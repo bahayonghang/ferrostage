@@ -1,0 +1,18 @@
+[package]
+name = "ferrostage-core"
+description = "Presentation state machine. No GPUI, no PDF, no window handles."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+thiserror.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+proptest.workspace = true
+
+[lints]
+workspace = true

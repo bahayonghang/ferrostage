@@ -1,0 +1,15 @@
+[package]
+name = "ferrostage-pdf"
+description = "PDF structure (lopdf) and, later, PDFium raster plus hayro-syntax."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+lopdf.workspace = true
+thiserror.workspace = true
+
+[lints]
+workspace = true

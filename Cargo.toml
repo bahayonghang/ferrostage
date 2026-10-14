@@ -1,0 +1,55 @@
+[workspace]
+resolver = "3"
+members = [
+    "crates/ferrostage-app",
+    "crates/ferrostage-ui",
+    "crates/ferrostage-core",
+    "crates/ferrostage-document",
+    "crates/ferrostage-pdf",
+    "crates/ferrostage-render",
+    "crates/ferrostage-media",
+    "crates/ferrostage-platform",
+    "crates/ferrostage-settings",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+publish = false
+rust-version = "1.99"
+
+[workspace.dependencies]
+ferrostage-core = { path = "crates/ferrostage-core" }
+ferrostage-document = { path = "crates/ferrostage-document" }
+ferrostage-pdf = { path = "crates/ferrostage-pdf" }
+ferrostage-render = { path = "crates/ferrostage-render" }
+ferrostage-media = { path = "crates/ferrostage-media" }
+ferrostage-platform = { path = "crates/ferrostage-platform" }
+ferrostage-settings = { path = "crates/ferrostage-settings" }
+ferrostage-ui = { path = "crates/ferrostage-ui" }
+
+# Latest stable crates.io releases as of 2026-10-14.
+# Heavy native / GPUI crates are pinned here but not linked by the default build.
+# See docs/adr/ADR-001-gpui-from-zed-tag.md and docs/adr/ADR-002-pdf-backends.md.
+thiserror = "2.0.21"
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
+clap = { version = "4.6.7", features = ["derive"] }
+serde = { version = "1.0.229", features = ["derive"] }
+toml = "1.1.8"
+lopdf = "0.45.0"
+proptest = "1.12.0"
+# notify 8.2.0 is the latest stable (9.0.0 is still a release candidate).
+notify = "8.2.0"
+# pdfium-render 0.9.4 (pdfium_7881). Not a default dependency: it downloads PDFium.
+# hayro-syntax 0.8.0 (MSRV 1.92). Not linked until the syntax PoC calls a stable API.
+# gpui-kit / gpui-component 0.7.3 (2026-10-12), built on gpui-pre 0.3.9.
+# Zed GPUI git pin: zed-industries/zed tag v1.23.3 (published 2026-10-12).
+# Do not depend on crates.io `gpui` 0.2.x.
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }

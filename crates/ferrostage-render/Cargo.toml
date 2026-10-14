@@ -1,0 +1,14 @@
+[package]
+name = "ferrostage-render"
+description = "Single render worker and L1/L2/L3 cache budgets. No GPU calls in this skeleton."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+ferrostage-core.workspace = true
+
+[lints]
+workspace = true

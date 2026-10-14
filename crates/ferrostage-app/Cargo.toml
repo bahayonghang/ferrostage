@@ -1,0 +1,22 @@
+[package]
+name = "ferrostage-app"
+description = "FerroStage binary. The presenter UI is not linked in this skeleton."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+
+[[bin]]
+name = "ferrostage"
+path = "src/main.rs"
+
+[dependencies]
+clap.workspace = true
+ferrostage-settings.workspace = true
+ferrostage-ui.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+[lints]
+workspace = true
