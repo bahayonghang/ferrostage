@@ -1,0 +1,16 @@
+{"file": ".trellis/spec/backend/index.md", "reason": "Backend crate rules and quality checklist"}
+{"file": ".trellis/spec/backend/directory-structure.md", "reason": "Crate and module layout"}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "thiserror in libraries, ExitCode in binary"}
+{"file": ".trellis/spec/backend/logging-guidelines.md", "reason": "tracing usage; never log PDF bytes"}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "just ci and forbidden patterns"}
+{"file": ".trellis/spec/backend/database-guidelines.md", "reason": "No ORM; TOML document model rules"}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "Reuse existing newtypes and constants"}
+{"file": "docs/PROJECT_PLAN.md", "reason": "v0.3 source plan: scope, invariants, settings schema, monitor roles"}
+{"file": ".trellis/tasks/10-14-presenter-v0.3/design.md", "reason": "Cross-task shared contracts (SessionStage, MonitorId, Settings layout)"}
+{"file": ".trellis/tasks/10-14-presenter-v0.3/prd.md", "reason": "Source requirements, milestone scope and dependency map"}
+{"file": ".trellis/tasks/10-14-presenter-v0.3/traceability.md", "reason": "Requirement to owner, design step and verification coverage"}
+{"file": ".trellis/tasks/10-14-presenter-v0.3/research/repository-baseline.md", "reason": "Verified skeleton and semantic scan ledger; task 01 spec conflicts"}
+{"file": ".trellis/tasks/10-14-02-settings-schema/prd.md", "reason": "Child requirements and explicit dependencies"}
+{"file": ".trellis/tasks/10-14-02-settings-schema/design.md", "reason": "Reviewed design choices, ownership, errors and rollback"}
+{"file": ".trellis/tasks/10-14-02-settings-schema/implement.md", "reason": "Ordered steps and layered verification gates"}
+{"file": ".trellis/tasks/10-14-presenter-v0.3/research/runtime-feasibility.md", "reason": "Primary-source native API, safe wrapper, ownership, CI and distribution gates"}
