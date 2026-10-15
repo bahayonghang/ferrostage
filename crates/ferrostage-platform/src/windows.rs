@@ -1,7 +1,6 @@
 //! Safe Windows adapters. Never persist HMONITOR or GDI enumeration indexes.
 use std::collections::BTreeMap;
 
-use winsafe::prelude::Handle;
 use winsafe::{
     DEVMODE, EnumDisplayDevices, EnumDisplaySettings, GmidxEnum, HDC, HMONITOR, HWND, SetLastError,
     co,
@@ -102,10 +101,11 @@ fn native_error(operation: &'static str, error: co::ERROR) -> PlatformError {
 }
 
 fn geometry() -> Result<Vec<Geometry>, PlatformError> {
-    // GetDC(NULL) spans the virtual desktop. With a non-null DC, the monitor
-    // enumeration callback receives a DC for that specific monitor. The guard
-    // releases the desktop DC, and callback handles never leave this scope.
-    let desktop = HWND::NULL
+    // Keep a real desktop owner: winsafe 0.0.29 skips ReleaseDC for a NULL HWND.
+    // This DC still enumerates all attached monitors with per-monitor callback
+    // DCs; complete device/geometry matching below rejects partial results.
+    // The guard releases on every exit and callback handles never escape.
+    let desktop = HWND::GetDesktopWindow()
         .GetDC()
         .map_err(|e| native_error("GetDC(desktop)", e))?;
     let mut result = Vec::new();

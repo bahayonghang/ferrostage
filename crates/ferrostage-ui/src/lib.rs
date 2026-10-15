@@ -12,6 +12,9 @@
 mod actions;
 #[cfg(feature = "gpui")]
 mod audience;
+pub mod display_settings;
+#[cfg(feature = "gpui")]
+mod identify;
 pub mod locale;
 pub mod policy;
 #[cfg(feature = "gpui")]

@@ -20,7 +20,7 @@ The skeleton originally left GPUI unlinked. Task07 is adopting the explicitly ap
 | [Directory Structure](./directory-structure.md) | Where views will live | Filled |
 | [Component Guidelines](./component-guidelines.md) | GPUI views, not React components | Filled |
 | [Hook Guidelines](./hook-guidelines.md) | No React hooks; GPUI context updates | Filled |
-| [State Management](./state-management.md) | Core state vs snapshot | Filled |
+| [State Management](./state-management.md) | Core/snapshot boundary and shared display-assignment contract | Filled |
 | [Quality Guidelines](./quality-guidelines.md) | Window rules | Filled |
 | [Type Safety](./type-safety.md) | Newtypes and the notes boundary | Filled |
 

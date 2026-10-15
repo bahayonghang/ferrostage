@@ -6,7 +6,9 @@ crates retain `unsafe_code = forbid` and warnings-denied lint.
 
 - GPUI0.2.2: Zed v1.23.3, revision96a1b1b5389efff473fc2306f7f8c690f2e1a417,
   Apache-2.0. Maintained resvg/usvg0.48.1 font stack, compatible Unicode cmap
-  coverage, and bit-identical Rust1.99 GOLDEN_RATIO constant.
+  coverage, and bit-identical Rust1.99 GOLDEN_RATIO constant. The task07 V8
+  retirement repair adds an owning-Window lifetime token and weak active-status
+  callback guard in `src/window.rs`; live callback errors retain their logger.
 - pulp0.22.3 (MIT), metal0.33.0 (MIT OR Apache-2.0): published pastey0.2.3
   replaces the old paste dependency under its existing alias. Rust code unchanged.
 - cosmic-text0.19.0 (MIT OR Apache-2.0): dependency-only fontdb0.24 migration.
@@ -19,6 +21,12 @@ The final526-source snapshot is
 `product-vendor-adoption.json` and `product-vendor-adaptation.patch` in that
 research directory record candidate-to-product copying and test path changes.
 Product source is not represented as byte-identical to the evaluation snapshot.
+
+The later V8 lifetime delta is bounded by ADR-008 and backed by the task07
+`product-v8-retirement-red-activation.log` / `product-v8-retirement-green.log`
+real-GPUI regressions. New product-v8 source/build and independent review records
+govern that revision; the original526-source snapshot remains historical. This
+does not change `gpui_windows`, add a maintained package or expand policy waivers.
 
 `fixtures/fonts` contains only unchanged original OFL fonts and complete notices;
 IBM's Reserved Font Name is Plex. TTC derivatives are generated in memory by

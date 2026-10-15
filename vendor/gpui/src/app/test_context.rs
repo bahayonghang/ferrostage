@@ -616,8 +616,8 @@ impl TestAppContext {
         .unwrap();
     }
 
-    /// Returns the `TestWindow` backing the given handle.
-    pub(crate) fn test_window(&self, window: AnyWindowHandle) -> TestWindow {
+    /// Returns the platform window, which can be retained to deliver queued events after removal.
+    pub fn test_window(&self, window: AnyWindowHandle) -> TestWindow {
         self.app
             .borrow_mut()
             .windows
@@ -629,6 +629,22 @@ impl TestAppContext {
             .as_test()
             .unwrap()
             .clone()
+    }
+
+    /// Runs a platform callback while the live window is leased out of the app.
+    /// This models an update in progress without holding the app's RefCell borrow.
+    pub fn with_window_lease<R>(&self, window: AnyWindowHandle, callback: impl FnOnce() -> R) -> R {
+        let leased = self
+            .app
+            .borrow_mut()
+            .windows
+            .get_mut(window.id)
+            .unwrap()
+            .take();
+        assert!(leased.is_some());
+        let result = callback();
+        *self.app.borrow_mut().windows.get_mut(window.id).unwrap() = leased;
+        result
     }
 
     /// Returns a stream of notifications whenever the Entity is updated.

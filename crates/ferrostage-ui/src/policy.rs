@@ -238,8 +238,24 @@ pub fn bindings(
     (valid, warnings)
 }
 
-/// A requested fullscreen flag alone is not proof. Fullscreen requires an
-/// observed native bounds event and actual bounds matching the mapped display.
+/// Reserve room for native borders/titlebar around the client area. Work-area
+/// bounds already exclude the taskbar/dock; the inset also avoids edge clipping.
+const WINDOW_MARGIN: f32 = 32.;
+
+pub fn windowed_bounds(visible: [f32; 4], desired: [f32; 2]) -> [f32; 4] {
+    let width = desired[0].min((visible[2] - 2. * WINDOW_MARGIN).max(1.));
+    let height = desired[1].min((visible[3] - 2. * WINDOW_MARGIN).max(1.));
+    [
+        visible[0] + (visible[2] - width) / 2.,
+        visible[1] + (visible[3] - height) / 2.,
+        width,
+        height,
+    ]
+}
+
+/// Fullscreen requires an observed native bounds event and matching full display
+/// bounds. Windowed callers provide the usable display area and must additionally
+/// check the requested client size after any cross-DPI creation has settled.
 pub fn placement_confirmed(
     requested: u64,
     actual: Option<u64>,
@@ -254,12 +270,20 @@ pub fn placement_confirmed(
         && bounds.into_iter().chain(display).all(f32::is_finite)
         && bounds[2] > 0.0
         && bounds[3] > 0.0
-        && (!fullscreen
-            || (observed
+        && display[2] > 0.0
+        && display[3] > 0.0
+        && if fullscreen {
+            observed
                 && bounds
                     .into_iter()
                     .zip(display)
-                    .all(|(a, b)| (a - b).abs() <= 2.0)))
+                    .all(|(a, b)| (a - b).abs() <= 2.0)
+        } else {
+            bounds[0] >= display[0] + WINDOW_MARGIN - 2.
+                && bounds[1] >= display[1] + WINDOW_MARGIN - 2.
+                && bounds[0] + bounds[2] <= display[0] + display[2] - WINDOW_MARGIN + 2.
+                && bounds[1] + bounds[3] <= display[1] + display[3] - WINDOW_MARGIN + 2.
+        }
 }
 
 #[cfg(test)]
@@ -379,6 +403,61 @@ mod tests {
             audience_target(&monitors, &settings).unwrap(),
             (MonitorId("a".into()), false)
         );
+    }
+    #[test]
+    fn placement_v10_portrait_native_overflow_is_not_confirmation() {
+        // V9 actual native read-back on C at 150%, created from B at 125%.
+        assert!(!placement_confirmed(
+            65735,
+            Some(65735),
+            false,
+            false,
+            true,
+            [1708., -273.33334, 1280., 912.],
+            [1706.6666, -761.3333, 1066.6666, 1706.6666],
+        ));
+    }
+    #[test]
+    fn placement_v10_work_area_and_narrow_clients_leave_native_frame_space() {
+        let portrait = [1706.6666, -761.3333, 1066.6666, 1706.6666];
+        let client = windowed_bounds(portrait, [1100., 760.]);
+        assert!((client[2] - 1002.6666).abs() < 0.01);
+        assert!(placement_confirmed(
+            1,
+            Some(1),
+            false,
+            false,
+            true,
+            client,
+            portrait
+        ));
+        let work = [-1706.6666, -112.6667, 1706.6666, 1020.];
+        for wanted in [[800., 600.], [390., 844.], [320., 640.]] {
+            let client = windowed_bounds(work, wanted);
+            assert_eq!([client[2], client[3]], wanted);
+            assert!(placement_confirmed(
+                1,
+                Some(1),
+                false,
+                false,
+                true,
+                client,
+                work
+            ));
+        }
+        // A client reaching the taskbar or placing its titlebar off the top must
+        // not pass even though its center still belongs to the requested screen.
+        for bad in [[100., 100., 700., 900.], [100., 0., 700., 700.]] {
+            assert!(!placement_confirmed(
+                1,
+                Some(1),
+                false,
+                false,
+                true,
+                bad,
+                [0., 0., 1000., 1000.]
+            ));
+        }
     }
     #[test]
     fn fullscreen_request_without_native_bounds_evidence_is_not_confirmation() {

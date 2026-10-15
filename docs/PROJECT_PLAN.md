@@ -25,7 +25,7 @@ FerroStage 是一个 clean-room 的 PDF / Beamer 双屏演示器。目标行为�
 **纳入 v1.0**
 
 - 打开 PDF（CLI、对话框、拖放、最近文件）；导入后处于就绪态，讲者显式点击开始。
-- 讲者/观众双窗口分离；按显示器角色投影；一键交换；黑/白屏；全屏。
+- 讲者/观众双窗口分离；先检测屏幕数量/编号，再显式选择应用屏/PDF屏；黑/白屏；全屏。
 - Beamer：同页左右/上下拼合备注、`notes:` 独立备注页、`\pause` overlay 步进、PageLabel 逻辑页码。
 - 讲者工作台：当前页、下一页、备注、计时器（正计/倒计/预警）、时钟、跳页预览、1–16 页网格缩略图。
 - 归一化矢量激光笔与手绘批注（会话内存，不写文件）。
@@ -58,14 +58,14 @@ FerroStage 是一个 clean-room 的 PDF / Beamer 双屏演示器。目标行为�
 | --- | --- | --- | --- |
 | 文件 | 打开/拖放/最近文件/CLI 路径 | P0 | 打开后进入 Ready；不创建观众窗口；不启动计时 |
 | 生命周期 | 开始演示 / 结束演示按钮与快捷键 | P0 | 点击开始：观众窗口在 Audience 角色屏全屏出现，计时器从 0 启动；结束：观众窗口关闭，回到 Ready，计时停止且 Ready 显示保留读数；每次重新 Start 清零 |
-| 显示 | 显示器识别、角色分配、Identify 覆盖层 | P0 | 三屏下可指定任意一块为 Audience、一块为 Presenter、其余 None；重启后角色按 `MonitorId` 恢复 |
+| 显示 | 显示器设置、数量/编号、应用屏/PDF屏选择、Identify | P0 | 先列检测数量和编号，再选择应用窗口/PDF播放目标，其余不使用；应用后生效，重启按 `MonitorId` 恢复；07提供最小面板，09整合完整设置 |
 | 显示 | 热插拔降级 | P0 | 拔掉 Audience 屏：观众窗口立即销毁，讲者窗口保持窗口化，不把备注全屏到剩余屏 |
 | 渲染 | 4K BGRA8 直出、纵横比保持、子区域裁剪 | P0 | 目标 P95≤25ms；机器/PDF/运行库与20次预热、200次采样见05协议；不经RGBA转换 |
 | Beamer | 拼合备注自动检测 + 手动覆盖；`notes:` 映射；overlay 步进 | P0 | 观众端只看到幻灯片半幅；翻页跳过独立备注页；`NextLogicalSlide` 跳过同帧 overlay |
 | 导航 | 物理页/逻辑页、跳页预览、回车确认 | P0 | 预览期间观众画面不变 |
 | 工作台 | 当前页、下一页、备注、计时器、时钟、进度 | P0 | 计时基于 `Instant`，渲染阻塞不影响读秒 |
-| 双屏安全 | 焦点防护、交换屏幕、黑/白屏 | P0 | 观众窗口获焦时任何快捷键都不在观众屏弹对话框 |
-| 设置 | 分节 TOML、原子保存、迁移、设置界面 | P0/P1 | schema见§4.4；M1配置角色，M2最终角色UI；设置只在讲者窗口 |
+| 双屏安全 | 焦点防护、屏幕分配、黑/白屏与旧交换快捷键兼容 | P0 | 观众窗口获焦时任何快捷键都不在观众屏弹对话框 |
+| 设置 | 分节 TOML、原子保存、迁移、设置界面 | P0/P1 | schema见§4.4；M1复用07最小角色面板，M2完整设置集成；设置只在讲者窗口 |
 | 工作台 | 1–16 页网格缩略图、分割条布局 | P1 | 千页 PDF 滚动 60 FPS，缩略图低优先级异步生成 |
 | 标注 | 激光笔、手绘、荧光笔、橡皮、清空 | P1 | `[0,1]²` 归一化坐标；双屏位置重合；会话内存，不落盘 |
 | 热重载 | 磁盘 PDF 被替换后自动重载 | P2 | 半写状态不报错不黑屏；重载后保持逻辑页与计时 |
@@ -116,7 +116,7 @@ enumerate_monitors返回Result<Vec<MonitorInfo>,PlatformError>，零屏正常空
 - 热插拔Audience消失：Curtain→Stop→关观众窗→Ready，讲者窗口化；新屏/重连不自动接管或Start；零屏等待恢复。
 - 03先研究安全wrapper，workspace forbid不能被局部allow覆盖；完整API不足先审最小ADR/lint方案。07核GPUI DisplayId/native identity/物理与逻辑坐标/DPI，歧义映射拒绝Start。
 
-09最终设置UI：按桌面位置的拓扑图、每屏角色下拉、稳定等级/解析来源/warnings与Identify。Gate B仅使用02配置文件指定角色，07允许占位，不代表设置UI或真实画面已实现。
+07在Gate B前交付“显示器设置”最小面板：数量/编号列表、应用窗口/PDF播放两项选择、Apply/Cancel和同号Identify；编号仅显示，持久化MonitorId。09复用面板并补桌面拓扑图、稳定等级/解析来源/warnings及完整设置。07仍允许PDF占位，旧配置/Swap证据不替代新角色UI或真实画面验收。
 
 ### 4.4 设置系统
 
@@ -241,8 +241,8 @@ Phase 0 必须实机通过的 PoC（对应子任务见 §7）：
 | 阶段 | 子任务 | 准出 |
 | --- | --- | --- |
 | Phase 0 文档与契约 | `01-docs-sync`、`02-settings-schema`、`03-monitor-topology`、`04-session-lifecycle` | 纯 Rust 单测通过；现行正向能力无禁用功能；历史/排除命中逐条审查 |
-| Phase 1 可用 Alpha | `05-pdf-raster`、`06-beamer-document-model`、`07-gpui-shell`、`08-presenter-workbench` | **M1 / Gate C**：01–08的P0 Alpha真实汇报（Gate B先占位、角色可配置文件）；08 P1增强仍待M2完整验收，不宣称所有产品P0完成 |
-| Phase 2 Beta | `09-settings-ui`、`10-hot-reload`、`11-media-playback` | **M2 / Gate D**：09最终角色/设置UI、08全部P1、10热重载/11媒体、父AC-1…10全部通过（含Claude原生主题验收） |
+| Phase 1 可用 Alpha | `05-pdf-raster`、`06-beamer-document-model`、`07-gpui-shell`、`08-presenter-workbench` | **M1 / Gate C**：01–08的P0 Alpha真实汇报（Gate B先占位、角色通过07最小分配UI）；08 P1增强仍待M2完整验收，不宣称所有产品P0完成 |
+| Phase 2 Beta | `09-settings-ui`、`10-hot-reload`、`11-media-playback` | **M2 / Gate D**：09完整角色/设置集成、08全部P1、10热重载/11媒体、父AC-1…10全部通过（含Claude原生主题验收） |
 | Phase 3 Stable | 跨平台与安装包（另行建任务） | **M3**：三平台 CI 全绿，120 分钟压测 |
 
 依赖关系写在各子任务 `prd.md`，父子结构本身不表示顺序。

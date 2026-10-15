@@ -1,5 +1,61 @@
 use super::*;
 
+#[test]
+fn getdc_v15_real_owner_preserves_topology_and_enumeration_releases_gdi() {
+    // Keep a real-owner DC alive so GetGuiResources has a nonzero baseline;
+    // winsafe treats a zero count as an error. No window is created or moved.
+    let desktop_window = HWND::GetDesktopWindow();
+    let sentinel = desktop_window.GetDC().unwrap();
+    let process = winsafe::HPROCESS::GetCurrentProcess();
+    let count = || process.GetGuiResources(co::GR::GDIOBJECTS).unwrap();
+    let expected = enumerate().unwrap();
+    assert!(
+        !expected.is_empty(),
+        "this Windows resource regression needs a desktop"
+    );
+
+    let before_candidate = count();
+    for _ in 0..16 {
+        let devices = devices().unwrap();
+        let geometry = {
+            let dc = desktop_window.GetDC().unwrap();
+            let mut result = Vec::new();
+            dc.EnumDisplayMonitors(None, |monitor, dc, _| {
+                result.push(read_geometry(monitor, dc));
+                true
+            })
+            .unwrap();
+            result.into_iter().collect::<Result<Vec<_>, _>>().unwrap()
+        };
+        let candidate = combine(devices, geometry).unwrap();
+        assert_eq!(
+            candidate, expected,
+            "real owner must retain every monitor/geometry/scale field"
+        );
+    }
+    let after_candidate = count();
+    eprintln!(
+        "real-owner candidate: monitors={} GDI before={before_candidate} after={after_candidate}",
+        expected.len()
+    );
+    assert_eq!(
+        after_candidate, before_candidate,
+        "real-owner DC must release on each scope exit"
+    );
+
+    let before = count();
+    for _ in 0..64 {
+        assert_eq!(enumerate().unwrap(), expected);
+    }
+    let after = count();
+    eprintln!("production enumeration64: GDI before={before} after={after}");
+    assert_eq!(
+        after, before,
+        "monitor polling must not accumulate desktop DCs"
+    );
+    drop(sentinel);
+}
+
 fn device(path: &str) -> BTreeMap<String, Device> {
     BTreeMap::from([(
         "DISPLAY-A".into(),

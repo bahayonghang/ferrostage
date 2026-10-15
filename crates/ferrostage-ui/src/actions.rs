@@ -36,6 +36,12 @@ pub(crate) enum Intent {
     Escape,
     Commit,
     RetrySave,
+    Displays,
+    Identify,
+    RefreshDisplays,
+    SelectPresenter(ferrostage_core::MonitorId),
+    SelectPdf(crate::display_settings::PdfTarget),
+    ApplyDisplays,
     Import(PathBuf),
 }
 

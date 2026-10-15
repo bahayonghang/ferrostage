@@ -1158,6 +1158,10 @@ pub struct Window {
     pub(crate) handle: AnyWindowHandle,
     pub(crate) invalidator: WindowInvalidator,
     pub(crate) removed: bool,
+    // Platform event queues may retain their callback after the Window is gone.
+    // This must drop before platform_window. Callbacks hold only Weak pointers,
+    // so queued/re-entrant events cannot extend the owning Window's lifetime.
+    _platform_callback_lifetime: Rc<()>,
     pub(crate) platform_window: Box<dyn PlatformWindow>,
     display_id: Option<DisplayId>,
     is_resizable: bool,
@@ -1687,6 +1691,7 @@ impl Window {
                 .detach();
         }
 
+        let platform_callback_lifetime = Rc::new(());
         platform_window.on_close(Box::new({
             let window_id = handle.window_id();
             let mut cx = cx.to_async();
@@ -1699,6 +1704,7 @@ impl Window {
         }));
         platform_window.on_request_frame(Box::new({
             let mut cx = cx.to_async();
+            let lifetime = Rc::downgrade(&platform_callback_lifetime);
             let invalidator = invalidator.clone();
             let active = active.clone();
             let needs_present = needs_present.clone();
@@ -1706,6 +1712,9 @@ impl Window {
             let input_rate_tracker = input_rate_tracker.clone();
             let mut deferred_force_render = false;
             move |request_frame_options| {
+                if lifetime.strong_count() == 0 {
+                    return;
+                }
                 #[cfg(feature = "profiler")]
                 let _foreground_turn = profiler::journal::foreground_turn();
                 // This must be checked before anything else: if this request
@@ -1839,7 +1848,11 @@ impl Window {
         invalidator.set_platform_waker(platform_window.frame_waker());
         platform_window.on_visual_viewport_changed(Box::new({
             let mut cx = cx.to_async();
+            let lifetime = Rc::downgrade(&platform_callback_lifetime);
             move || {
+                if lifetime.strong_count() == 0 {
+                    return;
+                }
                 handle
                     .update(&mut cx, |_, window, _| window.refresh())
                     .log_err();
@@ -1847,7 +1860,11 @@ impl Window {
         }));
         platform_window.on_insets_changed(Box::new({
             let mut cx = cx.to_async();
+            let lifetime = Rc::downgrade(&platform_callback_lifetime);
             move |_| {
+                if lifetime.strong_count() == 0 {
+                    return;
+                }
                 handle
                     .update(&mut cx, |_, window, _| window.refresh())
                     .log_err();
@@ -1855,7 +1872,11 @@ impl Window {
         }));
         platform_window.on_resize(Box::new({
             let mut cx = cx.to_async();
+            let lifetime = Rc::downgrade(&platform_callback_lifetime);
             move |_, _| {
+                if lifetime.strong_count() == 0 {
+                    return;
+                }
                 handle
                     .update(&mut cx, |_, window, cx| window.bounds_changed(cx))
                     .log_err();
@@ -1863,7 +1884,11 @@ impl Window {
         }));
         platform_window.on_moved(Box::new({
             let mut cx = cx.to_async();
+            let lifetime = Rc::downgrade(&platform_callback_lifetime);
             move || {
+                if lifetime.strong_count() == 0 {
+                    return;
+                }
                 handle
                     .update(&mut cx, |_, window, cx| window.bounds_changed(cx))
                     .log_err();
@@ -1871,13 +1896,21 @@ impl Window {
         }));
         platform_window.on_appearance_changed(Box::new({
             let cx = cx.to_async();
+            let lifetime = Rc::downgrade(&platform_callback_lifetime);
             let foreground_executor = cx.foreground_executor().clone();
             move || {
+                if lifetime.strong_count() == 0 {
+                    return;
+                }
                 let mut cx = cx.clone();
+                let lifetime = lifetime.clone();
                 // Defer the update because changing the AppKit appearance may
                 // synchronously invoke this callback while App is already borrowed.
                 foreground_executor
                     .spawn(async move {
+                        if lifetime.strong_count() == 0 {
+                            return;
+                        }
                         handle
                             .update(&mut cx, |_, window, cx| window.appearance_changed(cx))
                             .log_err();
@@ -1887,7 +1920,11 @@ impl Window {
         }));
         platform_window.on_button_layout_changed(Box::new({
             let mut cx = cx.to_async();
+            let lifetime = Rc::downgrade(&platform_callback_lifetime);
             move || {
+                if lifetime.strong_count() == 0 {
+                    return;
+                }
                 handle
                     .update(&mut cx, |_, window, cx| window.button_layout_changed(cx))
                     .log_err();
@@ -1895,7 +1932,11 @@ impl Window {
         }));
         platform_window.on_active_status_change(Box::new({
             let mut cx = cx.to_async();
+            let lifetime = Rc::downgrade(&platform_callback_lifetime);
             move |active| {
+                if lifetime.strong_count() == 0 {
+                    return;
+                }
                 handle
                     .update(&mut cx, |_, window, cx| {
                         window.active.set(active);
@@ -1916,7 +1957,11 @@ impl Window {
         }));
         platform_window.on_visibility_change(Box::new({
             let mut cx = cx.to_async();
+            let lifetime = Rc::downgrade(&platform_callback_lifetime);
             move |_| {
+                if lifetime.strong_count() == 0 {
+                    return;
+                }
                 handle
                     .update(&mut cx, |_, window, cx| {
                         window.refresh_visibility(cx);
@@ -1926,7 +1971,11 @@ impl Window {
         }));
         platform_window.on_hover_status_change(Box::new({
             let mut cx = cx.to_async();
+            let lifetime = Rc::downgrade(&platform_callback_lifetime);
             move |active| {
+                if lifetime.strong_count() == 0 {
+                    return;
+                }
                 handle
                     .update(&mut cx, |_, window, _| {
                         window.hovered.set(active);
@@ -1937,7 +1986,11 @@ impl Window {
         }));
         platform_window.on_input({
             let mut cx = cx.to_async();
+            let lifetime = Rc::downgrade(&platform_callback_lifetime);
             Box::new(move |event| {
+                if lifetime.strong_count() == 0 {
+                    return DispatchEventResult::default();
+                }
                 handle
                     .update(&mut cx, |_, window, cx| window.dispatch_event(event, cx))
                     .log_err()
@@ -1946,7 +1999,11 @@ impl Window {
         });
         platform_window.on_hit_test_window_control({
             let mut cx = cx.to_async();
+            let lifetime = Rc::downgrade(&platform_callback_lifetime);
             Box::new(move || {
+                if lifetime.strong_count() == 0 {
+                    return None;
+                }
                 handle
                     .update(&mut cx, |_, window, _cx| {
                         for (area, hitbox) in &window.rendered_frame.window_control_hitboxes {
@@ -1962,7 +2019,11 @@ impl Window {
         });
         platform_window.on_move_tab_to_new_window({
             let mut cx = cx.to_async();
+            let lifetime = Rc::downgrade(&platform_callback_lifetime);
             Box::new(move || {
+                if lifetime.strong_count() == 0 {
+                    return;
+                }
                 handle
                     .update(&mut cx, |_, _window, cx| {
                         SystemWindowTabController::move_tab_to_new_window(cx, handle.window_id());
@@ -1972,7 +2033,11 @@ impl Window {
         });
         platform_window.on_merge_all_windows({
             let mut cx = cx.to_async();
+            let lifetime = Rc::downgrade(&platform_callback_lifetime);
             Box::new(move || {
+                if lifetime.strong_count() == 0 {
+                    return;
+                }
                 handle
                     .update(&mut cx, |_, _window, cx| {
                         SystemWindowTabController::merge_all_windows(cx, handle.window_id());
@@ -1982,7 +2047,11 @@ impl Window {
         });
         platform_window.on_select_next_tab({
             let mut cx = cx.to_async();
+            let lifetime = Rc::downgrade(&platform_callback_lifetime);
             Box::new(move || {
+                if lifetime.strong_count() == 0 {
+                    return;
+                }
                 handle
                     .update(&mut cx, |_, _window, cx| {
                         SystemWindowTabController::select_next_tab(cx, handle.window_id());
@@ -1992,7 +2061,11 @@ impl Window {
         });
         platform_window.on_select_previous_tab({
             let mut cx = cx.to_async();
+            let lifetime = Rc::downgrade(&platform_callback_lifetime);
             Box::new(move || {
+                if lifetime.strong_count() == 0 {
+                    return;
+                }
                 handle
                     .update(&mut cx, |_, _window, cx| {
                         SystemWindowTabController::select_previous_tab(cx, handle.window_id())
@@ -2002,7 +2075,11 @@ impl Window {
         });
         platform_window.on_toggle_tab_bar({
             let mut cx = cx.to_async();
+            let lifetime = Rc::downgrade(&platform_callback_lifetime);
             Box::new(move || {
+                if lifetime.strong_count() == 0 {
+                    return;
+                }
                 handle
                     .update(&mut cx, |_, window, cx| {
                         let tab_bar_visible = window.platform_window.tab_bar_visible();
@@ -2022,6 +2099,7 @@ impl Window {
             handle,
             invalidator,
             removed: false,
+            _platform_callback_lifetime: platform_callback_lifetime,
             platform_window,
             display_id,
             is_resizable,

@@ -24,6 +24,8 @@ Do not add GPL or AGPL crates. `deny.toml` enforces this. Do not add MuPDF. ADR-
 - Do not `#[ignore]` a test to make CI green.
 - Default workspace checks exercise the pure Rust path. The separate `pdfium` feature suite requires the pinned native runtime and must fail when it is missing. A separate integration-test process checks failed initialization before any process-global bindings exist.
 - Raster goldens assert BGRA ordering, rotated/CropBox coordinates, alpha and same-density crop pixels. Performance uses uncached real renders, 20 warmups and all 200 timed samples; record runtime/fixture/font hashes and keep queue/upload time separate. Mock results do not establish native or GPU performance.
+- Repeated native monitor enumeration must release every acquired device context on success and failure. Do not infer this from a guard's type name: winsafe0.0.29 skips ReleaseDC for a NULL HWND owner. A replacement acquisition must preserve complete per-monitor identity/geometry/scale provenance and pass a real Windows GDI-resource-count regression; desktop-DPI contexts and full monitor coverage also need native application verification. Do not hide resource exhaustion by reusing stale topology.
+- Beamer notes acceptance uses a real TeX-compiled nonempty PDF with distinct public slide/private note canaries, physical-page labels and overlay expectations. Verify the original compiled page labels rather than assuming visible frame footers imply correct PDF labels. Independently establish left/right crop content, real PDFium rendering, presenter notes display and audience isolation. A placeholder or document-only result cannot prove UI notes availability.
 
 ## Forbidden
 

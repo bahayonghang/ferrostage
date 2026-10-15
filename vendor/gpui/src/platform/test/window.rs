@@ -43,6 +43,8 @@ pub(crate) struct TestWindowState {
     virtual_keyboard_requests: usize,
     virtual_keyboard_dismissals: usize,
     moved_callback: Option<Box<dyn FnMut()>>,
+    button_layout_callback: Option<Box<dyn FnMut()>>,
+    tab_callbacks: [Option<Box<dyn FnMut()>>; 5],
     appearance_change_callback: Option<Box<dyn FnMut()>>,
     request_frame_callback: Option<Box<dyn FnMut(RequestFrameOptions)>>,
     frame_wake_count: Rc<Cell<usize>>,
@@ -116,6 +118,8 @@ impl TestWindow {
             virtual_keyboard_requests: 0,
             virtual_keyboard_dismissals: 0,
             moved_callback: None,
+            button_layout_callback: None,
+            tab_callbacks: Default::default(),
             appearance_change_callback: None,
             request_frame_callback: None,
             frame_wake_count: Rc::new(Cell::new(0)),
@@ -239,6 +243,55 @@ impl TestWindow {
         drop(lock);
         callback(active);
         self.0.lock().active_status_change_callback = Some(callback);
+    }
+
+    /// Delivers a queued platform hover event, including after the owning Window is removed.
+    pub fn simulate_hover_status_change(&self, hovered: bool) {
+        let callback = self.0.lock().hover_status_change_callback.take();
+        if let Some(mut callback) = callback {
+            callback(hovered);
+            self.0.lock().hover_status_change_callback = Some(callback);
+        }
+    }
+
+    /// Delivers a platform movement notification.
+    pub fn simulate_move(&self) {
+        let callback = self.0.lock().moved_callback.take();
+        if let Some(mut callback) = callback {
+            callback();
+            self.0.lock().moved_callback = Some(callback);
+        }
+    }
+
+    /// Delivers a native titlebar button-layout change.
+    pub fn simulate_button_layout_change(&self) {
+        let callback = self.0.lock().button_layout_callback.take();
+        if let Some(mut callback) = callback {
+            callback();
+            self.0.lock().button_layout_callback = Some(callback);
+        }
+    }
+
+    /// Delivers each of the five registered system-tab commands once.
+    pub fn simulate_tab_commands(&self) {
+        for index in 0..5 {
+            let mut callback = self.0.lock().tab_callbacks[index].take().unwrap();
+            callback();
+            self.0.lock().tab_callbacks[index] = Some(callback);
+        }
+    }
+
+    /// Asks the platform callback which titlebar control is under the pointer.
+    pub fn simulate_window_control_hit_test(&self) -> Option<WindowControlArea> {
+        let mut callback = self
+            .0
+            .lock()
+            .hit_test_window_control_callback
+            .take()
+            .unwrap();
+        let result = callback();
+        self.0.lock().hit_test_window_control_callback = Some(callback);
+        result
     }
 
     pub fn simulate_appearance_change(&self, appearance: WindowAppearance) {
@@ -522,6 +575,30 @@ impl PlatformWindow for TestWindow {
 
     fn on_appearance_changed(&self, callback: Box<dyn FnMut()>) {
         self.0.lock().appearance_change_callback = Some(callback);
+    }
+
+    fn on_button_layout_changed(&self, callback: Box<dyn FnMut()>) {
+        self.0.lock().button_layout_callback = Some(callback);
+    }
+
+    fn on_move_tab_to_new_window(&self, callback: Box<dyn FnMut()>) {
+        self.0.lock().tab_callbacks[0] = Some(callback);
+    }
+
+    fn on_merge_all_windows(&self, callback: Box<dyn FnMut()>) {
+        self.0.lock().tab_callbacks[1] = Some(callback);
+    }
+
+    fn on_select_next_tab(&self, callback: Box<dyn FnMut()>) {
+        self.0.lock().tab_callbacks[2] = Some(callback);
+    }
+
+    fn on_select_previous_tab(&self, callback: Box<dyn FnMut()>) {
+        self.0.lock().tab_callbacks[3] = Some(callback);
+    }
+
+    fn on_toggle_tab_bar(&self, callback: Box<dyn FnMut()>) {
+        self.0.lock().tab_callbacks[4] = Some(callback);
     }
 
     fn draw(&self, scene: &Scene) {

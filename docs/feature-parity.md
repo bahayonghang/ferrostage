@@ -23,3 +23,8 @@ The behavior target is a dual-screen PDF / Beamer presenter. Priorities match [d
 | 1–16 page thumbnail grid | P1 | Task05 implements fixed-height180px thumbnail requests and bounded L3 cache. No grid UI |
 | Hot reload | P2 | Policy constants and generation check; watcher loop not started. External PDF replacement only |
 | Video / GIF | P2 | Task06 reads a documented Movie/Screen/RichMedia metadata subset with diagnostics; no playback. Shared-frame backend and runtime integration remain task11 |
+
+
+## Planned display-selection correction (2026-10-14)
+
+The primary toolbar Swap workflow is superseded by explicit display assignment: detected count/number list, matching Identify, application/PDF destination selectors and Apply/Cancel.07 owns the minimal shared surface,08 reuses it and09 integrates full settings/topology. This is PLANNED, not implemented or accepted; historical Swap/configuration receipts do not prove the new workflow. Gate B and all physical/P2 requirements remain unchanged. See the parent task `research/display-assignment-plan.md`.

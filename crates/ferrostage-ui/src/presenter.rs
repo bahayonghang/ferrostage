@@ -16,6 +16,7 @@ pub(crate) struct PresenterData {
     stage: SessionStage,
     filename: String,
     modal: Option<Modal>,
+    displays: Option<crate::display_settings::DisplayPanel>,
     error: Option<String>,
     warnings: Vec<String>,
     start_reason: Option<String>,
@@ -42,6 +43,7 @@ impl PresenterData {
                 .map(|name| name.to_string_lossy().into_owned())
                 .unwrap_or_else(|| "FerroStage".into()),
             modal: shell.modal.clone(),
+            displays: shell.display_panel(),
             error: shell.error.clone(),
             warnings: shell.warnings.clone(),
             start_reason: shell.start_reason(),
@@ -133,7 +135,7 @@ impl Presenter {
         (&self.data.filename, self.data.current, self.data.pages)
     }
 
-    fn button(
+    pub(crate) fn button(
         &self,
         id: String,
         label: String,
@@ -334,6 +336,13 @@ impl Render for Presenter {
                 }
             }));
         if let Some(modal) = modal {
+            if let Some(panel) = &self.data.displays {
+                return root
+                    .track_focus(&self.modal_focus)
+                    .key_context("FerroStageModal")
+                    .child(crate::display_settings::view::panel(self, panel, l, p))
+                    .into_any_element();
+            }
             let (title, description) = match modal {
                 Modal::Settings => (
                     l.text("settings"),
@@ -350,6 +359,7 @@ impl Render for Presenter {
                         ],
                     ),
                 ),
+                Modal::Displays(_) => unreachable!("display modal has prepared drawing data"),
             };
             return root
                 .track_focus(&self.modal_focus)
@@ -559,11 +569,11 @@ impl Render for Presenter {
                                 p,
                             ))
                             .child(self.button(
-                                "swap".into(),
-                                l.text("swap").into(),
+                                "displays".into(),
+                                l.text("displays").into(),
                                 !busy,
                                 false,
-                                Intent::Swap,
+                                Intent::Displays,
                                 p,
                             )),
                     ),

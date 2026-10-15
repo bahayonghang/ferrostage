@@ -118,6 +118,8 @@ Controls use md radius, panels lg, status badges sm. Content images retain their
 
 **modal / category-nav**: presenter-owned; Escape closes the topmost modal and consumes the event. Tab/Shift+Tab follow visible order, Enter/Space activate; restore focus to the invoker. Settings navigation marks selection with text weight and a border as well as a surface change.
 
+**display-assignment**: the toolbar uses “显示器设置” / “Displays”, opening a presenter-owned panel. First show detected display count and numbered entries; Identify uses those same numbers. Provide explicit “应用窗口所在屏幕” and “PDF播放屏幕” selectors with Apply/Cancel and current assignments; other screens are unused. Do not use a primary Swap button as the allocation workflow. Numbers are human-facing labels, while settings bind MonitorId. Task07 owns the minimal shared panel/Identify,08 reuses the entry,09 embeds it in full settings and adds the topology view. Existing Swap keybindings remain secondary compatibility actions.
+
 ## Do's and Don'ts
 
 - Use the single token layer; do not scatter raw styling values across views.

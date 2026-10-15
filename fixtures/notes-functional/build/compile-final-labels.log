@@ -1,0 +1,234 @@
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex)
+entering extended mode
+(./pympress-notes.tex
+LaTeX2e <2024-11-01> patch level 2
+L3 programming layer <2025-01-18>
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamer.cls
+Document Class: beamer 2025/02/04 v3.72 A class for typesetting presentations
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbasemodes.sty
+(c:/texlive/2025/texmf-dist/tex/latex/etoolbox/etoolbox.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbasedecode.sty))
+(c:/texlive/2025/texmf-dist/tex/generic/iftex/iftex.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbaseoptions.sty
+(c:/texlive/2025/texmf-dist/tex/latex/graphics/keyval.sty))
+(c:/texlive/2025/texmf-dist/tex/latex/geometry/geometry.sty
+(c:/texlive/2025/texmf-dist/tex/generic/iftex/ifvtex.sty))
+(c:/texlive/2025/texmf-dist/tex/latex/pgf/math/pgfmath.sty
+(c:/texlive/2025/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.tex)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/utilities/pgfutil-latex.def)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/utilities/pgfrcs.code.tex
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/pgf.revision.tex)))
+(c:/texlive/2025/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/utilities/pgfkeyslibraryfiltered.co
+de.tex))) (c:/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.tex)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.basic.code.te
+x)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.trigonometric
+.code.tex)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.random.code.t
+ex)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.comparison.co
+de.tex)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.base.code.tex
+)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.round.code.te
+x)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.misc.code.tex
+)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integerarithm
+etics.code.tex)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathfloat.code.tex)))
+(c:/texlive/2025/texmf-dist/tex/latex/base/size10.clo)
+(c:/texlive/2025/texmf-dist/tex/latex/pgf/basiclayer/pgfcore.sty
+(c:/texlive/2025/texmf-dist/tex/latex/graphics/graphicx.sty
+(c:/texlive/2025/texmf-dist/tex/latex/graphics/graphics.sty
+(c:/texlive/2025/texmf-dist/tex/latex/graphics/trig.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/graphics-cfg/graphics.cfg)
+(c:/texlive/2025/texmf-dist/tex/latex/graphics-def/xetex.def)))
+(c:/texlive/2025/texmf-dist/tex/latex/pgf/systemlayer/pgfsys.sty
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/systemlayer/pgfsys.code.tex
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-xetex.def
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-dvipdfmx.def
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-common-pdf.def))
+))
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/systemlayer/pgfsyssoftpath.code.tex
+)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/systemlayer/pgfsysprotocol.code.tex
+)) (c:/texlive/2025/texmf-dist/tex/latex/xcolor/xcolor.sty
+(c:/texlive/2025/texmf-dist/tex/latex/graphics-cfg/color.cfg)
+
+Package xcolor Warning: Package option `hyperref' is obsolete and ignored on in
+put line 265.
+
+(c:/texlive/2025/texmf-dist/tex/latex/graphics/mathcolor.ltx))
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcore.code.tex
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfint.code.tex)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepoints.code.tex)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathconstruct.cod
+e.tex)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathusage.code.te
+x)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcorescopes.code.tex)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcoregraphicstate.code
+.tex)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransformations.c
+ode.tex)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcorequick.code.tex)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreobjects.code.tex)
+
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathprocessing.co
+de.tex)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcorearrows.code.tex)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreshade.code.tex)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreimage.code.tex)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreexternal.code.tex
+) (c:/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcorelayers.code.tex
+)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransparency.code
+.tex)
+(c:/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepatterns.code.tex
+) (c:/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcorerdf.code.tex)))
+ (c:/texlive/2025/texmf-dist/tex/latex/pgf/utilities/xxcolor.sty
+
+Package xcolor Warning: Package option `hyperref' is obsolete and ignored on in
+put line 14.
+
+) (c:/texlive/2025/texmf-dist/tex/latex/base/atbegshi-ltx.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/hyperref/hyperref.sty
+(c:/texlive/2025/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty)
+(c:/texlive/2025/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty)
+(c:/texlive/2025/texmf-dist/tex/generic/pdfescape/pdfescape.sty
+(c:/texlive/2025/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty)
+(c:/texlive/2025/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+(c:/texlive/2025/texmf-dist/tex/generic/infwarerr/infwarerr.sty)))
+(c:/texlive/2025/texmf-dist/tex/latex/hycolor/hycolor.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/hyperref/nameref.sty
+(c:/texlive/2025/texmf-dist/tex/latex/refcount/refcount.sty)
+(c:/texlive/2025/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
+(c:/texlive/2025/texmf-dist/tex/latex/kvoptions/kvoptions.sty)))
+(c:/texlive/2025/texmf-dist/tex/generic/stringenc/stringenc.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(c:/texlive/2025/texmf-dist/tex/generic/intcalc/intcalc.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/hyperref/puenc.def)
+(c:/texlive/2025/texmf-dist/tex/latex/url/url.sty)
+(c:/texlive/2025/texmf-dist/tex/generic/bitset/bitset.sty
+(c:/texlive/2025/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))
+
+Package hyperref Message: Stopped early.
+
+) (c:/texlive/2025/texmf-dist/tex/latex/hyperref/hxetex.def
+(c:/texlive/2025/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+(c:/texlive/2025/texmf-dist/tex/latex/base/atveryend-ltx.sty)
+(c:/texlive/2025/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty)))
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbaserequires.sty
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbasecompatibility.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbasefont.sty
+(c:/texlive/2025/texmf-dist/tex/latex/amsfonts/amssymb.sty
+(c:/texlive/2025/texmf-dist/tex/latex/amsfonts/amsfonts.sty))
+(c:/texlive/2025/texmf-dist/tex/latex/sansmathaccent/sansmathaccent.sty
+(c:/texlive/2025/texmf-dist/tex/latex/koma-script/scrlfile.sty
+(c:/texlive/2025/texmf-dist/tex/latex/koma-script/scrlfile-hook.sty
+(c:/texlive/2025/texmf-dist/tex/latex/koma-script/scrlogo.sty)))))
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbasetranslator.sty
+(c:/texlive/2025/texmf-dist/tex/latex/translator/translator.sty))
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbasemisc.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbasetwoscreens.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbaseoverlay.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbasetitle.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbasesection.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbaseframe.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbaseverbatim.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbaseframesize.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbaseframecomponents.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbasecolor.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbasenotes.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbasetoc.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbasetemplates.sty
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbaseauxtemplates.sty
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbaseboxes.sty)))
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbaselocalstructure.sty
+(c:/texlive/2025/texmf-dist/tex/latex/tools/enumerate.sty))
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbasenavigation.sty
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbasenavigationsymbols.tex))
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbasetheorems.sty
+(c:/texlive/2025/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(c:/texlive/2025/texmf-dist/tex/latex/amsmath/amstext.sty
+(c:/texlive/2025/texmf-dist/tex/latex/amsmath/amsgen.sty))
+(c:/texlive/2025/texmf-dist/tex/latex/amsmath/amsbsy.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/amsmath/amsopn.sty))
+(c:/texlive/2025/texmf-dist/tex/latex/amscls/amsthm.sty))
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerbasethemes.sty))
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerthemedefault.sty
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerfontthemedefault.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamercolorthemedefault.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerinnerthemedefault.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/beamer/beamerouterthemedefault.sty)))
+(c:/texlive/2025/texmf-dist/tex/latex/ctex/ctex.sty
+(c:/texlive/2025/texmf-dist/tex/latex/l3kernel/expl3.sty
+(c:/texlive/2025/texmf-dist/tex/latex/l3backend/l3backend-xetex.def))
+(c:/texlive/2025/texmf-dist/tex/latex/ctex/ctexhook.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/ctex/ctexpatch.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/base/fix-cm.sty
+(c:/texlive/2025/texmf-dist/tex/latex/base/ts1enc.def))
+(c:/texlive/2025/texmf-dist/tex/latex/ctex/config/ctexopts.cfg)
+
+Package ctex Warning: Option `hyperref' is deprecated.
+(ctex)                `hyperref' package will be loaded.
+
+(c:/texlive/2025/texmf-dist/tex/latex/ctex/engine/ctex-engine-xetex.def
+(c:/texlive/2025/texmf-dist/tex/xelatex/xecjk/xeCJK.sty
+(c:/texlive/2025/texmf-dist/tex/latex/l3packages/xtemplate/xtemplate.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/fontspec/fontspec.sty
+(c:/texlive/2025/texmf-dist/tex/latex/l3packages/xparse/xparse.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/fontspec/fontspec-xetex.sty
+(c:/texlive/2025/texmf-dist/tex/latex/base/fontenc.sty)
+(c:/texlive/2025/texmf-dist/tex/latex/fontspec/fontspec.cfg)))
+(c:/texlive/2025/texmf-dist/tex/xelatex/xecjk/xeCJK.cfg)))
+(c:/texlive/2025/texmf-dist/tex/latex/zhnumber/zhnumber.sty
+(c:/texlive/2025/texmf-dist/tex/latex/zhnumber/zhnumber-utf8.cfg))
+(c:/texlive/2025/texmf-dist/tex/latex/ctex/scheme/ctex-scheme-chinese.def
+(c:/texlive/2025/texmf-dist/tex/latex/ctex/config/ctex-name-utf8.cfg))
+(c:/texlive/2025/texmf-dist/tex/latex/ctex/fontset/ctex-fontset-windows.def))
+(c:/texlive/2025/texmf-dist/tex/latex/ctex/config/ctex.cfg)
+(c:/texlive/2025/texmf-dist/tex/latex/pgf/utilities/pgfpages.sty
+(c:/texlive/2025/texmf-dist/tex/latex/tools/calc.sty))
+(build/pympress-notes.aux)
+*geometry* driver: auto-detecting
+*geometry* detected driver: xetex
+(build/pympress-notes.out) (build/pympress-notes.out)
+(c:/texlive/2025/texmf-dist/tex/latex/translator/translator-basic-dictionary-En
+glish.dict)
+(c:/texlive/2025/texmf-dist/tex/latex/translator/translator-bibliography-dictio
+nary-English.dict)
+(c:/texlive/2025/texmf-dist/tex/latex/translator/translator-environment-diction
+ary-English.dict)
+(c:/texlive/2025/texmf-dist/tex/latex/translator/translator-months-dictionary-E
+nglish.dict)
+(c:/texlive/2025/texmf-dist/tex/latex/translator/translator-numbers-dictionary-
+English.dict)
+(c:/texlive/2025/texmf-dist/tex/latex/translator/translator-theorem-dictionary-
+English.dict)
+(c:/texlive/2025/texmf-dist/tex/latex/ctex/dictionary/translator-theorem-dictio
+nary-ChineseUTF8.dict) (build/pympress-notes.nav)
+(c:/texlive/2025/texmf-dist/tex/latex/amsfonts/umsa.fd)
+(c:/texlive/2025/texmf-dist/tex/latex/amsfonts/umsb.fd)
+
+(build/pympress-notes.vrb)
+[2]
+
+[3]
+
+[4]
+
+[5]
+[6] (build/pympress-notes.aux) )
+Output written on build/pympress-notes.pdf (5 pages).
+Transcript written on build/pympress-notes.log.

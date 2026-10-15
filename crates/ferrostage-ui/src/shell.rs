@@ -1,6 +1,8 @@
 use crate::{
     actions::{self, Intent},
     audience::Audience,
+    display_settings::{self, DisplayDraft, DisplayPanel},
+    identify::Identify,
     policy::{self, ShellError},
     presenter::{Presenter, PresenterData},
     transactions::{self, Operation, Shutdown},
@@ -48,6 +50,7 @@ impl Global for ShellRoot {}
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(crate) enum Modal {
     Settings,
+    Displays(DisplayDraft),
     Jump(String),
 }
 
@@ -56,19 +59,28 @@ struct WindowRecord {
     monitor: MonitorId,
     display: u64,
     fullscreen: bool,
+    client_size: gpui::Size<Pixels>,
+    resize_attempt: Cell<Option<ClientResizeAttempt>>,
     bounds_observed: Rc<Cell<bool>>,
+}
+
+#[derive(Clone, Copy)]
+struct ClientResizeAttempt {
+    requested: gpui::Size<Pixels>,
+    before: gpui::Size<Pixels>,
+    corrected: bool,
 }
 
 enum TransactionKind {
     Start,
-    Swap(DisplaySettings),
+    Assign(DisplaySettings),
     RecoverPresenter,
 }
 impl TransactionKind {
     fn operation(&self) -> Operation {
         match self {
             Self::Start => Operation::Start,
-            Self::Swap(_) => Operation::Swap,
+            Self::Assign(_) => Operation::Swap,
             Self::RecoverPresenter => Operation::RecoverPresenter,
         }
     }
@@ -102,6 +114,9 @@ pub(crate) struct Shell {
     _watcher: Result<TopologyWatcher, ferrostage_platform::PlatformError>,
     monitors: Vec<MonitorInfo>,
     topology_valid: bool,
+    topology_revision: u64,
+    identify: Vec<AnyWindowHandle>,
+    identify_deadline: Option<Instant>,
     recover_windowed: bool,
     mapped: Result<BTreeMap<MonitorId, u64>, ShellError>,
     presenter: Option<WindowRecord>,
@@ -118,6 +133,9 @@ pub(crate) struct Shell {
     pub modal: Option<Modal>,
     pub snapshot: Entity<AudienceProjectionSnapshot>,
     escape_stops: bool,
+    poll_task: Option<gpui::Task<()>>,
+    import_read_task: Option<gpui::Task<()>>,
+    path_prompt_task: Option<gpui::Task<()>>,
 }
 
 pub fn run(inputs: ShellInputs) {
@@ -152,17 +170,7 @@ pub fn run(inputs: ShellInputs) {
             if let Some(path) = initial {
                 shell.begin_import(path, cx);
             }
-            cx.spawn(async move |weak, cx| {
-                loop {
-                    cx.background_executor()
-                        .timer(Duration::from_millis(25))
-                        .await;
-                    if weak.update(cx, |shell, cx| shell.tick(cx)).is_err() {
-                        break;
-                    }
-                }
-            })
-            .detach();
+            shell.start_polling(cx);
         });
         install_close_handler(&shell, cx);
         cx.activate(true);
@@ -188,7 +196,36 @@ fn install_close_handler(shell: &Entity<Shell>, cx: &mut App) {
 }
 
 impl Shell {
+    fn start_polling(&mut self, cx: &mut Context<Self>) {
+        self.poll_task = Some(cx.spawn(async move |weak, cx| {
+            loop {
+                cx.background_executor()
+                    .timer(Duration::from_millis(25))
+                    .await;
+                if weak.update(cx, |shell, cx| shell.tick(cx)).is_err() {
+                    break;
+                }
+            }
+        }));
+    }
+
+    fn stop_tasks(&mut self, reason: &'static str) {
+        // WeakEntity is checked only after a foreground wake. Cancel while the
+        // platform dispatcher HWND is still alive so a late background timer
+        // cannot enqueue another Shell wake after platform destruction.
+        if self.poll_task.take().is_some() {
+            tracing::debug!(reason, "shell polling task cancelled before quit");
+        }
+        drop(self.import_read_task.take());
+        drop(self.path_prompt_task.take());
+    }
+
     fn new(inputs: ShellInputs, cx: &mut Context<Self>) -> Self {
+        cx.on_app_quit(|shell, _| {
+            shell.stop_tasks("app shutdown");
+            async {}
+        })
+        .detach();
         let locale = crate::locale::Locale::new(&inputs.settings.settings.general.language);
         let state = PresentationState::idle();
         let snapshot = cx.new(|_| state.audience_snapshot());
@@ -223,6 +260,9 @@ impl Shell {
             _watcher: inputs.watcher,
             monitors,
             topology_valid,
+            topology_revision: 0,
+            identify: Vec::new(),
+            identify_deadline: None,
             recover_windowed,
             mapped: Err(ShellError::AmbiguousDisplays),
             presenter: None,
@@ -239,6 +279,9 @@ impl Shell {
             modal: None,
             snapshot,
             escape_stops,
+            poll_task: None,
+            import_read_task: None,
+            path_prompt_task: None,
         }
     }
 
@@ -307,6 +350,7 @@ impl Shell {
         match intent {
             Intent::Escape => {
                 self.cancel_focus();
+                self.close_identify(cx);
                 match transactions::escape(
                     self.modal.take().is_some(),
                     self.state.jump_preview().is_some(),
@@ -320,7 +364,36 @@ impl Shell {
             Intent::Stop => self.stop(cx),
             Intent::Start => self.start(cx),
             Intent::Swap => self.swap(cx),
-            Intent::Open | Intent::Settings | Intent::Jump => self.request_focus(intent, cx),
+            Intent::Open | Intent::Settings | Intent::Jump | Intent::Displays => {
+                self.request_focus(intent, cx)
+            }
+            Intent::RefreshDisplays => {
+                if matches!(self.modal, Some(Modal::Displays(_))) && !self.busy() {
+                    self.detect_displays(cx);
+                    self.new_display_draft();
+                }
+            }
+            Intent::SelectPresenter(id) => {
+                if self.display_editable()
+                    && let Some(Modal::Displays(draft)) = &mut self.modal
+                {
+                    draft.presenter = Some(id);
+                }
+            }
+            Intent::SelectPdf(target) => {
+                if self.display_editable()
+                    && let Some(Modal::Displays(draft)) = &mut self.modal
+                {
+                    draft.pdf = target;
+                }
+            }
+            Intent::ApplyDisplays => {
+                if self.display_editable() {
+                    self.detect_displays(cx);
+                    self.apply_display_draft(cx);
+                }
+            }
+            Intent::Identify => self.identify_displays(cx),
             Intent::Import(path) => self.begin_import(path, cx),
             Intent::RetrySave => self.save(cx),
             Intent::Commit => {
@@ -410,7 +483,17 @@ impl Shell {
         let read = cx
             .background_executor()
             .spawn(async move { std::fs::read(read_path) });
-        cx.spawn(async move |weak, cx| {
+        self.await_import_read(path, token, read, cx);
+    }
+
+    fn await_import_read(
+        &mut self,
+        path: PathBuf,
+        token: u64,
+        read: gpui::Task<std::io::Result<Vec<u8>>>,
+        cx: &mut Context<Self>,
+    ) {
+        self.import_read_task = Some(cx.spawn(async move |weak, cx| {
             let bytes = read.await;
             if let Err(error) = weak.update(cx, |shell, cx| {
                 if shell.import_token != token {
@@ -438,8 +521,7 @@ impl Shell {
             }) {
                 tracing::debug!(%error,"import target closed");
             }
-        })
-        .detach();
+        }));
     }
 
     fn poll_import(&mut self, cx: &mut Context<Self>) {
@@ -568,7 +650,7 @@ impl Shell {
                     multiple: false,
                     prompt: Some(self.locale.text("open").into()),
                 });
-                cx.spawn(async move |weak, cx| {
+                self.path_prompt_task = Some(cx.spawn(async move |weak, cx| {
                     let result = receiver.await;
                     if let Err(error) = weak.update(cx, |shell, cx| {
                         // A retired owner must not deliver a late import.
@@ -592,10 +674,13 @@ impl Shell {
                     }) {
                         tracing::debug!(%error,"dialog owner closed");
                     }
-                })
-                .detach();
+                }));
             }
             Intent::Settings => self.modal = Some(Modal::Settings),
+            Intent::Displays => {
+                self.detect_displays(cx);
+                self.new_display_draft();
+            }
             Intent::Jump if self.state.page_count() > 0 => {
                 self.modal = Some(Modal::Jump(String::new()));
                 self.apply(Command::JumpPreview(self.state.current_page()), cx);
@@ -623,16 +708,10 @@ impl Shell {
             .into_iter()
             .find(|item| u64::from(item.id()) == target_display)
             .ok_or_else(|| ShellError::AmbiguousDisplays.localized(self.locale))?
-            .bounds();
-        let width = f32::from(bounds.size.width).min(if audience { 800. } else { 1100. });
-        let height = f32::from(bounds.size.height).min(760.);
-        let restore = Bounds::new(
-            point(
-                bounds.origin.x + px((f32::from(bounds.size.width) - width) / 2.),
-                bounds.origin.y + px((f32::from(bounds.size.height) - height) / 2.),
-            ),
-            size(px(width), px(height)),
-        );
+            .visible_bounds();
+        let [x, y, width, height] =
+            policy::windowed_bounds(rect(bounds), [if audience { 800. } else { 1100. }, 760.]);
+        let restore = Bounds::new(point(px(x), px(y)), size(px(width), px(height)));
         let options = WindowOptions {
             display_id: Some(DisplayId::new(target_display)),
             window_bounds: Some(if fullscreen {
@@ -657,10 +736,14 @@ impl Shell {
         let handle = if audience {
             let snapshot = self.snapshot.clone();
             cx.open_window(options, move |window, cx| {
+                Self::intercept_close(window, cx);
                 cx.new(|cx| {
                     cx.observe(&snapshot, |_, _, cx| cx.notify()).detach();
-                    cx.observe_window_bounds(window, move |_, _, _| flag.set(true))
-                        .detach();
+                    cx.observe_window_bounds(window, move |_, window, cx| {
+                        flag.set(true);
+                        Self::log_bounds(window, cx);
+                    })
+                    .detach();
                     Audience { snapshot }
                 })
             })
@@ -670,9 +753,13 @@ impl Shell {
             let locale = self.locale;
             let data = PresenterData::from_shell(self);
             cx.open_window(options, move |window, cx| {
+                Self::intercept_close(window, cx);
                 cx.new(|cx| {
-                    cx.observe_window_bounds(window, move |_, _, _| flag.set(true))
-                        .detach();
+                    cx.observe_window_bounds(window, move |_, window, cx| {
+                        flag.set(true);
+                        Self::log_bounds(window, cx);
+                    })
+                    .detach();
                     cx.observe_window_appearance(window, |_, _, cx| cx.notify())
                         .detach();
                     Presenter::new(shell, locale, data, window, cx)
@@ -682,13 +769,75 @@ impl Shell {
         }
         .map_err(|error| error.to_string())?;
         tracing::info!(?handle,monitor=?monitor,target_display,fullscreen,audience, "window created behind confirmation gate");
-        Ok(WindowRecord {
+        let record = WindowRecord {
             handle,
             monitor,
             display: target_display,
             fullscreen,
+            client_size: restore.size,
+            resize_attempt: Cell::new(None),
             bounds_observed: observed,
-        })
+        };
+        Self::restore_client_size(&record, cx);
+        Ok(record)
+    }
+
+    fn restore_client_size(record: &WindowRecord, cx: &mut App) {
+        if record.fullscreen {
+            return;
+        }
+        if let Err(error) = record.handle.update(cx, |_, window, _| {
+            let actual = window.bounds().size;
+            let delta = record.client_size - actual;
+            if delta.width.abs() <= px(2.) && delta.height.abs() <= px(2.) {
+                return;
+            }
+            // Cross-DPI creation may scale twice. The platform's cached native
+            // frame inset can also leave a small client-size error after resize.
+            // Wait for a changed native observation, then compensate that error
+            // once. Unchanged/stale events and nonconvergence keep the timeout.
+            let previous = record.resize_attempt.get();
+            let requested = if let Some(previous) = previous {
+                if previous.corrected
+                    || !record.bounds_observed.get()
+                    || actual == previous.before
+                    || !f32::from(delta.width).is_finite()
+                    || !f32::from(delta.height).is_finite()
+                    || delta.width.abs() > px(32.)
+                    || delta.height.abs() > px(32.)
+                {
+                    return;
+                }
+                previous.requested + delta
+            } else {
+                record.client_size
+            };
+            record.resize_attempt.set(Some(ClientResizeAttempt {
+                requested,
+                before: actual,
+                corrected: previous.is_some(),
+            }));
+            record.bounds_observed.set(false);
+            tracing::info!(window=?record.handle.window_id(), actual=?rect(window.bounds()), target=?record.client_size, requested=?requested, correction=previous.is_some(), "restoring target client size after creation");
+            window.resize(requested);
+        }) {
+            tracing::debug!(%error, "pending window client resize unavailable");
+        }
+    }
+
+    fn intercept_close(window: &gpui::Window, cx: &App) {
+        window.on_window_should_close(cx, |window, cx| {
+            let handle = window.window_handle();
+            // Return to the platform close callback before removal. This keeps
+            // GPUI's platform Drop as the sole owner of native destruction.
+            cx.spawn(async move |cx| {
+                if let Err(error) = handle.update(cx, |_, window, _| window.remove_window()) {
+                    tracing::debug!(%error, "close request for retired window");
+                }
+            })
+            .detach();
+            false
+        });
     }
 
     fn confirmed(record: &WindowRecord, cx: &mut App) -> bool {
@@ -699,14 +848,25 @@ impl Shell {
                 let Some(display) = display else {
                     return false;
                 };
+                let actual = window.bounds();
+                if !record.fullscreen
+                    && ((actual.size.width - record.client_size.width).abs() > px(2.)
+                        || (actual.size.height - record.client_size.height).abs() > px(2.))
+                {
+                    return false;
+                }
                 policy::placement_confirmed(
                     record.display,
                     Some(u64::from(display.id())),
                     record.fullscreen,
                     window.is_fullscreen(),
                     record.bounds_observed.get(),
-                    rect(window.bounds()),
-                    rect(display.bounds()),
+                    rect(actual),
+                    rect(if record.fullscreen {
+                        display.bounds()
+                    } else {
+                        display.visible_bounds()
+                    }),
                 )
             })
             .unwrap_or(false)
@@ -729,6 +889,8 @@ impl Shell {
                 requested_display=record.display, requested_fullscreen=record.fullscreen,
                 actual_display=?observed_display.as_ref().map(|display| u64::from(display.id())),
                 actual_display_bounds=?observed_display.as_ref().map(|display| rect(display.bounds())),
+                actual_usable_bounds=?observed_display.as_ref().map(|display| rect(display.visible_bounds())),
+                requested_client_size=?record.client_size,
                 actual_bounds=?rect(window.bounds()), actual_fullscreen=window.is_fullscreen(),
                 bounds_observed=record.bounds_observed.get(), "window placement observation"
             );
@@ -737,7 +899,20 @@ impl Shell {
         }
     }
 
+    fn log_bounds(window: &gpui::Window, cx: &App) {
+        tracing::debug!(
+            window = ?window.window_handle().window_id(),
+            bounds = ?rect(window.bounds()),
+            viewport_size = ?window.viewport_size(),
+            scale_factor = window.scale_factor(),
+            display = ?window.display(cx).map(|display| u64::from(display.id())),
+            fullscreen = window.is_fullscreen(),
+            "window bounds changed"
+        );
+    }
+
     fn start(&mut self, cx: &mut Context<Self>) {
+        self.close_identify(cx);
         self.refresh_mapping(cx);
         if let Some(reason) = self.start_reason() {
             self.error = Some(reason);
@@ -793,6 +968,7 @@ impl Shell {
     }
 
     fn stop(&mut self, cx: &mut Context<Self>) {
+        self.close_identify(cx);
         self.cancel_focus();
         self.abandon_modal();
         for step in transactions::shutdown() {
@@ -830,26 +1006,37 @@ impl Shell {
                 return;
             }
         };
+        self.assign_displays(settings, cx);
+    }
+
+    // Both explicit assignments and the compatibility Swap shortcut use this
+    // one preparation/placement/commit transaction.
+    fn assign_displays(&mut self, settings: DisplaySettings, cx: &mut Context<Self>) {
+        tracing::info!(stage=?self.state.stage(), page=self.state.current_page().0,
+            elapsed_ms=self.state.elapsed_at(Instant::now()).as_millis(), requested=?settings,
+            "display assignment preparing");
         let Some(target) = policy::roles(&self.monitors, &settings).presenter else {
             return;
         };
+        self.close_identify(cx);
         self.cancel_focus();
         self.abandon_modal();
         self.publish(true, cx);
-        let prepared =
-            transactions::prepare(self.state.stage() == SessionStage::Presenting, |audience| {
-                if audience {
-                    policy::audience_target(&self.monitors, &settings)
-                        .map_err(|error| error.localized(self.locale))
-                        .and_then(|(target, fullscreen)| self.open(target, fullscreen, true, cx))
-                } else {
-                    self.open(target.clone(), false, false, cx)
-                }
-            });
+        let playing = self.state.stage() == SessionStage::Presenting
+            && policy::audience_target(&self.monitors, &settings).is_ok();
+        let prepared = transactions::prepare(playing, |audience| {
+            if audience {
+                policy::audience_target(&self.monitors, &settings)
+                    .map_err(|error| error.localized(self.locale))
+                    .and_then(|(target, fullscreen)| self.open(target, fullscreen, true, cx))
+            } else {
+                self.open(target.clone(), false, false, cx)
+            }
+        });
         match prepared {
             Ok(prepared) => {
                 self.pending = Some(Transaction {
-                    kind: TransactionKind::Swap(settings),
+                    kind: TransactionKind::Assign(settings),
                     presenter: Some(prepared.presenter),
                     audience: prepared.audience,
                     deadline: Instant::now() + CONFIRM_TIMEOUT,
@@ -904,10 +1091,214 @@ impl Shell {
         }
     }
 
+    fn new_display_draft(&mut self) {
+        tracing::info!(stage=?self.state.stage(), page=self.state.current_page().0,
+            elapsed_ms=self.state.elapsed_at(Instant::now()).as_millis(), revision=self.topology_revision,
+            "display settings opened");
+        self.modal = Some(Modal::Displays(DisplayDraft::new(
+            self.topology_revision,
+            &self.monitors,
+            &self.settings.settings.display,
+        )));
+    }
+
+    fn display_editable(&self) -> bool {
+        !self.busy()
+            && self.settings.write_policy == WritePolicy::Writable
+            && self.topology_valid
+            && self.mapped.is_ok()
+            && matches!(&self.modal, Some(Modal::Displays(draft)) if draft.revision == self.topology_revision)
+    }
+
+    pub(crate) fn display_panel(&self) -> Option<DisplayPanel> {
+        let Some(Modal::Displays(draft)) = &self.modal else {
+            return None;
+        };
+        let problem = if self.settings.write_policy != WritePolicy::Writable {
+            Some("displays-readonly")
+        } else if !self.topology_valid {
+            Some("displays-unavailable")
+        } else if self.monitors.is_empty() {
+            Some("displays-empty")
+        } else if draft.revision != self.topology_revision {
+            Some("displays-stale")
+        } else if self.mapped.is_err() {
+            Some("ambiguous-displays")
+        } else if self.busy() {
+            Some("confirming")
+        } else {
+            draft.validation_error(self.topology_revision, &self.monitors)
+        };
+        let problem = problem.map(|key| self.locale.text(key).to_owned());
+        Some(DisplayPanel {
+            monitors: self.monitors.clone(),
+            effective: self.settings.settings.display.clone(),
+            draft: draft.clone(),
+            operation_error: self
+                .error
+                .as_ref()
+                .filter(|error| Some(*error) != problem.as_ref())
+                .cloned(),
+            problem,
+            topology_valid: self.topology_valid,
+            editable: self.display_editable(),
+            can_identify: self.topology_valid
+                && self.mapped.is_ok()
+                && self.state.stage() != SessionStage::Presenting
+                && !self.busy()
+                && !self.monitors.is_empty(),
+        })
+    }
+
+    fn detect_displays(&mut self, cx: &mut Context<Self>) {
+        // Consume older watcher deliveries before the fresh synchronous probe.
+        while let Ok(event) = self.topology.try_recv() {
+            self.topology_changed(event, cx);
+        }
+        match ferrostage_platform::enumerate_monitors() {
+            Ok(monitors) => self.topology_changed(TopologyEvent::Changed(monitors), cx),
+            Err(error) => self.topology_changed(
+                TopologyEvent::Unavailable {
+                    error,
+                    last_known: self.monitors.clone(),
+                },
+                cx,
+            ),
+        }
+        self.refresh_mapping(cx);
+    }
+
+    fn apply_display_draft(&mut self, cx: &mut Context<Self>) {
+        let Some(panel) = self.display_panel() else {
+            return;
+        };
+        if let Some(problem) = panel.problem {
+            self.error = Some(problem);
+            return;
+        }
+        match panel.draft.settings(
+            self.topology_revision,
+            &self.monitors,
+            &self.settings.settings.display,
+        ) {
+            Ok(settings) => {
+                self.error = None;
+                self.assign_displays(settings, cx);
+            }
+            Err(key) => self.error = Some(self.locale.text(key).into()),
+        }
+    }
+
+    fn close_identify(&mut self, cx: &mut App) {
+        self.identify_deadline = None;
+        for handle in self.identify.drain(..) {
+            if let Err(error) = handle.update(cx, |_, window, _| window.remove_window()) {
+                tracing::debug!(%error, "identify window already retired");
+            }
+        }
+    }
+
+    fn identify_displays(&mut self, cx: &mut Context<Self>) {
+        if !self.display_panel().is_some_and(|panel| panel.can_identify) {
+            return;
+        }
+        self.detect_displays(cx);
+        if !self.display_panel().is_some_and(|panel| panel.can_identify) {
+            return;
+        }
+        self.open_identify(cx);
+    }
+
+    fn open_identify(&mut self, cx: &mut Context<Self>) {
+        self.close_identify(cx);
+        let targets = display_settings::numbered(&self.monitors)
+            .into_iter()
+            .map(|(number, monitor)| {
+                let display_id = self
+                    .mapped
+                    .as_ref()
+                    .ok()
+                    .and_then(|mapping| mapping.get(&monitor.id))
+                    .copied()
+                    .ok_or(ShellError::AmbiguousDisplays)?;
+                let display = cx
+                    .displays()
+                    .into_iter()
+                    .find(|d| u64::from(d.id()) == display_id)
+                    .ok_or(ShellError::AmbiguousDisplays)?;
+                Ok((
+                    number,
+                    monitor.id.clone(),
+                    monitor.name.clone(),
+                    display_id,
+                    display.bounds(),
+                ))
+            })
+            .collect::<Result<Vec<_>, ShellError>>();
+        let targets = match targets {
+            Ok(targets) => targets,
+            Err(error) => {
+                self.error = Some(error.localized(self.locale));
+                return;
+            }
+        };
+        for (number, monitor, name, display_id, bounds) in targets {
+            let size = size(px(300.), px(180.));
+            let origin = point(
+                bounds.origin.x + (bounds.size.width - size.width) / 2.,
+                bounds.origin.y + (bounds.size.height - size.height) / 2.,
+            );
+            let result = cx.open_window(
+                WindowOptions {
+                    display_id: Some(DisplayId::new(display_id)),
+                    window_bounds: Some(WindowBounds::Windowed(Bounds::new(origin, size))),
+                    titlebar: None,
+                    focus: false,
+                    kind: gpui::WindowKind::PopUp,
+                    is_movable: false,
+                    is_resizable: false,
+                    is_minimizable: false,
+                    ..Default::default()
+                },
+                move |window, cx| {
+                    Self::intercept_close(window, cx);
+                    window.set_window_title(&format!("FerroStage — {number} — {name}"));
+                    cx.new(|cx| {
+                        cx.observe_window_bounds(window, |_, window, cx| {
+                            Self::log_bounds(window, cx)
+                        })
+                        .detach();
+                        Identify { number, name }
+                    })
+                },
+            );
+            match result {
+                Ok(handle) => {
+                    tracing::info!(number, ?monitor, display_id, window=?handle.window_id(), "identify display");
+                    self.identify.push(handle.into());
+                }
+                Err(error) => {
+                    self.error = Some(error.to_string());
+                    self.close_identify(cx);
+                    return;
+                }
+            }
+        }
+        self.identify_deadline = Some(Instant::now() + Duration::from_secs(3));
+    }
+
     fn poll_transaction(&mut self, cx: &mut Context<Self>) {
         let Some(pending) = &self.pending else {
             return;
         };
+        if Instant::now() <= pending.deadline {
+            for window in [pending.presenter.as_ref(), pending.audience.as_ref()]
+                .into_iter()
+                .flatten()
+            {
+                Self::restore_client_size(window, cx);
+            }
+        }
         let confirmed = pending
             .presenter
             .as_ref()
@@ -952,12 +1343,20 @@ impl Shell {
         } else {
             None
         };
-        let old_audience = if pending.audience.is_some() {
+        let no_play = matches!(&pending.kind, TransactionKind::Assign(settings)
+            if policy::audience_target(&self.monitors, settings).is_err());
+        if no_play && self.state.stage() == SessionStage::Presenting {
+            // Placement has succeeded. Only now may no-play commit its safe
+            // stop; an earlier failure must leave the old session running.
+            self.publish(true, cx);
+            self.apply(Command::StopPresentation, cx);
+        }
+        let old_audience = if pending.audience.is_some() || no_play {
             std::mem::replace(&mut self.audience, pending.audience)
         } else {
             None
         };
-        if let TransactionKind::Swap(settings) = pending.kind {
+        if let TransactionKind::Assign(settings) = pending.kind {
             self.settings.settings.display = settings;
             self.settings.note_edit();
             self.save(cx);
@@ -969,45 +1368,70 @@ impl Shell {
         if let Some(window) = old_presenter {
             Self::close(window, cx);
         }
-        tracing::info!(stage=?self.state.stage(),presenter=?self.presenter.as_ref().map(|w|w.handle),audience=?self.audience.as_ref().map(|w|w.handle),"window transaction committed");
+        tracing::info!(stage=?self.state.stage(),page=self.state.current_page().0,
+            elapsed_ms=self.state.elapsed_at(Instant::now()).as_millis(),
+            presenter=?self.presenter.as_ref().map(|w|w.handle),audience=?self.audience.as_ref().map(|w|w.handle),"window transaction committed");
         cx.notify();
     }
 
     fn tick(&mut self, cx: &mut Context<Self>) {
         while let Ok(event) = self.topology.try_recv() {
-            tracing::info!(previous_monitors=?self.monitors,previous_valid=self.topology_valid,?event,"topology event received");
-            self.publish(true, cx);
-            self.retire_pending("topology changed", cx);
-            self.cancel_focus();
-            match event {
-                TopologyEvent::Changed(monitors) => {
-                    self.monitors = monitors;
-                    self.topology_valid = true;
-                }
-                TopologyEvent::Unavailable { error, .. } => {
-                    self.topology_valid = false;
-                    self.error = Some(error.to_string());
-                }
-            }
-            self.refresh_mapping(cx);
-            let audience_valid = self.audience.as_ref().is_none_or(|window| {
-                self.mapped
-                    .as_ref()
-                    .is_ok_and(|mapping| mapping.get(&window.monitor) == Some(&window.display))
-            });
-            if !self.topology_valid || self.monitors.is_empty() || !audience_valid {
-                self.recover_windowed = true;
-                self.stop(cx);
-            } else {
-                self.publish(false, cx);
-            }
-            self.recover_presenter(cx);
-            cx.notify();
+            self.topology_changed(event, cx);
+        }
+        if self
+            .identify_deadline
+            .is_some_and(|deadline| Instant::now() >= deadline)
+        {
+            self.close_identify(cx);
         }
         self.poll_import(cx);
         self.poll_transaction(cx);
         self.poll_focus(cx);
         // If startup had zero screens, the platform watcher owns recovery.
+    }
+
+    fn topology_changed(&mut self, event: TopologyEvent, cx: &mut Context<Self>) {
+        if matches!(&event, TopologyEvent::Changed(monitors) if self.topology_valid && *monitors == self.monitors)
+        {
+            return;
+        }
+        self.topology_revision += 1;
+        self.close_identify(cx);
+        let display_draft = match &self.modal {
+            Some(Modal::Displays(draft)) => Some(draft.clone()),
+            _ => None,
+        };
+        tracing::info!(previous_monitors=?self.monitors,previous_valid=self.topology_valid,?event,"topology event received");
+        self.publish(true, cx);
+        self.retire_pending("topology changed", cx);
+        self.cancel_focus();
+        match event {
+            TopologyEvent::Changed(monitors) => {
+                self.monitors = monitors;
+                self.topology_valid = true;
+            }
+            TopologyEvent::Unavailable { error, .. } => {
+                self.topology_valid = false;
+                self.error = Some(error.to_string());
+            }
+        }
+        self.refresh_mapping(cx);
+        let audience_valid = self.audience.as_ref().is_none_or(|window| {
+            self.mapped
+                .as_ref()
+                .is_ok_and(|mapping| mapping.get(&window.monitor) == Some(&window.display))
+        });
+        if !self.topology_valid || self.monitors.is_empty() || !audience_valid {
+            self.recover_windowed = true;
+            self.stop(cx);
+        } else {
+            self.publish(false, cx);
+        }
+        if let Some(draft) = display_draft {
+            self.modal = Some(Modal::Displays(draft));
+        }
+        self.recover_presenter(cx);
+        cx.notify();
     }
 
     fn closed(&mut self, id: WindowId, cx: &mut Context<Self>) {
@@ -1033,6 +1457,7 @@ impl Shell {
                 self.stop(cx);
             }
             transactions::Closed::Presenter => {
+                self.stop_tasks("presenter closed");
                 self.presenter = None;
                 self.stop(cx);
                 self.import_token += 1;
@@ -1060,7 +1485,1117 @@ fn rect(bounds: Bounds<Pixels>) -> [f32; 4] {
 #[cfg(all(test, feature = "test-support"))]
 mod tests {
     use super::*;
+    use crate::display_settings::PdfTarget;
     use gpui::TestAppContext;
+
+    fn pending_import_read(
+        shell: &Entity<Shell>,
+        cx: &mut TestAppContext,
+    ) -> std::sync::Arc<std::sync::atomic::AtomicBool> {
+        let completed = std::sync::Arc::new(std::sync::atomic::AtomicBool::new(false));
+        let flag = completed.clone();
+        shell.update(cx, |shell, cx| {
+            let timer = cx.background_executor().timer(Duration::from_millis(100));
+            let read = cx.background_executor().spawn(async move {
+                timer.await;
+                flag.store(true, std::sync::atomic::Ordering::SeqCst);
+                Err(std::io::Error::other("controlled pending read"))
+            });
+            shell.loading = true;
+            shell.await_import_read(
+                PathBuf::from("controlled.pdf"),
+                shell.import_token,
+                read,
+                cx,
+            );
+        });
+        cx.run_until_parked();
+        completed
+    }
+
+    fn pending_path_prompt(
+        shell: &Entity<Shell>,
+        presenter: AnyWindowHandle,
+        cx: &mut TestAppContext,
+    ) {
+        cx.simulate_keystrokes(presenter, "ctrl-o");
+        cx.run_until_parked();
+        shell.update(cx, |shell, cx| shell.poll_focus(cx));
+        cx.run_until_parked();
+        assert!(cx.did_prompt_for_paths());
+    }
+
+    #[gpui::test]
+    fn retirement_v13_presenter_close_cancels_pending_import_read(cx: &mut TestAppContext) {
+        let (shell, presenter) = input_presenter(cx);
+        let completed = pending_import_read(&shell, cx);
+        let mut visual = gpui::VisualTestContext::from_window(presenter, cx);
+        assert!(!visual.simulate_close());
+        cx.run_until_parked();
+        cx.executor().advance_clock(Duration::from_millis(200));
+        cx.run_until_parked();
+        assert!(
+            !completed.load(std::sync::atomic::Ordering::SeqCst),
+            "closing the owner must drop its pending read awaiter before a later delivery"
+        );
+        assert!(cx.windows().is_empty());
+        assert!(shell.read_with(cx, |shell, _| shell.error.is_none()));
+    }
+
+    #[gpui::test]
+    fn retirement_v13_shutdown_cancels_pending_import_read(cx: &mut TestAppContext) {
+        let (shell, _) = input_presenter(cx);
+        let completed = pending_import_read(&shell, cx);
+        cx.update(|cx| cx.shutdown());
+        cx.run_until_parked();
+        cx.executor().advance_clock(Duration::from_millis(200));
+        cx.run_until_parked();
+        assert!(
+            !completed.load(std::sync::atomic::Ordering::SeqCst),
+            "app shutdown must cancel a pending read independently of its import token"
+        );
+        assert!(shell.read_with(cx, |shell, _| shell.error.is_none()));
+    }
+
+    #[gpui::test]
+    fn retirement_v13_shutdown_cancels_pending_path_prompt(cx: &mut TestAppContext) {
+        let (shell, presenter) = input_presenter(cx);
+        pending_path_prompt(&shell, presenter, cx);
+        cx.update(|cx| cx.shutdown());
+        cx.run_until_parked();
+        cx.simulate_path_prompt_response(|_| Some(vec![PathBuf::from("late-choice.pdf")]));
+        cx.run_until_parked();
+        assert!(
+            shell.read_with(cx, |shell, _| shell.error.is_none()),
+            "a retained entity must not process a dialog response after shutdown"
+        );
+    }
+
+    #[gpui::test]
+    fn retirement_v13_nonowner_close_preserves_read_and_prompt_completion(cx: &mut TestAppContext) {
+        let (shell, presenter) = input_presenter(cx);
+        pending_path_prompt(&shell, presenter, cx);
+        let completed = pending_import_read(&shell, cx);
+        let retired = shell.update(cx, |shell, cx| test_window(shell, false, cx).handle);
+        let mut visual = gpui::VisualTestContext::from_window(retired, cx);
+        assert!(!visual.simulate_close());
+        cx.run_until_parked();
+        cx.executor().advance_clock(Duration::from_millis(200));
+        cx.run_until_parked();
+        assert!(completed.load(std::sync::atomic::Ordering::SeqCst));
+        shell.update(cx, |shell, _| {
+            assert!(
+                shell
+                    .error
+                    .as_ref()
+                    .unwrap()
+                    .contains("controlled pending read")
+            );
+            assert!(!shell.loading);
+            shell.error = None;
+        });
+        cx.simulate_path_prompt_response(|_| Some(vec![PathBuf::from("live-choice.pdf")]));
+        cx.run_until_parked();
+        assert!(shell.read_with(cx, |shell, _| shell.error.is_some()));
+        assert!(cx.windows().contains(&presenter));
+    }
+
+    #[gpui::test]
+    fn retirement_v12_presenter_close_cancels_pending_poll_wake(cx: &mut TestAppContext) {
+        let (shell, topology) = headless_shell(cx);
+        let presenter = shell.update(cx, |shell, cx| {
+            shell.presenter = Some(test_window(shell, false, cx));
+            shell.start_polling(cx);
+            shell.presenter.as_ref().unwrap().handle
+        });
+        cx.run_until_parked(); // Poll loop is suspended in its real executor timer.
+        let mut visual = gpui::VisualTestContext::from_window(presenter, cx);
+        assert!(!visual.simulate_close());
+        cx.run_until_parked();
+        assert!(cx.windows().is_empty());
+        topology
+            .send(TopologyEvent::Unavailable {
+                error: ferrostage_platform::PlatformError::UnsupportedPlatform,
+                last_known: Vec::new(),
+            })
+            .unwrap();
+        cx.executor().advance_clock(Duration::from_millis(100));
+        cx.run_until_parked();
+        assert_eq!(
+            shell.read_with(cx, |shell, _| shell.topology_revision),
+            0,
+            "a timer must not resume Shell work after the current Presenter requested quit"
+        );
+        assert!(cx.windows().is_empty());
+    }
+
+    #[gpui::test]
+    fn retirement_v12_app_shutdown_cancels_pending_poll_wake(cx: &mut TestAppContext) {
+        let (shell, topology) = headless_shell(cx);
+        shell.update(cx, |shell, cx| shell.start_polling(cx));
+        cx.run_until_parked();
+        cx.update(|cx| cx.shutdown());
+        cx.run_until_parked();
+        topology
+            .send(TopologyEvent::Unavailable {
+                error: ferrostage_platform::PlatformError::UnsupportedPlatform,
+                last_known: Vec::new(),
+            })
+            .unwrap();
+        cx.executor().advance_clock(Duration::from_millis(100));
+        cx.run_until_parked();
+        assert_eq!(
+            shell.read_with(cx, |shell, _| shell.topology_revision),
+            0,
+            "shutdown must cancel before the platform dispatcher can be destroyed"
+        );
+    }
+
+    #[gpui::test]
+    fn retirement_v12_nonowner_close_keeps_live_polling(cx: &mut TestAppContext) {
+        let (shell, topology) = headless_shell(cx);
+        let presenter = shell.update(cx, |shell, cx| {
+            load_ready(shell);
+            shell.presenter = Some(test_window(shell, false, cx));
+            shell.start_polling(cx);
+            shell.presenter.as_ref().unwrap().handle
+        });
+        cx.run_until_parked();
+        for kind in ["retired", "pending", "audience"] {
+            let closing = shell.update(cx, |shell, cx| {
+                if kind == "audience" {
+                    set_playing(shell, cx, Instant::now());
+                    shell.audience.as_ref().unwrap().handle
+                } else {
+                    let window = test_window(shell, false, cx);
+                    let handle = window.handle;
+                    if kind == "pending" {
+                        shell.pending = Some(Transaction {
+                            kind: TransactionKind::RecoverPresenter,
+                            presenter: Some(window),
+                            audience: None,
+                            deadline: Instant::now() + CONFIRM_TIMEOUT,
+                        });
+                    }
+                    handle
+                }
+            });
+            let mut visual = gpui::VisualTestContext::from_window(closing, cx);
+            assert!(!visual.simulate_close());
+            cx.run_until_parked();
+            shell.read_with(cx, |shell, _| {
+                assert!(
+                    shell.poll_task.is_some(),
+                    "{kind} is not the application owner"
+                );
+                assert_eq!(shell.presenter.as_ref().unwrap().handle, presenter);
+            });
+        }
+        topology
+            .send(TopologyEvent::Unavailable {
+                error: ferrostage_platform::PlatformError::UnsupportedPlatform,
+                last_known: Vec::new(),
+            })
+            .unwrap();
+        cx.executor().advance_clock(Duration::from_millis(100));
+        cx.run_until_parked();
+        assert_eq!(
+            shell.read_with(cx, |shell, _| shell.topology_revision),
+            1,
+            "the live coordinator must still consume topology after nonowner close"
+        );
+    }
+
+    fn display_fixture(cx: &mut TestAppContext) -> (Entity<Shell>, AnyWindowHandle) {
+        let (shell, handle) = input_presenter(cx);
+        shell.update(cx, |shell, cx| {
+            load_ready(shell);
+            shell.monitors = vec![test_monitor()];
+            shell.new_display_draft();
+            cx.notify();
+        });
+        redraw(handle, cx);
+        (shell, handle)
+    }
+
+    #[gpui::test]
+    fn displays_v8_mouse_draft_cancel_keeps_windows_core_and_disk(cx: &mut TestAppContext) {
+        let fixture = SaveFixture::new();
+        fixture.unblock();
+        let (shell, handle) = display_fixture(cx);
+        let (settings, state) = shell.update(cx, |shell, cx| {
+            shell.store = fixture.store();
+            shell.save(cx);
+            (shell.settings.settings.clone(), shell.state.clone())
+        });
+        let bytes = std::fs::read(fixture.0.join("blocked/settings.toml")).unwrap();
+        click_control(handle, "display-pdf-windowed", cx);
+        shell.read_with(cx, |shell, _| {
+            assert!(matches!(&shell.modal, Some(Modal::Displays(draft)) if draft.pdf == PdfTarget::Windowed));
+            assert_eq!(shell.settings.settings, settings);
+            assert_eq!(shell.state, state);
+            assert!(shell.pending.is_none() && shell.audience.is_none());
+        });
+        redraw(handle, cx);
+        click_control(handle, "cancel-displays", cx);
+        assert_eq!(cx.windows(), vec![handle]);
+        assert_eq!(
+            std::fs::read(fixture.0.join("blocked/settings.toml")).unwrap(),
+            bytes
+        );
+        redraw(handle, cx);
+        assert_tab_opens_pdf(&shell, handle, cx);
+    }
+
+    #[gpui::test]
+    fn displays_v8_future_settings_disable_mouse_keyboard_and_apply(cx: &mut TestAppContext) {
+        let (shell, handle) = display_fixture(cx);
+        let original = shell.update(cx, |shell, cx| {
+            shell.settings = SettingsSession::from_outcome(
+                ferrostage_settings::from_toml("schema_version = 999").unwrap(),
+            );
+            shell.new_display_draft();
+            cx.notify();
+            shell.settings.settings.clone()
+        });
+        redraw(handle, cx);
+        click_control(handle, "display-pdf-windowed", cx);
+        click_control(handle, "apply-displays", cx);
+        shell.update(cx, |shell, cx| {
+            shell.dispatch(Intent::SelectPdf(PdfTarget::Windowed), cx);
+            shell.dispatch(Intent::ApplyDisplays, cx);
+            assert_eq!(shell.settings.settings, original);
+            assert!(!shell.settings.dirty);
+            assert!(shell.pending.is_none());
+            assert!(
+                shell
+                    .display_panel()
+                    .unwrap()
+                    .problem
+                    .unwrap()
+                    .contains(shell.locale.text("displays-readonly"))
+            );
+        });
+        assert_eq!(cx.windows(), vec![handle]);
+        // Begin keyboard traversal from the modal's entry focus, independently
+        // of the preceding clicks on disabled controls.
+        cx.simulate_keystrokes(handle, "escape");
+        redraw(handle, cx);
+        shell.update(cx, |shell, cx| {
+            shell.new_display_draft();
+            cx.notify();
+        });
+        redraw(handle, cx);
+        cx.simulate_keystrokes(handle, "shift-tab");
+        redraw(handle, cx);
+        cx.simulate_keystrokes(handle, "enter"); // Disabled Apply is skipped; Cancel closes.
+        assert!(shell.read_with(cx, |shell, _| shell.modal.is_none()));
+    }
+
+    #[gpui::test]
+    fn placement_v11_windows_frame_delta_is_corrected_from_actual_readback(
+        cx: &mut TestAppContext,
+    ) {
+        let (shell, handle) = input_presenter(cx);
+        shell.update(cx, |shell, _| {
+            shell.presenter.as_mut().unwrap().client_size = size(px(1002.6666), px(760.));
+        });
+        cx.simulate_window_resize(handle, size(px(1202.6666), px(912.)));
+        for _ in 0..2 {
+            shell.update(cx, |shell, cx| {
+                Shell::restore_client_size(shell.presenter.as_ref().unwrap(), cx);
+            });
+            // TestPlatform's resize is exact. Feed the actual Windows boundary
+            // response through its real resize callback: at150%, the cached
+            // non-client conversion in V10 lost4x9 physical pixels.
+            let requested = handle
+                .update(cx, |_, window, _| window.bounds().size)
+                .unwrap();
+            cx.simulate_window_resize(
+                handle,
+                size(
+                    px(((f32::from(requested.width) * 1.5).round() - 4.) / 1.5),
+                    px(((f32::from(requested.height) * 1.5).round() - 9.) / 1.5),
+                ),
+            );
+        }
+        shell.update(cx, |shell, cx| {
+            assert!(Shell::confirmed(shell.presenter.as_ref().unwrap(), cx));
+        });
+    }
+
+    #[gpui::test]
+    fn placement_v11_large_or_nonconvergent_frame_response_stops_and_rolls_back(
+        cx: &mut TestAppContext,
+    ) {
+        for error in [size(px(33.), px(6.)), size(px(4. / 1.5), px(6.))] {
+            let (shell, owner) = display_fixture(cx);
+            let (state, settings, audience, replacement, target) = shell.update(cx, |shell, cx| {
+                set_playing(shell, cx, Instant::now() - Duration::from_secs(10));
+                let state = shell.state.clone();
+                let settings = shell.settings.settings.clone();
+                let audience = shell.audience.as_ref().unwrap().handle;
+                shell.new_display_draft();
+                shell.dispatch(Intent::SelectPdf(PdfTarget::None), cx);
+                shell.apply_display_draft(cx);
+                let pending = shell.pending.as_ref().unwrap().presenter.as_ref().unwrap();
+                (
+                    state,
+                    settings,
+                    audience,
+                    pending.handle,
+                    pending.client_size,
+                )
+            });
+            cx.simulate_window_resize(replacement, target.map(|value| value * 1.2));
+            shell.update(cx, |shell, cx| {
+                Shell::restore_client_size(
+                    shell.pending.as_ref().unwrap().presenter.as_ref().unwrap(),
+                    cx,
+                );
+            });
+            cx.simulate_window_resize(replacement, target - error);
+            shell.update(cx, |shell, cx| shell.poll_transaction(cx));
+            shell.read_with(cx, |shell, _| {
+                let attempt = shell
+                    .pending
+                    .as_ref()
+                    .unwrap()
+                    .presenter
+                    .as_ref()
+                    .unwrap()
+                    .resize_attempt
+                    .get()
+                    .unwrap();
+                assert_eq!(attempt.corrected, error.width <= px(32.));
+            });
+            // Reverse a small native error instead of converging. The correction
+            // budget is spent, so another callback cannot start oscillating retries.
+            let uncorrected = if error.width <= px(32.) {
+                target + error
+            } else {
+                target - error
+            };
+            cx.simulate_window_resize(replacement, uncorrected);
+            for _ in 0..3 {
+                shell.update(cx, |shell, cx| shell.poll_transaction(cx));
+                assert_eq!(
+                    replacement
+                        .update(cx, |_, window, _| window.bounds().size)
+                        .unwrap(),
+                    uncorrected
+                );
+            }
+            shell.update(cx, |shell, cx| {
+                shell.pending.as_mut().unwrap().deadline = Instant::now() - Duration::from_secs(1);
+                shell.poll_transaction(cx);
+                assert!(shell.pending.is_none());
+                assert_eq!(shell.state, state);
+                assert_eq!(shell.settings.settings, settings);
+                assert_eq!(shell.presenter.as_ref().unwrap().handle, owner);
+                assert_eq!(shell.audience.as_ref().unwrap().handle, audience);
+                assert_eq!(shell.snapshot.read(cx).stage, AudienceStage::Live);
+            });
+            assert!(!cx.windows().contains(&replacement));
+        }
+    }
+
+    #[gpui::test]
+    fn placement_v10_scaled_client_size_cannot_commit(cx: &mut TestAppContext) {
+        let (shell, handle) = input_presenter(cx);
+        cx.simulate_window_resize(handle, size(px(1320.), px(912.)));
+        shell.update(cx, |shell, cx| {
+            let presenter = shell.presenter.as_ref().unwrap();
+            assert!(!Shell::confirmed(presenter, cx));
+            Shell::restore_client_size(presenter, cx);
+            assert!(Shell::confirmed(presenter, cx));
+        });
+    }
+
+    #[gpui::test]
+    fn narrow_v10_display_panel_keeps_apply_cancel_inside_client(cx: &mut TestAppContext) {
+        for language in ["zh-CN", "en-US"] {
+            let (shell, _) = headless_shell(cx);
+            let handle = shell.update(cx, |shell, cx| {
+                shell.locale = crate::locale::Locale::new(language);
+                load_ready(shell);
+                shell.monitors = vec![test_monitor()];
+                for suffix in ["b", "c"] {
+                    let mut monitor = test_monitor();
+                    monitor.id.0.push_str(suffix);
+                    monitor.name = format!("Display {suffix}");
+                    monitor.is_primary = false;
+                    shell.monitors.push(monitor);
+                }
+                shell.presenter = Some(test_window(shell, false, cx));
+                shell.presenter.as_ref().unwrap().handle
+            });
+            for (width, height) in [(800., 600.), (390., 844.), (320., 640.)] {
+                shell.update(cx, |shell, cx| {
+                    shell.new_display_draft();
+                    cx.notify();
+                });
+                cx.simulate_window_resize(handle, size(px(width), px(height)));
+                redraw(handle, cx);
+                let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+                for control in ["apply-displays", "cancel-displays"] {
+                    let b = visual.debug_bounds(control).unwrap();
+                    assert!(
+                        b.left() >= px(0.)
+                            && b.top() >= px(0.)
+                            && b.right() <= px(width)
+                            && b.bottom() <= px(height),
+                        "{language} {width}x{height} {control}: {b:?}"
+                    );
+                    assert!(b.size.height >= px(40.), "footer control must not collapse");
+                }
+                visual.simulate_event(gpui::ScrollWheelEvent {
+                    position: point(px(width / 2.), px(height / 2.)),
+                    delta: gpui::ScrollDelta::Pixels(point(px(0.), px(-3000.))),
+                    ..Default::default()
+                });
+                redraw(handle, cx);
+                let b = visual.debug_bounds("display-pdf-3").unwrap();
+                let footer = visual.debug_bounds("apply-displays").unwrap();
+                assert!(
+                    b.left() >= px(0.)
+                        && b.top() >= px(0.)
+                        && b.right() <= px(width)
+                        && b.bottom() <= footer.top(),
+                    "last selector must be reachable above footer: {b:?}"
+                );
+                click_control(handle, "display-pdf-3", cx);
+                shell.read_with(cx, |shell, _| {
+                    assert!(matches!(&shell.modal, Some(Modal::Displays(draft)) if draft.pdf == PdfTarget::Display(shell.monitors[2].id.clone())));
+                });
+                click_control(handle, "cancel-displays", cx);
+                assert!(shell.read_with(cx, |shell, _| shell.modal.is_none()));
+                redraw(handle, cx);
+            }
+        }
+    }
+
+    #[gpui::test]
+    fn placement_v10_uncorrected_client_times_out_and_keeps_running_owner(cx: &mut TestAppContext) {
+        let (shell, owner) = display_fixture(cx);
+        let (state, settings, audience, replacement) = shell.update(cx, |shell, cx| {
+            set_playing(shell, cx, Instant::now() - Duration::from_secs(10));
+            let before = shell.state.clone();
+            let settings = shell.settings.settings.clone();
+            let audience = shell.audience.as_ref().unwrap().handle;
+            shell.new_display_draft();
+            shell.dispatch(Intent::SelectPdf(PdfTarget::None), cx);
+            shell.apply_display_draft(cx);
+            let replacement = shell
+                .pending
+                .as_ref()
+                .unwrap()
+                .presenter
+                .as_ref()
+                .unwrap()
+                .handle;
+            (before, settings, audience, replacement)
+        });
+        cx.simulate_window_resize(replacement, size(px(1320.), px(912.)));
+        shell.update(cx, |shell, cx| {
+            Shell::restore_client_size(
+                shell.pending.as_ref().unwrap().presenter.as_ref().unwrap(),
+                cx,
+            );
+        });
+        // Model no native response: an old queued callback repeats the dimensions
+        // from before the request. It cannot authorize a compensating resize.
+        cx.simulate_window_resize(replacement, size(px(1320.), px(912.)));
+        shell.update(cx, |shell, cx| {
+            shell.poll_transaction(cx);
+            assert!(
+                shell.pending.is_some(),
+                "no early commit on correct display with wrong client size"
+            );
+            assert!(
+                !shell
+                    .pending
+                    .as_ref()
+                    .unwrap()
+                    .presenter
+                    .as_ref()
+                    .unwrap()
+                    .resize_attempt
+                    .get()
+                    .unwrap()
+                    .corrected
+            );
+            shell.pending.as_mut().unwrap().deadline = Instant::now() - Duration::from_secs(1);
+            shell.poll_transaction(cx);
+            assert!(shell.pending.is_none());
+            assert_eq!(shell.state, state);
+            assert_eq!(shell.settings.settings, settings);
+            assert_eq!(shell.presenter.as_ref().unwrap().handle, owner);
+            assert_eq!(shell.audience.as_ref().unwrap().handle, audience);
+            assert_eq!(shell.snapshot.read(cx).stage, AudienceStage::Live);
+        });
+        assert!(!cx.windows().contains(&replacement));
+    }
+
+    #[gpui::test]
+    fn displays_v9_conflict_and_offline_draft_refuse_apply_from_real_controls(
+        cx: &mut TestAppContext,
+    ) {
+        let fixture = SaveFixture::new();
+        fixture.unblock();
+        let (shell, handle) = display_fixture(cx);
+        // TestPlatform has one native display. These extra owned records test
+        // list/selector input only; no physical mapping or placement is claimed.
+        let (settings, state, selected_pdf) = shell.update(cx, |shell, cx| {
+            for suffix in ["b", "c"] {
+                let mut monitor = test_monitor();
+                monitor.id.0.push_str(suffix);
+                monitor.connection_name.push_str(suffix);
+                monitor.name = format!("Display {suffix}");
+                monitor.is_primary = false;
+                shell.monitors.push(monitor);
+            }
+            shell.store = fixture.store();
+            shell.save(cx);
+            shell.new_display_draft();
+            cx.notify();
+            (
+                shell.settings.settings.clone(),
+                shell.state.clone(),
+                shell.monitors[1].id.clone(),
+            )
+        });
+        let bytes = std::fs::read(fixture.0.join("blocked/settings.toml")).unwrap();
+        cx.simulate_window_resize(handle, size(px(1200.), px(1100.)));
+        redraw(handle, cx);
+        click_control(handle, "display-pdf-2", cx);
+        redraw(handle, cx);
+        click_control(handle, "display-app-2", cx);
+        redraw(handle, cx);
+        shell.read_with(cx, |shell, _| {
+            let panel = shell.display_panel().unwrap();
+            assert_eq!(panel.draft.presenter.as_ref(), Some(&selected_pdf));
+            assert_eq!(panel.draft.pdf, PdfTarget::Display(selected_pdf.clone()));
+            assert_eq!(
+                panel.problem.as_deref(),
+                Some(shell.locale.text("displays-conflict"))
+            );
+        });
+        click_control(handle, "apply-displays", cx);
+        shell.read_with(cx, |shell, _| {
+            assert_eq!(shell.settings.settings, settings);
+            assert_eq!(shell.state, state);
+            assert!(shell.pending.is_none() && shell.audience.is_none());
+        });
+        click_control(handle, "display-app-1", cx);
+        shell.update(cx, |shell, cx| {
+            assert!(shell.display_panel().unwrap().problem.is_none());
+            let remaining = shell
+                .monitors
+                .iter()
+                .filter(|m| m.id != selected_pdf)
+                .cloned()
+                .collect();
+            shell.topology_changed(TopologyEvent::Changed(remaining), cx);
+            let panel = shell.display_panel().unwrap();
+            assert_eq!(panel.draft.pdf, PdfTarget::Display(selected_pdf));
+            assert_ne!(panel.draft.revision, shell.topology_revision);
+            assert_eq!(
+                panel.problem.as_deref(),
+                Some(shell.locale.text("displays-stale"))
+            );
+        });
+        redraw(handle, cx);
+        click_control(handle, "apply-displays", cx);
+        shell.read_with(cx, |shell, _| {
+            assert_eq!(shell.settings.settings, settings);
+            assert_eq!(shell.state, state);
+            assert!(shell.pending.is_none() && shell.audience.is_none());
+        });
+        assert_eq!(cx.windows(), vec![handle]);
+        assert_eq!(
+            std::fs::read(fixture.0.join("blocked/settings.toml")).unwrap(),
+            bytes
+        );
+    }
+
+    #[gpui::test]
+    fn displays_v8_topology_revision_invalidates_draft_and_distinguishes_failure(
+        cx: &mut TestAppContext,
+    ) {
+        let (shell, _) = display_fixture(cx);
+        shell.update(cx, |shell, cx| {
+            let old_settings = shell.settings.settings.clone();
+            let mut changed = test_monitor();
+            changed.native_size = (1280, 720);
+            shell.topology_changed(TopologyEvent::Changed(vec![changed]), cx);
+            assert!(matches!(&shell.modal, Some(Modal::Displays(draft)) if draft.revision != shell.topology_revision));
+            shell.apply_display_draft(cx);
+            assert_eq!(shell.error.as_deref(), Some(shell.locale.text("displays-stale")));
+            assert_eq!(shell.settings.settings, old_settings);
+            shell.topology_changed(TopologyEvent::Unavailable {
+                error: ferrostage_platform::PlatformError::UnsupportedPlatform,
+                last_known: shell.monitors.clone(),
+            }, cx);
+            let panel = shell.display_panel().unwrap();
+            assert!(!panel.topology_valid && !panel.editable);
+            assert_eq!(panel.problem.as_deref(), Some(shell.locale.text("displays-unavailable")));
+            shell.topology_changed(TopologyEvent::Changed(vec![]), cx);
+            let panel = shell.display_panel().unwrap();
+            assert!(panel.topology_valid && panel.monitors.is_empty() && !panel.editable);
+            assert_eq!(panel.problem.as_deref(), Some(shell.locale.text("displays-empty")));
+            assert_eq!(shell.settings.settings, old_settings);
+        });
+    }
+
+    fn set_playing(shell: &mut Shell, cx: &mut Context<Shell>, started: Instant) {
+        shell
+            .state
+            .apply_at(
+                Command::StartPresentation {
+                    audience_available: true,
+                },
+                started,
+            )
+            .unwrap();
+        shell.state.apply_at(Command::NextStep, started).unwrap();
+        shell
+            .state
+            .apply_at(Command::ToggleBlank(BlankMode::White), started)
+            .unwrap();
+        shell.audience = Some(test_window(shell, true, cx));
+        shell.publish(false, cx);
+    }
+
+    #[gpui::test]
+    fn displays_v8_valid_migration_preserves_page_blank_timer_and_save_retry(
+        cx: &mut TestAppContext,
+    ) {
+        let fixture = SaveFixture::new();
+        let (shell, old_presenter) = display_fixture(cx);
+        let started = Instant::now() - Duration::from_secs(10);
+        let (old_audience, replacement) = shell.update(cx, |shell, cx| {
+            shell.store = fixture.store();
+            set_playing(shell, cx, started);
+            let before = shell.state.clone();
+            let old_audience = shell.audience.as_ref().unwrap().handle;
+            shell.new_display_draft();
+            shell.dispatch(Intent::SelectPdf(PdfTarget::Windowed), cx);
+            // TestPlatform has no OS/GDI identity. Supply its already tested
+            // owned mapping and exercise the real preparation/confirmation.
+            shell.apply_display_draft(cx);
+            assert_eq!(
+                shell.settings.settings.display.single_monitor_mode,
+                ferrostage_settings::SingleMonitorMode::PresenterOnly
+            );
+            assert_eq!(shell.snapshot.read(cx).stage, AudienceStage::Curtain);
+            shell.poll_transaction(cx);
+            assert_eq!(shell.state, before);
+            assert_eq!(
+                shell.state.elapsed_at(started + Duration::from_secs(20)),
+                Duration::from_secs(20)
+            );
+            assert_eq!(shell.snapshot.read(cx).blank_mode, Some(BlankMode::White));
+            assert!(shell.settings.dirty && shell.settings.save_error.is_some());
+            (old_audience, shell.presenter.as_ref().unwrap().handle)
+        });
+        assert!(!cx.windows().contains(&old_presenter));
+        assert!(!cx.windows().contains(&old_audience));
+        assert_eq!(cx.windows().len(), 2);
+        fixture.unblock();
+        shell.update(cx, |shell, cx| {
+            shell.dispatch(Intent::RetrySave, cx);
+            assert_eq!(
+                shell.store.load().unwrap().settings.display,
+                shell.settings.settings.display
+            );
+            assert!(!shell.settings.dirty && shell.settings.save_error.is_none());
+        });
+        redraw(replacement, cx);
+    }
+
+    #[gpui::test]
+    fn displays_v8_no_play_waits_for_success_then_stops_freezes_and_closes(
+        cx: &mut TestAppContext,
+    ) {
+        let fixture = SaveFixture::new();
+        let (shell, old_presenter) = display_fixture(cx);
+        let started = Instant::now() - Duration::from_secs(10);
+        let old_audience = shell.update(cx, |shell, cx| {
+            shell.store = fixture.store();
+            set_playing(shell, cx, started);
+            shell.new_display_draft();
+            shell.dispatch(Intent::SelectPdf(PdfTarget::None), cx);
+            let audience = shell.audience.as_ref().unwrap().handle;
+            shell.apply_display_draft(cx);
+            assert_eq!(shell.state.stage(), SessionStage::Presenting);
+            assert_eq!(shell.audience.as_ref().unwrap().handle, audience);
+            assert_eq!(shell.snapshot.read(cx).stage, AudienceStage::Curtain);
+            shell.poll_transaction(cx);
+            assert_eq!(shell.state.stage(), SessionStage::Ready);
+            assert_eq!(shell.state.current_page(), PhysicalPage(1));
+            assert!(shell.audience.is_none());
+            assert_eq!(shell.snapshot.read(cx).stage, AudienceStage::Curtain);
+            let elapsed = shell.state.elapsed_at(Instant::now());
+            assert!(elapsed >= Duration::from_secs(10));
+            assert_eq!(
+                shell
+                    .state
+                    .elapsed_at(Instant::now() + Duration::from_secs(100)),
+                elapsed
+            );
+            assert!(
+                policy::audience_target(&shell.monitors, &shell.settings.settings.display).is_err()
+            );
+            audience
+        });
+        assert_eq!(cx.windows().len(), 1);
+        assert!(!cx.windows().contains(&old_audience));
+        assert!(!cx.windows().contains(&old_presenter));
+    }
+
+    #[gpui::test]
+    fn displays_v8_failed_no_play_placement_and_creation_roll_back_running_session(
+        cx: &mut TestAppContext,
+    ) {
+        let (shell, presenter) = display_fixture(cx);
+        shell.update(cx, |shell, cx| {
+            let started = Instant::now() - Duration::from_secs(10);
+            set_playing(shell, cx, started);
+            let before = shell.state.clone();
+            let settings = shell.settings.settings.clone();
+            let audience = shell.audience.as_ref().unwrap().handle;
+            shell.new_display_draft();
+            shell.dispatch(Intent::SelectPdf(PdfTarget::None), cx);
+            shell.apply_display_draft(cx);
+            let pending = shell.pending.as_mut().unwrap();
+            pending.presenter.as_mut().unwrap().display = u64::MAX;
+            pending.deadline = Instant::now() - Duration::from_secs(1);
+            shell.poll_transaction(cx);
+            assert_eq!(shell.state, before);
+            assert_eq!(shell.settings.settings, settings);
+            assert_eq!(shell.presenter.as_ref().unwrap().handle, presenter);
+            assert_eq!(shell.audience.as_ref().unwrap().handle, audience);
+            assert_eq!(shell.snapshot.read(cx).stage, AudienceStage::Live);
+            assert!(shell.pending.is_none());
+            let candidate = DisplayDraft {
+                revision: shell.topology_revision,
+                presenter: Some(test_monitor().id),
+                pdf: PdfTarget::None,
+            }
+            .settings(
+                shell.topology_revision,
+                &shell.monitors,
+                &shell.settings.settings.display,
+            )
+            .unwrap();
+            shell.mapped = Err(ShellError::AmbiguousDisplays);
+            shell.assign_displays(candidate, cx);
+            assert!(shell.pending.is_none());
+            assert_eq!(shell.state, before);
+            assert_eq!(shell.settings.settings, settings);
+            assert_eq!(cx.windows().len(), 2);
+        });
+    }
+
+    #[gpui::test]
+    fn displays_v8_identify_is_label_only_expires_and_is_refused_presenting(
+        cx: &mut TestAppContext,
+    ) {
+        let (shell, presenter) = display_fixture(cx);
+        shell.update(cx, |shell, cx| {
+            shell.open_identify(cx);
+            assert_eq!(shell.identify.len(), 1);
+            let label = shell.identify[0]
+                .downcast::<Identify>()
+                .unwrap()
+                .root(cx)
+                .unwrap();
+            assert_eq!(label.read(cx).number, 1);
+            assert_eq!(label.read(cx).name, test_monitor().name);
+            assert!(shell.audience.is_none());
+            shell.identify_deadline = Some(Instant::now() - Duration::from_secs(1));
+            shell.tick(cx);
+            assert!(shell.identify.is_empty());
+            assert_eq!(cx.windows(), vec![presenter]);
+            set_playing(shell, cx, Instant::now());
+            shell.new_display_draft();
+            shell.dispatch(Intent::Identify, cx);
+            assert!(shell.identify.is_empty());
+            assert!(!shell.display_panel().unwrap().can_identify);
+        });
+    }
+
+    #[derive(Clone)]
+    struct CapturedLog(std::sync::Arc<std::sync::Mutex<Vec<u8>>>);
+    impl std::io::Write for CapturedLog {
+        fn write(&mut self, bytes: &[u8]) -> std::io::Result<usize> {
+            self.0.lock().unwrap().extend_from_slice(bytes);
+            Ok(bytes.len())
+        }
+        fn flush(&mut self) -> std::io::Result<()> {
+            Ok(())
+        }
+    }
+
+    #[gpui::test]
+    fn retirement_v8_queued_activation_does_not_visit_removed_window(cx: &mut TestAppContext) {
+        let (output, _capture) = capture_window_errors();
+        let (shell, _) = headless_shell(cx);
+        let current = shell.update(cx, |shell, cx| {
+            load_ready(shell);
+            shell.presenter = Some(test_window(shell, false, cx));
+            let old = shell.presenter.take().unwrap();
+            old.handle
+                .update(cx, |_, window, _| window.activate_window())
+                .unwrap();
+            shell.presenter = Some(test_window(shell, false, cx));
+            shell
+                .presenter
+                .as_ref()
+                .unwrap()
+                .handle
+                .update(cx, |_, window, _| window.activate_window())
+                .unwrap();
+            Shell::close(old, cx);
+            shell.presenter.as_ref().unwrap().handle
+        });
+        cx.run_until_parked();
+        assert_eq!(cx.windows(), vec![current]);
+        assert_eq!(cx.update(|cx| cx.active_window()), Some(current));
+        let log = String::from_utf8(output.lock().unwrap().clone()).unwrap();
+        assert!(!log.contains("window not found"), "late activation: {log}");
+        shell.read_with(cx, |shell, _| {
+            assert_eq!(shell.state.stage(), SessionStage::Ready);
+            assert_eq!(shell.import_token, 0);
+        });
+    }
+
+    fn capture_window_errors() -> (
+        std::sync::Arc<std::sync::Mutex<Vec<u8>>>,
+        tracing::dispatcher::DefaultGuard,
+    ) {
+        use tracing_subscriber::util::SubscriberInitExt as _;
+        let output = std::sync::Arc::new(std::sync::Mutex::new(Vec::<u8>::new()));
+        let writer = CapturedLog(output.clone());
+        let guard = tracing_subscriber::fmt()
+            .with_ansi(false)
+            .with_file(true)
+            .with_line_number(true)
+            .with_max_level(tracing::Level::ERROR)
+            .with_writer(move || writer.clone())
+            .finish()
+            .set_default();
+        (output, guard)
+    }
+
+    #[gpui::test]
+    fn retirement_v14_retained_hover_cannot_visit_removed_window(cx: &mut TestAppContext) {
+        let (output, _capture) = capture_window_errors();
+        let window: AnyWindowHandle = cx.add_window(|_, _| gpui::EmptyView).into();
+        let platform = cx.test_window(window);
+        window
+            .update(cx, |_, window, _| window.remove_window())
+            .unwrap();
+        assert!(cx.windows().is_empty());
+        platform.simulate_hover_status_change(false);
+        assert!(
+            output.lock().unwrap().is_empty(),
+            "{}",
+            String::from_utf8_lossy(&output.lock().unwrap())
+        );
+    }
+
+    #[gpui::test]
+    fn retirement_v14_retained_notifications_cannot_visit_removed_window(cx: &mut TestAppContext) {
+        let (output, _capture) = capture_window_errors();
+        let window: AnyWindowHandle = cx.add_window(|_, _| gpui::EmptyView).into();
+        let mut platform = cx.test_window(window);
+        window
+            .update(cx, |_, window, _| window.remove_window())
+            .unwrap();
+        assert!(cx.windows().is_empty());
+        platform.simulate_visibility_change(gpui::WindowVisibility::Hidden);
+        platform.simulate_visual_viewport_change(gpui::Bounds::default());
+        platform.simulate_insets_change(gpui::WindowInsets::default());
+        platform.simulate_resize(size(px(320.), px(640.)));
+        platform.simulate_move();
+        platform.simulate_button_layout_change();
+        platform.simulate_tab_commands();
+        platform.simulate_appearance_change(gpui::WindowAppearance::Dark);
+        cx.run_until_parked();
+        assert!(
+            output.lock().unwrap().is_empty(),
+            "{}",
+            String::from_utf8_lossy(&output.lock().unwrap())
+        );
+    }
+
+    #[gpui::test]
+    fn retirement_v14_retained_input_hit_test_and_frame_are_inert(cx: &mut TestAppContext) {
+        let (output, _capture) = capture_window_errors();
+        let window: AnyWindowHandle = cx.add_window(|_, _| gpui::EmptyView).into();
+        let mut platform = cx.test_window(window);
+        window
+            .update(cx, |_, window, _| window.remove_window())
+            .unwrap();
+        assert!(cx.windows().is_empty());
+        assert!(
+            platform.simulate_input(gpui::PlatformInput::MouseMove(gpui::MouseMoveEvent {
+                position: gpui::point(px(5.), px(6.)),
+                pressed_button: None,
+                modifiers: gpui::Modifiers::default(),
+            }))
+        );
+        assert!(platform.simulate_window_control_hit_test().is_none());
+        let wakes = platform.frame_wake_count();
+        platform.simulate_frame_request(gpui::RequestFrameOptions::default());
+        assert_eq!(platform.frame_wake_count(), wakes);
+        assert!(
+            output.lock().unwrap().is_empty(),
+            "{}",
+            String::from_utf8_lossy(&output.lock().unwrap())
+        );
+    }
+
+    #[gpui::test]
+    fn retirement_v14_deferred_appearance_rechecks_owner(cx: &mut TestAppContext) {
+        let (output, _capture) = capture_window_errors();
+        let window: AnyWindowHandle = cx.add_window(|_, _| gpui::EmptyView).into();
+        cx.test_window(window)
+            .simulate_appearance_change(gpui::WindowAppearance::Dark);
+        window
+            .update(cx, |_, window, _| window.remove_window())
+            .unwrap();
+        cx.run_until_parked();
+        assert!(
+            output.lock().unwrap().is_empty(),
+            "{}",
+            String::from_utf8_lossy(&output.lock().unwrap())
+        );
+    }
+
+    #[gpui::test]
+    fn retirement_v14_live_callbacks_apply_and_leased_errors_remain_visible(
+        cx: &mut TestAppContext,
+    ) {
+        let (output, _capture) = capture_window_errors();
+        let window: AnyWindowHandle = cx.add_window(|_, _| gpui::EmptyView).into();
+        let mut platform = cx.test_window(window);
+        platform.simulate_visibility_change(gpui::WindowVisibility::Hidden);
+        platform.simulate_resize(size(px(320.), px(640.)));
+        platform.simulate_appearance_change(gpui::WindowAppearance::Dark);
+        cx.run_until_parked();
+        window
+            .update(cx, |_, window, _| {
+                assert_eq!(window.visibility(), gpui::WindowVisibility::Hidden);
+                assert_eq!(window.viewport_size(), size(px(320.), px(640.)));
+                assert_eq!(window.appearance(), gpui::WindowAppearance::Dark);
+            })
+            .unwrap();
+        assert!(output.lock().unwrap().is_empty());
+        cx.with_window_lease(window, || platform.simulate_hover_status_change(false));
+        let log = String::from_utf8(output.lock().unwrap().clone()).unwrap();
+        assert!(
+            log.contains("window not found"),
+            "live leased window must still report its update error: {log}"
+        );
+    }
+
+    #[gpui::test]
+    fn retirement_v8_user_close_is_deferred_and_stops_projection(cx: &mut TestAppContext) {
+        let (shell, presenter) = input_presenter(cx);
+        let audience = shell.update(cx, |shell, cx| {
+            load_ready(shell);
+            shell
+                .state
+                .apply_at(
+                    Command::StartPresentation {
+                        audience_available: true,
+                    },
+                    Instant::now(),
+                )
+                .unwrap();
+            shell.audience = Some(test_window(shell, true, cx));
+            shell.audience.as_ref().unwrap().handle
+        });
+        let mut visual = gpui::VisualTestContext::from_window(audience, cx);
+        assert!(
+            !visual.simulate_close(),
+            "OS must not destroy the native window first"
+        );
+        assert!(
+            cx.windows().contains(&audience),
+            "remove after the callback returns"
+        );
+        cx.run_until_parked();
+        assert_eq!(cx.windows(), vec![presenter]);
+        shell.read_with(cx, |shell, _| {
+            assert_eq!(shell.state.stage(), SessionStage::Ready);
+            assert!(shell.audience.is_none());
+        });
+        let mut visual = gpui::VisualTestContext::from_window(presenter, cx);
+        assert!(!visual.simulate_close());
+        cx.run_until_parked();
+        assert!(cx.windows().is_empty());
+        shell.read_with(cx, |shell, _| assert_eq!(shell.import_token, 1));
+    }
+
+    #[gpui::test]
+    fn retirement_v8_pending_and_retired_close_requests_cannot_quit_replacement(
+        cx: &mut TestAppContext,
+    ) {
+        let (shell, original) = input_presenter(cx);
+        let pending = shell.update(cx, |shell, cx| {
+            load_ready(shell);
+            let window = test_window(shell, false, cx);
+            let handle = window.handle;
+            shell.pending = Some(Transaction {
+                kind: TransactionKind::RecoverPresenter,
+                presenter: Some(window),
+                audience: None,
+                deadline: Instant::now() + CONFIRM_TIMEOUT,
+            });
+            handle
+        });
+        let mut visual = gpui::VisualTestContext::from_window(pending, cx);
+        assert!(!visual.simulate_close());
+        cx.run_until_parked();
+        assert_eq!(cx.windows(), vec![original]);
+        shell.read_with(cx, |shell, _| {
+            assert!(shell.pending.is_none());
+            assert_eq!(shell.import_token, 0);
+        });
+
+        let mut visual = gpui::VisualTestContext::from_window(original, cx);
+        assert!(!visual.simulate_close());
+        let replacement = shell.update(cx, |shell, cx| {
+            shell.pending = Some(Transaction {
+                kind: TransactionKind::RecoverPresenter,
+                presenter: Some(test_window(shell, false, cx)),
+                audience: None,
+                deadline: Instant::now() + CONFIRM_TIMEOUT,
+            });
+            shell.poll_transaction(cx); // Retire the old owner before queued close consumes it.
+            set_playing(shell, cx, Instant::now());
+            shell.presenter.as_ref().unwrap().handle
+        });
+        cx.run_until_parked();
+        shell.read_with(cx, |shell, _| {
+            assert_eq!(shell.state.stage(), SessionStage::Presenting);
+            assert_eq!(shell.presenter.as_ref().unwrap().handle, replacement);
+            assert_eq!(shell.import_token, 0);
+        });
+        let mut visual = gpui::VisualTestContext::from_window(replacement, cx);
+        assert!(!visual.simulate_close());
+        cx.run_until_parked();
+        assert!(cx.windows().is_empty());
+        shell.read_with(cx, |shell, _| {
+            assert_eq!(shell.state.stage(), SessionStage::Ready);
+            assert!(shell.audience.is_none());
+            assert_eq!(shell.import_token, 1);
+        });
+    }
 
     fn headless_shell(
         cx: &mut TestAppContext,
@@ -1372,7 +2907,7 @@ mod tests {
             let replacement = test_window(shell, false, cx);
             let replacement_handle = replacement.handle;
             shell.pending = Some(Transaction {
-                kind: TransactionKind::Swap(candidate),
+                kind: TransactionKind::Assign(candidate),
                 presenter: Some(replacement),
                 audience: None,
                 deadline: Instant::now() + CONFIRM_TIMEOUT,
@@ -1561,14 +3096,15 @@ mod tests {
         cx.simulate_keystrokes(handle, "tab shift-tab");
         redraw(handle, cx);
         // Start is disabled without a watcher. Reverse traversal must skip it
-        // and reach Swap, the last enabled control in this Ready fixture.
+        // and reach Displays, the last enabled control in this Ready fixture.
         cx.simulate_keystrokes(handle, "space");
         shell.read_with(cx, |shell, _| {
             assert_eq!(shell.state.current_page(), PhysicalPage(1));
-            assert_eq!(
-                shell.error.as_deref(),
-                Some(shell.locale.text("cannot-swap"))
-            );
+            assert!(shell.error.is_none());
+            assert!(matches!(
+                shell.focus_intent.as_ref().map(|pending| &pending.intent),
+                Some(Intent::Displays)
+            ));
         });
         let mut visual = gpui::VisualTestContext::from_window(handle, cx);
         let bounds = visual.debug_bounds("start").unwrap();
@@ -1579,6 +3115,7 @@ mod tests {
         redraw(handle, cx);
         shell.update(cx, |shell, cx| {
             shell.error = None;
+            shell.cancel_focus(); // Finish the preceding Displays activation assertion.
             shell
                 .state
                 .apply_at(
@@ -1966,7 +3503,10 @@ mod tests {
                     Instant::now(),
                 )
                 .unwrap();
-            shell.monitors = vec![test_monitor()];
+            let mut lost = test_monitor();
+            lost.id = MonitorId("lost-audience".into());
+            lost.connection_name = "lost-audience".into();
+            shell.monitors = vec![test_monitor(), lost];
             shell.recover_windowed = false;
             shell.settings.settings.display.presenter_start_fullscreen = true;
             let mut presenter = test_window(shell, false, cx);
@@ -2172,6 +3712,7 @@ mod tests {
         let (shell, sender) = headless_shell(cx);
         shell.update(cx, |shell, cx| {
             load_ready(shell);
+            shell.monitors = vec![test_monitor()];
             shell.pending = Some(Transaction {
                 kind: TransactionKind::RecoverPresenter,
                 presenter: Some(test_window(shell, false, cx)),
