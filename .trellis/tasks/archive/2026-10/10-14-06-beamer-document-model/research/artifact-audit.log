@@ -1,0 +1,1 @@
+PASS: actual result counts {'ci-final.log': 124, 'native-final.log': 59}; normal missing-runtime suite failed with LibraryUnavailable; deterministic regeneration preserved all13 PDF hashes; only .tex/.pdf/generator/expected/README remain in fixture directory.

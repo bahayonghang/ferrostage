@@ -1,0 +1,104 @@
+   Compiling ferrostage-core v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-core)
+error[E0277]: can't compare `PhysicalPage` with `PhysicalPage`
+  --> crates\ferrostage-core\src\slide_map.rs:19:82
+   |
+19 |                 if page.0 >= page_count || steps.last().is_some_and(|last| *last >= page) {
+   |                                                                                  ^^ no implementation for `PhysicalPage < PhysicalPage` and `PhysicalPage > PhysicalPage`
+   |
+   = help: the trait `PartialOrd` is not implemented for `PhysicalPage`
+help: consider annotating `PhysicalPage` with `#[derive(PartialOrd)]`
+  --> crates\ferrostage-core\src\ids.rs:10:1
+   |
+10 + #[derive(PartialOrd)]
+11 | pub struct PhysicalPage(pub usize);
+   |
+
+error[E0369]: binary operation `<=` cannot be applied to type `PhysicalPage`
+  --> crates\ferrostage-core\src\slide_map.rs:42:55
+   |
+42 |         let index = self.steps.partition_point(|p| *p <= page).saturating_sub(1);
+   |                                                    -- ^^ ---- PhysicalPage
+   |                                                    |
+   |                                                    PhysicalPage
+   |
+note: an implementation of `PartialOrd` might be missing for `PhysicalPage`
+  --> crates\ferrostage-core\src\ids.rs:10:1
+   |
+10 | pub struct PhysicalPage(pub usize);
+   | ^^^^^^^^^^^^^^^^^^^^^^^ must implement `PartialOrd`
+help: consider annotating `PhysicalPage` with `#[derive(PartialEq, PartialOrd)]`
+  --> crates\ferrostage-core\src\ids.rs:10:1
+   |
+10 + #[derive(PartialEq, PartialOrd)]
+11 | pub struct PhysicalPage(pub usize);
+   |
+
+error[E0277]: the trait bound `PhysicalPage: Ord` is not satisfied
+  --> crates\ferrostage-core\src\slide_map.rs:48:32
+   |
+48 |         let index = self.steps.binary_search(&page).ok()?;
+   |                                ^^^^^^^^^^^^^ the trait `Ord` is not implemented for `PhysicalPage`
+   |
+note: required by a bound in `core::slice::<impl [T]>::binary_search`
+  --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\slice\mod.rs:2932:4
+help: consider annotating `PhysicalPage` with `#[derive(Ord)]`
+  --> crates\ferrostage-core\src\ids.rs:10:1
+   |
+10 + #[derive(Ord)]
+11 | pub struct PhysicalPage(pub usize);
+   |
+
+Some errors have detailed explanations: E0277, E0369.
+For more information about an error, try `rustc --explain E0277`.
+error: could not compile `ferrostage-core` (lib) due to 3 previous errors
+warning: build failed, waiting for other jobs to finish...
+error[E0277]: can't compare `ids::PhysicalPage` with `ids::PhysicalPage`
+  --> crates\ferrostage-core\src\slide_map.rs:19:82
+   |
+19 |                 if page.0 >= page_count || steps.last().is_some_and(|last| *last >= page) {
+   |                                                                                  ^^ no implementation for `ids::PhysicalPage < ids::PhysicalPage` and `ids::PhysicalPage > ids::PhysicalPage`
+   |
+   = help: the trait `PartialOrd` is not implemented for `ids::PhysicalPage`
+help: consider annotating `ids::PhysicalPage` with `#[derive(PartialOrd)]`
+  --> crates\ferrostage-core\src\ids.rs:10:1
+   |
+10 + #[derive(PartialOrd)]
+11 | pub struct PhysicalPage(pub usize);
+   |
+
+error[E0369]: binary operation `<=` cannot be applied to type `ids::PhysicalPage`
+  --> crates\ferrostage-core\src\slide_map.rs:42:55
+   |
+42 |         let index = self.steps.partition_point(|p| *p <= page).saturating_sub(1);
+   |                                                    -- ^^ ---- ids::PhysicalPage
+   |                                                    |
+   |                                                    ids::PhysicalPage
+   |
+note: an implementation of `PartialOrd` might be missing for `ids::PhysicalPage`
+  --> crates\ferrostage-core\src\ids.rs:10:1
+   |
+10 | pub struct PhysicalPage(pub usize);
+   | ^^^^^^^^^^^^^^^^^^^^^^^ must implement `PartialOrd`
+help: consider annotating `ids::PhysicalPage` with `#[derive(PartialEq, PartialOrd)]`
+  --> crates\ferrostage-core\src\ids.rs:10:1
+   |
+10 + #[derive(PartialEq, PartialOrd)]
+11 | pub struct PhysicalPage(pub usize);
+   |
+
+error[E0277]: the trait bound `ids::PhysicalPage: Ord` is not satisfied
+  --> crates\ferrostage-core\src\slide_map.rs:48:32
+   |
+48 |         let index = self.steps.binary_search(&page).ok()?;
+   |                                ^^^^^^^^^^^^^ the trait `Ord` is not implemented for `ids::PhysicalPage`
+   |
+note: required by a bound in `core::slice::<impl [T]>::binary_search`
+  --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\slice\mod.rs:2932:4
+help: consider annotating `ids::PhysicalPage` with `#[derive(Ord)]`
+  --> crates\ferrostage-core\src\ids.rs:10:1
+   |
+10 + #[derive(Ord)]
+11 | pub struct PhysicalPage(pub usize);
+   |
+
+error: could not compile `ferrostage-core` (lib test) due to 3 previous errors

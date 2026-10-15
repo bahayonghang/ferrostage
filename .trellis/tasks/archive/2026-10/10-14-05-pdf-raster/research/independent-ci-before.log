@@ -1,0 +1,32 @@
+cargo fmt --all -- --check
+. : AuthorizationManager check failed.
+At line:1 char:3
++ . 'C:\Users\lyh\Documents\WindowsPowerShell\profile.ps1'
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : SecurityError: (:) [], PSSecurityException
+    + FullyQualifiedErrorId : UnauthorizedAccess
+. : AuthorizationManager check failed.
+At line:1 char:3
++ . 'C:\Users\lyh\Documents\WindowsPowerShell\Microsoft.PowerShell_prof ...
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : SecurityError: (:) [], PSSecurityException
+    + FullyQualifiedErrorId : UnauthorizedAccess
+cargo clippy --workspace --all-targets -- -D warnings
+. : AuthorizationManager check failed.
+At line:1 char:3
++ . 'C:\Users\lyh\Documents\WindowsPowerShell\profile.ps1'
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : SecurityError: (:) [], PSSecurityException
+    + FullyQualifiedErrorId : UnauthorizedAccess
+. : AuthorizationManager check failed.
+At line:1 char:3
++ . 'C:\Users\lyh\Documents\WindowsPowerShell\Microsoft.PowerShell_prof ...
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : SecurityError: (:) [], PSSecurityException
+    + FullyQualifiedErrorId : UnauthorizedAccess
+error: failed to open: D:\Documents\Code\Rust\Exp\ferrostage\target\debug\.cargo-build-lock
+
+Caused by:
+  Access is denied. (os error 5)
+error: recipe `clippy` failed on line 19 with exit code 1
+exit=1

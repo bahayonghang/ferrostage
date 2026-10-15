@@ -1,0 +1,30 @@
+{
+  "utc": "2026-10-15T03:12:27.087992+00:00",
+  "archive_map": {
+    ".trellis/tasks/10-14-01-docs-sync": ".trellis/tasks/archive/2026-10/10-14-01-docs-sync",
+    ".trellis/tasks/10-14-02-settings-schema": ".trellis/tasks/archive/2026-10/10-14-02-settings-schema",
+    ".trellis/tasks/10-14-04-session-lifecycle": ".trellis/tasks/archive/2026-10/10-14-04-session-lifecycle",
+    ".trellis/tasks/10-14-05-pdf-raster": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster",
+    ".trellis/tasks/10-14-06-beamer-document-model": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model"
+  },
+  "metadata_command": "task.py archive <id> --skip-branch-validation",
+  "reason": "Existing direct-main work; no PR was created. Preserve branch/base metadata.",
+  "context_files_relocated": [
+    ".trellis/tasks/10-14-07-gpui-shell/check.jsonl",
+    ".trellis/tasks/10-14-07-gpui-shell/implement.jsonl",
+    ".trellis/tasks/10-14-10-hot-reload/check.jsonl",
+    ".trellis/tasks/10-14-10-hot-reload/implement.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-01-docs-sync/check.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-01-docs-sync/implement.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-02-settings-schema/check.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-02-settings-schema/implement.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-04-session-lifecycle/check.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-04-session-lifecycle/implement.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/check.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/implement.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/check.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/implement.jsonl"
+  ],
+  "research_blobs_preserved": 28,
+  "historical_evidence_rule": "Frozen research reports and manifests retain original paths/hashes. Resolve their old task-prefix through archive_map; do not rewrite evidence or recreate old task directories. Only operational context JSONL paths and current progress index are updated."
+}

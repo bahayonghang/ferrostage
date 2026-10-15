@@ -1,0 +1,17 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling ferrostage-platform v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-platform)
+error[E0507]: cannot move out of `monitors` in pattern guard
+  --> crates\ferrostage-platform\examples\monitor_probe.rs:58:75
+   |
+58 |         Ok(ferrostage_platform::TopologyEvent::Changed(monitors)) if Some(monitors) == first => {
+   |                                                                           ^^^^^^^^ move occurs because `monitors` has type `Vec<MonitorInfo>`, which does not implement the `Copy` trait
+   |
+   = note: variables bound in patterns cannot be moved from until after the end of the pattern guard
+help: consider cloning the value if the performance cost is acceptable
+   |
+58 |         Ok(ferrostage_platform::TopologyEvent::Changed(monitors)) if Some(monitors.clone()) == first => {
+   |                                                                                   ++++++++
+
+For more information about this error, try `rustc --explain E0507`.
+error: could not compile `ferrostage-platform` (example "monitor_probe") due to 1 previous error

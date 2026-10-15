@@ -1,0 +1,22 @@
+   Compiling ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.30s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_render-c724fc6985cb9fc1.exe)
+
+running 1 test
+test worker::tests::readiness_from_a_stopped_worker_cannot_commit_a_replacement_worker ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 12 filtered out; finished in 0.00s
+
+     Running tests\native.rs (target\debug\deps\native-74d26317e2c28b7c.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\native_missing.rs (target\debug\deps\native_missing-896aecb42a0d0abd.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+exit=0

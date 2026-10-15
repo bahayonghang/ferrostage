@@ -1,0 +1,98 @@
+   Compiling tempfile v3.27.0
+   Compiling ferrostage-core v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-core)
+   Compiling tracing-subscriber v0.3.23
+   Compiling ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+   Compiling rusty-fork v0.3.1
+   Compiling ferrostage-settings v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-settings)
+   Compiling proptest v1.12.0
+   Compiling ferrostage-app v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.27s
+     Running unittests src\main.rs (target\debug\deps\ferrostage-541577b2c22b9e25.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\check_config.rs (target\debug\deps\check_config-7bddc15b21ebb387.exe)
+
+running 4 tests
+test missing_config_exits_one ... ok
+test startup_config_fills_missing_sections ... ok
+test check_config_syntax_error_exits_one_without_backup ... ok
+test check_config_leaf_fallback_exits_zero_and_does_not_write ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_core-2408fd4d59adc444.exe)
+
+running 10 tests
+test state::tests::blank_toggle_is_shown_on_the_snapshot_and_clears_on_repeat ... ok
+test display::tests::roles_are_distinct ... ok
+test state::tests::empty_document_is_rejected ... ok
+test display::tests::core_manifest_does_not_link_io_crates ... ok
+test state::tests::halves_cover_the_unit_square_without_overlap ... ok
+test state::tests::audience_snapshot_tracks_generation_and_has_no_notes_field ... ok
+test state::tests::preview_out_of_range_is_an_error_and_stale_generation_is_rejected ... ok
+test state::tests::step_clamps_at_both_ends ... ok
+test state::tests::swap_screens_does_not_change_the_audience_page ... ok
+test ids::order_tests::generation_order_matches_the_inner_integer ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_settings-ede0361e9608217b.exe)
+
+running 35 tests
+test tests::parse::defaults_use_render_cache_budgets ... ok
+test tests::parse::manifest_does_not_link_platform_or_gpui ... ok
+test tests::store::default_path_ends_at_ferrostage_settings ... ok
+test tests::parse::empty_document_is_the_default ... ok
+test tests::store::config_dirs_follow_each_platform ... ok
+test tests::parse::color_and_ratio_ranges_fall_back_one_leaf ... ok
+test tests::parse::recent_files_are_deduped_and_truncated ... ok
+test tests::parse::zero_target_minutes_falls_back_and_names_the_key ... ok
+test tests::parse::illegal_target_type_falls_back_only_that_leaf ... ok
+test tests::parse::wrong_section_type_falls_back_only_that_section ... ok
+test tests::parse::legacy_flat_keys_map_and_indexes_stay_unknown ... ok
+test tests::parse::yellow_must_exceed_red ... ok
+test tests::parse::keybinding_conflicts_are_recorded_and_not_resolved ... ok
+test tests::parse::illegal_role_becomes_none_not_audience ... ok
+test tests::parse::invalid_syntax_is_an_error_for_pure_parse ... ok
+test tests::parse::future_version_is_read_only ... ok
+test tests::parse::default_toml_roundtrip_matches_default ... ok
+test tests::parse::deleting_any_section_keeps_the_other_values ... ok
+test tests::parse::scratch_dirs_are_not_the_user_config ... ok
+test tests::store::future_version_refuses_save_and_keeps_the_bytes ... ok
+test tests::store::startup_does_not_rewrite_a_future_file ... ok
+test tests::store::failed_backup_keeps_the_original_and_forbids_writes ... ok
+test tests::store::parent_file_blocks_directory_creation ... ok
+test tests::store::temp_create_failure_does_not_touch_the_old_file ... ok
+test tests::store::injected_crash_after_temp_write_does_not_damage_settings ... ok
+test tests::store::missing_file_is_not_an_error_and_startup_can_create_it ... ok
+test tests::store::save_failure_leaves_the_old_file ... ok
+test tests::store::startup_fills_missing_sections_and_check_style_load_does_not ... ok
+test tests::store::legacy_save_drops_mapped_keys_and_keeps_indexes ... ok
+test tests::store::unknown_values_survive_a_known_edit ... ok
+test tests::store::save_creates_a_missing_directory ... ok
+test tests::store::syntax_error_backs_up_and_returns_defaults ... ok
+test tests::store::explicit_save_after_backup_may_replace_the_original ... ok
+test tests::store::duplicate_monitor_metadata_survives_repeated_session_saves ... FAILED
+test tests::windows::ntfs_replace_keeps_a_complete_file ... ok
+
+failures:
+
+---- tests::store::duplicate_monitor_metadata_survives_repeated_session_saves stdout ----
+
+thread 'tests::store::duplicate_monitor_metadata_survives_repeated_session_saves' (103612) panicked at crates\ferrostage-settings\src\tests\store.rs:157:5:
+assertion `left == right` failed
+  left: None
+ right: Some("second")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::store::duplicate_monitor_metadata_survives_repeated_session_saves
+
+test result: FAILED. 34 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.44s
+
+error: test failed, to rerun pass `-p ferrostage-settings --lib`

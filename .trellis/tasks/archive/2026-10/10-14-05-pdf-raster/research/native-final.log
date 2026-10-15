@@ -1,0 +1,49 @@
+   Compiling ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+   Compiling ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.82s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_pdf-73b01e7e6f3ad566.exe)
+
+running 3 tests
+test raster::tests::fits_crop_aspect_and_rejects_invalid_input ... ok
+test tests::version_pins_match_the_workspace_plan ... ok
+test tests::empty_buffer_is_not_a_pdf ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_render-860d242083953573.exe)
+
+running 10 tests
+test cache::tests::generations_share_one_budget ... ok
+test cache::tests::cpu_frames_are_released_and_oversized_frame_is_not_cached ... ok
+test scheduler::tests::next_dispatch_obeys_priority_and_epoch_cancels_queued_work ... ok
+test cache::tests::lru_bytes_oversize_resize_and_retirement ... ok
+test worker::tests::cache_hit_has_no_render_timing_and_uncached_always_renders ... ok
+test worker::tests::candidate_batch_yields_to_active_priority_and_uses_its_own_epoch ... ok
+test worker::tests::old_generation_inflight_cannot_publish_after_load ... ok
+test worker::tests::in_flight_is_not_preempted_but_old_epoch_is_never_published ... ok
+test worker::tests::superseded_prerender_cannot_complete_a_new_batch ... ok
+test worker::tests::candidate_metadata_prerender_commit_abort_and_retire_are_separate ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\native.rs (target\debug\deps\native-61f55e3b4dfd6f6e.exe)
+
+running 1 test
+test native_golden_and_transaction ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.19s
+
+     Running tests\native_missing.rs (target\debug\deps\native_missing-7e37f8ab57675c38.exe)
+
+running 1 test
+test missing_library_is_typed_before_any_successful_initialization ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests examples\poc2.rs (target\debug\examples\poc2-8bf76efa6de0abea.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+EXIT_CODE=0

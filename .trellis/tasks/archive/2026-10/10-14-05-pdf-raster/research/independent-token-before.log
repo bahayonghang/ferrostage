@@ -1,0 +1,24 @@
+   Compiling ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+   Compiling ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.64s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_render-c724fc6985cb9fc1.exe)
+
+running 1 test
+test worker::tests::readiness_from_a_stopped_worker_cannot_commit_a_replacement_worker ... FAILED
+
+failures:
+
+---- worker::tests::readiness_from_a_stopped_worker_cannot_commit_a_replacement_worker stdout ----
+
+thread 'worker::tests::readiness_from_a_stopped_worker_cannot_commit_a_replacement_worker' (119732) panicked at crates\ferrostage-render\src\worker\tests.rs:373:65:
+called `Result::unwrap_err()` on an `Ok` value: GenerationAck { generation: DocumentGeneration(1) }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    worker::tests::readiness_from_a_stopped_worker_cannot_commit_a_replacement_worker
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 12 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p ferrostage-render --lib`
+exit=101

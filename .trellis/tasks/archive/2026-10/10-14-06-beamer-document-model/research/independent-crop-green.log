@@ -1,0 +1,36 @@
+   Compiling ferrostage-core v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.20s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_core-3a2625eaad205ea5.exe)
+
+running 28 tests
+test display::tests::roles_are_distinct ... ok
+test display::tests::core_manifest_does_not_link_io_crates ... ok
+test frame::tests::invalid_geometry_stride_and_length_are_rejected ... ok
+test slide_map::tests::rejects_empty_reordered_duplicate_and_out_of_range_maps ... ok
+test state::lifecycle_tests::illegal_lifecycle_edges_leave_every_field_unchanged ... ok
+test state::lifecycle_tests::descriptor_commit_is_atomic_clamps_position_and_preserves_session_timer ... ok
+test state::lifecycle_tests::navigation_and_tools_require_a_document_but_not_a_live_session ... ok
+test state::tests::empty_document_is_rejected ... ok
+test state::lifecycle_tests::legal_lifecycle_edges_control_projection_and_document_resets ... ok
+test state::mapping_tests::checked_descriptor_rejects_empty_and_invalid_crop ... ok
+test frame::tests::packed_frame_shares_bgra_without_conversion ... ok
+test state::mapping_tests::legacy_crop_setter_rejects_invalid_geometry_without_mutation ... ok
+test state::mapping_tests::mapped_navigation_preview_shadow_and_reconfiguration_preserve_lifecycle ... ok
+test state::mapping_tests::reconfigure_clears_preview_and_preserves_paused_or_ready_timer ... ok
+test state::tests::blank_toggle_is_shown_on_the_snapshot_and_clears_on_repeat ... ok
+test state::tests::audience_snapshot_tracks_generation_and_has_no_notes_field ... ok
+test state::lifecycle_tests::timer_pause_resume_stop_and_restart_use_only_injected_time ... ok
+test slide_map::tests::boundaries_and_physical_clamp_skip_notes ... ok
+test state::tests::preview_does_not_change_the_audience_page ... ok
+test state::tests::preview_navigation_requires_explicit_commit ... ok
+test state::tests::halves_cover_the_unit_square_without_overlap ... ok
+test state::tests::preview_out_of_range_is_an_error_and_stale_generation_is_rejected ... ok
+test state::tests::preview_steps_clamp_in_both_directions_and_cancel_keeps_committed_page ... ok
+test state::tests::step_clamps_at_both_ends ... ok
+test state::tests::swap_screens_does_not_change_the_audience_page ... ok
+test ids::order_tests::generation_order_matches_the_inner_integer ... ok
+test slide_map::tests::neighbor_inverses_preserve_content_and_logical_groups ... ok
+test state::property_tests::arbitrary_commands_preserve_stage_privacy_and_error_atomicity ... ok
+
+test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+

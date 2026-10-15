@@ -2,16 +2,16 @@
 
 恢复索引。不替代 `task.json`、PRD、design、implement 或代码。`task.json` 状态只通过 `task.py` 维护。本文件的进度词（未开始、进行中、实现已验证、待人工验收、受阻、待提交/归档、已归档）不是 `task.json` 的 status 枚举。
 
-最后更新：2026-10-15T03:09:59.576237+00:00；用户已授权提交当前改动及归档已完成任务。产品提交841e287已完成，任务证据提交与01/02/04/05/06归档进行中；03/07及08–11/父级验收状态不变。
+最后更新：2026-10-15T03:12:27.087992+00:00；产品841e287与任务证据f246a67已提交，01/02/04/05/06已通过项目命令归档（父树5/11）；03/07保留in_progress，08–11与父任务保留planning。Gate B仍不完整。
 
 ## 仓库
 
 - 分支：`main`（与 `base_branch` 相同；本轮按新授权提交/归档已完成项，不新建分支、不推送）
-- HEAD：`ab78a84d96c7cf4a0bbc8dfd4f8e45da180bafb3`（`chore(task): 添加 11-media-playback 规划`）
-- 相对 `origin/main`：ahead 13
-- 工作区：01文档/spec/ADR，02 app/core/settings，04 core/document及测试均未提交；03 core/platform、05 pdf/render及06映射/备注/媒体结构与夹具已独立复核。07维护方案已获批并接入产品，GPUI外壳/主题/语言资源及vendor源未提交，自动检查已独立通过，原生验收部分通过。另有Claude DESIGN.md及父/07/08/09规划。保留既有修改。
+- 实施证据基线HEAD：`ab78a84d96c7cf4a0bbc8dfd4f8e45da180bafb3`；产品提交 `841e287`、证据提交 `f246a67`；后续归档/续接/日志提交由 `git log` 读取当前HEAD，不把旧基线误当当前版本。
+- 未推送；相对远端的提交数随本次收尾增加，以 `git status -sb` 为准。
+- 工作区：01–07相关代码、文档、规范、vendor与证据已提交；当前只整理归档上下文和续接Prompt，完成后核对clean。03/07未完成验收不因代码已提交而变为完成。
 - 当前 Codex 会话激活任务：`.trellis/tasks/10-14-07-gpui-shell`（Source: `session:codex_01a13abe-d5c3-7c40-9d4b-d8aa92bb9383`）。上一会话的01指针与历史Cursor的02指针仅属历史；任务指针按会话隔离。
-- `task.py start` 将 `branch` 记为 `main`，并警告 `branch == base_branch`。归档会拒绝；本轮不归档、不 `set-branch`。
+- 已完成五项由支持的 `task.py archive --skip-branch-validation` 归档：工作始终直接在main且没有PR，保留branch/base_branch事实。未完成03/07与父任务不归档。
 - 01 实现子代理 docs-sync（`0a443ef0-6a5a-433e-842d-eace71140c8e`）与检查子代理 docs-check（`fce9f864-15e4-4846-b564-a4816c6496f1`）均已返回。这些是历史代理标识，不是文件链接；未把“已发起”记为通过。
 
 ## 父任务
@@ -29,12 +29,12 @@
 
 | 目录 | task.json | 实施记录 | 证据 | 下一步 |
 | --- | --- | --- | --- | --- |
-| 10-14-01-docs-sync | in_progress | 文档二次复核完成，待提交/归档 | `research/review-2026-10-14.md`；原 `scan-ledger.md` 仅为历史快照；本轮未改产品代码，不声明 Rust/native 验收通过 | 提交/归档另行确认 |
-| 10-14-02-settings-schema | in_progress | 实现与独立检查已验证，待审阅/提交/归档 | research/check-review-2026-10-14.md；check-ci.log（59tests、fmt/clippy/deny PASS）；windows-persistence.log；47项当时SHA；后续CI继续回归 | 跳过已完成实施；等待最终集成复核 |
-| 10-14-03-monitor-topology | in_progress | 实现/自动/静态/独立check已验证，待人工验收及审阅/提交/归档 | research/independent-check.md；independent-just-ci.log 93tests；independent-native-static-probe.log；62项当前SHA | 物理拔插/换接口等NOT_RUN；技术交付可供下游使用 |
-| 10-14-04-session-lifecycle | in_progress | 实现与独立检查已验证，待审阅/提交/归档 | research/independent-check.md；just-ci.log 70tests PASS；51项当时源码SHA；后续CI继续回归 | 跳过已完成实施；等待最终集成复核 |
-| 10-14-05-pdf-raster | in_progress | 实现、native/性能与独立check已验证，待审阅/提交/归档 | research/independent-check.md；independent-check-manifest.json；109默认/42native PASS；1200samples复核 | 技术交付可供06/07；GPU/工作台留后续任务 |
-| 10-14-06-beamer-document-model | in_progress | 实现/native/独立check已验证，待审阅及提交/归档 | research/independent-check.md及independent-check-manifest.json；128默认/63native PASS | 技术交付可供07/08/10；不重复实施 |
+| archive/2026-10/10-14-01-docs-sync | completed | 实现与独立检查已验证；已提交、已归档 | `research/review-2026-10-14.md`；原 `scan-ledger.md` 仅为历史快照；本轮未改产品代码，不声明 Rust/native 验收通过 | 不重新实施；仅在契约受影响时回归 |
+| archive/2026-10/10-14-02-settings-schema | completed | 实现与独立检查已验证；已提交、已归档 | research/check-review-2026-10-14.md；check-ci.log（59tests、fmt/clippy/deny PASS）；windows-persistence.log；47项当时SHA；后续CI继续回归 | 不重新实施；仅在契约受影响时回归 |
+| 10-14-03-monitor-topology | in_progress | 实现/自动/静态/独立check已验证，待人工验收（现有改动已提交） | research/independent-check.md；independent-just-ci.log 93tests；independent-native-static-probe.log；62项当前SHA | 物理拔插/换接口等NOT_RUN；技术交付可供下游使用 |
+| archive/2026-10/10-14-04-session-lifecycle | completed | 实现与独立检查已验证；已提交、已归档 | research/independent-check.md；just-ci.log 70tests PASS；51项当时源码SHA；后续CI继续回归 | 不重新实施；仅在契约受影响时回归 |
+| archive/2026-10/10-14-05-pdf-raster | completed | 实现与独立检查已验证；已提交、已归档 | research/independent-check.md；independent-check-manifest.json；109默认/42native PASS；1200samples复核 | 不重新实施；仅在契约受影响时回归 |
+| archive/2026-10/10-14-06-beamer-document-model | completed | 实现与独立检查已验证；已提交、已归档 | research/independent-check.md及independent-check-manifest.json；128默认/63native PASS | 不重新实施；仅在契约受影响时回归 |
 | 10-14-07-gpui-shell | in_progress | V6实现与独立自动检查通过；F7/F8原生复测、选择器导入、保存角色重启PASS；待人工/剩余原生验收 | product-independent-v6-review.md；49GPUI/145default/strictlint/build；native-v6-checkpoint.md及native-v6-evidence-manifest.json | 先完成物理拓扑/延迟及剩余原生矩阵，Gate B通过后才进入08；不重复已验证修复 |
 | 10-14-08-presenter-workbench | planning | 未开始 | 无 | 等 Gate B |
 | 10-14-09-settings-ui | planning | 未开始 | 无 | 等 08 |
@@ -45,13 +45,13 @@
 
 此前07 I-2依赖阻塞已由用户明确批准的五包维护方案及三个精确许可证例外解除；实际产品build/full deny已通过。原政策失败和HarfRust六项上游直接lint失败保留为真实历史，未增加lint或通告豁免。当前07产品检查和独立check已通过，原生验收部分通过；物理拓扑/延迟及剩余原生矩阵仍不完整。不以隔离候选或自动检查替代产品实机验收。
 
-用户于2026-10-14确认本轮无法配合外接屏物理拔插/换接口；03 I-6相关稳定性/事件延迟与Gate B物理操作保留待人工验收。不得把静态枚举/模拟输入当实机PASS。继续依赖满足的自动验证及无此依赖工作；Gate B未通过阻塞08真实双窗集成，并使后续09及Gate C/D集成不可达。`main == base_branch`只影响以后归档。
+用户于2026-10-14确认本轮无法配合外接屏物理拔插/换接口；03 I-6相关稳定性/事件延迟与Gate B物理操作保留待人工验收。不得把静态枚举/模拟输入当实机PASS。继续依赖满足的自动验证及无此依赖工作；Gate B未通过阻塞08真实双窗集成，并使后续09及Gate C/D集成不可达。已完成项使用合法非PR归档选项；其余任务不能以此代替验收。
 
 ## 本轮下一步
 
 恢复时先核对磁盘、current、V6代码/可执行文件及最新证据；本轮受控进程全部正常退出，无待收结果的构建、测试或锁助手。无需再实施F7/F8，也不从01重做。下一必要交付为03 I-6/07 I-6物理拔插、换接口与≤1s延迟，以及07剩余原生验收（真实单/零屏、拖放、精确logical-client尺寸/状态、live OS主题事件、观众光标、Curtain过渡）；本轮用户已明确不能配合物理操作，保留待人工，不再重复询问。
 
-Gate B未通过明确阻塞08真实双窗集成，09依赖08，10/11完整集成依赖Gate C；没有其他依赖满足且尚未实施的授权子任务。全部范围及P2保留。先完成这些门禁再按08→09→10→11继续，提交/归档不是重复实施理由；所有修改未提交，禁止push/archive/add_session。
+Gate B未通过明确阻塞08真实双窗集成，09依赖08，10/11完整集成依赖Gate C；没有其他依赖满足且尚未实施的授权子任务。全部范围及P2保留。先完成这些门禁再按08→09→10→11继续；已完成五项已归档，不重做。后续新实施改动默认留待审阅，不自动提交、推送或归档，除非用户再次授权。
 
 ## 2026-10-14 连续实施恢复
 
@@ -652,3 +652,15 @@ Independent reviewer allows targeted native with no further source edits: F7/F8 
 用户明确要求“提交改动和归档已完成的任务”。当前产品/规范/依赖/夹具已提交为841e287b289d294e8a4e482bec64bceb934f57d6；下一步提交完整任务证据，然后只归档01、02、04、05、06。03/07人工验收未完成，父任务及08–11不归档。代码一直直接在main工作，没有对应PR，使用项目支持的archive --skip-branch-validation，不伪造branch/base_branch。此前“不提交/归档”的历史日志不适用于这次已授权收尾。后续新实施仍需另行提交授权，不推送。
 
 提交审计见research/commit-archive-audit.json及commit-product-staged-check.json。新增.gitattributes仅声明PDF二进制、vendor与研究证据保留原始字节；原维护源未变。第一方提交diff检查通过，完整检查保留19个上游原有空白告警，没有修改上游字节或新增lint/通告豁免。477个直接blob和34个上游LFS资产的payload SHA/size均匹配，git lfs fsck通过；初次将LFS pointer与原文件直接比较的审计断言错误已纠正，不算产品失败。
+
+## 归档完成与续接索引
+
+- 工作提交：841e287（产品与规范）；f246a67（任务计划/检查证据）。归档提交：2dc5f4c（01）、fbcd5ea（02）、aa83153（04）、f6d682e（05）、860941f（06）。后续仅为上下文修复/续接记录及日志收尾；当前HEAD由git读取。
+- 实际目录映射和原始研究字节校验：research/archive-relocation.json。01/02/04/05/06在archive/2026-10下，历史研究文件中的旧目录是证据当时位置，查阅时解析映射，不能重建活动目录。当前上下文JSONL已修复新位置。
+- 下一对话执行入口：next-session-prompt.md。先审计实际状态，再恢复03/07未完成原生验收与诊断；Gate B通过后才实施08，之后09→10→11。代码已提交不代表03/07或父级AC已通过。
+
+### 2026-10-15T03:16:37.932220+00:00 — 归档后检查与续接准备完成
+
+五项归档已由task.py完成；14份运行用上下文JSONL已迁移到实际archive路径，父+全部11子任务共12/12 validate通过（research/post-archive-context-validation.json）。研究原始内容与历史hash不重写，目录映射见archive-relocation.json。补充保留此前被通用*.log忽略的125份验收日志（retained-acceptance-logs.json），采用仅覆盖任务research的ignore例外，未强制加入缓存。native54份证据此前已全部跟踪。另仅对冻结清单中被上游规则忽略的vendor/cosmic-text/Cargo.lock执行精确git add -f，文件字节不变，未改写上游ignore规则。当前602源码与Git index双层绑定见committed-source-binding.json；Git LFS指针与文件字节按上游pointer SHA/size验证。
+
+下一轮可直接使用next-session-prompt.md；03/07继续待验，08–11保持依赖门禁。随后提交上下文/续接记录并按trellis-finish-work记录一次本次已授权收尾日志；不推送。

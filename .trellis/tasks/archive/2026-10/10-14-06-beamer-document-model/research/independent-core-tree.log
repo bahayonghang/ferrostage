@@ -1,0 +1,56 @@
+ferrostage-core v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-core)
+├── thiserror v2.0.21
+│   └── thiserror-impl v2.0.21 (proc-macro)
+│       ├── proc-macro2 v1.0.107
+│       │   └── unicode-ident v1.0.27
+│       ├── quote v1.0.47
+│       │   └── proc-macro2 v1.0.107 (*)
+│       └── syn v3.0.9
+│           ├── proc-macro2 v1.0.107 (*)
+│           ├── quote v1.0.47 (*)
+│           └── unicode-ident v1.0.27
+└── tracing v0.1.44
+    ├── pin-project-lite v0.2.17
+    ├── tracing-attributes v0.1.31 (proc-macro)
+    │   ├── proc-macro2 v1.0.107 (*)
+    │   ├── quote v1.0.47 (*)
+    │   └── syn v2.0.119
+    │       ├── proc-macro2 v1.0.107 (*)
+    │       ├── quote v1.0.47 (*)
+    │       └── unicode-ident v1.0.27
+    └── tracing-core v0.1.36
+        └── once_cell v1.21.4
+[dev-dependencies]
+└── proptest v1.12.0
+    ├── bit-set v0.11.1
+    │   └── bit-vec v0.10.1
+    ├── bit-vec v0.10.1
+    ├── bitflags v2.13.2
+    ├── chacha20 v0.10.2
+    │   ├── cfg-if v1.0.5
+    │   ├── cpufeatures v0.3.1
+    │   └── rand_core v0.10.1
+    ├── core_detect v1.0.0
+    ├── num-traits v0.2.19
+    │   [build-dependencies]
+    │   └── autocfg v1.5.1
+    ├── rand v0.10.3
+    │   ├── getrandom v0.4.3
+    │   │   ├── cfg-if v1.0.5
+    │   │   └── rand_core v0.10.1
+    │   └── rand_core v0.10.1
+    ├── rand_xorshift v0.5.0
+    │   └── rand_core v0.10.1
+    ├── regex-syntax v0.8.11
+    ├── rusty-fork v0.3.1
+    │   ├── fnv v1.0.7
+    │   ├── quick-error v1.2.3
+    │   ├── tempfile v3.27.0
+    │   │   ├── fastrand v2.5.0
+    │   │   ├── getrandom v0.4.3 (*)
+    │   │   ├── once_cell v1.21.4
+    │   │   └── windows-sys v0.61.2
+    │   │       └── windows-link v0.2.1
+    │   └── wait-timeout v0.2.1
+    ├── tempfile v3.27.0 (*)
+    └── unarray v0.1.4

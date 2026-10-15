@@ -1,0 +1,24 @@
+   Compiling ferrostage-core v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.14s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_core-3a2625eaad205ea5.exe)
+
+running 1 test
+test state::mapping_tests::legacy_crop_setter_rejects_invalid_geometry_without_mutation ... FAILED
+
+failures:
+
+---- state::mapping_tests::legacy_crop_setter_rejects_invalid_geometry_without_mutation stdout ----
+
+thread 'state::mapping_tests::legacy_crop_setter_rejects_invalid_geometry_without_mutation' (93836) panicked at crates\ferrostage-core\src\state\mapping_tests.rs:160:9:
+assertion `left == right` failed
+  left: PresentationState { stage: Ready, timer: TimerState { accumulated: 0ns, running_since: None }, generation: DocumentGeneration(1), page_count: 2, slide_map: Some(SlideMap { page_count: 2, groups: [[PhysicalPage(0)], [PhysicalPage(1)]], steps: [PhysicalPage(0), PhysicalPage(1)] }), current_page: PhysicalPage(0), logical_slide: LogicalSlide(0), slide_crop: NormalizedRect { x: NaN, y: 0.0, w: 1.0, h: 1.0 }, blank_mode: None, laser_pos_norm: None, strokes: [], jump_preview: None }
+ right: PresentationState { stage: Ready, timer: TimerState { accumulated: 0ns, running_since: None }, generation: DocumentGeneration(1), page_count: 2, slide_map: Some(SlideMap { page_count: 2, groups: [[PhysicalPage(0)], [PhysicalPage(1)]], steps: [PhysicalPage(0), PhysicalPage(1)] }), current_page: PhysicalPage(0), logical_slide: LogicalSlide(0), slide_crop: NormalizedRect { x: 0.0, y: 0.0, w: 1.0, h: 1.0 }, blank_mode: None, laser_pos_norm: None, strokes: [], jump_preview: None }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    state::mapping_tests::legacy_crop_setter_rejects_invalid_geometry_without_mutation
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 27 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p ferrostage-core --lib`

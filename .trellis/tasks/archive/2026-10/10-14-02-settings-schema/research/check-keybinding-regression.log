@@ -1,0 +1,24 @@
+   Compiling ferrostage-settings v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-settings)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.61s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_settings-bb7c44abc933c423.exe)
+
+running 1 test
+test tests::parse::invalid_keybinding_elements_fall_back_only_that_action ... FAILED
+
+failures:
+
+---- tests::parse::invalid_keybinding_elements_fall_back_only_that_action stdout ----
+
+thread 'tests::parse::invalid_keybinding_elements_fall_back_only_that_action' (54656) panicked at crates\ferrostage-settings\src\tests\parse.rs:336:9:
+assertion `left == right` failed
+  left: []
+ right: ["PageDown", "Space", "Right"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::parse::invalid_keybinding_elements_fall_back_only_that_action
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 37 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p ferrostage-settings --lib`

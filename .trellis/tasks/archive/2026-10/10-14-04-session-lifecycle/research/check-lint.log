@@ -1,0 +1,6 @@
+FORMAT_EXIT_CODE=0
+error: failed to open: D:\Documents\Code\Rust\Exp\ferrostage\target\debug\.cargo-build-lock
+
+Caused by:
+  Access is denied. (os error 5)
+CLIPPY_EXIT_CODE=101

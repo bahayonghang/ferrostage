@@ -6,8 +6,8 @@
 {"file": ".trellis/tasks/10-14-presenter-v0.3/prd.md", "reason": "Source requirements, milestone scope and dependency map"}
 {"file": ".trellis/tasks/10-14-presenter-v0.3/traceability.md", "reason": "Requirement to owner, design step and verification coverage"}
 {"file": ".trellis/tasks/10-14-presenter-v0.3/research/repository-baseline.md", "reason": "Verified skeleton and semantic scan ledger; task 01 spec conflicts"}
-{"file": ".trellis/tasks/10-14-05-pdf-raster/prd.md", "reason": "Child requirements and explicit dependencies"}
-{"file": ".trellis/tasks/10-14-05-pdf-raster/design.md", "reason": "Reviewed design choices, ownership, errors and rollback"}
-{"file": ".trellis/tasks/10-14-05-pdf-raster/implement.md", "reason": "Ordered steps and layered verification gates"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/prd.md", "reason": "Child requirements and explicit dependencies"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/design.md", "reason": "Reviewed design choices, ownership, errors and rollback"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/implement.md", "reason": "Ordered steps and layered verification gates"}
 {"file": ".trellis/tasks/10-14-presenter-v0.3/research/runtime-feasibility.md", "reason": "Primary-source native API, safe wrapper, ownership, CI and distribution gates"}
 {"file": ".trellis/tasks/10-14-presenter-v0.3/research/native-research-resume.md", "reason": "Verified pinned runtime artifact source/checksums and native environment leads; no runtime PASS implied"}

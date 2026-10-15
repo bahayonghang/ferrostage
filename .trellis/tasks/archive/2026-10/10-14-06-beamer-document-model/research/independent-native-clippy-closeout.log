@@ -1,0 +1,5 @@
+    Checking ferrostage-core v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-core)
+    Checking ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+    Checking ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+    Checking ferrostage-document v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-document)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.32s

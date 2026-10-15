@@ -1,0 +1,302 @@
+COMMAND git status --porcelain=v1 -uall
+ M .github/workflows/ci.yml
+ M .trellis/spec/backend/database-guidelines.md
+ M .trellis/spec/backend/directory-structure.md
+ M .trellis/spec/backend/logging-guidelines.md
+ M .trellis/spec/backend/quality-guidelines.md
+ M .trellis/spec/frontend/component-guidelines.md
+ M .trellis/spec/frontend/hook-guidelines.md
+ M .trellis/spec/frontend/quality-guidelines.md
+ M .trellis/spec/frontend/state-management.md
+ M .trellis/spec/frontend/type-safety.md
+ M .trellis/tasks/10-14-01-docs-sync/prd.md
+ M .trellis/tasks/10-14-01-docs-sync/task.json
+ M .trellis/tasks/10-14-02-settings-schema/design.md
+ M .trellis/tasks/10-14-02-settings-schema/implement.md
+ M .trellis/tasks/10-14-02-settings-schema/prd.md
+ M .trellis/tasks/10-14-02-settings-schema/task.json
+ M .trellis/tasks/10-14-03-monitor-topology/check.jsonl
+ M .trellis/tasks/10-14-03-monitor-topology/design.md
+ M .trellis/tasks/10-14-03-monitor-topology/implement.jsonl
+ M .trellis/tasks/10-14-03-monitor-topology/implement.md
+ M .trellis/tasks/10-14-03-monitor-topology/prd.md
+ M .trellis/tasks/10-14-03-monitor-topology/task.json
+ M .trellis/tasks/10-14-04-session-lifecycle/design.md
+ M .trellis/tasks/10-14-04-session-lifecycle/implement.md
+ M .trellis/tasks/10-14-04-session-lifecycle/prd.md
+ M .trellis/tasks/10-14-04-session-lifecycle/task.json
+ M .trellis/tasks/10-14-05-pdf-raster/check.jsonl
+ M .trellis/tasks/10-14-05-pdf-raster/design.md
+ M .trellis/tasks/10-14-05-pdf-raster/implement.jsonl
+ M .trellis/tasks/10-14-05-pdf-raster/implement.md
+ M .trellis/tasks/10-14-05-pdf-raster/prd.md
+ M .trellis/tasks/10-14-05-pdf-raster/task.json
+ M .trellis/tasks/10-14-06-beamer-document-model/check.jsonl
+ M .trellis/tasks/10-14-06-beamer-document-model/design.md
+ M .trellis/tasks/10-14-06-beamer-document-model/implement.jsonl
+ M .trellis/tasks/10-14-06-beamer-document-model/implement.md
+ M .trellis/tasks/10-14-06-beamer-document-model/prd.md
+ M .trellis/tasks/10-14-06-beamer-document-model/task.json
+ M .trellis/tasks/10-14-07-gpui-shell/check.jsonl
+ M .trellis/tasks/10-14-07-gpui-shell/design.md
+ M .trellis/tasks/10-14-07-gpui-shell/implement.jsonl
+ M .trellis/tasks/10-14-07-gpui-shell/implement.md
+ M .trellis/tasks/10-14-07-gpui-shell/prd.md
+ M .trellis/tasks/10-14-07-gpui-shell/task.json
+ M .trellis/tasks/10-14-08-presenter-workbench/check.jsonl
+ M .trellis/tasks/10-14-08-presenter-workbench/design.md
+ M .trellis/tasks/10-14-08-presenter-workbench/implement.jsonl
+ M .trellis/tasks/10-14-08-presenter-workbench/implement.md
+ M .trellis/tasks/10-14-08-presenter-workbench/prd.md
+ M .trellis/tasks/10-14-09-settings-ui/check.jsonl
+ M .trellis/tasks/10-14-09-settings-ui/design.md
+ M .trellis/tasks/10-14-09-settings-ui/implement.jsonl
+ M .trellis/tasks/10-14-09-settings-ui/implement.md
+ M .trellis/tasks/10-14-09-settings-ui/prd.md
+ M .trellis/tasks/10-14-10-hot-reload/check.jsonl
+ M .trellis/tasks/10-14-10-hot-reload/design.md
+ M .trellis/tasks/10-14-10-hot-reload/implement.jsonl
+ M .trellis/tasks/10-14-10-hot-reload/implement.md
+ M .trellis/tasks/10-14-11-media-playback/design.md
+ M .trellis/tasks/10-14-11-media-playback/implement.md
+ M .trellis/tasks/10-14-presenter-v0.3/check.jsonl
+ M .trellis/tasks/10-14-presenter-v0.3/design.md
+ M .trellis/tasks/10-14-presenter-v0.3/implement.jsonl
+ M .trellis/tasks/10-14-presenter-v0.3/implement.md
+ M .trellis/tasks/10-14-presenter-v0.3/prd.md
+ M .trellis/tasks/10-14-presenter-v0.3/research/planning-review.md
+ M .trellis/tasks/10-14-presenter-v0.3/traceability.md
+ M AGENTS.md
+ M Cargo.lock
+ M Cargo.toml
+ M README.md
+ M README.zh-CN.md
+ M crates/ferrostage-app/Cargo.toml
+ M crates/ferrostage-app/src/main.rs
+ M crates/ferrostage-core/src/command.rs
+ M crates/ferrostage-core/src/error.rs
+ M crates/ferrostage-core/src/geometry.rs
+ M crates/ferrostage-core/src/ids.rs
+ M crates/ferrostage-core/src/lib.rs
+ M crates/ferrostage-core/src/snapshot.rs
+ M crates/ferrostage-core/src/state.rs
+ M crates/ferrostage-document/Cargo.toml
+ M crates/ferrostage-document/src/lib.rs
+ M crates/ferrostage-pdf/Cargo.toml
+ M crates/ferrostage-pdf/src/lib.rs
+ M crates/ferrostage-platform/Cargo.toml
+ M crates/ferrostage-platform/src/lib.rs
+ M crates/ferrostage-render/Cargo.toml
+ M crates/ferrostage-render/src/lib.rs
+ M crates/ferrostage-settings/Cargo.toml
+ M crates/ferrostage-settings/src/lib.rs
+ M docs/PROJECT_PLAN.md
+ M docs/adr/ADR-001-gpui-from-zed-tag.md
+ M docs/adr/ADR-002-pdf-backends.md
+ M docs/adr/ADR-003-audience-snapshot.md
+ M docs/adr/ADR-004-lock-free-reload.md
+ M docs/architecture.md
+ M docs/beamer-notes.md
+ M docs/feature-parity.md
+ M docs/packaging.md
+ M fixtures/beamer/README.md
+ M fixtures/pdf/README.md
+ M justfile
+ M tests/hot_reload/README.md
+?? .trellis/tasks/10-14-01-docs-sync/research/review-2026-10-14.md
+?? .trellis/tasks/10-14-01-docs-sync/research/scan-ledger.md
+?? .trellis/tasks/10-14-02-settings-schema/research/check-review-2026-10-14.md
+?? .trellis/tasks/10-14-02-settings-schema/research/check-verified-source-sha256.json
+?? .trellis/tasks/10-14-02-settings-schema/research/implementation-review-2026-10-14.md
+?? .trellis/tasks/10-14-02-settings-schema/research/verified-source-sha256.json
+?? .trellis/tasks/10-14-03-monitor-topology/research/api-evidence.md
+?? .trellis/tasks/10-14-03-monitor-topology/research/context-validation.txt
+?? .trellis/tasks/10-14-03-monitor-topology/research/dependency-source-sha256.json
+?? .trellis/tasks/10-14-03-monitor-topology/research/independent-check.md
+?? .trellis/tasks/10-14-03-monitor-topology/research/independent-code-sha256.json
+?? .trellis/tasks/10-14-03-monitor-topology/research/independent-dependency-source-sha256.json
+?? .trellis/tasks/10-14-03-monitor-topology/research/independent-native-binary-sha256.json
+?? .trellis/tasks/10-14-03-monitor-topology/research/native-binary-sha256.json
+?? .trellis/tasks/10-14-03-monitor-topology/research/stability.md
+?? .trellis/tasks/10-14-03-monitor-topology/research/verification.md
+?? .trellis/tasks/10-14-03-monitor-topology/research/verified-code-sha256.json
+?? .trellis/tasks/10-14-03-monitor-topology/research/worktree-status.txt
+?? .trellis/tasks/10-14-04-session-lifecycle/research/independent-check.md
+?? .trellis/tasks/10-14-04-session-lifecycle/research/verification.md
+?? .trellis/tasks/10-14-04-session-lifecycle/research/verified-code-sha256.json
+?? .trellis/tasks/10-14-04-session-lifecycle/research/worktree-status.txt
+?? .trellis/tasks/10-14-05-pdf-raster/research/independent-check-manifest.json
+?? .trellis/tasks/10-14-05-pdf-raster/research/independent-check.md
+?? .trellis/tasks/10-14-05-pdf-raster/research/initial-tool-results.md
+?? .trellis/tasks/10-14-05-pdf-raster/research/native-api-audit.md
+?? .trellis/tasks/10-14-05-pdf-raster/research/poc-2-before-optimization.json
+?? .trellis/tasks/10-14-05-pdf-raster/research/poc-2-environment.json
+?? .trellis/tasks/10-14-05-pdf-raster/research/poc-2-owned-buffer.json
+?? .trellis/tasks/10-14-05-pdf-raster/research/poc-2-single-scratch-retained.json
+?? .trellis/tasks/10-14-05-pdf-raster/research/poc-2-timing.json
+?? .trellis/tasks/10-14-05-pdf-raster/research/poc-2-warm-scratch.json
+?? .trellis/tasks/10-14-05-pdf-raster/research/verification-manifest.json
+?? .trellis/tasks/10-14-05-pdf-raster/research/verification.md
+?? .trellis/tasks/10-14-06-beamer-document-model/research/fixture-provenance.json
+?? .trellis/tasks/10-14-06-beamer-document-model/research/independent-check-manifest.json
+?? .trellis/tasks/10-14-06-beamer-document-model/research/independent-check.md
+?? .trellis/tasks/10-14-06-beamer-document-model/research/media-field-contract.md
+?? .trellis/tasks/10-14-06-beamer-document-model/research/verification-manifest.json
+?? .trellis/tasks/10-14-06-beamer-document-model/research/verification.md
+?? .trellis/tasks/10-14-07-gpui-shell/research/.gitignore
+?? .trellis/tasks/10-14-07-gpui-shell/research/capture-evidence.ps1
+?? .trellis/tasks/10-14-07-gpui-shell/research/dependency-gate.md
+?? .trellis/tasks/10-14-07-gpui-shell/research/evidence-manifest.json
+?? .trellis/tasks/10-14-07-gpui-shell/research/gpui-display-api.md
+?? .trellis/tasks/10-14-07-gpui-shell/research/handoff-checks.txt
+?? .trellis/tasks/10-14-07-gpui-shell/research/independent-cbindgen-all-tree.log
+?? .trellis/tasks/10-14-07-gpui-shell/research/independent-check-exits-initial.json
+?? .trellis/tasks/10-14-07-gpui-shell/research/independent-check-exits.json
+?? .trellis/tasks/10-14-07-gpui-shell/research/independent-check.md
+?? .trellis/tasks/10-14-07-gpui-shell/research/independent-clippy-initial.log
+?? .trellis/tasks/10-14-07-gpui-shell/research/independent-clippy.log
+?? .trellis/tasks/10-14-07-gpui-shell/research/independent-dependency-exits-initial.json
+?? .trellis/tasks/10-14-07-gpui-shell/research/independent-dependency-exits.json
+?? .trellis/tasks/10-14-07-gpui-shell/research/independent-diff-check.log
+?? .trellis/tasks/10-14-07-gpui-shell/research/independent-fmt.log
+?? .trellis/tasks/10-14-07-gpui-shell/research/independent-hash-audit.json
+?? .trellis/tasks/10-14-07-gpui-shell/research/independent-hash-audit.py
+?? .trellis/tasks/10-14-07-gpui-shell/research/independent-hash-before.json
+?? .trellis/tasks/10-14-07-gpui-shell/research/independent-minimal-deny-initial.log
+?? .trellis/tasks/10-14-07-gpui-shell/research/independent-minimal-deny.log
+?? .trellis/tasks/10-14-07-gpui-shell/research/independent-minimal-windows-tree.log
+?? .trellis/tasks/10-14-07-gpui-shell/research/independent-original-gpui-display-api.md
+?? .trellis/tasks/10-14-07-gpui-shell/research/independent-original-implement.md
+?? .trellis/tasks/10-14-07-gpui-shell/research/independent-process-status.json
+?? .trellis/tasks/10-14-07-gpui-shell/research/independent-source-review.json
+?? .trellis/tasks/10-14-07-gpui-shell/research/independent-typecheck-initial.log
+?? .trellis/tasks/10-14-07-gpui-shell/research/independent-typecheck.log
+?? .trellis/tasks/10-14-07-gpui-shell/research/kit-bootstrap-info.log
+?? .trellis/tasks/10-14-07-gpui-shell/research/kit-metadata.json
+?? .trellis/tasks/10-14-07-gpui-shell/research/kit-route-build.log
+?? .trellis/tasks/10-14-07-gpui-shell/research/kit-route-deny.log
+?? .trellis/tasks/10-14-07-gpui-shell/research/kit-route-info.log
+?? .trellis/tasks/10-14-07-gpui-shell/research/kit-windows-tree.log
+?? .trellis/tasks/10-14-07-gpui-shell/research/pre-minimal-deny.log
+?? .trellis/tasks/10-14-07-gpui-shell/research/pre-minimal-metadata.json
+?? .trellis/tasks/10-14-07-gpui-shell/research/pre-minimal-windows-tree.log
+?? .trellis/tasks/10-14-07-gpui-shell/research/pre-route-info.log
+?? .trellis/tasks/10-14-07-gpui-shell/research/product-input-comparison.json
+?? .trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-kit-route-spike/Cargo.lock
+?? .trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-kit-route-spike/Cargo.toml
+?? .trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-kit-route-spike/src/main.rs
+?? .trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-pre-minimal-route/Cargo.lock
+?? .trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-pre-minimal-route/Cargo.toml
+?? .trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-pre-minimal-route/src/main.rs
+?? .trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-route-spike/Cargo.lock
+?? .trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-route-spike/Cargo.toml
+?? .trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-route-spike/src/main.rs
+?? .trellis/tasks/10-14-07-gpui-shell/research/route-spike-build-initial.log
+?? .trellis/tasks/10-14-07-gpui-shell/research/route-spike-build.log
+?? .trellis/tasks/10-14-07-gpui-shell/research/route-spike-deny-corrected.log
+?? .trellis/tasks/10-14-07-gpui-shell/research/route-spike-deny-final.log
+?? .trellis/tasks/10-14-07-gpui-shell/research/route-spike-deny.log
+?? .trellis/tasks/10-14-07-gpui-shell/research/route-spike-status.txt
+?? .trellis/tasks/10-14-07-gpui-shell/research/tagged-metadata.json
+?? .trellis/tasks/10-14-07-gpui-shell/research/tagged-windows-tree.log
+?? .trellis/tasks/10-14-07-gpui-shell/research/toolchain.log
+?? .trellis/tasks/10-14-presenter-v0.3/execution-state.md
+?? .trellis/tasks/10-14-presenter-v0.3/research/checkpoint-context-validation.json
+?? .trellis/tasks/10-14-presenter-v0.3/research/checkpoint-doc-links.json
+?? .trellis/tasks/10-14-presenter-v0.3/research/design-contrast-2026-10-14.md
+?? .trellis/tasks/10-14-presenter-v0.3/research/gate-a.md
+?? .trellis/tasks/10-14-presenter-v0.3/research/integration-checkpoint-2026-10-14.md
+?? .trellis/tasks/10-14-presenter-v0.3/research/native-environment.json
+?? .trellis/tasks/10-14-presenter-v0.3/research/native-research-resume.md
+?? .trellis/tasks/10-14-presenter-v0.3/research/resume-audit-2026-10-14.md
+?? DESIGN.md
+?? crates/ferrostage-app/tests/check_config.rs
+?? crates/ferrostage-core/src/display.rs
+?? crates/ferrostage-core/src/frame.rs
+?? crates/ferrostage-core/src/session.rs
+?? crates/ferrostage-core/src/slide_map.rs
+?? crates/ferrostage-core/src/slide_map/tests.rs
+?? crates/ferrostage-core/src/state/lifecycle_tests.rs
+?? crates/ferrostage-core/src/state/mapping_tests.rs
+?? crates/ferrostage-core/src/state/property_tests.rs
+?? crates/ferrostage-core/src/state/tests.rs
+?? crates/ferrostage-core/src/timer.rs
+?? crates/ferrostage-document/src/builder.rs
+?? crates/ferrostage-document/src/builder/tests.rs
+?? crates/ferrostage-document/src/layout.rs
+?? crates/ferrostage-document/src/media_slots.rs
+?? crates/ferrostage-document/src/notes.rs
+?? crates/ferrostage-document/tests/native.rs
+?? crates/ferrostage-pdf/src/metadata.rs
+?? crates/ferrostage-pdf/src/native.rs
+?? crates/ferrostage-pdf/src/raster.rs
+?? crates/ferrostage-pdf/src/structure.rs
+?? crates/ferrostage-pdf/src/structure/geometry.rs
+?? crates/ferrostage-pdf/src/structure/media.rs
+?? crates/ferrostage-pdf/src/structure/media/rich.rs
+?? crates/ferrostage-pdf/src/structure/media/screen.rs
+?? crates/ferrostage-pdf/src/structure/source.rs
+?? crates/ferrostage-pdf/src/structure/tests.rs
+?? crates/ferrostage-platform/examples/monitor_probe.rs
+?? crates/ferrostage-platform/src/monitor.rs
+?? crates/ferrostage-platform/src/topology.rs
+?? crates/ferrostage-platform/src/topology/tests.rs
+?? crates/ferrostage-platform/src/watch.rs
+?? crates/ferrostage-platform/src/watch/tests.rs
+?? crates/ferrostage-platform/src/windows.rs
+?? crates/ferrostage-platform/src/windows/tests.rs
+?? crates/ferrostage-platform/tests/settings_topology.rs
+?? crates/ferrostage-render/examples/poc2.rs
+?? crates/ferrostage-render/src/cache.rs
+?? crates/ferrostage-render/src/protocol.rs
+?? crates/ferrostage-render/src/scheduler.rs
+?? crates/ferrostage-render/src/worker.rs
+?? crates/ferrostage-render/src/worker/engine.rs
+?? crates/ferrostage-render/src/worker/tests.rs
+?? crates/ferrostage-render/src/worker/tests/contracts.rs
+?? crates/ferrostage-render/tests/native.rs
+?? crates/ferrostage-render/tests/native_missing.rs
+?? crates/ferrostage-settings/src/error.rs
+?? crates/ferrostage-settings/src/keybindings.rs
+?? crates/ferrostage-settings/src/merge.rs
+?? crates/ferrostage-settings/src/parse.rs
+?? crates/ferrostage-settings/src/parse/controls.rs
+?? crates/ferrostage-settings/src/parse/legacy.rs
+?? crates/ferrostage-settings/src/parse/sections.rs
+?? crates/ferrostage-settings/src/parse/value.rs
+?? crates/ferrostage-settings/src/schema.rs
+?? crates/ferrostage-settings/src/store.rs
+?? crates/ferrostage-settings/src/store/files.rs
+?? crates/ferrostage-settings/src/store/paths.rs
+?? crates/ferrostage-settings/src/tests/mod.rs
+?? crates/ferrostage-settings/src/tests/parse.rs
+?? crates/ferrostage-settings/src/tests/store.rs
+?? crates/ferrostage-settings/src/tests/windows.rs
+?? docs/adr/ADR-006-session-lifecycle.md
+?? docs/adr/ADR-007-monitor-roles.md
+?? docs/adr/ADR-008-gpui-dependency-gate.md
+?? docs/pdfium-runtime.json
+?? fixtures/beamer/bottom-classic.pdf
+?? fixtures/beamer/bottom-wide.pdf
+?? fixtures/beamer/expected.json
+?? fixtures/beamer/generate.py
+?? fixtures/beamer/independent.pdf
+?? fixtures/beamer/media.pdf
+?? fixtures/beamer/mixed.pdf
+?? fixtures/beamer/movie.pdf
+?? fixtures/beamer/movie.tex
+?? fixtures/beamer/notes-right.pdf
+?? fixtures/beamer/notes-right.tex
+?? fixtures/beamer/ordinary.pdf
+?? fixtures/beamer/overlays.pdf
+?? fixtures/beamer/overlays.tex
+?? fixtures/beamer/portrait-counterexample.pdf
+?? fixtures/beamer/tall-ordinary.pdf
+?? fixtures/beamer/top-rotated.pdf
+?? fixtures/beamer/wide-counterexample.pdf
+?? fixtures/pdf/generate.py
+?? fixtures/pdf/manifest.json
+?? fixtures/pdf/raster.pdf
+?? scripts/fetch-pdfium.ps1
+
+EXIT 0

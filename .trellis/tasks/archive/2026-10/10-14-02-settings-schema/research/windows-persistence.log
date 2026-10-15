@@ -1,0 +1,19 @@
+   Compiling ferrostage-settings v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-settings)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.46s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_settings-bb7c44abc933c423.exe)
+
+running 1 test
+WINDOWS_REPLACE missing_target=new_complete bytes=1154
+WINDOWS_REPLACE existing_target=new_complete
+WINDOWS_REPLACE readonly_attribute=old_complete save=Err(Replace { reason: "C:\\Users\\lyh\\AppData\\Local\\Temp\\ferrostage-settings-ntfs-153452-1791987642301720100\\settings.toml: Access is denied. (os error 5) (after 3 attempts)" })
+WINDOWS_REPLACE share_mode=FILE_SHARE_READ|FILE_SHARE_WRITE no FILE_SHARE_DELETE outcome=old_complete save=Err(Replace { reason: "C:\\Users\\lyh\\AppData\\Local\\Temp\\ferrostage-settings-ntfs-153452-1791987642301720100\\settings.toml: Access is denied. (os error 5) (after 3 attempts)" })
+WINDOWS_REPLACE retry_after_unlock=new_complete temps=0
+WINDOWS_REPLACE interrupt_after_tmp=old_complete temp=settings.toml.tmp-153452-6
+WINDOWS_REPLACE injected_replace_failure=old_complete temps=0
+WINDOWS_VOLUME format=Microsoft Windows NT 10.0.26300.0
+NTFS
+WINDOWS_VOLUME temp=C:\Users\lyh\AppData\Local\Temp\ferrostage-settings-ntfs-153452-1791987642301720100
+test tests::windows::ntfs_replace_keeps_a_complete_file ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 34 filtered out; finished in 0.44s
+

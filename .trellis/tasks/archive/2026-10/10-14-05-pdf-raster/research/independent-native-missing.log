@@ -1,0 +1,24 @@
+   Compiling ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+   Compiling ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.27s
+     Running tests\native.rs (target\debug\deps\native-61f55e3b4dfd6f6e.exe)
+
+running 1 test
+test native_golden_and_transaction ... FAILED
+
+failures:
+
+---- native_golden_and_transaction stdout ----
+
+thread 'native_golden_and_transaction' (119776) panicked at crates\ferrostage-render\tests\native.rs:69:79:
+called `Result::unwrap()` on an `Err` value: Pdf(LibraryUnavailable)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    native_golden_and_transaction
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p ferrostage-render --test native`
+native_exit=101

@@ -1,0 +1,12 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Checking ferrostage-core v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-core)
+    Checking ferrostage-media v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-media)
+    Checking ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+    Checking ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+    Checking ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Checking ferrostage-platform v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-platform)
+    Checking ferrostage-document v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-document)
+    Checking ferrostage-settings v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-settings)
+    Checking ferrostage-app v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.53s

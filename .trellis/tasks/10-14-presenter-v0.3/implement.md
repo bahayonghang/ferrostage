@@ -68,3 +68,9 @@ rg退出1只代表无匹配；每处命中按baseline的“历史/排除/现行�
 - 所有受控V6 app/锁助手及实施/check代理均已返回；没有未完成命令或活跃native进程。本会话current仍07；父planning、01–07 in_progress、08–11 planning，未手改状态或启动受阻任务。
 - Gate A技术PASS；Gate B INCOMPLETE；C/D NOT_RUN，父AC-1…10、M1/M2未完成。03物理项和07剩余原生矩阵/退役窗口诊断保留待验，08–11依赖受阻；用户本轮无法物理配合，不重复询问或绕过Gate。恢复从这些未完成验收继续，不重做已验证实现。
 - 分支main、HEAD ab78a84d96c7cf4a0bbc8dfd4f8e45da180bafb3；全部代码、文档、task与证据保留未提交。无commit、push、archive或add_session。
+
+### 2026-10-15T03:16:37.932220+00:00 — 归档后检查与续接准备完成
+
+五项归档已由task.py完成；14份运行用上下文JSONL已迁移到实际archive路径，父+全部11子任务共12/12 validate通过（research/post-archive-context-validation.json）。研究原始内容与历史hash不重写，目录映射见archive-relocation.json。补充保留此前被通用*.log忽略的125份验收日志（retained-acceptance-logs.json），采用仅覆盖任务research的ignore例外，未强制加入缓存。native54份证据此前已全部跟踪。另仅对冻结清单中被上游规则忽略的vendor/cosmic-text/Cargo.lock执行精确git add -f，文件字节不变，未改写上游ignore规则。当前602源码与Git index双层绑定见committed-source-binding.json；Git LFS指针与文件字节按上游pointer SHA/size验证。
+
+下一轮可直接使用next-session-prompt.md；03/07继续待验，08–11保持依赖门禁。随后提交上下文/续接记录并按trellis-finish-work记录一次本次已授权收尾日志；不推送。

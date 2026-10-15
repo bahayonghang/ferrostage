@@ -1,0 +1,48 @@
+   Compiling ferrostage-core v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-core)
+   Compiling ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+error[E0599]: no method named `contains_key` found for reference `&lopdf::Dictionary` in the current scope
+  --> crates\ferrostage-pdf\src\structure\media\screen.rs:10:15
+   |
+10 |     if action.contains_key(b"JS") || action.contains_key(b"Next") {p.warn("A/JS or Next",DiagnosticKind::Unsupported);}
+   |               ^^^^^^^^^^^^ method not found in `&lopdf::Dictionary`
+
+error[E0599]: no method named `contains_key` found for reference `&lopdf::Dictionary` in the current scope
+  --> crates\ferrostage-pdf\src\structure\media\screen.rs:10:45
+   |
+10 |     if action.contains_key(b"JS") || action.contains_key(b"Next") {p.warn("A/JS or Next",DiagnosticKind::Unsupported);}
+   |                                             ^^^^^^^^^^^^ method not found in `&lopdf::Dictionary`
+
+error[E0599]: no method named `contains_key` found for reference `&lopdf::Dictionary` in the current scope
+  --> crates\ferrostage-pdf\src\structure\media\rich.rs:40:36
+   |
+40 |     if activation.is_some_and(|a|a.contains_key(b"Scripts")) || instance.contains_key(b"Params") {p.warn("RichMedia Scripts/Params",...
+   |                                    ^^^^^^^^^^^^ method not found in `&lopdf::Dictionary`
+
+error[E0599]: no method named `contains_key` found for reference `&lopdf::Dictionary` in the current scope
+  --> crates\ferrostage-pdf\src\structure\media\rich.rs:40:74
+   |
+40 |     if activation.is_some_and(|a|a.contains_key(b"Scripts")) || instance.contains_key(b"Params") {p.warn("RichMedia Scripts/Params",...
+   |                                                                          ^^^^^^^^^^^^ method not found in `&lopdf::Dictionary`
+
+error[E0599]: no method named `contains_key` found for reference `&lopdf::Dictionary` in the current scope
+  --> crates\ferrostage-pdf\src\structure\media.rs:23:19
+   |
+23 | ...   if action.contains_key(b"Next") || (p.name(action,b"S")==Some(b"Movie") && matched.is_none()) {p.warn("Page/AA/O",DiagnosticKi...
+   |                 ^^^^^^^^^^^^ method not found in `&lopdf::Dictionary`
+
+error[E0599]: no method named `contains_key` found for reference `&lopdf::Dictionary` in the current scope
+  --> crates\ferrostage-pdf\src\structure\media.rs:34:30
+   |
+34 |     if base.is_some_and(|d|d.contains_key(b"FWScale")||d.contains_key(b"Rate")) {p.warn("A/Rate or FWScale",DiagnosticKind::Unsuppor...
+   |                              ^^^^^^^^^^^^ method not found in `&lopdf::Dictionary`
+
+error[E0599]: no method named `contains_key` found for reference `&lopdf::Dictionary` in the current scope
+  --> crates\ferrostage-pdf\src\structure\media.rs:34:58
+   |
+34 |     if base.is_some_and(|d|d.contains_key(b"FWScale")||d.contains_key(b"Rate")) {p.warn("A/Rate or FWScale",DiagnosticKind::Unsuppor...
+   |                                                          ^^^^^^^^^^^^ method not found in `&lopdf::Dictionary`
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `ferrostage-pdf` (lib) due to 7 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `ferrostage-pdf` (lib test) due to 7 previous errors

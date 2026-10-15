@@ -1,0 +1,22 @@
+   Compiling ferrostage-platform v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-platform)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.17s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_platform-1201f670d6354736.exe)
+
+running 1 test
+test windows::tests::every_required_native_mode_field_must_be_present ... FAILED
+
+failures:
+
+---- windows::tests::every_required_native_mode_field_must_be_present stdout ----
+
+thread 'windows::tests::every_required_native_mode_field_must_be_present' (109936) panicked at crates\ferrostage-platform\src\windows\tests.rs:43:9:
+accepted native mode without DM(0x0020 32)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    windows::tests::every_required_native_mode_field_must_be_present
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 21 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p ferrostage-platform --lib`

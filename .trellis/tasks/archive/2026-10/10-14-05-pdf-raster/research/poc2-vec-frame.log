@@ -1,0 +1,12 @@
+   Compiling ferrostage-core v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-core)
+   Compiling ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+   Compiling ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+    Finished `release` profile [optimized] target(s) in 3.02s
+     Running `target\release\examples\poc2.exe cache/pdfium-7881-win-x64/bin/pdfium.dll .trellis/tasks/10-14-05-pdf-raster/research/poc-2-timing.json`
+full_4k: median=12.479 ms p95=13.717 ms
+full_4k_previous_frame_retained: median=12.885 ms p95=13.964 ms
+wide_full_same_density: median=24.992 ms p95=26.973 ms
+wide_crop_4k: median=11.643 ms p95=13.034 ms
+tall_full_same_density: median=24.374 ms p95=25.320 ms
+tall_crop_4k: median=11.143 ms p95=12.345 ms
+EXIT_CODE=0

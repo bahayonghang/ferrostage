@@ -1,0 +1,25 @@
+    Checking ferrostage-core v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-core)
+    Checking ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+    Checking ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+error: using `map` over `inspect`
+   --> crates\ferrostage-render\src\worker\engine.rs:140:26
+    |
+140 |                         .map(|metadata| {
+    |                          ^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#manual_inspect
+    = note: `-D clippy::manual-inspect` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::manual_inspect)]`
+help: try
+    |
+140 ~                         .inspect(|metadata| {
+141 |                             self.epochs.insert(generation, 0);
+...
+148 |                                 }
+149 ~                             }
+    |
+
+error: could not compile `ferrostage-render` (lib) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `ferrostage-render` (lib test) due to 1 previous error
+EXIT_CODE=101
