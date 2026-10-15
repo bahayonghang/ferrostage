@@ -1,18 +1,18 @@
 # Design — GPUI 外壳与拓扑 PoC
 
 ## 选择、依赖、输入输出
-前置01/02/03/04/05，Gate A纯契约；G-1…11/R-13/21/23/42。05仅供只读import metadata，Gate B允许占位，无06/08真实画面要求。02配置角色，不宣称09 UI可用。app组合settings/topology/import/core，ui封装所有GPUI调用；输入owned metadata/配置/事件与命令，输出窗口事务/快照/讲者告警。
+前置01/02/03/04/05，Gate A纯契约；G-1…13/R-13/21/23/24/33/42。05仅供只读import metadata，Gate B允许占位，无06/08真实画面要求。02提供配置存储，07交付最小屏幕分配UI，不宣称09完整设置可用。app组合settings/topology/import/core，ui封装所有GPUI调用；输入owned metadata/配置/事件与命令，输出窗口事务/快照/讲者告警。
 
 ## 文件范围
 现有ui/src/lib.rs与Cargo.toml、app/src/main.rs与Cargo.toml、platform/src/lib.rs及03拟建topology模块（事件桥所需）、Cargo.toml、.github/workflows/ci.yml、ADR-001。
-拟建ui/src/{shell,presenter,audience,actions}.rs、app运行协调模块（main过大才拆）。不直接读lopdf，05 probe供导入，不实作工作台/设置页。
+拟建ui/src/{shell,presenter,audience,actions}.rs、app运行协调模块（main过大才拆）。不直接读lopdf，05 probe供导入，不实作工作台或完整设置分类页；最小显示器分配面板/Identify在本任务交付，由09复用。
 
 ## 研究与设计
 优先Zed tag v1.23.3已允许路线，先spike Windows build/fullscreen/事件/keystroke；gpui-kit0.7.3为已允许替代但必须记录具体路线，不能混引两套GPUI。native DisplayId↔MonitorId桥优先，GPUI bounds为Pixels而OS为物理桌面，混DPI/旋转转换需验证；多/零匹配拒绝Start，不凭index或第一矩形。
 启动load config→enumerate/resolve→讲者window（无屏等待，不unwrap）→CLI/dialog/drop经可替换DocumentImporter导入read-only probe→纯物理页descriptor→Load→Ready，占位显示页号；最近文件只属讲者设置控制侧。07仅Shell metadata，06 builder由08接到初次真实Load，不能把07称完整LoadedDocument导入。启动没有观众/计时。
 WindowCoordinator处理Start：校验Ready/目标/单屏显式模式→创建初始Curtain窗口→异步确认实际目标及要求的窗口模式→成功Start并发布Live占位；失败清窗口保持Ready/计时不增长。Stop先Curtain→Stop→关闭；Close/拔Audience同路径，讲者窗口化，新屏不自动接管。
 Action dispatcher是所有入口：Escape优先关闭当前模态/设置或CancelJump并消费，只有无模态/preview才匹配Stop绑定；导航等送core apply_at，Swap/设置/打开先由app协调；对话框/输入弹出前请求activate讲者并等待实际激活确认，不能同栈调用后立即弹出。非法/冲突绑定禁用冲突项并显示警告，不能多个动作同时执行；录制和规范语法给09复用。
-Swap通过修改display.monitors→resolve→窗口迁移→save同一协调器；单屏/缺Audience拒绝，core无独立flag。运行时迁移失败回滚role/window，save失败保留实际会话role并标未保存。热插拔由03 owned事件，零屏/歧义及时Curtain安全停止。
+最小显示器面板Apply通过修改display.monitors→resolve→窗口迁移→save同一协调器，旧Swap快捷键也复用；仅Swap在单屏/缺Audience时拒绝，显式应用屏选择及PDF不播放仍按G-13校验，core无独立flag。运行时迁移失败回滚role/window，save失败保留实际会话role并标未保存。热插拔由03 owned事件，零屏/歧义及时Curtain安全停止。
 AudienceView只snapshot Entity，Live占位也不接LoadedDocument；Curtain全黑无focus/UI。gpui feature app转发，nativebuild/clippy与pure CI分开，不在headless suite启动窗口。
 
 ## 错误和回滚
@@ -77,3 +77,12 @@ Jump modal editing consumes digits and Backspace before global navigation bindin
 When a focused presenter control disappears (modal Close/Commit, Start/Stop, Retry after success), restore a valid focus target in the same presenter so Tab and presentation shortcuts remain usable without a mouse click. Preserve existing valid button focus; do not steal audience focus as a side effect of unrelated model updates. Cover actual GPUI focus/key dispatch across removal, not only stored focus handles.
 
 A failed settings save is one unsaved-state message with Retry. A successful Retry clears the corresponding stale persistence error while retaining unrelated current errors. Runtime role changes survive persistence failure; durable role changes require successful read-back. Native FileShareRead-lock evidence is distinct from mocked save errors.
+
+
+## Shared minimal display-assignment surface
+
+Implement G-13 inside07: a presenter-owned `display_settings` view/model (split only as needed) consumes prepared owned topology data, never reads a leased Shell during synchronous first draw. Use the existing theme/control/focus layer. Show count and numbered rows plus two labeled destination selectors, current effective values, Apply/Cancel and Identify. The mapping is shared with short-lived Identify overlays; it is not persisted and is not a MonitorId or inferred Windows number. Use current complete topology and invalidate drafts when it changes; no stale last-known target may be applied.
+
+The role draft is translated to one complete binding update by the existing Shell coordinator, which owns validation, replacement/actual placement confirmation, rollback, focus and save feedback. No new independent role resolver or swap flag. Multi-screen destinations must differ; unselected screens are None. The single-screen PDF choices map explicitly to presenter_only (“不播放”) and windowed_audience (“在本屏窗口播放”); Apply includes single_monitor_mode in the same draft transaction, without duplicate MonitorId roles. Both no-play and an explicit physical PDF destination set presenter_only; only the single-screen windowed choice sets windowed_audience. This prevents an old windowed preference from authorizing an unselected target after topology loss. While Presenting, selecting “不播放” follows Curtain→Stop→audience close and freezes the timer in Ready; only valid-target migration preserves the stage/running timer. Preserve the read-only settings policy, unsaved Retry behavior and unchanged PDF/page invariants. Identify windows contain only number/name, expire after3s, and are disabled during Presenting; they are not audience windows and never consume the document/notes/snapshot.
+
+Replace the visible Swap button with Displays. Preserve the existing configured Swap shortcut as a secondary compatibility action; no automatic swap on opening the panel.08 reuses the entry and09 embeds this panel in its display category, adding the full topology view without duplicating transactions or numbering.07 does not depend on09 or on real PDF rendering. See the parent `research/display-assignment-plan.md` for current planning scope and verification matrix.

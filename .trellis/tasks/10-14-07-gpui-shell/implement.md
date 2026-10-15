@@ -1,12 +1,17 @@
 # Implement — 07
 
+## Resume 2026-10-14 America/New_York (2026-10-15 UTC)
+
+Existing task07 reactivated; baseline `3ac1ec2`, clean. `research/resume-v6-identity-20261015.json` verifies94 crate files and V6 executable/DLL/PDF unchanged; only the recorded DESIGN.md status-line difference among602 inputs. Five retained manifests match. Reuse applicable V6 evidence. Root continues pending software-native matrix and controls all windows; implement agent owns new retirement diagnosis research only until source freeze is released. User skips physical hardware operations this turn; they remain NOT_RUN. Gate B remains incomplete and08–11 gated. New changes stay uncommitted.
+
 1. **I-1 display研究门**：核pin Windows backend、DisplayId/uuid/bounds单位、fullscreen参数、DPI/事件与focus/keystroke；生成确有证据的gpui-display-api结论，择一允许路线。无法安全映射则保留具体阻塞。
 2. **I-2 feature编译**：ui链接gpui、app转发gpui/pdfium，更新ADR-001/CI；WindowsMSVC native compile通过，core依赖树无GPUI。
 3. **I-3 导入/讲者**：启动config/topology、CLI/dialog/drop/最近文件import调用05metadata；Load→Ready占位，无观众计时；坏文件在讲者提示、旧状态保留。
 4. **I-4 窗口事务**：实现create-Curtain/Start-Live/Stop-close、失效/零屏/单屏显式模式；注入创建失败测试不留Live/计时窗口。
 5. **I-5 动作/角色**：全局routing、Escape模态/preview优先消费、弹UI讲者activate、冲突按键禁用、Swap权威binding事务、save dirty提示、03事件拔屏停止；无独立swap flag。
-6. **I-6 Gate B实机**：02配置A Audience/B Presenter/C None→开始/结束/拔线/换C复测；混DPI/旋转/单屏/零屏；占位画面即可，焦点/Identify UI留09。记录环境/操作/截图/代码版本，报告实施后创建。
+6. **I-6 Gate B实机**：I-8后由最小分配UI选择B应用/A播放/C不使用，再以B应用/C播放复测；开始/结束/拔线、混DPI/旋转/单屏/零屏；占位画面即可，焦点/Identify在07验收。已有02配置驱动的历史结果保留，但不替代新UI验收。记录环境/操作/截图/代码版本。
 7. **I-7 评审**：only-snapshot view、read-only导入、错误/焦点、featureCI与Gate B；不能把占位称真实PDF或设置UI完成。
+8. **I-8 显示器分配修订（当前下一实施步骤，编号保留）**：先核03完整拓扑与07事务；替换工具栏Swap为显示器设置，构建数量/编号/两项选择/Apply/Cancel/Identify最小面板，保留旧快捷键兼容；用实际GPUI回归验证草稿、冲突、失效、焦点、运行时回滚与保存失败，随后独立check和真实三屏UI验收。I-8在Gate B之前完成，09复用，不以09为前置。
 
 拟feature创建后命令：cargo build -p ferrostage-app --features gpui,pdfium；cargo clippy -p ferrostage-app -p ferrostage-ui --all-targets --features gpui -- -D warnings；cargo test -p ferrostage-core -p ferrostage-platform；just ci。
 WindowsMSVC job编译门、纯suite、GateB实机分别记录。回滚Start失败清新窗口不计时；角色应用失败回滚窗口/bindings；feature路线回滚app/ui/CI/ADR同批。
@@ -223,3 +228,100 @@ Independent reviewer allows targeted native with no further source edits: F7/F8 
 - 所有受控V6 app/锁助手及实施/check代理均已返回；没有未完成命令或活跃native进程。本会话current仍07；父planning、01–07 in_progress、08–11 planning，未手改状态或启动受阻任务。
 - Gate A技术PASS；Gate B INCOMPLETE；C/D NOT_RUN，父AC-1…10、M1/M2未完成。03物理项和07剩余原生矩阵/退役窗口诊断保留待验，08–11依赖受阻；用户本轮无法物理配合，不重复询问或绕过Gate。恢复从这些未完成验收继续，不重做已验证实现。
 - 分支main、HEAD ab78a84d96c7cf4a0bbc8dfd4f8e45da180bafb3；全部代码、文档、task与证据保留未提交。无commit、push、archive或add_session。
+
+
+### Resume native checkpoint 2026-10-15T03:26Z
+
+Fresh V6 audience PageDown/black/Escape and dark Ready2 observed; `07/research/resume-v6-native-checkpoint.md` retains exact limits. Both owned runs exited0, first exit trigger unknown, second AX Close observed. Resize attempts did not establish logical size; cursor/Curtain remain partial. Generic retirement and invalid-handle errors reproduced. Frozen V6 source released only after exit for minimal source-location/client-geometry diagnostics; no vendor suppression or Gate B PASS.
+
+
+### V7 diagnostic implementation checkpoint
+
+Two first-party files add tracing source location and actual bounds/viewport/scale diagnostics only. Implementer reports fmt, just ci145, GPUI49, strict consumer clippy and native build exit0; first sandbox target-lock failure is retained separately. `product-native-freeze-v7.json` binds exe14dfd1f97b35df5611d94a034e7cd474a4d0556f9f5481ff2b76002f5839b309 and602inputs. Serial independent review precedes Root native attribution. No retirement repair is claimed. Supported SystemSettings launch returned no targetable window; live OS theme event stays NOT_RUN, no setting changed.
+
+
+## Planning correction — display selection before further acceptance
+
+The screenshot feedback replaces the primary Swap workflow with G-13. This is a planned requirement, not implemented UI. Review parent `research/display-assignment-plan.md`; resume with regression-backed retirement repair and I-8, then serial check. Preserve V6/V7 historic evidence without treating config-based role tests as new UI acceptance. Existing03/07 physical/native gates and downstream08–11 dependencies stay in force. No commits, pushes or archives.
+
+
+### 2026-10-15T03:52:28.734297+00:00 — I-8规划审阅完成（实现未开始）
+
+父research/display-assignment-review.md已闭合三项规划冲突；单屏“不播放/本屏窗口播放”和多屏物理目标通过同一草稿提交角色与既有single_monitor_mode；Presenting“不播放”明确安全停止。父+11子上下文12/12通过，非UI验收。下一实施批从退役回归/修复及I-8恢复，不重复既有V6/V7检查、不提前推进08；新改动继续未提交。
+
+### 2026-10-15 — V8 implementation and automated gate handoff
+
+Implemented the authorized regression-backed retirement repair and I-8 shared display assignment. `research/product-v8-implementation.md` records exact contracts, file ownership, real red/green receipts, tests and boundaries. `DisplayDraft`/`PdfTarget`/`numbered` plus the shared panel/Identify reuse Shell's existing role transaction; Swap remains a keyboard compatibility action. Runtime no-play commits Curtain→Stop→close only after successful replacement placement, retaining page and freezing time; valid migration preserves the running core state. Fresh topology invalidates stale drafts; no future-schema writes, index persistence or parallel role authority.
+
+Actual GPUI lifecycle red reproduced the V7 window.rs1914 errors; owning Window token plus weak callback lifetime and deferred first-party should-close pass real regression. Native Windows HRESULT/dispatcher absence remains for Root, not inferred from these tests.
+
+Product checks: just ci148; UI feature suite62 (41 real GPUI +21 pure); strict all-feature/all-target app/UI clippy; unchanged full all-feature locked/offline deny; native gpui,pdfium build all PASS. Initial command/harness/product failures remain under product-v8-*; final strict build follows the test-only import correction. Source/exe/DLL/PDF/config freeze and evidence manifest are prepared as product-native-freeze-v8.json and product-v8-evidence-manifest.json. No controlled Cargo/native process remains. Next is serial trellis-check and Root-only native UI/close acceptance. Gate B stays INCOMPLETE; physical tests and real single/zero displays NOT_RUN; 08–11 not implemented. All new changes remain uncommitted; no push/archive/add_session.
+
+### 2026-10-15 — V10 mixed-DPI placement correction
+
+Root's V9 native check found C client1280×912 wider than its1066.67 logical display; target monitor alone had incorrectly satisfied windowed confirmation. `research/product-v10-implementation.md` records the native geometry, pinned source cause, red2→green2 regressions and full repair boundaries. Only first-party `shell.rs`/`policy.rs` changed: use target visible work area with32px native-frame allowance, restore requested client size through existing GPUI resize after target DPI settles, require actual size and containment before transaction commit. Incorrect placement still times out and rolls back running state/windows/settings. No vendor/dependency change or retirement log suppression.
+
+Final product checks PASS: just ci150; feature UI68 (45 actual GPUI+23 pure); strict all-feature/all-target consumer clippy; full unchanged all-feature deny; native gpui,pdfium build; diff check. New GPUI scroll/selection/Cancel tests cover Chinese/English800×600,390×844,320×640 clients, without claiming native evidence. Both product red failures and initial synthetic fixture failure are retained. FreezeV10 binds609 source/contract inputs aggregate2ee35522a9f885cf8c62ac5007e7feecc7d5c32f28949fc2f7b65e4052383a67 and exe783d5769785029f11fa73f631720b47f7280e5124b30801d1930ee213dee37af; source delta is2 UI files plus Root's updated state-management contract,606 unchanged. New evidence/config-input manifest follows this freeze. Root owns serial independent check and actual C titlebar/fit/native sizes acceptance. All V6–V9 evidence preserved; Gate B remains incomplete, physical and real single/zero tests NOT_RUN,08–11 unimplemented. No commit/push/archive/add_session/native launch.
+
+### 2026-10-15 — V11 bounded native-frame correction
+
+V10 native C startup FAIL remains preserved: requesting1002.6666×760 yielded1000×754; strict placement timed out. Root stopped the now-windowless owned process with exit-1, not normal-close PASS. `research/product-v11-implementation.md` records pinned frame-inset conversion, actual4×9 physical pixel evidence, and regression coverage missed by the exact headless resize model.
+
+Only shell changes: retain API request and pre-request observation; after a changed native bounds callback permit at most one≤32px/axis client-delta compensation. Stale callbacks, large error or nonconvergence do not loop; original2px size and full usable-containment checks plus timeout rollback stay intact. New actual GPUI Windows-response model red1→green1; bounded/nonconvergent/stale cases preserve existing running owner/state/settings. Final UI70 (47 actual GPUI+23pure), just ci150, strict all-feature/all-target consumer Clippy, full deny and native gpui,pdfium build PASS. Initial new-test compile error is preserved separately from final70 pass.
+
+FreezeV11 binds609 inputs with607 unchanged; shell and Root state-management contract are the sole delta. Aggregate fdec41e24793817d526127a3928c9e1f0bfafa021a293dce26cc9125f87c48f1; EXE027ab17fc23a92c00c480148b06c1ac115f81fcfe1a2145ac210dd6dd79a4d6d. Next is serial independent check then Root actual C startup/client/titlebar acceptance. V11 native still NOT_RUN; remaining native/physical gates unchanged. No app launch or delivery side effect by implementer; all work uncommitted.
+
+### 2026-10-15T05:36Z — Root V11 native results and F11
+
+Independent V11 check passed; Root completed four native runs, now all exited0 with empty final Sky inventories. `research/native-v11-checkpoint.md` records new-panel B/A→B/C Presenting migration preserving page/blank/running timer, no-play Ready2 elapsed138110ms freeze, real read-lock save failure/Retry and disk read-back, B/C persisted relaunch, schema999 readonly unchanged bytes, dark320x640 and389.6x844 actual clients. Initial C resize converged, but external moves during CU interruption preceded the screenshot, so initial full-titlebar visibility remains UNVERIFIED. Light800x600.8 is only an approximate-size observation; exact800x600/1440x900 and remaining matrix are pending.07 placeholders do not prove08 PDF rendering.
+
+main/relaunch/future logs have no retirement errors; dark actual titlebar Close logs dispatcher.rs129 Invalid window handle at05:36:19.862676Z despite exit0. This is F11 FAIL. Root released source only after exit and dispatched the existing implementer for V12 minimal regression/repair, then serial independent check/new freeze/native retest. No log suppression or additional package-policy approval inferred. Gate B INCOMPLETE, physical/true single-zero NOT_RUN;08–11 gated and P2 retained. No commit/push/archive/add_session.
+
+### 2026-10-15 — V12 first-party poll-task lifecycle handoff
+
+Read `research/product-v12-implementation.md` and this tail explicitly because injected parent/child documents exceed32768 bytes. Pinned dispatcher129 posts a wake to the platform HWND; Shell's detached25ms loop had no quit cancellation, and its weak-entity check occurred after foreground dispatch. Real GPUI red2→green2 proves no timer-driven Shell work after current Presenter close or actual App.shutdown; positive coverage proves retired/pending/audience close preserves live polling. Shell now owns the Task and synchronously cancels before Presenter quit and on_app_quit. No vendor/dependency/package-policy change, log suppression or V8 owning-token rework.
+
+Final product gates PASS: UI73 (50 actual GPUI+23pure), just ci150, strict all-feature/all-target Clippy, full deny, native gpui,pdfium build and diff/read-back. FreezeV12 has609 inputs with607 unchanged; only shell plus Root component contract differ. Aggregate fa6617505a045fe2aa4dce0a3185eff47c3ed70bb283d1e1c7030e4c04054e73; EXE c8291c651a485ddff5cc00354dede2c67c25ea1080a4205e4d12fa0796789fda. New V12 evidence/config-input manifest preserves all earlier identities.
+
+This repairs the proven first-party late-wake source; native F11 HRESULT absence is NOT yet established. Root next performs serial independent check, cross-version evidence assessment, then new-identity dark resize/panel/Close retest and remaining matrix. V11 dark config is parsed-identical with CRLF→LF, not byte-identical; future/relaunch byte identity is preserved in Root's checkpoint. Initial C full-frame screenshot remains unverified. Gate B incomplete; physical/true single-zero NOT_RUN, no08–11 implementation. No native launch or delivery side effect by implementer; all work remains uncommitted.
+
+
+## Root V13 native checkpoint — 2026-10-15 06:30Z
+
+V13独立检查完成：UI77（54 GPUI+23 pure）、严格lint/typecheck/fmt/native build PASS，未变default150/deny核验复用。Root五轮原生中main/dark/en/open实际关闭exit0、空窗口、干净日志；第五light-small的320x640面板关闭虽exit0，却在poll取消后报F12 vendor/gpui/src/window.rs:1943 window not found（hover回调）。总体关闭验收FAIL。所有Root app已退出，609输入/exe在06:31:45复核后释放给既有implement代理，进行V14回归与同生命周期回调审计，随后必须串行独立check、新freeze、原生复验。
+
+V13历史source609=77aa180c7f60bcc39de7315554d9781d5f2f39effd211078a1da43cf7ed40d4a；EXE=d1164919dcdc09053df4fc6caae09be249329cccd0ad8bd482a67347561a6435。当前字节不能直接当V13。详见07 research/native-v13-checkpoint.md；92项清单/26原图SHA e08f7bb83832a0e6ccbd23b0ea5abb6a489181baad8ef85f27bc224475d4aedf。
+
+新实测包括C初始未移动前完整标题栏与严格放置、新UI C/B→B/C、精确light1440x900/800x600/390x844/320x640及dark320x640、英文新面板、Audience关闭→重新开始→Presenting主窗关闭、原生chooser取消与成功导入。light320几何截图不覆盖该run关闭FAIL。V9 Identify与V11新UI迁移/不播放计时/真实锁Retry/未来只读/重启按独立审阅适用性复用，不标成V13同次运行。
+
+剩余可执行：dark1440x900/800x600/精确390x844及有限键盘/控件状态（含窄窗Presenting/Stop），修复后继续，不列为外部阻塞。物理拔插/重连/接口/延迟及真实单屏/零屏NOT_RUN；live OS主题、跨窗口拖放、瞬态Curtain/loading和完整光标矩阵仍有限制/UNVERIFIED。Gate B INCOMPLETE，C/D NOT_RUN，08–11依赖受阻、P2不变。所有新改动未提交，不push/archive/add_session。
+
+### 2026-10-15 — V14 shared platform callback lifetime handoff
+
+Read `research/product-v14-implementation.md` and this tail explicitly; long injected task documents can truncate. F12 hover is a different lifetime boundary from V12/V13 Shell task cancellation. The existing GPUI Window-owned token now covers all17 Window-access event registrations, including an execution-time check for deferred appearance. Weak callbacks cannot extend owner lifetime, token drops before native platform teardown, and every live update/log remains unchanged. Input/hit-test preserve existing default results. Existing on_close idempotent cleanup, first-party should-close, and poll/read/chooser ownership remain intact. A11y Send/channel receivers have no equivalent failing executable evidence here and are explicitly outside this repair, not claimed covered. No new package/policy/lint waiver.
+
+Actual GPUI red-final:4 failures/1 positive control and19 removed-window errors; green:5/5. Tests retain real TestWindow callbacks after owning Window removal, and prove a live leased Window still reports its error. Full UI82 (59 actual GPUI+23pure), strict all-feature/all-target consumer Clippy/typecheck, workspace/vendor fmt, fresh full all-feature deny and actual gpui,pdfium build PASS. Default150 is V12 evidence reused after unchanged-default input checks, explicitly not a new just-ci run. Harness compile/default-assertion failures remain preserved separately from final product red/green.
+
+FreezeV14 has609 inputs,602 unchanged againstV13. Only window.rs runtime plus GPUI test support/Shell tests and Root's3 spec/ADR files changed. Source aggregate9764bfa0d94764c314fd559d8df2b55e056fc8f6ef77882cdde89662fe5d4413; EXE4be903dc34b4bb47163816cc88a67caf8c9f9806772f931b209bf27a9d3dbcd1; freezeSHA3f00b403a9668d3a841e0ba15564d28ad804934f8b740c3d4f1803b82da41a1c. `research/product-v14-evidence-manifest.json` seals new receipts/config-inputs/process-closeout/readback. Five-dimensional break-loop and Root knowledge capture are in `research/break-loop-f12.md`; no commit performed.
+
+Next: serial independent check, then Root-only native F12 narrow light titlebar-close/full-log retest and remaining feasible matrix. NativeV14 is NOT_RUN at handoff, historicalV13 F12 remains FAIL. GateB remains INCOMPLETE, physical/real single-zero NOT_RUN,08–11 gated/P2 retained. All new code/evidence uncommitted; no native launch/push/archive/add_session by implementer.
+# Root native update — 2026-10-15 08:05Z
+
+User deferred further width/size tests; prioritize core functionality and functional defects. V14 independent check passed. Root completed3 owned native runs, all exited. New Displays migration preserves page2/white/running timer; no-play stops projection, keeps page2, freezes122003ms across26.42s; saved no-play relaunch, conflict protection, application relocation, Start/Stop and Audience close/restart have direct receipts. Light-small F12 trigger and fresh Presenting owner Close pass scoped clean-log checks. Dark long run instead exposed F13 leaked desktop DC and F14 AccessKit Invalid HWND close panic despite exit0. See research/native-v14-core-results.md.125file/45original-image manifest477cfa6ecf65ba131eb60e705bbdbb955b77d7299b92990a16d203cf9b5c8590;609inputs/exe verified before releasing freeze. Existing implementer owns platform/GPUI regressions/minimal repair, Root owns specs/native/parent, then serial independent check. Gate B remains INCOMPLETE; physical NOT_RUN,08–11 gated/P2, no-commit boundaries unchanged.
+
+
+### 2026-10-15 — V15 DC resource fix and real notes fixture handoff
+
+Read research/product-v15-implementation.md and this tail explicitly; long injected task documents truncate. F13 is proven by real Windows GDI counts: old production enumeration leaks one DC per query (64 calls:2→66), safe real-desktop owner keeps counts flat (1→1) and all three MonitorInfo records equal. Only platform/windows.rs runtime changed; its real regression is new. No unsafe/dependency/package waiver.
+
+Root's actual TeX Beamer notes PDF is now pinned for native work. New document/tests/notes_native.rs verifies real PDFium Right layout,5physical/4logical,labels1/2/3/3/4,overlay navigation and independent nonempty public/notes pixels; audience snapshot renders match only left full-page pixels. Existing native.rs remains byte-identical. Initial same-process PDFium reinitialization harness failure is preserved, corrected by a separate test binary. Task07 placeholder UI is still NOT_IMPLEMENTED/NOT_RUN for actual notes display until08.
+
+Final checks PASS: just ci151,UI82(59GPUI+23pure),document native2,strict all-feature/all-target app/UI/document Clippy and typecheck,full all-feature deny,native build. F14 is NOT fixed in this product: research-only four-file AccessKit proposal plus red native panic/six green COM controls and compiled Root-only hidden-window harness await independent review and maintenance boundary decision. No sixth package adopted; no product vendor or dependency changes. See product-v15-a11y-proposal.md.
+
+FreezeV15:622inputs aggregate fdc00fc36ad02e46234398899ef924892e690810caf24f290cc5b0ec070d835a;EXE d40bb0d113e363df6f2bae5d331fd13d8473a8fbcf5820e4438b3da5489e8fab;notesPDF e939e35f931c184fd93b2e9b95e560db73ba6a6f6dfccbb0963262f0b359dfeb. Fresh manifest preserves config inputs, all red/harness failures and candidate evidence. Serial independent check precedes Root native; F13 long-run native and F14 remain open. Additional width/size work deferred by user; physical/true single-zero NOT_RUN,GateB incomplete,08–11 gated/P2. All work uncommitted; no native app launch/commit/push/archive/add_session by implementer.
+
+### Root V15 checkpoint — Computer Use stopped before product launch
+
+Root executed the already compiled isolated F14 candidate test at08:41Z:16 owned hidden HWND destruction cycles,64 retained-context COM queries returned normally; see research/product-v15-root-a11y-results.md and immutable root-hidden receipts. This does not adopt or accept the product fix. Independent check completed with no source changes, strict four-crate lint/typecheck and all frozen identity checks PASS; prior affected product regressions reused with verified inputs. Final report/manifest are under product-independent-v15.
+
+Sky list_windows then reported physical Escape user stop before any V15 app launch. Root stopped all Computer Use immediately; V15 native DPI/placement/lifecycle/notes UI are NOT_RUN/user-stopped. New real notes PDF and document/PDFium crop tests are complete, actual07 UI remains placeholders. Native continuation is recorded in research/native-v15-checkpoint.md; all prior evidence and user-deferred size/physical boundaries remain. GateB INCOMPLETE,08–11 gated,P2 unchanged; no commit/push/archive/add_session.

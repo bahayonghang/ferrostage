@@ -1,0 +1,36 @@
+{
+  "started_utc": "2026-10-15T08:19:49.749822+00:00",
+  "argv": [
+    "cargo",
+    "test",
+    "-p",
+    "ferrostage-document",
+    "--features",
+    "pdfium",
+    "--test",
+    "native",
+    "--locked",
+    "--offline",
+    "--",
+    "--test-threads=1",
+    "--nocapture"
+  ],
+  "status": "RETURNED",
+  "log": "product-v15-document.log",
+  "inputs": {
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll": {
+      "sha256": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118",
+      "bytes": 7211520
+    },
+    "fixtures\\notes-functional\\pympress-notes.pdf": {
+      "sha256": "e939e35f931c184fd93b2e9b95e560db73ba6a6f6dfccbb0963262f0b359dfeb",
+      "bytes": 129701
+    },
+    "fixtures\\notes-functional\\pympress-notes.tex": {
+      "sha256": "9552dc97c6ac5216e488b448846773befc8cb7952fd0665197db25bec275bc34",
+      "bytes": 4236
+    }
+  },
+  "exit_code": 101,
+  "ended_utc": "2026-10-15T08:19:56.306204+00:00"
+}

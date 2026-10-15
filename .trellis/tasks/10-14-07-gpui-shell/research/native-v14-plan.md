@@ -1,0 +1,23 @@
+# V14 native continuation — planned, not results
+
+## User priority override — 2026-10-15 07:48Z
+
+The user explicitly deferred further width/size testing and requested completion and verification of core functionality first. Do not resume the remaining dark1440x900 cell. This is deferred work, not PASS or a Gate waiver. Root instead tested Presenting migration, page/white/timer preservation, no-play safe stop/frozen timer, saved configuration relaunch and owner/nonowner close. See native-v14-checkpoint.md for results, including the newly observed desktop-DC leak and AccessKit close panic. These functional defects take priority over visual matrix work.
+
+Wait for implement→independent check and the final V14 source/EXE freeze. The V13 source was released only after all five processes exited and609 inputs were rechecked. Its92-file native manifest and independent closeout remain immutable. Root alone operates the desktop; no agent may launch or manipulate native windows.
+
+1. Retest F12 at its actual trigger: light320x640, Displays scrolled to target choices, real titlebar Close. Check the entire log after actual process exit for hover/window-not-found, dispatcher HRESULT and other errors. Exit0 alone is insufficient. Retain a fresh final Sky inventory. Cover separate Ready/panel and Presenting owner close, plus standalone Audience close→restart, on multiple owned runs; V13 failed only its fifth run.
+2. Finish the feasible size/theme gaps: dark1440x900,800x600 and exact390x844. B125% supports1440/800; C150% supports exact390. Use the new Displays application target controls to migrate before the390 probe; preserve MonitorId read-back. Inspect one action at a time, with logged actual client bounds and original screenshot metadata. The long native keyboard resize is feasible work, not a tool blocker.
+3. During a narrow run, Start→Presenting→Stop and new-panel Tab/ShiftTab→Enter/Space Cancel→usable returned focus are feasible additions. Save screenshot plus AX and state/role logs. Keep the global shortcut versus focused-control distinction. V13 size screenshots show Ready and Displays only, not every presentation/control state.
+4. Record hover through supported pointer interaction when a stable target can be observed without invoking an unrelated action. Pressed while held and very short loading/Curtain frames have no established reliable capture method in the available API. Do not turn post-click hover/focus or stale Preparing AX into a pressed/loading screenshot PASS. Keep these native observations separately pending/UNVERIFIED if no supported method establishes them.
+5. Reuse unchanged version-scoped native evidence only after V14 source-delta review: V9 matching Identify numbers, V11 no-play/page/timer, migration/blank/running timer, real save failure/Retry, future readonly and role relaunch, V13 actual chooser success/Cancel and captured five size/theme cells. Native F12 remains failed until a newly frozen executable passes its retest. Retest callback-dependent paths; do not rerun unrelated Cargo checks without a changed input or concern.
+
+## Design evidence distinctions
+
+`theme.rs::used_text_and_focus_pairs_meet_design_contrast` is included in the passing affected suite. It checks both palettes' six text/semantic colors on three surfaces at4.5:1, border/focus on those surfaces at3:1, and white text on primary/hover/active at4.5:1. This is token contrast evidence, not native hover/pressed observation. Chinese glyphs and English text are visible in original captures with the configured Segoe UI/Microsoft YaHei UI and Georgia/SimSun fallback stacks; a screenshot alone does not identify which fallback font supplied each glyph or prove every installed-font configuration. No proprietary font download or system-font mutation is needed.
+
+The independent reviewer confirms that N11 requires individual state evidence, not an invented exhaustive state×size×theme Cartesian product. The explicit four sizes must still be observed in both themes. Keep normal, keyboard/focus, hover, disabled, error/Retry, transient loading, long-label and reduced-motion claims individually grounded. Missing observations cannot be replaced by a full DESIGN PASS.
+
+## External/user boundaries
+
+No physical unplug/reconnect/port actions or repeated requests; true single/zero and physical latency/identity remain NOT_RUN. The recorded live OS Settings surface discovery and cross-window drag API limits remain scoped limitations. Complete audience cursor behavior and transient Curtain still lack reliable captured proof. Continue all work that does not depend on those limits. Gate B remains INCOMPLETE;08–11/P2 boundaries and the user's no-commit/push/archive/add_session instruction are unchanged.

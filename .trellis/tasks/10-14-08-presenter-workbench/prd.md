@@ -15,7 +15,7 @@
 
 ## Requirements
 
-- **W-1** 讲者窗口布局：左侧当前页（可绘制区），右上下一页预览，右下备注面板；底栏：上一页/下一页、`逻辑页 n/N（步进 i/k，物理 p/P）`、网格、激光笔、画笔、荧光笔、橡皮、清空、黑/白屏、交换；顶栏：文件名、阶段、时钟、计时器。分割比例来自设置并可拖拽（gpui-base resizable）。
+- **W-1** 讲者窗口布局：左侧当前页（可绘制区），右上下一页预览，右下备注面板；底栏：上一页/下一页、`逻辑页 n/N（步进 i/k，物理 p/P）`、网格、激光笔、画笔、荧光笔、橡皮、清空、黑/白屏；顶栏：文件名、阶段、时钟、计时器及复用07的“显示器设置”入口；先显示数量/编号，再选择应用屏/PDF屏，不恢复主要交换按钮。分割比例来自设置并可拖拽（gpui-base resizable）。
 - **W-2** 备注面板：拼合页显示 `notes_crop` 的光栅化（按面板像素请求，P1）；`notes:` 页显示对应备注页；无备注时显示空态；字号缩放来自 `presenter.notes_font_scale`（对光栅备注为缩放倍率）。
 - **W-3** 复用04 elapsed，count_up/target-elapsed/超时/黄红阈值。初次Ready elapsed=0（按mode正计00:00、倒计target），Stop后Ready沿同mode冻结读数，再次Start清零；Pause/Resume/Reset遵循父契约，不另存UI计时。
 - **W-4** Live只读snapshot.visual受控当前BGRA；组装器缺新帧保持已提交页，letterbox变换统一。Curtain/black/white最高层覆盖媒体/笔画/指针，view无任意页请求/讲者cache。

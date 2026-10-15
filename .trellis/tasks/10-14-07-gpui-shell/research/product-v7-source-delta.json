@@ -1,0 +1,26 @@
+{
+  "source_changes": {
+    "crates/ferrostage-app/src/main.rs": {
+      "v6": "63f09f79ef599946897a5e159975f6f68836d1e760557f8c3054f64a6ca36d3a",
+      "v7": "ea95f490fd4624541f26bf94a15d278071d6904caf9349e69ee2372c615a979e"
+    },
+    "crates/ferrostage-ui/src/shell.rs": {
+      "v6": "4ec7f6738d5a83685e469ac5a3d7ffb3aa802a425bc0a70ebc61234410dcdfb0",
+      "v7": "8e5c08a7b25130598ac6c63e534c996c4c10bbe180ef24f1a4ab8ce487dd9489"
+    },
+    "DESIGN.md": {
+      "v6": "1b13bda5cc6460a8f320a637e047c836813f817231315533d200ed873d31f4d6",
+      "v7": "88a7a31303e10d3adfc0be373bf326d16751123b54a2b211984ba9bfd6fe99c9"
+    }
+  },
+  "owned_product_changes": [
+    "crates/ferrostage-app/src/main.rs",
+    "crates/ferrostage-ui/src/shell.rs"
+  ],
+  "previous_documentation_delta": "DESIGN.md",
+  "unchanged_count": 599,
+  "all602_current_hashes_match": true,
+  "binary_matches": true,
+  "default_test_count": 145,
+  "patch_sha256": "f2f3ed6f0dc45beb3718710f3d566ac5beb0eb68c3e53c1e3e62231ecc912b9c"
+}

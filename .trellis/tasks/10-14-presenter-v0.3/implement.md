@@ -18,22 +18,22 @@
 ## Gate B — 外壳与拓扑 PoC（07）
 
 - 条件：07及其02/03/04/05前置交付可用、Gate A纯契约通过。05提供只读导入元数据；窗口展示占位即可，不验真实PDF像素或备注面板。
-- 三屏Windows11：角色由02配置指定A Audience/B Presenter/C None；打开PDF→Ready无观众/不计时；Start→A占位全屏；Stop→关窗；换C配置再复测；拔Audience≤1s安全降级。焦点在观众屏触发动作，弹UI必回讲者。单屏两模式/零屏/歧义拒绝测试。
-- 证据归属：07 research/poc-1-report.md（已记录实际启动失败及修复恢复点，纳入07 check上下文），含设备、DPI、操作/截图、结果、代码版本。GPUI API研究与编译门另记在07；不能声称09设置UI已可用。
+- 三屏Windows11：07显示器设置列出数量/编号并Identify，通过应用屏/PDF屏选择并Apply指定A Audience/B Presenter/C None；打开PDF→Ready无观众/不计时；Start→A占位全屏；Stop→关窗；用同一面板改选C Audience再复测；拔Audience≤1s安全降级。焦点在观众屏触发动作，弹UI必回讲者。单屏两模式/零屏/歧义拒绝测试。
+- 证据归属：07 research/poc-1-report.md（已记录实际启动失败及修复恢复点，纳入07 check上下文），含设备、DPI、操作/截图、结果、代码版本。GPUI API研究与编译门另记在07；旧配置文件/Swap证据不能代替新增分配UI；07最小面板不代表09完整设置页可用。
 - 阻塞范围：未通过实机拓扑/focus门不进入08真实双窗集成；可继续无此依赖的纯数据研究。
 
 ## Gate C — M1真实PDF工作台（08）
 
 - 条件：05实际PDFium测试/裁剪门、06自建Beamer夹具、Gate B、08 P0步骤I-1…I-5/I-7通过。
-- 真实≥80物理页Beamer，含备注、overlay；≥30min汇报：当前/下一页/备注、受控当前页观众BGRA、Ready/Start/Stop计时、导航/跳页、黑白屏、交换、焦点、真实备注隔离。不以07占位代替。
+- 真实≥80物理页Beamer，含备注、overlay；≥30min汇报：当前/下一页/备注、受控当前页观众BGRA、Ready/Start/Stop计时、导航/跳页、黑白屏、显示器分配与快捷键兼容、焦点、真实备注隔离。不以07占位代替。
 - 性能/资源：05的4K报告、08按帧/像素/纹理计数与VRAM协议验收；未达到阈值记录阻塞或申请具体目标调整，不能直接写Implemented。
-- 证据归属：05 raster/PoC2、06结构夹具、08M1/延迟/VRAM报告；父级traceability关联AC-3/5/7子集。角色暂由配置指定，AC-1最终UI路径未完成。
+- 证据归属：05 raster/PoC2、06结构夹具、08M1/延迟/VRAM报告；父级traceability关联AC-3/5/7子集。角色由07共享面板指定，AC-1的09完整设置与真实PDF组合仍须最终验证。
 - M1通过不等于08已完整归档；其P1网格/布局/高级标注仍须在M2前完成。Gate C未通过不做10/11完整集成，可预先研究native依赖。
 
 ## Gate D — M2与父级最终集成（09/10/11 + 08余项）
 
 - 条件：09真实角色/设置生效，10外部替换/失败回滚，11媒体/缺库启动/许可证，08全部P1通过；Gate A/B/C证据仍适用于当前代码。
-- 逐项执行AC-1…AC-10，三屏设置UI、Identify、交换唯一绑定、保存失败/未来版本、跨代像素与媒体隔离、旧资源退役、安全只读写入审查。
+- 逐项执行AC-1…AC-10，三屏数量/编号、两项角色选择、Identify、唯一绑定与旧交换快捷键兼容、保存失败/未来版本、跨代像素与媒体隔离、旧资源退役、安全只读写入审查。
 - just ci、PDFium feature实测job、GPUI feature编译、媒体选定feature/job及Windows实机报告都需通过；默认CI绿不能替代native/GPU。
 - 证据归属：09设置UI报告，10重载事务报告，11PoC4/依赖许可报告，08剩余增强验证；父级最终验收索引列命令/环境/代码状态/结果。
 - 无硬件时只记待人工验证；不造三屏、4K、显存、媒体报告，不勾未测AC。
@@ -74,3 +74,8 @@ rg退出1只代表无匹配；每处命中按baseline的“历史/排除/现行�
 五项归档已由task.py完成；14份运行用上下文JSONL已迁移到实际archive路径，父+全部11子任务共12/12 validate通过（research/post-archive-context-validation.json）。研究原始内容与历史hash不重写，目录映射见archive-relocation.json。补充保留此前被通用*.log忽略的125份验收日志（retained-acceptance-logs.json），采用仅覆盖任务research的ignore例外，未强制加入缓存。native54份证据此前已全部跟踪。另仅对冻结清单中被上游规则忽略的vendor/cosmic-text/Cargo.lock执行精确git add -f，文件字节不变，未改写上游ignore规则。当前602源码与Git index双层绑定见committed-source-binding.json；Git LFS指针与文件字节按上游pointer SHA/size验证。
 
 下一轮可直接使用next-session-prompt.md；03/07继续待验，08–11保持依赖门禁。随后提交上下文/续接记录并按trellis-finish-work记录一次本次已授权收尾日志；不推送。
+
+
+## Current planning correction
+
+Before completing07/Gate B, execute07 I-8: replace the toolbar Swap workflow with detected/numbered display assignment. Review the bounded `research/display-assignment-plan.md`, then perform the existing serial implement→check flow. Keep the task tree and archived01/02/04/05/06 intact.08 reuses this surface;09 integrates the complete settings page later, so no dependency cycle is introduced. The present correction changes planning only; V7 diagnostics are a separate uncommitted change already checked before this request.

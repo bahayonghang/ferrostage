@@ -1,0 +1,12 @@
+{
+  "captured_utc": "2026-10-15T05:47:21.3707857Z",
+  "process_names": [
+    "cargo",
+    "rustc",
+    "ferrostage"
+  ],
+  "cargo_commands_returned": true,
+  "implementer_native_launches": 0,
+  "processes": [],
+  "scope": "full host read via require_escalated; no process mutation"
+}

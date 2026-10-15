@@ -11,9 +11,9 @@
 | 04 | core 生命周期、时间输入、投影/BGRA 纯类型；document 消费者 | 05/06/07/08/10/11 |
 | 05 | pdf 只读 probe/PDFium；render 协议、调度、CPU cache | 06/07/08/10 |
 | 06 | core SlideMap/裁剪；document 构建器；pdf 只读媒体结构 | 08/10/11 |
-| 07 | ui/app 外壳、拓扑/快捷键/角色协调器 | 08/09/10/11 |
+| 07 | ui/app 外壳、最小屏幕分配面板/Identify、拓扑/快捷键/角色协调器 | 08/09/10/11 |
 | 08 | ui 工作台、投影组装/纹理 RAII；core 标注命令 | 09/10/11 |
-| 09 | ui 设置；settings/app 运行时应用 | 最终角色交互；11 媒体控件 |
+| 09 | ui 完整设置；复用07屏幕分配；settings/app 运行时应用 | 角色拓扑图与设置集成；11 媒体控件 |
 | 10 | platform/pdf/render/document/core/ui 重载事务 | 11 消费 generation invalidation |
 | 11 | media/ui 解码共享帧；document 槽位消费；settings 媒体节 | 两个窗口 |
 
@@ -37,7 +37,7 @@ platform enumerate_monitors -> Result<Vec<MonitorInfo>, PlatformError>；Info �
 
 无保存记录：主屏（没有则ID排序首屏）作Presenter；多屏中最大面积且ID不同于已解析Presenter的屏作Audience，同面积按ID排序。保存存在则不启用Audience启发式：缺席/显式None不自动接管。Presenter缺席允许主屏安全回退并告警；零屏 presenter=None。先按MonitorId规范化每ID唯一role（重复binding首项权威+DuplicateBinding）；重复角色再按配置首次有效绑定，其余None并告警。多屏已保存Audience先确定，Presenter回退须排除该ID；单屏解析固定Presenter本屏/Audience=None，由显式windowed模式在窗口层允许同屏窗口。两个物理屏退化ID相同，禁止自动恢复Audience。设备路径/EDID/名称退化都不能保证跨接口绝对稳定，实测失败应提示重绑。
 
-权威来源仅 display.monitors。07 SwapScreens 同一设置事务交换两个角色并迁移窗口；09 新选Audience同次将旧Audience设None。移除计划键 display.swap_roles；若已有外部文件包含此键，则保留为未知历史键但不执行。Presenting失去Audience：Curtain→Stop→销毁观众窗口→Ready；讲者保持有效Presenter屏窗口化。新屏不自动接管；零屏等待恢复，重连不自动Start。
+权威来源仅 display.monitors。07最小分配面板将应用屏/PDF屏草稿作为一次角色事务应用，清除旧角色并确保每ID一个role；09复用此面板/协调器。既有SwapScreens仅保留快捷键兼容并走同一事务，不作为工具栏主入口。移除计划键 display.swap_roles；若已有外部文件包含此键，则保留为未知历史键但不执行。Presenting失去Audience：Curtain→Stop→销毁观众窗口→Ready；讲者保持有效Presenter屏窗口化。新屏不自动接管；零屏等待恢复，重连不自动Start。
 
 03提供已审阅的安全wrapper；07使用已审阅的GPUI事件/DisplayId与完整UUID桥。身份映射不得退回位置、尺寸、DPI或屏幕索引；实际bounds仅用于创建后的窗口放置确认，映射歧义拒绝Start。workspace unsafe_code=forbid不能被局部allow覆盖。安全接口不足时须先形成最小适配模块、显式lint继承调整与ADR政策提案，评审通过才实施；不改core或全workspace禁令。
 
@@ -163,3 +163,16 @@ Open uses the existing import_allowed contract consistently at button, global in
 When a focused presenter control disappears (modal Close/Commit, Start/Stop, Retry after success), restore a valid focus target in the same presenter so Tab and presentation shortcuts remain usable without a mouse click. Preserve existing valid button focus; do not steal audience focus as a side effect of unrelated model updates. Cover actual GPUI focus/key dispatch across removal, not only stored focus handles.
 
 A failed settings save is one unsaved-state message with Retry. A successful Retry clears the corresponding stale persistence error while retaining unrelated current errors. Runtime role changes survive persistence failure; durable role changes require successful read-back. Native FileShareRead-lock evidence is distinct from mocked save errors.
+
+
+## Screen assignment planning correction — 2026-10-14
+
+User intent: detect available displays, identify their numbers, then explicitly choose the application/Presenter display and PDF/Audience display. The toolbar action is “显示器设置” / “Displays”; it opens a presenter-owned panel and does not move windows merely by opening it.
+
+03 remains the owner of complete MonitorInfo/ResolvedTopology/TopologyEvent data. 07 owns the shared minimal display-selection model, numbered list, two labeled selectors, Apply/Cancel, current effective assignments and 3s Identify overlays. 08 reuses its entry point; 09 embeds it in the full settings page and adds the desktop topology visualization and other settings. No07→09 dependency is introduced.
+
+Number labels are a presentation mapping over the current complete topology, consistent between the list and Identify overlays. Keep the same mapping while that topology is unchanged; do not claim that these are Windows Settings numbers unless verified from an actual OS identifier. Persist MonitorId only, never the UI number or enumeration index. Refresh on open and topology events; distinguish no displays from enumeration failure. Topology change invalidates a stale draft and forces revalidation against current IDs before Apply. Display identity confidence and scale source stay truthful; a GdiDeviceCapsRatio is not an effective scale measurement.
+
+The two selectors edit a draft; Apply validates both destinations together and invokes the existing07 coordinator. With multiple screens, application and PDF destinations must be distinct; unselected screens are None. “不播放” leaves no Audience and Start disabled. On a single screen, the PDF selector explicitly offers “不播放” (presenter_only) or “在本屏窗口播放” (windowed_audience); Apply updates single_monitor_mode together with the role draft, never adding a duplicate physical-role binding. Cancel leaves runtime and disk unchanged. Both “不播放” and a selected physical PDF display set single_monitor_mode=presenter_only; only the explicit single-screen windowed choice sets windowed_audience, preventing an inherited windowed mode from silently enabling a different target after topology loss. Apply preserves the current page/stage/timer during a valid migration. Choosing “不播放” while Presenting instead follows Curtain→Stop→audience close, retaining the page and freezing the timer in Ready; creation/placement failure restores old roles/windows, and save failure keeps effective roles with one unsaved/Retry owner. Future settings remain read-only. Identify is unavailable while Presenting and carries only number/name, no PDF/notes. All dialogs/selectors stay on the confirmed Presenter.
+
+New source UI tests and native count/number/Identify/assignment/restart observations are mandatory before Gate B PASS. Existing configuration-driven A/B/C and Swap receipts remain historical mechanism evidence, not acceptance of this new UI. Physical gates and P2 remain unchanged.

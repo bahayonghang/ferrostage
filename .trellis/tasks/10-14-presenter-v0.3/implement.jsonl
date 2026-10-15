@@ -16,3 +16,4 @@
 {"file": ".trellis/spec/frontend/type-safety.md", "reason": "Newtype, crop and notes boundary"}
 {"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "GPUI/BGRA/window safety checks"}
 {"file": "DESIGN.md", "reason": "R-45 / AC-10 presenter visual contract and native acceptance boundaries"}
+{"file": ".trellis/tasks/10-14-presenter-v0.3/research/display-assignment-plan.md", "reason": "Current approved screen-selection direction: count/number, explicit app/PDF roles, 07 ownership and honest evidence"}

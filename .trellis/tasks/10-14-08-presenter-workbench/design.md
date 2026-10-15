@@ -1,7 +1,7 @@
 # Design — 真实工作台与受控观众画面
 
 ## 选择、依赖、输入输出
-前置01/02/04/05/06/07与Gate B；W-1…10/R-40/43。排期P1任务内含M1阻塞P0：真实当前/next/notes/计时/时钟/进度/跳页/黑白屏/交换/备注隔离。P1网格/拖拽/高级画笔在M2前完整验收，不能提前归档全部任务。
+前置01/02/04/05/06/07与Gate B；W-1…10/R-40/43。排期P1任务内含M1阻塞P0：真实当前/next/notes/计时/时钟/进度/跳页/黑白屏/共享屏幕分配入口/备注隔离。P1网格/拖拽/高级画笔在M2前完整验收，不能提前归档全部任务。
 本任务负责app初次真实导入：05页metadata/只读结构→06 builder构建LoadedDocument/content SlideMap→core Load安装map/crop→Ready；坏build保旧document。07 Shell importer由真实DocumentLoader替换，10后续复用。输入private LoadedDocument/core state/05结果/settings给讲者与投影组装器；audience view唯一输入snapshot，不读取document/cachehandle。输出content变换/纹理/命令，02既有debug/grid键只消费。
 
 ## 文件范围
@@ -43,3 +43,8 @@ Consume parent design task06 concrete content-map interface: private validated S
 Task06 independent review found the pre-existing public PresentationState::set_slide_crop bypassed descriptor crop validation. Preserve the method with Result<(), CoreError>, reuse exactly the descriptor crop predicate/error, and reject invalid geometry without any state mutation; the sole existing lifecycle-test caller must handle the result. This closes the direct input path without changing valid crop semantics. Task08 still uses ReconfigureDocument for document viewing options so map/crop, timer/stage and preview are updated atomically. No new unvalidated crop entry point.
 
 Task07 native startup established the synchronous first-draw constraint documented in the parent design. Workbench views must consume prepared presenter display data during render and send actions through the controller; never synchronously borrow an already-updating coordinator from open_window rendering. This planning clarification does not bypass Gate B.
+
+
+## Reuse of07 display assignment
+
+The workbench toolbar retains07's Displays entry and shared count/number/application/PDF selection surface. Do not restore a primary Swap button, fork screen numbering, or create another role state/resolver. The configured Swap shortcut remains compatible through07. M1 exercises the shared panel with real PDF content; this does not claim09's complete settings page is delivered.

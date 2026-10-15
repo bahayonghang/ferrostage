@@ -38,7 +38,7 @@
 
 ## Out of Scope
 
-GPUI `DisplayId` 映射与窗口创建（`07`）；设置界面排布图与 Identify 覆盖层（`09`）；多 Audience 镜像。
+GPUI `DisplayId` 映射、最小屏幕分配界面与 Identify 覆盖层（`07`）；完整设置拓扑图（`09`）；多 Audience 镜像。
 
 ## Implementation evidence — 2026-10-14
 

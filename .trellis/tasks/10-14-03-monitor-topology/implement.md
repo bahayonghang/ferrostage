@@ -1,5 +1,9 @@
 # Implement — 03
 
+## Resume 2026-10-14 America/New_York (2026-10-15 UTC)
+
+Existing03 implementation remains intact. Current V6 identity audit confirms the unchanged platform/core sources; archived01/02/04/05/06 are not reopened. User explicitly skips physical unplug/reconnect/port checks this turn. Identity stability across ports and physical event latency remain NOT_RUN, not PASS. Task07 software-native checks continue; no topology policy or acceptance threshold change.
+
 1. **I-1 安全接口研究门**：基于父runtime证据核安全enum/device identity/event wrapper、exact版本/许可；若缺接口提出最小ADR/lint方案等待政策决定，不靠allow绕过forbid。
 2. **I-2 类型**：core补MonitorId，platform Info/source/warnings/Optional topology/diff；复用02 MonitorRole。编译与core依赖树确认无OS。
 3. **I-3 纯解析**：实现零/一/二/三屏，无保存/已有记录/显式None，缺Audience/Presenter，同ID重复binding/重复roles/无primary角色互斥/ID碰撞、面积tie稳定排序；property只断言真实不变量（最多1 Audience、来源合法）。
@@ -52,3 +56,8 @@
 - These checks supersede the earlier 92-test/82-subset evidence for current code. Pre-review hashes matched all62 source/manifest files and all8 dependency source files; new current fingerprints and detailed review are saved in research/independent-code-sha256.json and independent-check.md. Only windows.rs and windows/tests.rs differ from the earlier code set. No commands remain running.
 - I-7 independent review is technically PASS after the fix; I-6 remains PARTIAL. Physical unplug/replug latency, same-model/port-change/missing-identity hardware, DPI/rotation mutation and actual GPUI placement remain NOT_RUN. Task stays in_progress; no full03, AC-2/3 or Gate B completion claim, commit, archive or journal action.
 - Final task-context validation PASS (implement17/check14), git diff --check exit0 (line-ending notices only), and all62 current source/manifest hashes plus the rebuilt probe hash matched. Independent report and current evidence are saved; no commands running.
+
+
+## Screen-assignment planning handoff
+
+The requested count/number/application-screen/PDF-screen workflow is owned by07 I-8. Review the existing03 complete topology/Unavailable contract for that consumer; do not reimplement completed enumeration or alter persistent identity to match display labels. Existing physical stability/latency acceptance remains pending and thresholds unchanged.

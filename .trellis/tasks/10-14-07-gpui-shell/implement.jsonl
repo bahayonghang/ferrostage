@@ -32,3 +32,6 @@
 {"file": ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-report.md", "reason": "Completed isolated candidate and exact preserved behavior; product adoption and licenses remain gated"}
 {"file": ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-report.md", "reason": "Final repaired candidate, reconstruction, upstream lint and policy boundaries"}
 {"file": ".trellis/spec/frontend/maintained-dependencies.md", "reason": "Approved maintained-source contracts, exact license scope, and actual product gates"}
+{"file": ".trellis/tasks/10-14-07-gpui-shell/research/resume-v6-native-checkpoint.md", "reason": "Current session V6 identity-bound native results and remaining limits"}
+{"file": ".trellis/tasks/10-14-07-gpui-shell/research/product-v7-diagnostics.md", "reason": "Current frozen diagnostic-only version and exact validation evidence"}
+{"file": ".trellis/tasks/10-14-presenter-v0.3/research/display-assignment-plan.md", "reason": "Current approved screen-selection direction: count/number, explicit app/PDF roles, 07 ownership and honest evidence"}

@@ -1,0 +1,24 @@
+warning: function `shape` is never used
+   --> vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `harfrust` (lib) generated 1 warning
+   Compiling gpui v0.2.2 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui)
+error[E0364]: `TestWindow` is only public within the crate, and cannot be re-exported outside
+   --> vendor\gpui\src\platform.rs:126:82
+    |
+126 | pub use test::{TestDispatcher, TestScreenCaptureSource, TestScreenCaptureStream, TestWindow};
+    |                                                                                  ^^^^^^^^^^
+    |
+note: consider marking `TestWindow` as `pub` in the imported module
+   --> vendor\gpui\src\platform.rs:126:82
+    |
+126 | pub use test::{TestDispatcher, TestScreenCaptureSource, TestScreenCaptureStream, TestWindow};
+    |                                                                                  ^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0364`.
+error: could not compile `gpui` (lib) due to 1 previous error

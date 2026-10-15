@@ -1,0 +1,14 @@
+   Compiling accesskit_windows v0.34.0 (D:\Documents\Code\Rust\Exp\ferrostage\.trellis\tasks\10-14-07-gpui-shell\research\product-v15-accesskit-candidate)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.29s
+     Running unittests src\lib.rs (target\debug\deps\accesskit_windows-2067cf275139aa8d.exe)
+
+running 6 tests
+test v15_research_tests::live_desktop_coordinate_query_still_succeeds ... ok
+test v15_research_tests::live_provider_all_four_coordinate_methods_preserve_values ... ok
+test v15_research_tests::retained_context_com_queries_return_element_not_available ... ok
+test v15_research_tests::retained_text_context_queries_return_element_not_available ... ok
+test v15_research_tests::retired_hwnd_coordinate_query_does_not_panic ... ok
+test v15_research_tests::retired_hwnd_coordinate_query_returns_element_not_available ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+

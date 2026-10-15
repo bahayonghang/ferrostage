@@ -1,0 +1,61 @@
+{
+  "utc": "2026-10-15T05:40:44.511513+00:00",
+  "runs": [
+    {
+      "tag": "v11-main",
+      "pid": 181304,
+      "launch_utc": "2026-10-15T05:07:40.8901849Z",
+      "exit_utc": "2026-10-15T05:24:36.7434794Z",
+      "exit_code": 0,
+      "error_lines": [],
+      "warn_lines": [
+        "2026-10-15T05:15:14.937821Z  WARN ferrostage_settings::store::files: crates\\ferrostage-settings\\src\\store\\files.rs:147: settings save failed error=cannot replace settings file: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\v8-light.toml: Access is denied. (os error 5) (after 3 attempts)",
+        "2026-10-15T05:15:14.938084Z  WARN ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:410: settings remain unsaved error=cannot replace settings file: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\v8-light.toml: Access is denied. (os error 5) (after 3 attempts)",
+        "2026-10-15T05:15:36.713016Z  WARN ferrostage_settings::store::files: crates\\ferrostage-settings\\src\\store\\files.rs:147: settings save failed error=cannot replace settings file: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\v8-light.toml: Access is denied. (os error 5) (after 3 attempts)",
+        "2026-10-15T05:15:36.713264Z  WARN ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:410: settings remain unsaved error=cannot replace settings file: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\v8-light.toml: Access is denied. (os error 5) (after 3 attempts)"
+      ],
+      "stderr": "",
+      "final_windows": []
+    },
+    {
+      "tag": "v11-relaunch",
+      "pid": 33228,
+      "launch_utc": "2026-10-15T05:24:52.4452375Z",
+      "exit_utc": "2026-10-15T05:26:03.6088156Z",
+      "exit_code": 0,
+      "error_lines": [],
+      "warn_lines": [],
+      "stderr": "",
+      "final_windows": []
+    },
+    {
+      "tag": "v11-future",
+      "pid": 180632,
+      "launch_utc": "2026-10-15T05:26:15.5087530Z",
+      "exit_utc": "2026-10-15T05:27:01.6961287Z",
+      "exit_code": 0,
+      "error_lines": [],
+      "warn_lines": [
+        "2026-10-15T05:26:15.692606Z  WARN ferrostage_settings::parse: crates\\ferrostage-settings\\src\\parse.rs:224: settings warning key=\"schema_version\" reason=schema_version 999 is newer than 1; the file is read-only"
+      ],
+      "stderr": "warning: schema_version: schema_version 999 is newer than 1; the file is read-only\n",
+      "final_windows": []
+    },
+    {
+      "tag": "v11-dark",
+      "pid": 133036,
+      "launch_utc": "2026-10-15T05:27:35.9630807Z",
+      "exit_utc": "2026-10-15T05:36:19.9458214Z",
+      "exit_code": 0,
+      "error_lines": [
+        "2026-10-15T05:36:19.862676Z ERROR gpui_windows::dispatcher: C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\gpui_windows\\src\\dispatcher.rs:129: Invalid window handle. (0x80070578)"
+      ],
+      "warn_lines": [],
+      "stderr": "",
+      "final_windows": []
+    }
+  ],
+  "screenshot_hashes_verified": 39,
+  "source_freeze": "product-native-freeze-v11.json",
+  "native_result": "PARTIAL; dark close F11 FAIL; no Gate B PASS"
+}

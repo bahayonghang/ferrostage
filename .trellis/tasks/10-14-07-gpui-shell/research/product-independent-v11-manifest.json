@@ -1,0 +1,58 @@
+{
+  "at_utc": "2026-10-15T05:08:45.752676+00:00",
+  "files": {
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v11-check.py": {
+      "sha256": "5cfd70bf8a9891c073278a57da9c8d2fb2e42888afbce904292d011c5f667718",
+      "bytes": 4086
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v11-diff.json": {
+      "sha256": "ec177ed09281b920a853fb4bf2139859dfda50e36709d3d54e05e0c0745e1dd9",
+      "bytes": 260
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v11-diff.log": {
+      "sha256": "77fcd39d6f499d9d9aad54bd8fa115ac9acd22cd478b0a479d9c25cea1bdf292",
+      "bytes": 4557
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v11-final-identity.json": {
+      "sha256": "5bb2d4d32aa5c6db937186445f2afe0e100339f0379efe73f71a5588a2b3fe55",
+      "bytes": 514
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v11-identity.json": {
+      "sha256": "e9e0c2e35e190d9738b65161071f85ed7085dd6c4733cacb88923f59a5cbd30a",
+      "bytes": 880
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v11-lint.json": {
+      "sha256": "b054b263b5994e15cc0daef8f4a498d6cc9ee6854ee07023e745171007e1359d",
+      "bytes": 434
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v11-lint.log": {
+      "sha256": "cf4039023e1eb193547afcf0e72acb5f3c087e56eb77fb3bbc1242f0c306bf8b",
+      "bytes": 329
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v11-placement.json": {
+      "sha256": "c09d8418852b18bba02a2ab0340d1c84fc3103bb4af2bda86529c5b697aef460",
+      "bytes": 429
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v11-placement.log": {
+      "sha256": "a916b3cc3020dcfce15e098f355d2203d9f65c0788ee9b8b474315b21d7b2a96",
+      "bytes": 1073
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v11-reused-checks.json": {
+      "sha256": "c14897470615ed86a2b5e096bd240d301163c1efc8d9e48a7e6b284c0676150c",
+      "bytes": 3517
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v11-review.md": {
+      "sha256": "c5e7fec70aa8154ddc796c27478d85fac42297588b94a2abf4bb8ecba985939f",
+      "bytes": 5616
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v11-types.json": {
+      "sha256": "a223ec338bcc14f59e623b239421b2fd7869b2b4810ee96072347a3c06846092",
+      "bytes": 395
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v11-types.log": {
+      "sha256": "65a637493a870045390c05941f7a5550cdc4f99e21fea9a66c7068706699c10f",
+      "bytes": 521
+    }
+  },
+  "scope": "Independent review evidence only. Product sources, build and native configuration unchanged; no reviewer commands remain running."
+}

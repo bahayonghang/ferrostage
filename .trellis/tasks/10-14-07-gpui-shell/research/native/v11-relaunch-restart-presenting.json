@@ -1,0 +1,24 @@
+{
+  "utc": "2026-10-15T05:25:51.972Z",
+  "window": {
+    "app": "process:D:\\mbx-cache\\targets\\v1\\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0\\debug\\ferrostage.exe",
+    "id": 3153968,
+    "title": "raster.pdf — 演示中 — FerroStage"
+  },
+  "accessibility": {
+    "focused_element": "7 application FerroStage 讲者窗口",
+    "tree": "Window: \"raster.pdf — 演示中 — FerroStage\", App: ferrostage.exe.\n\t0 region raster.pdf — 演示中 — FerroStage Secondary Actions: Raise\n\t\t1 title bar (settable, string) Value: raster.pdf — 演示中 — FerroStage\n\t\t\t2 menu bar System ID: MenuBar\n\t\t\t\t3 menu item System\n\t\t\t4 button Minimize\n\t\t\t5 button Maximize\n\t\t\t6 button Close\n\t\t7 application FerroStage 讲者窗口\n\t\t\t25 button 打开 PDF（不可用） ID: open\n\t\t\t26 button 设置 ID: settings\n\t\t\t27 button 显示器设置 ID: displays\n\t\t\t33 button 结束演示 ID: stop\n\nThe focused UI element is 7 application FerroStage 讲者窗口."
+  },
+  "screenshots": [
+    {
+      "height": 791,
+      "id": "screenshot-0",
+      "originX": 592,
+      "originY": 192,
+      "width": 1102,
+      "zIndex": 0,
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/native/v11-relaunch-restart-presenting-0.jpg",
+      "sha256": "ce31e870d6f9e3319a3e04dc86bb8bfa41363c39af0122179fa6104ca131cdbd"
+    }
+  ]
+}

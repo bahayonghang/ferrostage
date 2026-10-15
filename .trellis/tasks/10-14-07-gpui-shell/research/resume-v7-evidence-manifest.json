@@ -1,0 +1,82 @@
+{
+  "utc": "2026-10-15T03:48:18.581324+00:00",
+  "scope": "V7 native attribution prior to display-assignment planning; partial only, Gate B incomplete. Occluded after-swap screenshot retained but excluded from visual acceptance.",
+  "records": {
+    ".trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-after-swap-0.jpg": {
+      "sha256": "9c32d09514792b5175b5f5c4c624255004e67c4f3c1abdc6bc2422d131c68b20",
+      "bytes": 97460
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-after-swap-visible-0.jpg": {
+      "sha256": "14ff226be15afeb41f9227e54d1bc52b9bcd34f2606b144e6f8ab111b61b47ef",
+      "bytes": 60135
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-after-swap-visible.json": {
+      "sha256": "0ac36ef4110bb1f6e0e11be0f8eef5d7b149acf23f5e057a537c731be70fcc51",
+      "bytes": 1332
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-after-swap.json": {
+      "sha256": "f8b64d317a304112abd88576532fb33d9e592811916007fdd8f290722e1722b9",
+      "bytes": 1324
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-before-swap-0.jpg": {
+      "sha256": "e0d95a969765d9849e6804cd99665ad4e0a39f40b4f6641ae58e91dd455b7af5",
+      "bytes": 45109
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-before-swap.json": {
+      "sha256": "02a03818ef27f150cdb6b457d30afd14a0c9108b3a53e347eb6ff03506b92231",
+      "bytes": 1334
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-dark-ready-0.jpg": {
+      "sha256": "b582e5ecdbc3c87221d62b24ae215859e932cdd106459840e4dc8b508ed22ac3",
+      "bytes": 47704
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-dark-ready.json": {
+      "sha256": "9a97650fbda0581381b9049285a2c26598ee1f8f3f9cf8797eb9b6ff75ed44f2",
+      "bytes": 1230
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-dark.config-after.toml": {
+      "sha256": "41798cb34079e64d46078604e4c382ec1698d1ad925977870caf8c71e66fefe3",
+      "bytes": 1712
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-dark.config-before.toml": {
+      "sha256": "b96b8708fcb7207f7673c322be62d1f2f68d1c9ff382fe3607fbf7d0d7249ab9",
+      "bytes": 1712
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-dark.exit.json": {
+      "sha256": "a0e70c2fc2c81e263db16d8b2a2333f49240d4c1497c7c50d955f27b646f3b51",
+      "bytes": 82
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-dark.launch.json": {
+      "sha256": "e2d14a60410e6e4f971b1608ddcbdf49f408b0b665970d74e512b9b67524fa0b",
+      "bytes": 1060
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-dark.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-dark.stdout.log": {
+      "sha256": "4e384de916a47d2cd84dbe843477347fb3c38236b30656a7e4af1dec6792159b",
+      "bytes": 22193
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-final-window-inventory.json": {
+      "sha256": "58b430f6d38a0e5a3841ff78008034520bd0e81184b9f07a77d4a764ddd39909",
+      "bytes": 56
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/resume-v7-native-checkpoint.md": {
+      "sha256": "35df58a1faabeab920c5ceeb9807a811be7b0659576536fab35d9200dbaae63d",
+      "bytes": 1981
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/resume-v7-native-plan.md": {
+      "sha256": "c28b16bf348ddf29fa77a2081ca803323af6cd8bf8acc88f1468ae3d2fd119af",
+      "bytes": 1735
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/resume-v7-postplan-identity.json": {
+      "sha256": "4851ac5ce7090375a58ad8c3de1be12c448df8d7629ebfe8f11631b9263bae4e",
+      "bytes": 2586
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v7-design-before-plan.md": {
+      "sha256": "88a7a31303e10d3adfc0be373bf326d16751123b54a2b211984ba9bfd6fe99c9",
+      "bytes": 10363
+    }
+  }
+}

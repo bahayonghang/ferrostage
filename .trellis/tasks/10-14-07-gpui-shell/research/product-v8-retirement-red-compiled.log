@@ -1,0 +1,42 @@
+warning: function `shape` is never used
+   --> vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `harfrust` (lib) generated 1 warning
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.84s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-22e71ba2dde21bfc.exe)
+
+running 2 tests
+test shell::tests::retirement_v8_queued_activation_does_not_visit_removed_window ... FAILED
+test shell::tests::retirement_v8_user_close_is_deferred_and_stops_projection ... FAILED
+
+failures:
+
+---- shell::tests::retirement_v8_queued_activation_does_not_visit_removed_window stdout ----
+
+thread 'shell::tests::retirement_v8_queued_activation_does_not_visit_removed_window' (43728) panicked at crates\ferrostage-ui\src\shell.rs:1116:9:
+assertion `left == right` failed
+  left: None
+ right: Some(AnyWindowHandle { id: WindowId(2v1), state_type: TypeId(0x5302d3a03ba4a85e8f4ee0bc5a8a4877), root_entity_type_name: "ferrostage_ui::presenter::Presenter" })
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- shell::tests::retirement_v8_user_close_is_deferred_and_stops_projection stdout ----
+
+thread 'shell::tests::retirement_v8_user_close_is_deferred_and_stops_projection' (156804) panicked at crates\ferrostage-ui\src\shell.rs:1138:9:
+assertion `left == right` failed
+  left: [AnyWindowHandle { id: WindowId(1v1), state_type: TypeId(0x5302d3a03ba4a85e8f4ee0bc5a8a4877), root_entity_type_name: "ferrostage_ui::presenter::Presenter" }, AnyWindowHandle { id: WindowId(2v1), state_type: TypeId(0xfaeeee67f7189e1f86508cfe957b17db), root_entity_type_name: "ferrostage_ui::audience::Audience" }]
+ right: [AnyWindowHandle { id: WindowId(1v1), state_type: TypeId(0x5302d3a03ba4a85e8f4ee0bc5a8a4877), root_entity_type_name: "ferrostage_ui::presenter::Presenter" }]
+
+
+failures:
+    shell::tests::retirement_v8_queued_activation_does_not_visit_removed_window
+    shell::tests::retirement_v8_user_close_is_deferred_and_stops_projection
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 49 filtered out; finished in 0.02s
+
+error: test failed, to rerun pass `-p ferrostage-ui --lib`

@@ -1,0 +1,18 @@
+{
+  "exe_sha256": "027ab17fc23a92c00c480148b06c1ac115f81fcfe1a2145ac210dd6dd79a4d6d",
+  "pid": 181304,
+  "window_style": "Normal",
+  "config_sha256": "FD9004C7B16F967A42E90BC1A6302D827BC24E0E674FF4FB47DE78543B5F9D08",
+  "freeze": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-native-freeze-v11.json",
+  "argv": [
+    "--config",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\v8-light.toml",
+    "--pdfium-library",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\pdf\\raster.pdf"
+  ],
+  "config": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\v8-light.toml",
+  "exe": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe",
+  "utc": "2026-10-15T05:07:40.8901849Z",
+  "source_sha256": "fdec41e24793817d526127a3928c9e1f0bfafa021a293dce26cc9125f87c48f1"
+}

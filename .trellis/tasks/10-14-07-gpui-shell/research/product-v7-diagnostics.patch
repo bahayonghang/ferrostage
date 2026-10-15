@@ -1,0 +1,60 @@
+--- v6/crates/ferrostage-app/src/main.rs
++++ v7/crates/ferrostage-app/src/main.rs
+@@ -46,6 +46,8 @@
+ 
+ fn main() -> ExitCode {
+     tracing_subscriber::fmt()
++        .with_file(true)
++        .with_line_number(true)
+         .with_env_filter(
+             tracing_subscriber::EnvFilter::try_from_default_env()
+                 .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new("info")),
+--- v6/crates/ferrostage-ui/src/shell.rs
++++ v7/crates/ferrostage-ui/src/shell.rs
+@@ -659,8 +659,11 @@
+             cx.open_window(options, move |window, cx| {
+                 cx.new(|cx| {
+                     cx.observe(&snapshot, |_, _, cx| cx.notify()).detach();
+-                    cx.observe_window_bounds(window, move |_, _, _| flag.set(true))
+-                        .detach();
++                    cx.observe_window_bounds(window, move |_, window, cx| {
++                        flag.set(true);
++                        Self::log_bounds(window, cx);
++                    })
++                    .detach();
+                     Audience { snapshot }
+                 })
+             })
+@@ -671,8 +674,11 @@
+             let data = PresenterData::from_shell(self);
+             cx.open_window(options, move |window, cx| {
+                 cx.new(|cx| {
+-                    cx.observe_window_bounds(window, move |_, _, _| flag.set(true))
+-                        .detach();
++                    cx.observe_window_bounds(window, move |_, window, cx| {
++                        flag.set(true);
++                        Self::log_bounds(window, cx);
++                    })
++                    .detach();
+                     cx.observe_window_appearance(window, |_, _, cx| cx.notify())
+                         .detach();
+                     Presenter::new(shell, locale, data, window, cx)
+@@ -735,6 +741,18 @@
+         }) {
+             tracing::info!(reason, window=?record.handle.window_id(), %error, "window placement unavailable");
+         }
++    }
++
++    fn log_bounds(window: &gpui::Window, cx: &App) {
++        tracing::debug!(
++            window = ?window.window_handle().window_id(),
++            bounds = ?rect(window.bounds()),
++            viewport_size = ?window.viewport_size(),
++            scale_factor = window.scale_factor(),
++            display = ?window.display(cx).map(|display| u64::from(display.id())),
++            fullscreen = window.is_fullscreen(),
++            "window bounds changed"
++        );
+     }
+ 
+     fn start(&mut self, cx: &mut Context<Self>) {

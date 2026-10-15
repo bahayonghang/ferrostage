@@ -1,0 +1,24 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.17s
+     Running unittests src\lib.rs (target\debug\deps\accesskit_windows-f43117aba997bf4e.exe)
+
+running 1 test
+test v15_research_tests::root_only_owned_hidden_hwnd_destroy_with_retained_context ... hidden owned HWND cycle 0: native destroy then four retained-context COM errors returned normally
+hidden owned HWND cycle 1: native destroy then four retained-context COM errors returned normally
+hidden owned HWND cycle 2: native destroy then four retained-context COM errors returned normally
+hidden owned HWND cycle 3: native destroy then four retained-context COM errors returned normally
+hidden owned HWND cycle 4: native destroy then four retained-context COM errors returned normally
+hidden owned HWND cycle 5: native destroy then four retained-context COM errors returned normally
+hidden owned HWND cycle 6: native destroy then four retained-context COM errors returned normally
+hidden owned HWND cycle 7: native destroy then four retained-context COM errors returned normally
+hidden owned HWND cycle 8: native destroy then four retained-context COM errors returned normally
+hidden owned HWND cycle 9: native destroy then four retained-context COM errors returned normally
+hidden owned HWND cycle 10: native destroy then four retained-context COM errors returned normally
+hidden owned HWND cycle 11: native destroy then four retained-context COM errors returned normally
+hidden owned HWND cycle 12: native destroy then four retained-context COM errors returned normally
+hidden owned HWND cycle 13: native destroy then four retained-context COM errors returned normally
+hidden owned HWND cycle 14: native destroy then four retained-context COM errors returned normally
+hidden owned HWND cycle 15: native destroy then four retained-context COM errors returned normally
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 12 filtered out; finished in 0.08s
+

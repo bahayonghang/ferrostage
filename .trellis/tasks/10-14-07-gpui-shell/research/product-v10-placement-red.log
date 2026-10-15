@@ -1,0 +1,40 @@
+warning: function `shape` is never used
+   --> vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `harfrust` (lib) generated 1 warning
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.53s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-22e71ba2dde21bfc.exe)
+
+running 2 tests
+test policy::tests::placement_v10_portrait_native_overflow_is_not_confirmation ... FAILED
+test shell::tests::placement_v10_scaled_client_size_cannot_commit ... FAILED
+
+failures:
+
+---- policy::tests::placement_v10_portrait_native_overflow_is_not_confirmation stdout ----
+
+thread 'policy::tests::placement_v10_portrait_native_overflow_is_not_confirmation' (67832) panicked at crates\ferrostage-ui\src\policy.rs:386:9:
+assertion failed: !placement_confirmed(65735, Some(65735), false, false, true,
+        [1708., -273.33334, 1280., 912.],
+        [1706.6666, -761.3333, 1066.6666, 1706.6666])
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- shell::tests::placement_v10_scaled_client_size_cannot_commit stdout ----
+
+thread 'shell::tests::placement_v10_scaled_client_size_cannot_commit' (76148) panicked at crates\ferrostage-ui\src\shell.rs:1477:13:
+assertion failed: !Shell::confirmed(shell.presenter.as_ref().unwrap(), cx)
+
+
+failures:
+    policy::tests::placement_v10_portrait_native_overflow_is_not_confirmation
+    shell::tests::placement_v10_scaled_client_size_cannot_commit
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 63 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p ferrostage-ui --lib`

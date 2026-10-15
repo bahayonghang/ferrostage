@@ -1,0 +1,28 @@
+   Compiling proptest v1.12.0
+   Compiling lopdf v0.45.0
+   Compiling ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+   Compiling ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+   Compiling ferrostage-settings v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-settings)
+   Compiling ferrostage-platform v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-platform)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.23s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_platform-de2a4798ecf44822.exe)
+
+running 1 test
+test windows::tests::getdc_v15_real_owner_preserves_topology_and_enumeration_releases_gdi ... real-owner candidate: monitors=3 GDI before=2 after=2
+production enumeration64: GDI before=2 after=66
+
+thread 'windows::tests::getdc_v15_real_owner_preserves_topology_and_enumeration_releases_gdi' (79124) panicked at crates\ferrostage-platform\src\windows\tests.rs:39:5:
+assertion `left == right` failed: monitor polling must not accumulate desktop DCs
+  left: 66
+ right: 2
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    windows::tests::getdc_v15_real_owner_preserves_topology_and_enumeration_releases_gdi
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 22 filtered out; finished in 0.59s
+
+error: test failed, to rerun pass `-p ferrostage-platform --lib`

@@ -1,0 +1,10 @@
+{
+  "at_utc": "2026-10-15T05:07:53.963596+00:00",
+  "source_count": 609,
+  "source_sha256": "fdec41e24793817d526127a3928c9e1f0bfafa021a293dce26cc9125f87c48f1",
+  "binary_sha256": "027ab17fc23a92c00c480148b06c1ac115f81fcfe1a2145ac210dd6dd79a4d6d",
+  "freeze_sha256": "db41074638d3d844e8a69c5a1575c1f507c8558ba2523e700048b16058302716",
+  "mismatches": [],
+  "status": "PASS",
+  "scope": "Final immutable source/executable recheck only; native configs delegated to Root after prelaunch identity receipt."
+}

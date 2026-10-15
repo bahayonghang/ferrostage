@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-15T03:26:14.358Z",
+  "windows": [
+    {
+      "app": "process:ferrostage.exe",
+      "id": 15666496,
+      "title": "raster.pdf — 准备就绪 — FerroStage"
+    },
+    {
+      "app": "process:ferrostage.exe",
+      "id": 42210676,
+      "title": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe"
+    }
+  ]
+}

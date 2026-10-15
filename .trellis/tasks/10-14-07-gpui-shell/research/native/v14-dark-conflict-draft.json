@@ -1,0 +1,24 @@
+{
+  "utc": "2026-10-15T07:41:35.241Z",
+  "window": {
+    "app": "process:D:\\mbx-cache\\targets\\v1\\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0\\debug\\ferrostage.exe",
+    "id": 16912338,
+    "title": "raster.pdf — 准备就绪 — FerroStage"
+  },
+  "accessibility": {
+    "focused_element": "42 button 1 · Generic PnP Monitor（已选择） ID: display-app-1",
+    "tree": "Window: \"raster.pdf — 准备就绪 — FerroStage\", App: ferrostage.exe.\n\t0 region raster.pdf — 准备就绪 — FerroStage Secondary Actions: Raise\n\t\t1 title bar (settable, string) Value: raster.pdf — 准备就绪 — FerroStage\n\t\t\t2 menu bar System ID: MenuBar\n\t\t\t\t3 menu item System\n\t\t\t4 button Minimize\n\t\t\t5 button Maximize\n\t\t\t6 button Close\n\t\t7 application FerroStage 讲者窗口\n\t\t\t40 button 识别屏幕 ID: identify-displays\n\t\t\t41 button 重新检测 ID: refresh-displays\n\t\t\t42 button 1 · Generic PnP Monitor（已选择） ID: display-app-1\n\t\t\t43 button 2 · Generic PnP Monitor ID: display-app-2\n\t\t\t44 button 3 · Generic PnP Monitor ID: display-app-3\n\t\t\t45 button 不播放 ID: display-pdf-none\n\t\t\t46 button 1 · Generic PnP Monitor（已选择） ID: display-pdf-1\n\t\t\t47 button 2 · Generic PnP Monitor ID: display-pdf-2\n\t\t\t48 button 3 · Generic PnP Monitor ID: display-pdf-3\n\t\t\t51 alert\n\t\t\t49 button 应用（不可用） ID: apply-displays\n\t\t\t50 button 取消 ID: cancel-displays\n\nThe focused UI element is 42 button 1 · Generic PnP Monitor（已选择） ID: display-app-1."
+  },
+  "screenshots": [
+    {
+      "height": 875,
+      "id": "screenshot-0",
+      "originX": 2608,
+      "originY": -491,
+      "width": 393,
+      "zIndex": 0,
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/native/v14-dark-conflict-draft-0.jpg",
+      "sha256": "b69d6828dc8aea489f3496bd1612ba229f2bea2fe080244e68598a07cc1b6b01"
+    }
+  ]
+}

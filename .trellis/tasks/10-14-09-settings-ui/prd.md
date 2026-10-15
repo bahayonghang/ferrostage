@@ -8,7 +8,7 @@
 
 ## Background
 
-- 数据源：`02-settings-schema` 的 `Settings` / `SettingsStore`；显示器：`03-monitor-topology` 的 `MonitorInfo` / `ResolvedTopology` / `TopologyEvent`；窗口外壳与入口占位：`07-gpui-shell`。
+- 数据源：`02-settings-schema` 的 `Settings` / `SettingsStore`；显示器：`03-monitor-topology` 的 `MonitorInfo` / `ResolvedTopology` / `TopologyEvent`；窗口外壳与共享最小屏幕分配面板/Identify：`07-gpui-shell`（新规划，尚未交付）。
 - 不变量 2：设置窗口只能挂在讲者窗口视图树内；焦点在观众窗口时先切回。
 - 语言资源 `assets/locales/{zh-CN,en-US}/app.toml` 已存在。
 
@@ -16,11 +16,11 @@
 
 - **U-1** 设置窗口（或讲者窗口内的模态面板）含左侧分类：通用、显示器、讲者布局、计时器、指针与画笔、快捷键、高级。
 - **U-2 显示器页**：
-  - 按虚拟桌面 `position`/`native_size` 等比绘制每块屏的矩形，标注编号、`friendly_name`、分辨率、缩放、OS 主屏标记、`MonitorId` 稳定级别（`edid:`/`name:`/`gdi:`）。
-  - 每块屏一个角色下拉：Presenter / Audience / None；新Presenter同次清旧Presenter，保证每ID一role；选择 Audience 时若已有另一块 Audience，提示并把旧的改为 None（新UI不得产生重复，旧配置warnings沿用resolve_roles的DuplicateAudience）。
-  - "Identify" 按钮：在每块屏中央显示 3 s 的编号与名称覆盖窗口（无边框、置顶、点击穿透不需要）；覆盖窗口不是观众窗口，不读快照，`Presenting` 中禁用该按钮。
+  - 按虚拟桌面 `position`/`native_size` 等比绘制每块屏的矩形，标注编号、`friendly_name`、分辨率、缩放、OS 主屏标记、03实际提供的身份来源/置信等级和缩放来源；不得从ID字符串前缀伪造稳定性结论。
+  - 复用07面板：先显示检测屏幕数量和一致编号，分别选择“应用窗口所在屏幕”和“PDF播放屏幕”，其余为不使用；草稿Apply一次提交两个角色，Cancel不改变配置。每ID一个role，多屏不能两角色同屏；不另写角色解析或编号。
+  - 复用07的“识别屏幕”/Identify与同号3s覆盖窗口；覆盖窗口不含PDF/备注且不是观众窗口，Presenting禁用。拓扑变化使旧草稿失效，按当前MonitorId重验。
   - 显示当前 `ResolvedTopology` 与 `source`、告警文案（如"已保存的观众屏当前不在场"）。
-  - 单屏模式选项：`presenter_only` / `windowed_audience`。
+  - 单屏PDF选择复用07：“不播放”对应`presenter_only`，“在本屏窗口播放”对应`windowed_audience`；与角色草稿一起Apply，不另建互相矛盾的模式控件。
   - 订阅 `TopologyEvent`，插拔后实时刷新。
 - **U-3 通用页**：语言（zh-CN/en-US，重启生效且重启后实际切换资源）、主题（dark/light/system）、启动时重新打开上次文档、最近文件数量、清空最近文件。
 - **U-4 讲者布局页**：下一页/备注比例滑块、备注字号倍率、显示时钟、显示缩略图条、网格列数1..4与可见页数1..16独立控件。
@@ -29,13 +29,13 @@
 - **U-7 快捷键页**：每个动作一行，显示当前按键列表；点击"录制"捕获下一次按键并追加；冲突（同键多动作）行内标黄；"恢复默认"。按键字符串语法沿用 `07` 的 research 结论。
 - **U-8** 高级页：08实际cache/debug；10接线前hot_reload禁用提示，11加media节后由11接控件；目录/重置仅可写版本。
 - **U-9** 校验→运行时应用→save；运行时失败回滚，保存失败保留会话值并未保存/重试，重启取上次成功值；未来版本只读。语言重启实际选择资源、dark/light/system真实切配色并跟随系统，不验空控件。
-- **U-10** 角色变更在 `Presenting` 中生效的语义：Audience 屏变更 → 观众窗口迁移到新屏（销毁重建）；Presenter 屏变更 → 讲者窗口移动。
+- **U-10** 角色变更在 `Presenting` 中生效的语义：Audience 屏变更 → 观众窗口迁移到新屏（销毁重建）；Presenter 屏变更 → 讲者窗口移动。选择“不播放”则Curtain→Stop→关闭观众并回Ready，保留页、冻结计时；有效目标迁移保持页/阶段/计时。
 
 - **U-11** 遵循根 DESIGN.md（R-45）：统一Claude风格token、浅/深配色、系统字体、完整控件状态与键盘焦点；原生截图/对比度/尺寸验证记录本任务research。
 
 ## Acceptance Criteria
 
-- [ ] 三屏实机：在显示器页把任意一块设为 Audience，点击 Identify 三块屏各显示正确编号；点击开始演示后观众窗口出现在所选屏。
+- [ ] 三屏实机：显示器页先显示数量/编号，Identify与列表一致；分别选择应用屏和任意PDF屏并Apply，其余不使用；开始后真实PDF只在所选屏，工具栏入口与此页共享状态。
 - [ ] 把 Audience 改到另一块屏（`Presenting` 中），观众窗口 ≤ 500 ms 内迁移，备注不出现在任何屏。
 - [ ] 拔掉一块屏，显示器页 ≤ 1 s 刷新并显示告警。
 - [ ] 修改计时阈值后讲者计时器颜色立即按新阈值变化；重启后保留。

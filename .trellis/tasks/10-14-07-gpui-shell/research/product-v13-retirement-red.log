@@ -1,0 +1,46 @@
+warning: function `shape` is never used
+   --> vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `harfrust` (lib) generated 1 warning
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.95s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-22e71ba2dde21bfc.exe)
+
+running 4 tests
+test shell::tests::retirement_v13_nonowner_close_preserves_read_and_prompt_completion ... ok
+test shell::tests::retirement_v13_presenter_close_cancels_pending_import_read ... FAILED
+test shell::tests::retirement_v13_shutdown_cancels_pending_import_read ... FAILED
+test shell::tests::retirement_v13_shutdown_cancels_pending_path_prompt ... FAILED
+
+failures:
+
+---- shell::tests::retirement_v13_presenter_close_cancels_pending_import_read stdout ----
+
+thread 'shell::tests::retirement_v13_presenter_close_cancels_pending_import_read' (184384) panicked at crates\ferrostage-ui\src\shell.rs:1524:9:
+closing the owner must drop its pending read awaiter before a later delivery
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- shell::tests::retirement_v13_shutdown_cancels_pending_import_read stdout ----
+
+thread 'shell::tests::retirement_v13_shutdown_cancels_pending_import_read' (178016) panicked at crates\ferrostage-ui\src\shell.rs:1540:9:
+app shutdown must cancel a pending read independently of its import token
+
+---- shell::tests::retirement_v13_shutdown_cancels_pending_path_prompt stdout ----
+
+thread 'shell::tests::retirement_v13_shutdown_cancels_pending_path_prompt' (180440) panicked at crates\ferrostage-ui\src\shell.rs:1555:9:
+a retained entity must not process a dialog response after shutdown
+
+
+failures:
+    shell::tests::retirement_v13_presenter_close_cancels_pending_import_read
+    shell::tests::retirement_v13_shutdown_cancels_pending_import_read
+    shell::tests::retirement_v13_shutdown_cancels_pending_path_prompt
+
+test result: FAILED. 1 passed; 3 failed; 0 ignored; 0 measured; 73 filtered out; finished in 0.04s
+
+error: test failed, to rerun pass `-p ferrostage-ui --lib`

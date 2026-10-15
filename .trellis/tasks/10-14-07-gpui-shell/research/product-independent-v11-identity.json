@@ -1,0 +1,23 @@
+{
+  "at_utc": "2026-10-15T05:05:34.201299+00:00",
+  "source_count": 609,
+  "source_sha256": "fdec41e24793817d526127a3928c9e1f0bfafa021a293dce26cc9125f87c48f1",
+  "binary_sha256": "027ab17fc23a92c00c480148b06c1ac115f81fcfe1a2145ac210dd6dd79a4d6d",
+  "freeze_sha256": "db41074638d3d844e8a69c5a1575c1f507c8558ba2523e700048b16058302716",
+  "manifests": {
+    "product-v11-evidence-manifest.json": {
+      "count": 25,
+      "sha256": "f74a13797a0375f5c56a44e2be9526b993b237e72d75f342fc5bf0cb40eec970"
+    },
+    "native-v10-evidence-manifest.json": {
+      "count": 11,
+      "sha256": "ad8cbffb28e7f8a90b0ed89c6ab3cc4f0171f5b0ef724c8982425d69e6426e24"
+    },
+    "product-independent-v10-manifest.json": {
+      "count": 15,
+      "sha256": "d072f240fb05431d86d85bf81274c44fbebc6298a3270b08a15dfd6953ccd066"
+    }
+  },
+  "mismatches": [],
+  "status": "PASS"
+}

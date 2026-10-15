@@ -1,0 +1,8 @@
+{
+  "captured_utc": "2026-10-15T07:11:35.1080483Z",
+  "method": "Get-Process -ErrorAction Stop then exact process-name filter",
+  "enumeration_succeeded": true,
+  "processes": [],
+  "status": "EMPTY",
+  "invalidates": "product-independent-v14-process-closeout.json: CIM failed with access denied; its EMPTY status must not be used"
+}

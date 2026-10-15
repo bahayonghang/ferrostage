@@ -1,0 +1,13 @@
+# Resume native checkpoint (V6)
+
+Date: 2026-10-14 America/New_York; receipts use 2026-10-15 UTC.
+
+Identity is verified by resume-v6-identity-20261015.json: same V6 executable,94 crate files, DLL and PDF; only the already recorded DESIGN.md documentation delta among602 frozen inputs. Older evidence is reused within its version boundaries.
+
+- `resume-v6-light` PID64092: real Ready1/9 on Presenter A, light theme captured. Lower footer extends beyond the visible desktop in this capture. The process exited0 at03:23:24.913Z before a successful close action; exit trigger is unknown. Subsequent Alt+F10 attempt returned `foreground window did not report a process id`, then Sky returned no FerroStage windows. Do not label the exit as a proved normal-close test or infer a crash.
+- `resume-v6-dark` PID108560: actual Presenter B Ready1/9, Start creates fullscreen Audience A and commits Presenting. Audience click gives only region0 accessibility, PageDown shows2, B shows black, Escape destroys audience and returns Presenter Ready2. Logs bind actual A display131073/fullscreen bounds. These functional cases pass, but are task07 placeholders.
+- Cursor captures show a pointer/desktop overlay on click and no dialogs/focus ring; key actions and the later capture do not establish uninterrupted cursor behavior. Preserve cursor clause as PARTIAL, not full acceptance. Black blank-mode is not Curtain-transition proof.
+- Border drag from(1099,788) to(801,630) did not change captured1102x791 outer bounds. This is failed sizing interaction, not800x600 logical-client acceptance or minimum-size proof. Alt+Space opened an unrelated desktop launcher. No launcher action was taken. A later click was rejected because user input was detected; Root reobserved before the next operation.
+- Actual AX Close ended PID108560 exit0 at03:26:14.354Z. The immediate post-close inventory still carried stale process-only window objects; subsequent inventory must confirm removal before another launch. Shutdown log still has generic window-not-found and0x80040102/0x80070578. No diagnostic fix claimed.
+- Both run sessions returned; native source freeze released only after their exit. Implement agent may add source-location and actual viewport/scale diagnostics, verify and freeze V7 before Root resumes. No vendor behavior change authorized from an unlocated log alone.
+- Task-owned a-light profile was restored byte-for-byte from this run's config-before after saving config-after. User settings and PDFs untouched. Physical operations explicitly skipped by user remain NOT_RUN; Gate B incomplete;08–11 gated and P2 retained.
