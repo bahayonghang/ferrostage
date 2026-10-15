@@ -80,3 +80,39 @@
 ### Next Steps
 
 - 从03/07未完成原生验收恢复；Gate B通过后继续08，再09/10/11。不重新实施已归档任务。
+
+
+## Session 3: 提交 V16 并归档基础任务，后续按功能优先实施
+<!-- trellis-session: v=2 fp=dd9e985d0d11d9b3 -->
+
+**Date**: 2026-10-15
+**Task**: 提交 V16 并归档基础任务，后续按功能优先实施
+**Branch**: `main`
+
+### Summary
+
+提交已审 AccessKit 修复和 V16 证据；按用户授权暂缓扩展实机验收，归档03/07，保存08至11连续实施Prompt。
+
+### Main Changes
+
+- 原始证据及延期验收完整保留，Gate B实施门通过，后续全部P1/P2功能保留。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `01dcf66` | fix: 采用 AccessKit 窗口销毁修复并保存 V16 验证证据 |
+| `5634825` | docs: 调整为功能优先验收并准备全部后续任务 Prompt |
+| `192fbce` | chore: 修复归档引用并保存后续实施检查点 |
+
+### Testing
+
+- [OK] 归档后12/12上下文通过，四份封存清单和运行产物匹配；CI151/UI82/COM8等为核验复用。
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- 从08开始，按acceptance-policy.md连续完成09/10/11；新改动默认不提交、不归档、不推送。
