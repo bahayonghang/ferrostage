@@ -8,9 +8,9 @@ pub struct PhysicalPage(pub usize);
 pub struct LogicalSlide(pub usize);
 ```
 
-`DocumentGeneration` is ordered. A shadow load must pass a strictly greater value or `apply` returns `CoreError::StaleGeneration`.
+`DocumentGeneration` is ordered. A shadow load must pass a strictly greater value or `apply_at` returns `CoreError::StaleGeneration`.
 
-`NormalizedRect` is page space in the unit square. Use `FULL`, `LEFT_HALF`, and `RIGHT_HALF` instead of repeating the numbers. `is_inside_unit_square` rejects non-finite or overflowing crops.
+`NormalizedRect` is page space in the unit square. Use `FULL`, `LEFT_HALF`, `RIGHT_HALF`, `TOP_HALF`, and `BOTTOM_HALF` instead of repeating the numbers. `is_inside_unit_square` rejects non-finite or overflowing crops.
 
 `BlankMode` is an enum (`Black`, `White`). Do not pass a `bool` and a comment.
 

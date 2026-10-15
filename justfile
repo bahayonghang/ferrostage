@@ -22,6 +22,19 @@ clippy:
 test:
     cargo test --workspace --all-targets
 
+# Requires FERROSTAGE_TEST_PDFIUM pointing to the verified native library file.
+test-native:
+    cargo test -p ferrostage-pdf -p ferrostage-render -p ferrostage-document --features pdfium --all-targets --locked
+
+clippy-native:
+    cargo clippy -p ferrostage-pdf -p ferrostage-render -p ferrostage-document --features pdfium --all-targets --locked -- -D warnings
+
+# Native compile/lint only; desktop acceptance is a separate gate.
+check-shell:
+    cargo build -p ferrostage-app --features gpui,pdfium --locked
+    cargo clippy -p ferrostage-app -p ferrostage-ui --features gpui,pdfium --all-targets --locked -- -D warnings
+    cargo test -p ferrostage-ui --features test-support --lib --locked
+
 # Reject GPL/AGPL and yanked-crate policy from deny.toml.
 deny:
     cargo deny check
@@ -30,9 +43,9 @@ deny:
 build:
     cargo build --workspace --release
 
-# Run the FerroStage binary. The presenter window is not linked yet.
+# Run the native shell; supply --pdfium-library explicitly for PDF import.
 dev:
-    cargo run -p ferrostage-app
+    cargo run -p ferrostage-app --features gpui,pdfium
 
 # Install the ferrostage binary into Cargo's bin directory.
 install:

@@ -1,14 +1,15 @@
 //! FerroStage process entry.
 //!
-//! `just dev` runs this binary. It parses a small CLI and can validate a
-//! settings file. Opening the presenter window waits on the GPUI task.
+//! `just dev` runs this binary. It parses a small CLI, loads settings, and can
+//! validate a settings file without writing it. Opening the presenter window
+//! is optional behind the `gpui` feature.
 
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 
 use clap::{Parser, Subcommand};
-use ferrostage_settings::{Settings, from_toml};
+use ferrostage_settings::{LoadOutcome, SettingsStore, SettingsWarning, from_toml};
 use ferrostage_ui::{GPUI_KIT_VERSION, ZED_GPUI_TAG};
 use tracing::info;
 
@@ -19,13 +20,24 @@ use tracing::info;
     about = "GPU-accelerated PDF and Beamer presentation stage"
 )]
 struct Cli {
+    /// Settings file used at startup. Does not change `check-config`, which only reads its path.
+    #[arg(long, global = true)]
+    config: Option<PathBuf>,
+
+    /// PDF opened read-only after the presenter window is ready.
+    pdf: Option<PathBuf>,
+
+    /// Exact PDFium library file. Defaults to pdfium.dll beside the executable.
+    #[arg(long)]
+    pdfium_library: Option<PathBuf>,
+
     #[command(subcommand)]
     command: Option<Command>,
 }
 
 #[derive(Debug, Subcommand)]
 enum Command {
-    /// Parse a settings TOML file and print the resolved values.
+    /// Parse a settings TOML file and print the resolved values. This does not write.
     CheckConfig {
         /// Path to a TOML settings file.
         path: PathBuf,
@@ -40,30 +52,130 @@ fn main() -> ExitCode {
         )
         .init();
 
-    match Cli::parse().command {
-        None => {
-            info!(zed = ZED_GPUI_TAG, gpui_kit = GPUI_KIT_VERSION, "skeleton");
-            println!(
-                "ferrostage {version} skeleton — presenter UI is not linked yet (GPUI pin {ZED_GPUI_TAG})",
-                version = env!("CARGO_PKG_VERSION"),
-            );
-            ExitCode::SUCCESS
-        }
-        Some(Command::CheckConfig { path }) => match check_config(&path) {
-            Ok(settings) => {
-                println!("{settings:#?}");
-                ExitCode::SUCCESS
-            }
-            Err(message) => {
-                eprintln!("ferrostage: {message}");
-                ExitCode::from(1)
-            }
-        },
+    let cli = Cli::parse();
+    match cli.command {
+        None => start_app(cli.config, cli.pdf, cli.pdfium_library),
+        Some(Command::CheckConfig { path }) => check_config(&path),
     }
 }
 
-fn check_config(path: &std::path::Path) -> Result<Settings, String> {
+fn start_app(
+    config: Option<PathBuf>,
+    pdf: Option<PathBuf>,
+    pdfium_library: Option<PathBuf>,
+) -> ExitCode {
+    info!(
+        zed = ZED_GPUI_TAG,
+        gpui_kit = GPUI_KIT_VERSION,
+        "starting FerroStage"
+    );
+    let store = match resolve_store(config) {
+        Ok(store) => store,
+        Err(message) => {
+            eprintln!("ferrostage: {message}");
+            return ExitCode::from(1);
+        }
+    };
+    match store.open_for_startup() {
+        Ok(session) => {
+            info!(path = %store.path().display(), "loaded settings");
+            print_warnings(&session.warnings);
+            if let Some(error) = &session.save_error {
+                eprintln!("ferrostage: settings were not saved: {error}");
+            }
+            #[cfg(feature = "gpui")]
+            {
+                native_shell(store, session, pdf, pdfium_library)
+            }
+            #[cfg(not(feature = "gpui"))]
+            {
+                let _inputs = (pdf, pdfium_library);
+                println!(
+                    "ferrostage {version} skeleton — presenter UI is not linked yet (GPUI pin {ZED_GPUI_TAG})",
+                    version = env!("CARGO_PKG_VERSION"),
+                );
+                ExitCode::SUCCESS
+            }
+        }
+        Err(error) => {
+            eprintln!("ferrostage: {error}");
+            ExitCode::from(1)
+        }
+    }
+}
+
+#[cfg(feature = "gpui")]
+fn native_shell(
+    store: SettingsStore,
+    session: ferrostage_settings::SettingsSession,
+    pdf: Option<PathBuf>,
+    library: Option<PathBuf>,
+) -> ExitCode {
+    let library_path = match library {
+        Some(path) => path,
+        None => match std::env::current_exe() {
+            Ok(path) => path.with_file_name("pdfium.dll"),
+            Err(error) => {
+                eprintln!("ferrostage: cannot resolve executable path: {error}");
+                return ExitCode::from(1);
+            }
+        },
+    };
+    let renderer = ferrostage_render::RenderHandle::spawn(
+        ferrostage_pdf::RuntimeConfig {
+            library_path,
+            font_directories: Vec::new(),
+        },
+        ferrostage_render::CacheBudgets {
+            l2_bytes: session.settings.cache.l2_cpu_mib as usize * 1024 * 1024,
+            l3_bytes: session.settings.cache.l3_thumb_mib as usize * 1024 * 1024,
+        },
+    );
+    let initial_monitors = ferrostage_platform::enumerate_monitors();
+    let (sink, topology) = std::sync::mpsc::channel();
+    let watcher = ferrostage_platform::watch_topology(sink);
+    ferrostage_ui::run(ferrostage_ui::ShellInputs {
+        settings: session,
+        store,
+        renderer,
+        topology,
+        watcher,
+        initial_monitors,
+        initial_pdf: pdf,
+    });
+    ExitCode::SUCCESS
+}
+
+fn resolve_store(config: Option<PathBuf>) -> Result<SettingsStore, String> {
+    let path = match config {
+        Some(path) => path,
+        None => SettingsStore::default_path().map_err(|error| error.to_string())?,
+    };
+    Ok(SettingsStore::at(path))
+}
+
+fn check_config(path: &Path) -> ExitCode {
+    match read_config(path) {
+        Ok(outcome) => {
+            print_warnings(&outcome.warnings);
+            println!("{:#?}", outcome.settings);
+            ExitCode::SUCCESS
+        }
+        Err(message) => {
+            eprintln!("ferrostage: {message}");
+            ExitCode::from(1)
+        }
+    }
+}
+
+fn read_config(path: &Path) -> Result<LoadOutcome, String> {
     let text = fs::read_to_string(path)
         .map_err(|error| format!("cannot read {}: {error}", path.display()))?;
     from_toml(&text).map_err(|error| error.to_string())
+}
+
+fn print_warnings(warnings: &[SettingsWarning]) {
+    for warning in warnings {
+        eprintln!("warning: {}: {}", warning.key, warning.reason);
+    }
 }

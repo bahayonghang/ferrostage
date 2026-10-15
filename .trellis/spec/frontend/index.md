@@ -9,7 +9,7 @@
 
 The UI crate does not own the deck. It sends `PresentationCommand` and, for the audience window, reads `AudienceProjectionSnapshot` only.
 
-GPUI is not linked in the skeleton. The pin is Zed tag `v1.23.3` (`GPUI_KIT_VERSION` = 0.7.3). Do not depend on crates.io `gpui` 0.2.x.
+The skeleton originally left GPUI unlinked. Task07 is adopting the explicitly approved maintained source based on Zed tag `v1.23.3`; ADR-008 and its final independent review define the exact local patches. `GPUI_KIT_VERSION` = 0.7.3 remains an alternate baseline constant, not a second UI stack. Do not depend on crates.io `gpui` 0.2.x or bypass actual product build/policy checks.
 
 ---
 
@@ -27,3 +27,5 @@ GPUI is not linked in the skeleton. The pin is Zed tag `v1.23.3` (`GPUI_KIT_VERS
 ---
 
 **Language**: All documentation should be written in **English**.
+
+Native source/policy integration: [Maintained Dependencies](maintained-dependencies.md) defines the reviewed source set, exact exceptions, executable product checks and compatibility regression contracts.

@@ -1,0 +1,76 @@
+%PDF-1.7
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Count 1 /Kids [3 0 R] /MediaBox [0 0 400 300] /CropBox [20 30 380 270] /Rotate 90 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /Annots [4 0 R 5 0 R 6 0 R 7 0 R 8 0 R] /AA << /O 9 0 R >> >>
+endobj
+4 0 obj
+<< /Type /Annot /Subtype /Movie /Rect [20 30 200 150] /Movie << /F (external-demo.mp4) >> /A << /Start [2000 1000] /Duration [8000 1000] /Mode /Repeat >> >>
+endobj
+5 0 obj
+<< /Type /Annot /Subtype /Screen /P 3 0 R /Rect [20 30 200 150] /A 10 0 R /AA << /PO 10 0 R >> >>
+endobj
+6 0 obj
+<< /Type /Annot /Subtype /RichMedia /Rect [20 30 200 150] /RichMediaSettings << /Activation << /Condition /PV >> >> /RichMediaContent << /Assets << /Names [(clip.mp4) 12 0 R] >> /Configurations [13 0 R] >> >>
+endobj
+7 0 obj
+<< /Type /Annot /Subtype /Movie /Rect [200 150 380 270] /Movie << /F (unscaled.mp4) >> /A << /Start 120 /Duration [8 0] /Mode /Palindrome >> >>
+endobj
+8 0 obj
+<< /Type /Annot /Subtype /RichMedia /Rect [20 30 200 150] /RichMediaContent << /Configurations [15 0 R] >> >>
+endobj
+9 0 obj
+<< /S /Movie /Annotation 4 0 R /Operation /Play >>
+endobj
+10 0 obj
+<< /S /Rendition /OP 0 /AN 5 0 R /R << /S /MR /C << /S /MCS /MH << /B << /S /T /T << /S /S /V 2 >> >> >> /D << /S /MCD /D 12 0 R /CT (video/mp4) >> >> /P << /MH << /D << /S /T /T << /S /S /V 8 >> >> /RC 0 /A true >> >> >> >>
+endobj
+11 0 obj
+<< /Type /EmbeddedFile /Length 16 >>
+stream
+fixture-not-video
+endstream
+endobj
+12 0 obj
+<< /Type /Filespec /F (clip.mp4) /UF (clip.mp4) /EF << /F 11 0 R >> >>
+endobj
+13 0 obj
+<< /Type /RichMediaConfiguration /Subtype /Video /Instances [14 0 R] >>
+endobj
+14 0 obj
+<< /Type /RichMediaInstance /Subtype /Video /Asset 12 0 R >>
+endobj
+15 0 obj
+<< /Type /RichMediaConfiguration /Subtype /Flash /Instances [16 0 R] >>
+endobj
+16 0 obj
+<< /Type /RichMediaInstance /Subtype /Flash /Asset 12 0 R /Params << /FlashVars (start=2&loop=true) >> >>
+endobj
+xref
+0 17
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000175 00000 n 
+0000000281 00000 n 
+0000000453 00000 n 
+0000000566 00000 n 
+0000000790 00000 n 
+0000000949 00000 n 
+0000001074 00000 n 
+0000001140 00000 n 
+0000001381 00000 n 
+0000001469 00000 n 
+0000001556 00000 n 
+0000001644 00000 n 
+0000001721 00000 n 
+0000001809 00000 n 
+trailer
+<< /Size 17 /Root 1 0 R >>
+startxref
+1931
+%%EOF

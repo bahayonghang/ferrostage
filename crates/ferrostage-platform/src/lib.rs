@@ -7,6 +7,20 @@
 
 use std::time::Duration;
 
+mod monitor;
+mod topology;
+mod watch;
+#[cfg(target_os = "windows")]
+mod windows;
+
+pub use monitor::{
+    IdentityConfidence, IdentitySource, MonitorInfo, PlatformError, ScaleSource, enumerate_monitors,
+};
+pub use topology::{
+    ResolutionSource, ResolvedTopology, TopologyDiff, TopologyWarning, diff, resolve_roles,
+};
+pub use watch::{TOPOLOGY_POLL_INTERVAL, TopologyEvent, TopologyWatcher, watch_topology};
+
 /// Latest stable `notify` release this crate links.
 pub const NOTIFY_VERSION: &str = "8.2.0";
 

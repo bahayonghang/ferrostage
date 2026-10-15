@@ -1,4 +1,5 @@
 use std::sync::Arc;
+use std::time::{Duration, Instant};
 
 use tracing::debug;
 
@@ -6,49 +7,75 @@ use crate::command::PresentationCommand;
 use crate::error::CoreError;
 use crate::geometry::{NormalizedRect, NormalizedStroke};
 use crate::ids::{DocumentGeneration, LogicalSlide, PhysicalPage};
-use crate::snapshot::{AudienceProjectionSnapshot, BlankMode};
+use crate::snapshot::{AudienceProjectionSnapshot, AudienceStage, BlankMode};
+use crate::timer::TimerState;
+use crate::{DocumentDescriptor, SessionStage, SlideMap};
 
 const DEFAULT_STROKE_COLOR_BGRA: [u8; 4] = [0, 0, 255, 255];
 const DEFAULT_STROKE_WIDTH_NORM: f32 = 0.004;
 
 /// Presenter-side state. Fields stay private so the audience window can only
 /// observe [`AudienceProjectionSnapshot`].
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct PresentationState {
+    stage: SessionStage,
+    timer: TimerState,
     generation: DocumentGeneration,
     page_count: usize,
+    slide_map: Option<SlideMap>,
     current_page: PhysicalPage,
     logical_slide: LogicalSlide,
     slide_crop: NormalizedRect,
     blank_mode: Option<BlankMode>,
     laser_pos_norm: Option<(f32, f32)>,
     strokes: Vec<NormalizedStroke>,
-    screens_swapped: bool,
     jump_preview: Option<PhysicalPage>,
 }
 
 impl PresentationState {
-    /// Start on the first page of a document that already has `page_count` pages.
+    /// Prepare the first page without starting a presentation or a timer.
     ///
     /// # Errors
     ///
     /// Returns [`CoreError::EmptyDocument`] when `page_count` is zero.
     pub fn new(page_count: usize) -> Result<Self, CoreError> {
-        if page_count == 0 {
-            return Err(CoreError::EmptyDocument);
-        }
-        Ok(Self {
-            generation: DocumentGeneration(1),
-            page_count,
+        let mut state = Self::idle();
+        state.load_document(DocumentGeneration(1), page_count)?;
+        Ok(state)
+    }
+
+    #[must_use]
+    pub fn idle() -> Self {
+        Self {
+            stage: SessionStage::Idle,
+            timer: TimerState::default(),
+            generation: DocumentGeneration(0),
+            page_count: 0,
+            slide_map: None,
             current_page: PhysicalPage(0),
             logical_slide: LogicalSlide(0),
             slide_crop: NormalizedRect::FULL,
             blank_mode: None,
             laser_pos_norm: None,
             strokes: Vec::new(),
-            screens_swapped: false,
             jump_preview: None,
-        })
+        }
+    }
+
+    #[must_use]
+    pub fn stage(&self) -> SessionStage {
+        self.stage
+    }
+
+    /// Compute elapsed time from an app-supplied monotonic timestamp.
+    #[must_use]
+    pub fn elapsed_at(&self, now: Instant) -> Duration {
+        self.timer.elapsed_at(now)
+    }
+
+    #[must_use]
+    pub fn is_timer_paused(&self) -> bool {
+        self.stage == SessionStage::Presenting && self.timer.is_paused()
     }
 
     #[must_use]
@@ -67,8 +94,8 @@ impl PresentationState {
     }
 
     #[must_use]
-    pub fn screens_swapped(&self) -> bool {
-        self.screens_swapped
+    pub fn jump_preview(&self) -> Option<PhysicalPage> {
+        self.jump_preview
     }
 
     #[must_use]
@@ -77,39 +104,95 @@ impl PresentationState {
     }
 
     /// Set the audience crop. Beamer notes pages use [`NormalizedRect::LEFT_HALF`].
-    pub fn set_slide_crop(&mut self, crop: NormalizedRect) {
+    ///
+    /// # Errors
+    ///
+    /// Returns [`CoreError::InvalidDocumentCrop`] without mutation for invalid geometry.
+    pub fn set_slide_crop(&mut self, crop: NormalizedRect) -> Result<(), CoreError> {
+        if !crop.is_inside_unit_square() {
+            return Err(CoreError::InvalidDocumentCrop);
+        }
         self.slide_crop = crop;
+        Ok(())
     }
 
     /// Copy the audience-visible projection. Speaker notes are not readable here.
     #[must_use]
     pub fn audience_snapshot(&self) -> AudienceProjectionSnapshot {
         AudienceProjectionSnapshot {
+            stage: if self.stage == SessionStage::Presenting {
+                AudienceStage::Live
+            } else {
+                AudienceStage::Curtain
+            },
             generation: self.generation,
-            current_page: self.jump_preview.unwrap_or(self.current_page),
+            current_page: self.current_page,
             slide_crop: self.slide_crop,
             blank_mode: self.blank_mode,
             laser_pos_norm: self.laser_pos_norm,
             strokes: Arc::from(self.strokes.as_slice()),
+            visual: None,
         }
     }
 
-    /// Apply one presenter command.
+    /// Apply one presenter command using the app's monotonic clock sample.
     ///
     /// # Errors
     ///
-    /// Returns [`CoreError::PageOutOfRange`] for a preview outside the document,
-    /// [`CoreError::StaleGeneration`] when a shadow generation is not strictly
-    /// newer, and [`CoreError::EmptyShadow`] when the shadow buffer is empty.
-    pub fn apply(&mut self, command: PresentationCommand) -> Result<(), CoreError> {
+    /// Invalid stages, missing audience, pages and descriptors return a typed
+    /// error without changing state. `SwapScreens` must be handled by the app.
+    pub fn apply_at(
+        &mut self,
+        command: PresentationCommand,
+        now: Instant,
+    ) -> Result<(), CoreError> {
         debug!(op = command.name(), "apply presentation command");
+        let allowed = match &command {
+            PresentationCommand::LoadDocument { .. }
+            | PresentationCommand::LoadMappedDocument(_) => self.stage != SessionStage::Presenting,
+            PresentationCommand::StartPresentation { .. } => self.stage == SessionStage::Ready,
+            PresentationCommand::StopPresentation
+            | PresentationCommand::PauseTimer
+            | PresentationCommand::ResumeTimer
+            | PresentationCommand::ResetTimer => self.stage == SessionStage::Presenting,
+            PresentationCommand::CloseDocument | PresentationCommand::SwapScreens => true,
+            _ => self.stage != SessionStage::Idle,
+        };
+        if !allowed {
+            return Err(CoreError::NotReady { stage: self.stage });
+        }
         match command {
-            PresentationCommand::NextStep | PresentationCommand::NextLogicalSlide => {
-                self.step(1);
+            PresentationCommand::LoadMappedDocument(descriptor) => self.load_mapped(descriptor),
+            PresentationCommand::ReconfigureDocument(descriptor) => self.reconfigure(descriptor)?,
+            PresentationCommand::LoadDocument {
+                generation,
+                page_count,
+            } => {
+                self.load_document(generation, page_count)?;
             }
-            PresentationCommand::PreviousStep | PresentationCommand::PreviousLogicalSlide => {
-                self.step(-1);
+            PresentationCommand::StartPresentation { audience_available } => {
+                if !audience_available {
+                    return Err(CoreError::NoAudienceDisplay);
+                }
+                self.timer.start(now);
+                self.stage = SessionStage::Presenting;
             }
+            PresentationCommand::StopPresentation => {
+                self.timer.pause(now);
+                self.stage = SessionStage::Ready;
+            }
+            PresentationCommand::CloseDocument => *self = Self::idle(),
+            PresentationCommand::PauseTimer => self.timer.pause(now),
+            PresentationCommand::ResumeTimer => self.timer.resume(now),
+            PresentationCommand::ResetTimer => self.timer.reset(now),
+            PresentationCommand::NextStep => {
+                self.step(1, false);
+            }
+            PresentationCommand::PreviousStep => {
+                self.step(-1, false);
+            }
+            PresentationCommand::NextLogicalSlide => self.step(1, true),
+            PresentationCommand::PreviousLogicalSlide => self.step(-1, true),
             PresentationCommand::JumpPreview(page) => self.preview(page)?,
             PresentationCommand::CommitJump => self.commit_jump(),
             PresentationCommand::CancelJump => self.jump_preview = None,
@@ -117,7 +200,10 @@ impl PresentationState {
             PresentationCommand::UpdateLaserPointer(pos) => self.laser_pos_norm = pos,
             PresentationCommand::AppendStrokePoint(point) => self.append_point(point),
             PresentationCommand::ClearStrokes => self.strokes.clear(),
-            PresentationCommand::SwapScreens => self.screens_swapped = !self.screens_swapped,
+            PresentationCommand::SwapScreens => {
+                return Err(CoreError::ScreenSwapRequiresCoordinator);
+            }
+            PresentationCommand::CommitDocument(descriptor) => self.commit_document(descriptor)?,
             PresentationCommand::StageShadowDocument {
                 new_generation,
                 bytes,
@@ -126,17 +212,29 @@ impl PresentationState {
         Ok(())
     }
 
-    fn step(&mut self, delta: isize) {
-        if let Some(preview) = self.jump_preview.take() {
-            self.current_page = preview;
-            self.logical_slide = LogicalSlide(preview.0);
+    pub fn slide_map(&self) -> Option<&SlideMap> {
+        self.slide_map.as_ref()
+    }
+
+    fn step(&mut self, delta: isize, logical: bool) {
+        let page = self.jump_preview.unwrap_or(self.current_page);
+        let Some(map) = &self.slide_map else {
             return;
+        };
+        let next = match (logical, delta > 0) {
+            (false, true) => map.next_step(page),
+            (false, false) => map.previous_step(page),
+            (true, true) => map.next_logical(page),
+            (true, false) => map.previous_logical(page),
+        };
+        if let Some(next) = next {
+            if self.jump_preview.is_some() {
+                self.jump_preview = Some(next);
+            } else {
+                self.current_page = next;
+                self.logical_slide = map.logical_for(next).unwrap_or(LogicalSlide(0));
+            }
         }
-        let next = self.current_page.0 as isize + delta;
-        let last = self.page_count.saturating_sub(1) as isize;
-        let clamped = next.clamp(0, last) as usize;
-        self.current_page = PhysicalPage(clamped);
-        self.logical_slide = LogicalSlide(clamped);
     }
 
     fn preview(&mut self, page: PhysicalPage) -> Result<(), CoreError> {
@@ -146,6 +244,14 @@ impl PresentationState {
                 len: self.page_count,
             });
         }
+        if self
+            .slide_map
+            .as_ref()
+            .and_then(|m| m.logical_for(page))
+            .is_none()
+        {
+            return Err(CoreError::NotContentPage { page: page.0 });
+        }
         self.jump_preview = Some(page);
         Ok(())
     }
@@ -153,7 +259,11 @@ impl PresentationState {
     fn commit_jump(&mut self) {
         if let Some(page) = self.jump_preview.take() {
             self.current_page = page;
-            self.logical_slide = LogicalSlide(page.0);
+            self.logical_slide = self
+                .slide_map
+                .as_ref()
+                .and_then(|m| m.logical_for(page))
+                .unwrap_or(LogicalSlide(0));
         }
     }
 
@@ -186,137 +296,77 @@ impl PresentationState {
         if bytes.is_empty() {
             return Err(CoreError::EmptyShadow);
         }
-        if new_generation <= self.generation {
+        let map = self.slide_map.clone().ok_or(CoreError::EmptyDocument)?;
+        self.commit_document(DocumentDescriptor::mapped(
+            new_generation,
+            map,
+            self.slide_crop,
+        )?)
+    }
+
+    fn load_document(
+        &mut self,
+        generation: DocumentGeneration,
+        page_count: usize,
+    ) -> Result<(), CoreError> {
+        self.load_mapped(DocumentDescriptor::identity(generation, page_count)?);
+        Ok(())
+    }
+
+    fn load_mapped(&mut self, descriptor: DocumentDescriptor) {
+        *self = Self::idle();
+        self.stage = SessionStage::Ready;
+        self.install(descriptor, PhysicalPage(0));
+    }
+
+    fn install(&mut self, descriptor: DocumentDescriptor, position: PhysicalPage) {
+        self.generation = descriptor.generation;
+        self.page_count = descriptor.page_count();
+        self.current_page = descriptor
+            .slide_map()
+            .closest_content_at_or_before(position);
+        self.logical_slide = descriptor
+            .slide_map()
+            .logical_for(self.current_page)
+            .unwrap_or(LogicalSlide(0));
+        self.slide_crop = descriptor.slide_crop();
+        self.slide_map = Some(descriptor.slide_map().clone());
+        self.jump_preview = None;
+    }
+
+    fn reconfigure(&mut self, descriptor: DocumentDescriptor) -> Result<(), CoreError> {
+        if descriptor.generation != self.generation || descriptor.page_count() != self.page_count {
+            return Err(CoreError::InvalidReconfiguration);
+        }
+        self.install(descriptor, self.current_page);
+        Ok(())
+    }
+
+    fn commit_document(&mut self, descriptor: DocumentDescriptor) -> Result<(), CoreError> {
+        if descriptor.generation <= self.generation {
             return Err(CoreError::StaleGeneration {
                 current: self.generation.0,
-                next: new_generation.0,
+                next: descriptor.generation.0,
             });
         }
         tracing::info!(
-            generation = new_generation.0,
-            bytes = bytes.len(),
-            "staged shadow document"
+            generation = descriptor.generation.0,
+            pages = descriptor.page_count(),
+            "committed document descriptor"
         );
-        self.generation = new_generation;
-        self.jump_preview = None;
-        if self.current_page.0 >= self.page_count {
-            self.current_page = PhysicalPage(0);
-            self.logical_slide = LogicalSlide(0);
-        }
+        self.install(descriptor, self.current_page);
         Ok(())
     }
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
+mod tests;
 
-    fn state() -> PresentationState {
-        PresentationState::new(4).unwrap()
-    }
+#[cfg(test)]
+mod lifecycle_tests;
 
-    #[test]
-    fn empty_document_is_rejected() {
-        assert_eq!(
-            PresentationState::new(0).unwrap_err(),
-            CoreError::EmptyDocument
-        );
-    }
+#[cfg(test)]
+mod property_tests;
 
-    #[test]
-    fn audience_snapshot_tracks_generation_and_has_no_notes_field() {
-        let mut presentation = state();
-        let before = presentation.audience_snapshot();
-        assert_eq!(before.generation, DocumentGeneration(1));
-        assert!(before.laser_pos_norm.is_none());
-        assert!(before.blank_mode.is_none());
-
-        presentation
-            .apply(PresentationCommand::StageShadowDocument {
-                new_generation: DocumentGeneration(2),
-                bytes: Arc::new(b"%PDF".to_vec()),
-            })
-            .unwrap();
-        let after = presentation.audience_snapshot();
-        assert_eq!(after.generation, DocumentGeneration(2));
-        let rendered = format!("{after:?}");
-        assert!(!rendered.contains("notes"));
-    }
-
-    #[test]
-    fn blank_toggle_is_shown_on_the_snapshot_and_clears_on_repeat() {
-        let mut presentation = state();
-        presentation
-            .apply(PresentationCommand::ToggleBlank(BlankMode::Black))
-            .unwrap();
-        assert_eq!(
-            presentation.audience_snapshot().blank_mode,
-            Some(BlankMode::Black)
-        );
-        presentation
-            .apply(PresentationCommand::ToggleBlank(BlankMode::Black))
-            .unwrap();
-        assert_eq!(presentation.audience_snapshot().blank_mode, None);
-    }
-
-    #[test]
-    fn swap_screens_does_not_change_the_audience_page() {
-        let mut presentation = state();
-        presentation.apply(PresentationCommand::NextStep).unwrap();
-        let page = presentation.audience_snapshot().current_page;
-        presentation
-            .apply(PresentationCommand::SwapScreens)
-            .unwrap();
-        assert!(presentation.screens_swapped());
-        assert_eq!(presentation.audience_snapshot().current_page, page);
-        assert_eq!(
-            presentation.audience_snapshot().slide_crop,
-            NormalizedRect::FULL
-        );
-    }
-
-    #[test]
-    fn preview_out_of_range_is_an_error_and_stale_generation_is_rejected() {
-        let mut presentation = state();
-        let error = presentation
-            .apply(PresentationCommand::JumpPreview(PhysicalPage(9)))
-            .unwrap_err();
-        assert_eq!(error, CoreError::PageOutOfRange { page: 9, len: 4 });
-        let stale = presentation
-            .apply(PresentationCommand::StageShadowDocument {
-                new_generation: DocumentGeneration(1),
-                bytes: Arc::new(vec![1]),
-            })
-            .unwrap_err();
-        assert_eq!(
-            stale,
-            CoreError::StaleGeneration {
-                current: 1,
-                next: 1
-            }
-        );
-    }
-
-    #[test]
-    fn step_clamps_at_both_ends() {
-        let mut presentation = state();
-        presentation
-            .apply(PresentationCommand::PreviousStep)
-            .unwrap();
-        assert_eq!(presentation.current_page(), PhysicalPage(0));
-        for _ in 0..10 {
-            presentation.apply(PresentationCommand::NextStep).unwrap();
-        }
-        assert_eq!(presentation.current_page(), PhysicalPage(3));
-    }
-
-    #[test]
-    fn halves_cover_the_unit_square_without_overlap() {
-        assert!(NormalizedRect::FULL.is_inside_unit_square());
-        assert!(NormalizedRect::LEFT_HALF.is_inside_unit_square());
-        assert!(NormalizedRect::RIGHT_HALF.is_inside_unit_square());
-        let left = std::hint::black_box(NormalizedRect::LEFT_HALF);
-        let right = std::hint::black_box(NormalizedRect::RIGHT_HALF);
-        assert!(left.x + left.w <= right.x + f32::EPSILON);
-    }
-}
+#[cfg(test)]
+mod mapping_tests;

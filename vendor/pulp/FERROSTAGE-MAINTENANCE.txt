@@ -1,0 +1,3 @@
+Isolated evaluation based on pulp 0.22.3. Original notices retained.
+The only source-package change is a dependency on published pastey 0.2.3
+under the existing paste alias; no upstream Rust source is renamed or edited.

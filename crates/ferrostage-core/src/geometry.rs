@@ -11,6 +11,18 @@ pub struct NormalizedRect {
 }
 
 impl NormalizedRect {
+    pub const TOP_HALF: Self = Self {
+        x: 0.0,
+        y: 0.0,
+        w: 1.0,
+        h: 0.5,
+    };
+    pub const BOTTOM_HALF: Self = Self {
+        x: 0.0,
+        y: 0.5,
+        w: 1.0,
+        h: 0.5,
+    };
     pub const FULL: Self = Self {
         x: 0.0,
         y: 0.0,

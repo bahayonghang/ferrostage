@@ -1,6 +1,6 @@
 # FerroStage 实施计划 v0.3
 
-状态：workspace 骨架已就绪（2026-10-14），演示器尚未实现。本文件是 v0.2 方案（`ref/implement_plan.md`，未入库）的修订版，也是 Trellis 父任务 `10-14-presenter-v0.3` 的来源需求。
+状态：01/02/04/05/06技术交付已独立验证；03自动与静态检查通过，物理验收待验；Gate A已通过。07已采用获批五包维护源及三个精确许可证例外，v6产品自动检查通过（49 GPUI/145默认测试、严格lint、native build），焦点恢复与保存重试反馈已修复并通过独立检查和原生复测；原生A/B/C、主题/语言、错误导入、选择器与保存角色重启已部分验证。物理拓扑、完整原生矩阵与Gate B仍未完成；08–11、Gate C/D、M1/M2未完成。上游HarfRust六项既存直接lint失败保留，无lint/安全通告豁免。当前恢复索引见 `.trellis/tasks/10-14-presenter-v0.3/execution-state.md`。本文件是 v0.2 方案（`ref/implement_plan.md`，未入库）的修订版，也是 Trellis 父任务 `10-14-presenter-v0.3` 的来源需求。
 
 FerroStage 是一个 clean-room 的 PDF / Beamer 双屏演示器。目标行为：讲者端看到当前页、下一页、备注、计时器；观众端只看到幻灯片与激光笔/批注图层。Pympress 源码不是输入。许可证 MIT OR Apache-2.0。
 
@@ -10,11 +10,11 @@ FerroStage 是一个 clean-room 的 PDF / Beamer 双屏演示器。目标行为�
 | --- | --- | --- | --- |
 | 1 | 版本基线过期：Rust 1.88–1.92、pdfium-render 0.8.27、lopdf 0.34、gpui-kit 0.7.0、hayro-syntax 0.7.1、Zed rev 未落地 | 与仓库实际 pin 冲突，子任务会按错误版本写代码 | 以 §2 的仓库 pin 为准：Rust 1.99.0、pdfium-render 0.9.4、lopdf 0.45.0、gpui-kit 0.7.3 / Zed `v1.23.3`、hayro-syntax 0.8.0（未链接） |
 | 2 | 大量 LaTeX 编辑场景：`latexmk -pvc`、`xelatex` 边改边讲、PoC-5 十次重编译、"LaTeX 重编译自动热重载"作为 P0 | 偏离"只做 PDF/Beamer 展示"的产品定位，膨胀 P0 范围 | 删除现行正向 LaTeX 工具链功能与 PoC-5，保留明确历史/排除说明。文件热重载降为 P2 通用能力（"磁盘上的 PDF 被替换"），验收不涉及任何 LaTeX 工具 |
-| 3 | PDF 注释编辑（/Text、/FreeText 增删改、lopdf 写回 /Annots、`.ferrostage.tmp` 原子替换） | 这是 PDF 编辑功能，不是展示；且是 R06"损坏用户文件"风险的唯一来源 | 整体删除。新增强约束：FerroStage 永不向用户 PDF 写入任何字节；手绘批注仅存于会话内存 |
+| 3 | PDF 注释编辑（/Text、/FreeText 增删改、lopdf 写回 /Annots、`.ferrostage.tmp` 原子替换） | 这是 PDF 编辑功能，不是展示；且是 R06"损坏用户文件"风险的唯一来源 | 整体删除。新增强约束：FerroStage 永不向用户 PDF 写入任何字节；手绘批注仅存于会话内存。本行 `.ferrostage.tmp` 只追述已删除的旧路径；现行原子替换仅用于设置文件（唯一同目录临时文件，如 `settings.toml.tmp-<pid>-<seq>`）与 FerroStage 自身产物（ADR-004） |
 | 4 | 没有应用生命周期：`PresentationState::new` 即进入演讲态，观众窗口隐含随文档打开 | 一打开 PDF 投影屏就被接管；无法先检查备注、调整设置再上场 | 新增 `SessionStage`：`Idle → Ready → Presenting`。只有导入 PDF 后点击"开始演示"才创建观众窗口并启动计时器（§4.2） |
 | 5 | 显示器只用 `Option<u32>` 索引表示，"显式屏幕角色绑定"只有一句话 | 三屏环境下索引不稳定、无法指定第三块屏闲置，重启后角色漂移 | 新增显示器拓扑模型：稳定 `MonitorId`、每屏一个 `MonitorRole`、持久化到设置、1/2/3+ 屏与热插拔回退规则（§4.3） |
 | 6 | 设置系统只有 6 个键、无文件位置、无保存、无 UI | "主题/快捷键自定义"列为 P2 但无落地路径 | 新增完整设置系统：分节 schema、配置目录、原子保存、`schema_version` 迁移、设置界面（§4.4） |
-| 7 | 范围过宽：排练统计导出、中英双语、主题、Linux/macOS 安装包、Beamer animate、libVLC+GStreamer 双后端并列 | 单人项目无法在 M1 前收敛 | 统计导出、animate、第二媒体后端移出 v1.0；i18n/主题缩为"设置项 + 资源文件已存在"的最小实现；跨平台打包留在 Phase 3 |
+| 7 | 范围过宽：排练统计导出、中英双语、主题、Linux/macOS 安装包、Beamer animate、libVLC+GStreamer 双后端并列 | 单人项目无法在 M1 前收敛 | 统计导出、animate、第二媒体后端移出 v1.0；i18n/主题采用最小真实生效路径；本轮追加的Claude视觉规范由根`DESIGN.md`统一，07/08/09分别实施基础主题/工作台/设置；跨平台打包留在 Phase 3 |
 | 8 | 渲染优先级表在 v0.2 §6.3 与 `docs/architecture.md` 不一致 | 实现时二选一会造成文档漂移 | 以本文 §4.6 为唯一来源，`architecture.md` 随 `01-docs-sync` 同步 |
 | 9 | 不变量 2 要求"弹窗前把焦点切回讲者窗"，但未规定非演示态观众窗口的存在性 | 观众窗口在 Ready 态是否存在无定义 | 新增不变量 7：观众窗口仅在 `Presenting` 存在；任何其他阶段若窗口存在只能绘制纯黑幕布 |
 
@@ -120,7 +120,7 @@ enumerate_monitors返回Result<Vec<MonitorInfo>,PlatformError>，零屏正常空
 
 ### 4.4 设置系统
 
-配置文件：`<config_dir>/ferrostage/settings.toml`。`config_dir` 为 Windows `%APPDATA%`、Linux `$XDG_CONFIG_HOME`（默认 `~/.config`）、macOS `~/Library/Application Support`。CLI `--config <path>` 覆盖。保存写 `settings.toml.tmp` 后原子重命名；读取失败回退默认并在讲者窗口提示，绝不静默覆盖损坏文件（改名为 `settings.toml.broken-<timestamp>`）。
+配置文件：`<config_dir>/ferrostage/settings.toml`。`config_dir` 为 Windows `%APPDATA%`、Linux `$XDG_CONFIG_HOME`（默认 `~/.config`）、macOS `~/Library/Application Support`。CLI `--config <path>` 覆盖。保存写唯一同目录临时文件 `<config-file-name>.tmp-<pid>-<seq>`（默认如 `settings.toml.tmp-<pid>-<seq>`），sync、关闭后原子替换配置文件；自定义配置名沿用其实际文件名。读取失败回退默认并在讲者窗口提示，绝不静默覆盖损坏文件（改名为 `settings.toml.broken-<timestamp>`）。
 
 ```toml
 schema_version = 1
@@ -242,7 +242,7 @@ Phase 0 必须实机通过的 PoC（对应子任务见 §7）：
 | --- | --- | --- |
 | Phase 0 文档与契约 | `01-docs-sync`、`02-settings-schema`、`03-monitor-topology`、`04-session-lifecycle` | 纯 Rust 单测通过；现行正向能力无禁用功能；历史/排除命中逐条审查 |
 | Phase 1 可用 Alpha | `05-pdf-raster`、`06-beamer-document-model`、`07-gpui-shell`、`08-presenter-workbench` | **M1 / Gate C**：01–08的P0 Alpha真实汇报（Gate B先占位、角色可配置文件）；08 P1增强仍待M2完整验收，不宣称所有产品P0完成 |
-| Phase 2 Beta | `09-settings-ui`、`10-hot-reload`、`11-media-playback` | **M2 / Gate D**：09最终角色/设置UI、08全部P1、10热重载/11媒体、父AC-1…9全部通过 |
+| Phase 2 Beta | `09-settings-ui`、`10-hot-reload`、`11-media-playback` | **M2 / Gate D**：09最终角色/设置UI、08全部P1、10热重载/11媒体、父AC-1…10全部通过（含Claude原生主题验收） |
 | Phase 3 Stable | 跨平台与安装包（另行建任务） | **M3**：三平台 CI 全绿，120 分钟压测 |
 
 依赖关系写在各子任务 `prd.md`，父子结构本身不表示顺序。

@@ -1,10 +1,29 @@
 # FerroStage
 
-A modern, GPU-accelerated, lock-free PDF and Beamer presentation stage built with Rust and GPUI.
+A modern, GPU-accelerated, lock-free PDF & Beamer presentation stage built with Rust and GPUI.
 
 Windows 11 is the first target. The process stays offline: no telemetry, no account.
 
 This repository is the workspace skeleton. The presenter window, PDFium raster worker, and media playback are not linked yet. Domain types, settings, the CLI, and the license gate do compile.
+
+## Planned for v1.0
+
+- Open a PDF (CLI, dialog, drag-and-drop, recent files). Import lands in Ready; the speaker starts explicitly.
+- Separate presenter and audience windows, projection by monitor role, one-key swap, black/white blank, fullscreen.
+- Beamer: same-page left/right or top/bottom notes, `notes:` pages, `\pause` overlay steps, PageLabel logical pages.
+- Presenter workbench: current page, next page, notes, timer (count up, count down, warning), clock, jump preview, 1–16 page thumbnail grid.
+- Normalized laser pointer and ink stored in session memory. Nothing is written to the PDF.
+- Settings system and settings UI; monitor identification and role assignment.
+- Generic hot reload when the PDF file on disk is replaced (P2).
+- GIF and offscreen video (P2).
+
+## Not in v1.0
+
+A LaTeX source or compiler toolchain; PDF annotation editing or write-back (read-only discovery of media structure stays); rehearsal-statistics export; Beamer `animate`; cloud, accounts, telemetry; PPTX.
+
+## GitHub topics
+
+Suggested topics keep `beamer` and drop `latex` when that topic is set. `beamer` means consuming a Beamer-exported PDF, not a LaTeX toolchain.
 
 ## Workspace
 

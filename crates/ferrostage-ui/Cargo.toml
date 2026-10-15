@@ -7,8 +7,25 @@ license.workspace = true
 publish.workspace = true
 rust-version.workspace = true
 
+[features]
+default = []
+gpui = ["dep:gpui", "dep:gpui_platform"]
+pdfium = ["ferrostage-render/pdfium"]
+# Headless GPUI TestPlatform; never opens an OS window. Not a default feature.
+test-support = ["gpui", "gpui/test-support"]
+
 [dependencies]
 ferrostage-core.workspace = true
+ferrostage-platform.workspace = true
+ferrostage-settings.workspace = true
+ferrostage-render.workspace = true
+ferrostage-pdf.workspace = true
+gpui = { workspace = true, optional = true }
+gpui_platform = { workspace = true, optional = true }
+uuid.workspace = true
+thiserror.workspace = true
+toml.workspace = true
+tracing.workspace = true
 
 [lints]
 workspace = true

@@ -27,7 +27,6 @@ mod order_tests {
 
 /// Zero-based index of a logical Beamer slide.
 ///
-/// Overlay steps inside one logical slide are not modeled yet. Until the Beamer
-/// parser lands, a logical slide moves one physical page at a time.
+/// A logical group contains one or more navigable content steps in SlideMap.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub struct LogicalSlide(pub usize);

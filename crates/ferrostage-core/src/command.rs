@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use crate::DocumentDescriptor;
 use crate::ids::{DocumentGeneration, PhysicalPage};
 use crate::snapshot::BlankMode;
 
@@ -10,6 +11,20 @@ use crate::snapshot::BlankMode;
 /// generation increased. It does not parse or retain the bytes.
 #[derive(Clone, Debug)]
 pub enum PresentationCommand {
+    LoadMappedDocument(DocumentDescriptor),
+    ReconfigureDocument(DocumentDescriptor),
+    LoadDocument {
+        generation: DocumentGeneration,
+        page_count: usize,
+    },
+    StartPresentation {
+        audience_available: bool,
+    },
+    StopPresentation,
+    CloseDocument,
+    PauseTimer,
+    ResumeTimer,
+    ResetTimer,
     NextStep,
     PreviousStep,
     NextLogicalSlide,
@@ -21,7 +36,9 @@ pub enum PresentationCommand {
     UpdateLaserPointer(Option<(f32, f32)>),
     AppendStrokePoint((f32, f32)),
     ClearStrokes,
+    /// App intent: the role coordinator handles this before calling core.
     SwapScreens,
+    CommitDocument(DocumentDescriptor),
     StageShadowDocument {
         new_generation: DocumentGeneration,
         bytes: Arc<Vec<u8>>,
@@ -32,6 +49,15 @@ impl PresentationCommand {
     #[must_use]
     pub fn name(&self) -> &'static str {
         match self {
+            Self::LoadMappedDocument(_) => "load_mapped_document",
+            Self::ReconfigureDocument(_) => "reconfigure_document",
+            Self::LoadDocument { .. } => "load_document",
+            Self::StartPresentation { .. } => "start_presentation",
+            Self::StopPresentation => "stop_presentation",
+            Self::CloseDocument => "close_document",
+            Self::PauseTimer => "pause_timer",
+            Self::ResumeTimer => "resume_timer",
+            Self::ResetTimer => "reset_timer",
             Self::NextStep => "next_step",
             Self::PreviousStep => "previous_step",
             Self::NextLogicalSlide => "next_logical_slide",
@@ -44,6 +70,7 @@ impl PresentationCommand {
             Self::AppendStrokePoint(_) => "append_stroke_point",
             Self::ClearStrokes => "clear_strokes",
             Self::SwapScreens => "swap_screens",
+            Self::CommitDocument(_) => "commit_document",
             Self::StageShadowDocument { .. } => "stage_shadow_document",
         }
     }

@@ -7,6 +7,11 @@ yanked = "warn"
 
 [licenses]
 version = 2
+exceptions = [
+    { crate = "arrayref@0.3.9", allow = ["BSD-2-Clause"] },
+    { crate = "libbz2-rs-sys@0.2.5", allow = ["bzip2-1.0.6"] },
+    { crate = "cbindgen@0.28.0", allow = ["MPL-2.0"] },
+]
 confidence-threshold = 0.8
 allow = [
     "MIT",

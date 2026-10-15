@@ -1,0 +1,55 @@
+# ADR-008: Resolve the GPUI dependency gate before shell integration
+
+## Status
+
+Bounded maintenance evaluation approved by the user on 2026-10-14: "批准维护评估，保留门禁（推荐）". This authorizes preparing an isolated candidate dependency/API patch or evaluating a maintained source within task07. Subsequently the user explicitly approved the final reviewed candidate and exactly three license exceptions: "批准采纳及这三个精确例外（推荐）". The approved source set and exact packages are recorded below and in the parent proposal. No advisory or lint waiver is approved; actual product integration must still pass its gates. ADR-001/ADR-005 reflect this bounded decision. This work belongs to the existing task07; it does not create another task tree.
+
+## Observed conflict
+
+Task07 tested both allowed routes in isolated workspaces. Zed `v1.23.3` resolves to `96a1b1b5389efff473fc2306f7f8c690f2e1a417`; kit/component `0.7.3` uses pre/platform `0.3.9`, whose published upstream identity is `93d745668805029476e6d7fbb19652116fed51de`. Both Windows MSVC builds returned zero. Neither executable was launched or integrated into FerroStage.
+
+Both full dependency audits returned exit5. A smaller pre/platform-only graph with default features disabled also returned exit5. The common findings are unmaintained `paste`, `rustybuzz` and `ttf-parser`, plus licenses outside the current explicit list (`arrayref` BSD-2-Clause and Apple build dependency `cbindgen` MPL-2.0). The tagged route additionally has `libbz2-rs-sys` bzip2-1.0.6; the component route has further findings. These are not interchangeable license categories, and the advisories are maintenance notices, not evidence of an exploit.
+
+Exact commands, dependency edges, target/build attribution, source files, failed attempts and hashes are in [task07's dependency report](../../.trellis/tasks/10-14-07-gpui-shell/research/dependency-gate.md). The API research is in [gpui-display-api.md](../../.trellis/tasks/10-14-07-gpui-shell/research/gpui-display-api.md). The [independent review](../../.trellis/tasks/10-14-07-gpui-shell/research/independent-check.md) confirmed the blocker, reran the minimal full audit with exit5 and verified unchanged product inputs. It also corrected asynchronous activation/fullscreen assumptions; a native confirmation protocol remains an implementation prerequisite.
+
+## Maintenance evidence and limits
+
+The [resvg changelog](https://github.com/linebender/resvg/blob/main/CHANGELOG.md) records a maintained text-stack migration in 0.48.0. Both approved GPUI families require resvg0.46 and call ttf-parser directly, so updating resvg alone is insufficient. No compatible lockfile-only resolution has been demonstrated.
+
+On 2026-10-14, the [official latest Zed release](https://github.com/zed-industries/zed/releases/tag/v1.23.3) is still the approved tag. The observed [main workspace manifest](https://raw.githubusercontent.com/zed-industries/zed/main/Cargo.toml) still selects resvg0.46, and the [GPUI manifest](https://raw.githubusercontent.com/zed-industries/zed/main/crates/gpui/Cargo.toml) and [SVG renderer](https://raw.githubusercontent.com/zed-industries/zed/main/crates/gpui/src/svg_renderer.rs) still declare/use ttf-parser0.25. These mutable-main observations are research leads, not a new pinned dependency or a complete audit of all upstream branches. An ordinary switch to "latest" is therefore not an evidenced solution.
+
+## Approved evaluation scope
+
+The user authorized the following bounded dependency-maintenance evaluation within task07. Product I-2 remains blocked until the candidate and any remaining policy decisions meet these conditions:
+
+1. Use the exact tagged source as a baseline and evaluate a maintained upstream revision if one becomes available; otherwise prepare the smallest reviewable dependency/API patch. Record upstream identities, patch diff, notices and all changed dependency edges. No publishing or pushing a fork is authorized.
+2. Replace the obsolete text/parser and macro edges with maintained implementations, with regression evidence for SVG text, font fallback, image decoding and the existing display API. Do not merely rename an unmaintained crate or add advisory ignores.
+3. Present remaining license additions separately by exact crate, version, license and build/runtime use. This scope approval alone would not approve any `deny.toml` exception. GPL/AGPL exclusion, the unsafe-code rule and full dependency coverage remain unchanged.
+4. Produce a candidate manifest/lock/patch and run the complete dependency audit, Windows native compile, lint and relevant regressions in isolation. Record failures without changing product acceptance criteria.
+5. Only after the candidate and any explicit license decision are reviewed, synchronize ADR-001, parent/child plans and the product dependency wiring, then resume I-2 and I-3 onward.
+
+The approval is for evaluation and preparation of a reviewable candidate, not acceptance of a new production dependency. Any remaining license exception must be presented with the concrete graph and attribution evidence after the technical evaluation.
+
+## Repaired candidate — independent review complete, adoption approved
+
+The [maintenance report](../../.trellis/tasks/10-14-07-gpui-shell/research/maintenance-report.md) records a candidate based on the same exact tag. It updates the GPUI text API to resvg/usvg0.48.1 and skrifa0.44.0, preserves SVGZ/codecs, replaces the pulp/metal macro dependency with the real pastey0.2.3 package, and moves cosmic-text0.19.0 to fontdb0.24.0 for the full WGPU/Web graph. One GPUI constant-lint repair preserves the exact f32 bits. The [patch](../../.trellis/tasks/10-14-07-gpui-shell/research/maintenance-source.patch), retained locks, source verification and failed attempts are reviewable.
+
+The implementer's final Windows build, relevant lint/typecheck, direct WGPU consumer compile and 43 distinct tests passed. The full unchanged audit returned **exit4 / FAIL**: advisories, bans and sources passed; arrayref0.3.9 (BSD-2-Clause), libbz2-rs-sys0.2.5 (bzip2-1.0.6) and cbindgen0.28.0 (MPL-2.0, Apple build tool) remain rejected. This is the historical pre-review candidate; the later independent repairs and final reconstruction set below supersede it. None of these results accepts a product dependency or completes task07.
+
+The independent reviewer subsequently reproduced four glyph-query compatibility regressions: cmap formats2/13, symbol-table priority and symbol-only coverage. The [red regression](../../.trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-cmap-probe-red.log) returned exit101. The later repair below restores and checks the old coverage semantics; the original43 tests only substantiate their actual coverage.
+
+The helper repair passed targeted comparisons, but a strict SVG pixel comparison exposed a remaining format2 rendering difference in HarfRust. Root reviewed the [minimal repair boundary](../../.trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-format2-scope.md) and authorized evaluation of a local MIT harfrust0.12 patch in `tables.rs` and `charmap.rs`: preserve encoding priority, share selection across cached/FontInstance paths and map format2 through checked read-fonts APIs. This adds a fifth maintained package to the candidate under evaluation, without changing shaping rules, outlines or product policy. The strict regressions now pass: formats2/13 have identical full RGBA output to the old stack, with 268 pixels and one fallback each, and both HarfRust constructors pass boundary comparisons. The final repaired candidate build, GPUI/root lint, typecheck and Windows WGPU consumer check returned zero. Direct HarfRust lint still fails with six findings in unchanged upstream files; an isolated original0.12 baseline has exactly the same six messages and locations. These remain recorded failures, not waived checks. No adoption or license decision is implied.
+
+The [final independent review](../../.trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-report.md) is complete. Its sole reconstruction entry is [maintenance-independent-prepare-final.py](../../.trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-prepare-final.py), incorporating the helper and HarfRust repairs and final locks. All526 source files reconstructed identically; all753 manifest records matched independent Root read-back. The original patch/preparer alone is not the final candidate. GPUI16, root7, HarfRust205 and separate diagnostic4 tests pass; overlapping diagnostic coverage is not added to library counts. Full unchanged deny still exits4 for exactly the same three license pairs.
+
+The [exact license/adoption proposal](../../.trellis/tasks/10-14-presenter-v0.3/research/gpui-license-review.md) was explicitly approved after independent review. Only the final five-package maintained set and arrayref@0.3.9 BSD-2-Clause, libbz2-rs-sys@0.2.5 bzip2-1.0.6, cbindgen@0.28.0 MPL-2.0 are authorized. Product integration and full-graph revalidation are now in progress; the original evaluation audit remains a historical FAIL, not retroactively PASS. It limits any future exception to these three exact versions and keeps all other gates. Fontdb0.24 retains an upstream-maintained metadata subset derived from ttf-parser; package-node advisory success does not imply all old parser source was removed. Apple/Linux/Web native runs, actual windows, focus, fullscreen and Gate B remain unverified.
+
+## Unchanged acceptance and recovery
+
+No product code or policy was changed by the route spikes. Task06's independently checked compilation inputs remain the baseline; task07 product tests and windows remain NOT_RUN. Claude theme planning in `DESIGN.md` is ready, but theme implementation and screenshots are not delivered.
+
+Even a resolved dependency gate will not complete Gate B: physical unplug/port changes are unavailable this turn by explicit user reply. Gate B continues to block08 real dual-window integration;09 depends on08, and Gate C/other task prerequisites continue to block10/11 integration. No P2 requirement is removed. Resume from task07 I-2 with the approved maintained set and exact exceptions, not task01. Complete actual product policy/build checks before I-3, preserve all native and physical acceptance requirements.
+
+## Product adoption execution boundary
+
+2026-10-15T00:26:24.572570+00:00: user approved the exact review proposal. Task07 may retain the five reviewed packages in a clearly separated local vendor area, preserve licenses/source identity and required original regression fixtures, wire optional app/ui features plus CI, and add only the three approved version-specific exceptions. Evaluation-only programs and generated derivative font binaries are not production artifacts. Additional dependency/API upgrades, advisory ignores, lint allows or broader license entries are not included. The old candidate evidence remains immutable; actual product commands and source deltas get new records. No commit, push, archive or publication is authorized.

@@ -22,3 +22,42 @@ jobs:
         run: cargo test --workspace --all-targets
       - name: cargo-deny
         run: cargo deny check
+
+  pdfium-native:
+    name: PDFium 7881 Windows fixtures
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.99.0
+        with:
+          components: clippy
+      - uses: taiki-e/install-action@cargo-deny
+      - name: Acquire verified runtime and complete notices
+        shell: pwsh
+        run: |
+          $library = ./scripts/fetch-pdfium.ps1 -Destination "$env:RUNNER_TEMP/pdfium-7881"
+          "FERROSTAGE_TEST_PDFIUM=$library" >> $env:GITHUB_ENV
+      - name: Verify independent fixture reproducibility
+        run: |
+          python fixtures/pdf/generate.py
+          git diff --exit-code -- fixtures/pdf
+      - name: Native clippy
+        run: cargo clippy -p ferrostage-pdf -p ferrostage-render -p ferrostage-document --features pdfium --all-targets --locked -- -D warnings
+      - name: Feature-on fixture suite must run
+        run: cargo test -p ferrostage-pdf -p ferrostage-render -p ferrostage-document --features pdfium --all-targets --locked
+      - name: Native feature dependency license gate
+        run: cargo deny --all-features check
+      - name: Native GPUI shell compile gate (does not launch windows)
+        run: cargo build -p ferrostage-app --features gpui,pdfium --locked
+      - name: Native GPUI shell lint
+        run: cargo clippy -p ferrostage-app -p ferrostage-ui --features gpui,pdfium --all-targets --locked -- -D warnings
+      - name: Headless GPUI window and entity regression (TestPlatform only)
+        run: cargo test -p ferrostage-ui --features test-support --lib --locked
+      - name: Normal native suite must fail with a missing runtime
+        shell: pwsh
+        run: |
+          $env:FERROSTAGE_TEST_PDFIUM = "$env:RUNNER_TEMP/nonexistent-pdfium.dll"
+          cargo test -p ferrostage-render --features pdfium --test native --locked 2>&1 | Tee-Object -FilePath native-missing.log
+          if ($LASTEXITCODE -eq 0) { throw 'Native fixture suite incorrectly succeeded without PDFium' }
+          if (-not (Select-String native-missing.log -SimpleMatch 'LibraryUnavailable' -Quiet)) { throw 'Unexpected native failure' }
+          exit 0
