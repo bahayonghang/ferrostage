@@ -1,3 +1,4 @@
+{"file": ".trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md", "reason": "Latest explicit user authorization: implementation-first gates, deferred hardware/native/size/performance matrices, retained functional checks and closeout scope"}
 {"file": ".trellis/spec/backend/index.md", "reason": "Backend crate rules and quality checklist"}
 {"file": ".trellis/spec/backend/directory-structure.md", "reason": "Topology dependency boundary and winsafe all-required-bits native validation contract"}
 {"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "just ci and forbidden patterns"}

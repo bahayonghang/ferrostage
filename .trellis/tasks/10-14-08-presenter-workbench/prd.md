@@ -1,5 +1,7 @@
 # 讲者工作台：当前页/下一页/备注/计时/缩略图/激光笔/画笔
 
+> Current acceptance policy (2026-10-15 user revision): `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md` supersedes older hardware/matrix blockers below. Implement all features first; retain automatic/feature/native-functional checks. Physical, exhaustive native/size and performance/soak matrices are deferred, not PASS. Gate B implementation is satisfied by V16;08 may start. Gate C/D are functional integration gates. Historical results and product contracts remain unchanged.
+
 父任务：`10-14-presenter-v0.3`（R-43）。复杂任务，设计和步骤见本目录design.md / implement.md。
 
 ## Goal

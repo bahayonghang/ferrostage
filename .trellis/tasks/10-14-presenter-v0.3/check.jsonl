@@ -1,3 +1,4 @@
+{"file": ".trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md", "reason": "Latest explicit user authorization: implementation-first gates, deferred hardware/native/size/performance matrices, retained functional checks and closeout scope"}
 {"file": ".trellis/spec/backend/index.md", "reason": "Backend crate rules and quality checklist"}
 {"file": ".trellis/spec/frontend/index.md", "reason": "GPUI view layer rules and window boundaries"}
 {"file": "docs/PROJECT_PLAN.md", "reason": "v0.3 source plan: scope, invariants, settings schema, monitor roles"}

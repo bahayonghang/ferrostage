@@ -1,5 +1,7 @@
 # Implement — 10
 
+> Current acceptance policy (2026-10-15 user revision): `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md` supersedes older hardware/matrix blockers below. Implement all features first; retain automatic/feature/native-functional checks. Physical, exhaustive native/size and performance/soak matrices are deferred, not PASS. Gate B implementation is satisfied by V16;08 may start. Gate C/D are functional integration gates. Historical results and product contracts remain unchanged.
+
 1. **I-1 事务/依赖评审**：核04descriptor/06map/05active-candidate/08snapshot，审所有线程与Prepare/Commit/Abort/Retire ack、最新token/close，Gate C完整接线前通过。
 2. **I-2 watcher/IO**：父目录过滤notify、300ms静默/100ms稳定stat/尾EOF/read后stat、timeout/取消；伪事件源测试不依赖真实30s，fixture只temp，删除SHADOW_TMP_SUFFIX写PDF描述。
 3. **I-3 候选构建**：structure worker lopdf+06；render worker唯一PDFium Prepare返回metadata→06建图定位→PreRender明确requests→ready，测试候选不被current-only过滤、active继续服务、load坏/晚到/连续event Abort。
@@ -14,3 +16,8 @@
 ## 2026-10-14 依赖审计 checkpoint
 
 07/08交付及Gate C未通过；完整热重载接线未开始，P2仍在范围内。 本任务保持planning，未start、未写本任务产品代码、未运行本任务验收。现有规划保留；恢复前先核父execution-state.md与07依赖门报告。03物理拔插/换接口本轮不可用，不能用模拟输入替代Gate B。无提交或归档。
+
+
+## Resume audit - 2026-10-15
+
+I-1/full transaction integration remains blocked by08 and Gate C. Existing05 candidate-worker APIs are delivered, but the watcher and end-to-end publication/retirement flow remain unimplemented. P2 scope is retained. See parent `research/resume-2026-10-15.md` and07 `research/resume-2026-10-15-v16-review.md` for current-code evidence and exact remaining gates. Task status and acceptance checkboxes are unchanged. No commit, push or archive.

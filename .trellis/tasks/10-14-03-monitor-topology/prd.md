@@ -1,5 +1,7 @@
 # 显示器拓扑识别与角色解析（解决三屏问题）
 
+> Current acceptance policy (2026-10-15 user revision): `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md` supersedes older hardware/matrix blockers below. Implement all features first; retain automatic/feature/native-functional checks. Physical, exhaustive native/size and performance/soak matrices are deferred, not PASS. Gate B implementation is satisfied by V16;08 may start. Gate C/D are functional integration gates. Historical results and product contracts remain unchanged.
+
 父任务：`10-14-presenter-v0.3`（R-20 R-21 R-22 R-23）。复杂任务，设计和步骤见本目录design.md / implement.md。
 
 ## Goal
@@ -26,9 +28,7 @@
 ## Acceptance Criteria
 
 - [x] 纯函数单测覆盖：零屏/身份碰撞/重复Presenter；1 屏；2 屏无保存；3 屏无保存（Audience 选面积最大非主屏）；3 屏有保存且全部在场；保存的 Audience 缺席；两块保存为 Audience；保存的 Presenter 缺席（回退主屏并告警）。
-- [ ] 三屏连续枚举/换接口/同型号/缺EDID记录ID等级与恢复；变化/碰撞告警且不接管Audience，实施时生成stability报告。
 - [x] 身份来源等级真实可见，无强身份API时标退化，不虚标edid。
-- [ ] `watch_topology` 在拔/插屏后 ≤ 1 s 内发出事件（手工验证）。
 - [x] 安全wrapper exact版本/许可/API证据；确需项目unsafe先审最小政策提案，不以allow绕过forbid。
 - [x] `just ci` 全绿。
 
@@ -43,3 +43,15 @@ GPUI `DisplayId` 映射、最小屏幕分配界面与 Identify 覆盖层（`07`�
 ## Implementation evidence — 2026-10-14
 
 自动检查、独立check与原生静态枚举通过，详见research/independent-check.md、verification.md、api-evidence.md、stability.md。独立check修正winsafe组合mask的any-bit误用，新增逐个缺失required DEVMODE字段的回归；修复后重新执行 `just ci` exit0 / 93tests（independent-just-ci.log），Gate A同套证据含core21+settings38+platform22+跨settings解析2=83tests。显式workspace/all-targets type-check与修复后的三屏十次连续枚举、watch首事件/取消通过，当前源码SHA见independent-code-sha256.json。不能替代换接口、同型号、缺identity实机、DPI/旋转变化或≤1s物理拔插验收。用户本轮无法操作硬件，因此对应复选框保持未勾选。技术交付可供后续任务使用，人工验收仍待执行；不宣称完整03或Gate B完成，代码/文档未提交，task status保留in_progress。
+
+## Implementation acceptance under the 2026-10-15 user revision
+
+- [x] Required implementation and automatic/feature checks are complete; current applicability independently audited in task07 research/resume-2026-10-15-v16-review.md.
+- [x] Complete static enumeration/identity provenance/watch initialization and cancellation are verified; later F13 resource repair has regression and V16 native applicability evidence.
+
+## Deferred full-qualification criteria (not current archive blockers)
+
+The following original composite criteria remain unaccepted as a whole. Their verified functional subsets are documented above; remaining physical/native/matrix portions are DEFERRED_BY_USER. No unchecked criterion is converted to PASS.
+
+- DEFERRED_BY_USER (original full criterion): 三屏连续枚举/换接口/同型号/缺EDID记录ID等级与恢复；变化/碰撞告警且不接管Audience，实施时生成stability报告。
+- DEFERRED_BY_USER (original full criterion): `watch_topology` 在拔/插屏后 ≤ 1 s 内发出事件（手工验证）。

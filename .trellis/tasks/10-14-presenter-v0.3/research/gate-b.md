@@ -1,5 +1,9 @@
 # Gate B — current checkpoint
 
+> Current2026-10-15 user revision: Gate B implementation PASS on verified V16 evidence; original extended hardware/native qualification DEFERRED_BY_USER.03/07 are eligible for implementation-scope archive,08 is unblocked. See `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md`; older incomplete/blocking statements below are historical under the previous policy. No old test outcome is changed.
+
+Current session V16: **INCOMPLETE**, with core-native scoped PASS. The separately approved sixth-package F14 repair is adopted and independently checked; product CI151/UI82/COM8/strict lint/typecheck/deny/build pass. Root16 owned-HWND cycles/64COM queries pass. Two frozen-product runs using the real notes PDF verify3-screen list/Identify/Apply/Cancel/conflict, actual role placement, navigation, modal routing, Presenting migration, no-play/page retention/timer freeze/relaunch, Start/Stop/Audience close/owner close. Both exit0 with full clean logs and fresh empty inventories. Read07 native-v16-core-results.md and native-v16-independent-review.md: independent evidence audit completed with no inaccuracies or gate inflation. Full race/handle reuse and actual notes UI are not claimed. Physical topology/real single-zero remain NOT_RUN, size matrix user-deferred and other native matrix limitations retained.08–11/P2 dependencies remain enforced; historical evidence below is immutable. New work remains uncommitted.
+
 Latest V15: **INCOMPLETE**. F13已有真实DC红→绿、产品检查和串行独立审阅；真实TeX notes文件和document/PDFium裁剪/overlay验证PASS，07 UI仍placeholder。F14四文件AccessKit候选只在research，Root16个实际隐藏窗口销毁/64次COM查询通过，不算产品修复；第六维护包未授权采用。Root Computer Use窗口清点收到physical Escape停止，本轮未启动V15应用，V15原生项NOT_RUN。读execution-state文首及07 native-v15-checkpoint.md。尺寸用户暂缓、物理NOT_RUN、P2和08–11依赖边界不变。
 
 Latest08:05Z: **INCOMPLETE**. 用户暂缓进一步尺寸验收，优先核心功能。V14新UI迁移/不播放计时冻结/no-play重启/冲突/Start-Stop/Audience关闭及两轮干净关闭有分项PASS，但长跑触发F13桌面DC泄漏，随后Close出现F14 AccessKit Invalid HWND panic；整体不能PASS。3个进程已退出，125项45原图封存；读07 native-v14-core-results.md及父execution-state文首。既有implement正处理真实回归与最小修复，之后串行check/native。未完成尺寸属于用户暂缓；物理NOT_RUN与P2/后续依赖边界不变。以下为历史检查点。
@@ -45,6 +49,6 @@ Environment: Windows11, actual A/B/C displays including a rotated C, NVIDIA RTX5
 No new source edits followed the independent V6 freeze. Only the stale status paragraph in root DESIGN.md changed after all native processes exited; its original bytes and the exact delta are retained. This documentation correction does not justify another Cargo run or invalidate the unchanged compiled-code evidence.
 
 
-## Display-assignment requirement added
+## Historical display-assignment requirement added (before V8 implementation)
 
 User screenshot feedback makes07 G-13/I-8 minimal count/number/application/PDF assignment and Identify a Gate B requirement.09 later reuses it in full settings. Old config/Swap evidence remains historical only. This newUI is PLANNED; Gate B remains INCOMPLETE, with physical/native requirements unchanged. Current plan: display-assignment-plan.md. V7 diagnostic native source locations are recorded in07 research/resume-v7-native-checkpoint.md; no repair claimed.

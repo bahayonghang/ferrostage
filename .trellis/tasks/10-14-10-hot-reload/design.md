@@ -1,5 +1,7 @@
 # Design — 外部 PDF 替换事务
 
+> Current acceptance policy (2026-10-15 user revision): `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md` supersedes older hardware/matrix blockers below. Implement all features first; retain automatic/feature/native-functional checks. Physical, exhaustive native/size and performance/soak matrices are deferred, not PASS. Gate B implementation is satisfied by V16;08 may start. Gate C/D are functional integration gates. Historical results and product contracts remain unchanged.
+
 ## 选择、依赖、输入输出
 完整前置01/04/05/06/07/08与Gate C；H-1…8/R-01/02/44。09不是hard依赖，设置可由配置指定；若UI存在由本任务启用09的对应控件。
 输入target path/notify events/settings；输出attempt/candidate owned metadata/frame和主线程新generation事务。用户PDF只读，测试覆盖写入只在独立temp目录。

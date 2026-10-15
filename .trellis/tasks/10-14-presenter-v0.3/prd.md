@@ -1,5 +1,7 @@
 # FerroStage v0.3 演示器实施计划（PDF/Beamer 展示）
 
+> Current acceptance policy (2026-10-15 user revision): `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md` supersedes older hardware/matrix blockers below. Implement all features first; retain automatic/feature/native-functional checks. Physical, exhaustive native/size and performance/soak matrices are deferred, not PASS. Gate B implementation is satisfied by V16;08 may start. Gate C/D are functional integration gates. Historical results and product contracts remain unchanged.
+
 父任务持有需求、共享契约、依赖图与最终集成验收，不是代码实施目标。2026-10-14 用户已授权在规划审阅与依赖满足后连续实施全部11个子任务；保留未提交供审阅，不提交、不推送、不归档。实际进度见 execution-state.md，父任务仍只协调。
 
 ## Goal 与已核对事实

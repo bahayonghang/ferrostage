@@ -34,3 +34,8 @@ Do not add GPL or AGPL crates. `deny.toml` enforces this. Do not add MuPDF. ADR-
 - Converting BGRA to RGBA on the audience path.
 - Copying Pympress (GPL) source into this repository.
 - Linking PDFium or Zed in the default feature set until a task is ready to own that build time.
+
+
+## Presenter v0.3 implementation-first scheduling
+
+For the existing10-14-presenter-v0.3 tree, the2026-10-15 user decision in `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md` defers physical/exhaustive native/size/performance matrices until after feature implementation. Retain automatic regressions, strict lint/typecheck/build/license checks and native-functional smoke where needed. Do not weaken runtime contracts or label deferred checks PASS; the original quality/performance targets remain later qualification work.

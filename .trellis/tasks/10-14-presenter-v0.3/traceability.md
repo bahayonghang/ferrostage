@@ -1,5 +1,7 @@
 # Traceability — 需求、所有者、步骤与验证
 
+> Current2026-10-15 user revision: Gate B implementation PASS on verified V16 evidence; original extended hardware/native qualification DEFERRED_BY_USER.03/07 are eligible for implementation-scope archive,08 is unblocked. See `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md`; older incomplete/blocking statements below are historical under the previous policy. No old test outcome is changed.
+
 R/AC来自父prd；D/S/M/L/P/B/G/W/U/H/V为原子PRD编号，保持不重编号。子目录统一.trellis/tasks/10-14-<slug>，所有02–11设计与implement步骤I-1…7真实存在；07本轮追加I-8并要求在Gate B前完成；01为PRD-only。此表是验收索引，不表示通过。
 
 | 父需求 | 子任务 / 子需求 | 设计 / 步骤 | 测试或手工验收 / Gate |
@@ -53,8 +55,13 @@ M1 Alpha验明确P0工作台及07最小角色分配UI，不声称所有产品P0�
 | --- | --- | --- | --- |
 | R-45 / AC-10 | 07基础token，08工作台，09设置 | 根DESIGN.md；父design §9；07 I-2/3/7，08 I-2/6/7，09 I-2/5/7 | 原生双主题/尺寸/DPI截图、对比度、键盘/控件状态；Gate D汇总，未运行保持NOT_RUN |
 
-## 2026-10-14 当前证据边界
+## 2026-10-14 历史证据边界（V6）
 
 01/02/04/05/06技术交付已独立检查，03自动与静态检查通过、人工项待验。06的128默认/63native检查为其交付基线；07新增GPUI集成后，V6当前默认CI145、实际GPUI49、严格feature lint及native build通过，底层未变的PDFium/Beamer实现沿用对应源身份的独立证据。Gate A纯契约PASS，B不完整、C/D未运行，所有父AC最终验收未完成。AC-4的01语义审查和07只读PDF哈希、AC-5的04/06/07隔离、AC-6的02存储和07实际失败/Retry、AC-7的自动/PDFium检查、AC-10的51组对比度及部分原生截图均只是各自子集，不能勾选父AC。
 
 07原始路线的依赖门失败保留为历史；ADR-008维护评估、最终五包及三个精确许可证例外获批后，产品接入及I-2实际门禁已通过。实际A/B/C窗口、主题/语言和导入已部分验证；V6修复焦点与保存反馈并通过独立检查/原生复测，选择器与保存角色重启通过。物理拓扑/延迟和剩余原生矩阵仍待验，Gate B不完整；08–11保留完整范围并受既定依赖/Gate阻塞。报告索引与恢复动作见execution-state.md及07 research/native-v6-checkpoint.md。尚未运行的M1长时汇报、GPU/VRAM、设置UI、热重载及媒体集成不得以已有纯测试替代。
+
+
+## Current evidence - 2026-10-15 V16 resume audit
+
+The fresh serial review verifies648 source inputs and all four V16 manifests; CI151/UI82/COM8/lint/typecheck/deny/build remain applicable without rerunning unchanged product checks. The approved sixth AccessKit package and07 display panel are implemented; core three-screen/native lifecycle observations are scoped PASS. Gate A remains technical PASS, B INCOMPLETE, C/D NOT_RUN. All parent AC-1 through AC-10 final acceptance remains incomplete, including M1/M2, actual workbench/notes/settings/reload/media integration. Physical single/zero/hotplug and remaining native matrix are not replaced by current automatic tests. Actual11-child paths, dependencies and next steps: `research/resume-2026-10-15.md`.

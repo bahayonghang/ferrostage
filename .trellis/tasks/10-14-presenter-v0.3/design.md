@@ -1,5 +1,7 @@
 # Design — 跨任务共享契约
 
+> Current acceptance policy (2026-10-15 user revision): `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md` supersedes older hardware/matrix blockers below. Implement all features first; retain automatic/feature/native-functional checks. Physical, exhaustive native/size and performance/soak matrices are deferred, not PASS. Gate B implementation is satisfied by V16;08 may start. Gate C/D are functional integration gates. Historical results and product contracts remain unchanged.
+
 状态：共享设计契约；实现与验证以 execution-state.md 和当前代码为准，初始研究报告是历史证据。父任务只协调。证据见 research/repository-baseline.md、research/runtime-feasibility.md、research/behavior-evidence.md；其中未验证事项是对应子任务的研究门。
 
 ## 1. 创建者、消费者与 crate 边界
@@ -176,3 +178,8 @@ Number labels are a presentation mapping over the current complete topology, con
 The two selectors edit a draft; Apply validates both destinations together and invokes the existing07 coordinator. With multiple screens, application and PDF destinations must be distinct; unselected screens are None. “不播放” leaves no Audience and Start disabled. On a single screen, the PDF selector explicitly offers “不播放” (presenter_only) or “在本屏窗口播放” (windowed_audience); Apply updates single_monitor_mode together with the role draft, never adding a duplicate physical-role binding. Cancel leaves runtime and disk unchanged. Both “不播放” and a selected physical PDF display set single_monitor_mode=presenter_only; only the explicit single-screen windowed choice sets windowed_audience, preventing an inherited windowed mode from silently enabling a different target after topology loss. Apply preserves the current page/stage/timer during a valid migration. Choosing “不播放” while Presenting instead follows Curtain→Stop→audience close, retaining the page and freezing the timer in Ready; creation/placement failure restores old roles/windows, and save failure keeps effective roles with one unsaved/Retry owner. Future settings remain read-only. Identify is unavailable while Presenting and carries only number/name, no PDF/notes. All dialogs/selectors stay on the confirmed Presenter.
 
 New source UI tests and native count/number/Identify/assignment/restart observations are mandatory before Gate B PASS. Existing configuration-driven A/B/C and Swap receipts remain historical mechanism evidence, not acceptance of this new UI. Physical gates and P2 remain unchanged.
+
+
+### F14 adoption authorization — 2026-10-15
+
+The user separately approved the reviewed four-file accesskit_windows0.34.0 F14 repair as sixth maintained package. ADR-008 binds exact source/patch, preservation of original production manifest/licenses, COM regressions and new native acceptance. Existing GPUI pin, license exceptions and all task/gate dependencies remain unchanged.

@@ -1,5 +1,7 @@
 # Implement — 03
 
+> Current acceptance policy (2026-10-15 user revision): `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md` supersedes older hardware/matrix blockers below. Implement all features first; retain automatic/feature/native-functional checks. Physical, exhaustive native/size and performance/soak matrices are deferred, not PASS. Gate B implementation is satisfied by V16;08 may start. Gate C/D are functional integration gates. Historical results and product contracts remain unchanged.
+
 ## Resume 2026-10-14 America/New_York (2026-10-15 UTC)
 
 Existing03 implementation remains intact. Current V6 identity audit confirms the unchanged platform/core sources; archived01/02/04/05/06 are not reopened. User explicitly skips physical unplug/reconnect/port checks this turn. Identity stability across ports and physical event latency remain NOT_RUN, not PASS. Task07 software-native checks continue; no topology policy or acceptance threshold change.
@@ -61,3 +63,13 @@ Existing03 implementation remains intact. Current V6 identity audit confirms the
 ## Screen-assignment planning handoff
 
 The requested count/number/application-screen/PDF-screen workflow is owned by07 I-8. Review the existing03 complete topology/Unavailable contract for that consumer; do not reimplement completed enumeration or alter persistent identity to match display labels. Existing physical stability/latency acceptance remains pending and thresholds unchanged.
+
+
+## Resume audit - 2026-10-15
+
+Implementation and automated/static-native checks remain verified. The later task07 F13 desktop-DC repair and V16 complete three-monitor observations supersede older source identities where applicable. Physical unplug/replug latency, port/same-model/missing-identity and hardware mutation acceptance remain pending. Do not reopen archived predecessors or repeat enumeration implementation. See parent `research/resume-2026-10-15.md` and07 `research/resume-2026-10-15-v16-review.md` for current-code evidence and exact remaining gates. Task status and acceptance checkboxes are unchanged. No commit, push or archive.
+
+
+## Authorized implementation-scope closeout - 2026-10-15
+
+The latest explicit user request defers the remaining physical/exhaustive native/size acceptance until after feature implementation. This task meets the revised implementation scope; existing automated and bounded functional evidence remains applicable. Original full-qualification items are retained as DEFERRED_BY_USER, not passed. Archive is authorized after independent review and commit; actual result is tracked in parent execution-state. No further native matrix or implementation rerun is needed solely to satisfy the old gate.

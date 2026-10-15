@@ -1,5 +1,7 @@
 # Design — GPUI 外壳与拓扑 PoC
 
+> Current acceptance policy (2026-10-15 user revision): `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md` supersedes older hardware/matrix blockers below. Implement all features first; retain automatic/feature/native-functional checks. Physical, exhaustive native/size and performance/soak matrices are deferred, not PASS. Gate B implementation is satisfied by V16;08 may start. Gate C/D are functional integration gates. Historical results and product contracts remain unchanged.
+
 ## 选择、依赖、输入输出
 前置01/02/03/04/05，Gate A纯契约；G-1…13/R-13/21/23/24/33/42。05仅供只读import metadata，Gate B允许占位，无06/08真实画面要求。02提供配置存储，07交付最小屏幕分配UI，不宣称09完整设置可用。app组合settings/topology/import/core，ui封装所有GPUI调用；输入owned metadata/配置/事件与命令，输出窗口事务/快照/讲者告警。
 
@@ -86,3 +88,8 @@ Implement G-13 inside07: a presenter-owned `display_settings` view/model (split 
 The role draft is translated to one complete binding update by the existing Shell coordinator, which owns validation, replacement/actual placement confirmation, rollback, focus and save feedback. No new independent role resolver or swap flag. Multi-screen destinations must differ; unselected screens are None. The single-screen PDF choices map explicitly to presenter_only (“不播放”) and windowed_audience (“在本屏窗口播放”); Apply includes single_monitor_mode in the same draft transaction, without duplicate MonitorId roles. Both no-play and an explicit physical PDF destination set presenter_only; only the single-screen windowed choice sets windowed_audience. This prevents an old windowed preference from authorizing an unselected target after topology loss. While Presenting, selecting “不播放” follows Curtain→Stop→audience close and freezes the timer in Ready; only valid-target migration preserves the stage/running timer. Preserve the read-only settings policy, unsaved Retry behavior and unchanged PDF/page invariants. Identify windows contain only number/name, expire after3s, and are disabled during Presenting; they are not audience windows and never consume the document/notes/snapshot.
 
 Replace the visible Swap button with Displays. Preserve the existing configured Swap shortcut as a secondary compatibility action; no automatic swap on opening the panel.08 reuses the entry and09 embeds this panel in its display category, adding the full topology view without duplicating transactions or numbering.07 does not depend on09 or on real PDF rendering. See the parent `research/display-assignment-plan.md` for current planning scope and verification matrix.
+
+
+### Separately approved F14 maintenance scope — 2026-10-15
+
+ADR-008 now authorizes the exact reviewed four-file accesskit_windows0.34.0 conversion-error patch as sixth maintained package. Preserve original manifest/licenses, all valid/empty semantics and other errors. No ownership/drain redesign, version upgrade or new exception. Product checks and Root current-build native closure remain separate gates.

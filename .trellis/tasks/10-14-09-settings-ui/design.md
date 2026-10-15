@@ -1,5 +1,7 @@
 # Design — 有实际效果的设置界面
 
+> Current acceptance policy (2026-10-15 user revision): `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md` supersedes older hardware/matrix blockers below. Implement all features first; retain automatic/feature/native-functional checks. Physical, exhaustive native/size and performance/soak matrices are deferred, not PASS. Gate B implementation is satisfied by V16;08 may start. Gate C/D are functional integration gates. Historical results and product contracts remain unchanged.
+
 ## 选择、依赖、输入输出
 前置01/02/03/07/08；U-1…10/R-24/33。M2交付完整设置集成，M1已使用07最小分配UI，但不宣称完整设置页已完成。输入Store WritePolicy/Settings/Topology与app应用协调器，输出校验修改→真实runtime effect→save status；只在讲者view树。
 语言确定重启生效，theme dark/light/system基础配色真实应用；不提供空控件。media项由11新增，hot_reload由10接线后启用。

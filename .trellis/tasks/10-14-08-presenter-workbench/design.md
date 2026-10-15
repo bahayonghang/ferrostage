@@ -1,5 +1,7 @@
 # Design — 真实工作台与受控观众画面
 
+> Current acceptance policy (2026-10-15 user revision): `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md` supersedes older hardware/matrix blockers below. Implement all features first; retain automatic/feature/native-functional checks. Physical, exhaustive native/size and performance/soak matrices are deferred, not PASS. Gate B implementation is satisfied by V16;08 may start. Gate C/D are functional integration gates. Historical results and product contracts remain unchanged.
+
 ## 选择、依赖、输入输出
 前置01/02/04/05/06/07与Gate B；W-1…10/R-40/43。排期P1任务内含M1阻塞P0：真实当前/next/notes/计时/时钟/进度/跳页/黑白屏/共享屏幕分配入口/备注隔离。P1网格/拖拽/高级画笔在M2前完整验收，不能提前归档全部任务。
 本任务负责app初次真实导入：05页metadata/只读结构→06 builder构建LoadedDocument/content SlideMap→core Load安装map/crop→Ready；坏build保旧document。07 Shell importer由真实DocumentLoader替换，10后续复用。输入private LoadedDocument/core state/05结果/settings给讲者与投影组装器；audience view唯一输入snapshot，不读取document/cachehandle。输出content变换/纹理/命令，02既有debug/grid键只消费。

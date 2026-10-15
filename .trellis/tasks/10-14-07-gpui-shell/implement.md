@@ -1,5 +1,13 @@
 # Implement — 07
 
+> Current acceptance policy (2026-10-15 user revision): `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md` supersedes older hardware/matrix blockers below. Implement all features first; retain automatic/feature/native-functional checks. Physical, exhaustive native/size and performance/soak matrices are deferred, not PASS. Gate B implementation is satisfied by V16;08 may start. Gate C/D are functional integration gates. Historical results and product contracts remain unchanged.
+
+## Resume audit — 2026-10-15 (V16 unchanged)
+
+The existing task was reactivated after an empty session pointer. Serial trellis-check completed: `research/resume-2026-10-15-v16-review.md` and `resume-2026-10-15-v16-audit.json` verify648 frozen inputs, runtime artifacts, four evidence manifests and completed CI151/UI82/COM8/lint/typecheck/deny/build receipts. All checks are verified reuse, not reruns. No product or sealed evidence was changed. Fresh Computer Use inventory finds no FerroStage window; no app/build process remains.
+
+I-8 display assignment is implemented and scoped native checks pass; do not repeat implementation. Remaining step is complete physical/native Gate B acceptance (including actual unplug/latency and single/zero displays), with sizes still user-deferred. Cursor/transient/drop/live-theme limitations are detailed in parent `research/resume-2026-10-15.md`. Gate B remains INCOMPLETE, task stays in_progress,08–11 remain gated. All changes remain uncommitted; no push/archive/add_session.
+
 ## Resume 2026-10-14 America/New_York (2026-10-15 UTC)
 
 Existing task07 reactivated; baseline `3ac1ec2`, clean. `research/resume-v6-identity-20261015.json` verifies94 crate files and V6 executable/DLL/PDF unchanged; only the recorded DESIGN.md status-line difference among602 inputs. Five retained manifests match. Reuse applicable V6 evidence. Root continues pending software-native matrix and controls all windows; implement agent owns new retirement diagnosis research only until source freeze is released. User skips physical hardware operations this turn; they remain NOT_RUN. Gate B remains incomplete and08–11 gated. New changes stay uncommitted.
@@ -11,7 +19,7 @@ Existing task07 reactivated; baseline `3ac1ec2`, clean. `research/resume-v6-iden
 5. **I-5 动作/角色**：全局routing、Escape模态/preview优先消费、弹UI讲者activate、冲突按键禁用、Swap权威binding事务、save dirty提示、03事件拔屏停止；无独立swap flag。
 6. **I-6 Gate B实机**：I-8后由最小分配UI选择B应用/A播放/C不使用，再以B应用/C播放复测；开始/结束/拔线、混DPI/旋转/单屏/零屏；占位画面即可，焦点/Identify在07验收。已有02配置驱动的历史结果保留，但不替代新UI验收。记录环境/操作/截图/代码版本。
 7. **I-7 评审**：only-snapshot view、read-only导入、错误/焦点、featureCI与Gate B；不能把占位称真实PDF或设置UI完成。
-8. **I-8 显示器分配修订（当前下一实施步骤，编号保留）**：先核03完整拓扑与07事务；替换工具栏Swap为显示器设置，构建数量/编号/两项选择/Apply/Cancel/Identify最小面板，保留旧快捷键兼容；用实际GPUI回归验证草稿、冲突、失效、焦点、运行时回滚与保存失败，随后独立check和真实三屏UI验收。I-8在Gate B之前完成，09复用，不以09为前置。
+8. **I-8 显示器分配修订（已实施，编号及原步骤保留）**：先核03完整拓扑与07事务；替换工具栏Swap为显示器设置，构建数量/编号/两项选择/Apply/Cancel/Identify最小面板，保留旧快捷键兼容；用实际GPUI回归验证草稿、冲突、失效、焦点、运行时回滚与保存失败，随后独立check和真实三屏UI验收。当前V16实施及限定原生通过证据见本文件首段；完整Gate B验收仍待完成。09复用，不以09为前置。
 
 拟feature创建后命令：cargo build -p ferrostage-app --features gpui,pdfium；cargo clippy -p ferrostage-app -p ferrostage-ui --all-targets --features gpui -- -D warnings；cargo test -p ferrostage-core -p ferrostage-platform；just ci。
 WindowsMSVC job编译门、纯suite、GateB实机分别记录。回滚Start失败清新窗口不计时；角色应用失败回滚窗口/bindings；feature路线回滚app/ui/CI/ADR同批。
@@ -325,3 +333,20 @@ FreezeV15:622inputs aggregate fdc00fc36ad02e46234398899ef924892e690810caf24f290c
 Root executed the already compiled isolated F14 candidate test at08:41Z:16 owned hidden HWND destruction cycles,64 retained-context COM queries returned normally; see research/product-v15-root-a11y-results.md and immutable root-hidden receipts. This does not adopt or accept the product fix. Independent check completed with no source changes, strict four-crate lint/typecheck and all frozen identity checks PASS; prior affected product regressions reused with verified inputs. Final report/manifest are under product-independent-v15.
 
 Sky list_windows then reported physical Escape user stop before any V15 app launch. Root stopped all Computer Use immediately; V15 native DPI/placement/lifecycle/notes UI are NOT_RUN/user-stopped. New real notes PDF and document/PDFium crop tests are complete, actual07 UI remains placeholders. Native continuation is recorded in research/native-v15-checkpoint.md; all prior evidence and user-deferred size/physical boundaries remain. GateB INCOMPLETE,08–11 gated,P2 unchanged; no commit/push/archive/add_session.
+
+
+### V16 continuation — explicit F14 adoption authorization
+
+Resumed from HEAD8ae980c with clean workspace and no product/build processes. Computer Use window inventory succeeded after explicit user resume. User separately answered "批准该限定范围" to the reviewed four-file accesskit_windows0.34.0 adoption as sixth maintained package. ADR-008/spec/AGENTS record the scope; no reapproval needed. Existing implementer ownership covers exact package/provenance/wiring/regressions; Root owns spec and core-only native verification after serial independent check and new V16 freeze. Use native-v16-plan.md and the real notes PDF. Preserve historical failures; no size adjustments, physical operations, gate weakening or08–11 integration before dependencies. New changes remain uncommitted.
+
+
+### Root V16 native core closeout — 2026-10-15
+
+Serial native evidence review is complete: `research/native-v16-independent-review.md` verifies all138 records/47images,648sources and runtime artifacts, raw placement/config/timer/exit evidence, with no inaccuracies or gate inflation. Independent manifest SHA `10f114c1b9d3c3e69764eebc0d64e6cbd6842e4970bf73f628ee431083ae56b8`. Cancel after-bytes are represented by the immediate hash readback receipt rather than a separate archived TOML; the review states this evidence boundary. No product changes or repeated source tests during this evidence audit.
+
+Approved sixth AccessKit package implemented and independently reviewed; product reconstruction21/COM8/CI151/UI82/strict lint/typecheck/full deny/native build PASS. Root adopted-source hidden16-window/64COM test PASS after preserved cache-permission failure. Two native runs(PIDs42672,58568) using real notes PDF and full backtrace exit0, with full clean logs and fresh empty windows. Native list/Identify all3, Apply/Cancel/conflict, app/target placement, Start/Stop/restart,1→2→3→4→3 navigation, Presenter-only Jump routing, Presenting page/white/timer migration, no-play freezing191785ms across23.071997s, saved no-play relaunch and Audience/Presenter close are scoped PASS. Read research/native-v16-core-results.md; manifest138/47original images SHA cad5c4ee34a7573c774efed77edb10cb53895201736fed2afd390501b13f91dc.648 source inputs/EXE/DLL/PDF still match freeze after close. No size tests, physical operations or notes UI claims. GateB INCOMPLETE,03/07 in_progress,08–11 gated,P2 unchanged. All new work uncommitted; no push/archive/add_session.
+
+
+## Authorized implementation-scope closeout - 2026-10-15
+
+The latest explicit user request defers the remaining physical/exhaustive native/size acceptance until after feature implementation. This task meets the revised implementation scope; existing automated and bounded functional evidence remains applicable. Original full-qualification items are retained as DEFERRED_BY_USER, not passed. Archive is authorized after independent review and commit; actual result is tracked in parent execution-state. No further native matrix or implementation rerun is needed solely to satisfy the old gate.

@@ -1,5 +1,7 @@
 # Design — 显示器拓扑
 
+> Current acceptance policy (2026-10-15 user revision): `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md` supersedes older hardware/matrix blockers below. Implement all features first; retain automatic/feature/native-functional checks. Physical, exhaustive native/size and performance/soak matrices are deferred, not PASS. Gate B implementation is satisfied by V16;08 may start. Gate C/D are functional integration gates. Historical results and product contracts remain unchanged.
+
 ## 选择、依赖、输入输出
 前置01/02，M-1…7/R-20…23；复用02 core MonitorRole，本任务在core新增MonitorId。OS查询输出Result<Vec<MonitorInfo>,PlatformError>；纯resolve_roles输入saved bindings和Info数组，输出父design §3的Optional presenter/audience、source/warnings/ignored；diff输出added/removed与身份歧义。
 

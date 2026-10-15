@@ -1,5 +1,7 @@
 # Implement — 09
 
+> Current acceptance policy (2026-10-15 user revision): `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md` supersedes older hardware/matrix blockers below. Implement all features first; retain automatic/feature/native-functional checks. Physical, exhaustive native/size and performance/soak matrices are deferred, not PASS. Gate B implementation is satisfied by V16;08 may start. Gate C/D are functional integration gates. Historical results and product contracts remain unchanged.
+
 1. **I-1 消费者评审**：核02/03/07/08接口与上表，语言restart、theme/system事件明确；hot_reload/media capability未就绪禁用，不做循环依赖。
 2. **I-2 界面骨架**：讲者内分类、WritePolicy只读、未保存/重试，先测试focus/disabled/SaveError，不接audience树。
 3. **I-3 复用角色面板**：先核07数量/编号/两项选择/Apply/Cancel/Identify交付；嵌入显示器页并补拓扑图/稳定等级/warnings/single mode，编号、事务和Identify不重复实现，迁移失败回滚。
@@ -18,3 +20,8 @@
 ## 2026-10-14 依赖审计 checkpoint
 
 07外壳和08工作台均未交付；真实设置消费者前置未满足。 本任务保持planning，未start、未写本任务产品代码、未运行本任务验收。现有规划保留；恢复前先核父execution-state.md与07依赖门报告。03物理拔插/换接口本轮不可用，不能用模拟输入替代Gate B。无提交或归档。
+
+
+## Resume audit - 2026-10-15
+
+Task07 minimal display panel is implemented; it is not the complete09 settings UI. I-1 remains blocked by08 delivery. Do not fork the shared role/Identify transaction or start planning-status product code. See parent `research/resume-2026-10-15.md` and07 `research/resume-2026-10-15-v16-review.md` for current-code evidence and exact remaining gates. Task status and acceptance checkboxes are unchanged. No commit, push or archive.

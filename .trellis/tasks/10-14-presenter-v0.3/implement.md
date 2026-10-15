@@ -1,5 +1,7 @@
 # Implement — 启动顺序与集成评审
 
+> Current acceptance policy (2026-10-15 user revision): `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md` supersedes older hardware/matrix blockers below. Implement all features first; retain automatic/feature/native-functional checks. Physical, exhaustive native/size and performance/soak matrices are deferred, not PASS. Gate B implementation is satisfied by V16;08 may start. Gate C/D are functional integration gates. Historical results and product contracts remain unchanged.
+
 2026-10-14 已获连续实施授权。每次恢复先审计 execution-state.md、实际代码和证据；子任务规划/依赖审阅后使用 task.py start，按 implement→check 串行推进。父任务不启动；01可PRD-only。所有代码、文档与记录留未提交，不推送、不归档。
 
 ## 依赖顺序
@@ -54,7 +56,7 @@ rg -n 'OpenOptions|File::create|write|SHADOW_TMP_SUFFIX|ferrostage.tmp' crates A
 
 rg退出1只代表无匹配；每处命中按baseline的“历史/排除/现行冲突/允许只读结构/写目标”分类并保留处置记录。评审目标是语义合规，不能靠删约束或将词替换为同义词制造零命中。
 
-父级未来完成：所有子任务完整技术验收、AC-1…10、M2、spec沉淀与证据索引齐全；提交/归档需用户另行授权。实际恢复点按 execution-state.md：01/02/04/05/06技术交付已独立复核，03自动与静态检查通过但物理验收待验；07产品依赖/编译与自动检查已通过；首次启动/关闭/输入再入panic已修复；v6独立49项GPUI/145项默认测试通过；实际A/B/C、Jump隔离、主题/语言、错误导入已部分验证，F7焦点恢复/F8保存重试反馈已修复并通过原生复测，选择器导入与保存角色重启通过；08–11依赖未满足。不从01重做；docs/adr/ADR-008-gpui-dependency-gate.md 的受限维护评估已获用户批准，隔离候选及独立检查已完成，实际修复后入口为07 research/maintenance-independent-prepare-final.py；最终五包与三个精确许可例外已按research/gpui-license-review.md获明确批准，实际产品I-2门已通过，继续07 native与独立审查，直接HarfRust既存lint失败及native限制如实保留。
+父级未来完成：所有子任务完整技术验收、AC-1…10、M2、spec沉淀与证据索引齐全；提交/归档需用户另行授权。实际恢复点按 execution-state.md 最新段：01/02/04/05/06已归档，不重新实施；03自动与静态检查通过但物理验收待验；07的V16产品及限定原生证据已独立复核，显示器分配界面和获单独批准的第六维护包AccessKit四文件修复已实施。原五包与三个精确许可例外保持既有范围，详见ADR-008；不重新运行历史维护候选准备入口。下一步为03/07剩余物理及原生验收，Gate B未通过前不实施08，09–11依赖门保持不变。直接HarfRust既存lint失败、未测试项及用户暂缓尺寸矩阵如实保留。当前证据和全部11项路径见research/resume-2026-10-15.md。
 
 ## Claude 主题实施验收
 
@@ -76,6 +78,6 @@ rg退出1只代表无匹配；每处命中按baseline的“历史/排除/现行�
 下一轮可直接使用next-session-prompt.md；03/07继续待验，08–11保持依赖门禁。随后提交上下文/续接记录并按trellis-finish-work记录一次本次已授权收尾日志；不推送。
 
 
-## Current planning correction
+## Display-assignment delivery and remaining gate
 
-Before completing07/Gate B, execute07 I-8: replace the toolbar Swap workflow with detected/numbered display assignment. Review the bounded `research/display-assignment-plan.md`, then perform the existing serial implement→check flow. Keep the task tree and archived01/02/04/05/06 intact.08 reuses this surface;09 integrates the complete settings page later, so no dependency cycle is introduced. The present correction changes planning only; V7 diagnostics are a separate uncommitted change already checked before this request.
+Task07 I-8 is implemented and serially checked. V16 native evidence verifies count/number/Identify, application/PDF selection, Apply/Cancel/conflict, placement, migration and no-play persistence. Do not restart its planning or implementation. Keep the task tree and archived01/02/04/05/06 intact.08 reuses this surface;09 integrates the complete settings page later, so no dependency cycle is introduced. Gate B still requires the outstanding physical/native acceptance recorded in `execution-state.md` and07 `research/native-v16-core-results.md`; scoped passes do not authorize08 integration before that gate passes.

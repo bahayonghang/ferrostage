@@ -1,5 +1,7 @@
 # PDF 文件变更热重载（通用，不绑定 LaTeX 工具链）
 
+> Current acceptance policy (2026-10-15 user revision): `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md` supersedes older hardware/matrix blockers below. Implement all features first; retain automatic/feature/native-functional checks. Physical, exhaustive native/size and performance/soak matrices are deferred, not PASS. Gate B implementation is satisfied by V16;08 may start. Gate C/D are functional integration gates. Historical results and product contracts remain unchanged.
+
 父任务：`10-14-presenter-v0.3`（R-44 热重载部分，R-01）。P2。复杂任务，设计和步骤见本目录design.md / implement.md。
 
 ## Goal

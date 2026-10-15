@@ -1,5 +1,7 @@
 # GPUI 双窗口外壳、开始按钮与全局快捷键路由
 
+> Current acceptance policy (2026-10-15 user revision): `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md` supersedes older hardware/matrix blockers below. Implement all features first; retain automatic/feature/native-functional checks. Physical, exhaustive native/size and performance/soak matrices are deferred, not PASS. Gate B implementation is satisfied by V16;08 may start. Gate C/D are functional integration gates. Historical results and product contracts remain unchanged.
+
 父任务：`10-14-presenter-v0.3`（R-42 R-13 R-23 R-24 R-33）。复杂任务，设计和步骤见本目录design.md / implement.md。
 
 ## Goal
@@ -36,20 +38,13 @@
 
 - [x] 三屏实机：通过02配置文件指定A屏（09 UI尚未交付）；A屏 Audience、B 屏 Presenter、C 屏 None；启动 → 讲者窗口在 B；打开 PDF → 无观众窗口；点击开始 → 观众窗口只在 A 全屏，C 无变化；结束 → 观众窗口关闭。
 - [x] 把角色改为 C Audience 后重复上一条，观众窗口出现在 C。
-- [ ] 单屏且 `presenter_only`：开始按钮禁用并提示"未找到观众显示器"；改为 `windowed_audience` 后可开始且出现窗口化观众窗口。
-- [ ] 焦点点在观众窗口上按 `PageDown`/`B`/`Escape`：页面变化/黑屏/结束均生效，观众屏无任何对话框、焦点框或光标变化。
-- [ ] `Presenting` 中拔掉 A 屏：观众窗口 ≤ 1 s 内消失，讲者窗口仍窗口化在 B，阶段回到 `Ready`。
 - [x] 观众窗口类型的字段中不存在 `LoadedDocument`、`SlideNotes` 或任何备注类型（代码评审 + `rg`）。
-- [ ] PoC-1 结论写入 `research/poc-1-report.md`；`just ci` 与 `cargo build -p ferrostage-app --features gpui,pdfium` 全绿；默认无feature构建不替代GPUI编译门。
 
-- [ ] 本任务界面在DESIGN.md各窗口尺寸及双主题下完成原生截图、键盘/焦点、hover/disabled/error/loading、字体回退和对比度检查；未执行不勾选。
 
 2026-10-15 V6验收索引：A Audience/B Presenter完整放置链对应 `research/poc-1-report.md`、`research/native/v4-a-cli.stdout.log`（Ready audience=None、Presenter65731、Audience131073全屏）和 `research/native/v4-a-audience-page1.json`；C Audience对应 `research/native-v5-checkpoint.md` 与 `research/native/v5-c-vertical.stdout.log`。这些是各自冻结版本的实际观测，不标成V6同次实测；跨版本源码/回归适用性见 `research/product-independent-review.md` 与 `research/product-independent-v6-review.md`，only-snapshot隔离由当前独立代码评阅核对。`research/native-v6-checkpoint.md` 补焦点、保存重试、原生选择器和重启。PageDown/B/Escape行为已观测，但观众光标完整矩阵未验，不勾组合条目；三屏配置禁用Audience不算单屏实机。自动CI/编译已通过，PoC-1整体实机结论仍不完整，保留该组合条目未勾；Gate B未通过。
 
 - [x] 工具栏显示“显示器设置”而非直接“交换屏幕”；点击只打开面板。先列当前屏幕数量和编号，三屏Identify与列表一致，再明确选择应用屏和PDF屏，第三屏不使用。
 - [x] 三屏分别选择B应用/A播放及B应用/C播放，通过Apply验证真实放置；Idle/Ready不自动开始，重启按MonitorId恢复。旧配置/Swap截图不能替代此项。
-- [ ] Cancel不改配置/窗口；冲突/离线/枚举失败/旧草稿不可应用；有效目标迁移保持页/阶段/计时，Presenting选“不播放”安全停止，单屏两种选项正确控制Start并在重启后恢复；运行时失败回滚、保存失败显示未保存/Retry，未来版本不写入。
-- [ ] 共享面板键盘/焦点/双主题/窄窗/真实角色操作通过；Identify在Presenting禁用，观众屏无设置UI和备注。
 
 2026-10-15 V11增量验收索引：前两项新UI勾选对应V9 `research/native-v9-checkpoint.md` 的面板/草稿及三次单独Identify1–3截图，以及V11 `research/native-v11-checkpoint.md` 的新面板B/A→B/C Apply、Ready无观众、Start实际目标和B/C保存重启。不同冻结版本如实标注；不以旧Swap/配置证据替代。V11已验证迁移/不播放计时、实际保存锁Retry、未来schema只读和部分主题/尺寸，但组合条目包含的单屏/完整尺寸/状态仍待验，保持未勾。V11深色窄窗Close出现F11 dispatcher错误，Gate B仍INCOMPLETE；修复及后续版本需独立复核证据适用性。
 
@@ -63,3 +58,20 @@
 
 
 2026-10-15 V13增量索引：research/native-v13-checkpoint.md封存五run/26截图。C初始完整标题栏、精确light1440/800/390/320及dark320、英文新面板、实际chooser成功和双窗口关闭有版本限定证据；第五light320关闭F12 FAIL，故不勾整体PoC/设计/关闭组合项。其余dark尺寸和可行状态检查在V14修复后继续；物理NOT_RUN不变。
+
+## Implementation acceptance under the 2026-10-15 user revision
+
+- [x] Required implementation and automatic/feature checks are complete; current applicability independently audited in task07 research/resume-2026-10-15-v16-review.md.
+- [x] V16 bounded native core verifies roles/Identify/Apply/Cancel/conflict, actual placement, navigation/modal routing, migration/no-play/timer/persistence and clean owner/Audience closure. Real PDF/notes UI remains08 work, not07 acceptance.
+
+## Deferred full-qualification criteria (not current archive blockers)
+
+The following original composite criteria remain unaccepted as a whole. Their verified functional subsets are documented above; remaining physical/native/matrix portions are DEFERRED_BY_USER. No unchecked criterion is converted to PASS.
+
+- DEFERRED_BY_USER (original full criterion): 单屏且 `presenter_only`：开始按钮禁用并提示"未找到观众显示器"；改为 `windowed_audience` 后可开始且出现窗口化观众窗口。
+- DEFERRED_BY_USER (original full criterion): 焦点点在观众窗口上按 `PageDown`/`B`/`Escape`：页面变化/黑屏/结束均生效，观众屏无任何对话框、焦点框或光标变化。
+- DEFERRED_BY_USER (original full criterion): `Presenting` 中拔掉 A 屏：观众窗口 ≤ 1 s 内消失，讲者窗口仍窗口化在 B，阶段回到 `Ready`。
+- DEFERRED_BY_USER (original full criterion): PoC-1 结论写入 `research/poc-1-report.md`；`just ci` 与 `cargo build -p ferrostage-app --features gpui,pdfium` 全绿；默认无feature构建不替代GPUI编译门。
+- DEFERRED_BY_USER (original full criterion): 本任务界面在DESIGN.md各窗口尺寸及双主题下完成原生截图、键盘/焦点、hover/disabled/error/loading、字体回退和对比度检查；未执行不勾选。
+- DEFERRED_BY_USER (original full criterion): Cancel不改配置/窗口；冲突/离线/枚举失败/旧草稿不可应用；有效目标迁移保持页/阶段/计时，Presenting选“不播放”安全停止，单屏两种选项正确控制Start并在重启后恢复；运行时失败回滚、保存失败显示未保存/Retry，未来版本不写入。
+- DEFERRED_BY_USER (original full criterion): 共享面板键盘/焦点/双主题/窄窗/真实角色操作通过；Identify在Presenting禁用，观众屏无设置UI和备注。

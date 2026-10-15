@@ -1,5 +1,7 @@
 # Implement — 11
 
+> Current acceptance policy (2026-10-15 user revision): `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md` supersedes older hardware/matrix blockers below. Implement all features first; retain automatic/feature/native-functional checks. Physical, exhaustive native/size and performance/soak matrices are deferred, not PASS. Gate B implementation is satisfied by V16;08 may start. Gate C/D are functional integration gates. Historical results and product contracts remain unchanged.
+
 1. **I-1 后端/加载/许可研究门**：基于runtime证据锁一套exact bindings/native/plugin/codec，safe BGRA与缺DLL启动原型验证；产生backend与分发清单结论再评审，不以AppSink存在当全部可行。
 2. **I-2 纯生命周期**：fake decoder，generation/page/slot/playback_epoch/sequence与SharedFrame复用BgraFrame，单audio、迟到帧过滤、black/white/Stop/Close/重载事件立即停；Ready不播放。
 3. **I-3 GIF/视频适配**：GIF延时/loop，单native decoder安全stride/pack、start/duration/autostart；media source路径/Embedded只控制侧，missing/unsupported占位。
@@ -14,3 +16,8 @@ native缺库启动实验不能被默认pure门替代，动态库/插件另做分
 ## 2026-10-14 依赖审计 checkpoint
 
 07/08/09交付及Gate C未通过；媒体完整集成未开始，P2仍在范围内。 本任务保持planning，未start、未写本任务产品代码、未运行本任务验收。现有规划保留；恢复前先核父execution-state.md与07依赖门报告。03物理拔插/换接口本轮不可用，不能用模拟输入替代Gate B。无提交或归档。
+
+
+## Resume audit - 2026-10-15
+
+Implementation remains blocked by08/09 and Gate C. The exact safe runtime-loader/backend/native-license research decision is still required before implementation. No new backend or exception was selected; playback and all P2 acceptance remain in scope. See parent `research/resume-2026-10-15.md` and07 `research/resume-2026-10-15-v16-review.md` for current-code evidence and exact remaining gates. Task status and acceptance checkboxes are unchanged. No commit, push or archive.

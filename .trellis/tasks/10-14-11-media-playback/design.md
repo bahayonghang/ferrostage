@@ -1,5 +1,7 @@
 # Design — 离屏媒体与共享帧
 
+> Current acceptance policy (2026-10-15 user revision): `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md` supersedes older hardware/matrix blockers below. Implement all features first; retain automatic/feature/native-functional checks. Physical, exhaustive native/size and performance/soak matrices are deferred, not PASS. Gate B implementation is satisfied by V16;08 may start. Gate C/D are functional integration gates. Historical results and product contracts remain unchanged.
+
 ## 选择、依赖、输入输出
 前置01/02/04/06/07/08/09与Gate C；V-1…8/R-40/44。单视频后端仍待research gate锁定；GStreamer safe AppSink为有证据的条件候选，LibVLC回调安全覆盖/包身份未充分核实，不引双后端。
 输入document私有MediaSlot/source、stage/page/generation/playback epoch；输出SharedFrame控制封装与唯一音频流。audience最终仅08snapshot中的slot/rect/pixels，不读取MediaSlot/path/backend/进度。
