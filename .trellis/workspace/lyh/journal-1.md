@@ -42,3 +42,41 @@
 ### Status
 
 [OK] **Completed**
+
+
+## Session 2: 提交阶段实现并归档五项已完成任务
+<!-- trellis-session: v=2 fp=af7c5271de6c3415 -->
+
+**Date**: 2026-10-14
+**Task**: 提交阶段实现并归档五项已完成任务
+**Branch**: `main`
+
+### Summary
+
+提交演示器基础实现与GPUI外壳、真实检查证据；归档01/02/04/05/06，保留03/07未完成验收及08至11门禁。
+
+### Main Changes
+
+- 维护原始PDF/vendor/研究证据字节，LFS完整性核验通过，补全125份验收日志。
+- 修复14份归档后上下文路径，保存next-session-prompt.md和目录映射。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `841e287` | feat: 实现演示器基础能力与 GPUI 外壳 |
+| `f246a67` | docs(task): 记录分阶段实现与原生验收证据 |
+| `92fed9f` | chore: 补全验收证据并更新归档续接入口 |
+
+### Testing
+
+- [OK] 归档后父与11子任务上下文12/12通过；602源绑定及125日志字节核对通过。
+- [OK] 复用未变源码的GPUI49/default145、严格lint/native build和独立原生证据；上游既存空白及HarfRust lint限制保留。
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- 从03/07未完成原生验收恢复；Gate B通过后继续08，再09/10/11。不重新实施已归档任务。
