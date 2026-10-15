@@ -1,0 +1,6 @@
+   Compiling accesskit_windows v0.34.0 (D:\Documents\Code\Rust\Exp\ferrostage\.trellis\tasks\10-14-07-gpui-shell\research\product-v16-accesskit-harness)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.41s
+  Executable unittests src\lib.rs (target\debug\deps\accesskit_windows-e8424f53739ed785.exe)
+mbx[cache]: 0 hits, 0 misses, 1 not looked up; 0 B downloaded, 0 B uploaded, 13.2 MiB stored locally
+mbx[gc]: evicted 0 objects and 0 action results (1.6 KiB logical); 2.0 GiB logical remain
+mbx[savings]: has quietly disposed of 91.2 GiB logical of build leftovers. nobody saw anything.

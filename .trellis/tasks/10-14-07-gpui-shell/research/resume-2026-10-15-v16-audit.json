@@ -1,0 +1,546 @@
+{
+  "captured_utc": "2026-10-15T11:05:43.357886+00:00",
+  "branch": "main",
+  "head": "8ae980ced5ccb83b7804b698d3cceef474b80633",
+  "source_count": 648,
+  "source_aggregate": "3e208cf586dcf37ab0420228e8eb3fba8ee07c0b73a8597c318a7f6a219c35b8",
+  "freeze_sha256": "0e2b1ed8ef9299676ba249e7600bd8ab6734f00c6ae17f677467405ad60402d3",
+  "artifacts": {
+    "binary": {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe",
+      "resolved_path": "D:\\mbx-cache\\targets\\v1\\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0\\debug\\ferrostage.exe",
+      "bytes": 37262848,
+      "sha256": "cf228c03655ddd45d25520bd88dab025c219af9bec9195314ce541dbb1cd89d1"
+    },
+    "pdfium": {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll",
+      "resolved_path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll",
+      "bytes": 7211520,
+      "sha256": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118"
+    },
+    "fixture": {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\notes-functional\\pympress-notes.pdf",
+      "resolved_path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\notes-functional\\pympress-notes.pdf",
+      "bytes": 129701,
+      "sha256": "e939e35f931c184fd93b2e9b95e560db73ba6a6f6dfccbb0963262f0b359dfeb"
+    },
+    "cargo_lock": {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\Cargo.lock",
+      "resolved_path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\Cargo.lock",
+      "bytes": 186267,
+      "sha256": "575780195da7f12f5a62f15eeb97edfebd5521db5c9510501e29e29fbe6e259e"
+    }
+  },
+  "manifests": {
+    "product-v16-evidence-manifest.json": {
+      "count": 62,
+      "sha256": "1e004a195f04725d2fe511036c1013d6be4bd5346ffc01e93dae76b4bac71f63",
+      "jpg_count": 0
+    },
+    "product-independent-v16-evidence-manifest.json": {
+      "count": 15,
+      "sha256": "1677b1b77b5c4b12e775de472d395019a52334b18ae7fa927210be89c00baafd",
+      "jpg_count": 0
+    },
+    "native-v16-evidence-manifest.json": {
+      "count": 138,
+      "sha256": "cad5c4ee34a7573c774efed77edb10cb53895201736fed2afd390501b13f91dc",
+      "jpg_count": 47
+    },
+    "native-v16-independent-evidence-manifest.json": {
+      "count": 6,
+      "sha256": "10f114c1b9d3c3e69764eebc0d64e6cbd6842e4970bf73f628ee431083ae56b8",
+      "jpg_count": 0
+    }
+  },
+  "checks": {
+    "product-v16-reconstruction": {
+      "receipt": {
+        "started_utc": "2026-10-15T10:00:59.412177+00:00",
+        "argv": [
+          "python",
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-v16-accesskit.py",
+          "verify"
+        ],
+        "status": "RETURNED",
+        "log": "product-v16-reconstruction.log",
+        "exit_code": 0,
+        "ended_utc": "2026-10-15T10:00:59.687967+00:00"
+      },
+      "log_sha256": "67bf66d8184b4e7ddb16bf535bd8c6c54c899bede01282afeb662b7d2d7a5fa3",
+      "test_pass_sum": 0,
+      "test_fail_sum": 0,
+      "log_tail": [
+        "    \"src/util.rs\"",
+        "  ],",
+        "  \"manifest_sha256\": \"baad411ffb33b69d13765a538db985128def773bc93e6722183c34efcd5289b2\",",
+        "  \"patch_sha256\": \"93563d304909e2bca657dc0136382ba9179e638b71799d9c6823918ad2a9f2f0\"",
+        "}"
+      ],
+      "status": "VERIFIED_REUSE_NOT_RERUN"
+    },
+    "product-v16-a11y-cache-access": {
+      "receipt": {
+        "started_utc": "2026-10-15T09:56:29.848373+00:00",
+        "argv": [
+          "cargo",
+          "test",
+          "--manifest-path",
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-v16-accesskit-harness\\Cargo.toml",
+          "--lib",
+          "--offline",
+          "v16_regression_tests",
+          "--",
+          "--test-threads=1",
+          "--nocapture"
+        ],
+        "status": "RETURNED",
+        "log": "product-v16-a11y-cache-access.log",
+        "exit_code": 0,
+        "ended_utc": "2026-10-15T09:56:32.753669+00:00"
+      },
+      "log_sha256": "1e6ed159c2501e096fcdd3e8c1231b007d8af192f770c3df09996a2defef037a",
+      "test_pass_sum": 8,
+      "test_fail_sum": 0,
+      "log_tail": [
+        "",
+        "mbx[cache]: 0 hits, 0 misses, 1 not looked up; 0 B downloaded, 0 B uploaded, 12.6 MiB stored locally",
+        "mbx[gc]: removed 1 target directories (42.6 GiB logical, 0 abandoned and 1 live); 63.8 GiB logical remain",
+        "mbx[gc]: evicted 0 objects and 0 action results (8.0 KiB logical); 1.9 GiB logical remain",
+        "mbx[savings]: disposed of 91.2 GiB logical without being asked. that is rather the point."
+      ],
+      "status": "VERIFIED_REUSE_NOT_RERUN"
+    },
+    "product-v16-hidden-compile": {
+      "receipt": {
+        "started_utc": "2026-10-15T09:56:42.271838+00:00",
+        "argv": [
+          "cargo",
+          "test",
+          "--manifest-path",
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-v16-accesskit-harness\\Cargo.toml",
+          "--lib",
+          "--locked",
+          "--offline",
+          "--features",
+          "root-native-window",
+          "--no-run"
+        ],
+        "status": "RETURNED",
+        "log": "product-v16-hidden-compile.log",
+        "exit_code": 0,
+        "ended_utc": "2026-10-15T09:56:44.009611+00:00"
+      },
+      "log_sha256": "c9c95e6c34add79de4a47b89ecde9bc798b0bcc5bc4e4a76b59fc18d2dcd712e",
+      "test_pass_sum": 0,
+      "test_fail_sum": 0,
+      "log_tail": [
+        "    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.41s",
+        "  Executable unittests src\\lib.rs (target\\debug\\deps\\accesskit_windows-e8424f53739ed785.exe)",
+        "mbx[cache]: 0 hits, 0 misses, 1 not looked up; 0 B downloaded, 0 B uploaded, 13.2 MiB stored locally",
+        "mbx[gc]: evicted 0 objects and 0 action results (1.6 KiB logical); 2.0 GiB logical remain",
+        "mbx[savings]: has quietly disposed of 91.2 GiB logical of build leftovers. nobody saw anything."
+      ],
+      "status": "VERIFIED_REUSE_NOT_RERUN"
+    },
+    "product-v16-root-hidden-cache-access": {
+      "receipt": {
+        "started_utc": "2026-10-15T10:10:24.914353+00:00",
+        "argv": [
+          "cargo",
+          "test",
+          "--manifest-path",
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-v16-accesskit-harness\\Cargo.toml",
+          "--lib",
+          "--locked",
+          "--offline",
+          "--features",
+          "root-native-window",
+          "v16_regression_tests::root_only_owned_hidden_hwnd_destroy_with_retained_context",
+          "--",
+          "--exact",
+          "--test-threads=1",
+          "--nocapture"
+        ],
+        "status": "RETURNED",
+        "log": "product-v16-root-hidden-cache-access.log",
+        "exit_code": 0,
+        "ended_utc": "2026-10-15T10:10:25.323444+00:00"
+      },
+      "log_sha256": "820607c421d81b0d4fe33dcdaf09b84e1568a94db921f365892f98124d8e4d7c",
+      "test_pass_sum": 1,
+      "test_fail_sum": 0,
+      "log_tail": [
+        "hidden owned HWND cycle 15: native destroy then four retained-context COM errors returned normally",
+        "ok",
+        "",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.06s",
+        ""
+      ],
+      "status": "VERIFIED_REUSE_NOT_RERUN"
+    },
+    "product-v16-just-ci": {
+      "receipt": {
+        "started_utc": "2026-10-15T09:58:31.962821+00:00",
+        "argv": [
+          "just",
+          "ci"
+        ],
+        "status": "RETURNED",
+        "log": "product-v16-just-ci.log",
+        "exit_code": 0,
+        "ended_utc": "2026-10-15T09:59:02.567672+00:00"
+      },
+      "log_sha256": "f16e27ed26a0b3475e5845778782911e8b8316d7762020cb9086ea3d3bcf548c",
+      "test_pass_sum": 151,
+      "test_fail_sum": 0,
+      "log_tail": [
+        "          \u2502   \u2514\u2500\u2500 walkdir v2.5.0",
+        "          \u2502       \u2514\u2500\u2500 notify v8.2.0 (*)",
+        "          \u2514\u2500\u2500 walkdir v2.5.0 (*)",
+        "",
+        "advisories ok, bans ok, licenses ok, sources ok"
+      ],
+      "status": "VERIFIED_REUSE_NOT_RERUN"
+    },
+    "product-v16-headless-final-lock": {
+      "receipt": {
+        "started_utc": "2026-10-15T09:58:09.387549+00:00",
+        "argv": [
+          "cargo",
+          "test",
+          "-p",
+          "ferrostage-ui",
+          "--features",
+          "test-support",
+          "--lib",
+          "--locked",
+          "--offline"
+        ],
+        "status": "RETURNED",
+        "log": "product-v16-headless-final-lock.log",
+        "exit_code": 0,
+        "ended_utc": "2026-10-15T09:58:31.903854+00:00"
+      },
+      "log_sha256": "dad35a5e27b20b7974e0cc9dd026f087d230830a618f1feb598bb0e1f797e03f",
+      "test_pass_sum": 82,
+      "test_fail_sum": 0,
+      "log_tail": [
+        "",
+        "test result: ok. 82 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s",
+        "",
+        "mbx[cache]: 0 hits, 0 misses, 4 not looked up; 0 B downloaded, 0 B uploaded, 812.1 MiB stored locally",
+        "mbx[savings]: the checkouts are gone. their 88.6 GiB logical has gone to join them."
+      ],
+      "status": "VERIFIED_REUSE_NOT_RERUN"
+    },
+    "product-v16-clippy": {
+      "receipt": {
+        "started_utc": "2026-10-15T09:59:16.570805+00:00",
+        "argv": [
+          "cargo",
+          "clippy",
+          "-p",
+          "ferrostage-app",
+          "-p",
+          "ferrostage-ui",
+          "-p",
+          "ferrostage-document",
+          "--all-features",
+          "--all-targets",
+          "--locked",
+          "--offline",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "RETURNED",
+        "log": "product-v16-clippy.log",
+        "exit_code": 0,
+        "ended_utc": "2026-10-15T10:00:12.704509+00:00"
+      },
+      "log_sha256": "6ac8e2c8665dbbb7d030309f18e9a26f7ce1c2fca5366f8ae43b6af5a965d869",
+      "test_pass_sum": 0,
+      "test_fail_sum": 0,
+      "log_tail": [
+        "    Checking ferrostage-ui v0.1.0 (D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui)",
+        "    Checking ferrostage-app v0.1.0 (D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-app)",
+        "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 55.64s",
+        "mbx[cache]: 1 hits, 0 misses, 386 not looked up, 3 bypassed; 0 B downloaded, 0 B uploaded, 449.7 MiB stored locally",
+        "mbx[savings]: 91.2 GiB logical of build debris has left the building."
+      ],
+      "status": "VERIFIED_REUSE_NOT_RERUN"
+    },
+    "product-v16-typecheck": {
+      "receipt": {
+        "started_utc": "2026-10-15T10:00:12.768641+00:00",
+        "argv": [
+          "cargo",
+          "check",
+          "-p",
+          "ferrostage-app",
+          "-p",
+          "ferrostage-ui",
+          "-p",
+          "ferrostage-document",
+          "--all-features",
+          "--all-targets",
+          "--locked",
+          "--offline"
+        ],
+        "status": "RETURNED",
+        "log": "product-v16-typecheck.log",
+        "exit_code": 0,
+        "ended_utc": "2026-10-15T10:00:16.568114+00:00"
+      },
+      "log_sha256": "d4267eadbf9b36926d54d604b69ad0fd7130f28162756f24d36f29f355fa30cb",
+      "test_pass_sum": 0,
+      "test_fail_sum": 0,
+      "log_tail": [
+        "    Checking ferrostage-ui v0.1.0 (D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui)",
+        "    Checking ferrostage-app v0.1.0 (D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-app)",
+        "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.42s",
+        "mbx[cache]: 0 hits, 0 misses, 14 not looked up; 0 B downloaded, 0 B uploaded, 1.4 MiB stored locally",
+        "mbx[savings]: found 88.6 GiB logical of target/ whose checkouts left long ago. the estate has been settled."
+      ],
+      "status": "VERIFIED_REUSE_NOT_RERUN"
+    },
+    "product-v16-deny": {
+      "receipt": {
+        "started_utc": "2026-10-15T10:00:16.628195+00:00",
+        "argv": [
+          "cargo",
+          "deny",
+          "--all-features",
+          "--locked",
+          "--offline",
+          "check"
+        ],
+        "status": "RETURNED",
+        "log": "product-v16-deny.log",
+        "exit_code": 0,
+        "ended_utc": "2026-10-15T10:00:19.249763+00:00"
+      },
+      "log_sha256": "7f766bd35a93c007f101d3bab4ff16468b84cbbdfc1fff96fb3acb35b4f52846",
+      "test_pass_sum": 0,
+      "test_fail_sum": 0,
+      "log_tail": [
+        "          \u251c\u2500\u2500 zbus_macros v5.19.0 (*)",
+        "          \u251c\u2500\u2500 zvariant v5.15.0 (*)",
+        "          \u2514\u2500\u2500 zvariant_derive v5.15.0 (*)",
+        "",
+        "advisories ok, bans ok, licenses ok, sources ok"
+      ],
+      "status": "VERIFIED_REUSE_NOT_RERUN"
+    },
+    "product-v16-build": {
+      "receipt": {
+        "started_utc": "2026-10-15T10:00:19.306003+00:00",
+        "argv": [
+          "cargo",
+          "build",
+          "-p",
+          "ferrostage-app",
+          "--features",
+          "gpui,pdfium",
+          "--locked",
+          "--offline"
+        ],
+        "status": "RETURNED",
+        "log": "product-v16-build.log",
+        "exit_code": 0,
+        "ended_utc": "2026-10-15T10:00:39.828583+00:00"
+      },
+      "log_sha256": "86ac2d6cc0bb2af28e48cf6fc23e4ec19af76232d1cc7e8b4a100c04d762e886",
+      "test_pass_sum": 0,
+      "test_fail_sum": 0,
+      "log_tail": [
+        "mbx[progress]: 15s elapsed; 0 hits, 0 misses, 0 bypassed, 9 not looked up; ~0s compiler work saved",
+        "   Compiling ferrostage-app v0.1.0 (D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-app)",
+        "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 20.15s",
+        "mbx[cache]: 0 hits, 1 misses, 9 not looked up; 0 B downloaded, 0 B uploaded, 935.5 MiB stored locally",
+        "mbx[savings]: swept up 91.2 GiB logical so far. the broom is content-addressed."
+      ],
+      "status": "VERIFIED_REUSE_NOT_RERUN"
+    },
+    "product-independent-v16-lint-cache-access": {
+      "receipt": {
+        "started_utc": "2026-10-15T10:06:08.712878+00:00",
+        "argv": [
+          "cargo",
+          "clippy",
+          "-p",
+          "ferrostage-app",
+          "-p",
+          "ferrostage-ui",
+          "-p",
+          "ferrostage-document",
+          "-p",
+          "ferrostage-platform",
+          "--all-features",
+          "--all-targets",
+          "--locked",
+          "--offline",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "RETURNED",
+        "log": "product-independent-v16-lint-cache-access.log",
+        "exit_code": 0,
+        "ended_utc": "2026-10-15T10:06:12.235109+00:00"
+      },
+      "log_sha256": "825244dba25121a884bdbd909e537fb74fbf019598019f89c9201f152b7d5ace",
+      "test_pass_sum": 0,
+      "test_fail_sum": 0,
+      "log_tail": [
+        "    Checking proptest v1.12.0",
+        "    Checking ferrostage-platform v0.1.0 (D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-platform)",
+        "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.03s",
+        "mbx[cache]: 0 hits, 0 misses, 4 not looked up; 0 B downloaded, 0 B uploaded, 2.7 MiB stored locally",
+        "mbx[savings]: 88.6 GiB logical of outputs had survived their checkouts. an unnatural state, now corrected."
+      ],
+      "status": "VERIFIED_REUSE_NOT_RERUN"
+    },
+    "product-independent-v16-typecheck": {
+      "receipt": {
+        "started_utc": "2026-10-15T10:06:20.131218+00:00",
+        "argv": [
+          "cargo",
+          "check",
+          "-p",
+          "ferrostage-app",
+          "-p",
+          "ferrostage-ui",
+          "-p",
+          "ferrostage-document",
+          "-p",
+          "ferrostage-platform",
+          "--all-features",
+          "--all-targets",
+          "--locked",
+          "--offline"
+        ],
+        "status": "RETURNED",
+        "log": "product-independent-v16-typecheck.log",
+        "exit_code": 0,
+        "ended_utc": "2026-10-15T10:06:21.969872+00:00"
+      },
+      "log_sha256": "5462dbfbd3e4b7cac2eac61bdc2393dc65691c59caed51b5e3878f77aebbccbc",
+      "test_pass_sum": 0,
+      "test_fail_sum": 0,
+      "log_tail": [
+        "warning: `harfrust` (lib) generated 1 warning",
+        "    Checking ferrostage-platform v0.1.0 (D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-platform)",
+        "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.48s",
+        "mbx[cache]: 0 hits, 0 misses, 3 not looked up; 0 B downloaded, 0 B uploaded, 15.9 KiB stored locally",
+        "mbx[savings]: has quietly disposed of 91.2 GiB logical of build leftovers. nobody saw anything."
+      ],
+      "status": "VERIFIED_REUSE_NOT_RERUN"
+    },
+    "product-independent-v16-fmt": {
+      "receipt": {
+        "started_utc": "2026-10-15T10:06:32.771378+00:00",
+        "argv": [
+          "cargo",
+          "fmt",
+          "--all",
+          "--",
+          "--check"
+        ],
+        "status": "RETURNED",
+        "log": "product-independent-v16-fmt.log",
+        "exit_code": 0,
+        "ended_utc": "2026-10-15T10:06:34.337443+00:00"
+      },
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "test_pass_sum": 0,
+      "test_fail_sum": 0,
+      "log_tail": [],
+      "status": "VERIFIED_REUSE_NOT_RERUN"
+    }
+  },
+  "native": {
+    "v16-core-main": {
+      "launch": {
+        "freeze_sha256": "0E2B1ED8EF9299676BA249E7600BD8AB6734F00C6AE17F677467405AD60402D3",
+        "dll_sha256": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118",
+        "pid": 42672,
+        "pdf_sha256": "e939e35f931c184fd93b2e9b95e560db73ba6a6f6dfccbb0963262f0b359dfeb",
+        "rust_backtrace": "full",
+        "source_sha256": "3e208cf586dcf37ab0420228e8eb3fba8ee07c0b73a8597c318a7f6a219c35b8",
+        "config": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\v16-core.toml",
+        "exe": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe",
+        "freeze": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-native-freeze-v16.json",
+        "rust_log": "info,ferrostage_ui=debug",
+        "config_sha256": "4C3ABBC78F4E4151B6EF14F44BBCA008FDD5042E9D01FCC7BFBA33509877C5E7",
+        "utc": "2026-10-15T10:10:36.5092751Z",
+        "argv": [
+          "--config",
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\v16-core.toml",
+          "--pdfium-library",
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll",
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\notes-functional\\pympress-notes.pdf"
+        ],
+        "exe_sha256": "cf228c03655ddd45d25520bd88dab025c219af9bec9195314ce541dbb1cd89d1"
+      },
+      "exit": {
+        "exit_code": 0,
+        "pid": 42672,
+        "utc": "2026-10-15T10:19:07.7565187Z"
+      },
+      "post_exit_inventory": {
+        "utc": "2026-10-15T10:19:17.829Z",
+        "windows": []
+      },
+      "stdout_lines": 126,
+      "stderr_bytes": 0
+    },
+    "v16-core-relaunch": {
+      "launch": {
+        "argv": [
+          "--config",
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\v16-core.toml",
+          "--pdfium-library",
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll",
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\notes-functional\\pympress-notes.pdf"
+        ],
+        "dll_sha256": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118",
+        "config_sha256": "7B190057C5120649774B36300F117BC323A6255A50BA32F04497380937D26393",
+        "utc": "2026-10-15T10:19:19.4275152Z",
+        "rust_log": "info,ferrostage_ui=debug",
+        "pdf_sha256": "e939e35f931c184fd93b2e9b95e560db73ba6a6f6dfccbb0963262f0b359dfeb",
+        "pid": 58568,
+        "freeze_sha256": "0E2B1ED8EF9299676BA249E7600BD8AB6734F00C6AE17F677467405AD60402D3",
+        "config": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\v16-core.toml",
+        "rust_backtrace": "full",
+        "freeze": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-native-freeze-v16.json",
+        "exe": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe",
+        "exe_sha256": "cf228c03655ddd45d25520bd88dab025c219af9bec9195314ce541dbb1cd89d1",
+        "source_sha256": "3e208cf586dcf37ab0420228e8eb3fba8ee07c0b73a8597c318a7f6a219c35b8"
+      },
+      "exit": {
+        "utc": "2026-10-15T10:21:18.4957160Z",
+        "exit_code": 0,
+        "pid": 58568
+      },
+      "post_exit_inventory": {
+        "utc": "2026-10-15T10:21:41.493Z",
+        "windows": []
+      },
+      "stdout_lines": 48,
+      "stderr_bytes": 0
+    }
+  },
+  "lock_package_count": 744,
+  "only_lock_change": "same-version AccessKit registry source/checksum removal",
+  "process_query": {
+    "method": "Get-Process",
+    "matches": [],
+    "limit": "Win32_Process CIM access denied; no command-line/parent inventory obtained"
+  },
+  "git_diff_check": 0,
+  "failures": [],
+  "status": "PASS",
+  "native_or_build_executed": false
+}

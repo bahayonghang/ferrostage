@@ -1,0 +1,23 @@
+{
+  "utc": "2026-10-15T10:16:14.212Z",
+  "window": {
+    "app": "process:D:\\mbx-cache\\targets\\v1\\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0\\debug\\ferrostage.exe",
+    "id": 2626324
+  },
+  "accessibility": {
+    "focused_element": "0 region Secondary Actions: Raise",
+    "tree": "Window: \"\", App: ferrostage.exe.\n\t0 region Secondary Actions: Raise\n\nThe focused UI element is 0 region Secondary Actions: Raise."
+  },
+  "screenshots": [
+    {
+      "height": 1152,
+      "id": "screenshot-0",
+      "originX": 0,
+      "originY": 0,
+      "width": 2048,
+      "zIndex": 0,
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/native/v16-audience-page3-back-0.jpg",
+      "sha256": "99c36fc2de4efdf444c037fff5e77b5c5b1d3dbc65b78763a4f0fd46733689b6"
+    }
+  ]
+}

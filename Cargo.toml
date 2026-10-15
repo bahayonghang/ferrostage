@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-exclude = ["vendor/gpui", "vendor/pulp", "vendor/metal", "vendor/cosmic-text", "vendor/harfrust"]
+exclude = ["vendor/gpui", "vendor/pulp", "vendor/metal", "vendor/cosmic-text", "vendor/harfrust", "vendor/accesskit_windows"]
 members = [
     "crates/ferrostage-app",
     "crates/ferrostage-ui",
@@ -69,3 +69,4 @@ pulp = { path = "vendor/pulp" }
 metal = { path = "vendor/metal" }
 cosmic-text = { path = "vendor/cosmic-text" }
 harfrust = { path = "vendor/harfrust" }
+accesskit_windows = { path = "vendor/accesskit_windows" }

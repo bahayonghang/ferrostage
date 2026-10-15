@@ -1,0 +1,13 @@
+{
+  "utc": "2026-10-15T10:13:23.973Z",
+  "window": {
+    "app": "process:D:\\mbx-cache\\targets\\v1\\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0\\debug\\ferrostage.exe",
+    "id": 4788400,
+    "title": "pympress-notes.pdf — 准备就绪 — FerroStage"
+  },
+  "accessibility": {
+    "focused_element": "32 button 2 · Generic PnP Monitor ID: display-app-2",
+    "tree": "Window: \"pympress-notes.pdf — 准备就绪 — FerroStage\", App: ferrostage.exe.\n\t0 region pympress-notes.pdf — 准备就绪 — FerroStage Secondary Actions: Raise\n\t\t1 title bar (settable, string) Value: pympress-notes.pdf — 准备就绪 — FerroStage\n\t\t\t2 menu bar System ID: MenuBar\n\t\t\t\t3 menu item System\n\t\t\t4 button Minimize\n\t\t\t5 button Maximize\n\t\t\t6 button Close\n\t\t7 application FerroStage 讲者窗口\n\t\t\t29 button 识别屏幕 ID: identify-displays\n\t\t\t30 button 重新检测 ID: refresh-displays\n\t\t\t31 button 1 · Generic PnP Monitor（已选择） ID: display-app-1\n\t\t\t32 button 2 · Generic PnP Monitor ID: display-app-2\n\t\t\t33 button 3 · Generic PnP Monitor ID: display-app-3\n\t\t\t34 button 不播放 ID: display-pdf-none\n\t\t\t35 button 1 · Generic PnP Monitor ID: display-pdf-1\n\t\t\t36 button 2 · Generic PnP Monitor ID: display-pdf-2\n\t\t\t37 button 3 · Generic PnP Monitor（已选择） ID: display-pdf-3\n\t\t\t38 button 应用 ID: apply-displays\n\t\t\t39 button 取消 ID: cancel-displays\n\nThe focused UI element is 32 button 2 · Generic PnP Monitor ID: display-app-2."
+  },
+  "screenshots": []
+}

@@ -4,6 +4,16 @@
 
 Bounded maintenance evaluation approved by the user on 2026-10-14: "批准维护评估，保留门禁（推荐）". This authorizes preparing an isolated candidate dependency/API patch or evaluating a maintained source within task07. Subsequently the user explicitly approved the final reviewed candidate and exactly three license exceptions: "批准采纳及这三个精确例外（推荐）". The approved source set and exact packages are recorded below and in the parent proposal. No advisory or lint waiver is approved; actual product integration must still pass its gates. ADR-001/ADR-005 reflect this bounded decision. This work belongs to the existing task07; it does not create another task tree.
 
+## Additional F14 scope approved — 2026-10-15
+
+After the V15 independent review and Root's isolated destruction test, the user answered **"批准该限定范围"** to adopting the exact four-file `accesskit_windows 0.34.0` patch as the sixth maintained package, including provenance, regression maintenance and product verification. This is adoption authorization, not native acceptance. The original five packages and three exact license exceptions remain unchanged.
+
+Approved patch: [product-v15-accesskit-proposal.patch](../../.trellis/tasks/10-14-07-gpui-shell/research/product-v15-accesskit-proposal.patch), SHA256 `93563d304909e2bca657dc0136382ba9179e638b71799d9c6823918ad2a9f2f0`. Baseline registry checksum `106c2b961215864d1c2e703ee63269c25c4e80a577ffb2c1017b9c17dcdf83a1`, upstream revision `c88605b96d04431f9c3c792464a0f2f253480e94`, `platforms/windows`; MIT OR Apache-2.0 requires no policy exception. Preserve the production package manifest and upstream notices; the stripped research harness manifest is not the product manifest.
+
+Only `src/util.rs`, `src/context.rs`, `src/node.rs` and `src/text.rs` receive runtime changes. Check the actual ClientToScreen result, map only invalid HWND to UIA_E_ELEMENTNOTAVAILABLE, propagate other errors, and preserve valid coordinates and zero/empty behavior. This repairs the demonstrated conversion panic without claiming a drain protocol, simultaneous teardown coverage or HWND-reuse protection. No gpui_windows patch, dependency-version upgrade, accessibility disable, or general error suppression is authorized here.
+
+Adoption requires reproducible provenance/diff, all four actual COM caller regressions and positive/empty controls, full product policy/lint/typecheck/build, serial independent review and a new source/EXE freeze. Root exclusively performs owned-HWND and real product close/retirement tests with full backtrace/logs. Track the exact upstream source and remove the patch only when equivalent upstream behavior passes these tests. V14's failure and V15's unpatched identity remain immutable; Gate B and downstream dependencies are unchanged until their actual criteria pass.
+
 ## Observed conflict
 
 Task07 tested both allowed routes in isolated workspaces. Zed `v1.23.3` resolves to `96a1b1b5389efff473fc2306f7f8c690f2e1a417`; kit/component `0.7.3` uses pre/platform `0.3.9`, whose published upstream identity is `93d745668805029476e6d7fbb19652116fed51de`. Both Windows MSVC builds returned zero. Neither executable was launched or integrated into FerroStage.

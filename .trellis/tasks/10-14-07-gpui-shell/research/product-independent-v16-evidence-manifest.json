@@ -1,0 +1,66 @@
+{
+  "captured_utc": "2026-10-15T10:09:52.124543+00:00",
+  "scope": "Independent V16 review. No product or native mutation. Current freeze verified; original V15 baseline EXE label corrected additively.",
+  "files": {
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-check.py": {
+      "bytes": 1737,
+      "sha256": "90e32bb56390c2af142522c01070dde5a983cc8929fc36bfd830c17a5e8f9480"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-fmt.json": {
+      "bytes": 285,
+      "sha256": "49b10913fa424b7e8e47eca2a3511908abc6b02cc842eae846f7723012454f09"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-fmt.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-lint-cache-access.json": {
+      "bytes": 525,
+      "sha256": "5bb5432e52cde367e3835d610a3bbf26d097637375870c302a8d67121f803e43"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-lint-cache-access.log": {
+      "bytes": 673,
+      "sha256": "825244dba25121a884bdbd909e537fb74fbf019598019f89c9201f152b7d5ace"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-lint.json": {
+      "bytes": 512,
+      "sha256": "d22bbe85e35a337e8b923a2587cae8b33a8bb5cd01a3db72a74fd6586c2f9dea"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-lint.log": {
+      "bytes": 391,
+      "sha256": "3053c6961c82b15b838b661ad06a0cf2b73b7cc1207d4f9efc544e168704db15"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-process-closeout.json": {
+      "bytes": 283,
+      "sha256": "6e941c802698bac4e64a2e2986f6774dcf798e82117d7463aee92a4ba474fc0e"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-readback.json": {
+      "bytes": 5034,
+      "sha256": "2f2e41ea16489fc1becfff26d6f94b0638e6ce444d7ac0507fa3c84425b772a7"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-reconstruction.json": {
+      "bytes": 384,
+      "sha256": "8ecd439246b500070d6d9863defe1d96c4a1c9ca11a950fb19212cbd51f78896"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-reconstruction.log": {
+      "bytes": 331,
+      "sha256": "67bf66d8184b4e7ddb16bf535bd8c6c54c899bede01282afeb662b7d2d7a5fa3"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-review.md": {
+      "bytes": 6911,
+      "sha256": "9db30cb9d4c1a9e4580d5abc38d5faa0c41b984e2883ff8dd3dbe03a5c7a773c"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-typecheck.json": {
+      "bytes": 477,
+      "sha256": "6b6cc9b8261a116250242233b34506e71ff5d35cbb0db350d348ef914e5e28e3"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-typecheck.log": {
+      "bytes": 633,
+      "sha256": "5462dbfbd3e4b7cac2eac61bdc2393dc65691c59caed51b5e3878f77aebbccbc"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-verify.py": {
+      "bytes": 5629,
+      "sha256": "cd8e245f802e69d0a8cc8126b565bc15b04d44f7b80a397944023678b4240d0b"
+    }
+  }
+}

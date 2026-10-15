@@ -1,0 +1,12 @@
+# V16 core native plan
+
+The user resumed Computer Use, deferred further size adjustments, and separately approved the exact F14 four-file AccessKit adoption. Root owns native interaction; implement and check agents do not operate the desktop. Resume existing task07 after serial implementation/check and a new verified freeze. Keep V15 and older evidence immutable.
+
+1. Verify frozen source, EXE, PDFium and fixture hashes, completed build processes, and an empty FerroStage window inventory. Use isolated `native/v16-core.toml`, the original `fixtures/notes-functional/pympress-notes.pdf`, full stdout/stderr and `RUST_BACKTRACE=full`.
+2. Observe Ready/page1 and no Audience. Open Displays; compare all three complete MonitorIds/geometries with GPUI actual display/placement logs. Capture matching Identify labels on physical screens. Change a draft and Cancel; compare exact configuration bytes and unchanged actual windows.
+3. Use Apply to assign application/PDF roles. Start, capture actual Audience placement, navigate physical pages through both overlay pages and back, and exercise Stop/restart. Distinguish placeholder page navigation from task08 PDF/notes rendering.
+4. During Presenting, migrate the PDF target through the new panel; verify preserved page/stage and advancing elapsed time. Select no-play and Apply; confirm Ready, page retained, Audience closed, Start disabled, and elapsed time unchanged across later observations. Read back full MonitorId settings. Relaunch to verify persistence.
+5. Restore a valid PDF target through the UI, Start, close Audience and verify surviving Ready Presenter; restart then close Presenter. Capture full process exit/logs and fresh post-exit inventory. Repeat controlled UIA observations during native retirement without treating a bounded clean run as proof of all races.
+6. Root executes the maintained real-DestroyWindow regression against the adopted source after check handoff. Preserve the deterministic post-destruction limit; randomized overlap and handle reuse are not covered.
+
+Save original screenshots, accessibility states, current window inventory, launch/exit/config receipts and immutable source identity. Keep unknown outcomes as UNVERIFIED; exit0 cannot conceal panic. If the tool reports user stop, cease input immediately. No resize matrix, physical unplug/reconnect/port changes, real single/zero displays or performance substitutions. Gate B remains INCOMPLETE while required evidence is missing;08–11 dependencies and P2 remain unchanged. New changes stay uncommitted.

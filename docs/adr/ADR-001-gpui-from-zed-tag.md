@@ -16,6 +16,8 @@ Record the pin as Zed `v1.23.3` and `gpui-kit` 0.7.3. Do not add either crate to
 
 ## Consequences
 
+On 2026-10-15 the user separately approved accesskit_windows0.34.0 as the sixth maintained package, limited to the reviewed four-file F14 COM coordinate-error repair. ADR-008 records exact patch/source identities and unchanged policy; the GPUI tag and package versions do not change. Adoption and native close acceptance are separate.
+
 `ferrostage-ui` exports `ZED_GPUI_TAG` so the pin is tested. The first UI task adds the real dependency and updates this ADR if the tag moves.
 
 Task07's original isolated routes failed policy. The user subsequently approved the final independently reviewed maintenance set in [ADR-008](ADR-008-gpui-dependency-gate.md): base tag v1.23.3 / revision96a1b1b5389efff473fc2306f7f8c690f2e1a417, local GPUI0.2.2/pulp0.22.3/metal0.33.0/cosmic-text0.19.0/harfrust0.12.0 patches, and three exact license exceptions under ADR-005. Product feature wiring and full product audit/build must pass before shell implementation proceeds. No crates.io gpui0.2 route, unrelated source upgrade or lint/advisory waiver is authorized.

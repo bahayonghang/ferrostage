@@ -1,6 +1,6 @@
 # Reviewed GPUI maintenance source
 
-These five dependency copies are excluded from the FerroStage workspace. They
+These six dependency copies are excluded from the FerroStage workspace. They
 retain upstream package licenses and upstream lint configuration; FerroStage
 crates retain `unsafe_code = forbid` and warnings-denied lint.
 
@@ -13,6 +13,18 @@ crates retain `unsafe_code = forbid` and warnings-denied lint.
   replaces the old paste dependency under its existing alias. Rust code unchanged.
 - cosmic-text0.19.0 (MIT OR Apache-2.0): dependency-only fontdb0.24 migration.
 - harfrust0.12.0 (MIT): reviewed format2 selection/mapping in two source files.
+- accesskit_windows0.34.0 (MIT OR Apache-2.0): approved F14 four-file patch
+  propagates actual ClientToScreen failure through all four coordinate callers.
+  Only ERROR_INVALID_WINDOW_HANDLE maps to UIA_E_ELEMENTNOTAVAILABLE; live
+  values, other errors and empty rectangles/ranges retain upstream semantics.
+  Original production manifest, tests, examples and notices are preserved.
+  `product-v16-accesskit-provenance.json` records archive/VCS/patch hashes and
+  exact source inventory; `product-v16-accesskit.py verify` reconstructs it.
+  Both files are in the task07 research directory. The local patch is tracked
+  by ADR-008/F14; no upstream issue or PR has been submitted. Remove it only
+  after separately approving an upstream replacement and rerunning all four
+  caller regressions and native product close checks. This bounded error
+  repair does not establish HWND reuse safety or complete provider retirement.
 
 Authoritative source review and preserved failing/passing regressions:
 `.trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-report.md`.

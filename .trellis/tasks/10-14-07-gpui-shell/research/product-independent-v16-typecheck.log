@@ -1,0 +1,13 @@
+warning: function `shape` is never used
+   --> vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `harfrust` (lib) generated 1 warning
+    Checking ferrostage-platform v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-platform)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.48s
+mbx[cache]: 0 hits, 0 misses, 3 not looked up; 0 B downloaded, 0 B uploaded, 15.9 KiB stored locally
+mbx[savings]: has quietly disposed of 91.2 GiB logical of build leftovers. nobody saw anything.
