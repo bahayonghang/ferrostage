@@ -27,7 +27,7 @@ crates retain `unsafe_code = forbid` and warnings-denied lint.
   repair does not establish HWND reuse safety or complete provider retirement.
 
 Authoritative source review and preserved failing/passing regressions:
-`.trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-report.md`.
+`.trellis/tasks/archive/2026-10/10-14-07-gpui-shell/research/maintenance-independent-report.md`.
 The final526-source snapshot is
 `cc9a8ded6bfeeed1c0286ba5bf2e3ecf750b6ce34987f11d4b6e23d85ec8a960`.
 `product-vendor-adoption.json` and `product-vendor-adaptation.patch` in that

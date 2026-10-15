@@ -1,0 +1,23 @@
+{
+  "reason": "Authorized03/07 implementation-scope archive. Resolve original sealed manifest path prefixes through this map; do not rewrite sealed bytes.",
+  "mapping": {
+    ".trellis/tasks/10-14-03-monitor-topology": ".trellis/tasks/archive/2026-10/10-14-03-monitor-topology",
+    ".trellis/tasks/10-14-07-gpui-shell": ".trellis/tasks/archive/2026-10/10-14-07-gpui-shell"
+  },
+  "context_and_current_reference_files_updated": [
+    ".trellis/tasks/archive/2026-10/10-14-03-monitor-topology/check.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-03-monitor-topology/implement.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-07-gpui-shell/check.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-07-gpui-shell/implement.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-07-gpui-shell/implement.md",
+    "docs/adr/ADR-008-gpui-dependency-gate.md",
+    "vendor/README.md"
+  ],
+  "head_after_archive": "a4f1d2348ec6d420d8fcc5492f04937927cad8c0",
+  "commits": [
+    "a4f1d2348ec6d420d8fcc5492f04937927cad8c0 chore(task): archive 10-14-07-gpui-shell",
+    "8b43edbddbdbfee3cac85879e6ffc6d1375b3c42 chore(task): archive 10-14-03-monitor-topology",
+    "563482536bcf12ffe475275f107a6b39418dd931 docs: \u8c03\u6574\u4e3a\u529f\u80fd\u4f18\u5148\u9a8c\u6536\u5e76\u51c6\u5907\u5168\u90e8\u540e\u7eed\u4efb\u52a1 Prompt",
+    "01dcf663257bbc74d24a700363cb5bc69bcfcbd2 fix: \u91c7\u7528 AccessKit \u7a97\u53e3\u9500\u6bc1\u4fee\u590d\u5e76\u4fdd\u5b58 V16 \u9a8c\u8bc1\u8bc1\u636e"
+  ]
+}

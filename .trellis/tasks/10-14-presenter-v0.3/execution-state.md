@@ -1,5 +1,17 @@
 # Execution state — 10-14-presenter-v0.3
 
+## Completed closeout - 2026-10-15 (current recovery entry)
+
+User-authorized work commits: `01dcf663257bbc74d24a700363cb5bc69bcfcbd2` (AccessKit repair and V16 evidence), `5634825` (implementation-first policy and continuation prompt). Supported task.py archive completed03 (`8b43edb`) and07 (`a4f1d23`), both with return code0 and archive commits. Archive mapping and the four full commit identities are saved in `research/implementation-first-archive-relocation.json`.
+
+Actual archived directories: `.trellis/tasks/archive/2026-10/10-14-03-monitor-topology` and `.trellis/tasks/archive/2026-10/10-14-07-gpui-shell`. Together with01/02/04/05/06, seven children are now completed/archived under their applicable scopes.08/09/10/11 remain planning, parent remains coordinating/planning. The current pointer is empty because07 was archived; do not recreate or restart01-07.
+
+Next implementation: review08 artifacts and actual interfaces, then task.py start its existing directory. Continue08 ->09 ->10 ->11 with all functionality and meaningful automatic/native-functional checks. Gate A technical PASS, revised Gate B implementation PASS; original extended hardware/native/size/performance qualification DEFERRED_BY_USER. Functional Gate C/D remains to be implemented/checked. `acceptance-policy.md` overrides all older blocking statements below; deferred original composite ACs are not marked PASS.
+
+Current first-party runtime remains V16; verified CI151/UI82/COM8 and full feature checks are reused, not rerun. Current planning/spec path and scheduling edits are documentation deltas. Archive preserves sealed original evidence; use the explicit mapping for old paths, not rewritten hashes. Post-archive checks returned PASS:12/12 contexts,7 completed children, all four relocated manifests62/15/138/6 unchanged, runtime artifacts unchanged and no broken current Markdown links. Four frozen documentation inputs now differ due to policy/path updates; no runtime delta. Full command/results: `research/implementation-first-postarchive-checks.json`.
+
+The ready-to-use request is `next-session-prompt.md`. Subsequent08-11 changes stay uncommitted/unarchived by default; this turn's commit/archive authorization covers only this closeout. No push. Final checkpoint/reference corrections and authorized journal recording are the remaining closeout bookkeeping. No further feature implementation occurs in this closeout turn. Use git log/status for the final journal commit and clean-worktree confirmation.
+
 ## Current user revision - 2026-10-15: implementation-first closeout
 
 The user explicitly authorized committing/archiving completed work and deferring physical unplug/latency, true single/zero displays, other full native matrices and size testing until after all remaining functionality. `acceptance-policy.md` is the authoritative current schedule, also injected into all active child contexts. It supersedes older Gate B blockers below; no historical FAIL/NOT_RUN is converted to PASS. Required automatic/feature/license and bounded native-functional checks remain.

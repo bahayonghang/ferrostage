@@ -13,26 +13,26 @@
 {"file": ".trellis/tasks/10-14-presenter-v0.3/prd.md", "reason": "Source requirements, milestone scope and dependency map"}
 {"file": ".trellis/tasks/10-14-presenter-v0.3/traceability.md", "reason": "Requirement to owner, design step and verification coverage"}
 {"file": ".trellis/tasks/10-14-presenter-v0.3/research/repository-baseline.md", "reason": "Verified skeleton and semantic scan ledger; task 01 spec conflicts"}
-{"file": ".trellis/tasks/10-14-07-gpui-shell/prd.md", "reason": "Child requirements and explicit dependencies"}
-{"file": ".trellis/tasks/10-14-07-gpui-shell/design.md", "reason": "Reviewed design choices, ownership, errors and rollback"}
-{"file": ".trellis/tasks/10-14-07-gpui-shell/implement.md", "reason": "Ordered steps and layered verification gates"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-07-gpui-shell/prd.md", "reason": "Child requirements and explicit dependencies"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-07-gpui-shell/design.md", "reason": "Reviewed design choices, ownership, errors and rollback"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-07-gpui-shell/implement.md", "reason": "Ordered steps and layered verification gates"}
 {"file": ".trellis/tasks/10-14-presenter-v0.3/research/runtime-feasibility.md", "reason": "Primary-source native API, safe wrapper, ownership, CI and distribution gates"}
 {"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Required pure/native checks and no ignore; Rust 1.99/unsafe policy"}
 {"file": "DESIGN.md", "reason": "R-45 native Claude-inspired tokens, component states, theme boundaries and visual acceptance"}
 {"file": ".trellis/tasks/10-14-presenter-v0.3/research/native-research-resume.md", "reason": "Current read-only source observations: partial enumeration, safe interface ID lead, DPI context and actual three-screen inventory; no gate PASS"}
 {"file": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/independent-check.md", "reason": "Verified task05 metadata/frame/candidate delivery and exact native/performance evidence boundaries"}
 {"file": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/native-api-audit.md", "reason": "Pinned PDFium worker lifetime, owned metadata, runtime configuration and licensing constraints"}
-{"file": ".trellis/tasks/10-14-03-monitor-topology/research/independent-check.md", "reason": "Verified safe Windows topology delivery, scale limitations and pending physical acceptance"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-03-monitor-topology/research/independent-check.md", "reason": "Verified safe Windows topology delivery, scale limitations and pending physical acceptance"}
 {"file": ".trellis/tasks/10-14-presenter-v0.3/research/gate-a.md", "reason": "Prerequisite pure-contract gate and physical acceptance distinction"}
 {"file": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/independent-check.md", "reason": "Current checked core descriptor/crop/navigation APIs and exact integration evidence"}
-{"file": ".trellis/tasks/10-14-07-gpui-shell/research/gpui-display-api.md", "reason": "Source-audited display/input contracts; no native runtime acceptance"}
-{"file": ".trellis/tasks/10-14-07-gpui-shell/research/dependency-gate.md", "reason": "Actual isolated route builds and unchanged policy blockers; resume at I-2"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-07-gpui-shell/research/gpui-display-api.md", "reason": "Source-audited display/input contracts; no native runtime acceptance"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-07-gpui-shell/research/dependency-gate.md", "reason": "Actual isolated route builds and unchanged policy blockers; resume at I-2"}
 {"file": "docs/adr/ADR-008-gpui-dependency-gate.md", "reason": "Approved five-package maintenance adoption and three exact license exceptions; product gates remain mandatory"}
-{"file": ".trellis/tasks/10-14-07-gpui-shell/research/independent-check.md", "reason": "Independent blocker audit, unchanged task06 evidence and asynchronous activation/fullscreen corrections; task07 is not delivered"}
-{"file": ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-plan.md", "reason": "Historical bounded maintenance evaluation plan; final approval and product adoption follow ADR-008 and final review"}
-{"file": ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-report.md", "reason": "Completed isolated candidate and exact preserved behavior; product adoption and licenses remain gated"}
-{"file": ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-report.md", "reason": "Final repaired candidate, reconstruction, upstream lint and policy boundaries"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-07-gpui-shell/research/independent-check.md", "reason": "Independent blocker audit, unchanged task06 evidence and asynchronous activation/fullscreen corrections; task07 is not delivered"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-07-gpui-shell/research/maintenance-plan.md", "reason": "Historical bounded maintenance evaluation plan; final approval and product adoption follow ADR-008 and final review"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-07-gpui-shell/research/maintenance-report.md", "reason": "Completed isolated candidate and exact preserved behavior; product adoption and licenses remain gated"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-07-gpui-shell/research/maintenance-independent-report.md", "reason": "Final repaired candidate, reconstruction, upstream lint and policy boundaries"}
 {"file": ".trellis/spec/frontend/maintained-dependencies.md", "reason": "Approved maintained-source contracts, exact license scope, and actual product gates"}
-{"file": ".trellis/tasks/10-14-07-gpui-shell/research/resume-v6-native-checkpoint.md", "reason": "Current session V6 identity-bound native results and remaining limits"}
-{"file": ".trellis/tasks/10-14-07-gpui-shell/research/product-v7-diagnostics.md", "reason": "Current frozen diagnostic-only version and exact validation evidence"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-07-gpui-shell/research/resume-v6-native-checkpoint.md", "reason": "Current session V6 identity-bound native results and remaining limits"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-07-gpui-shell/research/product-v7-diagnostics.md", "reason": "Current frozen diagnostic-only version and exact validation evidence"}
 {"file": ".trellis/tasks/10-14-presenter-v0.3/research/display-assignment-plan.md", "reason": "Current approved screen-selection direction: count/number, explicit app/PDF roles, 07 ownership and honest evidence"}
