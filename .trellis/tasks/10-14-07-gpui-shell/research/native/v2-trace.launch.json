@@ -1,0 +1,7 @@
+{
+  "utc": "2026-10-15T01:13:49.6887071Z",
+  "pid": 172680,
+  "sha256": "B96CB72EA54DDACACD9491090A5F92EF8950F7FDF720758C2D5F2DC6986BB396",
+  "diagnostic": "RUST_BACKTRACE=full",
+  "exe": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe"
+}

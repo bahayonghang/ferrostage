@@ -1,0 +1,20 @@
+warning: Cargo.toml: `lints.clippy.large-stack-arrays` is deprecated in favor of `lints.clippy.large_stack_arrays` and will not work in a future edition
+warning: `harfrust` (manifest) generated 1 warning
+   Compiling harfrust v0.12.0 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\vendor\harfrust)
+warning: function `shape` is never used
+   --> src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `harfrust` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.53s
+     Running unittests src\lib.rs (cache/gpui-maintenance-candidate/target\debug\deps\harfrust-a2aaa95e318544a0.exe)
+
+running 1 test
+test hb::charmap::maintenance_cmap2_tests::both_constructors_keep_format2_glyph_and_failure_results ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 204 filtered out; finished in 0.00s
+

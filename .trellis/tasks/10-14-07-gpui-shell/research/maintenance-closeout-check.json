@@ -1,0 +1,16 @@
+{
+  "authored_text_files_checked": [
+    "maintenance-capture.py",
+    "maintenance-golden-ratio-proof.rs",
+    "maintenance-phi-proof.rs",
+    "maintenance-plan.md",
+    "maintenance-prepare.py",
+    "maintenance-regression-fonts.rs",
+    "maintenance-regression-image.rs",
+    "maintenance-report.md",
+    "maintenance-source-validation.py",
+    "maintenance-svg-tests.rs"
+  ],
+  "candidate_source_records_matching": 441,
+  "result": "PASS"
+}

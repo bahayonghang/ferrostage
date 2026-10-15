@@ -1,0 +1,20 @@
+    Checking gpui v0.2.2 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\vendor\gpui)
+warning: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\target\debug\incremental\gpui-06eci38vt9gyt\s-hn7vg5zr7w-0j1olq5-working`
+
+warning: `gpui` (lib) generated 1 warning
+    Checking gpui_windows v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+    Checking gpui_platform v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+    Checking ferrostage-gpui-maintenance-candidate v0.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate)
+warning: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\target\debug\incremental\ferrostage_gpui_maintenance_candidate-2l2dzz8hoeqmn\s-hn7vga12kz-0lc6wg7-working`
+
+warning: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\target\debug\incremental\ferrostage_gpui_maintenance_candidate-2j71b9jthy5fw\s-hn7vga1r44-0ru0rev-working`
+
+warning: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\target\debug\incremental\fonts-1gdh81yovly7w\s-hn7vga2fwh-061441q-working`
+
+warning: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\target\debug\incremental\image-1yazrfoevpy9i\s-hn7vga36bs-1adg5yu-working`
+
+warning: `ferrostage-gpui-maintenance-candidate` (bin "ferrostage-gpui-maintenance-candidate") generated 1 warning
+warning: `ferrostage-gpui-maintenance-candidate` (test "fonts") generated 1 warning
+warning: `ferrostage-gpui-maintenance-candidate` (test "image") generated 1 warning
+warning: `ferrostage-gpui-maintenance-candidate` (bin "ferrostage-gpui-maintenance-candidate" test) generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 8.87s

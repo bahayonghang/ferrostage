@@ -40,8 +40,21 @@ R/AC来自父prd；D/S/M/L/P/B/G/W/U/H/V为原子PRD编号，保持不重编号�
 | AC-7 | 每个子task just ci；05native job、07GPUI build、11媒体native job、实机证据 |
 | AC-8 | 10完整跨platform/pdf/render/document/core/ui/app事务与temp integration |
 | AC-9 | 11 backend/许可/缺库启动/PoC4，与08RAII/overlay及10generation失效组合 |
+| AC-10 | DESIGN.md对比度、07主题基础、08工作台、09设置原生截图与交互；Gate D汇总 |
 
 ## 接线无主检查
 02→03 MonitorRole由02；03→07 MonitorId/DisplayId由03数据+07映射；04→05 BgraFrame由04创建/05复用；05→06metadata由05/06owned构建；08负责首Load full document，10负责reload；Prepare先metadata/建图定位后PreRender；06→08notes由06/08Presenter独占；05→08visual由08组装；07→09roles协调器由07/09UI消费；02/08→09各实际consumer由09接线；10commit/retire由10跨crate协调；11→08 media visual与→09 media控件由11扩展，10只发布generation失效接口不等待11。无循环，完整前置以父Task Map与子Dependencies一致核查。
 
-M1 Alpha只验明确P0工作台及配置角色，不声称所有产品P0完成；最终UI和P1/P2在M2。Gate技术证据与提交/归档分开，当前所有任务仍planning。
+M1 Alpha只验明确P0工作台及配置角色，不声称所有产品P0完成；最终UI和P1/P2在M2。Gate技术证据与提交/归档分开；任务状态和当前实施进度以task.json及execution-state.md为准。
+
+## 2026-10-14 主题需求增量
+
+| 需求 | 所有者 | 设计/步骤 | 验证 |
+| --- | --- | --- | --- |
+| R-45 / AC-10 | 07基础token，08工作台，09设置 | 根DESIGN.md；父design §9；07 I-2/3/7，08 I-2/6/7，09 I-2/5/7 | 原生双主题/尺寸/DPI截图、对比度、键盘/控件状态；Gate D汇总，未运行保持NOT_RUN |
+
+## 2026-10-14 当前证据边界
+
+01/02/04/05/06技术交付已独立检查，03自动与静态检查通过、人工项待验。06的128默认/63native检查为其交付基线；07新增GPUI集成后，V6当前默认CI145、实际GPUI49、严格feature lint及native build通过，底层未变的PDFium/Beamer实现沿用对应源身份的独立证据。Gate A纯契约PASS，B不完整、C/D未运行，所有父AC最终验收未完成。AC-4的01语义审查和07只读PDF哈希、AC-5的04/06/07隔离、AC-6的02存储和07实际失败/Retry、AC-7的自动/PDFium检查、AC-10的51组对比度及部分原生截图均只是各自子集，不能勾选父AC。
+
+07原始路线的依赖门失败保留为历史；ADR-008维护评估、最终五包及三个精确许可证例外获批后，产品接入及I-2实际门禁已通过。实际A/B/C窗口、主题/语言和导入已部分验证；V6修复焦点与保存反馈并通过独立检查/原生复测，选择器与保存角色重启通过。物理拓扑/延迟和剩余原生矩阵仍待验，Gate B不完整；08–11保留完整范围并受既定依赖/Gate阻塞。报告索引与恢复动作见execution-state.md及07 research/native-v6-checkpoint.md。尚未运行的M1长时汇报、GPU/VRAM、设置UI、热重载及媒体集成不得以已有纯测试替代。

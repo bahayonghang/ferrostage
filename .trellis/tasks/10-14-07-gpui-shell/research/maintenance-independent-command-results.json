@@ -1,0 +1,62 @@
+[
+    {
+        "command":  "cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/gpui/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --no-default-features --lib svg_renderer --locked --offline",
+        "name":  "gpui-tests-final",
+        "log":  ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-gpui-tests-final.log",
+        "exit":  0
+    },
+    {
+        "command":  "cargo test --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --tests --locked --offline",
+        "name":  "root-tests",
+        "log":  ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-root-tests.log",
+        "exit":  0
+    },
+    {
+        "command":  "cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/pulp/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --lib --locked --offline",
+        "name":  "pulp-tests",
+        "log":  ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-pulp-tests.log",
+        "exit":  0
+    },
+    {
+        "command":  "cargo test --manifest-path cache/gpui-maintenance-candidate/validation/fontdb/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --tests --locked --offline",
+        "name":  "fontdb-tests",
+        "log":  ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-fontdb-tests.log",
+        "exit":  0
+    },
+    {
+        "command":  "cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/cosmic-text/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --lib --locked --offline",
+        "name":  "cosmic-tests",
+        "log":  ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-cosmic-tests.log",
+        "exit":  0
+    },
+    {
+        "command":  "cargo clippy --manifest-path cache/gpui-maintenance-candidate/vendor/gpui/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --no-default-features --lib --locked --offline -- -D warnings",
+        "name":  "gpui-clippy",
+        "log":  ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-gpui-clippy.log",
+        "exit":  0
+    },
+    {
+        "command":  "cargo clippy --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --all-targets --locked --offline -- -D warnings",
+        "name":  "root-clippy",
+        "log":  ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-root-clippy.log",
+        "exit":  0
+    },
+    {
+        "command":  "cargo check --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --all-targets --locked --offline",
+        "name":  "root-typecheck",
+        "log":  ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-root-typecheck.log",
+        "exit":  0
+    },
+    {
+        "command":  "cargo build --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --locked --offline",
+        "name":  "root-build",
+        "log":  ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-root-build.log",
+        "exit":  0
+    },
+    {
+        "command":  "cargo deny --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --config deny.toml --locked --offline check",
+        "name":  "deny",
+        "log":  ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-deny.log",
+        "exit":  1
+    }
+]

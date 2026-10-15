@@ -14,3 +14,5 @@
 {"file": ".trellis/spec/frontend/state-management.md", "reason": "Snapshot state boundary; role/settings stale clauses resolved by parent and task 01"}
 {"file": ".trellis/spec/frontend/type-safety.md", "reason": "Newtype, crop and notes boundary"}
 {"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "GPUI/BGRA/window safety checks"}
+{"file": ".trellis/tasks/10-14-05-pdf-raster/research/independent-check.md", "reason": "Verified task05 metadata/frame/candidate delivery and exact native/performance evidence boundaries"}
+{"file": ".trellis/tasks/10-14-05-pdf-raster/research/native-api-audit.md", "reason": "Pinned PDFium worker lifetime, owned metadata, runtime configuration and licensing constraints"}

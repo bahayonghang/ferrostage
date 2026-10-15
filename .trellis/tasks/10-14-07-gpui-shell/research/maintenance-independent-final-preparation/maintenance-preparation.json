@@ -1,0 +1,140 @@
+{
+  "tag": "v1.23.3",
+  "revision": "96a1b1b5389efff473fc2306f7f8c690f2e1a417",
+  "source": "C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b",
+  "candidate": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\gpui-maintenance-independent-final-reproduction",
+  "path_dependencies": [
+    {
+      "name": "bench_metrics",
+      "license": "Apache-2.0",
+      "source_manifest": "C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\bench_metrics\\Cargo.toml"
+    },
+    {
+      "name": "collections",
+      "license": "Apache-2.0",
+      "source_manifest": "C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\collections\\Cargo.toml"
+    },
+    {
+      "name": "gpui_macros",
+      "license": "Apache-2.0",
+      "source_manifest": "C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\gpui_macros\\Cargo.toml"
+    },
+    {
+      "name": "gpui_platform",
+      "license": "Apache-2.0",
+      "source_manifest": "C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\gpui_platform\\Cargo.toml"
+    },
+    {
+      "name": "gpui_shared_string",
+      "license": "Apache-2.0",
+      "source_manifest": "C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\gpui_shared_string\\Cargo.toml"
+    },
+    {
+      "name": "gpui_util",
+      "license": "Apache-2.0",
+      "source_manifest": "C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\gpui_util\\Cargo.toml"
+    },
+    {
+      "name": "http_client",
+      "license": "Apache-2.0",
+      "source_manifest": "C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\http_client\\Cargo.toml"
+    },
+    {
+      "name": "refineable",
+      "license": "Apache-2.0",
+      "source_manifest": "C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\refineable\\Cargo.toml"
+    },
+    {
+      "name": "reqwest_client",
+      "license": "Apache-2.0",
+      "source_manifest": "C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\reqwest_client\\Cargo.toml"
+    },
+    {
+      "name": "scheduler",
+      "license": "Apache-2.0",
+      "source_manifest": "C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\scheduler\\Cargo.toml"
+    },
+    {
+      "name": "sum_tree",
+      "license": "Apache-2.0",
+      "source_manifest": "C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\sum_tree\\Cargo.toml"
+    },
+    {
+      "name": "util_macros",
+      "license": "Apache-2.0",
+      "source_manifest": "C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\util_macros\\Cargo.toml"
+    }
+  ],
+  "inherited_dependencies": [
+    "accesskit",
+    "anyhow",
+    "async-channel",
+    "async-task",
+    "backtrace",
+    "bench_metrics",
+    "bitflags",
+    "chrono",
+    "collections",
+    "core-video",
+    "criterion",
+    "ctor",
+    "derive_more",
+    "env_logger",
+    "etagere",
+    "futures",
+    "futures-concurrency",
+    "gpui_macros",
+    "gpui_platform",
+    "gpui_shared_string",
+    "gpui_util",
+    "hdrhistogram",
+    "heapless",
+    "http_client",
+    "image",
+    "inventory",
+    "itertools",
+    "libc",
+    "log",
+    "objc2",
+    "objc2-core-foundation",
+    "objc2-core-video",
+    "parking_lot",
+    "pollster",
+    "postage",
+    "profiling",
+    "proptest",
+    "rand",
+    "raw-window-handle",
+    "refineable",
+    "regex",
+    "reqwest_client",
+    "resvg",
+    "scap",
+    "scheduler",
+    "schemars",
+    "serde",
+    "serde_json",
+    "slotmap",
+    "smallvec",
+    "stacksafe",
+    "strum",
+    "sum_tree",
+    "thiserror",
+    "unicode-segmentation",
+    "url",
+    "usvg",
+    "util_macros",
+    "uuid",
+    "wasm-bindgen",
+    "web-time",
+    "windows"
+  ],
+  "changes": [
+    "resvg/usvg0.48.1 + explicit svgz",
+    "skrifa0.44 glyph lookup",
+    "pulp/metal real pastey0.2.3 dependency",
+    "cosmic-text0.19 fontdb0.24 dependency",
+    "bit-identical GOLDEN_RATIO for Rust1.99 lint"
+  ],
+  "gpui_original_manifest_sha256": "bda94183e8ee63e71e6958fcd1836146997d1ae8a95594dd006fe065f514df9e"
+}

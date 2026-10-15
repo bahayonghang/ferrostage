@@ -1,0 +1,2668 @@
+{
+  "prepare_exit": 0,
+  "patch_matches": true,
+  "original_patch_sha256": "d907642badb418203c3ca97472d2acd464fd4025e9b756b7c3f4fef0d98f9440",
+  "reproduced_patch_sha256": "d907642badb418203c3ca97472d2acd464fd4025e9b756b7c3f4fef0d98f9440",
+  "records": [
+    {
+      "path": "assets/fonts/evaluation.ttc",
+      "expected": "372c21a3f755b7c760e419d219e396f06e617013ede02829d33d03875f3f6100",
+      "actual": "372c21a3f755b7c760e419d219e396f06e617013ede02829d33d03875f3f6100",
+      "matches": true
+    },
+    {
+      "path": "assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf",
+      "expected": "975dcda37d80f038dcd143c22e33ca2d97a0cc5a929aace1c749153b0fe1afa5",
+      "actual": "975dcda37d80f038dcd143c22e33ca2d97a0cc5a929aace1c749153b0fe1afa5",
+      "matches": true
+    },
+    {
+      "path": "assets/fonts/ibm-plex-sans/license.txt",
+      "expected": "91c25c350d3cac39da2736d74f7ba37ef648f5237a4e330a240615bc8d8c4360",
+      "actual": "91c25c350d3cac39da2736d74f7ba37ef648f5237a4e330a240615bc8d8c4360",
+      "matches": true
+    },
+    {
+      "path": "assets/fonts/lilex/Lilex-Regular.ttf",
+      "expected": "8a467ad5a1941dc7c9cebaee34e3ed9364a73b48393034e363e4b528bd711d04",
+      "actual": "8a467ad5a1941dc7c9cebaee34e3ed9364a73b48393034e363e4b528bd711d04",
+      "matches": true
+    },
+    {
+      "path": "assets/fonts/lilex/OFL.txt",
+      "expected": "a356708a399e3f54b937ec7d9b722c26dabba21365b60f95c56eb7ebca0dee40",
+      "actual": "a356708a399e3f54b937ec7d9b722c26dabba21365b60f95c56eb7ebca0dee40",
+      "matches": true
+    },
+    {
+      "path": "Cargo.lock",
+      "expected": "3942617fe59bf16eaab91e73f1ff739631762c4a30a349247b398d49836e8452",
+      "actual": "3942617fe59bf16eaab91e73f1ff739631762c4a30a349247b398d49836e8452",
+      "matches": true
+    },
+    {
+      "path": "Cargo.toml",
+      "expected": "5891e5c7314198e4b8024ca0573bcc645a21456bd1743d4b46986c0378de55ae",
+      "actual": "5891e5c7314198e4b8024ca0573bcc645a21456bd1743d4b46986c0378de55ae",
+      "matches": true
+    },
+    {
+      "path": "maintenance-fixtures/shape.svg",
+      "expected": "f025ef1fa1fa0aecf70d44a918e4bdc8302e5dad8974e85daf5db4092a3d5f5f",
+      "actual": null,
+      "matches": false
+    },
+    {
+      "path": "maintenance-fixtures/shape.svgz",
+      "expected": "84e5ab312d5c878e90f10cbd66352fad515772fb197ed0c09df4bb857ce1c7c6",
+      "actual": null,
+      "matches": false
+    },
+    {
+      "path": "src/main.rs",
+      "expected": "dc364397b5ebdb613c8f23c6df7a4cd7f25ceba0ce3cb204552a3a35b93f37a8",
+      "actual": "dc364397b5ebdb613c8f23c6df7a4cd7f25ceba0ce3cb204552a3a35b93f37a8",
+      "matches": true
+    },
+    {
+      "path": "tests/fonts.rs",
+      "expected": "c55461889722220eaceff3ff0a505332ed66e42095ddf5d76399d3aa9208df67",
+      "actual": "c55461889722220eaceff3ff0a505332ed66e42095ddf5d76399d3aa9208df67",
+      "matches": true
+    },
+    {
+      "path": "tests/image.rs",
+      "expected": "019b818339afd6ecd15273176bbc5622f6c07a2a412397d6873409d743ae9911",
+      "actual": "019b818339afd6ecd15273176bbc5622f6c07a2a412397d6873409d743ae9911",
+      "matches": true
+    },
+    {
+      "path": "validation/fontdb/.cargo-ok",
+      "expected": "afbf9d0f3560b0fd7795e81c42a0a79ee6b6fc67e064f77826aee642cad28d91",
+      "actual": "afbf9d0f3560b0fd7795e81c42a0a79ee6b6fc67e064f77826aee642cad28d91",
+      "matches": true
+    },
+    {
+      "path": "validation/fontdb/.cargo_vcs_info.json",
+      "expected": "c97ef279d5088126141be8681308f2869d597e53e6d1b12797ead1f4bb70bbef",
+      "actual": "c97ef279d5088126141be8681308f2869d597e53e6d1b12797ead1f4bb70bbef",
+      "matches": true
+    },
+    {
+      "path": "validation/fontdb/.github/workflows/main.yml",
+      "expected": "1c63d196cbbea212a7988fc8f3f587a04c2ef19f89c60f39fe22e1d9f1b63cb2",
+      "actual": "1c63d196cbbea212a7988fc8f3f587a04c2ef19f89c60f39fe22e1d9f1b63cb2",
+      "matches": true
+    },
+    {
+      "path": "validation/fontdb/.gitignore",
+      "expected": "808cf1ee86e9598a288cc8eb62c6bb08e197b24be09ecd53501dada12473d1de",
+      "actual": "808cf1ee86e9598a288cc8eb62c6bb08e197b24be09ecd53501dada12473d1de",
+      "matches": true
+    },
+    {
+      "path": "validation/fontdb/Cargo.lock",
+      "expected": "61c3bc4c21ea5b079ab5f9c57668ffa6e3088a97a4a23c2e32ca97e840d0987d",
+      "actual": "61c3bc4c21ea5b079ab5f9c57668ffa6e3088a97a4a23c2e32ca97e840d0987d",
+      "matches": true
+    },
+    {
+      "path": "validation/fontdb/Cargo.toml",
+      "expected": "952de1df787d2c5a91164aacae69919b8094a32bf35780489248180339e86aa8",
+      "actual": "952de1df787d2c5a91164aacae69919b8094a32bf35780489248180339e86aa8",
+      "matches": true
+    },
+    {
+      "path": "validation/fontdb/Cargo.toml.orig",
+      "expected": "f8b75e8b2d40487982b3edc1a0c3e57991cf3e28aa80ad1d06924a3e49bddcf1",
+      "actual": "f8b75e8b2d40487982b3edc1a0c3e57991cf3e28aa80ad1d06924a3e49bddcf1",
+      "matches": true
+    },
+    {
+      "path": "validation/fontdb/CHANGELOG.md",
+      "expected": "5ebf831a758ef57402e5913510a2782b2341538323e262dd5693a75b5ca87885",
+      "actual": "5ebf831a758ef57402e5913510a2782b2341538323e262dd5693a75b5ca87885",
+      "matches": true
+    },
+    {
+      "path": "validation/fontdb/examples/find-system-font.rs",
+      "expected": "2ba1c6c785da8b779c4d88a77e25fdb04d9e4315bf0a97809bda13fcf89bd539",
+      "actual": "2ba1c6c785da8b779c4d88a77e25fdb04d9e4315bf0a97809bda13fcf89bd539",
+      "matches": true
+    },
+    {
+      "path": "validation/fontdb/LICENSE",
+      "expected": "59a1fdac3bd550043599bd159fd70f09a1108c2b09e3751d39b11e1ff8e51f00",
+      "actual": "59a1fdac3bd550043599bd159fd70f09a1108c2b09e3751d39b11e1ff8e51f00",
+      "matches": true
+    },
+    {
+      "path": "validation/fontdb/README.md",
+      "expected": "de71c68e92a72da1fdf6b5f0fa291ce8819b9dd030ecefcfe751d2f0fdc05e37",
+      "actual": "de71c68e92a72da1fdf6b5f0fa291ce8819b9dd030ecefcfe751d2f0fdc05e37",
+      "matches": true
+    },
+    {
+      "path": "validation/fontdb/src/lib.rs",
+      "expected": "da0fe96aa5244ada27b0ea37171ba7e8d29be00f3d2fad5e5643665ee8ca9cac",
+      "actual": "da0fe96aa5244ada27b0ea37171ba7e8d29be00f3d2fad5e5643665ee8ca9cac",
+      "matches": true
+    },
+    {
+      "path": "validation/fontdb/src/ttf_parser/language.rs",
+      "expected": "c37fffe8271cdfe6e65fe05c0f15fe68c5831830c0593ea3b3b48d50b62cac74",
+      "actual": "c37fffe8271cdfe6e65fe05c0f15fe68c5831830c0593ea3b3b48d50b62cac74",
+      "matches": true
+    },
+    {
+      "path": "validation/fontdb/src/ttf_parser/mod.rs",
+      "expected": "47c1a7a659c1ca07bc8e41783089248c4c6bacb4b28cb8b50c7bdaba490650f2",
+      "actual": "47c1a7a659c1ca07bc8e41783089248c4c6bacb4b28cb8b50c7bdaba490650f2",
+      "matches": true
+    },
+    {
+      "path": "validation/fontdb/src/ttf_parser/name.rs",
+      "expected": "51d2cc48e5c0ee5f2423755b64e7124e5ce88c1ff4035c2618764353072a512c",
+      "actual": "51d2cc48e5c0ee5f2423755b64e7124e5ce88c1ff4035c2618764353072a512c",
+      "matches": true
+    },
+    {
+      "path": "validation/fontdb/src/ttf_parser/os2.rs",
+      "expected": "1e2c83c0b1ba8812151f86ccfd1bb740b12c93e62cc73896cdc55f5bbcb01c5d",
+      "actual": "1e2c83c0b1ba8812151f86ccfd1bb740b12c93e62cc73896cdc55f5bbcb01c5d",
+      "matches": true
+    },
+    {
+      "path": "validation/fontdb/src/ttf_parser/parser.rs",
+      "expected": "b783a855bc07b4945a4fe0c4c8396cd28ecdd43a3f35d240d38a9a9319ef239c",
+      "actual": "b783a855bc07b4945a4fe0c4c8396cd28ecdd43a3f35d240d38a9a9319ef239c",
+      "matches": true
+    },
+    {
+      "path": "validation/fontdb/tests/add_fonts.rs",
+      "expected": "bff85c98b5433d3cc14813a9d21fed6416aaf11239550072d4304c227dc12d74",
+      "actual": "bff85c98b5433d3cc14813a9d21fed6416aaf11239550072d4304c227dc12d74",
+      "matches": true
+    },
+    {
+      "path": "validation/fontdb/tests/fonts/LICENSE.txt",
+      "expected": "b84fdd2c3da5db56385cdbb639795e90aa3e035c53bc3591135f18df3331451f",
+      "actual": "b84fdd2c3da5db56385cdbb639795e90aa3e035c53bc3591135f18df3331451f",
+      "matches": true
+    },
+    {
+      "path": "validation/fontdb/tests/fonts/Tuffy.ttf",
+      "expected": "b97cd5005278b24aabb69b8b6ead98860955599558f6e8119483b575a5fdce98",
+      "actual": "b97cd5005278b24aabb69b8b6ead98860955599558f6e8119483b575a5fdce98",
+      "matches": true
+    },
+    {
+      "path": "validation/wgpu-consumer/Cargo.lock",
+      "expected": "8509bd4add84aaf98d43b7c66fd8435ef10f74f121794d99c101a3abea3699ff",
+      "actual": "8509bd4add84aaf98d43b7c66fd8435ef10f74f121794d99c101a3abea3699ff",
+      "matches": true
+    },
+    {
+      "path": "validation/wgpu-consumer/Cargo.toml",
+      "expected": "94b1b35494153432b046a75fe34aea9c93cedc5f42645b1782907a2c8b7bc3c3",
+      "actual": "94b1b35494153432b046a75fe34aea9c93cedc5f42645b1782907a2c8b7bc3c3",
+      "matches": true
+    },
+    {
+      "path": "validation/wgpu-consumer/src/main.rs",
+      "expected": "864130ead7d47c489a41039dd8f5353b3eb4d2071fc8622fa8612b4b4fb7e62f",
+      "actual": "864130ead7d47c489a41039dd8f5353b3eb4d2071fc8622fa8612b4b4fb7e62f",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/.cargo-ok",
+      "expected": "afbf9d0f3560b0fd7795e81c42a0a79ee6b6fc67e064f77826aee642cad28d91",
+      "actual": "afbf9d0f3560b0fd7795e81c42a0a79ee6b6fc67e064f77826aee642cad28d91",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/.cargo_vcs_info.json",
+      "expected": "03a23000cc239df49e532d633577c2ac276104f59f5a650be84e5d308bc99358",
+      "actual": "03a23000cc239df49e532d633577c2ac276104f59f5a650be84e5d308bc99358",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/.gitattributes",
+      "expected": "89d5a306f16ddd385a5928e51ee5a3446720ff6f0b17a0e38a02b42ea8d4cabb",
+      "actual": "89d5a306f16ddd385a5928e51ee5a3446720ff6f0b17a0e38a02b42ea8d4cabb",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/.github/PULL_REQUEST_TEMPLATE.md",
+      "expected": "068011f06143cce4b385b118a253fdeb518087e0992cbd13ca9081cf153ceb0d",
+      "actual": "068011f06143cce4b385b118a253fdeb518087e0992cbd13ca9081cf153ceb0d",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/.github/workflows/pages.yml",
+      "expected": "5c767eff510c39d83f3846a2ab99857d79c21fe3299076c50b7c744fd7aa088b",
+      "actual": "5c767eff510c39d83f3846a2ab99857d79c21fe3299076c50b7c744fd7aa088b",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/.github/workflows/rust.yml",
+      "expected": "d815e3fa80807b076bae4897119544e8731a498b6648b5faa38b50bb65405824",
+      "actual": "d815e3fa80807b076bae4897119544e8731a498b6648b5faa38b50bb65405824",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/.gitignore",
+      "expected": "2247bf287ca6b50f01cea74357adb5434e0c5d2b3d522442f48a1d3bda7283a3",
+      "actual": "2247bf287ca6b50f01cea74357adb5434e0c5d2b3d522442f48a1d3bda7283a3",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/benches/layout.rs",
+      "expected": "b6e1d9f2b328df155cc99ae60d0026573418f952bcb8ecfd3a6664ff5ac865ac",
+      "actual": "b6e1d9f2b328df155cc99ae60d0026573418f952bcb8ecfd3a6664ff5ac865ac",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/benches/text_shaping_benchmarks.rs",
+      "expected": "2ccabfde6293432b93e7c3a43374bc3b60b8885c9f54a04f4ee756f09293d240",
+      "actual": "2ccabfde6293432b93e7c3a43374bc3b60b8885c9f54a04f4ee756f09293d240",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/Cargo.lock",
+      "expected": "c6d367a0aa56439e9d62b26fa173eaac1f7b647803af6f7f05b7e6136a25be9e",
+      "actual": "c6d367a0aa56439e9d62b26fa173eaac1f7b647803af6f7f05b7e6136a25be9e",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/Cargo.toml",
+      "expected": "ce49b635a1d1bffdc1bfc633e1a02dfddac66d2f12963f06e48302159b7a4e79",
+      "actual": "ce49b635a1d1bffdc1bfc633e1a02dfddac66d2f12963f06e48302159b7a4e79",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/Cargo.toml.orig",
+      "expected": "2600ed137d38cb652bc265373601d47706009baa6cc3229c857e1c9f02e4ff50",
+      "actual": "2600ed137d38cb652bc265373601d47706009baa6cc3229c857e1c9f02e4ff50",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/CHANGELOG.md",
+      "expected": "9687428b86ebcfc75cd63d591467fe4ded9331342edabaa163e693f9963afe51",
+      "actual": "9687428b86ebcfc75cd63d591467fe4ded9331342edabaa163e693f9963afe51",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/ci.sh",
+      "expected": "e3f6f993321a0a60a41c5cc065275f65885c59f0a40d23fbea36cbaeede19736",
+      "actual": "e3f6f993321a0a60a41c5cc065275f65885c59f0a40d23fbea36cbaeede19736",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/deny.toml",
+      "expected": "a59031a0f914433e7343081aa90a19937389f3f36cef8f8002fc79b8d2a87eb9",
+      "actual": "a59031a0f914433e7343081aa90a19937389f3f36cef8f8002fc79b8d2a87eb9",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/editor-test.sh",
+      "expected": "d5be92b97c2c705f7e24dcd5a9ff70c25a166db2d71e9941efee549590a81862",
+      "actual": "d5be92b97c2c705f7e24dcd5a9ff70c25a166db2d71e9941efee549590a81862",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/editor.sh",
+      "expected": "a8ab44adf4efdfa764e8c5038236ae26b023b95870cea470b5c6285e6079162a",
+      "actual": "a8ab44adf4efdfa764e8c5038236ae26b023b95870cea470b5c6285e6079162a",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/FERROSTAGE-MAINTENANCE.txt",
+      "expected": "837fc2d67327874704708c8d2b4ae84e980306cfa12cb3f1970b8dfa03864ffd",
+      "actual": "837fc2d67327874704708c8d2b4ae84e980306cfa12cb3f1970b8dfa03864ffd",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/fonts/FiraMono-LICENSE",
+      "expected": "587dd9548304fd421cd254f7550bd101c1250ffc95417f2f7f92d55b44ecbe53",
+      "actual": "587dd9548304fd421cd254f7550bd101c1250ffc95417f2f7f92d55b44ecbe53",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/fonts/FiraMono-Medium.ttf",
+      "expected": "5f9173ce3d05fadef74c7eed06570d54e4f75bd0cd9860726fb2987a7f848292",
+      "actual": "5f9173ce3d05fadef74c7eed06570d54e4f75bd0cd9860726fb2987a7f848292",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/fonts/Inter-LICENSE",
+      "expected": "3c8d13d97ea5eb62868833a377034c6be6a9833e768d32abec2a767a8101e4bc",
+      "actual": "3c8d13d97ea5eb62868833a377034c6be6a9833e768d32abec2a767a8101e4bc",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/fonts/Inter-Regular.ttf",
+      "expected": "3127f0b873387ee37e2040135a06e9e9c05030f509eb63689529becf28b50384",
+      "actual": "3127f0b873387ee37e2040135a06e9e9c05030f509eb63689529becf28b50384",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/fonts/InterVariable-Italic.ttf",
+      "expected": "d6f1f6a172d9e588438db9f986fd5cfad7b30f644374080a8a9d4d91e344586f",
+      "actual": "d6f1f6a172d9e588438db9f986fd5cfad7b30f644374080a8a9d4d91e344586f",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/fonts/InterVariable.ttf",
+      "expected": "4989b125924991b90d05b2d16e0e388c48f7d5bb8b30539bbf9c755278d0ccaf",
+      "actual": "4989b125924991b90d05b2d16e0e388c48f7d5bb8b30539bbf9c755278d0ccaf",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/fonts/NotoSans-LICENSE",
+      "expected": "5ec4347054089def6904da61d04f0360968f9ef36634b1fe007a5b6ec2f7aa96",
+      "actual": "5ec4347054089def6904da61d04f0360968f9ef36634b1fe007a5b6ec2f7aa96",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/fonts/NotoSans-Regular.ttf",
+      "expected": "2ec33f84606cbaa0a1a944488e14f97faf2f6a25ecdd8354f5358f06da13c7d9",
+      "actual": "2ec33f84606cbaa0a1a944488e14f97faf2f6a25ecdd8354f5358f06da13c7d9",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/fonts/NotoSansArabic.ttf",
+      "expected": "ee489b994b3e62def9874c918145e32b133b625abaf98cec60502bdb40102c56",
+      "actual": "ee489b994b3e62def9874c918145e32b133b625abaf98cec60502bdb40102c56",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/fonts/NotoSansHebrew.ttf",
+      "expected": "3d4fef85b449ade4d165de982969374fa30b2a5fe7bc679f5a3f5bfc047fb703",
+      "actual": "3d4fef85b449ade4d165de982969374fa30b2a5fe7bc679f5a3f5bfc047fb703",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/LICENSE-APACHE",
+      "expected": "000b4962e6b27176a0ff89cce4be555b16472cafb5671eb2804a8fdac6854793",
+      "actual": "000b4962e6b27176a0ff89cce4be555b16472cafb5671eb2804a8fdac6854793",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/LICENSE-MIT",
+      "expected": "95557bafe728379e206f3b6d4aceeaa054d271c71d722411a6222e2dec01138c",
+      "actual": "95557bafe728379e206f3b6d4aceeaa054d271c71d722411a6222e2dec01138c",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/multiview.sh",
+      "expected": "8de55e39c5089f9c3b2c62292ce916f7ae7f7b1f56d8cdb1ad366f0592d14809",
+      "actual": "8de55e39c5089f9c3b2c62292ce916f7ae7f7b1f56d8cdb1ad366f0592d14809",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/README.md",
+      "expected": "78f353b4b55de2001ad7aca064338ee39b4d261efa1cbc11793ffcb158ccb7d8",
+      "actual": "78f353b4b55de2001ad7aca064338ee39b4d261efa1cbc11793ffcb158ccb7d8",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/redoxer.sh",
+      "expected": "3a2aff4147e48ca2ee95f5ad884be8ad988a289c12aff493f6a22880cc80c5a9",
+      "actual": "3a2aff4147e48ca2ee95f5ad884be8ad988a289c12aff493f6a22880cc80c5a9",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/rich-text.sh",
+      "expected": "7313beac5c0c51820faf059197596c644cb2ca17d19ac04f8551f190d9855e29",
+      "actual": "7313beac5c0c51820faf059197596c644cb2ca17d19ac04f8551f190d9855e29",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/sample/arabic.txt",
+      "expected": "228447a4719fb5fa01f53443bfa4dfd0b92825d35f78dfa6696194295357c5aa",
+      "actual": "228447a4719fb5fa01f53443bfa4dfd0b92825d35f78dfa6696194295357c5aa",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/sample/bengali.txt",
+      "expected": "2cae6bbaf8fdf763189d5a2da8b14fbdd852363c58f29a0177225cd4402d868e",
+      "actual": "2cae6bbaf8fdf763189d5a2da8b14fbdd852363c58f29a0177225cd4402d868e",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/sample/crlf.txt",
+      "expected": "2f3f11962bfb72508d815b8a8787a7a05d2086d36201469414ca735f631bb255",
+      "actual": "2f3f11962bfb72508d815b8a8787a7a05d2086d36201469414ca735f631bb255",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/sample/em.txt",
+      "expected": "e06efae4660ed07a26319c9270fee916b1d1ac1a384852867ae6d659fdbd102a",
+      "actual": "e06efae4660ed07a26319c9270fee916b1d1ac1a384852867ae6d659fdbd102a",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/sample/emoji-zjw.txt",
+      "expected": "d0356ad25aaf338383d5909f9303265d7cf233898a0d821a8c8e39ac733367c0",
+      "actual": "d0356ad25aaf338383d5909f9303265d7cf233898a0d821a8c8e39ac733367c0",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/sample/emoji.txt",
+      "expected": "933b90ec6dad907c32beab9f7f1002d3c4f4a1918cdd24cf75835c62eb367cbd",
+      "actual": "933b90ec6dad907c32beab9f7f1002d3c4f4a1918cdd24cf75835c62eb367cbd",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/sample/fallback.txt",
+      "expected": "d28c11f893f356c5ce512bb6ac95cc1ac9f8c5adff618645bca9c7a3f588d833",
+      "actual": "d28c11f893f356c5ce512bb6ac95cc1ac9f8c5adff618645bca9c7a3f588d833",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/sample/farsi.txt",
+      "expected": "3dfe69ed259cce6a1772e3e2484e94a68fe11024285347f6aa6fc994b50db69d",
+      "actual": "3dfe69ed259cce6a1772e3e2484e94a68fe11024285347f6aa6fc994b50db69d",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/sample/han.txt",
+      "expected": "795540d33d3e0627d32f54c9031c6e9e06cbe0fbd53c212a5fa266d1b1581ecc",
+      "actual": "795540d33d3e0627d32f54c9031c6e9e06cbe0fbd53c212a5fa266d1b1581ecc",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/sample/hebrew.txt",
+      "expected": "3cf23f2a3b9391cb707781e079b2125e2e269fca00d83de048cda15ba0dc99f3",
+      "actual": "3cf23f2a3b9391cb707781e079b2125e2e269fca00d83de048cda15ba0dc99f3",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/sample/hello.txt",
+      "expected": "0dca2ba1ce4b5de21a1a6802099610dc0932b771dbf8056822e0551413631ea3",
+      "actual": "0dca2ba1ce4b5de21a1a6802099610dc0932b771dbf8056822e0551413631ea3",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/sample/ligature.txt",
+      "expected": "05987a9a2f90f2146a05791374ab7fe370d9c52fa99f5138dde88b8f48a66f89",
+      "actual": "05987a9a2f90f2146a05791374ab7fe370d9c52fa99f5138dde88b8f48a66f89",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/sample/lioneatingpoet.txt",
+      "expected": "1d19412e4275ab86306b1abb3397095463324f68632e6125f831793100551b34",
+      "actual": "1d19412e4275ab86306b1abb3397095463324f68632e6125f831793100551b34",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/sample/mono.txt",
+      "expected": "6ab901226d19b7e9278561d727f01f30b059a9eddec439b125d2ab4ebc22057d",
+      "actual": "6ab901226d19b7e9278561d727f01f30b059a9eddec439b125d2ab4ebc22057d",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/sample/proportional.txt",
+      "expected": "31288194d36cb0401c627e9c04f4c3e05e4a7ec62fc0218af91072fbdb2d7f15",
+      "actual": "31288194d36cb0401c627e9c04f4c3e05e4a7ec62fc0218af91072fbdb2d7f15",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/sample/tabs.txt",
+      "expected": "fa3eeec0ba036d042fe329911dc1173bfc156a407efd2df8b02b9e9390b1a84c",
+      "actual": "fa3eeec0ba036d042fe329911dc1173bfc156a407efd2df8b02b9e9390b1a84c",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/sample/thai.txt",
+      "expected": "f1a2929c86c0332a2f0e14417085f36f68066adb5f0bbe1a3a417c093f894d7e",
+      "actual": "f1a2929c86c0332a2f0e14417085f36f68066adb5f0bbe1a3a417c093f894d7e",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/screenshots/arabic.png",
+      "expected": "38994360da746e9331c0f0ffcc637d3342be5d0d568c25ffeb7d908b5c40be95",
+      "actual": "38994360da746e9331c0f0ffcc637d3342be5d0d568c25ffeb7d908b5c40be95",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/screenshots/chinese-simplified.png",
+      "expected": "84f494ab596674e29b47f4b367bd2695ef21d63010e568fa432edea4f94265ca",
+      "actual": "84f494ab596674e29b47f4b367bd2695ef21d63010e568fa432edea4f94265ca",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/screenshots/hindi.png",
+      "expected": "28ddfa78fffabea00d1caedee477b071c0a40064701d54ef9371b3a596d91fa5",
+      "actual": "28ddfa78fffabea00d1caedee477b071c0a40064701d54ef9371b3a596d91fa5",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/attrs.rs",
+      "expected": "51cf717e661be2df81e580b1676f13fda44c2b89314f7544dcd7f4c79da638e6",
+      "actual": "51cf717e661be2df81e580b1676f13fda44c2b89314f7544dcd7f4c79da638e6",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/bidi_para.rs",
+      "expected": "a81f78e45237d2622e70d01869e4691f748d633f1f8a766d81009d2cedc195f3",
+      "actual": "a81f78e45237d2622e70d01869e4691f748d633f1f8a766d81009d2cedc195f3",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/buffer.rs",
+      "expected": "e3bd25aa225daa70f1802552f3bbce5381d1ace8f07b2d8fdd230228d9a249ae",
+      "actual": "e3bd25aa225daa70f1802552f3bbce5381d1ace8f07b2d8fdd230228d9a249ae",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/buffer_line.rs",
+      "expected": "162665f3f9a85385ab2905d6c41c7f252fd2aeb63cc13bcfa52d60508466b2a8",
+      "actual": "162665f3f9a85385ab2905d6c41c7f252fd2aeb63cc13bcfa52d60508466b2a8",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/cached.rs",
+      "expected": "b07d50a471742face460d480e848d46ce8d7cdc40830b74b17f0eb3fca5d2587",
+      "actual": "b07d50a471742face460d480e848d46ce8d7cdc40830b74b17f0eb3fca5d2587",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/cursor.rs",
+      "expected": "a931e0536eee7676c887e92b6a7d9cac4f8e6b2465d52f29c69238569a86285c",
+      "actual": "a931e0536eee7676c887e92b6a7d9cac4f8e6b2465d52f29c69238569a86285c",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/edit/editor.rs",
+      "expected": "3b0c5cf988d9dd6b0db56ceb74afcf2c99f4cd45c3facd9dbc90b2640f8beeee",
+      "actual": "3b0c5cf988d9dd6b0db56ceb74afcf2c99f4cd45c3facd9dbc90b2640f8beeee",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/edit/mod.rs",
+      "expected": "94860ba0c8f4fe1b4d0b53452726a2a81151029737c79a60544a04922a598bf7",
+      "actual": "94860ba0c8f4fe1b4d0b53452726a2a81151029737c79a60544a04922a598bf7",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/edit/syntect.rs",
+      "expected": "f1c69e4374b4d682d7990e94f7888965e778f812da5ef9b4ed1b553cf531d2f2",
+      "actual": "f1c69e4374b4d682d7990e94f7888965e778f812da5ef9b4ed1b553cf531d2f2",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/edit/vi.rs",
+      "expected": "06837941b609966c4ace093aa325c5d0a52887ec18554ed910e8810f5fa5c5c7",
+      "actual": "06837941b609966c4ace093aa325c5d0a52887ec18554ed910e8810f5fa5c5c7",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/font/fallback/macos.rs",
+      "expected": "7a200cdd634814e86fc49719a71ba21591972a6a49e44fd70e2303417e67e39a",
+      "actual": "7a200cdd634814e86fc49719a71ba21591972a6a49e44fd70e2303417e67e39a",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/font/fallback/mod.rs",
+      "expected": "f9e1ded417f5974f9706a2da74420b3341e921c56427290f94489a8262b6dacc",
+      "actual": "f9e1ded417f5974f9706a2da74420b3341e921c56427290f94489a8262b6dacc",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/font/fallback/other.rs",
+      "expected": "b5981c13c15a61a91643904533aea350ad3a3679aea321d7708d6914c0ede7b9",
+      "actual": "b5981c13c15a61a91643904533aea350ad3a3679aea321d7708d6914c0ede7b9",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/font/fallback/unix.rs",
+      "expected": "0ca043dc44da2d3c30b0a9c69bae9bda88a354be782a3c8be2cc5fc6fd96dae4",
+      "actual": "0ca043dc44da2d3c30b0a9c69bae9bda88a354be782a3c8be2cc5fc6fd96dae4",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/font/fallback/windows.rs",
+      "expected": "b96f09a775b9274da0ab424b4160b01ccfd9da1e693116debf51da5e5b4119aa",
+      "actual": "b96f09a775b9274da0ab424b4160b01ccfd9da1e693116debf51da5e5b4119aa",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/font/mod.rs",
+      "expected": "d23eda595330f3df0469825a0fb83dd9b92b674631aa6cf8e1e4342e1bb0550a",
+      "actual": "d23eda595330f3df0469825a0fb83dd9b92b674631aa6cf8e1e4342e1bb0550a",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/font/system.rs",
+      "expected": "fccb45e578f376b95a10a880f0ef63546bc0231ce637e10b88272e25cbd347d1",
+      "actual": "fccb45e578f376b95a10a880f0ef63546bc0231ce637e10b88272e25cbd347d1",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/glyph_cache.rs",
+      "expected": "d32978b61cc491a68ae43368e3b7413e60fa376e10bde1c6b5df4265d4522a54",
+      "actual": "d32978b61cc491a68ae43368e3b7413e60fa376e10bde1c6b5df4265d4522a54",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/layout.rs",
+      "expected": "3bc29ede301acffedfa78632378eb89cda6632bac8f6d278ef52aad78fe2f326",
+      "actual": "3bc29ede301acffedfa78632378eb89cda6632bac8f6d278ef52aad78fe2f326",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/lib.rs",
+      "expected": "476b914033feca580af1d893594f93fa47ef5d4169d1d5a45d34cb5b4b74ff8d",
+      "actual": "476b914033feca580af1d893594f93fa47ef5d4169d1d5a45d34cb5b4b74ff8d",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/line_ending.rs",
+      "expected": "44e25c4d8ec372e7516efec234139aed3eb79fd0f8adbaa870072097eb686cd0",
+      "actual": "44e25c4d8ec372e7516efec234139aed3eb79fd0f8adbaa870072097eb686cd0",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/math.rs",
+      "expected": "9acafa8fef8e2653fbb1081ae6c6e3fb58877e8c05069e9661effdd9d1ade27a",
+      "actual": "9acafa8fef8e2653fbb1081ae6c6e3fb58877e8c05069e9661effdd9d1ade27a",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/render.rs",
+      "expected": "7539924fc99410e6fd8addc6170433220836129479bd7d2503738665c12cced7",
+      "actual": "7539924fc99410e6fd8addc6170433220836129479bd7d2503738665c12cced7",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/shape.rs",
+      "expected": "d94983d9b811c8f7f8b3d3dd8e2dc118d260c28eca829aba9af036ee68582837",
+      "actual": "d94983d9b811c8f7f8b3d3dd8e2dc118d260c28eca829aba9af036ee68582837",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/shape_run_cache.rs",
+      "expected": "85ea80e64a91d9d8bdad212ebdeed473880dd70ef10e3e2911f7f9fbf1d6abe4",
+      "actual": "85ea80e64a91d9d8bdad212ebdeed473880dd70ef10e3e2911f7f9fbf1d6abe4",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/src/swash.rs",
+      "expected": "5d6cc10ea69ff1c2936d33841af1b641eb63a9fb0dcdeed79c122ed9e7a91420",
+      "actual": "5d6cc10ea69ff1c2936d33841af1b641eb63a9fb0dcdeed79c122ed9e7a91420",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/terminal.sh",
+      "expected": "f3aed1c37d48a35e86b5d489680fdc1aed65035d3b159af3d7f8c2288c639d04",
+      "actual": "f3aed1c37d48a35e86b5d489680fdc1aed65035d3b159af3d7f8c2288c639d04",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/test.sh",
+      "expected": "24d56d21a8d02bafbfdeb69b5b6955009eaf41b0bd76c22faa8be8c9f88757fb",
+      "actual": "24d56d21a8d02bafbfdeb69b5b6955009eaf41b0bd76c22faa8be8c9f88757fb",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/common/mod.rs",
+      "expected": "d094643fd0fee5480f122f5a4590e48cad4f265d3cacf4ff4f00bb054b05680d",
+      "actual": "d094643fd0fee5480f122f5a4590e48cad4f265d3cacf4ff4f00bb054b05680d",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/editor_modified_state.rs",
+      "expected": "b3d2e4568e98eb3e18a21cb72d84efd586844ea065cb1f26e23b95a037f653dc",
+      "actual": "b3d2e4568e98eb3e18a21cb72d84efd586844ea065cb1f26e23b95a037f653dc",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/ellipsize_rendering.rs",
+      "expected": "30c26b687d3fdb7bbace6f3b75bf0a69e2e3a0fdc31692da3875560c4b4d759e",
+      "actual": "30c26b687d3fdb7bbace6f3b75bf0a69e2e3a0fdc31692da3875560c4b4d759e",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/a_hebrew_paragraph.png",
+      "expected": "2f72802a3ee4244c55f3ee0e1841a0f07dfe19904c57e29f8ab1d18f0e06dcab",
+      "actual": "2f72802a3ee4244c55f3ee0e1841a0f07dfe19904c57e29f8ab1d18f0e06dcab",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/a_hebrew_word.png",
+      "expected": "e0bc89c5a0fc5b9e79cf30bf66fd456cbf8e3fdca0f8dff110ab2706030e0c43",
+      "actual": "e0bc89c5a0fc5b9e79cf30bf66fd456cbf8e3fdca0f8dff110ab2706030e0c43",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/an_arabic_paragraph.png",
+      "expected": "3e7cab5e17e253b6a3ba175fb08468cf79f69877122e1470ccc3a17f3e297512",
+      "actual": "3e7cab5e17e253b6a3ba175fb08468cf79f69877122e1470ccc3a17f3e297512",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/an_arabic_word.png",
+      "expected": "2805960705f701c297ff700840b9fcc296bd0803a0a33d2c7209d7c6ba208c2e",
+      "actual": "2805960705f701c297ff700840b9fcc296bd0803a0a33d2c7209d7c6ba208c2e",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_bidi_isolates_middle_bug.png",
+      "expected": "ec1a2e5611f55301bb332c354eab1f342b0e40361ee19549360e2b1826425614",
+      "actual": "ec1a2e5611f55301bb332c354eab1f342b0e40361ee19549360e2b1826425614",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_ltr_end_single_line.png",
+      "expected": "73d2223f481fd301d2f28553e1efb61b0598c1ab6e11c93f7a2ddfe4b40d0326",
+      "actual": "73d2223f481fd301d2f28553e1efb61b0598c1ab6e11c93f7a2ddfe4b40d0326",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_ltr_end_single_line_aligned_right.png",
+      "expected": "12ec72d420500ed60b7e01be3f3b67d4103d2d52b06c1d05072ef50a4f725526",
+      "actual": "12ec72d420500ed60b7e01be3f3b67d4103d2d52b06c1d05072ef50a4f725526",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_ltr_end_two_lines.png",
+      "expected": "161c1a36c05548109847a9f18fa8efd3560c28185bba85736eb2e244b204eeb5",
+      "actual": "161c1a36c05548109847a9f18fa8efd3560c28185bba85736eb2e244b204eeb5",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_ltr_middle_single_line.png",
+      "expected": "f345206eb456e4e689be51afaf0de25934bfa99cc466c2abe62db8352152cfe5",
+      "actual": "f345206eb456e4e689be51afaf0de25934bfa99cc466c2abe62db8352152cfe5",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_ltr_middle_small_buffer.png",
+      "expected": "4cfbb42f584b56040a99ddb82eebdecc967a89ce340d393aa651c2a441fd7fcf",
+      "actual": "4cfbb42f584b56040a99ddb82eebdecc967a89ce340d393aa651c2a441fd7fcf",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_ltr_single_word_middle_two_lines.png",
+      "expected": "ac15ef08a12fd4ca4dd7c7daa56bfc659b33d20d331012a831f690c9adfde6c8",
+      "actual": "ac15ef08a12fd4ca4dd7c7daa56bfc659b33d20d331012a831f690c9adfde6c8",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_ltr_start_single_line.png",
+      "expected": "e2a705f931aae72c693a2a1ae56ad2455ee3a8f7f2309ca99864eedbf7c59d40",
+      "actual": "e2a705f931aae72c693a2a1ae56ad2455ee3a8f7f2309ca99864eedbf7c59d40",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_mixed_end_single_line.png",
+      "expected": "6438bf5df040bfe61566af722823f2f78d519e4719547c766fbe19e2dc4a07f6",
+      "actual": "6438bf5df040bfe61566af722823f2f78d519e4719547c766fbe19e2dc4a07f6",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_mixed_ltr_rtl_ltr_middle_three_lines.png",
+      "expected": "9575c7ddc027ed59e1b8ce465b3f52e0a9d53cfb9eac438221026de1e0c601d6",
+      "actual": "9575c7ddc027ed59e1b8ce465b3f52e0a9d53cfb9eac438221026de1e0c601d6",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_mixed_ltr_rtl_middle_two_lines.png",
+      "expected": "36156e31793901ede07b4db53ddf671b5c134afe82a8328fd7eacad1cebcd339",
+      "actual": "36156e31793901ede07b4db53ddf671b5c134afe82a8328fd7eacad1cebcd339",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_mixed_middle_single_line.png",
+      "expected": "88bf081f80aac508baa685718fce15e3acf888b43c199aa902494a2c47ed22e3",
+      "actual": "88bf081f80aac508baa685718fce15e3acf888b43c199aa902494a2c47ed22e3",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_mixed_rtl_ltr_middle_two_lines.png",
+      "expected": "9a3eb2c4514c4e2cc94db4bba650fae8df46ffc330d541618804d351808b6dca",
+      "actual": "9a3eb2c4514c4e2cc94db4bba650fae8df46ffc330d541618804d351808b6dca",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_rtl_end_single_line.png",
+      "expected": "0e9d984a59003766fda15d1bb35069d6f5a9638b00c0560f2fad3431c0283aa9",
+      "actual": "0e9d984a59003766fda15d1bb35069d6f5a9638b00c0560f2fad3431c0283aa9",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/some_english_mixed_with_arabic.png",
+      "expected": "d292af9a584bbb04d89b515db917c175f57267602f934c6a9dd30906a75a99aa",
+      "actual": "d292af9a584bbb04d89b515db917c175f57267602f934c6a9dd30906a75a99aa",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/some_english_mixed_with_hebrew.png",
+      "expected": "e46e15f44eef847fd76a751ec2b198862cafc61e821ac2b5dbdc7c33480a73be",
+      "actual": "e46e15f44eef847fd76a751ec2b198862cafc61e821ac2b5dbdc7c33480a73be",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/text_decoration_bidi.png",
+      "expected": "d83b58ede597fede243ebb042c31668c0847069a3843dc9b279c3624e1387728",
+      "actual": "d83b58ede597fede243ebb042c31668c0847069a3843dc9b279c3624e1387728",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/text_decoration_multiline_bidi.png",
+      "expected": "6e332dc9edc0d8c2fd6dd7d9361dc1441b4c979023e79571ac26b7f4f1f1b274",
+      "actual": "6e332dc9edc0d8c2fd6dd7d9361dc1441b4c979023e79571ac26b7f4f1f1b274",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/text_decoration_rtl.png",
+      "expected": "0492623759b02a0fa6e56ad2d2662a2c8f0352ed034cf5c8f085ea2184c5517c",
+      "actual": "0492623759b02a0fa6e56ad2d2662a2c8f0352ed034cf5c8f085ea2184c5517c",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/text_decorations.png",
+      "expected": "8639df22ce9e580c5e75dd1163cf05a79691d18ed49156d173a9e7222db44538",
+      "actual": "8639df22ce9e580c5e75dd1163cf05a79691d18ed49156d173a9e7222db44538",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/richtext_layout.rs",
+      "expected": "73acf7b6bf78af8eb89a2bebe721b7cea7f206ee3053f56eedacd668c6dba9ec",
+      "actual": "73acf7b6bf78af8eb89a2bebe721b7cea7f206ee3053f56eedacd668c6dba9ec",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/shaping_and_rendering.rs",
+      "expected": "adcb626aaea50361b0067b2d8224af0f4833dd2b1dbb7639d2fc4c93ea33fbab",
+      "actual": "adcb626aaea50361b0067b2d8224af0f4833dd2b1dbb7639d2fc4c93ea33fbab",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/text_decorations.rs",
+      "expected": "290dd41ac2b5ac1fdcd2cf771e8dbb6331980932c143b79847cf2c865b029f8d",
+      "actual": "290dd41ac2b5ac1fdcd2cf771e8dbb6331980932c143b79847cf2c865b029f8d",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/variable_font_weight.rs",
+      "expected": "163630e6355817896521ca5a8bf642c03b9701c13e4df61438e550c4cad6b3ac",
+      "actual": "163630e6355817896521ca5a8bf642c03b9701c13e4df61438e550c4cad6b3ac",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/wrap_stability.rs",
+      "expected": "e5ad7ae89edc7bfd5eb467e284b89e3216d0ed632f5751bbb8c853dd6cd87da8",
+      "actual": "e5ad7ae89edc7bfd5eb467e284b89e3216d0ed632f5751bbb8c853dd6cd87da8",
+      "matches": true
+    },
+    {
+      "path": "vendor/cosmic-text/tests/wrap_word_fallback.rs",
+      "expected": "f426585d2825f3f2588201def20f2d3f3fb4f51cc848d8e8f382708281f3bae1",
+      "actual": "f426585d2825f3f2588201def20f2d3f3fb4f51cc848d8e8f382708281f3bae1",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/build.rs",
+      "expected": "4c8ee205251fb2d5b66446a7d7385a908ecf5bbd1cae31eb4a72bf0b02b7ffb7",
+      "actual": "4c8ee205251fb2d5b66446a7d7385a908ecf5bbd1cae31eb4a72bf0b02b7ffb7",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/Cargo.lock",
+      "expected": "1df32ac56ad329aabd9fe7155b7bf513daa49c291d4fcd11f485e652d4b2cb6b",
+      "actual": "1df32ac56ad329aabd9fe7155b7bf513daa49c291d4fcd11f485e652d4b2cb6b",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/Cargo.toml",
+      "expected": "4c31197dd1c6f3266c2c4b0fdf6f835d3bb1664a5292123f74c297d94cd6d10d",
+      "actual": "4c31197dd1c6f3266c2c4b0fdf6f835d3bb1664a5292123f74c297d94cd6d10d",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/docs/contexts.md",
+      "expected": "2688efb86472685cf2ea1af254c7c4bc70d53dd369c3d30118bf5e356fe86574",
+      "actual": "2688efb86472685cf2ea1af254c7c4bc70d53dd369c3d30118bf5e356fe86574",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/docs/key_dispatch.md",
+      "expected": "56189467c43ca57c7cfa507f6ed7cdc31516144cbe648ef1f5fd97696862fe1a",
+      "actual": "56189467c43ca57c7cfa507f6ed7cdc31516144cbe648ef1f5fd97696862fe1a",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/a11y.rs",
+      "expected": "136308b44a36f7a0dbee5269b2434d8476cec42beb7f8b46e4e38e864d4cc805",
+      "actual": "136308b44a36f7a0dbee5269b2434d8476cec42beb7f8b46e4e38e864d4cc805",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/active_state_bug.rs",
+      "expected": "94230a37b899e1c56fe34ac249c081113a0a1446f568c6cf0372905a3816b9ae",
+      "actual": "94230a37b899e1c56fe34ac249c081113a0a1446f568c6cf0372905a3816b9ae",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/anchor.rs",
+      "expected": "5be423ce91b36db94857a8f7758f7f5967d0103b77941fa7bc7c5a64e3c4fe72",
+      "actual": "5be423ce91b36db94857a8f7758f7f5967d0103b77941fa7bc7c5a64e3c4fe72",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/animation.rs",
+      "expected": "0c36449cf96c897e0520cef592933e86759471108c77f53a00cda4e21969df4b",
+      "actual": "0c36449cf96c897e0520cef592933e86759471108c77f53a00cda4e21969df4b",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/data_table.rs",
+      "expected": "da44c6782a63d7d5e6ef349612cb263a32e930ec1247aad9eff6bf712ec4e341",
+      "actual": "da44c6782a63d7d5e6ef349612cb263a32e930ec1247aad9eff6bf712ec4e341",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/drag_drop.rs",
+      "expected": "4011afde7c64fac2559b78918e6fdabdc563fe9f7591c74425d72da906dcc47a",
+      "actual": "4011afde7c64fac2559b78918e6fdabdc563fe9f7591c74425d72da906dcc47a",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/example_support/fonts.rs",
+      "expected": "150804a20e31ecf9d82c9ae7d47fdc9cb5b7bc4ea306ff1ab4199dd597a23051",
+      "actual": "150804a20e31ecf9d82c9ae7d47fdc9cb5b7bc4ea306ff1ab4199dd597a23051",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/focus_visible.rs",
+      "expected": "533c5101ae1727d33b3b7c339efdb2e5dd4c1e1343d6b0ffaa8babc92a8f908b",
+      "actual": "533c5101ae1727d33b3b7c339efdb2e5dd4c1e1343d6b0ffaa8babc92a8f908b",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/gif_viewer.rs",
+      "expected": "8051774dbf4cab1503ac5938a25932409c0701c66ba36d00b5e0ee11838b2a4c",
+      "actual": "8051774dbf4cab1503ac5938a25932409c0701c66ba36d00b5e0ee11838b2a4c",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/gradient.rs",
+      "expected": "620dbeccd4daa80f71cb1c67f1628508cb397e9aeb4b5a5d0abe0a2a45aad193",
+      "actual": "620dbeccd4daa80f71cb1c67f1628508cb397e9aeb4b5a5d0abe0a2a45aad193",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/grid_layout.rs",
+      "expected": "c82663a8c48340464f70f96dfa60135f4cd3b48670882b7bc23a9ca787fb261e",
+      "actual": "c82663a8c48340464f70f96dfa60135f4cd3b48670882b7bc23a9ca787fb261e",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/hello_world.rs",
+      "expected": "7e9d145d93470b02ce5641290ed7b444776813de580fe1d613b45443cc890aa0",
+      "actual": "7e9d145d93470b02ce5641290ed7b444776813de580fe1d613b45443cc890aa0",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/image/app-icon.png",
+      "expected": "77453d98d46494b3b34b94aa863b686ea299e0190030a5c7ca5377b238332522",
+      "actual": "77453d98d46494b3b34b94aa863b686ea299e0190030a5c7ca5377b238332522",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/image/arrow_circle.svg",
+      "expected": "1dc122d8c7f8f346e6e7b838594f9718e5670fc32a5d5024aaa5e7f28a3aa8c8",
+      "actual": "1dc122d8c7f8f346e6e7b838594f9718e5670fc32a5d5024aaa5e7f28a3aa8c8",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/image/black-cat-typing.gif",
+      "expected": "b50a33262f84725f9c922fcbf0bb616270a2cb611a5ea4e280c2dca46cea9622",
+      "actual": "b50a33262f84725f9c922fcbf0bb616270a2cb611a5ea4e280c2dca46cea9622",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/image/color.svg",
+      "expected": "d0949465578c8223c7124ff1f66ce308e07e6eb303fdf26c2814715332d88f3b",
+      "actual": "d0949465578c8223c7124ff1f66ce308e07e6eb303fdf26c2814715332d88f3b",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/image/exif-orientation-rotate-180.jpg",
+      "expected": "cb6c28e3e6065d62790ba38662d14f3f1510180375cacba18547720e8b48d9d5",
+      "actual": "cb6c28e3e6065d62790ba38662d14f3f1510180375cacba18547720e8b48d9d5",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/image/image.rs",
+      "expected": "5e962dc29772bc59cdab236d8adf1a8335475ce045a7beda1d5a04864dd7faea",
+      "actual": "5e962dc29772bc59cdab236d8adf1a8335475ce045a7beda1d5a04864dd7faea",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/image_gallery.rs",
+      "expected": "aa6bd497f4362a74e99c2840233cf1f56bc84d70dd4f86cae76fb17856203891",
+      "actual": "aa6bd497f4362a74e99c2840233cf1f56bc84d70dd4f86cae76fb17856203891",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/image_loading.rs",
+      "expected": "1bbb69d71fcfc20f76cc677fc44b8ae611ec6e2bba1b769f5ad16a6bcd0818e4",
+      "actual": "1bbb69d71fcfc20f76cc677fc44b8ae611ec6e2bba1b769f5ad16a6bcd0818e4",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/input.rs",
+      "expected": "bdc741098f42201ec7c3324d70e482b8cfffe753123ddf042c26ee13542fb5b4",
+      "actual": "bdc741098f42201ec7c3324d70e482b8cfffe753123ddf042c26ee13542fb5b4",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/layer_shell.rs",
+      "expected": "c6d78b271eb00c26869e4e54f705c9dc3a9ab84636840e6b3413b6130d85cb33",
+      "actual": "c6d78b271eb00c26869e4e54f705c9dc3a9ab84636840e6b3413b6130d85cb33",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/list_example.rs",
+      "expected": "536e2527e4469ffe3203778e24c3af875ec3b57f88708fc096094077b5e72203",
+      "actual": "536e2527e4469ffe3203778e24c3af875ec3b57f88708fc096094077b5e72203",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/mouse_pressure.rs",
+      "expected": "c7edbfecdccafbcaf338bf1c0ec3d23282138a84445bac3008cb96f1cb9c6aba",
+      "actual": "c7edbfecdccafbcaf338bf1c0ec3d23282138a84445bac3008cb96f1cb9c6aba",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/move_entity_between_windows.rs",
+      "expected": "1b633fa89cf9382197b855cfb133319268b6c86f5bbcfc98fc2140773dee0a2f",
+      "actual": "1b633fa89cf9382197b855cfb133319268b6c86f5bbcfc98fc2140773dee0a2f",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/on_window_close_quit.rs",
+      "expected": "b67e9242e1eca361e572cf8057e3cc2a2f7b9e790ecaae92f1e2ff0de305e8f6",
+      "actual": "b67e9242e1eca361e572cf8057e3cc2a2f7b9e790ecaae92f1e2ff0de305e8f6",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/opacity.rs",
+      "expected": "dffb0dbb32ca28e113def0502688483ee91f04bd373420602f6c14ec444824f7",
+      "actual": "dffb0dbb32ca28e113def0502688483ee91f04bd373420602f6c14ec444824f7",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/ownership_post.rs",
+      "expected": "9f7fca12bd9109634722139e72640af5338f9358246870cac1242f1b49e89644",
+      "actual": "9f7fca12bd9109634722139e72640af5338f9358246870cac1242f1b49e89644",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/painting.rs",
+      "expected": "fa856d8218217acfc6fc48a1c4c92883faca2f0b0cbf0b9e842d3d59bab558c2",
+      "actual": "fa856d8218217acfc6fc48a1c4c92883faca2f0b0cbf0b9e842d3d59bab558c2",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/paths_bench.rs",
+      "expected": "936a02d1e82c1612abfcedbdd6c39596481d72e0179c79b021a182400afe28bd",
+      "actual": "936a02d1e82c1612abfcedbdd6c39596481d72e0179c79b021a182400afe28bd",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/pattern.rs",
+      "expected": "5aff341ee70f8cd2ae08d69d70690b88a7256cd68097fe665725e764cb4b294d",
+      "actual": "5aff341ee70f8cd2ae08d69d70690b88a7256cd68097fe665725e764cb4b294d",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/popover.rs",
+      "expected": "ee87c93b159cddaa1ae913c39ccac39cd89653e3ca2a3b9b42263b970ecc56c7",
+      "actual": "ee87c93b159cddaa1ae913c39ccac39cd89653e3ca2a3b9b42263b970ecc56c7",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/README.md",
+      "expected": "54c16d597880aee348f066e08029bd0f37747e924528571055dfb52d1fea6bd2",
+      "actual": "54c16d597880aee348f066e08029bd0f37747e924528571055dfb52d1fea6bd2",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/scrollable.rs",
+      "expected": "20074e207ce78efec9e7c11a6d2532227ce57a8d3c6b18055b0504e1457fdcb1",
+      "actual": "20074e207ce78efec9e7c11a6d2532227ce57a8d3c6b18055b0504e1457fdcb1",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/set_menus.rs",
+      "expected": "4f2e8034e9eb3b9871f9330cd95c3fb82858c0b7cbe60ef89723be5e75a4644e",
+      "actual": "4f2e8034e9eb3b9871f9330cd95c3fb82858c0b7cbe60ef89723be5e75a4644e",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/shadow.rs",
+      "expected": "ef3b84f66ae520ba2b44e590d7284d7dbe4746ade50a4a6d1f300e4662546fd0",
+      "actual": "ef3b84f66ae520ba2b44e590d7284d7dbe4746ade50a4a6d1f300e4662546fd0",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/svg/dragon.svg",
+      "expected": "a66278ec0c72d70152ab05fc9dd122ad094a262d96fa6f61fba6b12e128e0e47",
+      "actual": "a66278ec0c72d70152ab05fc9dd122ad094a262d96fa6f61fba6b12e128e0e47",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/svg/svg.rs",
+      "expected": "5ee96bdb68e3a076bbb5b1d0d2729b19317772289ed3121f8d620585af0d48c2",
+      "actual": "5ee96bdb68e3a076bbb5b1d0d2729b19317772289ed3121f8d620585af0d48c2",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/system_notifications.rs",
+      "expected": "692166db2266fb434f565efe2bc2f8da8f2baa8b6ab75ebc027f1e3d4722d474",
+      "actual": "692166db2266fb434f565efe2bc2f8da8f2baa8b6ab75ebc027f1e3d4722d474",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/tab_stop.rs",
+      "expected": "be187a56c091ee0b609fa396cae4a13b49dcf98ff9e602d8caed3126de3f6a8e",
+      "actual": "be187a56c091ee0b609fa396cae4a13b49dcf98ff9e602d8caed3126de3f6a8e",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/testing.rs",
+      "expected": "95b15f220b4a37ac02bc6ba42108721ba00fab3e94dbd8ae6cd3d0a0ef787b3c",
+      "actual": "95b15f220b4a37ac02bc6ba42108721ba00fab3e94dbd8ae6cd3d0a0ef787b3c",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/text.rs",
+      "expected": "3883e127027adf7b99a8c909eaba3cac4b31f1afd1f6591ab520918b3f9fa25e",
+      "actual": "3883e127027adf7b99a8c909eaba3cac4b31f1afd1f6591ab520918b3f9fa25e",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/text_layout.rs",
+      "expected": "07e4ab7a1286374a21b5bc541ef327c3473cecf361d172f3d62401b473e6cbdd",
+      "actual": "07e4ab7a1286374a21b5bc541ef327c3473cecf361d172f3d62401b473e6cbdd",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/text_wrapper.rs",
+      "expected": "db28861bc1f606d125ab696d67f26b4bf69de8c7a4b3de42bc103dba1edc9481",
+      "actual": "db28861bc1f606d125ab696d67f26b4bf69de8c7a4b3de42bc103dba1edc9481",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/tree.rs",
+      "expected": "217e1e750cdeb736c68ee5c7d45fa6a0f8e44fc222fbf78f1f24d39dcda6a278",
+      "actual": "217e1e750cdeb736c68ee5c7d45fa6a0f8e44fc222fbf78f1f24d39dcda6a278",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/uniform_list.rs",
+      "expected": "939b065c2db96ce38400c0ea79a0dd74803aa27793698bb5d00f6652a58f4e3a",
+      "actual": "939b065c2db96ce38400c0ea79a0dd74803aa27793698bb5d00f6652a58f4e3a",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/view_example/example_editor.rs",
+      "expected": "564c01431356cb878e60512858fa4b86143681a4a07198fae2a02b6dade57c5f",
+      "actual": "564c01431356cb878e60512858fa4b86143681a4a07198fae2a02b6dade57c5f",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/view_example/example_input.rs",
+      "expected": "18751cd2746a1c25e6b8af052b67dd4d382e70f97baebcad8eba34e6e55b2803",
+      "actual": "18751cd2746a1c25e6b8af052b67dd4d382e70f97baebcad8eba34e6e55b2803",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/view_example/example_tests.rs",
+      "expected": "799582680b19888a0258a865d2649bc9076ee18cad3b40568e2301be98c90492",
+      "actual": "799582680b19888a0258a865d2649bc9076ee18cad3b40568e2301be98c90492",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/view_example/example_text_area.rs",
+      "expected": "c852878e5b4c6c9006059ba2b4b88fbfe9cd737945a9a5234e0421b9f003b2a8",
+      "actual": "c852878e5b4c6c9006059ba2b4b88fbfe9cd737945a9a5234e0421b9f003b2a8",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/view_example/view_example_main.rs",
+      "expected": "032a61e146623470cbf19a5aa565b623b075a7430e5ac87e69e10de447423bc9",
+      "actual": "032a61e146623470cbf19a5aa565b623b075a7430e5ac87e69e10de447423bc9",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/window.rs",
+      "expected": "791ec50ee1e824c224da8609ff72241518ddeb4a38b80fb50bc46498283dd1da",
+      "actual": "791ec50ee1e824c224da8609ff72241518ddeb4a38b80fb50bc46498283dd1da",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/window_movable.rs",
+      "expected": "b67243c58182b84f07fe531033d5cd140d1111d433e57a2c37de0dc1c34ae27c",
+      "actual": "b67243c58182b84f07fe531033d5cd140d1111d433e57a2c37de0dc1c34ae27c",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/window_positioning.rs",
+      "expected": "2e029ffe40bbb4ef64d9e3bdb72660c41376ef8f2b88d7c25d05bfd29a32a5f1",
+      "actual": "2e029ffe40bbb4ef64d9e3bdb72660c41376ef8f2b88d7c25d05bfd29a32a5f1",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/examples/window_shadow.rs",
+      "expected": "2dd7cd7076b31bbdf2f83d11bc70b8a283e51902021df12bc879267b3d76eb41",
+      "actual": "2dd7cd7076b31bbdf2f83d11bc70b8a283e51902021df12bc879267b3d76eb41",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/FERROSTAGE-MAINTENANCE.txt",
+      "expected": "3f66516641a9bf23bef60bff7bcf7742235c14b3769cc49f492ec408f8c997b5",
+      "actual": "3f66516641a9bf23bef60bff7bcf7742235c14b3769cc49f492ec408f8c997b5",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/LICENSE-APACHE",
+      "expected": "752daf2fb234ca4a1fa372c073fe127f44b7b90fd2529ae44273a64f9d53da7a",
+      "actual": "752daf2fb234ca4a1fa372c073fe127f44b7b90fd2529ae44273a64f9d53da7a",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/README.md",
+      "expected": "989b10e5914dcc8a1f2568303849aeab2d6aa26f2c5dfead96de0491330ada79",
+      "actual": "989b10e5914dcc8a1f2568303849aeab2d6aa26f2c5dfead96de0491330ada79",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/resources/windows/gpui.manifest.xml",
+      "expected": "00bce21693c57d15d1a15f1d8814206d9dd80389bbf63ce5a8f3b364891232b6",
+      "actual": "00bce21693c57d15d1a15f1d8814206d9dd80389bbf63ce5a8f3b364891232b6",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/resources/windows/gpui.rc",
+      "expected": "eb3efc3b6af498552a0dd67f69d58e1a53e49155dfe90e4649478ec64dbd6af6",
+      "actual": "eb3efc3b6af498552a0dd67f69d58e1a53e49155dfe90e4649478ec64dbd6af6",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/_accessibility.rs",
+      "expected": "bcdeb209fa6309f5c507d9e8918235e75c18751c1985d0ebed632de643d7ea2e",
+      "actual": "bcdeb209fa6309f5c507d9e8918235e75c18751c1985d0ebed632de643d7ea2e",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/_ownership_and_data_flow.rs",
+      "expected": "4edbde237dc322ceac8969028811fd30d87a8bd108475a642c4fb961b2770258",
+      "actual": "4edbde237dc322ceac8969028811fd30d87a8bd108475a642c4fb961b2770258",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/action.rs",
+      "expected": "6566c34d4f4cf7f6a5280cbc4c07c747c5c6fc4c6554abd42c73fefe5716fc20",
+      "actual": "6566c34d4f4cf7f6a5280cbc4c07c747c5c6fc4c6554abd42c73fefe5716fc20",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/app/async_context.rs",
+      "expected": "9ce9c6f7fa3621679d4785d74686e81300cdc765b500245d8a92a8d33aed3094",
+      "actual": "9ce9c6f7fa3621679d4785d74686e81300cdc765b500245d8a92a8d33aed3094",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/app/bench_context.rs",
+      "expected": "6bef320831a933502651903f85b849b6ea371b84c6822b7b88d3e064dc8c9818",
+      "actual": "6bef320831a933502651903f85b849b6ea371b84c6822b7b88d3e064dc8c9818",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/app/context.rs",
+      "expected": "af9c74ba63623cf4f107861e041cddb72cca5b5c65695ab6531bb44fbf7b3573",
+      "actual": "af9c74ba63623cf4f107861e041cddb72cca5b5c65695ab6531bb44fbf7b3573",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/app/entity_map.rs",
+      "expected": "f770a17e04bfb1305577ca423a926fa967eeb3f392aeba10811d2ef7ccd2562d",
+      "actual": "f770a17e04bfb1305577ca423a926fa967eeb3f392aeba10811d2ef7ccd2562d",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/app/headless_app_context.rs",
+      "expected": "b8f42a8e9e99f74611984fcf301f5f998377e7ea2eacd20a3a9c45873143a248",
+      "actual": "b8f42a8e9e99f74611984fcf301f5f998377e7ea2eacd20a3a9c45873143a248",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/app/test_app.rs",
+      "expected": "ea41a502634c8eb8011a0f499b8a3900939228e6f6260bf8857766c799633316",
+      "actual": "ea41a502634c8eb8011a0f499b8a3900939228e6f6260bf8857766c799633316",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/app/test_context.rs",
+      "expected": "b57dd9f67b1b6a344c9859bb5adf9b4405bcf7e21cf0a0bece3fda93b8afda56",
+      "actual": "b57dd9f67b1b6a344c9859bb5adf9b4405bcf7e21cf0a0bece3fda93b8afda56",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/app/visual_test_context.rs",
+      "expected": "b6e0399349417b70cf067a90cf46a385a0b2efc999e30fd4a037d0ecdd87ff1c",
+      "actual": "b6e0399349417b70cf067a90cf46a385a0b2efc999e30fd4a037d0ecdd87ff1c",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/app.rs",
+      "expected": "09920cb50857041e0ec3e0063e60f95f165da975f53b53a7f933919b8c3f11bb",
+      "actual": "09920cb50857041e0ec3e0063e60f95f165da975f53b53a7f933919b8c3f11bb",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/arena.rs",
+      "expected": "262e6403f8fa505592dddb674028f43c0e41beb1f51aa97e37c917215052580b",
+      "actual": "262e6403f8fa505592dddb674028f43c0e41beb1f51aa97e37c917215052580b",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/asset_cache.rs",
+      "expected": "cc1eb306523094d2d9a0e15538ce9a4fe29408288bd73e27781ea9a92c1b059e",
+      "actual": "cc1eb306523094d2d9a0e15538ce9a4fe29408288bd73e27781ea9a92c1b059e",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/assets.rs",
+      "expected": "44e116678b8b351ecb7fb45a3163b58288d551fbc72049ddc7a8d255d589bcff",
+      "actual": "44e116678b8b351ecb7fb45a3163b58288d551fbc72049ddc7a8d255d589bcff",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/bounds_tree.rs",
+      "expected": "c3da5abcd110191eea8b7b73a88bb8d1fd89251549e889c9cd42d1a7857a1b4c",
+      "actual": "c3da5abcd110191eea8b7b73a88bb8d1fd89251549e889c9cd42d1a7857a1b4c",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/color.rs",
+      "expected": "4292aa1a2bbc56b653aaef0702726325f8efb93f16226320519e257c3ba8a839",
+      "actual": "4292aa1a2bbc56b653aaef0702726325f8efb93f16226320519e257c3ba8a839",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/colors.rs",
+      "expected": "bd7d022046e8ff2303761168f70a473738abbe200f3b40b7f216d16ca05d187b",
+      "actual": "bd7d022046e8ff2303761168f70a473738abbe200f3b40b7f216d16ca05d187b",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/debug_overlay.rs",
+      "expected": "c5bdef757b2ce28d4b1e584ba2dbaf988df106057bedab23c185b61451425cf4",
+      "actual": "c5bdef757b2ce28d4b1e584ba2dbaf988df106057bedab23c185b61451425cf4",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/element.rs",
+      "expected": "1eea2303609c4aca23e44e623a9d44eded93ad8b70f86e3e4c7446b3e0238b4c",
+      "actual": "1eea2303609c4aca23e44e623a9d44eded93ad8b70f86e3e4c7446b3e0238b4c",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/elements/anchored.rs",
+      "expected": "1c649ab428e36a9502dca7d9b5c530acccd70f5a8500588c2e400e85d2a15f52",
+      "actual": "1c649ab428e36a9502dca7d9b5c530acccd70f5a8500588c2e400e85d2a15f52",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/elements/animation.rs",
+      "expected": "117a4b1a580382b21accce30308f0480853c1e9372220566748dcb5f74d5793e",
+      "actual": "117a4b1a580382b21accce30308f0480853c1e9372220566748dcb5f74d5793e",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/elements/canvas.rs",
+      "expected": "3e09646e725d31c10a88be290c146d6a6e829e0be173e6bc82c138461668e646",
+      "actual": "3e09646e725d31c10a88be290c146d6a6e829e0be173e6bc82c138461668e646",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/elements/container_query.rs",
+      "expected": "7e72aab18967e7e16ebbe38c535caf2ac6f881a62cf9f6045922fbeb8a06df07",
+      "actual": "7e72aab18967e7e16ebbe38c535caf2ac6f881a62cf9f6045922fbeb8a06df07",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/elements/deferred.rs",
+      "expected": "0501cd9c0f041b849e51ea78a69abeb24781e5b5488311c0b87f4cf1ed01f451",
+      "actual": "0501cd9c0f041b849e51ea78a69abeb24781e5b5488311c0b87f4cf1ed01f451",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/elements/div.rs",
+      "expected": "10f334243fae305666e48d4939ed63495ce01b13534db22a751062a6f76fa59b",
+      "actual": "10f334243fae305666e48d4939ed63495ce01b13534db22a751062a6f76fa59b",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/elements/image_cache.rs",
+      "expected": "e4540d7e92bc63bbaaf703df42338bbfabca764e34b7244880460d38962e14c4",
+      "actual": "e4540d7e92bc63bbaaf703df42338bbfabca764e34b7244880460d38962e14c4",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/elements/img.rs",
+      "expected": "c196cb1ed3db30ab3141b036c84288a22e04de2b53b687e1d86fe732420374e3",
+      "actual": "c196cb1ed3db30ab3141b036c84288a22e04de2b53b687e1d86fe732420374e3",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/elements/list.rs",
+      "expected": "42704328bf8f1f5c75b0129dfaf4052e475f2de1bcfec3a2c6f92f518c6cb573",
+      "actual": "42704328bf8f1f5c75b0129dfaf4052e475f2de1bcfec3a2c6f92f518c6cb573",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/elements/mod.rs",
+      "expected": "447ab5d960591744b9f193bbf9af562b5fbf9d8fd156e179584031e6f464d632",
+      "actual": "447ab5d960591744b9f193bbf9af562b5fbf9d8fd156e179584031e6f464d632",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/elements/surface.rs",
+      "expected": "b72696ba0a043fdcddcad5536c7cde2e1703a4fc185f6a5449b86b62cee20819",
+      "actual": "b72696ba0a043fdcddcad5536c7cde2e1703a4fc185f6a5449b86b62cee20819",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/elements/svg.rs",
+      "expected": "ab5412945c36fd0087e95a1544d610cf9308e906b3059835b4c49f98f4b9279e",
+      "actual": "ab5412945c36fd0087e95a1544d610cf9308e906b3059835b4c49f98f4b9279e",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/elements/text.rs",
+      "expected": "3ffcc422356924ae4d6eef864421f56588be65cd931c8fe35d7e5e6438c23346",
+      "actual": "3ffcc422356924ae4d6eef864421f56588be65cd931c8fe35d7e5e6438c23346",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/elements/uniform_list.rs",
+      "expected": "04221d6daf31f1bd994fb4649a19df3184b56de293301c0306183bd642e09e03",
+      "actual": "04221d6daf31f1bd994fb4649a19df3184b56de293301c0306183bd642e09e03",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/executor.rs",
+      "expected": "6047eea975fb8d0b3cfd170a07a73d72a27b80b91830c272e8c84ec49ffde52c",
+      "actual": "6047eea975fb8d0b3cfd170a07a73d72a27b80b91830c272e8c84ec49ffde52c",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/geometry.rs",
+      "expected": "fe4fdc556e471e228e882488bbc0afd9389bccde46c71b846ed7bef91ad96155",
+      "actual": "fe4fdc556e471e228e882488bbc0afd9389bccde46c71b846ed7bef91ad96155",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/gestures.rs",
+      "expected": "0a1db91af00d98d35799bd2c82f65ec8d39e026dc58c66b78623368b367dbb7e",
+      "actual": "0a1db91af00d98d35799bd2c82f65ec8d39e026dc58c66b78623368b367dbb7e",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/global.rs",
+      "expected": "c52ddc647f712282a3a1f3629f864d0868966169fee7aff5f1f8d27e67f3f077",
+      "actual": "c52ddc647f712282a3a1f3629f864d0868966169fee7aff5f1f8d27e67f3f077",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/gpui.rs",
+      "expected": "2f060a8bdbf87be91f434ac8290f44bd26bab08be0f2ead38a5aa6d2f664c440",
+      "actual": "2f060a8bdbf87be91f434ac8290f44bd26bab08be0f2ead38a5aa6d2f664c440",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/input.rs",
+      "expected": "212ab29d9ac70756d2e480a246b56c5028257746cd5f1b49a3a59a12b7a19db9",
+      "actual": "212ab29d9ac70756d2e480a246b56c5028257746cd5f1b49a3a59a12b7a19db9",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/inspector.rs",
+      "expected": "39a2790b992b2c354eccb4d60a7070e41628a86c5463d339f9c7b8fa250c1ede",
+      "actual": "39a2790b992b2c354eccb4d60a7070e41628a86c5463d339f9c7b8fa250c1ede",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/interactive.rs",
+      "expected": "443b41c4f7d6d31ba288a49a151dc2280ec1e1e20df2f558551dc07009672087",
+      "actual": "443b41c4f7d6d31ba288a49a151dc2280ec1e1e20df2f558551dc07009672087",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/key_dispatch.rs",
+      "expected": "82c084ec3bff07572e5e99c385daecc94ff51472523415b6ad83811ff46670ba",
+      "actual": "82c084ec3bff07572e5e99c385daecc94ff51472523415b6ad83811ff46670ba",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/keymap/binding.rs",
+      "expected": "7306cd42de8bd0dbbf111c7b1c9d30b2a814251ad0f00b7f7cb3bf042925f895",
+      "actual": "7306cd42de8bd0dbbf111c7b1c9d30b2a814251ad0f00b7f7cb3bf042925f895",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/keymap/context.rs",
+      "expected": "dd3cf2e883caed26e201a8aed39fbc51de782e7f806ecc22fde617929ca223cf",
+      "actual": "dd3cf2e883caed26e201a8aed39fbc51de782e7f806ecc22fde617929ca223cf",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/keymap.rs",
+      "expected": "7b007c96f748b0593ce56f9ea1520422b3b9401919cc442f2ef4a2b374e203be",
+      "actual": "7b007c96f748b0593ce56f9ea1520422b3b9401919cc442f2ef4a2b374e203be",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/path_builder.rs",
+      "expected": "07fa0b21e5493cf46ce54976d77ffea3a430ddbbc369c4d4e247a3bc68854e35",
+      "actual": "07fa0b21e5493cf46ce54976d77ffea3a430ddbbc369c4d4e247a3bc68854e35",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/platform/app_menu.rs",
+      "expected": "c751e70bf50cf2366dad9d6b2a66fc3a8e9cd1547128173dbfc59520feb454cc",
+      "actual": "c751e70bf50cf2366dad9d6b2a66fc3a8e9cd1547128173dbfc59520feb454cc",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/platform/keyboard.rs",
+      "expected": "8de8d585f4238204fd14113abded703afa6bb0a532dacabdf400df8249390376",
+      "actual": "8de8d585f4238204fd14113abded703afa6bb0a532dacabdf400df8249390376",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/platform/keystroke.rs",
+      "expected": "35515a9d079060667e99851f09227d0ff2204b2d0d951bd96d8297f3bc3f9115",
+      "actual": "35515a9d079060667e99851f09227d0ff2204b2d0d951bd96d8297f3bc3f9115",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/platform/layer_shell.rs",
+      "expected": "cdb4822c6589461045f09829640da3961e957d782c8e4763050b65701c90d305",
+      "actual": "cdb4822c6589461045f09829640da3961e957d782c8e4763050b65701c90d305",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/platform/popup.rs",
+      "expected": "18a8aa2aaf3739c71d34233e7b2dabb4e902e5e27f9e1dcb362acd110478bb1a",
+      "actual": "18a8aa2aaf3739c71d34233e7b2dabb4e902e5e27f9e1dcb362acd110478bb1a",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/platform/scap_screen_capture.rs",
+      "expected": "b6492678395e5a9a3335fd6babaa60192dc5b971efd32f896e33fb8fbbd7e484",
+      "actual": "b6492678395e5a9a3335fd6babaa60192dc5b971efd32f896e33fb8fbbd7e484",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/platform/test/dispatcher.rs",
+      "expected": "dea03a78a0c64d486f2c5b7bc669ba281638a0f8ee53316a52993a0e5b5cabd0",
+      "actual": "dea03a78a0c64d486f2c5b7bc669ba281638a0f8ee53316a52993a0e5b5cabd0",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/platform/test/display.rs",
+      "expected": "1cbb36acb34c98fefdebf9c3676ff6b2dad93ef9e51ed7729ccdfa34f8b6ceb4",
+      "actual": "1cbb36acb34c98fefdebf9c3676ff6b2dad93ef9e51ed7729ccdfa34f8b6ceb4",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/platform/test/platform.rs",
+      "expected": "3a95163b4974fa09a6ee6b4c3f9dd579698e642afb80a8529d4e17989b23ce22",
+      "actual": "3a95163b4974fa09a6ee6b4c3f9dd579698e642afb80a8529d4e17989b23ce22",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/platform/test/window.rs",
+      "expected": "e31520f95c8910c6e378a39a4fc59312ed02f157aa7f2aaf2ab59d04a29553b9",
+      "actual": "e31520f95c8910c6e378a39a4fc59312ed02f157aa7f2aaf2ab59d04a29553b9",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/platform/test.rs",
+      "expected": "52861874bfdd1433728d61bd7be3a40b1f8c27aae4e4cc9d31b311ef13bda994",
+      "actual": "52861874bfdd1433728d61bd7be3a40b1f8c27aae4e4cc9d31b311ef13bda994",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/platform/threaded_dispatcher.rs",
+      "expected": "aff57da6e74ddb0dbdb57f2c58b08236c1b78a4971e0c6d2f095f0746096f09c",
+      "actual": "aff57da6e74ddb0dbdb57f2c58b08236c1b78a4971e0c6d2f095f0746096f09c",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/platform/visual_test.rs",
+      "expected": "71265c50863bfb9eb0dd5e103d1bbbb5d612e73cee1614662c26ac538db28124",
+      "actual": "71265c50863bfb9eb0dd5e103d1bbbb5d612e73cee1614662c26ac538db28124",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/platform.rs",
+      "expected": "9de7e0b0f29c51b149263b9bc9b4061bfbe41849e296b75df9cf259d9bbbdc4c",
+      "actual": "9de7e0b0f29c51b149263b9bc9b4061bfbe41849e296b75df9cf259d9bbbdc4c",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/platform_scheduler.rs",
+      "expected": "db193099a1b790d8658e1f056b393bb03df5b97f2c89f60c0ebca7186bdc0a51",
+      "actual": "db193099a1b790d8658e1f056b393bb03df5b97f2c89f60c0ebca7186bdc0a51",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/prelude.rs",
+      "expected": "cbbef2e02b205044bb46dbe0e5353af35dfa466bcecb45078947994958ef133d",
+      "actual": "cbbef2e02b205044bb46dbe0e5353af35dfa466bcecb45078947994958ef133d",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/profiler/actions.rs",
+      "expected": "1907458a07d8370f19652fb60bb0bf1ef8ee8baf3e5fe4d04fc54f380e586d8f",
+      "actual": "1907458a07d8370f19652fb60bb0bf1ef8ee8baf3e5fe4d04fc54f380e586d8f",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/profiler/hang/monitor.rs",
+      "expected": "83418659e622e1b1eb83a1d65e5eaac136ebecbd34a25ae95fa427084ebc9a6f",
+      "actual": "83418659e622e1b1eb83a1d65e5eaac136ebecbd34a25ae95fa427084ebc9a6f",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/profiler/hang.rs",
+      "expected": "310a7070179bc5671acf715573cc8ab90233713fb4562c67d83eb7f1a2c24203",
+      "actual": "310a7070179bc5671acf715573cc8ab90233713fb4562c67d83eb7f1a2c24203",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/profiler/journal.rs",
+      "expected": "278bb4c109d4a7993a2386feb788bc5392b875e314031c4b6e076049e0e79d84",
+      "actual": "278bb4c109d4a7993a2386feb788bc5392b875e314031c4b6e076049e0e79d84",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/profiler.rs",
+      "expected": "2ead5740bf573293e4866ae40ea06d82721a87d31c0310415c3c0e2f2866508a",
+      "actual": "2ead5740bf573293e4866ae40ea06d82721a87d31c0310415c3c0e2f2866508a",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/queue.rs",
+      "expected": "9753459cd04fedae7f2323bd9b1b2e7379e0cf10858f4b82922d62a84d474710",
+      "actual": "9753459cd04fedae7f2323bd9b1b2e7379e0cf10858f4b82922d62a84d474710",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/randomized_element_tree.rs",
+      "expected": "b7d714477368e8c2fc0dc3fe4b193d3148bab242d8ce132e503e3942737788c3",
+      "actual": "b7d714477368e8c2fc0dc3fe4b193d3148bab242d8ce132e503e3942737788c3",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/scene.rs",
+      "expected": "2162c7da284ca995e5a84a3c9b66fbd65abb63d96858c0cc76c25efd4ba1d66e",
+      "actual": "2162c7da284ca995e5a84a3c9b66fbd65abb63d96858c0cc76c25efd4ba1d66e",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/seeds.rs",
+      "expected": "5ee929b48bf3f5b0fa6ba0dd99cb87371ba4dfcf0c09814494b3af3b4fd5971c",
+      "actual": "5ee929b48bf3f5b0fa6ba0dd99cb87371ba4dfcf0c09814494b3af3b4fd5971c",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/shared_uri.rs",
+      "expected": "7a0a4feb3e290bb3f2c15fd4c8ee4c8ca3a9a5974e04ec084c4f8f0f3fc89248",
+      "actual": "7a0a4feb3e290bb3f2c15fd4c8ee4c8ca3a9a5974e04ec084c4f8f0f3fc89248",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/spring.rs",
+      "expected": "1cdc32dc3fd2d2b8cbdc7809e51c276ced938592dd08083fe7cc063a02086663",
+      "actual": "1cdc32dc3fd2d2b8cbdc7809e51c276ced938592dd08083fe7cc063a02086663",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/style.rs",
+      "expected": "b4a0e838fc7050cef25f71aae623cf86010c2ec361600479d24ce1aaff91bdc1",
+      "actual": "b4a0e838fc7050cef25f71aae623cf86010c2ec361600479d24ce1aaff91bdc1",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/styled.rs",
+      "expected": "c6e62fe136bedf887ee755c886df5466d5fe0b398a004b35d1a3530fef809c8d",
+      "actual": "c6e62fe136bedf887ee755c886df5466d5fe0b398a004b35d1a3530fef809c8d",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/subscription.rs",
+      "expected": "cca3b5138cb23084932772c8e009cce8a08562c2c00b69f3e0d4b1676b88087a",
+      "actual": "cca3b5138cb23084932772c8e009cce8a08562c2c00b69f3e0d4b1676b88087a",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/svg_renderer.rs",
+      "expected": "553466dac47866f7a2860959e6aaecca4fb9e4c96a6e8e52b8014b8391bcb6a1",
+      "actual": "553466dac47866f7a2860959e6aaecca4fb9e4c96a6e8e52b8014b8391bcb6a1",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/tab_stop.rs",
+      "expected": "7f742d6d6b7e5cd6fc634f2764fc3937e1cdebcf086d4b7c166379724edd1881",
+      "actual": "7f742d6d6b7e5cd6fc634f2764fc3937e1cdebcf086d4b7c166379724edd1881",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/taffy.rs",
+      "expected": "dd561fcc6b693cfcd15b343b5e2935b9cff2ee8fb373d5e7166ca71ff1f74880",
+      "actual": "dd561fcc6b693cfcd15b343b5e2935b9cff2ee8fb373d5e7166ca71ff1f74880",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/test.rs",
+      "expected": "205f9f481fe843470dca43972853f4d64b23ddd03ee9b26eebbf2a2508a9c65f",
+      "actual": "205f9f481fe843470dca43972853f4d64b23ddd03ee9b26eebbf2a2508a9c65f",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/text_system/font_fallbacks.rs",
+      "expected": "8451a6f069fe78c76da11377ee17b01aabd3c35aaa494fb329f2ae5a5bf9736f",
+      "actual": "8451a6f069fe78c76da11377ee17b01aabd3c35aaa494fb329f2ae5a5bf9736f",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/text_system/font_features.rs",
+      "expected": "85f901df313e3b8379e65b70a0e69e5dfc7d8280a761e568d1f4293edc4c4834",
+      "actual": "85f901df313e3b8379e65b70a0e69e5dfc7d8280a761e568d1f4293edc4c4834",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/text_system/line.rs",
+      "expected": "25bbf6a409ce8e70d1265a858f2d2abdbbc2c110d515abd31bb0a379cdce54e3",
+      "actual": "25bbf6a409ce8e70d1265a858f2d2abdbbc2c110d515abd31bb0a379cdce54e3",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/text_system/line_layout.rs",
+      "expected": "a78d230d050bbf17bd968612da1d84f4c8aaefc39f82100e11b2b3a6990d45e4",
+      "actual": "a78d230d050bbf17bd968612da1d84f4c8aaefc39f82100e11b2b3a6990d45e4",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/text_system/line_wrapper.rs",
+      "expected": "58feea87a0f1e150d8d733886fe9601d5afcd37f91b00c80d6717d5e9b7272ed",
+      "actual": "58feea87a0f1e150d8d733886fe9601d5afcd37f91b00c80d6717d5e9b7272ed",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/text_system.rs",
+      "expected": "b39e05a8a8f7b36e13ffe1211d2c2993f68f2ce4cada87ad3414492a42e927b4",
+      "actual": "b39e05a8a8f7b36e13ffe1211d2c2993f68f2ce4cada87ad3414492a42e927b4",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/util.rs",
+      "expected": "04397f667bf5d890cce690b96441cd5b8f5eb0a5dd2942ce27b0314be38fa636",
+      "actual": "04397f667bf5d890cce690b96441cd5b8f5eb0a5dd2942ce27b0314be38fa636",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/view.rs",
+      "expected": "11eeda4ac05a0b03b22df9ffd58fc08ce1f6b0ef57af6cd8e7679d06f4601d94",
+      "actual": "11eeda4ac05a0b03b22df9ffd58fc08ce1f6b0ef57af6cd8e7679d06f4601d94",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/window/a11y/debug.rs",
+      "expected": "2055ed9e63900a601a973191ff82ebbd91557178036826a4d2c04b09f5cf4dc2",
+      "actual": "2055ed9e63900a601a973191ff82ebbd91557178036826a4d2c04b09f5cf4dc2",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/window/a11y.rs",
+      "expected": "1579b5772038313635feda4ad5c32a46f5bd843396268c8b573d68e7c57488b5",
+      "actual": "1579b5772038313635feda4ad5c32a46f5bd843396268c8b573d68e7c57488b5",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/window/prompts.rs",
+      "expected": "0d58ec14e8139af53b50f4ad67690f01959ed59ffafc4adb2cf522f3f6197164",
+      "actual": "0d58ec14e8139af53b50f4ad67690f01959ed59ffafc4adb2cf522f3f6197164",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/src/window.rs",
+      "expected": "75ebfde34c284ed6afce96989bfc8794dcd7fb79b3b228d36e87a930688cf86b",
+      "actual": "75ebfde34c284ed6afce96989bfc8794dcd7fb79b3b228d36e87a930688cf86b",
+      "matches": true
+    },
+    {
+      "path": "vendor/gpui/tests/action_macros.rs",
+      "expected": "47b69024f403feb6cb63c9990a6993b8582856146f5a6ae16984714321956a84",
+      "actual": "47b69024f403feb6cb63c9990a6993b8582856146f5a6ae16984714321956a84",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/.cargo-ok",
+      "expected": "afbf9d0f3560b0fd7795e81c42a0a79ee6b6fc67e064f77826aee642cad28d91",
+      "actual": "afbf9d0f3560b0fd7795e81c42a0a79ee6b6fc67e064f77826aee642cad28d91",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/.cargo_vcs_info.json",
+      "expected": "201c9ad8c230c0e1c927ae0295f1aef3e7895bd68e3ecf08fc9cedb065fccfe9",
+      "actual": "201c9ad8c230c0e1c927ae0295f1aef3e7895bd68e3ecf08fc9cedb065fccfe9",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/.github/workflows/ci.yml",
+      "expected": "6fc575c967f7d3e78bc37b8bf132f6b7d99e7cba6048664ea2faf6f9997e537c",
+      "actual": "6fc575c967f7d3e78bc37b8bf132f6b7d99e7cba6048664ea2faf6f9997e537c",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/.gitignore",
+      "expected": "095f56ed336b3f6e9c084982dd82118a6caf8f199dc7bc29e2d28ce3c027c149",
+      "actual": "095f56ed336b3f6e9c084982dd82118a6caf8f199dc7bc29e2d28ce3c027c149",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/assets/metal.svg",
+      "expected": "3a295bd130785bc2fea2f3a91a4f6c7b4b3c40682c3fcb7a75f9887b66b06264",
+      "actual": "3a295bd130785bc2fea2f3a91a4f6c7b4b3c40682c3fcb7a75f9887b66b06264",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/bors.toml",
+      "expected": "c2733ec512a08bf76b6a1ed77270810a0edeb888ba24c2a75679e1eb1bd563a5",
+      "actual": "c2733ec512a08bf76b6a1ed77270810a0edeb888ba24c2a75679e1eb1bd563a5",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/Cargo.lock",
+      "expected": "341fa20998f08b817968a85540ce7d81bd142384432c3e2bc1b0c3a699d71e95",
+      "actual": "341fa20998f08b817968a85540ce7d81bd142384432c3e2bc1b0c3a699d71e95",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/Cargo.toml",
+      "expected": "56f5d658694c569e8bcc65ab76419beff1276afa770613c30656af6ca40ab0a1",
+      "actual": "56f5d658694c569e8bcc65ab76419beff1276afa770613c30656af6ca40ab0a1",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/Cargo.toml.orig",
+      "expected": "8d2421bd1bf3eb688774cae4c9b5c488bb785774763bff99cf0a2b1f1a333c58",
+      "actual": "8d2421bd1bf3eb688774cae4c9b5c488bb785774763bff99cf0a2b1f1a333c58",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/argument-buffer/main.rs",
+      "expected": "a087db6648a4b092520de29616521c704d892e0d3ace935d16f3f339415c4361",
+      "actual": "a087db6648a4b092520de29616521c704d892e0d3ace935d16f3f339415c4361",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/bind/main.rs",
+      "expected": "a0c85aad05f08666f9b380a7146a8473a6a6fe0db5d523760373093a0af20e5f",
+      "actual": "a0c85aad05f08666f9b380a7146a8473a6a6fe0db5d523760373093a0af20e5f",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/bindless/main.rs",
+      "expected": "020fdc78a4cf9196dd80c333d0ddb2569202b573b90ad5df2081d4ff88318372",
+      "actual": "020fdc78a4cf9196dd80c333d0ddb2569202b573b90ad5df2081d4ff88318372",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/caps/main.rs",
+      "expected": "b7be00c1cc9042140d34ea05051152a7035f316f0bdcd31ac5a660a97e0c4f70",
+      "actual": "b7be00c1cc9042140d34ea05051152a7035f316f0bdcd31ac5a660a97e0c4f70",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/circle/main.rs",
+      "expected": "8690a17b2c59293bd774f7945f386246b4154a67283d2052d4fbb6d3cb74bf76",
+      "actual": "8690a17b2c59293bd774f7945f386246b4154a67283d2052d4fbb6d3cb74bf76",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/circle/README.md",
+      "expected": "e1c97cf5252f0d1f2934ace78b5d839c5f45911f3007dbd2925eeceefb8f0af6",
+      "actual": "e1c97cf5252f0d1f2934ace78b5d839c5f45911f3007dbd2925eeceefb8f0af6",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/circle/screenshot.png",
+      "expected": "97bf07c85bf02367447b9c8a81707c124e4a3b420fa386b95ba08b21938f4f2a",
+      "actual": "97bf07c85bf02367447b9c8a81707c124e4a3b420fa386b95ba08b21938f4f2a",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/circle/shaders.metal",
+      "expected": "5e4f40efca5bb386204a09e1b983cc6c634fdf1ca9dd4974227313adbf50e8b5",
+      "actual": "5e4f40efca5bb386204a09e1b983cc6c634fdf1ca9dd4974227313adbf50e8b5",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/circle/shaders.metallib",
+      "expected": "666a9491d795ef9c0b9c122c7ada571cc2c0e8774d2d89e5b4b996f3dc47962b",
+      "actual": "666a9491d795ef9c0b9c122c7ada571cc2c0e8774d2d89e5b4b996f3dc47962b",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/compute/compute-argument-buffer.metal",
+      "expected": "6530bbd6a0101d9db2893805436f5dc877959e81ea97a27014c0fc52fc9fa77b",
+      "actual": "6530bbd6a0101d9db2893805436f5dc877959e81ea97a27014c0fc52fc9fa77b",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/compute/compute-argument-buffer.rs",
+      "expected": "8c02647426cda46d2687890eb64a833bf5bcf4740109fb871f56d4aea6984bcf",
+      "actual": "8c02647426cda46d2687890eb64a833bf5bcf4740109fb871f56d4aea6984bcf",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/compute/embedded-lib.rs",
+      "expected": "55f701810fa5270c27ca771e713f9f8cf09e124a997b0b03790b38435593a7ea",
+      "actual": "55f701810fa5270c27ca771e713f9f8cf09e124a997b0b03790b38435593a7ea",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/compute/main.rs",
+      "expected": "a9eee4e600887f2dafdd953a899cf1d11ea5fc252297cf5f9747f209454ba173",
+      "actual": "a9eee4e600887f2dafdd953a899cf1d11ea5fc252297cf5f9747f209454ba173",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/compute/shaders.metal",
+      "expected": "f2b15551bb5247b88a3029c3d8ef37c6fa04a4a6cca9f90f069894ed6822b4bf",
+      "actual": "f2b15551bb5247b88a3029c3d8ef37c6fa04a4a6cca9f90f069894ed6822b4bf",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/compute/shaders.metallib",
+      "expected": "fef91643e60c0ec99ad2bd2f3916299bcc3e6a80038ea27bed59681badfea7d1",
+      "actual": "fef91643e60c0ec99ad2bd2f3916299bcc3e6a80038ea27bed59681badfea7d1",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/events/main.rs",
+      "expected": "9cb35381b0a3918bd7d530171de8f7cceafe3d4851c0f430b4aff1f5c2aae749",
+      "actual": "9cb35381b0a3918bd7d530171de8f7cceafe3d4851c0f430b4aff1f5c2aae749",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/fence/main.rs",
+      "expected": "47741327e62db1d8bd344b6a9ec26ef13ffb0b56b0dd7077c5d926d43faaeff7",
+      "actual": "47741327e62db1d8bd344b6a9ec26ef13ffb0b56b0dd7077c5d926d43faaeff7",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/headless-render/.gitignore",
+      "expected": "99520a5b5abaf30fc75759f1fd9f4338b6fbd1fc49f2dcbb466b22e6f9db4f62",
+      "actual": "99520a5b5abaf30fc75759f1fd9f4338b6fbd1fc49f2dcbb466b22e6f9db4f62",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/headless-render/main.rs",
+      "expected": "814f639b0a919f3bec8e6f9f9928d881824fd0b4a6d36d32006cecbb36ae6599",
+      "actual": "814f639b0a919f3bec8e6f9f9928d881824fd0b4a6d36d32006cecbb36ae6599",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/headless-render/README.md",
+      "expected": "b1c97b52701cfb41fc0b9e269ba7a7a454d9161746198e2f5789f2636f60842d",
+      "actual": "b1c97b52701cfb41fc0b9e269ba7a7a454d9161746198e2f5789f2636f60842d",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/headless-render/screenshot.png",
+      "expected": "01d6ea5791b63b0f01190198756446cf313fc25dc64d0138c1b4f62c9f862dd1",
+      "actual": "01d6ea5791b63b0f01190198756446cf313fc25dc64d0138c1b4f62c9f862dd1",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/library/main.rs",
+      "expected": "42368ae9b630ca87ee8d8e0ced12163fdc86e6c9f2260a4b74689dbd41a60d3b",
+      "actual": "42368ae9b630ca87ee8d8e0ced12163fdc86e6c9f2260a4b74689dbd41a60d3b",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/mesh-shader/main.rs",
+      "expected": "bc7ca72445565015a51a94d3943a622617d13c8982a47224529fe4eed021e37d",
+      "actual": "bc7ca72445565015a51a94d3943a622617d13c8982a47224529fe4eed021e37d",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/mesh-shader/shaders.metal",
+      "expected": "6ba934c3edd3ba0b8f6c4ac37be0fd0fe35eeef004e371521b7bf5a2fae9a223",
+      "actual": "6ba934c3edd3ba0b8f6c4ac37be0fd0fe35eeef004e371521b7bf5a2fae9a223",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/mesh-shader/shaders.metallib",
+      "expected": "0af3b7ab0cd6186a90163550b76fab5bd2ef6ba97e791354d4281ca92d4887ff",
+      "actual": "0af3b7ab0cd6186a90163550b76fab5bd2ef6ba97e791354d4281ca92d4887ff",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/mps/main.rs",
+      "expected": "e626ce5a4ab7e447e0e4f7b85fb27fb157afc5a0d1620cd53c248b025f7e7fb4",
+      "actual": "e626ce5a4ab7e447e0e4f7b85fb27fb157afc5a0d1620cd53c248b025f7e7fb4",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/mps/shaders.metal",
+      "expected": "155922d6a4184078ae7ee29504a268e1218f07d908f921eef60e5bfa8a793bda",
+      "actual": "155922d6a4184078ae7ee29504a268e1218f07d908f921eef60e5bfa8a793bda",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/mps/shaders.metallib",
+      "expected": "b62451223549b1e7eb90ec3d3534c0ed4cdfdc581c7df3ffcdc4786a5fcacde4",
+      "actual": "b62451223549b1e7eb90ec3d3534c0ed4cdfdc581c7df3ffcdc4786a5fcacde4",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/raytracing/camera.rs",
+      "expected": "11d631b13b2ba6e14e785d339919e7e13f9f381c39a78d0ab95500d551c58505",
+      "actual": "11d631b13b2ba6e14e785d339919e7e13f9f381c39a78d0ab95500d551c58505",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/raytracing/geometry.rs",
+      "expected": "afffd828f071b4adad8d5732c23eb99ebbc4711993e3b682861e571cec2234a2",
+      "actual": "afffd828f071b4adad8d5732c23eb99ebbc4711993e3b682861e571cec2234a2",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/raytracing/main.rs",
+      "expected": "51bde3c7e81b18a1914322cc71ed5701289873fac44a88e29c2ae7939dc2d0b4",
+      "actual": "51bde3c7e81b18a1914322cc71ed5701289873fac44a88e29c2ae7939dc2d0b4",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/raytracing/README.md",
+      "expected": "6f0d683efac74572099c317ce9f65c3e6ff3c5252c6870c0c38c67f08b37bb01",
+      "actual": "6f0d683efac74572099c317ce9f65c3e6ff3c5252c6870c0c38c67f08b37bb01",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/raytracing/renderer.rs",
+      "expected": "590fa078d377cdf5eedec30447f117b5c6c717478fd36b3afe5991cd7d142e25",
+      "actual": "590fa078d377cdf5eedec30447f117b5c6c717478fd36b3afe5991cd7d142e25",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/raytracing/scene.rs",
+      "expected": "40fb7b0a9cb68a00cf7d6c9a7f0f75f2175808ac6cb7ead1128ae822a35629ce",
+      "actual": "40fb7b0a9cb68a00cf7d6c9a7f0f75f2175808ac6cb7ead1128ae822a35629ce",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/raytracing/screenshot.png",
+      "expected": "400bb138f5adb69e4db8626681fb17667e5e112c94864879d9282d5348d970db",
+      "actual": "400bb138f5adb69e4db8626681fb17667e5e112c94864879d9282d5348d970db",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/raytracing/shaders.metal",
+      "expected": "696f6a0ba79d82e2fa0e03eadbff2f6cdeac87acc805c2b7df657b85c1173174",
+      "actual": "696f6a0ba79d82e2fa0e03eadbff2f6cdeac87acc805c2b7df657b85c1173174",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/raytracing/shaders.metallib",
+      "expected": "249b71998f58ddf8b3de37d79e9cc1f4a3494fba4bd7ba3f5411fb603de9dd5a",
+      "actual": "249b71998f58ddf8b3de37d79e9cc1f4a3494fba4bd7ba3f5411fb603de9dd5a",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/reflection/main.rs",
+      "expected": "26060dd97ee2175958b89e85635d788cd5d1b496b4e1de799f9d225fab3682f2",
+      "actual": "26060dd97ee2175958b89e85635d788cd5d1b496b4e1de799f9d225fab3682f2",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/shader-dylib/main.rs",
+      "expected": "bf91ea8c14114a832ab5d45cd4658def678b1c296aefa7841b1d217ee4211212",
+      "actual": "bf91ea8c14114a832ab5d45cd4658def678b1c296aefa7841b1d217ee4211212",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/shader-dylib/test_dylib.metal",
+      "expected": "3469de785c2c0da784e84758fc0da5a81e474ca15588485d9e04398690641cc8",
+      "actual": "3469de785c2c0da784e84758fc0da5a81e474ca15588485d9e04398690641cc8",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/shader-dylib/test_shader.metal",
+      "expected": "1a04ff8ab3288b09d14cd35440b2557e92ddedbff9d07c4144a22e9062e6e1e4",
+      "actual": "1a04ff8ab3288b09d14cd35440b2557e92ddedbff9d07c4144a22e9062e6e1e4",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/window/main.rs",
+      "expected": "f562ad4d0c239552f61b8b1cc3d3b8c14d8ff40684e2fa5b1a6004691949a55c",
+      "actual": "f562ad4d0c239552f61b8b1cc3d3b8c14d8ff40684e2fa5b1a6004691949a55c",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/window/README.md",
+      "expected": "69655cff298e07887fe70e8a13e27d8a87efcd0cc0da4e15485134e064e1aceb",
+      "actual": "69655cff298e07887fe70e8a13e27d8a87efcd0cc0da4e15485134e064e1aceb",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/window/screenshot.png",
+      "expected": "da7369d7cc297c7f7f6bd773c93e7d708d72442c9c5ff5a20c2f2ee6852552dc",
+      "actual": "da7369d7cc297c7f7f6bd773c93e7d708d72442c9c5ff5a20c2f2ee6852552dc",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/window/shaders.metal",
+      "expected": "90dee6c752add5c617dfdca93064b2824b44ff8c01ef63986826f6a1531e95d6",
+      "actual": "90dee6c752add5c617dfdca93064b2824b44ff8c01ef63986826f6a1531e95d6",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/examples/window/shaders.metallib",
+      "expected": "16fa82beb70bf16c3501970cae0d5028a747a08164337161dc9c2e8965d4c366",
+      "actual": "16fa82beb70bf16c3501970cae0d5028a747a08164337161dc9c2e8965d4c366",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/FERROSTAGE-MAINTENANCE.txt",
+      "expected": "885df07a4e37f80aadf76984613e032c20ff04ada63697889e0f990293546966",
+      "actual": "885df07a4e37f80aadf76984613e032c20ff04ada63697889e0f990293546966",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/LICENSE-APACHE",
+      "expected": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+      "actual": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/LICENSE-MIT",
+      "expected": "0621878e61f0d0fda054bcbe02df75192c28bde1ecc8289cbd86aeba2dd72720",
+      "actual": "0621878e61f0d0fda054bcbe02df75192c28bde1ecc8289cbd86aeba2dd72720",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/Makefile",
+      "expected": "99c4c592467981921d1257a4e9e841dce53624448738d0ed52a75431a406f7bc",
+      "actual": "99c4c592467981921d1257a4e9e841dce53624448738d0ed52a75431a406f7bc",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/README.md",
+      "expected": "0abbe98a0b7460179c0cfe507e99aed7e0be070473b3d3140d886a519519f73f",
+      "actual": "0abbe98a0b7460179c0cfe507e99aed7e0be070473b3d3140d886a519519f73f",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/renovate.json",
+      "expected": "c9bcf4274fc54533cf2143b1076ad7089b973b9d28433499da682daec1f0d7b0",
+      "actual": "c9bcf4274fc54533cf2143b1076ad7089b973b9d28433499da682daec1f0d7b0",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/acceleration_structure.rs",
+      "expected": "25533892466369deab8d9024a037c0dd05e7393ac9b3b1815a1b9f6853ace42f",
+      "actual": "25533892466369deab8d9024a037c0dd05e7393ac9b3b1815a1b9f6853ace42f",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/acceleration_structure_pass.rs",
+      "expected": "892b1fc8360f91d09bbde08251de125bea72b134c529cd3a9e6b9cdc854e403f",
+      "actual": "892b1fc8360f91d09bbde08251de125bea72b134c529cd3a9e6b9cdc854e403f",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/argument.rs",
+      "expected": "6d78fcb7398a893687294bcfb3326df73a1c7292ded166a167bc677f546cc32a",
+      "actual": "6d78fcb7398a893687294bcfb3326df73a1c7292ded166a167bc677f546cc32a",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/blitpass.rs",
+      "expected": "e558d69c1b571637007650bf4c9875a020fd6175247c6a4b203f50585d7315a9",
+      "actual": "e558d69c1b571637007650bf4c9875a020fd6175247c6a4b203f50585d7315a9",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/buffer.rs",
+      "expected": "71be298ae404bc872086f834405c79f01669f4ca405ac5dd461039257c023f25",
+      "actual": "71be298ae404bc872086f834405c79f01669f4ca405ac5dd461039257c023f25",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/capturedescriptor.rs",
+      "expected": "c687c4db298fb83ef640eb34929758c2d7955174a68725e986838e367291e302",
+      "actual": "c687c4db298fb83ef640eb34929758c2d7955174a68725e986838e367291e302",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/capturemanager.rs",
+      "expected": "3862b2d66e91f7f803b459c1e0302ddf87e98cb5948cfad082533f0f45c33061",
+      "actual": "3862b2d66e91f7f803b459c1e0302ddf87e98cb5948cfad082533f0f45c33061",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/commandbuffer.rs",
+      "expected": "1e36a3878ecd8c48180e4a0887e1d5067bb8f4cb8b65140a2a38ea01f36f38ba",
+      "actual": "1e36a3878ecd8c48180e4a0887e1d5067bb8f4cb8b65140a2a38ea01f36f38ba",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/commandqueue.rs",
+      "expected": "a7d6dee5d064093521465e1da30bded851aa9d59f078942d88926d0f38de82fd",
+      "actual": "a7d6dee5d064093521465e1da30bded851aa9d59f078942d88926d0f38de82fd",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/computepass.rs",
+      "expected": "a6ac68f0052efc1b651c9684ed6e90fdaff89748e3d8b67707b6c23018fd8a85",
+      "actual": "a6ac68f0052efc1b651c9684ed6e90fdaff89748e3d8b67707b6c23018fd8a85",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/constants.rs",
+      "expected": "bbfeecf910d4f9ed149a7988d8a79df6e9ad479de81f7fc1294d3434a721b7fd",
+      "actual": "bbfeecf910d4f9ed149a7988d8a79df6e9ad479de81f7fc1294d3434a721b7fd",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/counters.rs",
+      "expected": "d23188bde20656d2e7ecdb80c474f4ae645a88d3f1ab688c11d4918609aee26d",
+      "actual": "d23188bde20656d2e7ecdb80c474f4ae645a88d3f1ab688c11d4918609aee26d",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/depthstencil.rs",
+      "expected": "71f221640a2031ef40449697297f09cd42d23833854c51759b3006ba55c84de9",
+      "actual": "71f221640a2031ef40449697297f09cd42d23833854c51759b3006ba55c84de9",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/device.rs",
+      "expected": "da9b60f6f5d162dd1b1c1595cdc3fffc9b8be5b82e8a3fd9fe51dc41455909d6",
+      "actual": "da9b60f6f5d162dd1b1c1595cdc3fffc9b8be5b82e8a3fd9fe51dc41455909d6",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/drawable.rs",
+      "expected": "568c6199113724130a1eb3fc108d73735797d86542bde94500be6b5d11573b2c",
+      "actual": "568c6199113724130a1eb3fc108d73735797d86542bde94500be6b5d11573b2c",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/encoder.rs",
+      "expected": "8eb26752a2851816097b9615e5f71b37bcfea74f7397c11c9483d9576cbf904f",
+      "actual": "8eb26752a2851816097b9615e5f71b37bcfea74f7397c11c9483d9576cbf904f",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/heap.rs",
+      "expected": "f12d519c4417af4365c2d8a12f29124362785ad1b3a17ee80a7bb7f74a24a8be",
+      "actual": "f12d519c4417af4365c2d8a12f29124362785ad1b3a17ee80a7bb7f74a24a8be",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/indirect_encoder.rs",
+      "expected": "ede986d0f4f2555413605257b58ea54b044ddbf5612f0c922b9f8b0313382d0e",
+      "actual": "ede986d0f4f2555413605257b58ea54b044ddbf5612f0c922b9f8b0313382d0e",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/lib.rs",
+      "expected": "7d183d08f53e5dd2970f5afee3195b4c75cefb7f000dce5ed74032373f2df503",
+      "actual": "7d183d08f53e5dd2970f5afee3195b4c75cefb7f000dce5ed74032373f2df503",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/library.rs",
+      "expected": "934eb6c737dc1f40e13458ce205878322e416c0a56d033c6308ca7a33f892351",
+      "actual": "934eb6c737dc1f40e13458ce205878322e416c0a56d033c6308ca7a33f892351",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/mps.rs",
+      "expected": "607b51a163577364771d8afbb95888ef3603d71be40eddab1e2cdc2ad75cbd5e",
+      "actual": "607b51a163577364771d8afbb95888ef3603d71be40eddab1e2cdc2ad75cbd5e",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/pipeline/compute.rs",
+      "expected": "1d655df7ab78efe5cd8d100acfd90caf4265fc9ddaf859c6a3e9eee8190446e0",
+      "actual": "1d655df7ab78efe5cd8d100acfd90caf4265fc9ddaf859c6a3e9eee8190446e0",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/pipeline/mod.rs",
+      "expected": "280916e71b6f3c5fffda6ffee31c616bf4aba6e5a186401ea2febe71c3264145",
+      "actual": "280916e71b6f3c5fffda6ffee31c616bf4aba6e5a186401ea2febe71c3264145",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/pipeline/render.rs",
+      "expected": "8bbe04b5ace6adeb2a2df06d00b3003d32cb5085706e33be31108821acdd67f4",
+      "actual": "8bbe04b5ace6adeb2a2df06d00b3003d32cb5085706e33be31108821acdd67f4",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/renderpass.rs",
+      "expected": "03b358a21d1b2399c1a682187a67193e1a25b69999a33e1b128db0c09fa7860b",
+      "actual": "03b358a21d1b2399c1a682187a67193e1a25b69999a33e1b128db0c09fa7860b",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/resource.rs",
+      "expected": "f239254592d3e14ab9a418105cd51fe923be385cd6983c7fb9cd81b5f5eb90ef",
+      "actual": "f239254592d3e14ab9a418105cd51fe923be385cd6983c7fb9cd81b5f5eb90ef",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/sampler.rs",
+      "expected": "b82205283e3ba4ff229f6b4fb2e73ac5da9cdc75312a76e5d7e40d9ebf0d051c",
+      "actual": "b82205283e3ba4ff229f6b4fb2e73ac5da9cdc75312a76e5d7e40d9ebf0d051c",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/sync.rs",
+      "expected": "8fbff195456c6410d1e787b9b93379dacbdc9ae3e331bc07a9dc3522f1f65c45",
+      "actual": "8fbff195456c6410d1e787b9b93379dacbdc9ae3e331bc07a9dc3522f1f65c45",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/texture.rs",
+      "expected": "8fe3245d1b9b53c09de2eff0d015afcafd6b1bc9e8fec2ddab78f060d418eff1",
+      "actual": "8fe3245d1b9b53c09de2eff0d015afcafd6b1bc9e8fec2ddab78f060d418eff1",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/types.rs",
+      "expected": "d255f9c1b449acdb971616255e1c98d35b3b1ac54d9c388f7cdff6cfc3a8b944",
+      "actual": "d255f9c1b449acdb971616255e1c98d35b3b1ac54d9c388f7cdff6cfc3a8b944",
+      "matches": true
+    },
+    {
+      "path": "vendor/metal/src/vertexdescriptor.rs",
+      "expected": "6a1378f270f7adf631319bcc8c8d6831c9f9be55e7b39a7ccfe151af9a9363c4",
+      "actual": "6a1378f270f7adf631319bcc8c8d6831c9f9be55e7b39a7ccfe151af9a9363c4",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/.cargo-ok",
+      "expected": "afbf9d0f3560b0fd7795e81c42a0a79ee6b6fc67e064f77826aee642cad28d91",
+      "actual": "afbf9d0f3560b0fd7795e81c42a0a79ee6b6fc67e064f77826aee642cad28d91",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/.cargo_vcs_info.json",
+      "expected": "4b6715e3609e046e93b850d4b966ebf2323cf412c61aab80f4abcf3821e0673e",
+      "actual": "4b6715e3609e046e93b850d4b966ebf2323cf412c61aab80f4abcf3821e0673e",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/benches/bench.rs",
+      "expected": "85b6eac3e54b9685309722914d03f60f786c6dd54a597229648d984e341ae149",
+      "actual": "85b6eac3e54b9685309722914d03f60f786c6dd54a597229648d984e341ae149",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/build.rs",
+      "expected": "ba006df9f748fd817b68f9ff9b174ece596cf9fa3e4f1a008dbcb762bd7f00b8",
+      "actual": "ba006df9f748fd817b68f9ff9b174ece596cf9fa3e4f1a008dbcb762bd7f00b8",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/Cargo.lock",
+      "expected": "764cbf6235c3d5c7df0f482778611195540a73b28afbe7608d7450b9b7a04890",
+      "actual": "764cbf6235c3d5c7df0f482778611195540a73b28afbe7608d7450b9b7a04890",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/Cargo.toml",
+      "expected": "bacfaf463e2a415b1edbe11268c50b37fe30aaa30c117991e8572167f3c71740",
+      "actual": "bacfaf463e2a415b1edbe11268c50b37fe30aaa30c117991e8572167f3c71740",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/Cargo.toml.orig",
+      "expected": "ce69fb268eb9f8c44e8b53b865afb0ac3b06e293943d5e3776252babb6813d3b",
+      "actual": "ce69fb268eb9f8c44e8b53b865afb0ac3b06e293943d5e3776252babb6813d3b",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/examples/basic.rs",
+      "expected": "45544c69c19b676c0880c4b547f2b77a84cb4a79f91785daae20be376df8f2d1",
+      "actual": "45544c69c19b676c0880c4b547f2b77a84cb4a79f91785daae20be376df8f2d1",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/examples/dot_product.rs",
+      "expected": "b3a2df57485b08f2c4d65713ef0adf1a68d0a47380df77655f9d707147775dd3",
+      "actual": "b3a2df57485b08f2c4d65713ef0adf1a68d0a47380df77655f9d707147775dd3",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/examples/mask_store.rs",
+      "expected": "1988565732110f7da7dff4ba4c25d2be2bd76bfe3923b52cc28a3a2a2a660d8a",
+      "actual": "1988565732110f7da7dff4ba4c25d2be2bd76bfe3923b52cc28a3a2a2a660d8a",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/FERROSTAGE-MAINTENANCE.txt",
+      "expected": "d33c1f2fa50efd294a1000147b959bb6edc634da8f0166568246cdc60fce9f80",
+      "actual": "d33c1f2fa50efd294a1000147b959bb6edc634da8f0166568246cdc60fce9f80",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/LICENSE",
+      "expected": "d64f878c89bd5f1e5ada7e4aad57690b122727cf5229b7b87ea1980c188da1d9",
+      "actual": "d64f878c89bd5f1e5ada7e4aad57690b122727cf5229b7b87ea1980c188da1d9",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/README.md",
+      "expected": "f70e0976c7bedfe32d4dbe014483768b16184f87bb65d9068a56e9e90c0f8eee",
+      "actual": "f70e0976c7bedfe32d4dbe014483768b16184f87bb65d9068a56e9e90c0f8eee",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/aarch64.rs",
+      "expected": "428f60728d89512826a40714a4d63bf299d848430e5e1579a49d69f0fb505f29",
+      "actual": "428f60728d89512826a40714a4d63bf299d848430e5e1579a49d69f0fb505f29",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/core_arch/aarch64/mod.rs",
+      "expected": "eaa8b736b87143d10eb6a0ec4d5a73387984a8798068d246baf9a9cfb6243485",
+      "actual": "eaa8b736b87143d10eb6a0ec4d5a73387984a8798068d246baf9a9cfb6243485",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/core_arch/mod.rs",
+      "expected": "3664c6d261efd42c515a8c70d8286b71307a1eaa536415e7ca0c66d0e6afc91c",
+      "actual": "3664c6d261efd42c515a8c70d8286b71307a1eaa536415e7ca0c66d0e6afc91c",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/core_arch/raw_cpuid_detect.rs",
+      "expected": "1d8aabc5368af72e95b596645dd5ecd93942bf7f2137feebe1d816bcd6c8e55d",
+      "actual": "1d8aabc5368af72e95b596645dd5ecd93942bf7f2137feebe1d816bcd6c8e55d",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/core_arch/wasm/mod.rs",
+      "expected": "2fde55c5bad48c4d1de442979111fe922266d466549c475faf972dc3c16f9df8",
+      "actual": "2fde55c5bad48c4d1de442979111fe922266d466549c475faf972dc3c16f9df8",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/core_arch/x86/avx.rs",
+      "expected": "c4064dce8fe8223260b3e632590b799fb4171d3082ca9d85633c451298664f95",
+      "actual": "c4064dce8fe8223260b3e632590b799fb4171d3082ca9d85633c451298664f95",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/core_arch/x86/avx2.rs",
+      "expected": "84132eb67177e13b10e5e9c4e05e8c5dfeb71e5b456075bd6aa521129d4a8365",
+      "actual": "84132eb67177e13b10e5e9c4e05e8c5dfeb71e5b456075bd6aa521129d4a8365",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/core_arch/x86/avx512bw.rs",
+      "expected": "39ad033b24fe8b708fde55018c2af1ed47563abeebbaecc9e9b0b49db4b941d8",
+      "actual": "39ad033b24fe8b708fde55018c2af1ed47563abeebbaecc9e9b0b49db4b941d8",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/core_arch/x86/avx512cd.rs",
+      "expected": "37d64c1fa4f3b0590541180a033356311f613ed6bbbc4625e60b7b7e84c07428",
+      "actual": "37d64c1fa4f3b0590541180a033356311f613ed6bbbc4625e60b7b7e84c07428",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/core_arch/x86/avx512dq.rs",
+      "expected": "0191b16a88f5a2d45b635f0499a75cc879d567a6f95d3b347c326263d1890ca4",
+      "actual": "0191b16a88f5a2d45b635f0499a75cc879d567a6f95d3b347c326263d1890ca4",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/core_arch/x86/avx512f.rs",
+      "expected": "4cc3201efa2c91953fddbffb3a5c6e1e79a40a711b65a1109bb23a0fa96cba6c",
+      "actual": "4cc3201efa2c91953fddbffb3a5c6e1e79a40a711b65a1109bb23a0fa96cba6c",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/core_arch/x86/avx512ifma.rs",
+      "expected": "4f8059d158ada0c80eb8d1edece8ca889ec01f3546ec6bed8a058d49d68446b1",
+      "actual": "4f8059d158ada0c80eb8d1edece8ca889ec01f3546ec6bed8a058d49d68446b1",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/core_arch/x86/fma.rs",
+      "expected": "e7289cda84b853a1622db8862568797d87c32761ae4c910321dc2a2573b4aacd",
+      "actual": "e7289cda84b853a1622db8862568797d87c32761ae4c910321dc2a2573b4aacd",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/core_arch/x86/mod.rs",
+      "expected": "c87d309fe15468b1a9a97c49555efbbc81ee96095463330820c5590c9787fc73",
+      "actual": "c87d309fe15468b1a9a97c49555efbbc81ee96095463330820c5590c9787fc73",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/core_arch/x86/sse.rs",
+      "expected": "3e8d89b4f50d075f19b1446674ce3b9383f0f5730b37ab0f11526b3af20482b1",
+      "actual": "3e8d89b4f50d075f19b1446674ce3b9383f0f5730b37ab0f11526b3af20482b1",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/core_arch/x86/sse2.rs",
+      "expected": "13ec47ee9d27dfe841f3b876ff7dcabae94b29661758b651dc8e3b9d9995cda3",
+      "actual": "13ec47ee9d27dfe841f3b876ff7dcabae94b29661758b651dc8e3b9d9995cda3",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/core_arch/x86/sse3.rs",
+      "expected": "b9cf7acb36d78617f16127990c054ae4c647cf6eaa979f26a5b73573b687b342",
+      "actual": "b9cf7acb36d78617f16127990c054ae4c647cf6eaa979f26a5b73573b687b342",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/core_arch/x86/sse41.rs",
+      "expected": "ade8d7cba77da9168f406fe24d838342acac17cca3c0abf6ca36270401a1e623",
+      "actual": "ade8d7cba77da9168f406fe24d838342acac17cca3c0abf6ca36270401a1e623",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/core_arch/x86/sse42.rs",
+      "expected": "8e75ba0d1c340430f866dac9b688f6025490941fc26bf26acebf002d172951b7",
+      "actual": "8e75ba0d1c340430f866dac9b688f6025490941fc26bf26acebf002d172951b7",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/core_arch/x86/ssse3.rs",
+      "expected": "af70519f36e2b52f9514f6ab1e63a609dc59ac0c7f1f17c4d114c90f1bb05a56",
+      "actual": "af70519f36e2b52f9514f6ab1e63a609dc59ac0c7f1f17c4d114c90f1bb05a56",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/lib.rs",
+      "expected": "847f58ab06d89dc93684116b67c19c1f486acab56726ef5a3566bae01bfb0145",
+      "actual": "847f58ab06d89dc93684116b67c19c1f486acab56726ef5a3566bae01bfb0145",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/wasm.rs",
+      "expected": "f14ce5eca5147bd03d62626e71fa078d447b8bb612d9f202793b3954f64eca4e",
+      "actual": "f14ce5eca5147bd03d62626e71fa078d447b8bb612d9f202793b3954f64eca4e",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/x86/v1.rs",
+      "expected": "d6c74c4b71d0a2620e27de68acb1d8ee17f3389fbaa7367801e1e8f7cac33735",
+      "actual": "d6c74c4b71d0a2620e27de68acb1d8ee17f3389fbaa7367801e1e8f7cac33735",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/x86/v2.rs",
+      "expected": "e37d3ac380f9e64e215570eb6627d9475cb435f126d0d10c43e81603bfb70e90",
+      "actual": "e37d3ac380f9e64e215570eb6627d9475cb435f126d0d10c43e81603bfb70e90",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/x86/v3.rs",
+      "expected": "64f1cedb8c7dbb97c0a908740728c5c95cf170ffa37bbb3d0d43f68eb8a74c18",
+      "actual": "64f1cedb8c7dbb97c0a908740728c5c95cf170ffa37bbb3d0d43f68eb8a74c18",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/x86/v4.rs",
+      "expected": "327416276779c58c991373ada9de91c2827e956935e0c827232f544d5b269e75",
+      "actual": "327416276779c58c991373ada9de91c2827e956935e0c827232f544d5b269e75",
+      "matches": true
+    },
+    {
+      "path": "vendor/pulp/src/x86.rs",
+      "expected": "f9bdd072b58ce413100ab7647fc29efbfd4eb216f929a4d793b090a36224e5bf",
+      "actual": "f9bdd072b58ce413100ab7647fc29efbfd4eb216f929a4d793b090a36224e5bf",
+      "matches": true
+    }
+  ],
+  "mismatches": [
+    {
+      "path": "maintenance-fixtures/shape.svg",
+      "expected": "f025ef1fa1fa0aecf70d44a918e4bdc8302e5dad8974e85daf5db4092a3d5f5f",
+      "actual": null,
+      "matches": false
+    },
+    {
+      "path": "maintenance-fixtures/shape.svgz",
+      "expected": "84e5ab312d5c878e90f10cbd66352fad515772fb197ed0c09df4bb857ce1c7c6",
+      "actual": null,
+      "matches": false
+    }
+  ]
+}

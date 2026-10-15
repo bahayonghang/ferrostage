@@ -17,3 +17,24 @@ NextStep按content序列首尾钳制；closest_content_at_or_before(physical)取
 
 ## 错误、回滚
 metadata/count不一致、empty content、越界map拒绝；孤立/重复/unsupported只讲者diagnostic，观众不获notes/path。自建fixtures已知半幅内容，不依赖允许文档外Pympress源码。回滚map API同时core/document调用者；bad build不改变旧LoadedDocument。
+
+## Task05 owned render interface
+
+Consume the concrete parent design §5 metadata and RenderHandle protocol. Page dimensions are visible rotated points; labels remain Option<String>. Probe/Load/Prepare run on the existing single render worker. Candidate preparation returns metadata first; document mapping chooses explicit prerender requests before CandidateReady. Results echo the full request identity; cache hits are marked separately from actual render duration. Commit/Abort/Retire acknowledgements and delayed retirement preserve the old active document through preparation. No native document or PDFium handle crosses to consumers.
+
+## Media timing and fixture research constraints
+
+Before selecting the Movie/Screen/RichMedia subset, read the relevant primary reference tables linked in parent research/native-research-resume.md and record exact field paths. Movie time integers without an explicit scale are not established seconds: preserve unresolved timing with a diagnostic rather than guessing a value; supported explicit time/scale pairs require valid nonzero scale and checked conversion. Independently inspect local Beamer output labels and annotations, because the installed producer version and second-screen overlay behavior can differ from documentation. Fixture success must compare declared model/pixel expectations to actual metadata and structure, not infer them from a successful TeX invocation. Task05 was independently verified before task06 started. Actual task06 results are recorded in research/verification.md.
+
+### Task06 shared map/descriptor clarification
+
+Consume parent design task06 concrete content-map interface: private validated SlideMap+crop descriptor, explicit identity compatibility for07, mapped load for08, same-generation/same-physical-count ReconfigureDocument for document viewing options without timer reset, and strictly newer-generation CommitDocument for10 reload. Reconfigure atomically remaps committed content and clears preview; malformed/stale descriptors must leave state unchanged. Labels/notes/media remain in document; snapshot never contains the map.
+
+
+### Implemented boundaries
+
+Structure extraction lives in pdf/structure modules; task05 native raster algorithms are unchanged. Document depends on pdf and has a test-only render dependency. Its default feature is native-free; pdfium forwards the existing worker feature, and native CI/just entries include document. Exact supported dictionary paths and geometry rules are in research/media-field-contract.md. New-load overrides reset; caller-identified same-file reload reuses them. Actual Beamer second-screen repeated labels remain unmodified; physical_pages is the recovery option.
+
+### Checked crop setter compatibility
+
+Task06 independent review found the pre-existing public PresentationState::set_slide_crop bypassed descriptor crop validation. Preserve the method with Result<(), CoreError>, reuse exactly the descriptor crop predicate/error, and reject invalid geometry without any state mutation; the sole existing lifecycle-test caller must handle the result. This closes the direct input path without changing valid crop semantics. Task08 still uses ReconfigureDocument for document viewing options so map/crop, timer/stage and preview are updated atomically. No new unvalidated crop entry point.

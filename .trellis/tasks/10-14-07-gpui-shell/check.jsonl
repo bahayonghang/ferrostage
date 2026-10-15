@@ -13,3 +13,20 @@
 {"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Required pure/native checks and no ignore; Rust 1.99/unsafe policy"}
 {"file": ".trellis/spec/backend/error-handling.md", "reason": "Typed errors across crate boundaries"}
 {"file": ".trellis/spec/frontend/state-management.md", "reason": "Snapshot state boundary; role/settings stale clauses resolved by parent and task 01"}
+{"file": "DESIGN.md", "reason": "R-45 native Claude-inspired tokens, component states, theme boundaries and visual acceptance"}
+{"file": ".trellis/tasks/10-14-presenter-v0.3/research/native-research-resume.md", "reason": "Current read-only source observations: partial enumeration, safe interface ID lead, DPI context and actual three-screen inventory; no gate PASS"}
+{"file": ".trellis/tasks/10-14-05-pdf-raster/research/independent-check.md", "reason": "Verified task05 metadata/frame/candidate delivery and exact native/performance evidence boundaries"}
+{"file": ".trellis/tasks/10-14-05-pdf-raster/research/native-api-audit.md", "reason": "Pinned PDFium worker lifetime, owned metadata, runtime configuration and licensing constraints"}
+{"file": ".trellis/tasks/10-14-03-monitor-topology/research/independent-check.md", "reason": "Verified topology contracts and exact native evidence boundary"}
+{"file": ".trellis/tasks/10-14-presenter-v0.3/research/gate-a.md", "reason": "Prerequisite pure-contract gate applicability"}
+{"file": ".trellis/tasks/10-14-06-beamer-document-model/research/independent-check.md", "reason": "Current core API and verified downstream model boundary"}
+{"file": ".trellis/tasks/10-14-07-gpui-shell/research/gpui-display-api.md", "reason": "Source-audited display/input contracts; no native runtime acceptance"}
+{"file": ".trellis/tasks/10-14-07-gpui-shell/research/dependency-gate.md", "reason": "Actual isolated route builds and unchanged policy blockers; resume at I-2"}
+{"file": "docs/adr/ADR-008-gpui-dependency-gate.md", "reason": "Approved five-package maintenance adoption and three exact license exceptions; product gates remain mandatory"}
+{"file": ".trellis/tasks/10-14-07-gpui-shell/research/independent-check.md", "reason": "Independent blocker audit, unchanged task06 evidence and asynchronous activation/fullscreen corrections; task07 is not delivered"}
+{"file": ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-plan.md", "reason": "Historical bounded maintenance evaluation plan; final approval and product adoption follow ADR-008 and final review"}
+{"file": ".trellis/tasks/10-14-presenter-v0.3/research/gpui-license-review.md", "reason": "User-approved final five-package adoption and exact three-license exception scope; no lint or security-advisory waiver"}
+{"file": ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-report.md", "reason": "Candidate tests/source provenance and license-only failure; independently verify before adoption"}
+{"file": ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-report.md", "reason": "Final repaired candidate, reconstruction, upstream lint and policy boundaries"}
+{"file": ".trellis/spec/frontend/maintained-dependencies.md", "reason": "Approved maintained-source contracts, exact license scope, and actual product gates"}
+{"file": ".trellis/tasks/10-14-07-gpui-shell/research/poc-1-report.md", "reason": "Actual native startup regression and subsequent acceptance evidence owned by Root"}

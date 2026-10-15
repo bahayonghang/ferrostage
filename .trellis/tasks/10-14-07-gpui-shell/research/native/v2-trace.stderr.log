@@ -1,0 +1,186 @@
+
+thread 'main' (114064) panicked at vendor\gpui\src\app\entity_map.rs:164:36:
+cannot update ferrostage_ui::shell::Shell while it is already being updated
+stack backtrace:
+   0:     0x7ff6d3c03fb9 - std::backtrace_rs::backtrace::win64::trace
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\..\..\backtrace\src\backtrace\win64.rs:85
+   1:     0x7ff6d3c03fb9 - std::backtrace_rs::backtrace::trace_unsynchronized
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\..\..\backtrace\src\backtrace\mod.rs:66
+   2:     0x7ff6d3c03fb9 - std::sys::backtrace::_print_fmt
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\sys\backtrace.rs:74
+   3:     0x7ff6d3c03fb9 - std::sys::backtrace::impl$0::print::impl$0::fmt
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\sys\backtrace.rs:44
+   4:     0x7ff6d3c17afe - core::fmt::write
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\fmt\mod.rs:0
+   5:     0x7ff6d3c094a4 - core::io::write::default_write_fmt
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\io\write.rs:402
+   6:     0x7ff6d3c094a4 - core::io::write::Write::write_fmt<std::sys::stdio::windows::Stderr>
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\io\write.rs:335
+   7:     0x7ff6d3be96b5 - std::sys::backtrace::BacktraceLock::print
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\sys\backtrace.rs:47
+   8:     0x7ff6d3be96b5 - std::panicking::default_hook::closure$0
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\panicking.rs:292
+   9:     0x7ff6d3bfc1e8 - std::panicking::default_hook
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\panicking.rs:319
+  10:     0x7ff6d3bfc5c3 - std::panicking::panic_with_hook
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\panicking.rs:815
+  11:     0x7ff6d3be978e - std::panicking::panic_handler::closure$0
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\panicking.rs:688
+  12:     0x7ff6d3be71ef - std::sys::backtrace::__rust_end_short_backtrace<std::panicking::panic_handler::closure_env$0,never$>
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\sys\backtrace.rs:182
+  13:     0x7ff6d3bea0ae - std::panicking::panic_handler
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\panicking.rs:679
+  14:     0x7ff6d3c2627d - core::panicking::panic_fmt
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\panicking.rs:80
+  15:     0x7ff6d2542fe8 - gpui::app::entity_map::double_lease_panic
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\app\entity_map.rs:232
+  16:     0x7ff6d27caad3 - gpui::app::entity_map::impl$3::lease_erased::closure$0
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\app\entity_map.rs:164
+  17:     0x7ff6d2545063 - enum2$<core::option::Option<alloc::boxed::Box<dyn$<core::any::Any>,alloc::alloc::Global> > >::unwrap_or_else<alloc::boxed::Box<dyn$<core::any::Any>,alloc::alloc::Global>,gpui::app::entity_map::impl$3::lease_erased::closure_env$0>
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\option.rs:1065
+  18:     0x7ff6d2542624 - gpui::app::entity_map::EntityMap::lease_erased
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\app\entity_map.rs:164
+  19:     0x7ff6d27998e5 - gpui::app::impl$10::update_entity_erased::closure$0
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\app.rs:3013
+  20:     0x7ff6d2491b85 - gpui::app::App::update
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\app.rs:1187
+  21:     0x7ff6d2491b85 - gpui::app::App::update_entity_erased
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\app.rs:3012
+  22:     0x7ff6d2187964 - gpui::app::impl$11::update_entity
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\app.rs:3076
+  23:     0x7ff6d2187964 - gpui::app::entity_map::WeakEntity<ferrostage_ui::shell::Shell>::update
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\app\entity_map.rs:808
+  24:     0x7ff6d2187964 - ferrostage_ui::shell::run::closure$0::closure$3
+                               at D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui\src\shell.rs:167
+  25:     0x7ff6d258d2a7 - alloc::boxed::impl$32::call_mut<tuple$<ref_mut$<gpui::app::App>,gpui::window::WindowId>,dyn$<core::ops::function::FnMut<tuple$<ref_mut$<gpui::app::App>,gpui::window::WindowId>,assoc$<Output,tuple$<> > > >,alloc::alloc::Global>
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\alloc\src\boxed.rs:2327
+  26:     0x7ff6d279c5e3 - gpui::app::impl$10::update_window_erased::closure$0::trail::closure$0
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\app.rs:2981
+  27:     0x7ff6d27bf05b - gpui::subscription::impl$1::retain::closure$1<tuple$<>,alloc::boxed::Box<dyn$<core::ops::function::FnMut<tuple$<ref_mut$<gpui::app::App>,gpui::window::WindowId>,assoc$<Output,tuple$<> > > >,alloc::alloc::Global>,gpui::app::impl$10::update_window_erased::cl
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\subscription.rs:131
+  28:     0x7ff6d259cd68 - alloc::collections::btree::map::impl$20::retain::closure$0<usize,gpui::subscription::Subscriber<alloc::boxed::Box<dyn$<core::ops::function::FnMut<tuple$<ref_mut$<gpui::app::App>,gpui::window::WindowId>,assoc$<Output,tuple$<> > > >,alloc::alloc::Global> >,a
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\alloc\src\collections\btree\map.rs:1197
+  29:     0x7ff6d2594bfa - alloc::collections::btree::map::ExtractIfInner<usize,gpui::subscription::Subscriber<alloc::boxed::Box<dyn$<core::ops::function::FnMut<tuple$<ref_mut$<gpui::app::App>,gpui::window::WindowId>,assoc$<Output,tuple$<> > > >,alloc::alloc::Global> >,core::ops::ra
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\alloc\src\collections\btree\map.rs:2217
+  30:     0x7ff6d25a4019 - alloc::collections::btree::map::impl$58::next<usize,gpui::subscription::Subscriber<alloc::boxed::Box<dyn$<core::ops::function::FnMut<tuple$<ref_mut$<gpui::app::App>,gpui::window::WindowId>,assoc$<Output,tuple$<> > > >,alloc::alloc::Global> >,core::ops::ran
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\alloc\src\collections\btree\map.rs:2183
+  31:     0x7ff6d259bc03 - core::iter::traits::iterator::Iterator::fold<alloc::collections::btree::map::ExtractIf<usize,gpui::subscription::Subscriber<alloc::boxed::Box<dyn$<core::ops::function::FnMut<tuple$<ref_mut$<gpui::app::App>,gpui::window::WindowId>,assoc$<Output,tuple$<> > >
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\iter\traits\iterator.rs:2666
+  32:     0x7ff6d259862d - core::iter::traits::iterator::Iterator::for_each
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\iter\traits\iterator.rs:887
+  33:     0x7ff6d259862d - alloc::collections::btree::map::BTreeMap<usize,gpui::subscription::Subscriber<alloc::boxed::Box<dyn$<core::ops::function::FnMut<tuple$<ref_mut$<gpui::app::App>,gpui::window::WindowId>,assoc$<Output,tuple$<> > > >,alloc::alloc::Global> >,alloc::alloc::Globa
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\alloc\src\collections\btree\map.rs:1197
+  34:     0x7ff6d27bdc6d - gpui::subscription::SubscriberSet<tuple$<>,alloc::boxed::Box<dyn$<core::ops::function::FnMut<tuple$<ref_mut$<gpui::app::App>,gpui::window::WindowId>,assoc$<Output,tuple$<> > > >,alloc::alloc::Global> >::retain<tuple$<>,alloc::boxed::Box<dyn$<core::ops::fun
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\subscription.rs:124
+  35:     0x7ff6d2495073 - gpui::app::impl$10::update_window_erased::closure$0::trail
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\app.rs:2980
+  36:     0x7ff6d2799d61 - gpui::app::impl$10::update_window_erased::closure$0
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\app.rs:2999
+  37:     0x7ff6d2491c29 - gpui::app::App::update
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\app.rs:1187
+  38:     0x7ff6d2491c29 - gpui::app::App::update_window_erased
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\app.rs:2950
+  39:     0x7ff6d2137bfe - gpui::app::App::update_window_id
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\app.rs:2018
+  40:     0x7ff6d2137bfe - gpui::app::impl$11::update_window<tuple$<>,ferrostage_ui::shell::impl$2::close::closure_env$0>
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\app.rs:3106
+  41:     0x7ff6d214f7e3 - gpui::window::AnyWindowHandle::update<gpui::app::App,tuple$<>,ferrostage_ui::shell::impl$2::close::closure_env$0>
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\window.rs:7371
+  42:     0x7ff6d2131986 - ferrostage_ui::shell::Shell::close
+                               at D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui\src\shell.rs:688
+  43:     0x7ff6d212bbb4 - ferrostage_ui::shell::Shell::retire_pending
+                               at D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui\src\shell.rs:725
+  44:     0x7ff6d21313f1 - ferrostage_ui::shell::Shell::tick
+                               at D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui\src\shell.rs:912
+  45:     0x7ff6d2186143 - ferrostage_ui::shell::run::closure$0::closure$2::closure$0::async_closure$0::closure$0
+                               at D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui\src\shell.rs:158
+  46:     0x7ff6d213aeac - gpui::app::impl$11::update_entity::closure$0<ferrostage_ui::shell::Shell,tuple$<>,ferrostage_ui::shell::run::closure$0::closure$2::closure$0::async_closure$0::closure_env$0>
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\app.rs:3077
+  47:     0x7ff6d279998b - gpui::app::impl$10::update_entity_erased::closure$0
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\app.rs:3014
+  48:     0x7ff6d2491b85 - gpui::app::App::update
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\app.rs:1187
+  49:     0x7ff6d2491b85 - gpui::app::App::update_entity_erased
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\app.rs:3012
+  50:     0x7ff6d21848c1 - gpui::app::impl$11::update_entity
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\app.rs:3076
+  51:     0x7ff6d21848c1 - gpui::app::async_context::impl$1::update_entity
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\app\async_context.rs:67
+  52:     0x7ff6d21848c1 - gpui::app::entity_map::WeakEntity<ferrostage_ui::shell::Shell>::update
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\app\entity_map.rs:808
+  53:     0x7ff6d21848c1 - ferrostage_ui::shell::run::closure$0::closure$2::closure$0::async_closure$0
+                               at D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui\src\shell.rs:158
+  54:     0x7ff6d217bb3b - gpui::app::context::impl$2::spawn::closure$0::async_closure$0<ferrostage_ui::shell::Shell,ferrostage_ui::shell::run::closure$0::closure$2::closure_env$0,tuple$<> >
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\app\context.rs:237
+  55:     0x7ff6d2139d7f - gpui::app::impl$10::spawn::async_block$0<gpui::app::context::impl$2::spawn::closure_env$0<ferrostage_ui::shell::Shell,ferrostage_ui::shell::run::closure$0::closure$2::closure_env$0,tuple$<> >,tuple$<> >
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\app.rs:2110
+  56:     0x7ff6d271b495 - core::future::future::impl$1::poll<alloc::boxed::Box<dyn$<core::future::future::Future<assoc$<Output,tuple$<> > > >,alloc::alloc::Global> >
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\future\future.rs:133
+  57:     0x7ff6d271b495 - core::future::future::impl$1::poll<alloc::boxed::Box<dyn$<core::future::future::Future<assoc$<Output,tuple$<> > > >,alloc::alloc::Global> >
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\future\future.rs:133
+  58:     0x7ff6d250a1ac - scheduler::executor::spawn_local_with_source_location::impl$1::poll<core::pin::Pin<alloc::boxed::Box<dyn$<core::future::future::Future<assoc$<Output,tuple$<> > > >,alloc::alloc::Global> > >
+                               at C:\Users\lyh\.cargo\git\checkouts\zed-a70e2ad075855582\96a1b1b\crates\scheduler\src\executor.rs:794
+  59:     0x7ff6d27d6960 - async_task::raw::RawTask<scheduler::executor::spawn_local_with_source_location::Checked<core::pin::Pin<alloc::boxed::Box<dyn$<core::future::future::Future<assoc$<Output,tuple$<> > > >,alloc::alloc::Global> > >,tuple$<>,scheduler::executor::impl$0::schedule
+                               at C:\Users\lyh\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-task-4.7.1\src\raw.rs:557
+  60:     0x7ff6d36a26e8 - async_task::runnable::Runnable<scheduler::RunnableMeta>::run<scheduler::RunnableMeta>
+                               at C:\Users\lyh\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\async-task-4.7.1\src\runnable.rs:781
+  61:     0x7ff6d223e0de - gpui_windows::dispatcher::WindowsDispatcher::execute_runnable
+                               at C:\Users\lyh\.cargo\git\checkouts\zed-a70e2ad075855582\96a1b1b\crates\gpui_windows\src\dispatcher.rs:96
+  62:     0x7ff6d223e0de - gpui_windows::platform::WindowsPlatformInner::run_foreground_task
+                               at C:\Users\lyh\.cargo\git\checkouts\zed-a70e2ad075855582\96a1b1b\crates\gpui_windows\src\platform.rs:1172
+  63:     0x7ff6d223dd20 - gpui_windows::platform::WindowsPlatformInner::handle_gpui_events
+                               at C:\Users\lyh\.cargo\git\checkouts\zed-a70e2ad075855582\96a1b1b\crates\gpui_windows\src\platform.rs:1085
+  64:     0x7ff6d223d5e6 - gpui_windows::platform::WindowsPlatformInner::handle_msg
+                               at C:\Users\lyh\.cargo\git\checkouts\zed-a70e2ad075855582\96a1b1b\crates\gpui_windows\src\platform.rs:1064
+  65:     0x7ff6d2235d5d - gpui_windows::platform::window_procedure::closure$0
+                               at C:\Users\lyh\.cargo\git\checkouts\zed-a70e2ad075855582\96a1b1b\crates\gpui_windows\src\platform.rs:1612
+  66:     0x7ff6d2278e5b - std::panicking::catch_unwind::do_call<gpui_windows::platform::window_procedure::closure_env$0,windows::Win32::Foundation::LRESULT>
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\panicking.rs:576
+  67:     0x7ff6d226b7e3 - gpui::platform::PlatformWindow::get_title<gpui_windows::window::WindowsWindow>
+  68:     0x7ff6d2251299 - std::panicking::catch_unwind
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\panicking.rs:544
+  69:     0x7ff6d2251299 - std::panic::catch_unwind<gpui_windows::platform::window_procedure::closure_env$0,windows::Win32::Foundation::LRESULT>
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\panic.rs:359
+  70:     0x7ff6d2246cb4 - gpui_windows::platform::window_procedure
+                               at C:\Users\lyh\.cargo\git\checkouts\zed-a70e2ad075855582\96a1b1b\crates\gpui_windows\src\platform.rs:1612
+  71:     0x7ffb07c152e6 - CallWindowProcW
+  72:     0x7ffb07c15dbd - IsWindowUnicode
+  73:     0x7ff6d235ebff - windows::Win32::UI::WindowsAndMessaging::DispatchMessageW
+                               at C:\Users\lyh\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows-0.62.2\src\Windows\Win32\UI\WindowsAndMessaging\mod.rs:577
+  74:     0x7ff6d224c7ea - gpui_windows::platform::impl$5::run
+                               at C:\Users\lyh\.cargo\git\checkouts\zed-a70e2ad075855582\96a1b1b\crates\gpui_windows\src\platform.rs:519
+  75:     0x7ff6d2136099 - gpui::app::Application::run<ferrostage_ui::shell::run::closure_env$0>
+                               at D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui\src\app.rs:243
+  76:     0x7ff6d2133604 - ferrostage_ui::shell::run
+                               at D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui\src\shell.rs:122
+  77:     0x7ff6d20a1db8 - ferrostage::native_shell
+                               at D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app\src\main.rs:137
+  78:     0x7ff6d20a3102 - ferrostage::start_app
+                               at D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app\src\main.rs:88
+  79:     0x7ff6d20a250d - ferrostage::main
+                               at D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app\src\main.rs:57
+  80:     0x7ff6d20a719b - core::ops::function::FnOnce::call_once<std::process::ExitCode (*)(),tuple$<> >
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\ops\function.rs:250
+  81:     0x7ff6d20a900e - std::sys::backtrace::__rust_begin_short_backtrace<std::process::ExitCode (*)(),std::process::ExitCode>
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\sys\backtrace.rs:166
+  82:     0x7ff6d20ab211 - std::rt::lang_start::closure$0<std::process::ExitCode>
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\rt.rs:206
+  83:     0x7ff6d3bfaba0 - std::rt::lang_start_internal::closure$0
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\rt.rs:175
+  84:     0x7ff6d3bfaba0 - std::panicking::catch_unwind::do_call
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\panicking.rs:576
+  85:     0x7ff6d3bfaba0 - std::panicking::catch_unwind
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\panicking.rs:544
+  86:     0x7ff6d3bfaba0 - std::panic::catch_unwind
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\panic.rs:359
+  87:     0x7ff6d3bfaba0 - std::rt::lang_start_internal
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\rt.rs:171
+  88:     0x7ff6d20ab1fa - std::rt::lang_start<std::process::ExitCode>
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\rt.rs:205
+  89:     0x7ff6d20a4bc9 - main
+  90:     0x7ff6d3c2328f - invoke_main
+                               at D:\a\_work\1\s\src\vctools\crt\vcstartup\src\startup\exe_common.inl:78
+  91:     0x7ff6d3c2328f - __scrt_common_main_seh
+                               at D:\a\_work\1\s\src\vctools\crt\vcstartup\src\startup\exe_common.inl:288
+  92:     0x7ffb06cacdf7 - BaseThreadInitThunk
+  93:     0x7ffb0857ee4c - RtlUserThreadStart

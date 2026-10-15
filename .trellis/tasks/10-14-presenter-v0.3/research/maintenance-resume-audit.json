@@ -1,0 +1,82 @@
+{
+  "captured_utc": "2026-10-14T23:24:44.747925+00:00",
+  "head": "ab78a84d96c7cf4a0bbc8dfd4f8e45da180bafb3",
+  "baseline_input_count": 117,
+  "changed_inputs": [],
+  "task_locations": [
+    {
+      "path": ".trellis/tasks/10-14-01-docs-sync",
+      "id": "01-docs-sync",
+      "status": "in_progress",
+      "parent": "10-14-presenter-v0.3"
+    },
+    {
+      "path": ".trellis/tasks/10-14-02-settings-schema",
+      "id": "02-settings-schema",
+      "status": "in_progress",
+      "parent": "10-14-presenter-v0.3"
+    },
+    {
+      "path": ".trellis/tasks/10-14-03-monitor-topology",
+      "id": "03-monitor-topology",
+      "status": "in_progress",
+      "parent": "10-14-presenter-v0.3"
+    },
+    {
+      "path": ".trellis/tasks/10-14-04-session-lifecycle",
+      "id": "04-session-lifecycle",
+      "status": "in_progress",
+      "parent": "10-14-presenter-v0.3"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster",
+      "id": "05-pdf-raster",
+      "status": "in_progress",
+      "parent": "10-14-presenter-v0.3"
+    },
+    {
+      "path": ".trellis/tasks/10-14-06-beamer-document-model",
+      "id": "06-beamer-document-model",
+      "status": "in_progress",
+      "parent": "10-14-presenter-v0.3"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell",
+      "id": "07-gpui-shell",
+      "status": "in_progress",
+      "parent": "10-14-presenter-v0.3"
+    },
+    {
+      "path": ".trellis/tasks/10-14-08-presenter-workbench",
+      "id": "08-presenter-workbench",
+      "status": "planning",
+      "parent": "10-14-presenter-v0.3"
+    },
+    {
+      "path": ".trellis/tasks/10-14-09-settings-ui",
+      "id": "09-settings-ui",
+      "status": "planning",
+      "parent": "10-14-presenter-v0.3"
+    },
+    {
+      "path": ".trellis/tasks/10-14-10-hot-reload",
+      "id": "10-hot-reload",
+      "status": "planning",
+      "parent": "10-14-presenter-v0.3"
+    },
+    {
+      "path": ".trellis/tasks/10-14-11-media-playback",
+      "id": "11-media-playback",
+      "status": "planning",
+      "parent": "10-14-presenter-v0.3"
+    },
+    {
+      "path": ".trellis/tasks/10-14-presenter-v0.3",
+      "id": "presenter-v0.3",
+      "status": "planning",
+      "parent": null
+    }
+  ],
+  "prior07_audit_sha256": "7ab294c93f0beb5ddcb9b6b8d80a6f214a5d30f927b483d5e333587dc4801262",
+  "authorization": "User approved bounded ADR-008 maintenance evaluation while preserving gates; no license exception approved."
+}

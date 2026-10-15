@@ -14,3 +14,5 @@
 {"file": ".trellis/spec/frontend/type-safety.md", "reason": "Newtype, crop and notes boundary"}
 {"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "GPUI/BGRA/window safety checks"}
 {"file": ".trellis/tasks/10-14-presenter-v0.3/research/planning-review.md", "reason": "Resolved planning consistency audit; recheck ownership, ordering and independent task acceptance"}
+{"file": "DESIGN.md", "reason": "R-45 / AC-10 presenter visual contract and native acceptance boundaries"}
+{"file": ".trellis/tasks/10-14-presenter-v0.3/research/gpui-license-review.md", "reason": "Exact candidate policy decision and native acceptance limits"}

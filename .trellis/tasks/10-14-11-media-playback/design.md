@@ -21,3 +21,7 @@ play/pause/autostart/start/duration/loop为slot状态；进入Presenting当前�
 ## 验收、错误与回滚
 fake decoder先测晚到帧/单音频/释放/切页路径；真实1080p60 15min视频及GIF、媒体激光笔/画笔叠加、时间裁剪/loop、缺DLL启动。记录OS/CPU/GPU/driver/display Hz/native插件/媒体SHA/build，热身1min后采样15min，60fps P95帧间隔≤20ms、丢帧≤1%（有定义的decoder/Present计数），GPU专用VRAM相对稳定baseline±15MiB；音频stop≤100ms、后台退出目标≤1s，不阻塞UI。
 missing library是禁用媒体+typed说明，坏codec/文件只坏slot，不坏演示；安全loader/许可不可达则研究阻塞，不能忽略门禁。回滚media/UI/schema同批；旧软件可保留新增未知键，schema读取兼容。
+
+### Shared frame allocation contract (task05 refinement)
+
+BgraFrame::new accepts an owned Vec<u8>, validates packed BGRA geometry and stores private Arc<Vec<u8>> without copying pixels. pixels_bgra returns &[u8]; clone the BgraFrame to share an existing allocation. No mutable pixels or native handles are exposed. See parent design task05 measured frame-storage refinement; task05 owns core frame tests plus all current constructor call-site updates.

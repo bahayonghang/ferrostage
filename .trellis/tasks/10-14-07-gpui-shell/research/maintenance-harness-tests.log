@@ -1,0 +1,47 @@
+     Locking 1 package to highest Rust 1.99.0 compatible version
+      Adding cosmic-text v0.19.0 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\vendor\cosmic-text)
+   Compiling font-types v0.11.3
+   Compiling core_maths v0.1.1
+   Compiling yazi v0.2.1
+   Compiling zeno v0.3.3
+   Compiling unicode-linebreak v0.1.5
+   Compiling linebender_resource_handle v0.1.1
+   Compiling sys-locale v0.3.2
+   Compiling self_cell v1.3.0
+   Compiling rangemap v1.8.0
+   Compiling http_client v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling read-fonts v0.37.0
+   Compiling gpui v0.2.2 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\vendor\gpui)
+   Compiling swash v0.2.10
+   Compiling skrifa v0.40.0
+   Compiling harfrust v0.5.2
+   Compiling cosmic-text v0.19.0 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\vendor\cosmic-text)
+   Compiling gpui_windows v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling gpui_platform v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling ferrostage-gpui-maintenance-candidate v0.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 24.84s
+     Running unittests src\main.rs (cache\gpui-maintenance-candidate\target\debug\deps\ferrostage_gpui_maintenance_candidate-6cec6dcb47751b39.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\fonts.rs (cache\gpui-maintenance-candidate\target\debug\deps\fonts-6f56cce46b3a5eab.exe)
+
+running 3 tests
+test malformed_metadata_and_out_of_bounds_collection_offsets_do_not_load_faces ... ok
+test maintained_metadata_parser_preserves_collection_face_metadata ... ok
+test cosmic_shaping_fallback_and_rasterization_use_both_collection_faces ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\image.rs (cache\gpui-maintenance-candidate\target\debug\deps\image-718927a700e209e5.exe)
+
+running 4 tests
+test maintained_macro_supports_metal_identifier_type_positions ... ok
+test png_decode_retains_rgba_channel_order ... ok
+test truncated_exr_is_an_error ... ok
+test exr_lossless_decoding_preserves_all_float_channels_and_simd_tails ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+

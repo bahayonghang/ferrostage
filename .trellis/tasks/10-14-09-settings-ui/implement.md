@@ -10,3 +10,11 @@
 
 命令：cargo test -p ferrostage-settings -p ferrostage-ui -p ferrostage-core；cargo build -p ferrostage-app --features gpui,pdfium；just ci。
 回滚：I-3role事务失败原窗口/binding，I-4save失败旧文件保留；字段/资源接线回滚同步ui/app/settings。10/11后续补相应capability实际验收，本任务不称其功能已完成。
+
+## 主题执行补充（2026-10-14）
+
+在I-2/I-5/I-7中先核DESIGN.md与07主题层所有权，实施对应token/布局/设置消费者后保存原生截图、对比度结果与键盘/状态检查。无运行窗口时记NOT_RUN，保持原有Gate依赖。
+
+## 2026-10-14 依赖审计 checkpoint
+
+07外壳和08工作台均未交付；真实设置消费者前置未满足。 本任务保持planning，未start、未写本任务产品代码、未运行本任务验收。现有规划保留；恢复前先核父execution-state.md与07依赖门报告。03物理拔插/换接口本轮不可用，不能用模拟输入替代Gate B。无提交或归档。

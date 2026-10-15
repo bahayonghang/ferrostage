@@ -29,3 +29,11 @@ general recent文件元数据仅设置/讲者控制侧，不能进入snapshot。
 07协调器负责Presenting角色迁移，先保证新目标有效与窗体构建，再提交role/window；失败回原配置/窗口，不能先持久化。≤500ms为实机目标；如果无Audience则走安全Stop/Curtain。设置Focus永远讲者，popover不会挂audience。
 控件修改校验→runtime应用→save；runtime失败回滚该项；save失败保留当前效果、明显未保存与重试，重启取上次落盘。future版本所有写/重置控件禁用；读配置打开目录也不能触发写回。不要让reset覆写未来文件。
 表格是可测试字段映射模型，不以字段数量相等代替实际效果验证。回滚SettingsView与必要app/store接线同批，保留旧可读settings。
+
+## 视觉与交互契约
+
+遵循根 DESIGN.md。07拥有唯一theme.rs及基础控件；08复用工作台布局；09复用主题并消费general.theme，无额外主题设置schema。暖米色/陶土色仅用于讲者UI；原始PDF/媒体/备注光栅与观众安全幕布不着色。字体使用系统替代，交互错误有文字，焦点2px且有间隔。原生窄窗/双主题/DPI截图与键盘验证按DESIGN.md逐项记录，不能以纯测试或浏览器替代。
+
+## Task03 topology interface clarification
+
+Consume the parent design §3 owned monitor identity and explicit confidence/scale-source fields. Windows interface paths are connection-scoped, not guaranteed stable across port changes. Geometry must come from a complete cross-checked enumeration. A TopologyEvent::Unavailable makes Audience unavailable: task07 curtains/stops/closes the audience and never continues from last-known geometry; recovery does not auto-start. Task09 shows diagnostic warnings and identity confidence. Task07 uses the strict connection-name/GPUI UUID bridge defined by the parent; no geometry fallback is allowed. GdiDeviceCapsRatio remains a diagnostic process-context ratio, never an effective-DPI or display-identity substitute; ambiguity rejects Start. Polling is owned by platform, with cancellation; no extra hidden window listener.

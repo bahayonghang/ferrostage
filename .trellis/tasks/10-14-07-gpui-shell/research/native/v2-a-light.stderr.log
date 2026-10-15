@@ -1,0 +1,4 @@
+
+thread 'main' (168704) panicked at vendor\gpui\src\app\entity_map.rs:164:36:
+cannot update ferrostage_ui::shell::Shell while it is already being updated
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

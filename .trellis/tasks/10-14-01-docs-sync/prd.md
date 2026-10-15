@@ -28,15 +28,15 @@
 
 ## Acceptance Criteria
 
-- [ ] 禁用扫描每处命中记录path/line、历史/排除/現行分类与处置；历史/排除允许，现行正向能力禁止；保留约束，不以零匹配验收。
-- [ ] `rg -n "ferrostage.tmp" AGENTS.md docs` 的每处命中都明确限定为设置文件或 FerroStage 自身产物，不再指向用户 PDF。
-- [ ] `docs/adr/ADR-006-session-lifecycle.md` 与 `ADR-007-monitor-roles.md` 存在，Status 为 Proposed，且与 `10-14-presenter-v0.3/design.md` §2–§3 的类型名一致。
-- [ ] `docs/architecture.md` 与 `docs/PROJECT_PLAN.md` §4.6 的优先级表逐行一致。
-- [ ] git diff --check；产品代码未变，ADR/spec与父契约一致。仅文档任务不声称产品测试通过。
+- [x] 禁用扫描每处命中记录path/line、历史/排除/现行分类与处置；历史/排除允许，现行正向能力禁止；保留约束，不以零匹配验收。初次证据为 `research/scan-ledger.md`；本轮复核及完整当前扫描见 `research/review-2026-10-14.md`，二者不得混作同一工作区快照。
+- [x] `rg -n "ferrostage.tmp" AGENTS.md docs` 的每处命中都明确排除用户 PDF 写回。唯一命中 `docs/PROJECT_PLAN.md` 的已删除历史路径；现行写入仅用于设置文件及 FerroStage 自身产物。设置使用唯一同目录临时文件（如 `settings.toml.tmp-<pid>-<seq>`），自定义配置路径沿用自身文件名。
+- [x] `docs/adr/ADR-006-session-lifecycle.md` 与 `ADR-007-monitor-roles.md` 存在，Status 为 Proposed，且与 `10-14-presenter-v0.3/design.md` §2–§3 的类型名一致。
+- [x] `docs/architecture.md` 与 `docs/PROJECT_PLAN.md` §4.6 的优先级表逐行一致。
+- [x] `git diff --check` 与任务上下文校验通过；ADR/spec 与父契约一致。本轮仅修改文档，工作区已有任务 02 的产品改动，不以“crate 无 diff”为依据，也不声称产品测试通过。`just ci` 不属于本轮文档静态复核结果；平台 `SHADOW_TMP_SUFFIX` 与 render 旧优先级注释仍由 10 / 05 处理。
 
 ## Dependencies
 
-无；最先实施，本次不执行。
+无；最先实施。文档实现及二次复核已完成（2026-10-14），修正项与验证边界见 `research/review-2026-10-14.md`。待提交/归档；本轮不提交。
 
 ## Out of Scope
 

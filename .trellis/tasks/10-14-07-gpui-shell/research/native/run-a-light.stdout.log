@@ -1,0 +1,3 @@
+2026-10-15T01:03:48.386755Z  INFO ferrostage: starting FerroStage zed="v1.23.3" gpui_kit="0.7.3"
+2026-10-15T01:03:48.394741Z  INFO ferrostage: loaded settings path=D:\Documents\Code\Rust\Exp\ferrostage\.trellis\tasks\10-14-07-gpui-shell\research\native\a-light.toml
+2026-10-15T01:03:48.434116Z  INFO gpui_windows::directx_devices: Using GPU: NVIDIA GeForce RTX 5090 Laptop GPU

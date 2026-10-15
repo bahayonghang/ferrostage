@@ -1,0 +1,104 @@
+{
+  "captured_utc": "2026-10-15T02:03:57.489521+00:00",
+  "scope": "Immutable v5 implementation receipts, finalized after v5 freeze. Root native captures and review reports are separate. Command status is extracted from the existing chronological ledger; capture time is not command execution time.",
+  "freeze_sha256": "7cc8e5523c077c5d991aef6bbc4797a561022512b4fd67f66e8c24aeb813a442",
+  "source_snapshot_sha256": "39907c8b4fdb0221ede20be1889b9ca20d6768a3794652479a7c451c4b1aa8f0",
+  "files": {
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-freeze.py": {
+      "bytes": 3076,
+      "sha256": "b67da1a77d043303a9a6bf544764fcdce38aac851099482bb0ee794ffa0ffc14"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-native-freeze-v4.json": {
+      "bytes": 72490,
+      "sha256": "6b6264ff0136d32943fcc3aec0e43268916f9430b8f80c8ee3f6389b0c4da4d2"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-native-freeze-v5.json": {
+      "bytes": 72490,
+      "sha256": "7cc8e5523c077c5d991aef6bbc4797a561022512b4fd67f66e8c24aeb813a442"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v5-before-actions.rs": {
+      "bytes": 3349,
+      "sha256": "131dbde13166d6588a9b5baf2c7ca2ee87ed463c09f282ab17b28d4a1dfb0222"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v5-before-presenter.rs": {
+      "bytes": 20890,
+      "sha256": "a07a0e76f0d0c064fcb8763a8c065ad31196d95819367b14e76beaf99be97f5a"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v5-before-shell.rs": {
+      "bytes": 50627,
+      "sha256": "e7a1bb4e0a394b02d0a13a024010ce5d8bf431fe1927c03490736134f642d8a1"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v5-build.log": {
+      "bytes": 533,
+      "sha256": "62aefe2c14f5ae9212b04a4da9d69c88a4ad45c6fb4ead7b04eb0568e782832c"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v5-clippy.log": {
+      "bytes": 533,
+      "sha256": "19ba4286fa56187ae0c4b1ef2fa6fc749755d7cb78c5ab6e05defc9cfb380728"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v5-command-status.txt": {
+      "bytes": 1333,
+      "sha256": "52febe04465064946a39d5e968a0b47cd0cda7ed45028f217ee10ce0653a8a10"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v5-diff-check.log": {
+      "bytes": 4161,
+      "sha256": "49fc0d2b321728a5e1b8e1cb312c6c370a50ac356cdd171b86edf53026352926"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v5-evidence.py": {
+      "bytes": 1929,
+      "sha256": "02fce7ab66cf350d24bcd3d6acb3dee1e1b6a364effd3d5d7d8f3a178c98b9ae"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v5-green-final.log": {
+      "bytes": 4097,
+      "sha256": "02ffe4a61df4ecf4fc8253dea23f214f6fbf04693dfea85d0eee3fd535c2d42a"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v5-green.log": {
+      "bytes": 3857,
+      "sha256": "b2f420faae71b8b05c044b2b1a82ee2d4d33b9e5e44192d2a9bf5d1daf2c72e4"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v5-jump-numeric-red.log": {
+      "bytes": 1278,
+      "sha256": "e27e2c4de2d0860e3edc7f05d7751d896994c7b5280e0ba2e6c728aedcd98ca8"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v5-jump-red.log": {
+      "bytes": 2052,
+      "sha256": "599212333fec82cb67640934bd16ad0fd41243c00050b726afdad2e11b470921"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v5-just-ci.log": {
+      "bytes": 25348,
+      "sha256": "77b0a8ebc2b8937cbe78f5d0a48645fb171d43e1c7cc25f5f1a633fb62ec2dea"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v5-preview-red.log": {
+      "bytes": 2169,
+      "sha256": "05f3a6a1fb830b40e22cb01abdbf5648c980b97e238bb1ca635f29d7335252cc"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v5-processes.json": {
+      "bytes": 4,
+      "sha256": "a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v5-red.log": {
+      "bytes": 3244,
+      "sha256": "05ac2964463fbd9d33dd94b5cca79ad05413d049faf24e9800edfcad2f440857"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v5-repair.md": {
+      "bytes": 7492,
+      "sha256": "5fe2d1dd834a2b8d63f7517bb80cd51a5c876d01241d6415c1abf25ea1f4a6d4"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v5-repair.patch": {
+      "bytes": 33543,
+      "sha256": "7a10ccdfced02e42b842427a129cb3b298d07494299ac932bb29ee8f4e0d04c0"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v5-source-delta.json": {
+      "bytes": 1078,
+      "sha256": "86147ecf7e3559ee9588e8ffc956a6e1ae1abbcbe88a69f85214b5ce136b485d"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v5-topology-red.log": {
+      "bytes": 2681,
+      "sha256": "13951a3bd63fe3c31e14f780e0e069ae00df8c7b9e41e14195a8b476282d05ab"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-version-manifests.py": {
+      "bytes": 3082,
+      "sha256": "2b3e969b20dc5989a63b1789f51b3dcf07e152e9cc041ea208da824b0e02baab"
+    }
+  }
+}

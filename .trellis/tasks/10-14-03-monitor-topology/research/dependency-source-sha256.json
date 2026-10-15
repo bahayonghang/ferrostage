@@ -1,0 +1,23 @@
+{
+  "recorded_at_utc": "2026-10-14T15:16:55.316060+00:00",
+  "selected": "winsafe =0.0.29",
+  "license": "MIT",
+  "rust_version": "1.87",
+  "features": [
+    "gdi",
+    "user",
+    "kernel"
+  ],
+  "cache_root": "C:\\Users\\lyh\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\winsafe-0.0.29",
+  "sha256": {
+    "Cargo.toml": "12829182d3ae63d031c619cc2c23db112805d2fbd6cbaf9bdd15b23356a25211",
+    "src/user/iterators.rs": "9e5342a41ac9cefaae0ac98592fe1550fd46d79c8efcf0b6d3a01e9fde99e93b",
+    "src/user/funcs.rs": "054aaae7081c71c3b48a2a7b0f01d65d7b6012d545f99dc5007ec8d82ac1a6fb",
+    "src/user/structs.rs": "eb2d5d5f117c845551a763b7ff9ca2f194bc695c45c0174145ac4803211755c1",
+    "src/user/handles/hdc.rs": "2607ae66a79a762ffc1cc7297126bcca99d70ae58d2937eaf5a530eba190a272",
+    "src/user/handles/hwnd.rs": "34dc1c4c09d27b7f6547cfbbada95befda6363bd8be55b8a15cb50a6123cabbf",
+    "src/user/handles/hmonitor.rs": "c67b2644788defece13aa7f588680ff07c4bbe0af333845b046101d79c4317fd",
+    "src/gdi/handles/hdc.rs": "54d3d41ba6268e343e2e9577c775838f3e3f026e352acd3527a482fdf6c40ab3"
+  },
+  "rejected_candidate": "display-info 0.5.9 -> fxhash 0.2.1: RUSTSEC-2025-0057; removed, no exception"
+}

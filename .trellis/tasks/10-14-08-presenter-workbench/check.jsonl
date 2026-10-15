@@ -13,3 +13,4 @@
 {"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Required pure/native checks and no ignore; Rust 1.99/unsafe policy"}
 {"file": ".trellis/spec/backend/error-handling.md", "reason": "Typed errors across crate boundaries"}
 {"file": ".trellis/spec/frontend/state-management.md", "reason": "Snapshot state boundary; role/settings stale clauses resolved by parent and task 01"}
+{"file": "DESIGN.md", "reason": "R-45 native Claude-inspired tokens, component states, theme boundaries and visual acceptance"}

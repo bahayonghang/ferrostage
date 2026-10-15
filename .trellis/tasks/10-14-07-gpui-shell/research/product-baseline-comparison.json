@@ -1,0 +1,57 @@
+{
+  "baseline_count": 117,
+  "unchanged": 107,
+  "changed": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "baseline": "a7e6b04b7cf7ef3e0e80dcd30ef0b52a885ce5aff324e59ee3f85db043a6e0c5",
+      "current": "85eda9a3b06e2ee302c7ac1498aa2a4fe13a026ed3826a8e173aad0a6ee39f63"
+    },
+    {
+      "path": "Cargo.lock",
+      "baseline": "6d990381c2036775917c5b2b156e9273f8c24f7fac1fc3fa781ddb40631dbd04",
+      "current": "b22ab08e9e1615c721ffb02b953b0d65b37ad2552323582284d51d44847527f3"
+    },
+    {
+      "path": "Cargo.toml",
+      "baseline": "fb19c4b84da4ef197afc2c858280f1d82cb1765dc5b57c61216cdd24750b78ac",
+      "current": "8e593ebee153b083185ac229d7729ec0243cb1b945811c2f87b9f1f0f0371c5d"
+    },
+    {
+      "path": "crates/ferrostage-app/Cargo.toml",
+      "baseline": "b263907e4f203e9a71527f7bf4bbd9ac040e44a118b68a9292fd597bd202f272",
+      "current": "9b65514227f0e45a5ccbea36f8d685020a252a96a0795a799c5a0ecd888931e8"
+    },
+    {
+      "path": "crates/ferrostage-app/src/main.rs",
+      "baseline": "d1814c722a6d433d81639ee32e0b8724023cd1351bedf1a325e31bc8ad8c8d8a",
+      "current": "63f09f79ef599946897a5e159975f6f68836d1e760557f8c3054f64a6ca36d3a"
+    },
+    {
+      "path": "crates/ferrostage-app/tests/check_config.rs",
+      "baseline": "f25b03cab0bebd55c95fc8c4e2fc83ce66576a7ad622376a720a22e9a0f85d94",
+      "current": "22f16063a6936a5632db174a3cf5fafc4ee6478ea1441b76f6cfc910e2c146b9"
+    },
+    {
+      "path": "crates/ferrostage-ui/Cargo.toml",
+      "baseline": "3a059a71d4a44b371a670f5ffa9a5741fdde8b02a8f7899f820e847871b13752",
+      "current": "3937404fd50c1fc829f53bc894f45dfbd5e079bc458bce6f11e05bcbb1157ad5"
+    },
+    {
+      "path": "crates/ferrostage-ui/src/lib.rs",
+      "baseline": "296a0c88a66afc5c26f6c71f511743a547dc53492204f46262d58dbcc06d2a01",
+      "current": "cea24b5fb579f6111428454884156945037d3772309835fa8f5093c82307f7a5"
+    },
+    {
+      "path": "deny.toml",
+      "baseline": "1cf48641ae1451010587ad06ab197867e8f9ba5b012b585c9880f860443f85e4",
+      "current": "b523fa9292860a95ba53572261d93161a5acfe9e6975f096a1eed2837dbadab0"
+    },
+    {
+      "path": "justfile",
+      "baseline": "09a765874ff1fb5a222cd26cb70cf2433885712301cc45a3b98993c50813337a",
+      "current": "fd827fa24727eef1b092ee94111ff257f6642c520c8fc884adef02910516bc9b"
+    }
+  ],
+  "all_previous_core_platform_pdf_render_document_source_unchanged": true
+}

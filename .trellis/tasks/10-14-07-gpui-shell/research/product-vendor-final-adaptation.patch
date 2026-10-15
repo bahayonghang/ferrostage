@@ -1,0 +1,90 @@
+--- reviewed/gpui/src/svg_renderer.rs
++++ product/gpui/src/svg_renderer.rs
+@@ -418,8 +418,8 @@
+     use usvg::fontdb::{Database, Family, Query};
+ 
+     const IBM_PLEX_REGULAR: &[u8] =
+-        include_bytes!("../../../assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf");
+-    const LILEX_REGULAR: &[u8] = include_bytes!("../../../assets/fonts/lilex/Lilex-Regular.ttf");
++        include_bytes!("../../fixtures/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf");
++    const LILEX_REGULAR: &[u8] = include_bytes!("../../fixtures/fonts/lilex/Lilex-Regular.ttf");
+ 
+     #[test]
+     fn renders_parsed_svg_at_requested_size() -> Result<()> {
+@@ -588,12 +588,31 @@
+ mod maintenance_tests {
+     use super::*;
+ 
+-    const IBM: &[u8] =
+-        include_bytes!("../../../assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf");
+-    const LILEX: &[u8] = include_bytes!("../../../assets/fonts/lilex/Lilex-Regular.ttf");
+-    const COLLECTION: &[u8] = include_bytes!("../../../assets/fonts/evaluation.ttc");
+-    const SHAPE: &[u8] = include_bytes!("../../../maintenance-fixtures/shape.svg");
+-    const SHAPE_GZIP: &[u8] = include_bytes!("../../../maintenance-fixtures/shape.svgz");
++    const IBM: &[u8] = include_bytes!("../../fixtures/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf");
++    const LILEX: &[u8] = include_bytes!("../../fixtures/fonts/lilex/Lilex-Regular.ttf");
++    static COLLECTION: LazyLock<Vec<u8>> = LazyLock::new(|| {
++        // Test-only collection; retain original OFL fonts, never distribute a
++        // modified RFN-bearing font file. Table offsets are collection-relative.
++        let mut bytes = b"ttcf\0\x01\0\0\0\0\0\x02\0\0\0\0\0\0\0\0".to_vec();
++        for (index, input) in [IBM, LILEX].into_iter().enumerate() {
++            while bytes.len() % 4 != 0 {
++                bytes.push(0);
++            }
++            let offset = bytes.len() as u32;
++            bytes[12 + index * 4..16 + index * 4].copy_from_slice(&offset.to_be_bytes());
++            let mut font = input.to_vec();
++            let tables = u16::from_be_bytes([font[4], font[5]]) as usize;
++            for table in 0..tables {
++                let entry = 12 + table * 16 + 8;
++                let old = u32::from_be_bytes(font[entry..entry + 4].try_into().unwrap());
++                font[entry..entry + 4].copy_from_slice(&(old + offset).to_be_bytes());
++            }
++            bytes.extend(font);
++        }
++        bytes
++    });
++    const SHAPE: &[u8] = include_bytes!("../../fixtures/svg/shape.svg");
++    const SHAPE_GZIP: &[u8] = include_bytes!("../../fixtures/svg/shape.svgz");
+ 
+     fn database() -> usvg::fontdb::Database {
+         let mut db = usvg::fontdb::Database::new();
+@@ -656,7 +675,7 @@
+         assert_eq!(db.face(lilex).unwrap().index, 1);
+         assert!(!font_has_char(&db, ibm, '│'));
+         assert!(font_has_char(&db, lilex, '│'));
+-        assert!(skrifa::FontRef::from_index(COLLECTION, 2).is_err());
++        assert!(skrifa::FontRef::from_index(&COLLECTION, 2).is_err());
+         assert!(skrifa::FontRef::from_index(b"invalid font", 0).is_err());
+     }
+ 
+@@ -723,8 +742,7 @@
+ #[cfg(test)]
+ mod maintenance_cmap_tests {
+     use super::*;
+-    const IBM: &[u8] =
+-        include_bytes!("../../../assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf");
++    const IBM: &[u8] = include_bytes!("../../fixtures/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf");
+ 
+     fn word(out: &mut Vec<u8>, n: u16) {
+         out.extend(n.to_be_bytes());
+@@ -990,7 +1008,7 @@
+         for (encoding, table) in [(6, range(13, 0x2705, glyph)), (0, cmap2(0x2705, glyph, 0))] {
+             let mut db = usvg::fontdb::Database::new();
+             db.load_font_data(
+-                include_bytes!("../../../assets/fonts/lilex/Lilex-Regular.ttf").to_vec(),
++                include_bytes!("../../fixtures/fonts/lilex/Lilex-Regular.ttf").to_vec(),
+             );
+             db.load_font_data(font(vec![(0, encoding, table)]));
+             let calls = Arc::new(AtomicUsize::new(0));
+--- reviewed/harfrust/src/hb/charmap.rs
++++ product/harfrust/src/hb/charmap.rs
+@@ -185,7 +185,7 @@
+ mod maintenance_cmap2_tests {
+     use super::*;
+     const IBM: &[u8] =
+-        include_bytes!("../../../../assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf");
++        include_bytes!("../../../fixtures/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf");
+ 
+     fn word(out: &mut Vec<u8>, n: u16) {
+         out.extend(n.to_be_bytes());

@@ -1,0 +1,17 @@
+   Compiling exr v1.74.2
+   Compiling image v0.25.10
+   Compiling gpui v0.2.2 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\vendor\gpui)
+   Compiling gpui_windows v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling gpui_platform v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling ferrostage-gpui-maintenance-candidate v0.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 25.10s
+     Running tests\image.rs (cache\gpui-maintenance-candidate\target\debug\deps\image-3b977cc96c8e4fd3.exe)
+
+running 4 tests
+test maintained_macro_supports_metal_identifier_type_positions ... ok
+test png_decode_retains_rgba_channel_order ... ok
+test truncated_exr_is_an_error ... ok
+test exr_lossless_decoding_preserves_all_float_channels_and_simd_tails ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+

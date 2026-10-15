@@ -30,14 +30,16 @@
 
 ## Acceptance Criteria
 
-- [ ] 4K目标P95≤25ms；机器/PDF SHA/字体/binary、预热20采样200，测worker render不含排队/上传，实施时生成poc-2-timing，当前待验。
-- [ ] 同源密度crop/FULL切片非边缘每通道差≤1，排除边缘2px并记录；量化median耗时比，目标≤0.8；不能以明显更快唯一验收。
-- [ ] 输出缓冲 stride = width×4，首像素字节序为 B,G,R,A（用纯红色页验证为 `[0,0,255,255]`）。
-- [ ] 可控fake worker出队前排10个P4/新epoch P0，下一出队P0、旧P4取消；已运行同步P4允许完成但旧结果不发布。
-- [ ] 提交 `generation=1` 任务后把当前代设为 2，该任务结果被丢弃。
-- [ ] L2 缓存写入超过上限时淘汰最旧项，总字节数不超过上限。
-- [ ] 默认纯Rust必跑；pdfium feature真实fixture在配置DLL的native CI必跑，缺库失败，禁止ignore/缺库early return成功；GPU另验。
-- [ ] `cargo deny` 通过（PDFium BSD-3-Clause）。
+- [x] 4K目标P95≤25ms；机器/PDF SHA/字体/binary、预热20采样200，测worker render不含排队/上传。`research/poc-2-timing.json`：所有4Kcase PASS，含保留前帧；适用边界见verification.md。
+- [x] 同源密度crop/FULL切片非边缘每通道差≤1，排除边缘2px并记录；median耗时比0.465884/0.457172≤0.8。
+- [x] 输出缓冲 stride = width×4，首像素字节序为 B,G,R,A（用纯红色页验证为 `[0,0,255,255]`）。
+- [x] 可控fake worker出队前排10个P4/新epoch P0，下一出队P0、旧P4取消；已运行同步P4允许完成但旧结果不发布。
+- [x] 提交 `generation=1` 任务后把当前代设为 2，该任务结果被丢弃。
+- [x] L2 缓存写入超过上限时淘汰最旧项；跨代共用budget并按Vec capacity计量。
+- [x] 独立审查后默认纯Rust109tests通过；native42tests通过，独立CI job已配置必跑且缺库负门exit101。Hosted workflow本轮NOT_RUN，GPU另验；无ignore/缺库early-success。
+- [x] 默认及all-features `cargo deny` 通过；预编译PDFium及第三方许可另行审阅，不属cargo deny覆盖。
+
+Implementation checkpoint: `research/verification.md`, `research/verification-manifest.json`. Independent check passed after fixing cross-worker readiness-token reuse; current evidence: `research/independent-check.md`, `research/independent-check-manifest.json`. Task05 is technically ready for parent progression; no commit, push, archive or journal operation was performed.
 
 ## Dependencies
 

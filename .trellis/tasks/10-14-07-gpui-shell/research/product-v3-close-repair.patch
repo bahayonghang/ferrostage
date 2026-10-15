@@ -1,0 +1,333 @@
+--- v2/shell.rs
++++ v3/shell.rs
+@@ -162,15 +162,27 @@
+             })
+             .detach();
+         });
+-        let weak = shell.downgrade();
+-        cx.on_window_closed(move |cx, id| {
++        install_close_handler(&shell, cx);
++        cx.activate(true);
++    });
++}
++
++fn install_close_handler(shell: &Entity<Shell>, cx: &mut App) {
++    // Topology recovery may temporarily leave no windows. Only closing the
++    // current Presenter asks the coordinator to quit.
++    cx.set_quit_mode(gpui::QuitMode::Explicit);
++    let weak = shell.downgrade();
++    cx.on_window_closed(move |cx, id| {
++        let weak = weak.clone();
++        // remove_window invokes this hook before the calling Shell lease ends.
++        // Classify the original ID after that lease, against current handles.
++        cx.defer(move |cx| {
+             if let Err(error) = weak.update(cx, |shell, cx| shell.closed(id, cx)) {
+                 tracing::debug!(%error,"closed retired shell");
+             }
+-        })
+-        .detach();
+-        cx.activate(true);
+-    });
++        });
++    })
++    .detach();
+ }
+ 
+ impl Shell {
+@@ -691,6 +703,22 @@
+         }
+     }
+ 
++    fn log_placement(record: &WindowRecord, reason: &'static str, cx: &mut App) {
++        if let Err(error) = record.handle.update(cx, |_, window, cx| {
++            let observed_display = window.display(cx);
++            tracing::info!(
++                reason, window=?record.handle.window_id(), monitor=?record.monitor,
++                requested_display=record.display, requested_fullscreen=record.fullscreen,
++                actual_display=?observed_display.as_ref().map(|display| u64::from(display.id())),
++                actual_display_bounds=?observed_display.as_ref().map(|display| rect(display.bounds())),
++                actual_bounds=?rect(window.bounds()), actual_fullscreen=window.is_fullscreen(),
++                bounds_observed=record.bounds_observed.get(), "window placement observation"
++            );
++        }) {
++            tracing::info!(reason, window=?record.handle.window_id(), %error, "window placement unavailable");
++        }
++    }
++
+     fn start(&mut self, cx: &mut Context<Self>) {
+         self.refresh_mapping(cx);
+         if let Some(reason) = self.start_reason() {
+@@ -716,19 +744,22 @@
+         }
+     }
+ 
+-    fn retire_pending(&mut self, cx: &mut Context<Self>) {
++    fn retire_pending(&mut self, reason: &'static str, cx: &mut Context<Self>) {
+         if let Some(pending) = self.pending.take() {
++            tracing::info!(reason, operation=?pending.kind.operation(), "window transaction cancelled");
+             if let Some(window) = pending.audience {
++                Self::log_placement(&window, reason, cx);
+                 Self::close(window, cx);
+             }
+             if let Some(window) = pending.presenter {
++                Self::log_placement(&window, reason, cx);
+                 Self::close(window, cx);
+             }
+         }
+     }
+ 
+-    fn cancel_transaction(&mut self, cx: &mut Context<Self>) {
+-        self.retire_pending(cx);
++    fn cancel_transaction(&mut self, reason: &'static str, cx: &mut Context<Self>) {
++        self.retire_pending(reason, cx);
+         self.publish(false, cx);
+     }
+ 
+@@ -738,7 +769,7 @@
+         for step in transactions::shutdown() {
+             match step {
+                 Shutdown::Curtain => self.publish(true, cx),
+-                Shutdown::RetirePending => self.retire_pending(cx),
++                Shutdown::RetirePending => self.retire_pending("stop", cx),
+                 Shutdown::StopCore => {
+                     if self.state.stage() == SessionStage::Presenting {
+                         self.apply(Command::StopPresentation, cx);
+@@ -850,7 +881,7 @@
+         if !confirmed {
+             if Instant::now() > pending.deadline {
+                 self.error = Some(ShellError::PlacementTimeout.localized(self.locale));
+-                self.cancel_transaction(cx);
++                self.cancel_transaction("placement timeout", cx);
+                 cx.notify();
+             }
+             return;
+@@ -862,9 +893,7 @@
+             .into_iter()
+             .flatten()
+         {
+-            let _ = record.handle.update(cx, |_,window,cx| {
+-                tracing::info!(window=?record.handle.window_id(),monitor=?record.monitor,requested_display=record.display,actual_display=?window.display(cx).map(|display|u64::from(display.id())),actual_bounds=?rect(window.bounds()),fullscreen=window.is_fullscreen(),bounds_observed=record.bounds_observed.get(),"window placement confirmed");
+-            });
++            Self::log_placement(record, "confirmed", cx);
+         }
+         if matches!(pending.kind, TransactionKind::Start)
+             && let Err(error) = self.state.apply_at(
+@@ -908,8 +937,9 @@
+ 
+     fn tick(&mut self, cx: &mut Context<Self>) {
+         while let Ok(event) = self.topology.try_recv() {
++            tracing::info!(previous_monitors=?self.monitors,previous_valid=self.topology_valid,?event,"topology event received");
+             self.publish(true, cx);
+-            self.retire_pending(cx);
++            self.retire_pending("topology changed", cx);
+             self.cancel_focus();
+             match event {
+                 TopologyEvent::Changed(monitors) => {
+@@ -970,7 +1000,7 @@
+                 cx.quit();
+             }
+             transactions::Closed::Pending => {
+-                self.cancel_transaction(cx);
++                self.cancel_transaction("pending window closed", cx);
+                 cx.notify();
+             }
+             transactions::Closed::Retired => {}
+@@ -993,12 +1023,13 @@
+     use super::*;
+     use gpui::TestAppContext;
+ 
+-    #[gpui::test]
+-    fn presenter_creation_draws_while_controller_is_leased(cx: &mut TestAppContext) {
++    fn headless_shell(
++        cx: &mut TestAppContext,
++    ) -> (Entity<Shell>, std::sync::mpsc::Sender<TopologyEvent>) {
+         let settings = SettingsSession::from_outcome(
+             ferrostage_settings::from_toml("schema_version = 1").unwrap(),
+         );
+-        let (_, topology) = std::sync::mpsc::channel();
++        let (sender, topology) = std::sync::mpsc::channel();
+         let shell = cx.new(|cx| {
+             Shell::new(
+                 ShellInputs {
+@@ -1014,14 +1045,45 @@
+                 cx,
+             )
+         });
+-        let handle = shell.update(cx, |shell, cx| {
++        cx.update(|cx| install_close_handler(&shell, cx));
++        shell.update(cx, |shell, cx| {
+             let id = MonitorId("headless-test-display".into());
+             let display = u64::from(cx.displays().first().unwrap().id());
+             // Identity mapping has separate tests. Exercise the actual native
+             // coordinator open path with GPUI's no-OS-window TestPlatform.
+             shell.mapped = Ok([(id.clone(), display)].into());
+-            shell.open(id, false, false, cx).unwrap().handle
+-        });
++        });
++        (shell, sender)
++    }
++
++    fn test_window(shell: &Shell, audience: bool, cx: &mut Context<Shell>) -> WindowRecord {
++        shell
++            .open(
++                MonitorId("headless-test-display".into()),
++                false,
++                audience,
++                cx,
++            )
++            .unwrap()
++    }
++
++    fn load_ready(shell: &mut Shell) {
++        shell
++            .state
++            .apply_at(
++                Command::LoadDocument {
++                    generation: ferrostage_core::DocumentGeneration(1),
++                    page_count: 3,
++                },
++                Instant::now(),
++            )
++            .unwrap();
++    }
++
++    #[gpui::test]
++    fn presenter_creation_draws_while_controller_is_leased(cx: &mut TestAppContext) {
++        let (shell, _) = headless_shell(cx);
++        let handle = shell.update(cx, |shell, cx| test_window(shell, false, cx).handle);
+         let view = handle.downcast::<Presenter>().unwrap().root(cx).unwrap();
+         assert_eq!(view.read_with(cx, |view, _| view.rendered_document().2), 0);
+         shell.update(cx, |shell, cx| {
+@@ -1053,4 +1115,131 @@
+             Shell::close(replacement, cx);
+         });
+     }
+-}
++
++    #[gpui::test]
++    fn close_hook_topology_cancels_pending_under_controller_lease(cx: &mut TestAppContext) {
++        let (shell, sender) = headless_shell(cx);
++        shell.update(cx, |shell, cx| {
++            load_ready(shell);
++            shell.pending = Some(Transaction {
++                kind: TransactionKind::RecoverPresenter,
++                presenter: Some(test_window(shell, false, cx)),
++                audience: None,
++                deadline: Instant::now() + CONFIRM_TIMEOUT,
++            });
++        });
++        sender.send(TopologyEvent::Changed(Vec::new())).unwrap();
++        shell.update(cx, |shell, cx| shell.tick(cx));
++        shell.read_with(cx, |shell, cx| {
++            assert!(shell.pending.is_none());
++            assert!(shell.presenter.is_none());
++            assert_eq!(shell.state.stage(), SessionStage::Ready);
++            assert_eq!(shell.snapshot.read(cx).stage, AudienceStage::Curtain);
++            assert_eq!(
++                shell.import_token, 0,
++                "retired close must not take current-presenter quit branch"
++            );
++        });
++        assert!(cx.windows().is_empty());
++    }
++
++    #[gpui::test]
++    fn close_hook_timeout_preserves_ready_and_current_presenter(cx: &mut TestAppContext) {
++        let (shell, _) = headless_shell(cx);
++        let current = shell.update(cx, |shell, cx| {
++            load_ready(shell);
++            shell.presenter = Some(test_window(shell, false, cx));
++            let mut audience = test_window(shell, true, cx);
++            audience.display = u64::MAX; // Actual window is deliberately on the wrong display.
++            shell.pending = Some(Transaction {
++                kind: TransactionKind::Start,
++                presenter: None,
++                audience: Some(audience),
++                deadline: Instant::now() - Duration::from_secs(1),
++            });
++            shell.presenter.as_ref().unwrap().handle
++        });
++        shell.update(cx, |shell, cx| shell.poll_transaction(cx));
++        shell.read_with(cx, |shell, cx| {
++            assert!(shell.pending.is_none());
++            assert!(shell.audience.is_none());
++            assert_eq!(shell.state.stage(), SessionStage::Ready);
++            assert_eq!(shell.state.elapsed_at(Instant::now()), Duration::ZERO);
++            assert_eq!(shell.snapshot.read(cx).stage, AudienceStage::Curtain);
++            assert_eq!(shell.presenter.as_ref().unwrap().handle, current);
++            assert_eq!(
++                shell.error.as_deref(),
++                Some(shell.locale.text("placement-timeout"))
++            );
++        });
++        assert_eq!(cx.windows(), vec![current]);
++    }
++
++    #[gpui::test]
++    fn close_hook_replacement_keeps_live_session_and_user_close_stops(cx: &mut TestAppContext) {
++        let (shell, _) = headless_shell(cx);
++        let started = Instant::now() - Duration::from_secs(10);
++        let (presenter, audience) = shell.update(cx, |shell, cx| {
++            load_ready(shell);
++            shell
++                .state
++                .apply_at(
++                    Command::StartPresentation {
++                        audience_available: true,
++                    },
++                    started,
++                )
++                .unwrap();
++            shell.state.apply_at(Command::NextStep, started).unwrap();
++            shell.presenter = Some(test_window(shell, false, cx));
++            shell.audience = Some(test_window(shell, true, cx));
++            shell.pending = Some(Transaction {
++                kind: TransactionKind::RecoverPresenter,
++                presenter: Some(test_window(shell, false, cx)),
++                audience: None,
++                deadline: Instant::now() + CONFIRM_TIMEOUT,
++            });
++            let new_presenter = shell
++                .pending
++                .as_ref()
++                .unwrap()
++                .presenter
++                .as_ref()
++                .unwrap()
++                .handle;
++            let audience = shell.audience.as_ref().unwrap().handle;
++            shell.poll_transaction(cx); // Actually commits a replacement and removes the old window.
++            (new_presenter, audience)
++        });
++        shell.read_with(cx, |shell, cx| {
++            assert_eq!(shell.presenter.as_ref().unwrap().handle, presenter);
++            assert_eq!(shell.state.stage(), SessionStage::Presenting);
++            assert_eq!(shell.state.current_page(), PhysicalPage(1));
++            assert_eq!(
++                shell.state.elapsed_at(started + Duration::from_secs(20)),
++                Duration::from_secs(20)
++            );
++            assert_eq!(shell.snapshot.read(cx).stage, AudienceStage::Live);
++            assert_eq!(shell.import_token, 0);
++        });
++        audience
++            .update(cx, |_, window, _| window.remove_window())
++            .unwrap();
++        shell.read_with(cx, |shell, cx| {
++            assert_eq!(shell.state.stage(), SessionStage::Ready);
++            assert!(shell.audience.is_none());
++            assert_eq!(shell.snapshot.read(cx).stage, AudienceStage::Curtain);
++            assert_eq!(shell.presenter.as_ref().unwrap().handle, presenter);
++        });
++        presenter
++            .update(cx, |_, window, _| window.remove_window())
++            .unwrap();
++        shell.read_with(cx, |shell, _| {
++            assert!(shell.presenter.is_none());
++            assert_eq!(
++                shell.import_token, 1,
++                "current user close takes the explicit quit branch"
++            );
++        });
++    }
++}

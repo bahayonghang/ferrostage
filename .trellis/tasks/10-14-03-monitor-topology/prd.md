@@ -8,8 +8,8 @@
 
 ## Background
 
-- 现状 `ferrostage-platform` 只有热重载常量（`crates/ferrostage-platform/src/lib.rs`）；没有显示器相关代码。
-- 现状设置用 `Option<u32>` 索引（`crates/ferrostage-settings/src/lib.rs:15-16`），Windows 的显示器枚举顺序会随接口与驱动变化。
+- 初始骨架 `ferrostage-platform` 只有热重载常量（`crates/ferrostage-platform/src/lib.rs`）；没有显示器相关代码。
+- 初始骨架设置用 `Option<u32>` 索引（`crates/ferrostage-settings/src/lib.rs:15-16`），Windows 的显示器枚举顺序会随接口与驱动变化。
 - 规则来源：`docs/PROJECT_PLAN.md` §4.3；共享类型见父任务 `design.md` §3。
 - workspace unsafe_code=forbid；局部allow不能覆盖。先研究安全wrapper；不足时提出最小模块/lint继承/ADR政策提案评审，不能直接放宽。
 
@@ -25,12 +25,12 @@
 
 ## Acceptance Criteria
 
-- [ ] 纯函数单测覆盖：零屏/身份碰撞/重复Presenter；1 屏；2 屏无保存；3 屏无保存（Audience 选面积最大非主屏）；3 屏有保存且全部在场；保存的 Audience 缺席；两块保存为 Audience；保存的 Presenter 缺席（回退主屏并告警）。
+- [x] 纯函数单测覆盖：零屏/身份碰撞/重复Presenter；1 屏；2 屏无保存；3 屏无保存（Audience 选面积最大非主屏）；3 屏有保存且全部在场；保存的 Audience 缺席；两块保存为 Audience；保存的 Presenter 缺席（回退主屏并告警）。
 - [ ] 三屏连续枚举/换接口/同型号/缺EDID记录ID等级与恢复；变化/碰撞告警且不接管Audience，实施时生成stability报告。
-- [ ] 身份来源等级真实可见，无强身份API时标退化，不虚标edid。
+- [x] 身份来源等级真实可见，无强身份API时标退化，不虚标edid。
 - [ ] `watch_topology` 在拔/插屏后 ≤ 1 s 内发出事件（手工验证）。
-- [ ] 安全wrapper exact版本/许可/API证据；确需项目unsafe先审最小政策提案，不以allow绕过forbid。
-- [ ] `just ci` 全绿。
+- [x] 安全wrapper exact版本/许可/API证据；确需项目unsafe先审最小政策提案，不以allow绕过forbid。
+- [x] `just ci` 全绿。
 
 ## Dependencies
 
@@ -39,3 +39,7 @@
 ## Out of Scope
 
 GPUI `DisplayId` 映射与窗口创建（`07`）；设置界面排布图与 Identify 覆盖层（`09`）；多 Audience 镜像。
+
+## Implementation evidence — 2026-10-14
+
+自动检查、独立check与原生静态枚举通过，详见research/independent-check.md、verification.md、api-evidence.md、stability.md。独立check修正winsafe组合mask的any-bit误用，新增逐个缺失required DEVMODE字段的回归；修复后重新执行 `just ci` exit0 / 93tests（independent-just-ci.log），Gate A同套证据含core21+settings38+platform22+跨settings解析2=83tests。显式workspace/all-targets type-check与修复后的三屏十次连续枚举、watch首事件/取消通过，当前源码SHA见independent-code-sha256.json。不能替代换接口、同型号、缺identity实机、DPI/旋转变化或≤1s物理拔插验收。用户本轮无法操作硬件，因此对应复选框保持未勾选。技术交付可供后续任务使用，人工验收仍待执行；不宣称完整03或Gate B完成，代码/文档未提交，task status保留in_progress。

@@ -1,0 +1,12 @@
+# V6 targeted native retest protocol
+
+Status: targeted V6 protocol PASS through normal close/relaunch; task07/Gate B remain INCOMPLETE. See native-v6-checkpoint.md and native-v6-evidence-manifest.json for actual observations. Root was the sole desktop controller, with no overlapping V6 apps. V5 results remain bound to v5 identity, with unchanged-path reuse assessed by check. The exact size matrix was not completed and remains explicitly unverified.
+
+1. Verify complete source/exe/DLL freeze and launch isolated a-dark with valid repository PDF. Confirm one actual presenter window and Ready.
+2. Settings→Tab→Return closes modal; next Tab must focus a valid visible control. Start with focused Space, then explicitly Tab to an enabled visible control before navigating to Stop and pressing Enter; next Tab remains usable and page does not change on activation. Start removed-control behavior has no direct automated red/green case in the49-test suite, so this native step is required and must not be described as automated coverage. Jump Commit/Cancel must preserve valid keyboard routing.
+3. Hold isolated settings file using existing read-lock helper; Swap while Ready; one visible unsaved message plus Retry, runtime role placement succeeds and disk hash stays unchanged. Release exact lock marker and collect unlock receipt. Retry through focused Enter; saved roles/readback match runtime, stale persistence error/Retry disappear, next Tab works. An unrelated valid error must not be erased (automated regression supplies independent error ownership check).
+4. Only after successful normal close and actual exit receipt may relaunch saved profile; verify saved placement. No native UI process competes with a rebuild.
+5. If native chooser can be targeted reliably, use an actual path selection; retain CU text-injection failures as tool limitation, never substitute recent import for chooser. Attempt exact size checks only with observed dimensions; no fabricated logical-client sizes.
+6. Physical unplug/ports/single/zero displays unavailable by prior user answer. Keep Gate B incomplete,08–11 planning, C/D/M1/M2 incomplete; no commit/push/archive/journal.
+
+Research runner now holds an exclusive task-owned native-run.lock while its owned app runs and saves config-before/config-after bytes. This prevents accidental overlapping profiles after failed UI close; it does not prove no unrelated process exists and does not replace live window selection.

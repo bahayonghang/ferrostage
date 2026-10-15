@@ -1,0 +1,397 @@
+--- v5/crates/ferrostage-ui/src/presenter.rs
++++ v6/crates/ferrostage-ui/src/presenter.rs
+@@ -267,11 +267,43 @@
+             self.return_focus = window.focused(cx);
+             window.focus(&self.modal_focus, cx);
+         }
+-        if modal.is_none() && self.had_modal {
+-            window.focus(self.return_focus.as_ref().unwrap_or(&self.focus), cx);
+-            self.return_focus = None;
++        // Keep the return handle alive until the deferred tree check owns it.
++        // A handle alone does not mean its former button is still rendered.
++        let return_focus = if modal.is_none() && self.had_modal {
++            Some(
++                self.return_focus
++                    .take()
++                    .unwrap_or_else(|| self.focus.clone()),
++            )
++        } else {
++            None
++        };
++        if let Some(return_focus) = &return_focus {
++            window.focus(return_focus, cx);
+         }
+         self.had_modal = modal.is_some();
++        if let Some(focused) = window.focused(cx) {
++            let presenter = cx.weak_entity();
++            // Auto-created button handles can outlive their removed element
++            // (notably return_focus). Check the completed dispatch tree, after
++            // the render/window lease ends. A newer focus choice wins.
++            window.defer(cx, move |window, cx| {
++                if window.focused(cx).as_ref() != Some(&focused) {
++                    return;
++                }
++                if let Some(presenter) = presenter.upgrade() {
++                    let presenter = presenter.read(cx);
++                    let fallback = if presenter.had_modal {
++                        presenter.modal_focus.clone()
++                    } else {
++                        presenter.focus.clone()
++                    };
++                    if !fallback.contains_focused(window, cx) {
++                        window.focus(&fallback, cx);
++                    }
++                }
++            });
++        }
+         let root = div()
+             .id("presenter-root")
+             .role(Role::Application)
+--- v5/crates/ferrostage-ui/src/shell.rs
++++ v6/crates/ferrostage-ui/src/shell.rs
+@@ -357,7 +357,9 @@
+ 
+     fn save(&mut self, cx: &mut Context<Self>) {
+         if let Err(error) = self.store.save_session(&mut self.settings) {
+-            self.error = Some(self.locale.error("save-error", error));
++            // SettingsSession owns persistence feedback and clears it on retry.
++            // Do not duplicate it or overwrite an unrelated operation error.
++            tracing::warn!(%error, "settings remain unsaved");
+         }
+         cx.notify();
+     }
+@@ -1174,6 +1176,334 @@
+             .unwrap();
+     }
+ 
++    fn click_control(handle: AnyWindowHandle, name: &'static str, cx: &TestAppContext) {
++        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
++        let bounds = visual.debug_bounds(name).unwrap();
++        visual.simulate_click(bounds.center(), gpui::Modifiers::default());
++    }
++
++    fn assert_tab_opens_pdf(
++        shell: &Entity<Shell>,
++        handle: AnyWindowHandle,
++        cx: &mut TestAppContext,
++    ) {
++        cx.simulate_keystrokes(handle, "tab enter");
++        assert_open_waits_for_owner(shell, handle, cx);
++    }
++
++    #[gpui::test]
++    fn v6_removed_modal_button_restores_keyboard_traversal(cx: &mut TestAppContext) {
++        let (shell, handle) = input_presenter(cx);
++        shell.update(cx, |shell, cx| {
++            load_ready(shell);
++            cx.notify();
++        });
++        redraw(handle, cx);
++        click_control(handle, "settings", cx);
++        shell.update(cx, |shell, cx| shell.poll_focus(cx));
++        redraw(handle, cx);
++        cx.simulate_keystrokes(handle, "tab enter");
++        assert!(shell.read_with(cx, |shell, _| shell.modal.is_none()));
++        redraw(handle, cx);
++        let before = handle
++            .update(cx, |_, window, cx| window.focused(cx))
++            .unwrap();
++        cx.simulate_keystrokes(handle, "tab");
++        redraw(handle, cx);
++        handle
++            .update(cx, |_, window, cx| {
++                assert_ne!(window.focused(cx), before, "Tab must traverse after Close");
++                assert!(window.is_action_available(&actions::ActivateButton, cx));
++            })
++            .unwrap();
++    }
++
++    #[gpui::test]
++    fn v6_removed_jump_commit_restores_keyboard_traversal(cx: &mut TestAppContext) {
++        let (shell, handle) = input_presenter(cx);
++        shell.update(cx, |shell, cx| {
++            load_ready(shell);
++            cx.notify();
++        });
++        redraw(handle, cx);
++        cx.simulate_keystrokes(handle, "g");
++        shell.update(cx, |shell, cx| shell.poll_focus(cx));
++        redraw(handle, cx);
++        cx.simulate_keystrokes(handle, "2 tab enter");
++        assert_eq!(
++            shell.read_with(cx, |shell, _| shell.state.current_page()),
++            PhysicalPage(1)
++        );
++        redraw(handle, cx);
++        assert_tab_opens_pdf(&shell, handle, cx);
++    }
++
++    #[gpui::test]
++    fn v6_removed_stop_restores_keyboard_traversal(cx: &mut TestAppContext) {
++        let (shell, handle) = input_presenter(cx);
++        shell.update(cx, |shell, cx| {
++            load_ready(shell);
++            shell
++                .state
++                .apply_at(
++                    Command::StartPresentation {
++                        audience_available: true,
++                    },
++                    Instant::now(),
++                )
++                .unwrap();
++            cx.notify();
++        });
++        redraw(handle, cx);
++        cx.simulate_keystrokes(handle, "tab shift-tab enter");
++        assert_eq!(
++            shell.read_with(cx, |shell, _| shell.state.stage()),
++            SessionStage::Ready
++        );
++        redraw(handle, cx);
++        assert_tab_opens_pdf(&shell, handle, cx);
++    }
++
++    struct SaveFixture(PathBuf);
++
++    impl SaveFixture {
++        fn new() -> Self {
++            static NEXT: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
++            let path = std::env::temp_dir().join(format!(
++                "ferrostage-ui-save-{}-{}",
++                std::process::id(),
++                NEXT.fetch_add(1, std::sync::atomic::Ordering::Relaxed)
++            ));
++            std::fs::create_dir(&path).unwrap();
++            std::fs::write(path.join("blocked"), b"block parent directory").unwrap();
++            Self(path)
++        }
++
++        fn store(&self) -> SettingsStore {
++            SettingsStore::at(self.0.join("blocked/settings.toml"))
++        }
++
++        fn unblock(&self) {
++            std::fs::remove_file(self.0.join("blocked")).unwrap();
++        }
++    }
++
++    impl Drop for SaveFixture {
++        fn drop(&mut self) {
++            std::fs::remove_dir_all(&self.0).unwrap();
++        }
++    }
++
++    #[gpui::test]
++    fn v6_save_failure_has_one_owner_and_keeps_unrelated_error(cx: &mut TestAppContext) {
++        let fixture = SaveFixture::new();
++        let (shell, _) = input_presenter(cx);
++        for unrelated in [None, Some("unrelated import error".to_string())] {
++            shell.update(cx, |shell, cx| {
++                shell.store = fixture.store();
++                shell.error = unrelated.clone();
++                shell.dispatch(Intent::RetrySave, cx);
++                assert!(shell.settings.dirty);
++                assert!(shell.settings.save_error.is_some());
++                assert_eq!(
++                    shell.error, unrelated,
++                    "save feedback must not duplicate/overwrite the general error"
++                );
++            });
++        }
++        fixture.unblock();
++        shell.update(cx, |shell, cx| {
++            shell.dispatch(Intent::RetrySave, cx);
++            assert!(!shell.settings.dirty);
++            assert!(shell.settings.save_error.is_none());
++            assert_eq!(shell.error.as_deref(), Some("unrelated import error"));
++        });
++    }
++
++    #[gpui::test]
++    fn v6_import_and_swap_keep_runtime_results_when_saving_fails(cx: &mut TestAppContext) {
++        let fixture = SaveFixture::new();
++        let (shell, _) = input_presenter(cx);
++        let (sender, reply) = std::sync::mpsc::channel();
++        // Owned worker output exercises poll_import; this is not a PDFium test.
++        sender
++            .send(Ok(DocumentMetadata {
++                pages: vec![ferrostage_pdf::PageMetadata {
++                    page: PhysicalPage(0),
++                    width_points: 640.,
++                    height_points: 480.,
++                    rotation_degrees: 0,
++                    label: None,
++                }],
++            }))
++            .unwrap();
++        shell.update(cx, |shell, cx| {
++            shell.store = fixture.store();
++            shell.error = Some("previous import failure".into());
++            shell.import = Some(ImportReply {
++                token: shell.import_token,
++                path: PathBuf::from("owned-metadata.pdf"),
++                reply,
++            });
++            shell.poll_import(cx);
++            assert_eq!(shell.state.stage(), SessionStage::Ready);
++            assert_eq!(
++                shell.path.as_deref(),
++                Some(std::path::Path::new("owned-metadata.pdf"))
++            );
++            assert_eq!(
++                shell.settings.settings.general.recent_files[0],
++                "owned-metadata.pdf"
++            );
++            assert!(shell.error.is_none());
++            assert!(shell.settings.dirty && shell.settings.save_error.is_some());
++
++            let mut candidate = shell.settings.settings.display.clone();
++            candidate
++                .monitors
++                .push(ferrostage_settings::MonitorBinding {
++                    id: "new-role-authority".into(),
++                    friendly_name: "Headless role".into(),
++                    role: ferrostage_core::MonitorRole::Presenter,
++                    source_occurrence: None,
++                });
++            // Exercise the actual confirmed replacement commit/save branch.
++            // Physical role mapping/migration remains separate native evidence.
++            let replacement = test_window(shell, false, cx);
++            let replacement_handle = replacement.handle;
++            shell.pending = Some(Transaction {
++                kind: TransactionKind::Swap(candidate),
++                presenter: Some(replacement),
++                audience: None,
++                deadline: Instant::now() + CONFIRM_TIMEOUT,
++            });
++            shell.error = Some("unrelated operation error".into());
++            shell.poll_transaction(cx);
++            assert!(shell.pending.is_none());
++            assert_eq!(shell.presenter.as_ref().unwrap().handle, replacement_handle);
++            assert_eq!(
++                shell.settings.settings.display.monitors[0].id,
++                "new-role-authority"
++            );
++            assert_eq!(shell.error.as_deref(), Some("unrelated operation error"));
++            assert!(shell.settings.dirty && shell.settings.save_error.is_some());
++        });
++        fixture.unblock();
++        shell.update(cx, |shell, cx| {
++            shell.dispatch(Intent::RetrySave, cx);
++            let saved = shell.store.load().unwrap();
++            assert_eq!(saved.settings.display.monitors[0].id, "new-role-authority");
++            assert_eq!(saved.settings.general.recent_files[0], "owned-metadata.pdf");
++            assert!(shell.settings.save_error.is_none());
++            assert!(!shell.settings.dirty);
++            assert_eq!(shell.error.as_deref(), Some("unrelated operation error"));
++        });
++    }
++
++    #[gpui::test]
++    fn v6_retry_success_clears_save_feedback_and_restores_keyboard(cx: &mut TestAppContext) {
++        let fixture = SaveFixture::new();
++        let (shell, handle) = input_presenter(cx);
++        shell.update(cx, |shell, cx| {
++            load_ready(shell);
++            shell.store = fixture.store();
++            shell
++                .settings
++                .settings
++                .display
++                .monitors
++                .push(ferrostage_settings::MonitorBinding {
++                    id: "saved-presenter".into(),
++                    role: ferrostage_core::MonitorRole::Presenter,
++                    friendly_name: "Saved presenter".into(),
++                    source_occurrence: None,
++                });
++            shell.settings.note_edit();
++            shell.dispatch(Intent::RetrySave, cx);
++        });
++        redraw(handle, cx);
++        fixture.unblock();
++        cx.simulate_keystrokes(handle, "tab shift-tab enter"); // Retry is the last enabled control.
++        shell.read_with(cx, |shell, _| {
++            assert!(!shell.settings.dirty);
++            assert!(shell.settings.save_error.is_none());
++            assert!(
++                shell.error.is_none(),
++                "successful Retry left stale save error: {:?}",
++                shell.error
++            );
++            let saved = shell.store.load().unwrap();
++            assert_eq!(saved.settings.display.monitors[0].id, "saved-presenter");
++            assert_eq!(
++                saved.settings.display.monitors[0].role,
++                ferrostage_core::MonitorRole::Presenter
++            );
++        });
++        redraw(handle, cx);
++        assert_tab_opens_pdf(&shell, handle, cx);
++    }
++
++    #[gpui::test]
++    fn v6_notify_preserves_valid_control_and_audience_activation(cx: &mut TestAppContext) {
++        let (shell, handle) = input_presenter(cx);
++        cx.simulate_keystrokes(handle, "tab");
++        let focus = handle
++            .update(cx, |_, window, cx| window.focused(cx))
++            .unwrap();
++        let audience = shell.update(cx, |shell, cx| {
++            let audience = test_window(shell, true, cx);
++            let handle = audience.handle;
++            shell.audience = Some(audience);
++            cx.notify();
++            handle
++        });
++        audience
++            .update(cx, |_, window, _| window.activate_window())
++            .unwrap();
++        cx.run_until_parked();
++        redraw(handle, cx);
++        assert_eq!(
++            handle
++                .update(cx, |_, window, cx| window.focused(cx))
++                .unwrap(),
++            focus
++        );
++        assert_eq!(cx.update(|cx| cx.active_window()), Some(audience));
++    }
++
++    #[gpui::test]
++    fn v6_focus_chosen_after_draw_wins_over_deferred_recovery(cx: &mut TestAppContext) {
++        let (shell, handle) = input_presenter(cx);
++        cx.simulate_keystrokes(handle, "tab");
++        shell.update(cx, |_, cx| cx.notify());
++        let newer = handle
++            .update(cx, |_, window, cx| {
++                window.draw(cx).clear(cx);
++                window.focus_next(cx);
++                window.focused(cx)
++            })
++            .unwrap();
++        assert_eq!(
++            handle
++                .update(cx, |_, window, cx| window.focused(cx))
++                .unwrap(),
++            newer
++        );
++        shell.update(cx, |_, cx| cx.notify());
++        handle
++            .update(cx, |_, window, cx| {
++                window.draw(cx).clear(cx);
++                window.blur(cx);
++            })
++            .unwrap();
++        assert!(
++            handle
++                .update(cx, |_, window, cx| window.focused(cx))
++                .unwrap()
++                .is_none()
++        );
++    }
++
+     #[gpui::test]
+     fn v5_tab_focused_open_consumes_enter_and_space_before_global_actions(cx: &mut TestAppContext) {
+         let (shell, handle) = input_presenter(cx);

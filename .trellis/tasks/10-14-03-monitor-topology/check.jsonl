@@ -1,4 +1,5 @@
 {"file": ".trellis/spec/backend/index.md", "reason": "Backend crate rules and quality checklist"}
+{"file": ".trellis/spec/backend/directory-structure.md", "reason": "Topology dependency boundary and winsafe all-required-bits native validation contract"}
 {"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "just ci and forbidden patterns"}
 {"file": ".trellis/spec/backend/error-handling.md", "reason": "thiserror in libraries, ExitCode in binary"}
 {"file": "docs/PROJECT_PLAN.md", "reason": "v0.3 source plan: scope, invariants, settings schema, monitor roles"}
@@ -10,3 +11,4 @@
 {"file": ".trellis/tasks/10-14-03-monitor-topology/design.md", "reason": "Reviewed design choices, ownership, errors and rollback"}
 {"file": ".trellis/tasks/10-14-03-monitor-topology/implement.md", "reason": "Ordered steps and layered verification gates"}
 {"file": ".trellis/tasks/10-14-presenter-v0.3/research/runtime-feasibility.md", "reason": "Primary-source native API, safe wrapper, ownership, CI and distribution gates"}
+{"file": ".trellis/tasks/10-14-presenter-v0.3/research/native-research-resume.md", "reason": "Current read-only source observations: partial enumeration, safe interface ID lead, DPI context and actual three-screen inventory; no gate PASS"}

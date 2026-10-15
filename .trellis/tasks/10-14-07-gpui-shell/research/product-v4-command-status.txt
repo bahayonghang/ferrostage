@@ -1,0 +1,12 @@
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib input_route --locked --offline (v4 real input red)
+V4 INPUT RED EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib --locked --offline (v4 deferred input)
+V4 INPUT GREEN EXIT: 0
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib --locked --offline (v4 input plus font/filename UI)
+V4 HEADLESS FINAL EXIT: 0
+RUNNING: just ci (v4 input, fallback, filename, labels)
+V4 JUST CI EXIT: 0
+RUNNING: cargo clippy -p ferrostage-app -p ferrostage-ui --all-features --all-targets --locked --offline -- -D warnings (v4)
+V4 CLIPPY EXIT: 0
+RUNNING: cargo build -p ferrostage-app --features gpui,pdfium --locked --offline (v4 freeze)
+V4 NATIVE BUILD EXIT: 0

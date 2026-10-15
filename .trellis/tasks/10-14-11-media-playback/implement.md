@@ -9,4 +9,8 @@
 7. **I-7 Gate D媒体评审**：AC-5/9、与10已集成时generation停播回归、texture/resource计数、用户PDF只读/无child HWND；跑命令并明确未完成native/GPU项。
 
 拟在I-1选择后定义media feature/app转发；命令：cargo test -p ferrostage-media -p ferrostage-settings -p ferrostage-ui；cargo build -p ferrostage-app --features gpui,pdfium,media；cargo test -p ferrostage-media --features media；just ci；cargo deny check。
-native缺库启动实验不能被默认pure门替代，动态库/插件另做分发审计。回滚backend/feature/CI/UI/schema同批，save失败不动旧settings，decode失败保slide。尚无后端锁定/实机报告，本次不启动。
+native缺库启动实验不能被默认pure门替代，动态库/插件另做分发审计。回滚backend/feature/CI/UI/schema同批，save失败不动旧settings，decode失败保slide。后端锁定/实机报告须在I-1/I-6取得；当前按父execution-state.md和依赖Gate恢复，不跳过研究门。
+
+## 2026-10-14 依赖审计 checkpoint
+
+07/08/09交付及Gate C未通过；媒体完整集成未开始，P2仍在范围内。 本任务保持planning，未start、未写本任务产品代码、未运行本任务验收。现有规划保留；恢复前先核父execution-state.md与07依赖门报告。03物理拔插/换接口本轮不可用，不能用模拟输入替代Gate B。无提交或归档。

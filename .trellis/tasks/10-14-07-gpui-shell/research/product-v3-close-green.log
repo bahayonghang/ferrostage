@@ -1,0 +1,24 @@
+warning: function `shape` is never used
+   --> vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `harfrust` (lib) generated 1 warning
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+error[E0599]: no method named `as_ref` found for fn item `fn(_) -> DisplayValue<_> {tracing::field::display::<_>}` in the current scope
+   --> crates\ferrostage-ui\src\shell.rs:712:41
+    |
+712 |                 actual_display=?display.as_ref().map(|display| u64::from(display.id())),
+    |                                         ^^^^^^ method not found in `fn(_) -> DisplayValue<_> {tracing::field::display::<_>}`
+
+error[E0599]: no method named `as_ref` found for fn item `fn(_) -> DisplayValue<_> {tracing::field::display::<_>}` in the current scope
+   --> crates\ferrostage-ui\src\shell.rs:713:48
+    |
+713 |                 actual_display_bounds=?display.as_ref().map(|display| rect(display.bounds())),
+    |                                                ^^^^^^ method not found in `fn(_) -> DisplayValue<_> {tracing::field::display::<_>}`
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `ferrostage-ui` (lib test) due to 2 previous errors

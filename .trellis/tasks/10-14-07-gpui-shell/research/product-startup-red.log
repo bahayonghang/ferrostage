@@ -1,0 +1,62 @@
+     Locking 57 packages to highest Rust 1.99 compatible versions
+      Adding bit-set v0.8.0
+      Adding bit-vec v0.8.0
+      Adding bitflags v1.3.2
+      Adding cocoa v0.25.0
+      Adding cocoa-foundation v0.1.2
+      Adding convert_case v0.11.0
+      Adding core-foundation v0.9.4
+      Adding core-graphics v0.23.2
+      Adding core-graphics-helmer-fork v0.24.0
+      Adding core-graphics-types v0.1.3
+      Adding dispatch v0.2.0
+      Adding getrandom v0.2.17
+      Adding ntapi v0.4.3
+      Adding objc-foundation v0.1.1
+      Adding objc_exception v0.1.2
+      Adding objc_id v0.1.1
+      Adding proptest v1.10.0 (https://github.com/proptest-rs/proptest?rev=3dca198a8fef1b32e3a66f1e1897c955b4dc5b5b#3dca198a)
+      Adding proptest-macro v0.5.0 (https://github.com/proptest-rs/proptest?rev=3dca198a8fef1b32e3a66f1e1897c955b4dc5b5b#3dca198a)
+      Adding quick-xml v0.41.0
+      Adding rand v0.8.8
+      Adding rand_chacha v0.3.1
+      Adding rand_core v0.6.4
+      Adding rand_xorshift v0.4.0
+      Adding screencapturekit v0.2.8
+      Adding screencapturekit-sys v0.2.8
+      Adding sysinfo v0.31.4
+      Adding tao-core-video-sys v0.2.0
+      Adding winapi v0.3.9
+      Adding winapi-i686-pc-windows-gnu v0.4.0
+      Adding winapi-x86_64-pc-windows-gnu v0.4.0
+      Adding windows v0.57.0
+      Adding windows v0.61.3
+      Adding windows-capture v1.5.0
+      Adding windows-collections v0.2.0
+      Adding windows-core v0.57.0
+      Adding windows-core v0.61.2
+      Adding windows-future v0.2.1
+      Adding windows-implement v0.57.0
+      Adding windows-interface v0.57.0
+      Adding windows-link v0.1.3
+      Adding windows-numerics v0.2.0
+      Adding windows-result v0.1.2
+      Adding windows-result v0.3.4
+      Adding windows-strings v0.4.2
+      Adding windows-targets v0.52.6
+      Adding windows-threading v0.1.0
+      Adding windows_aarch64_gnullvm v0.52.6
+      Adding windows_aarch64_msvc v0.52.6
+      Adding windows_i686_gnu v0.52.6
+      Adding windows_i686_gnullvm v0.52.6
+      Adding windows_i686_msvc v0.52.6
+      Adding windows_x86_64_gnu v0.52.6
+      Adding windows_x86_64_gnullvm v0.52.6
+      Adding windows_x86_64_msvc v0.52.6
+      Adding x11 v2.21.0
+      Adding xcb v1.7.1
+      Adding zed-scap v0.0.8-zed (https://github.com/zed-industries/scap?rev=4afea48c3b002197176fb19cd0f9b180dd36eaac#4afea48c)
+error: failed to download `bit-set v0.8.0`
+
+Caused by:
+  attempting to make an HTTP request, but --offline was specified

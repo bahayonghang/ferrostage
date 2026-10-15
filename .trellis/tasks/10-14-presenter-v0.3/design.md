@@ -1,6 +1,6 @@
 # Design — 跨任务共享契约
 
-状态：规划设计；API 尚未实现，PoC 尚未通过。父任务只协调。证据见 research/repository-baseline.md、research/runtime-feasibility.md、research/behavior-evidence.md；其中未验证事项是对应子任务的研究门。
+状态：共享设计契约；实现与验证以 execution-state.md 和当前代码为准，初始研究报告是历史证据。父任务只协调。证据见 research/repository-baseline.md、research/runtime-feasibility.md、research/behavior-evidence.md；其中未验证事项是对应子任务的研究门。
 
 ## 1. 创建者、消费者与 crate 边界
 
@@ -23,7 +23,7 @@ core 只含纯类型、状态机和纯函数，不依赖 IO crate、GPUI、PDFiu
 
 SessionStage = Idle | Ready | Presenting；加载只进 Ready。04 将 new(page_count) 定义为 Ready 的便利构造，生产走 idle()+LoadDocument；不保留隐式 Presenting 测试特例。Presenting 中 Load 被拒；Close 清空；Stop 保留页/笔画并返回 Ready。
 
-core 不读系统时钟：app 在命令边界提供 Instant（或单调时间值）给 apply_at/elapsed_at。每次 Start 清零并运行；Pause 冻结；Resume 续跑；Reset 在 Presenting 清零并保留暂停状态；Stop 冻结读数；Ready与Presenting使用相同timer.mode格式：正计显示冻结elapsed/target，倒计显示冻结target-elapsed/target；初次elapsed=0故正计00:00、倒计target，Stop后显示不跳变；Close 清零。倒计时可显示超时。04 用受控时间输入测试，无 sleep。
+core 不读系统时钟：app 在命令边界提供 Instant（或单调时间值）给 apply_at/elapsed_at。每次 Start 清零并运行；Pause 冻结；Resume 续跑；Reset 在 Presenting 清零并保留暂停状态；Stop 冻结读数；Ready与Presenting使用相同timer.mode格式：正计显示冻结elapsed/target，倒计显示冻结target-elapsed/target；初次elapsed=0故正计00:00、倒计target，Stop后显示不跳变；Close 清零。倒计时可显示超时。04 用受控时间输入测试，无 sleep。 04已核当前apply仅由core测试调用；统一迁移为apply_at(command, now)并更新全部当前调用方，不保留无真实消费者的兼容入口。core不读取系统时钟或虚构时间。
 
 StartPresentation { audience_available } 仅验证 Ready 与输入前置。07 主线程协调窗口创建与 Start；创建失败保持 Ready、零增长，无残留窗口；销毁前发布 Curtain。Idle/Ready snapshot 恒 Curtain且不携带 visual。跳页预览只属讲者：Next/Previous 在预览模式只移动预览，Enter Commit 才改 audience current_page，Esc 取消；04 修正当前 audience_snapshot 和 step 的隐式提交。
 
@@ -39,7 +39,11 @@ platform enumerate_monitors -> Result<Vec<MonitorInfo>, PlatformError>；Info �
 
 权威来源仅 display.monitors。07 SwapScreens 同一设置事务交换两个角色并迁移窗口；09 新选Audience同次将旧Audience设None。移除计划键 display.swap_roles；若已有外部文件包含此键，则保留为未知历史键但不执行。Presenting失去Audience：Curtain→Stop→销毁观众窗口→Ready；讲者保持有效Presenter屏窗口化。新屏不自动接管；零屏等待恢复，重连不自动Start。
 
-03研究安全wrapper；07研究GPUI事件/DisplayId。native identity优先；位置+尺寸回退需统一物理/逻辑单位和DPI，映射歧义拒绝Start。workspace unsafe_code=forbid不能被局部allow覆盖。安全接口不足时须先形成最小适配模块、显式lint继承调整与ADR政策提案，评审通过才实施；不改core或全workspace禁令。
+03提供已审阅的安全wrapper；07使用已审阅的GPUI事件/DisplayId与完整UUID桥。身份映射不得退回位置、尺寸、DPI或屏幕索引；实际bounds仅用于创建后的窗口放置确认，映射歧义拒绝Start。workspace unsafe_code=forbid不能被局部allow覆盖。安全接口不足时须先形成最小适配模块、显式lint继承调整与ADR政策提案，评审通过才实施；不改core或全workspace禁令。
+
+03已审阅的Windows实现方案：仅Windows目标链接winsafe =0.0.29（MIT，gdi feature包含user），不引入display-info/fxhash。安全EnumDisplayDevices提供attached adapter/active monitor的owned interface path与当前GDI连接名，迭代引用当次拷贝；安全桌面DC RAII与EnumDisplayMonitors提供每屏DC，GetMonitorInfo名称关联EnumDisplaySettings current的DEVMODE物理位置/尺寸/旋转，核对device caps物理宽度及完整active GDI集合一一匹配，否则返回typed错误。device-interface path身份等级为ConnectionScoped，不称EDID或跨接口不变；缺path的name|WxH为Degraded，碰撞禁止Audience。scale来源显式GdiDeviceCapsRatio，即当前调用DPI context下DESKTOPHORZRES/HORZRES之比，不是已验证effective DPI；07须在实际GPUI context中验证映射，不能将ratio=1当作100%系统缩放设置。
+
+03采用200ms安全枚举轮询，取消订阅释放worker；Changed传owned拓扑，Unavailable传错误并让Audience availability=false。last-known仅用于诊断，不作为旧投影继续有效的依据。07收到Unavailable与目标屏移除同样走Curtain/Stop/销毁，恢复只更新可用拓扑不自动Start；09显示identity/scale等级与警告，不另造回退策略。此方案保持workspace unsafe_code=forbid；native静态枚举、换线/热插拔及≤1s硬件证据分别记录。
 
 ## 4. SettingsStore 与 schema
 
@@ -64,13 +68,17 @@ save：同目录唯一tmp→完整写入→sync_all→验证过的Windows replac
 | 唯一render worker | PDFium初始化、active/candidate加载、PageLabel、尺寸、预渲染、释放 | owned metadata/BgraFrame/ready token |
 | GPUI主线程app/ui | 最新token检查、core/document/visual事务、纹理/窗口 | audience-only snapshot |
 
-PDFium bindings/document/page/bitmap都不逃逸；bytes owner覆盖借用文档，不建unsafe自引用。pdfium-render本身不提供/自动下载PDFium；05锁binary构建号、来源、校验值并传入动态绑定路径，不虚构PDFIUM_DYNAMIC_LIB_PATH为库自动支持变量。
+PDFium bindings/document/page/bitmap都不逃逸；bytes owner覆盖借用文档，不建unsafe自引用。pdfium-render本身不提供/自动下载PDFium；05锁binary构建号、来源、校验值并传入动态绑定路径，不虚构PDFIUM_DYNAMIC_LIB_PATH为库自动支持变量。 0.9.4绑定使用进程全局OnceCell；05用安全进程级会话互斥与首次成功初始化后的固定native配置保证唯一worker，不静默切换库路径/字体目录，不以失败初始化污染成功状态。不同配置需typed诊断/重启；缺库负测试隔离进程，避免已加载bindings掩盖缺库。
 
 消息：LoadActive/PrepareCandidate（先返回metadata）、PreRenderCandidate（06建图定位后请求）、RenderRequest、CommitCandidate、AbortCandidate、RetireGeneration。请求/结果键包含generation/page/crop/target_px/priority/epoch；P0观众当前、P1讲者当前/下一页/备注、P2±1观众预取、P3预览、P4缩略图。candidate有独立命名空间/结果通道，不能被current-only检查提前丢弃，旧active持续服务。epoch可取消排队项/丢弃旧结果，不能承诺打断同步PDFium调用；优先级只决定下次出队。缓存按bytes预算。
 
+05接口具体化：pdf提供owned PageMetadata（PhysicalPage、可见旋转后width_points/height_points、rotation_degrees、Option<String> label）与DocumentMetadata/PdfError。render的RenderRequest完整携带generation/page/crop/target_px/priority/epoch，RequestId关联结果；结果回显完整请求与BgraFrame、实际render_duration/cache-hit。RenderHandle只传owned消息：probe/load_active/prepare_candidate返回metadata，pre_render_candidate返回CandidateReady token及请求对应owned frames，commit(token)/abort(generation)/retire(generation)明确ack；候选不能被active-only过滤，旧active资源保留到retire。所有native对象在唯一worker作用域内，不为probe另建并发PDFium实例。
+
+性能样本必须是worker真实PDFium render调用，绕过cache，不含queue/upload；cache-hit结果独立标记，不计入20warm/200sample的渲染延迟分布。缓存仍按generation/page/crop/target_px键与字节预算，epoch用于请求失效而非错误地让旧结果发布。
+
 ## 6. 观众唯一数据入口与 SharedFrame
 
-04创建纯core BgraFrame { width,height,stride,pixels_bgra:Arc<[u8]> }，checked长度、非零尺寸、紧密width×4 stride；05 BgraBitmap复用。11在media::SharedFrame复用该像素类型并加generation/page/slot/playback_epoch/sequence身份封装；core不依赖media。
+04创建纯core BgraFrame { width,height,stride,pixels_bgra:Arc<Vec<u8>> }，checked长度、非零尺寸、紧密width×4 stride；05 BgraBitmap复用。11在media::SharedFrame复用该像素类型并加generation/page/slot/playback_epoch/sequence身份封装；core不依赖media。
 
 AudienceProjectionSnapshot是观众view唯一输入（可Entity包装）：stage、generation/current_page/slide_crop、blank/laser/strokes，visual:Option<AudienceVisual>。visual只有匹配当前键的受控页BGRA与AudienceMediaFrame { slot_id,rect_norm,pixels }，没有LoadedDocument、SlideMap、notes_page/crop、路径、媒体源、讲者预览、计时。Curtain不带visual。04纯audience_snapshot产生投影元数据；08组装器从私有cache按精确键补visual；11补媒体。
 
@@ -93,3 +101,65 @@ L0：纯Rust suite必跑just ci（fmt/clippy/test/deny）；core/settings/纯top
 性能报告记录机器CPU/GPU/驱动/DPI、PDF SHA、分辨率、binary/build、预热/样本/时间边界，协议见子implement；无数据就待验。01先同步baseline列出的ADR/spec冲突（写PDF、swap flag、settings只读），本次不修改这些实施目标。用户只读和唯一角色来源约束优先于旧spec。
 
 共享API回滚需连同消费者；设置失败不覆盖旧文件；重载回滚candidate；native安全API不足停在研究门，其他无依赖工作可继续。ADR/lint政策和媒体loader选型要形成具体方案评审，不能以待定技术为理由削减已授权需求。
+
+## 9. 讲者界面主题（R-45）
+
+根 DESIGN.md 为视觉唯一来源，采用design-md brand:claude并适配FerroStage原生布局、可读对比度及系统字体。07创建ui/src/theme.rs与基础控件状态，08复用布局与工具条，09将已有general.theme接到同一theme resolver并验证system事件。theme与Store仅在讲者控制侧；不向audience snapshot添加主题字段，PDF/备注/媒体像素及黑白幕布不变。原生截图/键盘/字体回退/响应尺寸/DPI均须实际运行验证。只修改现有07/08/09规划，不增加另一任务树或改变Gate阻塞范围。
+
+### Task05 measured frame-storage refinement
+
+The retained-previous-frame PoC2 exposed a 33MiB Vec-to-Arc-slice copy (P95 25.602ms). BgraFrame now accepts an owned Vec<u8> in its checked new constructor, stores a private Arc<Vec<u8>>, and exposes pixels only as &[u8]. Cloning BgraFrame shares the existing allocation. No public mutable access, channel conversion, legacy dual-storage enum or unsafe initialization is needed: the unreleased callers are updated together. Task05 removes the scratch buffer so retained and released frames follow the same production allocation path; native PdfBitmap borrows the Vec only until bitmap destruction, then the Vec moves into the checked frame. Keep geometry/stride/length validation and geometry-only Debug unchanged, prove allocation sharing and retained-frame immutability, and rerun core plus native/performance checks. This refinement remains task05 work and does not reopen the task04 lifecycle implementation.
+
+CPU frame-cache byte accounting uses BgraFrame::allocation_bytes(), the owned Vec capacity, not only its visible pixel length. This is a read-only scalar; pixel access stays immutable and checked geometry stays based on length. L1 texture accounting remains width×height×4 for actual texture storage, not the CPU Vec capacity. Oversized CPU allocations are returned uncached rather than violating the global budget.
+
+CandidateReady is scoped to the worker instance that issued it, in addition to generation, epoch and candidate-batch identity. A token from another worker or a restarted worker must be rejected even if its numeric fields happen to match. Keep this identity private to render; consumers only pass the opaque token back to its original handle.
+
+### Task06 concrete content-map interface
+
+Core SlideMap owns validated, nonempty, strictly increasing content steps grouped into logical slides; it contains no labels, notes or media. Constructors accept physical page_count and ordered groups, rejecting empty/out-of-range/duplicate/reordered maps before state mutation. Core DocumentDescriptor uses private validated map+crop fields with identity(generation,count) and mapped(generation,map,crop) constructors. The existing count-based LoadDocument path remains the explicit identity compatibility used by07; LoadMappedDocument installs the real document builder output. CommitDocument keeps the strictly newer-generation rule and preserves timer/stage while clamping to valid content. The temporary StageShadow adapter preserves existing map/crop, without parsing bytes.
+
+Document-local layout/notes-identification/physical-pages overrides require a same-document reconfiguration path: ReconfigureDocument(descriptor) must match the current generation and physical page_count, preserve lifecycle/timer, remap committed content to closest_content_at_or_before and clear preview atomically. It must reject mismatched identity or invalid geometry without mutation; do not fake a new PDF generation or reset the session merely to change a viewing option. Task08 uses this path and publishes only exact generation/page/crop frames; task10 uses the newer-generation commit path.
+
+Document LoadedDocument::build consumes owned PDF metadata plus read-only structure and DocumentOverrides. It owns raw optional labels, resolved layout/source, SlideMap, ordered page-notes mapping, original markdown notes, media slots and diagnostics. notes_for retains its markdown semantics. New load uses default overrides; same-file reload passes current overrides explicitly. Media structure source/paths/embedded data remain on the document side; raw PDF rectangles/boxes/rotation are converted there to visible top-left/crop coordinates. Unsupported or unresolved times are diagnostic, never guessed seconds.
+
+### Checked crop setter compatibility
+
+Task06 independent review found the pre-existing public PresentationState::set_slide_crop bypassed descriptor crop validation. Preserve the method with Result<(), CoreError>, reuse exactly the descriptor crop predicate/error, and reject invalid geometry without any state mutation; the sole existing lifecycle-test caller must handle the result. This closes the direct input path without changing valid crop semantics. Task08 still uses ReconfigureDocument for document viewing options so map/crop, timer/stage and preview are updated atomically. No new unvalidated crop entry point.
+
+### Task07 pinned Windows display bridge
+
+For the adopted Zed v1.23.3 source route, task07 maps the existing owned MonitorInfo.connection_name to the pinned public GPUI display UUID: encode into exactly32 zero-filled UTF-16 code units, serialize big-endian bytes and compute UUIDv5 with the DNS namespace. Reject overlong/unrepresentable input, duplicate MonitorIds/names/GPUI IDs/UUIDs and incomplete set/count matches before Start. This is a pin-specific transient mapping, not a persistent MonitorId or effective-DPI estimate. No platform API expansion or geometry fallback is needed. The user-approved maintained tagged source under ADR-008 has passed actual product dependency/build checks. Actual A/B/C placement has partial native evidence; complete mixed-DPI/physical topology acceptance remains pending. Source feasibility, candidate approval and automatic checks alone are not Gate B.
+
+### Task07 role migration without a native position setter
+
+The evaluated Zed tag public GPUI API has no general window-position setter. If that route clears the dependency gate, role migration prepares replacement windows using the existing presenter/snapshot entities, stages audience output behind Curtain, and verifies each actual display before retiring old windows. Keep core stage/timer/page unchanged during Swap; do not Stop/Start merely to move windows. On partial failure close replacements, restore old complete snapshot/handles and keep old authoritative role bindings. Distinguish retired-window close callbacks from current user-close events by window identity, and update Presenter focus/modal targets to the replacement handle. Save only after the runtime transaction succeeds; save failure retains session values with an unsaved warning. Pure transaction tests and real placement/focus verification remain separate evidence.
+
+### Task07 asynchronous activation and fullscreen boundary
+
+The independent source review found that Windows activation and fullscreen requests schedule executor work; returning from activate_window/open_window does not establish completion. The native path chooser captures the active window synchronously. The coordinator must therefore confirm the current Presenter is active before opening a chooser/modal, and keep a new Audience behind Curtain until its actual display and required window mode are confirmed. Start/time begins only after successful confirmation. Apply the same boundary to replacement-window migration before retiring old windows. Cancellation, topology changes, superseding requests or a bounded confirmation failure must invalidate pending callbacks and clean up replacements without opening a late modal or publishing Live. A cached/requested mode alone is not placement evidence. The audited public activation path is Context::observe_window_activation plus Window::is_window_active and a fresh App::active_window identity check (Windows reads GetActiveWindow at that call). For placement, Context::observe_window_bounds plus Window::bounds/display provide event-updated observations. Window::is_fullscreen alone is insufficient: the Windows flag is set before SetWindowPos, whose failure is logged rather than returned. No public completion Result/future establishes native fullscreen success. The implementation must establish a bounded confirmation protocol using actual placement observations and verify it natively; until then this remains an implementation prerequisite, not a proven solution.
+
+### Task07 approved source and policy delivery
+
+User explicitly approved the final independently reviewed five-package local maintenance set and only arrayref@0.3.9/BSD-2-Clause, libbz2-rs-sys@0.2.5/bzip2-1.0.6, cbindgen@0.28.0/MPL-2.0 exceptions. The product adopted the final reconstruction, not the original defective maintenance patch alone, and passed I-2 actual graph/build verification. Preserve upstream notices and test provenance; do not broaden global policy, add advisory/lint ignores or change core purity. Parent research/gpui-license-review.md and ADR-008 record exact hashes and retained limits; original failures and six upstream direct HarfRust lint failures remain disclosed.
+
+### Task07 synchronous first draw boundary
+
+The pinned App::open_window performs a synchronous first draw before it returns. A presenter created while Shell is leased by Entity::update must not read or update that controller during render. Task07 supplies a small presenter display-data value prepared from the current Shell borrow; later model notifications refresh that value after the update lease ends. It contains only fields actually rendered, not a duplicate PresentationState, SettingsSession, worker or deck. Actions retain a WeakEntity<Shell>. Audience still receives only AudienceProjectionSnapshot. Cover the actual GPUI open_window/draw path with a feature-scoped harness and repeat native startup after rebuilding; a pure policy test does not cover this entity-borrow contract. Initial native failure and source identity are retained in07 research/poc-1-report.md and native/initial-freeze.json.
+
+Window removal can also synchronously invoke App::on_window_closed before the calling Shell update releases its entity lease. Defer controller mutation from that callback until the current update completes, carrying the original WindowId and applying the existing current-versus-retired identity check at consumption time. Test actual GPUI removal under a coordinator lease, including timeout rollback and replaced-window cleanup. Do not suppress the callback, swallow the panic or relax placement confirmation.
+
+The shell owns explicit application exit: closing a pending/retired window during topology cancellation or migration must not trigger last-window automatic quit. Closing the current presenter is an intentional user exit; closing the audience safely stops projection while retaining the presenter. A zero-screen state waits for topology recovery without creating an audience or exiting implicitly.
+
+Input actions may run while GPUI has leased the originating window. Dispatch shared shell intents after that event update completes, before requesting activation, opening/replacing windows or closing projection. Do not call AnyWindowHandle::update on the same leased window from its key/mouse/accessibility callback. Exercise real input dispatch (keyboard and mouse), not only direct controller methods, and retain presenter-owner activation confirmation before a chooser.
+
+### Native-driven input correction (2026-10-15T01:46:29.323959+00:00)
+
+07 native v4 exposed focused Start + Space dispatching global Next and Enter doing nothing. The existing DESIGN.md Enter/Space rule is unchanged: enabled focused controls consume unmodified activation keys before presentation bindings; disabled controls stay noninteractive; actual GPUI focus/key regression must fail before repair. Shared deferred action dispatch remains mandatory.
+
+Open uses the existing import_allowed contract consistently at button, global intent, chooser and import entry. During Presenting/incompatible transactions it must not open a chooser whose result is guaranteed to be rejected. Audience-origin refusal confirms Presenter activation before localized feedback. No mid-presentation document replacement is added. Root owns this contract clarification;07 owns the local repair.
+
+
+### Native focus and save-feedback recovery
+When a focused presenter control disappears (modal Close/Commit, Start/Stop, Retry after success), restore a valid focus target in the same presenter so Tab and presentation shortcuts remain usable without a mouse click. Preserve existing valid button focus; do not steal audience focus as a side effect of unrelated model updates. Cover actual GPUI focus/key dispatch across removal, not only stored focus handles.
+
+A failed settings save is one unsaved-state message with Retry. A successful Retry clears the corresponding stale persistence error while retaining unrelated current errors. Runtime role changes survive persistence failure; durable role changes require successful read-back. Native FileShareRead-lock evidence is distinct from mocked save errors.

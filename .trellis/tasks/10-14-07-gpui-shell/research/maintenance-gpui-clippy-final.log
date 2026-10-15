@@ -1,0 +1,5 @@
+   Compiling gpui v0.2.2 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\vendor\gpui)
+warning: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\target\debug\incremental\build_script_build-2vwj64wraqk3w\s-hn7vc615n3-1tvbp64-working`
+
+warning: `gpui` (build script) generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 9.96s

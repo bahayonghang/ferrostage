@@ -1,0 +1,277 @@
+{
+  "utc": "2026-10-15T02:52:58.649825+00:00",
+  "scope": "Native receipt integrity, unchanged compiled inputs and documentation-only closeout. Not task07/Gate B acceptance.",
+  "records": [
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-chooser-import-pass-0.jpg",
+      "bytes": 49485,
+      "sha256": "b2e5d434c226ce398a4031fad26fbd909a3710467be7f56ac6b462aa0f2d1c11"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-chooser-import-pass.json",
+      "bytes": 1329,
+      "sha256": "6212072d977e7a6e5f868954c107534d7da89e39c81f232f6fc78343fc998e83"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-close-modal-tab-open-pass-0.jpg",
+      "bytes": 66785,
+      "sha256": "c622c868fee907681ca88b80ad82fbbdcd84100cdbf3108b0878fb39e3651b42"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-close-modal-tab-open-pass.json",
+      "bytes": 1340,
+      "sha256": "f5fd43e723a1481f80ac7c9b6207c3dc9c138a374b8235cf7202d5b9d031befb"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-dark-lock.lock.json",
+      "bytes": 425,
+      "sha256": "8c0747fd2c77a05f2c26af144bd75dd80c01d513d2c25d270bafe4d1403070f7"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-dark-lock.release",
+      "bytes": 33,
+      "sha256": "2ab988bd73ebab55c3c93496152a43f964cbc4d4f4283a32c4359d3a2e11a62d"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-dark-lock.unlock.json",
+      "bytes": 209,
+      "sha256": "4b94a344e77790d3a55ba81d73dc752d5ea33fda52b67b790dae599d4a9e3964"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-dark-ready-a-0.jpg",
+      "bytes": 65807,
+      "sha256": "7e7ac24abec789d854dbafde3b132d0538f65d72c2865041d6828bdf54034b6d"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-dark-ready-a.json",
+      "bytes": 1341,
+      "sha256": "b1a2393924cc6d79da0a89c3615ceb761251b236c54c1725112b014f07379f5b"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-final-window-inventory.json",
+      "bytes": 66,
+      "sha256": "75d47929cb195a0634c1282bf56c1dcd33f6d6ab3a0db07ad1cc488d459572f9"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-focus-save.config-after.toml",
+      "bytes": 1712,
+      "sha256": "b96b8708fcb7207f7673c322be62d1f2f68d1c9ff382fe3607fbf7d0d7249ab9"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-focus-save.config-before.toml",
+      "bytes": 1712,
+      "sha256": "41798cb34079e64d46078604e4c382ec1698d1ad925977870caf8c71e66fefe3"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-focus-save.exit.json",
+      "bytes": 83,
+      "sha256": "718eaa92ab8a2aa9557630740c8bd240e7be05f3ec3ff255d1541ce28ceb4181"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-focus-save.launch.json",
+      "bytes": 1061,
+      "sha256": "462a3e2ac16af6dfba4412806a5217afad6bb6cc5245a8b381dccb0eb1a728f5"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-focus-save.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-focus-save.stdout.log",
+      "bytes": 16827,
+      "sha256": "a0afda9a0fee6218ae128aa35a85d802496e326395052fd2a6cf8ff6b02b010a"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-jump-cancel-tab-pass-0.jpg",
+      "bytes": 66768,
+      "sha256": "3f725bb45b0018e35cf673b6776dfe5d21d85265e8f4854a22246cc0b9f6768c"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-jump-cancel-tab-pass.json",
+      "bytes": 1335,
+      "sha256": "d45f1c3c5deffbdbf33e426a02aecf472ab28e5654b247b715e5d484f93bb7f9"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-jump-commit-tab-pass-0.jpg",
+      "bytes": 66761,
+      "sha256": "78f4260396b9cf885d6fae6c654f4fbfaf8760f58370feb2c8a01a62dded4b26"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-jump-commit-tab-pass.json",
+      "bytes": 1335,
+      "sha256": "9065a3ab81362600fc8eb5ef924f8646b7e63027871f7d57a1d8155fa860519d"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-relaunch-dark-settings-placeholder-0.jpg",
+      "bytes": 27583,
+      "sha256": "89951df3fd18280894dfde4d0872a1f6bd20d8f1322a7d382a87a94978b3614b"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-relaunch-dark-settings-placeholder.json",
+      "bytes": 1222,
+      "sha256": "e59b160984e2275a7e85294007c5c9c872e310a3d451681cc6e1fd21762b4a31"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-relaunch.config-after.toml",
+      "bytes": 1712,
+      "sha256": "b96b8708fcb7207f7673c322be62d1f2f68d1c9ff382fe3607fbf7d0d7249ab9"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-relaunch.config-before.toml",
+      "bytes": 1712,
+      "sha256": "b96b8708fcb7207f7673c322be62d1f2f68d1c9ff382fe3607fbf7d0d7249ab9"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-relaunch.exit.json",
+      "bytes": 84,
+      "sha256": "6be6369cd6ad215cf7c60f6804c30b7666a00e4f687ef4117596c8f33d594d9c"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-relaunch.launch.json",
+      "bytes": 984,
+      "sha256": "13a90ffc806020f92eb27a2aae5c9d1e6f52c9023fe83585ff4ba5238fd43a70"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-relaunch.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-relaunch.stdout.log",
+      "bytes": 9286,
+      "sha256": "09630d6ed3f38a771288b188c99e5fc2d49ba92cf292d0af7143c01f63d32ab1"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-retry-removed-tab-open-pass-0.jpg",
+      "bytes": 49667,
+      "sha256": "383a935407073ee196c7d6d43749b831446e57ff85b49f8e22f72ada515cb7ef"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-retry-removed-tab-open-pass.json",
+      "bytes": 1355,
+      "sha256": "4d941255a229fc4822e24bfff4e4e3bcc2f2149cc67625bcf8017610c93be284"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-retry-still-locked-0.jpg",
+      "bytes": 69755,
+      "sha256": "2559a87ae73611bc45e91ae1fb7a65d8fec271ebd5e7ddd9984a661d71e19fac"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-retry-still-locked.json",
+      "bytes": 1391,
+      "sha256": "afafd1f33eb3ceb0427ac6d3cc4772f0cd3db597abbb06ba212de00d8d497f87"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-retry-success-clears-error-0.jpg",
+      "bytes": 48868,
+      "sha256": "4449e11c7a03c6cba1a0c822cfcea587c1e8554742c7529245c20b715a4e5483"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-retry-success-clears-error.json",
+      "bytes": 1354,
+      "sha256": "6887a38ab69dd3ff4c29d758e1b543267b99ba05ad8f145f620e6a6993f60af5"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-retry-tab-readback.json",
+      "bytes": 1071,
+      "sha256": "02b170c152b55d6e1c2da28750dcf99bc32b60fc503dbd0bae25476bd500370a"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-root-identity.json",
+      "bytes": 409,
+      "sha256": "a54630c8d2f5b0586d6ba32ea41daf73f0e7194272b03153c33fc4ba0a5f3c0c"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-save-failure-single-message-0.jpg",
+      "bytes": 66805,
+      "sha256": "28c08cfc79aa73a4f3587760900fc1e3145068df104250604d57064515ccc4bf"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-save-failure-single-message.json",
+      "bytes": 1400,
+      "sha256": "b5760f4be6ef2ac0e5a7f0f306ef048c75c1dee3b0ca7bdc4d1d18a114313019"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-settings-readback.json",
+      "bytes": 1003,
+      "sha256": "d1f8158418764ac7131846ab43eff04516ae5555c9435a6e5f9d887875206d7b"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-start-tab-settings-pass-0.jpg",
+      "bytes": 60806,
+      "sha256": "196522da0acf73e80040f5e0f4146588ecd24ece2ed239415378a4d6d0226c1f"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-start-tab-settings-pass.json",
+      "bytes": 1299,
+      "sha256": "27365fd03d18a5857a0db274636b094e02468bb3d7ca9adef7ac356484b6dee7"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-stop-tab-open-pass-0.jpg",
+      "bytes": 66802,
+      "sha256": "ae147edb15f0f603bbd483459b8e3951855bef9cc78ab1c352ea409952b54460"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/v6-stop-tab-open-pass.json",
+      "bytes": 1333,
+      "sha256": "e4ef0c6a4227b196be785aaff42cd0f69c697f6276553fc3661813da270dbd00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native-v6-checkpoint.md",
+      "bytes": 3701,
+      "sha256": "5ce4e47fedacf3e0c6588860951f1279b1c288c0df4c7e41ce51e378ce15db9c"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native-v6-closeout.py",
+      "bytes": 5347,
+      "sha256": "4809c9d383570d9ed780a524395cc728d2ba78ad784acadd80b3ef796c13a28f"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native-v6-closeout-identity.json",
+      "bytes": 1765,
+      "sha256": "305f9884ebcb26a1eee3c142f6a57441ac61ce8e79945855c3d5a6d9b422cc87"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native-v6-closeout-git-status.txt",
+      "bytes": 9860,
+      "sha256": "09cef4b80a1e77b924f5ce96eb1d35f1621622cb7bd2837143c35b8916b9f334"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native-v6-closeout-diff-check.log",
+      "bytes": 4382,
+      "sha256": "3f6a73f3128022ebb043adcea92cc5848fac0663c3651a85a31d1ef4116d8b79"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native-v6-design-before-closeout.md",
+      "bytes": 10182,
+      "sha256": "1b13bda5cc6460a8f320a637e047c836813f817231315533d200ed873d31f4d6"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native-v6-retest-plan.md",
+      "bytes": 2479,
+      "sha256": "8f5433f4ebb073ad3a558b12ce52256bb070e7f56f8be5027420e70eafe8a984"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/product-native-freeze-v6.json",
+      "bytes": 72490,
+      "sha256": "b7df3a62ff2b1b7212924e47f79d72468ff86356265a1aaf650c0694adb6d7ea"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v6-manifest.json",
+      "bytes": 21952,
+      "sha256": "252a22e5ab5173b7c9a03da0e6a15768edd2d904b6cfd5404c42c9f72c101fb5"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/run-native.ps1",
+      "bytes": 2944,
+      "sha256": "c463ce4e8606a3a824b927eed5251bc54a96f38dca19fa7c3b6374099ddac023"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell/research/native/hold-settings-read-lock.ps1",
+      "bytes": 1541,
+      "sha256": "07d17bb8121575887eb58fa424dbc201ecc9206bb17f0c6ceb571ebb9e274a64"
+    }
+  ],
+  "limitations": "Physical unplug/ports/single/zero-display, full logical-client size/state matrix, drag/drop, live OS theme event and retirement diagnostics remain unresolved or unverified. Earlier failures are retained, not promoted to passes."
+}

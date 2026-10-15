@@ -1,0 +1,43 @@
+{
+  "keys": 45,
+  "direct_call_keys": [
+    "close",
+    "confirm-jump",
+    "confirming",
+    "disabled-label",
+    "import-error",
+    "import-unavailable",
+    "invalid-page",
+    "jump",
+    "loading",
+    "need-document",
+    "open",
+    "page-placeholder",
+    "preparing",
+    "presenter-label",
+    "read-error",
+    "readonly-swap",
+    "recent",
+    "reserved-escape",
+    "retry-save",
+    "save-error",
+    "settings",
+    "settings-placeholder",
+    "stage-idle",
+    "stage-presenting",
+    "stage-ready",
+    "start",
+    "stop",
+    "stop-before-import",
+    "swap",
+    "unsaved",
+    "watcher-unavailable",
+    "welcome",
+    "worker-closed"
+  ],
+  "catalog_hashes": {
+    "en-US": "27aeaa0a5da580dc5fd435116a80ed0f77d5e52beceb01bfb767b1796f0de895",
+    "zh-CN": "1861dab0079f59c0ae0108e56a810da82e3ad259b28ec7c20ae2c1395dd6080a"
+  },
+  "status": "PASS: identical keys, direct calls present; test verifies interpolation fields; runtime screenshots pending"
+}

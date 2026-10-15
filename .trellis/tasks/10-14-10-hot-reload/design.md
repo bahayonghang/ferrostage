@@ -18,3 +18,17 @@ AttemptToken随新事件/Close/新Load递增；ready结果先验证token/desired
 ## 错误与回滚
 半写/坏PDF重试仅日志，不弹窗/不黑屏；旧服务不提前清缓存。并发候选只保最新，过时native文档在worker释放。资源回收计数/ack验证而非凭generation增加宣称完成。swap/focus/window/错误由07/08协调，重载不直接创建第二窗口。
 回滚候选的bytes/metadata/frame/纹理在各线程释放；主线程发布后旧代只作退役不可重复提交。无任何以target path写方式打开的调用，fixture harness路径强制temp前缀。
+
+## Task05 owned render interface
+
+Consume the concrete parent design §5 metadata and RenderHandle protocol. Page dimensions are visible rotated points; labels remain Option<String>. Probe/Load/Prepare run on the existing single render worker. Candidate preparation returns metadata first; document mapping chooses explicit prerender requests before CandidateReady. Results echo the full request identity; cache hits are marked separately from actual render duration. Commit/Abort/Retire acknowledgements and delayed retirement preserve the old active document through preparation. No native document or PDFium handle crosses to consumers.
+
+CandidateReady tokens are opaque capabilities bound to the originating worker instance as well as generation/epoch/batch. A restarted or replacement worker requires a fresh Prepare/PreRender result; never reuse an earlier worker token.
+
+### Implementation-start transaction review
+
+Task05 confirms commit errors return NotReady before mutation; successful commit switches active generation, invalidates old queued work/CPU entries, and retains the old PDFium document until explicit retire. Task10 must concretely review ordering of worker commit acknowledgement and main-thread descriptor/document/visual publication, including a newer attempt or Close arriving during the wait. A failed or stale acknowledgement must not leave mixed generations published. This is a mandatory I-1 design check, not a new render API or a claim that task10 integration is already implemented.
+
+### Task06 shared map/descriptor clarification
+
+Consume parent design task06 concrete content-map interface: private validated SlideMap+crop descriptor, explicit identity compatibility for07, mapped load for08, same-generation/same-physical-count ReconfigureDocument for document viewing options without timer reset, and strictly newer-generation CommitDocument for10 reload. Reconfigure atomically remaps committed content and clears preview; malformed/stale descriptors must leave state unchanged. Labels/notes/media remain in document; snapshot never contains the map.

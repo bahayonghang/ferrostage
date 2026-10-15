@@ -1,0 +1,106 @@
+{
+  "utc": "2026-10-15T02:55:46.218573+00:00",
+  "scope": "Changed current-document links and existing task statuses only; not product acceptance",
+  "documents_checked": 13,
+  "local_links": [
+    {
+      "file": "docs/feature-parity.md",
+      "target": "PROJECT_PLAN.md",
+      "exists": true
+    },
+    {
+      "file": "docs/feature-parity.md",
+      "target": "adr/ADR-008-gpui-dependency-gate.md",
+      "exists": true
+    },
+    {
+      "file": ".trellis/tasks/10-14-presenter-v0.3/research/gate-b.md",
+      "target": "../../10-14-07-gpui-shell/research/native-v6-checkpoint.md",
+      "exists": true
+    },
+    {
+      "file": ".trellis/tasks/10-14-presenter-v0.3/research/gate-b.md",
+      "target": "../../10-14-07-gpui-shell/research/native-v6-evidence-manifest.json",
+      "exists": true
+    },
+    {
+      "file": ".trellis/tasks/10-14-presenter-v0.3/research/gate-b.md",
+      "target": "../../10-14-07-gpui-shell/research/native-v5-checkpoint.md",
+      "exists": true
+    },
+    {
+      "file": ".trellis/tasks/10-14-presenter-v0.3/research/gate-b.md",
+      "target": "../../10-14-07-gpui-shell/research/poc-1-report.md",
+      "exists": true
+    },
+    {
+      "file": ".trellis/tasks/10-14-presenter-v0.3/research/gate-b.md",
+      "target": "../../10-14-07-gpui-shell/research/product-independent-v6-review.md",
+      "exists": true
+    },
+    {
+      "file": ".trellis/tasks/10-14-presenter-v0.3/research/gate-b.md",
+      "target": "../../10-14-07-gpui-shell/research/product-native-freeze-v6.json",
+      "exists": true
+    },
+    {
+      "file": ".trellis/tasks/10-14-presenter-v0.3/research/gate-b.md",
+      "target": "../../10-14-07-gpui-shell/research/native-v6-closeout-identity.json",
+      "exists": true
+    }
+  ],
+  "missing": [],
+  "tasks": [
+    {
+      "path": ".trellis/tasks/10-14-presenter-v0.3",
+      "status": "planning"
+    },
+    {
+      "path": ".trellis/tasks/10-14-01-docs-sync",
+      "status": "in_progress"
+    },
+    {
+      "path": ".trellis/tasks/10-14-02-settings-schema",
+      "status": "in_progress"
+    },
+    {
+      "path": ".trellis/tasks/10-14-03-monitor-topology",
+      "status": "in_progress"
+    },
+    {
+      "path": ".trellis/tasks/10-14-04-session-lifecycle",
+      "status": "in_progress"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster",
+      "status": "in_progress"
+    },
+    {
+      "path": ".trellis/tasks/10-14-06-beamer-document-model",
+      "status": "in_progress"
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell",
+      "status": "in_progress"
+    },
+    {
+      "path": ".trellis/tasks/10-14-08-presenter-workbench",
+      "status": "planning"
+    },
+    {
+      "path": ".trellis/tasks/10-14-09-settings-ui",
+      "status": "planning"
+    },
+    {
+      "path": ".trellis/tasks/10-14-10-hot-reload",
+      "status": "planning"
+    },
+    {
+      "path": ".trellis/tasks/10-14-11-media-playback",
+      "status": "planning"
+    }
+  ],
+  "context_validation_receipt": "research/context-validation-v6.json",
+  "context_changes_since_validation": false,
+  "correction": "Two historical agent UUIDs were formatted as broken local links; changed to plain code identifiers. Initial failed scan is retained in native-v6-document-closeout.json."
+}

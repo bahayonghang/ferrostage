@@ -15,7 +15,7 @@
 | PR-02 | 已解决：父 design:36–38 与 03 design:13 已加入 DuplicateBinding、排除实际 Presenter、Presenter 回退排除 Audience、单屏 audience=None；09 design:28 / I-3 已同时清旧 Audience 与旧 Presenter。 |
 | PR-03 | 已解决：08 I-5 已前移基本 Begin/Append/End 会话画笔，I-6 只留高级增强，M1 画笔 AC 有实际实施步骤。 |
 | PR-04 | 已解决：07 design:12 用可替换 Shell DocumentImporter/物理 descriptor；06 design:15 保留 page_count→identity SlideMap 的纯兼容入口供独立 Shell PoC；08 design:5、文件范围:8 与 I-2 明确 app 初次真实 05 metadata/结构→06 builder→Load 显式 map/crop→Ready，坏 build 保旧，不用 identity 默认冒充 Beamer 结果。 |
-| PR-05 | 已解决：08 W-11、design:12 / I-4 明确当前文档五 layout、独立 notes、physical_pages、diagnostic 与 core ApplyDocumentView；同代保留 stage/timer，帧齐备完整发布。06 仍规定新 Load 重置/同文件重载保留覆盖。 |
+| PR-05 | 已解决：08 W-11、design:12 / I-4 明确当前文档五 layout、独立 notes、physical_pages、diagnostic 与 core文档查看更新入口（06具体化为ReconfigureDocument）；同代保留 stage/timer，帧齐备完整发布。06 仍规定新 Load 重置/同文件重载保留覆盖。 |
 | PR-06 | 已解决：03 M-5、design:14 / I-5 独立负责安全 OS 事件源，接口不足可选明确的 200ms 安全枚举轮询；07 只补触发，不再是 03 交付前置。实际 ≤1s 仍待未来硬件验收。 |
 | PR-07 | 已解决：父 design:73 与 11 V-3、design:17 / I-2 均将 playback_epoch 加入私有 SharedFrame；观众仍只得 slot/rect/pixels。 |
 | PR-08 | 已解决：05 P-4 / design:11 / I-2、10 H-3（prd:21）/ design:13 / I-3 均为 Prepare 仅 load/metadata→06 建图/定位/crop→PreRender 明确 P0/P1 请求→ready，需求、协议、设计和步骤已同步。 |

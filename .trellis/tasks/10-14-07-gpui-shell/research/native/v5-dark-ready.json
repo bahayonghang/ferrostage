@@ -1,0 +1,23 @@
+{
+  "capturedAt": "2026-10-15T02:08:48.809Z",
+  "window": {
+    "app": "process:D:\\mbx-cache\\targets\\v1\\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0\\debug\\ferrostage.exe",
+    "id": 60037630,
+    "title": "raster.pdf — 准备就绪 — FerroStage"
+  },
+  "accessibility": {
+    "focused_element": "7 application FerroStage 讲者窗口",
+    "tree": "Window: \"raster.pdf — 准备就绪 — FerroStage\", App: ferrostage.exe.\n\t0 region raster.pdf — 准备就绪 — FerroStage Secondary Actions: Raise\n\t\t1 title bar (settable, string) Value: raster.pdf — 准备就绪 — FerroStage\n\t\t\t2 menu bar System ID: MenuBar\n\t\t\t\t3 menu item System\n\t\t\t4 button Minimize\n\t\t\t5 button Maximize\n\t\t\t6 button Close\n\t\t7 application FerroStage 讲者窗口\n\t\t\t8 button 打开 PDF ID: open\n\t\t\t9 button 设置 ID: settings\n\t\t\t10 button 交换屏幕 ID: swap\n\t\t\t11 button raster.pdf ID: recent-0\n\t\t\t12 button 开始演示 ID: start\n\nThe focused UI element is 7 application FerroStage 讲者窗口."
+  },
+  "screenshots": [
+    {
+      "file": "v5-dark-ready-0.jpg",
+      "sha256": "2a1d02dc3cb7c2ff5b285073ddf0a51b4390d566a9c5245e8d1b260b8191e734",
+      "id": "screenshot-0",
+      "width": 1102,
+      "height": 791,
+      "originX": 592,
+      "originY": 222
+    }
+  ]
+}

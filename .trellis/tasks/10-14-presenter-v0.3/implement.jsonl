@@ -15,3 +15,4 @@
 {"file": ".trellis/spec/frontend/state-management.md", "reason": "Snapshot state boundary; role/settings stale clauses resolved by parent and task 01"}
 {"file": ".trellis/spec/frontend/type-safety.md", "reason": "Newtype, crop and notes boundary"}
 {"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "GPUI/BGRA/window safety checks"}
+{"file": "DESIGN.md", "reason": "R-45 / AC-10 presenter visual contract and native acceptance boundaries"}

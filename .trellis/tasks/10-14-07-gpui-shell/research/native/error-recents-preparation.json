@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-15T01:54:53.056105+00:00",
+  "status": "PREPARED_NOT_RUN",
+  "profile": ".trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\a-conflicting-keys.toml",
+  "before_sha256": "e2b8d2d0dacc8aacf42d3705865e6df951b6efc7f820a6f7d5db300f1c3eadd6",
+  "after_sha256": "84740db8296ea50e246a0c53338217ae353c73627511356c012c208e292c721a",
+  "malformed_sha256": "f4e3885d1af47b846cb2b9916268d283ceb66df3afade6f518ab0f4b78126ee0",
+  "missing_path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\missing-owned-fixture.pdf",
+  "backup": ".trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\a-conflicting-keys.before-error-recents.toml"
+}

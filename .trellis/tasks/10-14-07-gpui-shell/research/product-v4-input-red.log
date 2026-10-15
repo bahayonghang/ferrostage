@@ -1,0 +1,38 @@
+warning: function `shape` is never used
+   --> vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `harfrust` (lib) generated 1 warning
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.06s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-f6f69bc716fb3e17.exe)
+
+running 2 tests
+test shell::tests::input_route_open_button_releases_window_before_activation ... FAILED
+test shell::tests::input_route_ctrl_o_releases_window_before_activation ... FAILED
+
+failures:
+
+---- shell::tests::input_route_open_button_releases_window_before_activation stdout ----
+
+thread 'shell::tests::input_route_open_button_releases_window_before_activation' (164396) panicked at crates\ferrostage-ui\src\shell.rs:1102:13:
+input error: Some("window not found")
+
+---- shell::tests::input_route_ctrl_o_releases_window_before_activation stdout ----
+
+thread 'shell::tests::input_route_ctrl_o_releases_window_before_activation' (128436) panicked at crates\ferrostage-ui\src\shell.rs:1102:13:
+input error: Some("window not found")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    shell::tests::input_route_ctrl_o_releases_window_before_activation
+    shell::tests::input_route_open_button_releases_window_before_activation
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 22 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p ferrostage-ui --lib`

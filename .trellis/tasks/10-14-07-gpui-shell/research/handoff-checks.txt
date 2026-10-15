@@ -1,0 +1,10 @@
+2026-10-14 handoff checks
+
+Initial capture-evidence.ps1: exit1 because the audited keystroke source was incorrectly listed as src/keystroke.rs. No dependency or product changes occurred. Corrected the report and capture list to src/platform/keystroke.rs.
+Corrected capture-evidence.ps1: exit0; 117/117 baseline files unchanged; 92/92 selected product inputs unchanged; 52 primary source/license/advisory files hashed; both built spike binaries hashed; minimal-pre binary correctly absent/unbuilt.
+git diff --check: exit0. Git emitted existing LF-to-CRLF normalization warnings, no whitespace errors.
+Get-Process -Name cargo,rustc,cargo-deny: zero active processes at handoff check.
+rg --files crates compared with task06 baseline keys: zero unlisted crate files.
+Task07 native window execution and product tests: NOT_RUN, dependency policy gate unresolved.
+
+research/.gitignore exposes raw *.log evidence for future review without changing product ignores or staging files. No commit/push/archive/journal action was performed.

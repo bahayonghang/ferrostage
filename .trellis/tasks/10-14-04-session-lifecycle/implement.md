@@ -9,4 +9,21 @@
 7. **I-7 Gate A**：运行命令并检查core依赖/no clock read/no notes；记录API变更给05/06/07/08/10/11。真实窗口/像素隔离留07/08。
 
 命令：cargo test -p ferrostage-core -p ferrostage-document；cargo tree -p ferrostage-core；just ci。
-回滚点：I-3状态API、I-4snapshot与document同批回滚，I-5旧bytes桥接由10最终收敛，不能留下两套提交权威。本次不执行命令或启动。
+回滚点：I-3状态API、I-4snapshot与document同批回滚，I-5旧bytes桥接由10最终收敛，不能留下两套提交权威。本轮 I-1…I-7 已实施并通过自动检查和独立审查；真实窗口/像素验收由07/08负责。
+
+## Execution evidence
+- I-1 reviewed shared lifecycle/timer/preview/swap/descriptor contracts and current callers; no production caller yet uses PresentationState.
+- I-2 reproduced: `cargo test -p ferrostage-core preview_` returned two expected regression failures and one existing PASS; see `research/preview-red.log`. First sandbox attempt could not access the Cargo build lock; approved escalation executed the test.
+
+- I-3/I-4/I-5 implemented; I-6 tests added. I-7 targeted check PASS: `cargo test -p ferrostage-core -p ferrostage-document` (21 core + 1 document), `cargo tree -p ferrostage-core` (only thiserror/tracing production dependencies), formatting PASS. Reports: `research/core-document-tests.log`, `research/core-tree.log`.
+- I-7 PASS: `just ci` exit 0 (fmt, clippy with `-D warnings`, 70 workspace tests, cargo deny); `research/just-ci.log`. Existing duplicate `syn`/`windows-sys` warnings are non-failing. `git diff --check` PASS. Core production source scan found no clock sampling, file/thread IO, old `apply` calls or swap flag.
+- Implementation, automated checks and independent Trellis check complete. Parent Gate A still needs task 03 topology delivery. Real windows, PDF pixels, multi-monitor, GPU and media acceptance are NOT_RUN here and remain downstream scope. No commit, push, archive or journal performed.
+- Current source evidence: `research/verified-code-sha256.json` (workspace Rust/manifests SHA-256, branch/HEAD/time), `research/worktree-status.txt`, `research/verification.md`.
+
+Last verification record (UTC): 2026-10-14T14:45:09.302752+00:00.
+
+## Independent check
+
+- PASS (2026-10-14 14:49:28 UTC): all 51 recorded Rust/manifest hashes match the working tree, with no missing or extra code inputs; branch and HEAD match the implementation evidence. Lifecycle/timer/preview/descriptor and document projection paths reviewed. No implementation defects found. The L-4 accessor spelling was synchronized to `elapsed_at(now)`; no product source changes were needed.
+- Independent formatting and Clippy/type-check PASS. Initial sandbox build-lock denial was recovered by approved escalation. Existing 21+1 targeted tests, 70-test full CI and license evidence remain applicable to unchanged code; no broad tests repeated. `git diff --check` and task context validation PASS. Full report: `research/independent-check.md`.
+- Task 04 is implementation-verified and independently checked, awaiting user review/authorized commit/archive. It does not block selecting the next dependency-ready task. Gate A still requires 03, and downstream hardware acceptance remains NOT_RUN.

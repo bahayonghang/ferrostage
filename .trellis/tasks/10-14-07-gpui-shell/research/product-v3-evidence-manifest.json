@@ -1,0 +1,88 @@
+{
+  "captured_utc": "2026-10-15T02:03:57.465445+00:00",
+  "scope": "Immutable v3 implementation receipts, finalized after v5 freeze. Root native captures and review reports are separate. Command status is extracted from the existing chronological ledger; capture time is not command execution time.",
+  "freeze_sha256": "0c0cd228e6c8f00de75a9976b6ed653d93cb4dc1f745c8f59d44cd9e74ae0e5e",
+  "source_snapshot_sha256": "7504bbec590d2c3df76a125350f8142838dc5f894ca8e76c1ee4802ee871c27a",
+  "files": {
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-freeze.py": {
+      "bytes": 3076,
+      "sha256": "b67da1a77d043303a9a6bf544764fcdce38aac851099482bb0ee794ffa0ffc14"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-native-freeze-v2.json": {
+      "bytes": 72491,
+      "sha256": "87437d3e173a023b7c1e8802374904425d61b174a60c91090127ef57e4e428ee"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-native-freeze-v3.json": {
+      "bytes": 72490,
+      "sha256": "0c0cd228e6c8f00de75a9976b6ed653d93cb4dc1f745c8f59d44cd9e74ae0e5e"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v3-after-shell.rs": {
+      "bytes": 46559,
+      "sha256": "e579664dbeb33267d24e93c2a646956bc28f9f4c088deb1b07721ae74feeada9"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v3-before-shell.rs": {
+      "bytes": 38610,
+      "sha256": "3491c367a137cf06a47d3091bb582594698e8c33f441c8520f2184a65bb2d89d"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v3-build.log": {
+      "bytes": 533,
+      "sha256": "953d39c842e18c1a74228e252ff8126bbef24a4fee9986f7249a7ed4ee9dc2a3"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v3-clippy.log": {
+      "bytes": 533,
+      "sha256": "bc65dde50565c2f2a2395616e1ad6cfa7fc490903aae1ecf6e4307d28439d4ff"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v3-close-green-2.log": {
+      "bytes": 2488,
+      "sha256": "c73466b9a9d490aa1824823cc9ef135aa1c523cbfafd91009099f6c1b6f113f6"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v3-close-green.log": {
+      "bytes": 1368,
+      "sha256": "b218a691f1793e5fbe37d2c4f0a096404b0bdd380d4d4a42f63caa86e6fc39ab"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v3-close-red-retry.log": {
+      "bytes": 2281,
+      "sha256": "61837dc10558042921779732b94b61efde8ba3f0efd2005ab976f3df44d97dea"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v3-close-red.log": {
+      "bytes": 141,
+      "sha256": "af9e170b81f294c34be54258221289031f06ced403e067765ad55f396fa49bd7"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v3-close-repair.md": {
+      "bytes": 7438,
+      "sha256": "14a2a34c694134093e8bda9f50ed77e1b9d2f2024db3659ba879ac603294d624"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v3-close-repair.patch": {
+      "bytes": 13759,
+      "sha256": "a60cd6e38024a49a51a8185e533b912d98331aa27d9db556f8e7a18711041b35"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v3-command-status.txt": {
+      "bytes": 913,
+      "sha256": "2731f69618ed584725eb12905788a7c2d1e4da55581adf2f5e89c9dc8d103768"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v3-diff-check.log": {
+      "bytes": 4161,
+      "sha256": "49fc0d2b321728a5e1b8e1cb312c6c370a50ac356cdd171b86edf53026352926"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v3-evidence.py": {
+      "bytes": 2846,
+      "sha256": "d66baed254c05ae0fabdb4361cd3a89a980941c05b459d0e2b02a540aa6a6ab5"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v3-just-ci.log": {
+      "bytes": 25348,
+      "sha256": "7c4570e6dbe31d46c65556af4b022c62b4c218de47faaba5943313a46c7d38a0"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v3-processes.json": {
+      "bytes": 4,
+      "sha256": "a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v3-source-delta.json": {
+      "bytes": 480,
+      "sha256": "6fd4cd5b9f4952e0a6863f1fc8e65e4c72d277815860fdbce7fda06be985ee9e"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-version-manifests.py": {
+      "bytes": 3082,
+      "sha256": "2b3e969b20dc5989a63b1789f51b3dcf07e152e9cc041ea208da824b0e02baab"
+    }
+  }
+}

@@ -1,0 +1,56 @@
+warning: Cargo.toml: `lints.clippy.large-stack-arrays` is deprecated in favor of `lints.clippy.large_stack_arrays` and will not work in a future edition
+warning: `harfrust` (manifest) generated 1 warning
+ Downloading crates ...
+  Downloaded zerocopy-derive v0.8.47
+  Downloaded zerocopy v0.8.47
+  Downloaded clap v4.6.0
+  Downloaded font-types v0.12.0
+   Compiling zerocopy v0.8.47
+   Compiling either v1.15.0
+   Compiling regex-syntax v0.8.10
+   Compiling memchr v2.8.0
+   Compiling num-traits v0.2.19
+   Compiling cc v1.2.57
+   Compiling serde_json v1.0.149
+   Compiling clap_builder v4.6.0
+   Compiling once_cell v1.21.4
+   Compiling smallvec v1.15.1
+   Compiling bitflags v2.11.0
+   Compiling zerocopy-derive v0.8.47
+   Compiling serde v1.0.228
+   Compiling bytemuck v1.25.0
+   Compiling itertools v0.13.0
+   Compiling rayon v1.11.0
+   Compiling font-types v0.12.0
+   Compiling read-fonts v0.41.0
+   Compiling regex-automata v0.4.14
+   Compiling alloca v0.4.0
+   Compiling tinytemplate v1.2.1
+   Compiling criterion-plot v0.8.2
+   Compiling plotters v0.3.7
+   Compiling clap v4.6.0
+   Compiling regex v1.12.3
+   Compiling half v2.7.1
+   Compiling ciborium-ll v0.2.2
+   Compiling ciborium v0.2.2
+   Compiling criterion v0.8.2
+   Compiling harfrust v0.12.0 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\vendor\harfrust)
+error[E0603]: function `find_best_cmap_subtable` is private
+   --> src\hb\charmap.rs:1:25
+    |
+  1 | use crate::hb::tables::{find_best_cmap_subtable, SelectedCmapSubtable, TableRanges};
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^ private function
+    |
+note: the function `find_best_cmap_subtable` is defined here
+   --> src\hb\tables.rs:268:1
+    |
+268 | / fn find_best_cmap_subtable<'a>(
+269 | |     cmap: &Cmap<'a>,
+270 | | ) -> Option<(u16, PlatformId, u16, CmapSubtable<'a>)> {
+...   |
+286 | |         .or_else(|| find_cmap_subtable(cmap, PlatformId::Macintosh, 0))
+287 | | }
+    | |_^
+
+For more information about this error, try `rustc --explain E0603`.
+error: could not compile `harfrust` (lib test) due to 1 previous error

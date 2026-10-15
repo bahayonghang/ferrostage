@@ -1,0 +1,74 @@
+[
+    {
+        "command":  "cargo update --manifest-path cache/gpui-maintenance-candidate/Cargo.toml -p harfrust@0.12.0 --offline",
+        "name":  "final-root-lock",
+        "log":  ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-final-root-lock.log",
+        "exit":  0
+    },
+    {
+        "command":  "cargo update --manifest-path cache/gpui-maintenance-candidate/vendor/gpui/Cargo.toml -p harfrust@0.12.0 --offline",
+        "name":  "final-gpui-lock",
+        "log":  ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-final-gpui-lock.log",
+        "exit":  0
+    },
+    {
+        "command":  "cargo update --manifest-path cache/gpui-maintenance-candidate/validation/wgpu-consumer/Cargo.toml -p harfrust@0.12.0 --offline",
+        "name":  "final-wgpu-lock",
+        "log":  ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-final-wgpu-lock.log",
+        "exit":  0
+    },
+    {
+        "command":  "cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/harfrust/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --lib --locked --offline",
+        "name":  "final-harfrust-tests",
+        "log":  ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-final-harfrust-tests.log",
+        "exit":  0
+    },
+    {
+        "command":  "cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/gpui/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --no-default-features --lib svg_renderer --locked --offline",
+        "name":  "final-gpui-tests",
+        "log":  ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-final-gpui-tests.log",
+        "exit":  0
+    },
+    {
+        "command":  "cargo test --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --tests --locked --offline",
+        "name":  "final-root-tests",
+        "log":  ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-final-root-tests.log",
+        "exit":  0
+    },
+    {
+        "command":  "cargo clippy --manifest-path cache/gpui-maintenance-candidate/vendor/harfrust/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --lib --locked --offline -- -D warnings",
+        "name":  "final-harfrust-clippy",
+        "log":  ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-final-harfrust-clippy.log",
+        "exit":  101
+    },
+    {
+        "command":  "cargo clippy --manifest-path cache/gpui-maintenance-candidate/vendor/gpui/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --no-default-features --lib --locked --offline -- -D warnings",
+        "name":  "final-gpui-clippy",
+        "log":  ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-final-gpui-clippy.log",
+        "exit":  0
+    },
+    {
+        "command":  "cargo clippy --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --all-targets --locked --offline -- -D warnings",
+        "name":  "final-root-clippy",
+        "log":  ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-final-root-clippy.log",
+        "exit":  0
+    },
+    {
+        "command":  "cargo check --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --all-targets --locked --offline",
+        "name":  "final-root-typecheck",
+        "log":  ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-final-root-typecheck.log",
+        "exit":  0
+    },
+    {
+        "command":  "cargo check --manifest-path cache/gpui-maintenance-candidate/validation/wgpu-consumer/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --locked --offline",
+        "name":  "final-wgpu-typecheck",
+        "log":  ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-final-wgpu-typecheck.log",
+        "exit":  0
+    },
+    {
+        "command":  "cargo build --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --locked --offline",
+        "name":  "final-root-build",
+        "log":  ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-final-root-build.log",
+        "exit":  0
+    }
+]

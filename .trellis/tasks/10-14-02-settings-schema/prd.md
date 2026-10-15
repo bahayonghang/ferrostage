@@ -31,15 +31,17 @@
 
 ## Acceptance Criteria
 
-- [ ] `from_toml("")` 得到的 `Settings` 与 `Settings::default()` 相等；`toml::to_string(&Settings::default())` 可被 `from_toml` 往返并相等。
-- [ ] 删除任意一节的 TOML 解析成功且该节为默认。
-- [ ] `timer.target_minutes = 0` 解析成功、值回退为 45、告警包含键名。
-- [ ] 顶层future、general未知键、monitors元素未知字段经改已知值/save均保留；未来版本拒save且哈希不变。
-- [ ] target_minutes非法类型仅单项回退，缺省节app补全，check-config不改盘；save失败旧文件完整。
-- [ ] 语法错误文件 load 后生成 `settings.toml.broken-*`，返回默认值。
-- [ ] `save` 在目标目录不存在时成功；崩溃模拟（写 tmp 后不 rename）不破坏既有 `settings.toml`。
-- [ ] `ferrostage check-config <path>` 行为符合 S-10。
-- [ ] `ferrostage-settings` 不依赖 `ferrostage-platform` 或 GPUI；`just ci` 全绿。
+- [x] `from_toml("")` 得到的 `Settings` 与 `Settings::default()` 相等；`toml::to_string(&Settings::default())` 可被 `from_toml` 往返并相等。
+- [x] 删除任意一节的 TOML 解析成功且该节为默认。
+- [x] `timer.target_minutes = 0` 解析成功、值回退为 45、告警包含键名。
+- [x] 顶层future、general未知键、monitors元素未知字段经改已知值/save均保留；未来版本拒save且哈希不变。
+- [x] target_minutes非法类型仅单项回退，缺省节app补全，check-config不改盘；save失败旧文件完整。
+- [x] 语法错误文件 load 后生成 `settings.toml.broken-*`，返回默认值。
+- [x] `save` 在目标目录不存在时成功；崩溃模拟（写 tmp 后不 rename）不破坏既有 `settings.toml`。
+- [x] `ferrostage check-config <path>` 行为符合 S-10。
+- [x] `ferrostage-settings` 不依赖 `ferrostage-platform` 或 GPUI；`just ci` 全绿。
+
+2026-10-14 实现者验证证据：`research/implementation-review-2026-10-14.md`、`research/ci.log`（修复前57个测试）、`research/windows-persistence.log`、`research/cli-probe.log`。独立trellis-check已完成：`research/check-review-2026-10-14.md`、`research/check-ci.log`（修复后59个测试）、`research/check-verified-source-sha256.json`。修复非法快捷键数组逐action回退，显式空数组仍为解绑；本勾选不代表提交/归档或父Gate A全项通过。
 
 ## Dependencies
 

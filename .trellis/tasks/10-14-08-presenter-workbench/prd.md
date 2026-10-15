@@ -26,7 +26,9 @@
 - **W-9** ManagedRenderImage由UI拥有并显式释放；±2与实际字节预算驱动淘汰，替换/关闭/代际/DPI统一回收。debug_overlay由02定义，08实现字节/帧时间，09控件。
 - **W-10** 08投影组装器精确匹配generation/page/crop/target才补snapshot.visual；notes请求/cache仅讲者，真实隔离在08验收，11通过同入口扩展媒体。
 
-- **W-11** 08负责首Load的05metadata/结构→06 builder→LoadedDocument/core SlideMap/crop接线；文档菜单五layout覆盖、独立notes识别、physical_pages与diagnostic，同代ApplyDocumentView保留stage/timer，错build保旧。
+- **W-11** 08负责首Load的05metadata/结构→06 builder→LoadedDocument/core SlideMap/crop接线；文档菜单五layout覆盖、独立notes识别、physical_pages与diagnostic，同generation/同physicalcount ReconfigureDocument保留stage/timer，错build保旧。
+
+- **W-12** 遵循根 DESIGN.md（R-45）：统一Claude风格token、浅/深配色、系统字体、完整控件状态与键盘焦点；原生截图/对比度/尺寸验证记录本任务research。
 
 ## Acceptance Criteria
 
@@ -37,6 +39,8 @@
 - [ ] 连续翻页 200 次后进程 GPU 专用显存回落到基线 ±15 MiB（任务管理器/PIX 记录到 `research/vram-report.md`）。
 - [ ] 计时器在渲染阻塞（人为 sleep 渲染线程 2 s）期间读秒不偏差。
 - [ ] 观众视图模块 `rg "SlideNotes|notes_crop|LoadedDocument"` 无命中；`docs/feature-parity.md` 仅已验条目标Implemented，M1 P0和M2 P1分开；`just ci` 全绿。
+
+- [ ] 本任务界面在DESIGN.md各窗口尺寸及双主题下完成原生截图、键盘/焦点、hover/disabled/error/loading、字体回退和对比度检查；未执行不勾选。
 
 ## Dependencies
 

@@ -1,0 +1,23 @@
+{
+  "capturedAt": "2026-10-15T01:59:06.799Z",
+  "window": {
+    "app": "process:D:\\mbx-cache\\targets\\v1\\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0\\debug\\ferrostage.exe",
+    "id": 75373506,
+    "title": "演示验收_Claude主题_中文字体回退_超长文件名不应覆盖开始演示按钮_2026.pdf — 准备就绪 — FerroStage"
+  },
+  "accessibility": {
+    "focused_element": "7 application FerroStage 讲者窗口",
+    "tree": "Window: \"FerroStage — 未打开文档 — FerroStage\", App: ferrostage.exe.\n\t0 region FerroStage — 未打开文档 — FerroStage Secondary Actions: Raise\n\t\t1 title bar (settable, string) Value: 演示验收_Claude主题_中文字体回退_超长文件名不应覆盖开始演示按钮_2026.pdf — 准备就绪 — FerroStage\n\t\t\t2 menu bar System ID: MenuBar\n\t\t\t\t3 menu item System\n\t\t\t4 button Minimize\n\t\t\t5 button Maximize\n\t\t\t6 button Close\n\t\t7 application FerroStage 讲者窗口\n\t\t\t8 button 打开 PDF ID: open\n\t\t\t9 button 设置 ID: settings\n\t\t\t10 button 交换屏幕 ID: swap\n\t\t\t11 button 演示验收_Claude主题_中文字体回退_超长文件名不应覆盖开始演示按钮_2026.pdf ID: recent-0\n\t\t\t12 button 开始演示 ID: start\n\nThe focused UI element is 7 application FerroStage 讲者窗口."
+  },
+  "screenshots": [
+    {
+      "file": "v5-relaunch-saved-presenter-a-0.jpg",
+      "sha256": "2b42087c4880bb3004463c5cdbb86b584ae3e5e946aecf7412b9d323a1653c4e",
+      "id": "screenshot-0",
+      "width": 1323,
+      "height": 929,
+      "originX": -2105,
+      "originY": 38
+    }
+  ]
+}

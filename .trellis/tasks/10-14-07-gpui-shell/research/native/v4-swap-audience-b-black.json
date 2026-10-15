@@ -1,0 +1,22 @@
+{
+  "capturedAt": "2026-10-15T01:39:40.155Z",
+  "window": {
+    "app": "process:D:\\mbx-cache\\targets\\v1\\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0\\debug\\ferrostage.exe",
+    "id": 51186720
+  },
+  "accessibility": {
+    "focused_element": "0 region Secondary Actions: Raise",
+    "tree": "Window: \"\", App: ferrostage.exe.\n\t0 region Secondary Actions: Raise\n\nThe focused UI element is 0 region Secondary Actions: Raise."
+  },
+  "screenshots": [
+    {
+      "file": "v4-swap-audience-b-black-0.jpg",
+      "sha256": "be1d1f717c620cef9960f201ffe0a9252351beda6ce9490f9e3a1a291a5ea825",
+      "id": "screenshot-0",
+      "width": 2048,
+      "height": 1152,
+      "originX": 0,
+      "originY": 0
+    }
+  ]
+}

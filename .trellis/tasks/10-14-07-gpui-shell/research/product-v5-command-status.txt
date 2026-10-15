@@ -1,0 +1,20 @@
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib v5_ --locked --offline (focused-control/import/Idle red)
+V5 RED EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib v5_ --locked --offline (input green plus topology recovery red)
+V5 TOPOLOGY RED EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib v5_ --locked --offline (topology green plus Jump precedence red)
+V5 JUMP RED EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib v5_jump_numeric --locked --offline (configured numeric conflict red)
+V5 JUMP NUMERIC RED EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib --locked --offline (v5 complete repair)
+V5 GREEN EXIT: 0
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib discards --locked --offline (abandoned Jump preview red)
+V5 PREVIEW RED EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib --locked --offline (v5 F1-F6 complete green)
+V5 GREEN FINAL EXIT: 0
+RUNNING: just ci (v5 F1-F6)
+V5 JUST CI EXIT: 0
+RUNNING: cargo clippy -p ferrostage-app -p ferrostage-ui --all-features --all-targets --locked --offline -- -D warnings (v5)
+V5 CLIPPY EXIT: 0
+RUNNING: cargo build -p ferrostage-app --features gpui,pdfium --locked --offline (v5 freeze)
+V5 NATIVE BUILD EXIT: 0

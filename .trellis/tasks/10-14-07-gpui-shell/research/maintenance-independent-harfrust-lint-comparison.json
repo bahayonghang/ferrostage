@@ -1,0 +1,57 @@
+{
+  "candidate_diagnostics": [
+    [
+      "function `shape` is never used\r",
+      "src\\hb\\face.rs:439:8\r"
+    ],
+    [
+      "manual implementation of `midpoint` which can overflow\r",
+      "src\\hb\\aat\\layout_trak_table.rs:157:28\r"
+    ],
+    [
+      "this block may be rewritten with the `?` operator\r",
+      "src\\hb\\glyph_metrics.rs:199:16\r"
+    ],
+    [
+      "this block may be rewritten with the `?` operator\r",
+      "src\\hb\\glyph_metrics.rs:247:27\r"
+    ],
+    [
+      "this block may be rewritten with the `?` operator\r",
+      "src\\hb\\unicode.rs:614:9\r"
+    ],
+    [
+      "this block may be rewritten with the `?` operator\r",
+      "src\\hb\\unicode.rs:631:9\r"
+    ]
+  ],
+  "unmodified_baseline_diagnostics": [
+    [
+      "function `shape` is never used\r",
+      "src\\hb\\face.rs:439:8\r"
+    ],
+    [
+      "manual implementation of `midpoint` which can overflow\r",
+      "src\\hb\\aat\\layout_trak_table.rs:157:28\r"
+    ],
+    [
+      "this block may be rewritten with the `?` operator\r",
+      "src\\hb\\glyph_metrics.rs:199:16\r"
+    ],
+    [
+      "this block may be rewritten with the `?` operator\r",
+      "src\\hb\\glyph_metrics.rs:247:27\r"
+    ],
+    [
+      "this block may be rewritten with the `?` operator\r",
+      "src\\hb\\unicode.rs:614:9\r"
+    ],
+    [
+      "this block may be rewritten with the `?` operator\r",
+      "src\\hb\\unicode.rs:631:9\r"
+    ]
+  ],
+  "exact_diagnostics_match": true,
+  "candidate_exit": 101,
+  "baseline_exit": 101
+}

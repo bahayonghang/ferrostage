@@ -1,0 +1,106 @@
+    Updating crates.io index
+     Locking 1 package to highest compatible version
+    Updating fontdb v0.23.0 -> v0.24.0
+ Downloading crates ...
+  Downloaded rangemap v1.7.1
+  Downloaded swash v0.2.7
+   Compiling unicode-ident v1.0.24
+   Compiling cfg-if v1.0.4
+   Compiling zerocopy v0.8.48
+   Compiling find-msvc-tools v0.1.9
+   Compiling simd-adler32 v0.3.9
+   Compiling crc32fast v1.5.0
+   Compiling shlex v1.3.0
+   Compiling windows-link v0.2.1
+   Compiling autocfg v1.5.0
+   Compiling adler2 v2.0.1
+   Compiling serde_json v1.0.149
+   Compiling memchr v2.8.0
+   Compiling either v1.15.0
+   Compiling clap_lex v1.1.0
+   Compiling anstyle v1.0.14
+   Compiling itoa v1.0.18
+   Compiling quote v1.0.45
+   Compiling serde_core v1.0.228
+   Compiling libm v0.2.16
+   Compiling serde v1.0.228
+   Compiling zmij v1.0.21
+   Compiling winapi v0.3.9
+   Compiling regex-syntax v0.8.10
+   Compiling ciborium-io v0.2.2
+   Compiling proc-macro2 v1.0.106
+   Compiling slotmap v1.1.1
+   Compiling windows-sys v0.61.2
+   Compiling miniz_oxide v0.8.9
+   Compiling clap_builder v4.6.0
+   Compiling fdeflate v0.3.7
+   Compiling num-traits v0.2.19
+   Compiling itertools v0.13.0
+   Compiling cc v1.2.60
+   Compiling cast v0.3.0
+   Compiling log v0.4.29
+   Compiling bitflags v1.3.2
+   Compiling arrayref v0.3.9
+   Compiling tinyvec_macros v0.1.1
+   Compiling strict-num v0.1.1
+   Compiling smallvec v1.15.1
+   Compiling oorandom v11.1.5
+   Compiling zeno v0.3.3
+   Compiling winapi-util v0.1.11
+   Compiling yazi v0.2.1
+   Compiling anes v0.1.6
+   Compiling regex-automata v0.4.14
+   Compiling tinyvec v1.11.0
+   Compiling arrayvec v0.7.6
+   Compiling bitflags v2.11.1
+   Compiling memmap2 v0.9.10
+   Compiling self_cell v1.2.2
+   Compiling syn v2.0.117
+   Compiling core_maths v0.1.1
+   Compiling same-file v1.0.6
+   Compiling flate2 v1.1.9
+   Compiling linebender_resource_handle v0.1.1
+   Compiling unicode-segmentation v1.13.2
+   Compiling smol_str v0.3.6
+   Compiling fontdb v0.24.0
+   Compiling sys-locale v0.3.2
+   Compiling unicode-linebreak v0.1.5
+   Compiling walkdir v2.5.0
+   Compiling unicode-bidi v0.3.18
+   Compiling alloca v0.4.0
+   Compiling rangemap v1.7.1
+   Compiling unicode-script v0.5.8
+   Compiling page_size v0.6.0
+   Compiling criterion-plot v0.8.2
+   Compiling png v0.17.16
+   Compiling clap v4.6.1
+   Compiling rustc-hash v2.1.2
+   Compiling regex v1.12.3
+   Compiling bytemuck_derive v1.10.2
+   Compiling zerocopy-derive v0.8.48
+   Compiling serde_derive v1.0.228
+   Compiling bytemuck v1.25.0
+   Compiling font-types v0.11.3
+   Compiling tiny-skia-path v0.11.4
+   Compiling read-fonts v0.37.0
+   Compiling tiny-skia v0.11.4
+   Compiling tinytemplate v1.2.1
+   Compiling half v2.7.1
+   Compiling ciborium-ll v0.2.2
+   Compiling ciborium v0.2.2
+   Compiling criterion v0.8.2
+   Compiling skrifa v0.40.0
+   Compiling harfrust v0.5.2
+   Compiling swash v0.2.7
+   Compiling cosmic-text v0.19.0 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\vendor\cosmic-text)
+    Finished `test` profile [optimized + debuginfo] target(s) in 22.94s
+     Running unittests src\lib.rs (cache/gpui-maintenance-candidate/target\debug\deps\cosmic_text-b8d6cd93e7a2689e.exe)
+
+running 4 tests
+test glyph_cache::test_subpixel_bins ... ok
+test line_ending::test_line_iter ... ok
+test swash::test::no_coord_leakage_across_fonts ... ok
+test font::test::test_fonts_load_time ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.54s
+

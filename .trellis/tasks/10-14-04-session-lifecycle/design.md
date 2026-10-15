@@ -16,3 +16,14 @@ DocumentDescriptor先只gen/page_count，06扩SlideMap，10替换旧bytes提交�
 
 ## 错误、回滚
 空文档/非法stage/无Audience/陈旧generation/非法frame均typed error，不半更新状态。Bgra含opaque像素而不增IO依赖。回滚共享snapshot/command API同时回滚document；不能让两种stage行为并存。
+
+## Implementation decisions (2026-10-14)
+
+- Repository caller scan found `apply` only in core tests; document only calls `audience_snapshot`. Replace `apply` with `apply_at(command, Instant)` for every command. No compatibility clock, fabricated timestamp, or additional `TimeRequired` error is necessary. `elapsed_at` reads only its argument; tests inject offsets without sleeping.
+- `SwapScreens` returns `ScreenSwapRequiresCoordinator` without mutating core. Task 07 must intercept this intent and perform the single settings/window transaction.
+- `CommitDocument(DocumentDescriptor)` validates nonempty page count and strictly newer generation before committing metadata. The temporary `StageShadowDocument` command delegates to that same path using the current page count, and never stores bytes; task 10 removes this bridge.
+- `BgraFrame` owns immutable pixels behind a checked packed-stride constructor; task05 refines private storage to `Arc<Vec<u8>>`, accepts an owned Vec and exposes only a read-only slice to avoid a measured raster export copy. Frame clones share storage; dimensions, stride and length are read-only. Debug output contains geometry only. `AudienceVisual` carries a page frame and source-free media frames; actual assembly and rendering remain tasks 08/11.
+
+### Checked crop setter compatibility
+
+Task06 independent review found the pre-existing public PresentationState::set_slide_crop bypassed descriptor crop validation. Preserve the method with Result<(), CoreError>, reuse exactly the descriptor crop predicate/error, and reject invalid geometry without any state mutation; the sole existing lifecycle-test caller must handle the result. This closes the direct input path without changing valid crop semantics. Task08 still uses ReconfigureDocument for document viewing options so map/crop, timer/stage and preview are updated atomically. No new unvalidated crop entry point.

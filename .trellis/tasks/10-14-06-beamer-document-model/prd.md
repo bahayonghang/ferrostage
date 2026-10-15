@@ -28,14 +28,14 @@
 
 ## Acceptance Criteria
 
-- [ ] 夹具 A（16:9 常规 + `\pause`）：`SlideMap` 逻辑页数等于 frame 数，步进数等于物理页数。
-- [ ] 夹具 B（`show notes on second screen=right`）：`layout == Right`，`slide_crop == LEFT_HALF`，`notes_crop == Some(RIGHT_HALF)`。
-- [ ] 夹具 C（`notes:` 标签独立页）：翻页序列跳过全部备注页，document按content物理步的有序NotesMapping正确关联。
-- [ ] 自建D对已记录字段路径的媒体支持子集还原参数，未知结构诊断。
-- [ ] 8:9/2:3、宽图/竖版反例、手动覆盖、缺失/非数字/重号/多备注/孤立notes均有期望模型。
-- [ ] 手动覆盖 `NotesLayout::None` 时拼合页按整页投影。
-- [ ] 有后继位置prev(next(p))=p，有前驱next(prev(p))=p；首尾钳制单测，逻辑逆向只比组，导航全为content且在范围内。
-- [ ] `format!("{snapshot:?}")` 不包含任何夹具备注文本；`just ci` 全绿。
+- [x] 夹具 A（16:9 常规 + `\pause`）：`SlideMap` 逻辑页数等于 frame 数，步进数等于物理页数。
+- [x] 夹具 B（`show notes on second screen=right`）：`layout == Right`，`slide_crop == LEFT_HALF`，`notes_crop == Some(RIGHT_HALF)`。
+- [x] 夹具 C（`notes:` 标签独立页）：翻页序列跳过全部备注页，document按content物理步的有序NotesMapping正确关联。
+- [x] 自建D对已记录字段路径的媒体支持子集还原参数，未知结构诊断。
+- [x] 8:9/2:3、宽图/竖版反例、手动覆盖、缺失/非数字/重号/多备注/孤立notes均有期望模型。
+- [x] 手动覆盖 `NotesLayout::None` 时拼合页按整页投影。
+- [x] 有后继位置prev(next(p))=p，有前驱next(prev(p))=p；首尾钳制单测，逻辑逆向只比组，导航全为content且在范围内。
+- [x] `format!("{snapshot:?}")` 不包含任何夹具备注文本；`just ci` 全绿。
 
 ## Dependencies
 
@@ -44,3 +44,12 @@
 ## Out of Scope
 
 播放媒体（`11`）；讲者端备注渲染（`08`）；Beamer `animate`。
+
+
+## Implementation evidence
+
+All task06 criteria above are verified at the model/native boundary; see research/verification.md and media-field-contract.md. Actual Beamer3.72 second-screen labels repeat1/1 despite two source frames; the PDF is unchanged and physical_pages recovers two groups. This does not establish native UI/physical monitor/media playback acceptance. No commit, push, archive or journal operation was performed.
+
+## Independent review
+
+Independent review passed after two media diagnostic fixes, the coordinated checked crop-setter API repair and additional reconfiguration coverage. Current evidence: research/independent-check.md and independent-check-manifest.json; just ci128/native63, native clippy and all-feature typecheck PASS. No unresolved task06 finding remains. Task stays in_progress and uncommitted; UI/playback/physical-monitor acceptance is not inferred.

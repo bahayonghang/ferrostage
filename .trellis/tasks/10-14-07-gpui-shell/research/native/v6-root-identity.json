@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-15T02:31:13.961557+00:00",
+  "source_count": 602,
+  "source_mismatches": [],
+  "exe_sha256": "d4f2e653ee793176b384034797ad99e1ad665aa0da6535a454ba88a36b055074",
+  "exe_matches": true,
+  "dll_sha256": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118",
+  "dll_matches": true,
+  "freeze_sha256": "b7df3a62ff2b1b7212924e47f79d72468ff86356265a1aaf650c0694adb6d7ea"
+}

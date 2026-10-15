@@ -1,0 +1,5 @@
+{
+  "fix": "root fixture writer introduced CRCRLF; repaired from original backup using UTF8 bytes; first run fallback evidence not shortcut/error-recent evidence",
+  "tomllib": "PASS",
+  "sha256": "70d9694994ed4d63a88a07f313f567791fadb1a03b579c13aaa37b1f7bd84f4c"
+}

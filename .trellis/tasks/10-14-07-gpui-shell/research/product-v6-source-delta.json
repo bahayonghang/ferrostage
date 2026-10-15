@@ -1,0 +1,17 @@
+{
+  "source_changes": {
+    "crates/ferrostage-ui/src/presenter.rs": {
+      "v5": "a42c0cbe5ed6ec594354d30f42ecaec0058be57cbce6c1a7e54e3ffd569eb6f9",
+      "v6": "49e3662d3e59ed1eb29b01aff95b808b1d82febe34eea2d0624307af4375b6c0"
+    },
+    "crates/ferrostage-ui/src/shell.rs": {
+      "v5": "3ef506a2ebf70b62f4589c711ebf8a429e4e15c746233bb5e3fa6b7d57857099",
+      "v6": "4ec7f6738d5a83685e469ac5a3d7ffb3aa802a425bc0a70ebc61234410dcdfb0"
+    }
+  },
+  "unchanged_count": 600,
+  "new_or_removed": [],
+  "lock_unchanged": true,
+  "all_core_vendor_inputs_unchanged": true,
+  "patch_sha256": "69bed99db29112e2a948fc76896fbc227b5d8776e034f1de17a41baca63d5300"
+}
