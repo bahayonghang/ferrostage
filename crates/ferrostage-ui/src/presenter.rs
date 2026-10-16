@@ -377,13 +377,24 @@ impl Presenter {
             .flex()
             .items_center()
             .child(self.timer_panel(p));
-        let actions = div()
+        let mut actions = div()
             .id("presenter-actions")
             .debug_selector(|| "presenter-actions".into())
             .flex()
             .items_center()
             .gap(px(8.))
-            .flex_shrink_0()
+            .flex_shrink_0();
+        if stage != SessionStage::Idle {
+            actions = actions.child(self.button(
+                "home".into(),
+                l.text("home").into(),
+                !busy,
+                false,
+                Intent::Home,
+                p,
+            ));
+        }
+        actions = actions
             .child(self.button(
                 "open".into(),
                 l.text("open").into(),

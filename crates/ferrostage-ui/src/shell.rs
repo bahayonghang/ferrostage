@@ -515,6 +515,7 @@ impl Shell {
                 }
             }
             Intent::Stop => self.stop(cx),
+            Intent::Home => self.return_home(cx),
             Intent::Start => self.start(cx),
             Intent::Swap => self.swap(cx),
             Intent::Open | Intent::Settings | Intent::Jump | Intent::Displays => {
@@ -1241,6 +1242,44 @@ impl Shell {
                 }
             }
         }
+        cx.notify();
+    }
+
+    fn return_home(&mut self, cx: &mut Context<Self>) {
+        if self.state.stage() == SessionStage::Idle
+            || self.loading
+            || self.pending.is_some()
+            || self.preference_change.is_some()
+            || self.reload_busy()
+        {
+            return;
+        }
+        let generation = self.state.generation();
+        if self.state.stage() == SessionStage::Presenting {
+            self.stop(cx);
+        } else {
+            self.close_identify(cx);
+            self.cancel_focus();
+            self.abandon_modal();
+        }
+        self.media.stop();
+        if let Err(error) = self.state.apply_at(Command::CloseDocument, Instant::now()) {
+            self.error = Some(error.to_string());
+            cx.notify();
+            return;
+        }
+        self.path = None;
+        self.workbench.document = None;
+        self.workbench.clear_frames();
+        if let Err(error) = self.replace_pdf_watch(&self.settings.settings.hot_reload.clone()) {
+            self.warnings.push(error);
+        }
+        if generation.0 != 0
+            && let Ok(worker) = &self.renderer
+        {
+            let _ = worker.retire_generation(generation);
+        }
+        self.publish(false, cx);
         cx.notify();
     }
 
@@ -3097,7 +3136,8 @@ mod tests {
         handle: AnyWindowHandle,
         cx: &mut TestAppContext,
     ) {
-        cx.simulate_keystrokes(handle, "tab enter");
+        // Home precedes Open once a document is loaded.
+        cx.simulate_keystrokes(handle, "tab tab enter");
         assert_open_waits_for_owner(shell, handle, cx);
     }
 
@@ -3430,7 +3470,7 @@ mod tests {
             cx.notify();
         });
         redraw(handle, cx);
-        cx.simulate_keystrokes(handle, "tab");
+        cx.simulate_keystrokes(handle, "tab tab"); // Home, then Open.
         redraw(handle, cx);
         for key in ["space", "enter"] {
             cx.simulate_keystrokes(handle, key);
@@ -3494,7 +3534,7 @@ mod tests {
         visual.simulate_click(bounds.center(), gpui::Modifiers::default());
         assert!(shell.read_with(cx, |shell, _| shell.pending.is_none()));
 
-        cx.simulate_keystrokes(handle, "tab"); // Return to Open.
+        cx.simulate_keystrokes(handle, "tab tab"); // Home, then Open.
         redraw(handle, cx);
         shell.update(cx, |shell, cx| {
             shell.error = None;
@@ -4568,12 +4608,12 @@ mod tests {
             let title = visual.debug_bounds("document-title").unwrap();
             let progress = visual.debug_bounds("workbench-progress").unwrap();
             let timer = visual.debug_bounds("presenter-timer").unwrap();
-            let open = visual.debug_bounds("open").unwrap();
+            let home = visual.debug_bounds("home").unwrap();
             assert!(
                 same_row(title.origin.y, progress.origin.y)
                     && same_row(title.origin.y, timer.origin.y)
-                    && same_row(title.origin.y, open.origin.y),
-                "title {title:?} progress {progress:?} timer {timer:?} open {open:?}"
+                    && same_row(title.origin.y, home.origin.y),
+                "title {title:?} progress {progress:?} timer {timer:?} home {home:?}"
             );
             let notes = visual.debug_bounds("notes-panel").unwrap();
             let right = visual.debug_bounds("next-notes-pane").unwrap();
@@ -4601,11 +4641,86 @@ mod tests {
         redraw(handle, cx);
         let mut visual = gpui::VisualTestContext::from_window(handle, cx);
         let title = visual.debug_bounds("document-title").unwrap();
-        let open = visual.debug_bounds("open").unwrap();
-        assert!(open.origin.y > title.bottom());
+        let home = visual.debug_bounds("home").unwrap();
+        assert!(home.origin.y > title.bottom());
         let current = visual.debug_bounds("current-pane").unwrap();
         let next = visual.debug_bounds("next-notes-pane").unwrap();
         assert!(next.origin.y >= current.bottom());
         assert!(current.size.height > px(40.));
+    }
+
+    #[gpui::test]
+    fn idle_presenter_has_no_home_button(cx: &mut TestAppContext) {
+        let (_shell, handle) = input_presenter(cx);
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        assert!(visual.debug_bounds("home").is_none());
+        assert!(visual.debug_bounds("welcome-open").is_some());
+    }
+
+    #[gpui::test]
+    fn home_returns_to_welcome_and_keeps_recent_files(cx: &mut TestAppContext) {
+        let (shell, handle) = workbench_fixture(cx);
+        shell.update(cx, |shell, cx| {
+            shell.path = Some(PathBuf::from("raster.pdf"));
+            shell.settings.settings.general.recent_files = vec!["kept.pdf".into()];
+            shell.loading = true;
+            cx.notify();
+        });
+        redraw(handle, cx);
+        click_control(handle, "home", cx);
+        shell.read_with(cx, |shell, _| {
+            assert_eq!(shell.state.stage(), SessionStage::Ready);
+            assert_eq!(shell.path, Some(PathBuf::from("raster.pdf")));
+        });
+        shell.update(cx, |shell, cx| {
+            shell.loading = false;
+            cx.notify();
+        });
+        redraw(handle, cx);
+        click_control(handle, "home", cx);
+        shell.read_with(cx, |shell, _| {
+            assert_eq!(shell.state.stage(), SessionStage::Idle);
+            assert!(shell.path.is_none());
+            assert!(shell.workbench.document.is_none());
+            assert!(shell.workbench.frames.is_empty());
+            assert_eq!(shell.state.generation().0, 0);
+            assert_eq!(shell.settings.settings.general.recent_files, ["kept.pdf"]);
+        });
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        assert!(visual.debug_bounds("welcome-open").is_some());
+        assert!(visual.debug_bounds("home").is_none());
+    }
+
+    #[gpui::test]
+    fn home_from_presentation_closes_the_audience(cx: &mut TestAppContext) {
+        let (shell, handle) = workbench_fixture(cx);
+        let audience = shell.update(cx, |shell, cx| {
+            shell.path = Some(PathBuf::from("raster.pdf"));
+            shell
+                .state
+                .apply_at(
+                    Command::StartPresentation {
+                        audience_available: true,
+                    },
+                    Instant::now(),
+                )
+                .unwrap();
+            let audience = test_window(shell, true, cx);
+            let handle = audience.handle;
+            shell.audience = Some(audience);
+            cx.notify();
+            handle
+        });
+        redraw(handle, cx);
+        click_control(handle, "home", cx);
+        shell.read_with(cx, |shell, _| {
+            assert_eq!(shell.state.stage(), SessionStage::Idle);
+            assert!(shell.path.is_none());
+            assert!(shell.workbench.document.is_none());
+            assert!(shell.audience.is_none());
+        });
+        assert!(!cx.windows().contains(&audience));
     }
 }

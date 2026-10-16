@@ -53,6 +53,7 @@ pub(crate) enum Intent {
     White,
     Swap,
     Open,
+    Home,
     Settings,
     Jump,
     Escape,
