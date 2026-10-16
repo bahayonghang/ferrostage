@@ -1,6 +1,6 @@
 {
   "client_date": "2026-10-15",
-  "status": "prepared_before_archive",
+  "status": "archived_and_verified",
   "expected_mutations": [
     "task.json status/completedAt",
     "runtime JSONL context paths only"
@@ -1366,5 +1366,31 @@
         }
       ]
     }
+  ],
+  "unchanged_files": 255,
+  "unchanged_research_files": 243,
+  "context_path_repairs": [
+    ".trellis/tasks/archive/2026-10/10-14-08-presenter-workbench/check.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-08-presenter-workbench/implement.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-09-settings-ui/check.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-09-settings-ui/implement.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-10-hot-reload/check.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-10-hot-reload/implement.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-11-media-playback/check.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-11-media-playback/implement.jsonl"
+  ],
+  "expected_metadata_mutations": [
+    ".trellis/tasks/archive/2026-10/10-14-08-presenter-workbench/check.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-08-presenter-workbench/implement.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-08-presenter-workbench/task.json",
+    ".trellis/tasks/archive/2026-10/10-14-09-settings-ui/check.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-09-settings-ui/implement.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-09-settings-ui/task.json",
+    ".trellis/tasks/archive/2026-10/10-14-10-hot-reload/check.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-10-hot-reload/implement.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-10-hot-reload/task.json",
+    ".trellis/tasks/archive/2026-10/10-14-11-media-playback/check.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-11-media-playback/implement.jsonl",
+    ".trellis/tasks/archive/2026-10/10-14-11-media-playback/task.json"
   ]
 }

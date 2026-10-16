@@ -11,9 +11,9 @@
 {"file": ".trellis/tasks/10-14-presenter-v0.3/prd.md", "reason": "Source requirements, milestone scope and dependency map"}
 {"file": ".trellis/tasks/10-14-presenter-v0.3/traceability.md", "reason": "Requirement to owner, design step and verification coverage"}
 {"file": ".trellis/tasks/10-14-presenter-v0.3/research/repository-baseline.md", "reason": "Verified skeleton and semantic scan ledger; task 01 spec conflicts"}
-{"file": ".trellis/tasks/10-14-10-hot-reload/prd.md", "reason": "Child requirements and explicit dependencies"}
-{"file": ".trellis/tasks/10-14-10-hot-reload/design.md", "reason": "Reviewed design choices, ownership, errors and rollback"}
-{"file": ".trellis/tasks/10-14-10-hot-reload/implement.md", "reason": "Ordered steps and layered verification gates"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-10-hot-reload/prd.md", "reason": "Child requirements and explicit dependencies"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-10-hot-reload/design.md", "reason": "Reviewed design choices, ownership, errors and rollback"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-10-hot-reload/implement.md", "reason": "Ordered steps and layered verification gates"}
 {"file": ".trellis/tasks/10-14-presenter-v0.3/research/runtime-feasibility.md", "reason": "Primary-source native API, safe wrapper, ownership, CI and distribution gates"}
 {"file": ".trellis/tasks/10-14-presenter-v0.3/research/behavior-evidence.md", "reason": "Allowed user-facing behavior evidence, independent Rust design and limitations"}
 {"file": ".trellis/spec/frontend/state-management.md", "reason": "Snapshot state boundary; role/settings stale clauses resolved by parent and task 01"}

@@ -12,9 +12,9 @@
 {"file": ".trellis/tasks/10-14-presenter-v0.3/prd.md", "reason": "Source requirements, milestone scope and dependency map"}
 {"file": ".trellis/tasks/10-14-presenter-v0.3/traceability.md", "reason": "Requirement to owner, design step and verification coverage"}
 {"file": ".trellis/tasks/10-14-presenter-v0.3/research/repository-baseline.md", "reason": "Verified skeleton and semantic scan ledger; task 01 spec conflicts"}
-{"file": ".trellis/tasks/10-14-08-presenter-workbench/prd.md", "reason": "Child requirements and explicit dependencies"}
-{"file": ".trellis/tasks/10-14-08-presenter-workbench/design.md", "reason": "Reviewed design choices, ownership, errors and rollback"}
-{"file": ".trellis/tasks/10-14-08-presenter-workbench/implement.md", "reason": "Ordered steps and layered verification gates"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-08-presenter-workbench/prd.md", "reason": "Child requirements and explicit dependencies"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-08-presenter-workbench/design.md", "reason": "Reviewed design choices, ownership, errors and rollback"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-08-presenter-workbench/implement.md", "reason": "Ordered steps and layered verification gates"}
 {"file": ".trellis/tasks/10-14-presenter-v0.3/research/behavior-evidence.md", "reason": "Allowed user-facing behavior evidence, independent Rust design and limitations"}
 {"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Required pure/native checks and no ignore; Rust 1.99/unsafe policy"}
 {"file": ".trellis/spec/backend/error-handling.md", "reason": "Typed errors across crate boundaries"}

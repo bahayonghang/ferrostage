@@ -11,3 +11,5 @@ Commit plan: product/source/spec/docs/fixtures/packaging first, task plans/raw e
 Next conversation uses next-session-prompt.md. Continue remaining functional evidence and confirmed fixes, not a repeat implementation of archived tasks. New changes default to uncommitted. Desktop checks require coordinated availability because the user is working elsewhere.
 
 Product commits: `15ab278` (implementation) and `2f95978` (exact upstream notice bytes). Committed124 product paths bind to169 unchanged reviewed source inputs; first-party diff check PASS. Full diff preserves upstream notice/recipe whitespace diagnostics, without modifying source notices or granting lint/advisory waivers.
+
+Archival completed for08–11 under archive/2026-10. Relocation verified255 unchanged files including243 research files;8 current context JSONL files had path-only repair. Parent+11 children validate12/12; the additional bootstrap task also validates (13 total). Initial count assertion expected12 across the full tree and included bootstrap; all actual validations exited0. Context validity is not product acceptance. See archive-08-11-map.json and archive-08-11-context-validation.json.

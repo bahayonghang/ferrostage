@@ -2,6 +2,8 @@
 
 ## Latest closeout — 2026-10-15
 
+Completed closeout: product15ab278 + provenance2f95978 + evidence018f05d committed;08–11 archived under archive/2026-10. Parent remains active for remaining functional acceptance/confirmed fixes; not all original ACs passed. Parent+11 child contexts validate12/12 (bootstrap also passes), archived research byte identity retained in research/archive-08-11-map.json. No push. Next-session-prompt.md is the continuation entry. Earlier checkpoints below retain their historical state.
+
 2026-10-15 latest user request explicitly authorizes committing current changes and archiving completed tasks, then preparing the next-session Prompt. This supersedes the earlier no-commit/no-archive instruction for this closeout only. Do not push.08–11 are eligible for implementation-scope archival; the parent remains in_progress and owns unresolved functional observations and deferred qualification. New follow-up changes default to uncommitted until separately authorized. See research/implementation-closeout.md and next-session-prompt.md. The entries below are chronological historical evidence; this authorization overrides their no-commit/no-archive wording.
 
 ## Active implementation continuation — 2026-10-15

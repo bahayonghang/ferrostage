@@ -12,7 +12,7 @@
   "assignee": "lyh",
   "createdAt": "2026-10-14",
   "completedAt": null,
-  "branch": null,
+  "branch": "main",
   "base_branch": "main",
   "worktree_path": null,
   "commit": null,
@@ -35,10 +35,10 @@
   "relatedFiles": [],
   "notes": "",
   "meta": {
-    "active_implementation": "08-11_source_complete",
-    "active_phase": "implementation_closeout_and_remaining_acceptance",
+    "active_implementation": "01-11_archived_implementation_complete",
+    "active_phase": "remaining_functional_acceptance_and_confirmed_fixes",
     "desktop_smoke": "core_subset_pass_remaining_not_run_or_unverified",
-    "delivery": "commit_and_archive_authorized_no_push",
+    "delivery": "committed_archived_no_push",
     "automatic_checks": "passed",
     "remaining_scope": "unobserved_functional_checks_and_deferred_qualification"
   }
