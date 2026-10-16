@@ -26,15 +26,19 @@ PDF & Beamer presentation stage。基于 Rust 与 GPUI 的 PDF / Beamer 演示�
 ## 命令
 
 ```text
-just ci
-just build
-just dev
-just install
+just ci       # 默认 features：fmt、clippy、test、cargo deny
+just dev      # 把已校验的 PDFium 放到 target/debug，再以 gpui,pdfium 运行
+just build    # 发布 gpui,pdfium；双击 target\release\ferrostage.exe
+just install  # 安装 gpui,pdfium，并只把 pdfium.dll 放到 Cargo 的 bin
 ```
 
 工具链：Rust 1.99.0，edition 2024。
 
-以上命令使用默认 features。完整桌面 GUI 使用 `cargo build -p ferrostage-app --features gpui,pdfium,media --locked` 构建，再以 `target/debug/ferrostage --config <settings.toml> --pdfium-library <pdfium.dll> <document.pdf>` 启动。PDFium 需单独准备；原生音视频还需要单独构建的媒体助手和置于 GUI 旁的选定运行库。精确来源、许可证和准备命令见[打包说明](docs/packaging.md)。应用不自行下载运行库，也不写用户 PDF。
+`just ci` 保持默认 features。`just dev`、`just build`、`just install` 启用 `gpui` 与 `pdfium`，并放置哈希校验过的 `pdfium.dll`。来源、通知文件和准备命令见[打包说明](docs/packaging.md)。`just dev` 与 `just build` 同时放置 `LICENSE` 和 `licenses/`。`just install` 只放置 DLL，完整通知文件留在 `target\release`。应用进程不下载 PDFium，也不写用户 PDF。
+
+双击产物是 `just build` 之后的 `target\release\ferrostage.exe`。该配方最后才链接带 feature 的程序。视频仍要单独准备媒体助手和运行库，构建命令是 `cargo build -p ferrostage-app --features gpui,pdfium,media --locked`。
+
+`just dev` 保留控制台。发布版可执行文件使用 Windows GUI 子系统，资源管理器打开 `target\release\ferrostage.exe` 时不分配控制台。`just dev -- check-config <path>` 在终端打印只读的设置解析结果。交互式的 release `check-config` 没有控制台。把 release `check-config` 的 stdout 重定向后，解析结果仍会写出。
 
 GPUI 使用基于 Zed 标签 `v1.23.3` 的已审维护源（ADR-008），不使用 crates.io 上的 `gpui` 0.2.x。唯一原生媒体后端为独立助手中的 GStreamer（ADR-009）。
 

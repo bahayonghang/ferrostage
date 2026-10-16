@@ -2,7 +2,10 @@
 
 Development staging is available for the Windows 11 executable and its separately loaded PDFium and media runtimes. An installer is not produced.
 
-- `just install` runs `cargo install --path crates/ferrostage-app --locked`.
+- `just ci` stays on default features and does not require `pdfium.dll`.
+- `just dev` stages the verified `pdfium.dll`, `LICENSE`, and `licenses/` into `target/debug`, then runs `cargo run -p ferrostage-app --features gpui,pdfium --locked`.
+- `just build` builds the other workspace crates, links `ferrostage-app` with `gpui,pdfium` last, then stages those same files into `target/release`. The double-click artifact is `target\release\ferrostage.exe`.
+- `just install` runs `cargo install --path crates/ferrostage-app --locked --features gpui,pdfium`, then stages only the verified `pdfium.dll` beside that binary. The full notice tree stays with `target\release`.
 - The optional `pdfium` feature links `pdfium-render =0.9.4` with only `pdfium_7881`. The runtime is acquired separately as described below; no installer is produced by this task.
 - URW Base35 fonts, if required for a fallback, belong under `assets/fonts/urw-base35/` and must carry a license that `cargo deny` accepts. The directory currently holds only a README.
 - The app does not embed a telemetry endpoint. Settings stay in a local TOML file.
@@ -27,6 +30,15 @@ the session read-only. These operations never write the opened PDF.
 SHA256, DLL SHA256, and all 16 notice files (packaging LICENSE plus 15 component
 notices). `scripts/fetch-pdfium.ps1 -Destination <cache-directory>` downloads only
 that artifact and verifies every hash. The application never downloads it.
+`scripts/stage-pdfium.ps1 -Destination <dir>` reads this manifest and reuses
+`cache/pdfium-7881-win-x64` when `bin/pdfium.dll` already matches `dll_sha256`.
+It calls `fetch-pdfium.ps1` only when that DLL is missing or the hash differs.
+The script copies `pdfium.dll` and checks the destination hash. Without
+`-DllOnly`, it also copies `LICENSE` and the whole `licenses/` directory and
+checks every notice hash. `-CargoBin` ignores `-Destination` and writes to
+`$env:CARGO_HOME\bin`, or `%USERPROFILE%\.cargo\bin` when `CARGO_HOME` is unset.
+The staged runtime is the DLL plus, unless `-DllOnly`, the notice files. SDK
+headers, static libraries, the archive, and build tools stay in the cache.
 Distribute `bin/pdfium.dll`, the packaging `LICENSE`, and the complete unmodified
 `licenses/` directory beside the application; do not ship the SDK headers/static
 libraries or build tools. Retain the following distribution acknowledgments:
@@ -58,10 +70,20 @@ developer script and has no product or user-PDF write path.
 
 ## Native shell development build
 
-Build the complete app with `cargo build -p ferrostage-app --features gpui,pdfium,media --locked`.
-Launch `ferrostage --config <isolated-settings.toml> --pdfium-library <pdfium.dll> <pdf>`.
-The PDF argument is optional; the library defaults to `pdfium.dll` beside the
-executable. A missing runtime leaves the shell available with an import error.
+`just dev` and `just build` enable `gpui,pdfium` and stage the verified DLL beside
+the executable. The release executable uses the Windows GUI subsystem, so Explorer
+opens `target\release\ferrostage.exe` without allocating a console. `just dev` keeps
+the console. `just dev -- check-config <path>` is the terminal settings check. An
+interactive release `check-config` has no console. Redirected stdout from a release
+`check-config` still prints the parse result, with the same exit code as the debug
+binary.
+
+Launch with `ferrostage --config <isolated-settings.toml> <pdf>`. The PDF argument
+is optional. The library defaults to `pdfium.dll` beside the executable.
+`--pdfium-library <pdfium.dll>` overrides that path. A missing runtime leaves the
+shell available with an import error. Video still needs the separate media
+preparation below. `just dev`, `just build`, and `just install` leave `media` off.
+The media-enabled build is `cargo build -p ferrostage-app --features gpui,pdfium,media --locked`.
 The single PDFium worker supplies actual current/next/notes rasters to the presenter
 workbench. The app includes settings, transactional reload, annotations and shared
 public media frames; notes and media sources remain private to the presenter.

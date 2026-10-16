@@ -43,15 +43,19 @@ Suggested topics keep `beamer` and drop `latex` when that topic is set. `beamer`
 ## Commands
 
 ```text
-just ci       # fmt --check, clippy -D warnings, test, cargo deny
-just build    # cargo build --workspace --release
-just dev      # cargo run -p ferrostage-app
-just install  # cargo install --path crates/ferrostage-app --locked
+just ci       # fmt --check, clippy -D warnings, test, cargo deny; default features
+just dev      # stage verified PDFium into target/debug, then run with gpui,pdfium
+just build    # release gpui,pdfium app; double-click target\release\ferrostage.exe
+just install  # install gpui,pdfium and stage pdfium.dll into Cargo's bin
 ```
 
 Toolchain: Rust 1.99.0, edition 2024 (`rust-toolchain.toml`).
 
-Those commands use default features. Build the full desktop GUI with `cargo build -p ferrostage-app --features gpui,pdfium,media --locked`, then launch `target/debug/ferrostage --config <settings.toml> --pdfium-library <pdfium.dll> <document.pdf>`. PDFium is supplied separately; native audio/video also needs the separately built media helper and selected runtime beside the GUI. Follow [packaging and runtime preparation](docs/packaging.md) for exact sources, notices and commands. The application never downloads runtimes or writes the user's PDF.
+`just ci` stays on default features. `just dev`, `just build`, and `just install` enable `gpui` and `pdfium` and stage the hash-checked `pdfium.dll` from [packaging](docs/packaging.md). `just dev` and `just build` also stage `LICENSE` and `licenses/`. `just install` stages only the DLL, leaving the notices with `target\release`. The application never downloads PDFium and never writes the user's PDF.
+
+The double-click artifact is `target\release\ferrostage.exe` after `just build`. That recipe links the featured app last. Video playback still needs the separate media helper and runtime, built with `cargo build -p ferrostage-app --features gpui,pdfium,media --locked`.
+
+`just dev` keeps a console. The release executable uses the Windows GUI subsystem, so Explorer opens `target\release\ferrostage.exe` without a console. `just dev -- check-config <path>` prints the read-only settings report in the terminal. An interactive release `check-config` has no console. Redirected stdout from release `check-config` still prints the result.
 
 ## License
 
