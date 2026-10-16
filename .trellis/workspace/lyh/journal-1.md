@@ -178,3 +178,37 @@ just dev 与 just build 放置已校验的 pdfium.dll；发布版改为 GUI 子�
 ### Status
 
 [OK] **Completed**
+
+
+## Session 6: 显示器名称拆分提交并归档
+<!-- trellis-session: v=2 fp=60d15a741398828f -->
+
+**Date**: 2026-10-16
+**Task**: 显示器名称拆分提交并归档
+**Branch**: `main`
+
+### Summary
+
+三块 Generic PnP Monitor 改为型号加几何位置，并拆成平台、界面和任务记录三次提交。
+
+### Main Changes
+
+- 从 Windows FriendlyName 解析型号，读不到时不让枚举失败
+- 显示器设置改成每屏一张卡片，识别浮层用同一句说明
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `d368bc2` | feat(platform): ✨ 从 Windows FriendlyName 解析显示器型号 |
+| `a31de58` | feat(ui): ✨ 用可区分的屏幕卡片选择显示器 |
+| `febf90e` | docs(task): 📝 记录显示器名称任务 |
+
+### Testing
+
+- [OK] platform friendly 与 windows 枚举测试通过
+- [OK] ferrostage-ui test-support 下 display 相关测试通过，clippy -D warnings 通过
+
+### Status
+
+[OK] **Completed**
