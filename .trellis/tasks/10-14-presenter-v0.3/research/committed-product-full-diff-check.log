@@ -1,0 +1,164 @@
+packaging/media/notices/bzip2-LICENSE:1: trailing whitespace.
++
+packaging/media/notices/bzip2-LICENSE:2: trailing whitespace.
++--------------------------------------------------------------------------
+packaging/media/notices/bzip2-LICENSE:3: trailing whitespace.
++
+packaging/media/notices/bzip2-LICENSE:4: trailing whitespace.
++This program, "bzip2", the associated library "libbzip2", and all
+packaging/media/notices/bzip2-LICENSE:5: trailing whitespace.
++documentation, are copyright (C) 1996-2019 Julian R Seward.  All
+packaging/media/notices/bzip2-LICENSE:6: trailing whitespace.
++rights reserved.
+packaging/media/notices/bzip2-LICENSE:7: trailing whitespace.
++
+packaging/media/notices/bzip2-LICENSE:8: trailing whitespace.
++Redistribution and use in source and binary forms, with or without
+packaging/media/notices/bzip2-LICENSE:9: trailing whitespace.
++modification, are permitted provided that the following conditions
+packaging/media/notices/bzip2-LICENSE:10: trailing whitespace.
++are met:
+packaging/media/notices/bzip2-LICENSE:11: trailing whitespace.
++
+packaging/media/notices/bzip2-LICENSE:12: trailing whitespace.
++1. Redistributions of source code must retain the above copyright
+packaging/media/notices/bzip2-LICENSE:13: trailing whitespace.
++   notice, this list of conditions and the following disclaimer.
+packaging/media/notices/bzip2-LICENSE:14: trailing whitespace.
++
+packaging/media/notices/bzip2-LICENSE:15: trailing whitespace.
++2. The origin of this software must not be misrepresented; you must 
+packaging/media/notices/bzip2-LICENSE:16: trailing whitespace.
++   not claim that you wrote the original software.  If you use this 
+packaging/media/notices/bzip2-LICENSE:17: trailing whitespace.
++   software in a product, an acknowledgment in the product 
+packaging/media/notices/bzip2-LICENSE:18: trailing whitespace.
++   documentation would be appreciated but is not required.
+packaging/media/notices/bzip2-LICENSE:19: trailing whitespace.
++
+packaging/media/notices/bzip2-LICENSE:20: trailing whitespace.
++3. Altered source versions must be plainly marked as such, and must
+packaging/media/notices/bzip2-LICENSE:21: trailing whitespace.
++   not be misrepresented as being the original software.
+packaging/media/notices/bzip2-LICENSE:22: trailing whitespace.
++
+packaging/media/notices/bzip2-LICENSE:23: trailing whitespace.
++4. The name of the author may not be used to endorse or promote 
+packaging/media/notices/bzip2-LICENSE:24: trailing whitespace.
++   products derived from this software without specific prior written 
+packaging/media/notices/bzip2-LICENSE:25: trailing whitespace.
++   permission.
+packaging/media/notices/bzip2-LICENSE:26: trailing whitespace.
++
+packaging/media/notices/bzip2-LICENSE:27: trailing whitespace.
++THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS
+packaging/media/notices/bzip2-LICENSE:28: trailing whitespace.
++OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+packaging/media/notices/bzip2-LICENSE:29: trailing whitespace.
++WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+packaging/media/notices/bzip2-LICENSE:30: trailing whitespace.
++ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+packaging/media/notices/bzip2-LICENSE:31: trailing whitespace.
++DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+packaging/media/notices/bzip2-LICENSE:32: trailing whitespace.
++DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+packaging/media/notices/bzip2-LICENSE:33: trailing whitespace.
++GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+packaging/media/notices/bzip2-LICENSE:34: trailing whitespace.
++INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+packaging/media/notices/bzip2-LICENSE:35: trailing whitespace.
++WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+packaging/media/notices/bzip2-LICENSE:36: trailing whitespace.
++NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+packaging/media/notices/bzip2-LICENSE:37: trailing whitespace.
++SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+packaging/media/notices/bzip2-LICENSE:38: trailing whitespace.
++
+packaging/media/notices/bzip2-LICENSE:39: trailing whitespace.
++Julian Seward, jseward@acm.org
+packaging/media/notices/bzip2-LICENSE:40: trailing whitespace.
++bzip2/libbzip2 version 1.0.8 of 13 July 2019
+packaging/media/notices/bzip2-LICENSE:41: trailing whitespace.
++
+packaging/media/notices/bzip2-LICENSE:42: trailing whitespace.
++--------------------------------------------------------------------------
+packaging/media/notices/gst-plugins-base-COPYING:149: trailing whitespace.
++  
+packaging/media/notices/gst-plugins-base-COPYING:503: new blank line at EOF.
+packaging/media/notices/gst-plugins-good-COPYING:149: trailing whitespace.
++  
+packaging/media/notices/gst-plugins-good-COPYING:503: new blank line at EOF.
+packaging/media/notices/gstreamer-COPYING:149: trailing whitespace.
++  
+packaging/media/notices/gstreamer-COPYING:503: new blank line at EOF.
+packaging/media/notices/libffi-LICENSE-verified:1: trailing whitespace.
++libffi - Copyright (c) 1996-2014  Anthony Green, Red Hat, Inc and others.
+packaging/media/notices/libffi-LICENSE-verified:2: trailing whitespace.
++See source files for details.
+packaging/media/notices/libffi-LICENSE-verified:3: trailing whitespace.
++
+packaging/media/notices/libffi-LICENSE-verified:4: trailing whitespace.
++Permission is hereby granted, free of charge, to any person obtaining
+packaging/media/notices/libffi-LICENSE-verified:5: trailing whitespace.
++a copy of this software and associated documentation files (the
+packaging/media/notices/libffi-LICENSE-verified:6: trailing whitespace.
++``Software''), to deal in the Software without restriction, including
+packaging/media/notices/libffi-LICENSE-verified:7: trailing whitespace.
++without limitation the rights to use, copy, modify, merge, publish,
+packaging/media/notices/libffi-LICENSE-verified:8: trailing whitespace.
++distribute, sublicense, and/or sell copies of the Software, and to
+packaging/media/notices/libffi-LICENSE-verified:9: trailing whitespace.
++permit persons to whom the Software is furnished to do so, subject to
+packaging/media/notices/libffi-LICENSE-verified:10: trailing whitespace.
++the following conditions:
+packaging/media/notices/libffi-LICENSE-verified:11: trailing whitespace.
++
+packaging/media/notices/libffi-LICENSE-verified:12: trailing whitespace.
++The above copyright notice and this permission notice shall be
+packaging/media/notices/libffi-LICENSE-verified:13: trailing whitespace.
++included in all copies or substantial portions of the Software.
+packaging/media/notices/libffi-LICENSE-verified:14: trailing whitespace.
++
+packaging/media/notices/libffi-LICENSE-verified:15: trailing whitespace.
++THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
+packaging/media/notices/libffi-LICENSE-verified:16: trailing whitespace.
++EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+packaging/media/notices/libffi-LICENSE-verified:17: trailing whitespace.
++MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+packaging/media/notices/libffi-LICENSE-verified:18: trailing whitespace.
++IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+packaging/media/notices/libffi-LICENSE-verified:19: trailing whitespace.
++CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+packaging/media/notices/libffi-LICENSE-verified:20: trailing whitespace.
++TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+packaging/media/notices/libffi-LICENSE-verified:21: trailing whitespace.
++SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+packaging/media/notices/libvpx-LICENSE:31: new blank line at EOF.
+packaging/media/notices/orc-COPYING:4: trailing whitespace.
++  
+packaging/media/notices/orc-COPYING:7: trailing whitespace.
++  
+packaging/media/notices/orc-COPYING:16: trailing whitespace.
++  
+packaging/media/notices/orc-COPYING:28: trailing whitespace.
++  
+packaging/media/notices/orc-COPYING:29: trailing whitespace.
++  
+packaging/media/notices/orc-COPYING:34: trailing whitespace.
++   All rights reserved.                          
+packaging/media/notices/orc-COPYING:47: trailing whitespace.
++     3. The names of its contributors may not be used to endorse or promote 
+packaging/media/notices/orc-COPYING:48: trailing whitespace.
++        products derived from this software without specific prior written 
+packaging/media/notices/orc-COPYING:62: new blank line at EOF.
+packaging/media/notices/proxy-libintl-COPYING:5: space before tab in indent.
++    		    59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+packaging/media/notices/proxy-libintl-COPYING:136: trailing whitespace.
++  
+packaging/media/notices/proxy-libintl-COPYING:466: trailing whitespace.
++    License along with this library; if not, write to the 
+packaging/media/notices/proxy-libintl-COPYING:467: trailing whitespace.
++    Free Software Foundation, Inc., 59 Temple Place - Suite 330, 
+packaging/media/recipes/glib.recipe:272: new blank line at EOF.
+packaging/media/recipes/gstreamer-1.0.recipe:56: trailing whitespace.
++        Symbolication.SKIP: [], 

@@ -1,0 +1,9 @@
+{
+  "utc": "2026-10-15T13:20:28.6349223Z",
+  "pid": 57176,
+  "timeout": false,
+  "exit_code": 0,
+  "exe_sha256": "4381439B529BBAEE4E1B038912E20961DB946BB9FFBA0499BD0691A1C8B0B102",
+  "stdout": "helper_exit=Some(0) control_process_ready=true\nnative=GStreamer 1.28.8 (GIT) frames=360 packed_bytes=82944000 fingerprint=7882306038111442340 elapsed_ms=208\n",
+  "stderr": ""
+}

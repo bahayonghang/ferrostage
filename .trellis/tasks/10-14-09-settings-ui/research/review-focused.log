@@ -1,0 +1,28 @@
+warning: function `shape` is never used
+   --> vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `harfrust` (lib) generated 1 warning
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.94s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-b15f31a9a1f94425.exe)
+
+running 9 tests
+test shell::tests::settings_v09_dual_gpu_preflight_never_applies_half_a_transaction ... ok
+test shell::tests::settings_v09_shared_display_apply_cancel_timeout_and_topology ... ok
+test shell::tests::settings_v09_worker_ack_serializes_changes_and_failed_display_rolls_budget_back ... ok
+test shell::tests::settings_v09_edit_save_retry_readonly_and_runtime_consumers ... ok
+test shell::tests::settings_v09_values_reach_workbench_timer_layout_pointer_clock_and_diagnostics ... ok
+test shell::tests::settings_v09_closed_panel_split_waits_for_apply_and_rollback_ack ... ok
+test shell::tests::settings_v09_numeric_editor_and_slider_use_real_keyboard_events ... ok
+test shell::tests::settings_v09_record_replaces_keymap_and_capture_precedes_actions ... ok
+test shell::tests::settings_v09_all_categories_render_and_footer_stays_reachable ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 99 filtered out; finished in 0.28s
+
+mbx[cache]: 0 hits, 0 misses, 1 not looked up, 1 incremental; 0 B downloaded, 0 B uploaded, 0 B stored locally
+mbx[savings]: 91.2 GiB logical of build debris binned so far. cargo clean remains unemployed.

@@ -1,5 +1,9 @@
 # Implement — 08
 
+## Current checkpoint — 2026-10-15
+
+All I-1–I-6 product scope and retained I-7 automatic checks are complete after independent review. Final GPUI95 / real-PDFium UI29 / default CI158, strict feature lint/typecheck, deny and final feature build PASS. See `research/independent-review.md` and `research/native-functional-report.md`. Actual native current/next/private03A/03B, public-only Audience, overlay navigation, preview isolation/cancel, paused timer and synchronized pen were observed. The user explicitly chose to continue code now and consolidate remaining desktop smoke after09→10→11; these actions remain NOT_RUN. Extended matrices remain DEFERRED_BY_USER. Proceed to09 without reimplementing08; keep08 unarchived and new changes uncommitted.
+
 > Current acceptance policy (2026-10-15 user revision): `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md` supersedes older hardware/matrix blockers below. Implement all features first; retain automatic/feature/native-functional checks. Physical, exhaustive native/size and performance/soak matrices are deferred, not PASS. Gate B implementation is satisfied by V16;08 may start. Gate C/D are functional integration gates. Historical results and product contracts remain unchanged.
 
 1. **I-1 门/范围审阅**：Gate B与05实际native/06models通过；审父design §6、P0/P1责任，核GPUI上传/drop/Present测量API，确立受控snapshot入口。
@@ -25,3 +29,12 @@ pure测试/GPUI编译不能替代Windows真实画面/GPU报告。回滚组装器
 ## Resume audit - 2026-10-15
 
 Task07 shell/display assignment is implemented and V16 scoped native checks are verified; the old statement that07 product source was absent is historical. Gate B remains INCOMPLETE, so I-1/real dual-window integration is blocked. Current/next/notes pixels and workbench remain unimplemented. See parent `research/resume-2026-10-15.md` and07 `research/resume-2026-10-15-v16-review.md` for current-code evidence and exact remaining gates. Task status and acceptance checkboxes are unchanged. No commit, push or archive.
+
+## Implementation handoff — 2026-10-15
+
+I-1–I-6 product scope is implemented, including all08 P1 controls. I-7 retained automatic checks pass; full details and executable identity are in `research/implementation-report.md`. Latest receipts: default CI158, GPUI headless89, UI/PDFium29, retained native36, strict product/test-support feature lint, full-feature deny and native build PASS. Serial independent review and parent-owned bounded desktop smoke remain pending. Full hardware/size/DPI/theme/performance/soak matrices remain DEFERRED_BY_USER/NOT_RUN; original combined acceptance boxes remain unchecked. New work is uncommitted and unarchived.
+
+
+## Upload recovery handoff — 2026-10-15
+
+The independent review's remaining upload rollback finding is implemented: actual paint success commits, failure retires candidate and paints the complete old snapshot/image, covers dominate, Presenter receives localized feedback, and old+candidate bytes fit explicit swap headroom. CPU raster gaps retain active-surface fallback ownership. Final scoped receipts are GPUI headless94, native-library UI29 and strict feature lint PASS; see the appended `research/implementation-report.md` section. Independent review, final CI/deny/native executable rebuild and parent desktop smoke remain next. Historical executable hashes are not valid for the new source. No commit/push/archive/native UI operation.

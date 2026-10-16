@@ -1,0 +1,57 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+from cerbero.utils import shell
+from cerbero.utils import messages as m
+from cerbero.tools.libtool import LibtoolLibrary
+import os
+import shutil
+
+class Recipe(recipe.Recipe):
+    name = 'libvpx'
+    version = 'v1.14.1'
+    stype = SourceType.TARBALL
+    url = 'https://github.com/webmproject/libvpx/archive/%(version)s.tar.gz'
+    tarball_dirname = 'libvpx-' + version[1:]
+    tarball_checksum = '901747254d80a7937c933d03bd7c5d41e8e6c883e0665fadcb172542167c7977'
+    licenses = [{License.BSD_3_Clause: ['LICENSE'], License.Misc: ['PATENTS']}]
+
+    btype = BuildType.MESON
+    meson_options = {
+        'size_limit': '16384x16384',
+        'unit_tests': 'disabled',
+        'postproc': 'enabled',
+        'multi_res_encoding': 'enabled',
+        'temporal_denoising': 'enabled',
+        'vp9_temporal_denoising': 'enabled',
+        'vp9_postproc': 'enabled',
+        'vp9_highbitdepth': 'enabled',
+        'tools': 'disabled',
+        'examples': 'disabled',
+        'docs': 'disabled',
+    }
+
+    patches = [
+        'libvpx/0003-Add-Meson-build.patch',
+    ]
+
+    files_libs = ['libvpx']
+    files_devel = ['include/vpx', '%(libdir)s/pkgconfig/vpx.pc']
+
+    def prepare(self):
+        if Platform.is_apple(self.config.target_platform):
+            # make sure the linker uses the correct stdlib when building with
+            # 10.13 which makes the usage of libstdc++ a hard error.
+            self.append_env('LDFLAGS', '-stdlib=libc++')
+
+        if self.config.target_platform == Platform.WINDOWS or Platform.is_app_platform(self.config.target_platform):
+            self.library_type = LibraryType.STATIC
+
+        if self.config.target_platform == Platform.ANDROID:
+            # See https://gitlab.freedesktop.org/pixman/pixman/-/merge_requests/71
+            self.meson_options['cpu_features_path'] = os.path.join(self.config.toolchain_prefix, 'sources', 'android', 'cpufeatures')
+
+    def post_install(self):
+        # Meson does not generate la files
+        LibtoolLibrary('vpx', None, None, None,
+                       self.config.libdir, self.config.target_platform,
+                       static_only=self.library_type == LibraryType.STATIC).save()
+        super().post_install()

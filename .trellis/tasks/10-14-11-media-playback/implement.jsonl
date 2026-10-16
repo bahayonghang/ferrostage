@@ -20,3 +20,5 @@
 {"file": ".trellis/tasks/10-14-presenter-v0.3/research/behavior-evidence.md", "reason": "Allowed user-facing behavior evidence, independent Rust design and limitations"}
 {"file": ".trellis/spec/frontend/state-management.md", "reason": "Snapshot state boundary; role/settings stale clauses resolved by parent and task 01"}
 {"file": ".trellis/spec/frontend/type-safety.md", "reason": "Newtype, crop and notes boundary"}
+{"file": ".trellis/tasks/10-14-11-media-playback/research/implementation-handoff.md", "reason": "Exact safe native and animation feasibility, helper isolation, pending product integration and native evidence boundaries"}
+{"file": ".trellis/tasks/10-14-11-media-playback/research/native-runtime-candidate.md", "reason": "Per-binary native source and notice mapping; complete GPL-containing wheels prohibited"}

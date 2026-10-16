@@ -3,7 +3,7 @@
   "name": "10-hot-reload",
   "title": "PDF 文件变更热重载（通用，不绑定 LaTeX 工具链）",
   "description": "notify 监听已打开 PDF：300ms 防抖、%%EOF 校验、后台影子文档解析、严格更新 DocumentGeneration、保留逻辑页位置与计时；FerroStage 本身绝不写用户 PDF",
-  "status": "planning",
+  "status": "in_progress",
   "dev_type": null,
   "scope": null,
   "package": null,
@@ -12,7 +12,7 @@
   "assignee": "lyh",
   "createdAt": "2026-10-14",
   "completedAt": null,
-  "branch": null,
+  "branch": "main",
   "base_branch": "main",
   "worktree_path": null,
   "commit": null,
@@ -21,6 +21,14 @@
   "children": [],
   "parent": "10-14-presenter-v0.3",
   "relatedFiles": [],
-  "notes": "",
-  "meta": {}
+  "notes": " Latest2026-10-15: user authorized commit/archive of completed implementation; parent retains NOT_RUN/NOT_VERIFIED/PARTIAL native and deferred qualification. No push.",
+  "meta": {
+    "implementation_status": "complete",
+    "automatic_checks": "passed",
+    "independent_check": "passed",
+    "native_remaining": "bounded_core_observed_remaining_not_run_or_unverified",
+    "completion_scope": "implementation_and_independent_checks_with_bounded_core_native",
+    "remaining_acceptance_owner": "10-14-presenter-v0.3",
+    "archive_authorization": "explicit_user_2026-10-15"
+  }
 }

@@ -1,0 +1,9 @@
+{
+  "utc": "2026-10-15T13:20:28.9844174Z",
+  "pid": 67344,
+  "timeout": false,
+  "exit_code": 0,
+  "exe_sha256": "4381439B529BBAEE4E1B038912E20961DB946BB9FFBA0499BD0691A1C8B0B102",
+  "stdout": "media_unavailable=missing_runtime control_process_ready=true\n",
+  "stderr": ""
+}

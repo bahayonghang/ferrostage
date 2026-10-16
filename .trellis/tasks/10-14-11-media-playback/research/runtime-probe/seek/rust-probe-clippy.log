@@ -1,0 +1,4 @@
+    Checking ferrostage-media-research-probe v0.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\cache\media-research\rust-probe)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.44s
+mbx[cache]: 0 hits, 0 misses, 2 not looked up; 0 B downloaded, 0 B uploaded, 17.3 KiB stored locally
+mbx[savings]: 88.6 GiB logical of outputs had survived their checkouts. an unnatural state, now corrected.

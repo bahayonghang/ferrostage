@@ -1,0 +1,9 @@
+{
+  "utc": "2026-10-15T14:08:46.2963885Z",
+  "pid": 4048,
+  "timeout": false,
+  "exit_code": 0,
+  "exe_sha256": "87C9A4A2F1DABB66C33BB297DB265B168F2C02DA4517E171C64A0A31931414B8",
+  "stdout": "cycle=0 frames=240 first_pts=Some(0:00:02.000000000) last_pts=Some(0:00:09.966666666) EOS=true\ncycle=1 frames=240 first_pts=Some(0:00:02.000000000) last_pts=Some(0:00:09.966666666) EOS=true\n",
+  "stderr": ""
+}

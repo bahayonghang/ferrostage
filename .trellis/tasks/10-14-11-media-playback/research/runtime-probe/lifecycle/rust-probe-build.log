@@ -1,0 +1,4 @@
+   Compiling ferrostage-media-research-probe v0.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\cache\media-research\rust-probe)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.07s
+mbx[cache]: 0 hits, 0 misses, 1 not looked up; 0 B downloaded, 0 B uploaded, 15.0 MiB stored locally
+mbx[savings]: disposed of 91.2 GiB logical without being asked. that is rather the point.

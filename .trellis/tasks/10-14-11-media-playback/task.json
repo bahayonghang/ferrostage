@@ -2,8 +2,8 @@
   "id": "11-media-playback",
   "name": "11-media-playback",
   "title": "GIF 与离屏 BGRA 视频播放",
-  "description": "image GIF 解码与离屏 BGRA 帧（libVLC 回调或 GStreamer AppSink）共享到双窗口，无子 HWND，切页即回收；start/duration/loop 参数来自文档模型",
-  "status": "planning",
+  "description": "Pure Rust GIF/WebP and one isolated GStreamer helper produce bounded public BGRA frames for both windows; generation/page/crop/instance cancellation, actual media controls/settings and selected runtime staging.",
+  "status": "in_progress",
   "dev_type": null,
   "scope": null,
   "package": null,
@@ -12,7 +12,7 @@
   "assignee": "lyh",
   "createdAt": "2026-10-14",
   "completedAt": null,
-  "branch": null,
+  "branch": "main",
   "base_branch": "main",
   "worktree_path": null,
   "commit": null,
@@ -21,6 +21,17 @@
   "children": [],
   "parent": "10-14-presenter-v0.3",
   "relatedFiles": [],
-  "notes": "",
-  "meta": {}
+  "notes": "V-1–V-8/P2 source and serial independent checks complete:17 media,119 parent UI+1 isolated replay,40 PDFium,180 default CI; strict feature/helper/all-feature lint/typecheck,deny and builds pass. Final bounded native GIF/MP4 both windows, pause, missing selected DLL fallback and normal exit observed; other desktop actions NOT_RUN, extended qualification DEFERRED_BY_USER.  Latest2026-10-15: user authorized commit/archive of completed implementation; parent retains NOT_RUN/NOT_VERIFIED/PARTIAL native and deferred qualification. No push.",
+  "meta": {
+    "research_context": "research/implementation-handoff.md",
+    "product_implementation": "implemented",
+    "implementation_status": "complete",
+    "native_remaining": "bounded_core_observed_remaining_not_run_or_unverified",
+    "i1_review": "approved_2026_10_15",
+    "backend": "gstreamer_isolated_helper_and_pure_rust_animation",
+    "automatic_checks": "passed",
+    "completion_scope": "implementation_and_independent_checks_with_bounded_core_native",
+    "remaining_acceptance_owner": "10-14-presenter-v0.3",
+    "archive_authorization": "explicit_user_2026-10-15"
+  }
 }

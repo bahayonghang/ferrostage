@@ -1,0 +1,35 @@
+   Compiling ferrostage-platform v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-platform)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.69s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_platform-76d5e0276fbb423e.exe)
+
+running 25 tests
+test monitor::tests::identity_is_owned_case_normalized_and_honestly_graded ... ok
+test reload::tests::quiet_stable_timeout_and_exact_target ... ok
+test tests::eof_marker_is_required ... ok
+test watch::tests::fast_changes_coalesce_but_last_committed_topology_is_preserved ... ok
+test topology::tests::diff_reports_set_changes_and_new_ambiguity_without_indexes ... ok
+test topology::tests::duplicate_bindings_first_none_wins_before_role_resolution ... ok
+test topology::tests::missing_primary_and_area_ties_are_independent_of_enumeration_order ... ok
+test topology::tests::duplicate_roles_keep_first_valid_and_report_remaining_ids ... ok
+test topology::tests::saved_absent_or_explicitly_unused_audience_never_falls_back ... ok
+test topology::tests::saved_roles_are_authoritative_in_configuration_order ... ok
+test topology::tests::zero_and_single_screen_are_safe ... ok
+test watch::tests::empty_topology_is_a_change_not_an_error_and_reversal_cancels_pending ... ok
+test watch::tests::error_is_immediate_diagnostic_only_and_same_topology_recovery_is_published ... ok
+test windows::tests::every_required_native_mode_field_must_be_present ... ok
+test windows::tests::invalid_scale_size_or_primary_is_not_accepted ... ok
+test windows::tests::omitted_or_extra_or_duplicate_geometry_is_rejected ... ok
+test topology::tests::saved_audience_resolves_before_missing_presenter_fallback ... ok
+test windows::tests::output_owns_physical_units_and_does_not_promote_handle_or_missing_path ... ok
+test topology::tests::any_identity_collision_disables_saved_and_heuristic_audience ... ok
+test topology::tests::default_two_and_three_choose_largest_non_presenter ... ok
+test watch::tests::disconnected_sink_ends_worker_and_stop_remains_successful ... ok
+test watch::tests::explicit_stop_and_drop_join_the_worker_without_waiting_for_another_event ... ok
+test topology::tests::resolved_ids_are_present_unique_disjoint_and_never_unsaved_audience ... ok
+test windows::tests::getdc_v15_real_owner_preserves_topology_and_enumeration_releases_gdi ... ok
+test reload::tests::real_parent_watch_handles_chunks_rename_delete_recreate_and_ignores_siblings ... ok
+
+test result: ok. 25 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.28s
+
+mbx[cache]: 0 hits, 0 misses, 1 not looked up, 1 incremental; 0 B downloaded, 0 B uploaded, 0 B stored locally
+mbx[savings]: disposed of 91.2 GiB logical without being asked. that is rather the point.

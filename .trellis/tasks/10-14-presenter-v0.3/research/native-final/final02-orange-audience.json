@@ -1,0 +1,19 @@
+{
+  "recorded_utc": "2026-10-16T00:56:34.318Z",
+  "window": {
+    "app": "process:D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\consolidated-smoke\\complete\\ferrostage.exe",
+    "id": 3151374
+  },
+  "accessibility": null,
+  "screenshots": [
+    {
+      "height": 1707,
+      "id": "screenshot-0",
+      "originX": 2560,
+      "originY": -1142,
+      "width": 1067,
+      "zIndex": 0,
+      "file": "final02-orange-audience-0.jpg"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+warning: function `shape` is never used
+   --> vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `harfrust` (lib) generated 1 warning
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.26s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-6b88b4996b278790.exe)
+
+running 29 tests
+test display_settings::tests::stale_missing_ambiguous_and_conflicting_destinations_are_rejected ... ok
+test display_settings::tests::numbering_is_shared_stable_and_not_serialized ... ok
+test policy::tests::fullscreen_request_without_native_bounds_evidence_is_not_confirmation ... ok
+test policy::tests::placement_v10_portrait_native_overflow_is_not_confirmation ... ok
+test policy::tests::placement_v10_work_area_and_narrow_clients_leave_native_frame_space ... ok
+test policy::tests::single_monitor_requires_explicit_windowed_mode ... ok
+test policy::tests::swap_prepares_authority_without_mutating_old_settings ... ok
+test slide_surface::tests::letterbox_inverse_ignores_bars_and_roundtrips_at_4k ... ok
+test tests::gpui_pin_is_the_zed_tag_not_crates_io ... ok
+test policy::tests::mapping_rejects_partial_duplicate_and_unknown_sets ... ok
+test transactions::tests::failed_second_replacement_returns_only_new_resources_for_cleanup ... ok
+test theme::tests::used_text_and_focus_pairs_meet_design_contrast ... ok
+test transactions::tests::focus_waits_for_both_observations_and_rejects_retired_owners ... ok
+test transactions::tests::invalid_jump_text_cannot_commit_a_previous_valid_preview ... ok
+test transactions::tests::retiring_old_windows_cannot_stop_replacements ... ok
+test display_settings::tests::single_screen_choices_roundtrip_without_duplicate_role_or_inherited_mode ... ok
+test transactions::tests::settings_escape_does_not_send_cancel_jump_into_idle_core ... ok
+test transactions::tests::startup_import_survives_presenter_confirmation_only ... ok
+test policy::tests::uuid_includes_terminator_and_full_utf16_buffer ... ok
+test policy::tests::conflicts_are_disabled_after_normalization ... ok
+test policy::tests::configured_bindings_cannot_collide_with_shell_shortcuts ... ok
+test transactions::tests::invalid_import_preserves_document_state_and_presenter_path ... ok
+test transactions::tests::shutdown_never_publishes_live_between_curtain_and_close ... ok
+test locale::tests::catalogs_have_identical_keys_and_interpolation_fields ... ok
+test workbench::tests::audience_target_respects_its_half_of_the_gpu_budget ... ok
+test workbench::tests::awaiting_frame_keeps_complete_old_identity_and_immediate_covers ... ok
+test workbench::tests::projection_rejects_every_mismatched_key_and_presenter_notes_priority ... ok
+test workbench::tests::ten_previews_do_not_change_authorized_projection ... ok
+test document_load::native_tests::real_initial_load_notes_projection_and_failed_candidate_preserve_active ... ok
+
+test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+mbx[cache]: 0 hits, 0 misses, 1 not looked up, 1 incremental; 0 B downloaded, 0 B uploaded, 0 B stored locally
+mbx[savings]: found 88.6 GiB logical of target/ whose checkouts left long ago. the estate has been settled.

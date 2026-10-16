@@ -1,0 +1,14 @@
+[
+  {
+    "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe",
+    "bytes": 42888192,
+    "utc": "2026-10-15T16:21:20.6199689Z",
+    "sha256": "FEC7E2A1286C29C16E73230B1149FF0819AB0F219B759EB21279866833775A3A"
+  },
+  {
+    "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage-media-helper.exe",
+    "bytes": 799232,
+    "utc": "2026-10-15T16:17:36.2643063Z",
+    "sha256": "48D3801C3DDC3A563B56F7E56FBAD3CE4EEB89CE983992C2273D7DCC5D0C1F70"
+  }
+]

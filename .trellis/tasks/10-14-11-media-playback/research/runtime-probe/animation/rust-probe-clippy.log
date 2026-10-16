@@ -1,0 +1,5 @@
+    Checking ferrostage-media-research-probe v0.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\cache\media-research\rust-probe)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.44s
+mbx[cache]: 0 hits, 2 misses, 2 incremental; 0 B downloaded, 0 B uploaded, 0 B stored locally
+mbx[gc]: evicted 0 objects and 0 action results (59.0 KiB logical); 6.8 GiB logical remain
+mbx[savings]: 91.2 GiB logical of old build output has been shown the door.

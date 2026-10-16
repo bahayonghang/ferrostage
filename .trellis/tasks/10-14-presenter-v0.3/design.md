@@ -1,5 +1,7 @@
 # Design — 跨任务共享契约
 
+Task09 runtime-budget refinement2026-10-15: use one acknowledged `RenderHandle::set_cache_budgets(CacheBudgets) -> Reply<CacheBudgetAck>` message on the existing render thread for CPU/thumbnail immediate eviction. Shell serializes settings transactions, preflights both window GPU caches, awaits/rechecks worker application before updating Settings/save, and restores old worker budgets if a later precondition fails. Failed runtime application/rollback must remain visible and must not be persisted as success. No PDFium restart or second thread. See09 design for the complete settings consumer mapping.
+
 > Current acceptance policy (2026-10-15 user revision): `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md` supersedes older hardware/matrix blockers below. Implement all features first; retain automatic/feature/native-functional checks. Physical, exhaustive native/size and performance/soak matrices are deferred, not PASS. Gate B implementation is satisfied by V16;08 may start. Gate C/D are functional integration gates. Historical results and product contracts remain unchanged.
 
 状态：共享设计契约；实现与验证以 execution-state.md 和当前代码为准，初始研究报告是历史证据。父任务只协调。证据见 research/repository-baseline.md、research/runtime-feasibility.md、research/behavior-evidence.md；其中未验证事项是对应子任务的研究门。
@@ -61,6 +63,8 @@ save：同目录唯一tmp→完整写入→sync_all→验证过的Windows replac
 
 09维护键→消费者→生效表：布局/计时/指针/cache/debug由08即时应用；快捷键/角色由07；语言重启后确实切换资源；dark/light/system确实切换配色并监听系统主题。hot_reload仅在10接线后可启用，媒体项仅在11接线后显示可编辑；不以能写TOML验收空控件。
 
+Task09 consumer refinement (2026-10-15 source audit): RenderHandle currently accepts CPU/thumbnail budgets only at spawn.09 owns the necessary acknowledged runtime worker/cache budget-update adapter and immediate eviction tests, preserving the existing worker/document rather than restarting PDFium. Runtime rejection must leave settings unchanged; successful application precedes persistence. Its settings design records this precise scope extension. Shortcut updates likewise replace old registrations through the verified GPUI keymap API.
+
 ## 5. 线程与渲染协议
 
 | 执行域 | 工作 | 跨界值 |
@@ -80,9 +84,11 @@ PDFium bindings/document/page/bitmap都不逃逸；bytes owner覆盖借用文档
 
 ## 6. 观众唯一数据入口与 SharedFrame
 
+Task08 implementation refinement (2026-10-15): the snapshot carries a pure `LaserStyle` (BGRA color and normalized radius) so both windows render the configured pointer without giving Audience access to settings. A checked `SetLaserStyle` command rejects non-finite/out-of-range geometry before mutation; the default remains red with radius0.008. Task09 applies pointer settings through this same command. Task08 owns the planned BeginStroke/EndStroke/EraseStrokeAt commands and per-page annotation storage. Initial document import uses the existing candidate prepare/build/prerender/commit protocol so a failed document build retains the previous document; task10 extends this coordinator for external replacements.
+
 04创建纯core BgraFrame { width,height,stride,pixels_bgra:Arc<Vec<u8>> }，checked长度、非零尺寸、紧密width×4 stride；05 BgraBitmap复用。11在media::SharedFrame复用该像素类型并加generation/page/slot/playback_epoch/sequence身份封装；core不依赖media。
 
-AudienceProjectionSnapshot是观众view唯一输入（可Entity包装）：stage、generation/current_page/slide_crop、blank/laser/strokes，visual:Option<AudienceVisual>。visual只有匹配当前键的受控页BGRA与AudienceMediaFrame { slot_id,rect_norm,pixels }，没有LoadedDocument、SlideMap、notes_page/crop、路径、媒体源、讲者预览、计时。Curtain不带visual。04纯audience_snapshot产生投影元数据；08组装器从私有cache按精确键补visual；11补媒体。
+AudienceProjectionSnapshot是观众view唯一输入（可Entity包装）：stage、generation/current_page/slide_crop、blank/laser/strokes，visual:Option<AudienceVisual>。visual只有匹配当前键的受控页BGRA、纯渲染预算标量texture_budget_bytes与AudienceMediaFrame { slot_id,rect_norm,pixels }，没有LoadedDocument、SlideMap、notes_page/crop、路径、媒体源、讲者预览、计时。预算标量仅约束观众本地纹理事务，不授予Settings或控制器访问。Curtain不带visual。04纯audience_snapshot产生投影元数据；08组装器从私有cache按精确键补visual；11补媒体。
 
 观众view没有整个cache句柄或任意页请求接口；snapshot BGRA上传到自己的受预算RAII纹理，讲者缓存权限独立，可共享同源Arc像素。错页/crop/DPI/代际帧不能绘制。组装器保持上一完整已发布投影直至新页帧就绪，不能旧像素配新页metadata；Curtain/blank立即安全覆盖、等待时清错页laser/strokes，首次显示受控占位；幕布/black/white在媒体/标注/激光笔之上。08负责替换/淘汰/关闭/代际纹理释放，11沿用。媒体源只在document/media控制侧解析；跨代/跨页帧在组装边界拒绝。
 
@@ -183,3 +189,36 @@ New source UI tests and native count/number/Identify/assignment/restart observat
 ### F14 adoption authorization — 2026-10-15
 
 The user separately approved the reviewed four-file accesskit_windows0.34.0 F14 repair as sixth maintained package. ADR-008 binds exact source/patch, preservation of original production manifest/licenses, COM regressions and new native acceptance. Existing GPUI pin, license exceptions and all task/gate dependencies remain unchanged.
+
+## Task10 I-1 reviewed transaction refinement — 2026-10-15
+
+The implementation-start review authorizes a minimal pure `AudienceStagingFrame` carried only in `AudienceProjectionSnapshot.staging`: attempt identity, candidate generation/page/crop and public `BgraFrame`. Existing committed snapshot identity/visual remain unchanged until publication. Audience gains no document, path, notes, Settings or controller/cache capability. Presenter staging remains on its own workbench path, including private notes only there. Staging acknowledgement exposes identity and success/error only.
+
+Production staging uses a normal canvas paint callback with nonempty image bounds and an empty content mask. The pinned GPUI code inserts into the sprite atlas before clipping the scene primitive, so the real upload result is observed while candidate pixels remain invisible. Both required windows acknowledge the current attempt/target before worker commit; a Presenter-only session requires only its own acknowledgement. Keep the same staged RenderImage allocation through promotion, account for old plus candidate bytes within total L1, and explicitly drop every rejected/obsolete staging allocation. Empty bounds or a test-only atlas predicate cannot establish upload success.
+
+Transaction order: read stable bytes → structure/Prepare metadata → map and explicit P0/P1 prerender → window upload acknowledgements → worker Commit → commit acknowledgement → final current-state validation and atomic core/document/visual publication → old-generation Retire acknowledgement. A new event/Close/import during Commit keeps the reply alive and marks it obsolete; it cannot silently discard an already committed worker generation. An obsolete successful commit must use an opaque, single-use rollback capability bound to that worker and exact commit/previous generation, await rollback acknowledgement, then retire the rejected generation. A failed commit follows acknowledged abort. Never authorize arbitrary generation rollback by two public integers, reuse a capability across workers, or decrease a published core generation. The concrete command/ack signatures are to be recorded in10's implementation report.
+
+Candidate preparation does not freeze the core state for later replacement. Before publication, apply the checked reload mapping to the latest state so timer/pause, blank and mapped annotations reflect intervening actions. A changed current page, document-view options, window identity or raster target invalidates incompatible preparation; rebuild from the stable candidate bytes rather than waiting indefinitely for another file event. Laser motion alone must not starve commits. Rollback failure is explicit, retains the last complete UI projection and prevents mixed-generation rendering; a corrected retry/reimport remains a recovery path. All native handles remain on the same PDFium worker, and source PDFs stay read-only.
+
+This is the reviewed implementation contract, not a claim that task10 code or native acceptance has already passed. Latest acceptance-policy scheduling remains authoritative.
+
+
+## Task11 I-1 reviewed backend and lifecycle refinement — 2026-10-15
+
+Root reviewed the existing native/animation/seek/audio/lifecycle/missing-runtime research and the implementer's concrete package/control plan. Proceed with one GStreamer backend in a separate `ferrostage-media-helper` package: optional native feature and required-feature binary, exact gstreamer0.25.4/app0.25.2/video0.25.2 dependencies only there. The GUI uses pure media/controller/protocol plus image0.25.10 GIF/WebP and core BgraFrame; no helper dependency or native imports may enter the GUI through feature unification. Default workspace CI stays SDK-independent; explicit native helper build/test/lint uses the audited SYSTEM_DEPS import-library route. Actual final GUI PE imports and missing-runtime behavior remain required checks.
+
+Adopt the reviewed47-file/18-plugin candidate for product staging, with exact archive/file hashes, complete original notices/recipes/source references and a formal task11 ADR/packaging manifest. Never copy the aggregate wheels wholesale. Hash checks secure original download/extraction/package inputs; compatible user replacement of LGPL dynamic libraries remains possible. No new license/advisory/unsafe exception or second backend.
+
+One supervisor owns one active decoder/audio source. First current-content annotation with a nonempty public intersection and autostart wins in document order; explicit selection stops the previous slot before the next starts. Other slots retain PDF content. The Presenter shows the active selection/state and explicit play/pause/progress. Slot click handling must not steal an active ink gesture. Notes-only annotations never autostart invisible audio. GIF/WebP remain independently available when native video is unavailable.
+
+Use bounded commands/latest frames and framed IPC validated before allocation. UI identity invalidation is synchronous; pipe reads/writes, decode/crop/scale and shutdown/reaping run off UI. Drain stderr on a background reader with bounded diagnostics as well as stdout. Do not spawn a replacement audio owner before old child exit/kill/reap. EOF/crash/missing runtime/source/codec yields typed recoverable Presenter state while PDF remains usable. Audio-only uses bus/progress without requiring a video sample. Ready, page departure, blank, Stop, Close and committed-generation change invalidate epochs; leaving blank does not revive the old decoder.
+
+Media output shares the existing BGRA allocation and budgeted08 texture path. Publish only the authorized source-pixel crop at the public destination intersection, stripped to existing AudienceMediaFrame slot/rect/pixels. Preserve alpha and aspect ratio. Bound source dimensions, file bytes, total animation storage and output length; source fields and temporary embedded artifacts remain controller-only. Embedded extraction uses create-new owned storage and deletes only after decoder/child release.
+
+Add `media.max_decode_height` to schema v1 with default1080 and valid integer range1..=2160; output height is at most the configured value and width at most1920 with aspect preserved. Apply changes to the next playback instance through a real09 Advanced control. Preserve old-v1 defaults, unknown leaves and future read-only policy. All V-1–V-8/P2 functionality stays required; desktop inputs/real audio are reserved for root's consolidated pass after independent checks. Extended matrices remain DEFERRED_BY_USER/NOT_RUN.
+
+
+Task11 implementation identity refinement: existing `AudienceMediaFrame.slot_id` identifies an opaque public playback instance, not the document annotation index. Keep annotation/source/progress on the controller side. The public instance ID must not be reused across page, committed generation, Close/reimport, settings rebuild or helper restart; checked exhaustion fails explicitly. Both windows share this ID and the same BgraFrame. This prevents budget/upload fallback from exposing a prior-page or prior-epoch slot's retained pixels. Keep the existing pure slot/rect/pixels snapshot shape and test the actual texture path on failed upload.
+
+
+Task11 media geometry refinement: background composition first fits the decoded frame into a transparent canvas with the original annotation aspect ratio, then applies the source crop corresponding to the public-slide intersection, then publishes at the public destination rectangle. This avoids stretching or fitting an already-cropped frame at the wrong position. Bound the full canvas before allocating (width≤1920, height≤configured maximum and checked bytes), including extremely wide/narrow annotations; crop integer edges must not expand toward private notes. Both windows share the resulting BgraFrame and transparent areas retain underlying PDF pixels.

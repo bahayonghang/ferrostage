@@ -1,0 +1,5 @@
+    Checking ferrostage-media v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-media)
+    Checking ferrostage-media-helper v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-media-helper)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.92s
+mbx[cache]: 0 hits, 0 misses, 4 not looked up, 5 incremental; 0 B downloaded, 0 B uploaded, 0 B stored locally
+mbx[savings]: 112.9 GiB logical of build debris has left the building.

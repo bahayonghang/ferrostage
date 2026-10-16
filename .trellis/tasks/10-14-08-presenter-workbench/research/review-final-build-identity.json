@@ -1,0 +1,9 @@
+{
+  "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe",
+  "bytes": 41183232,
+  "sha256": "2E38E384DEC3065AD01E41640A8A399AE7112D2DDDC686F799B83D12DDE27B1F",
+  "features": "gpui,pdfium",
+  "profile": "debug",
+  "built_after_default_ci": true,
+  "native_smoke": "NOT_RUN_PARENT_OWNED"
+}

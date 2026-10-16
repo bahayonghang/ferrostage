@@ -3,7 +3,7 @@
 > Current acceptance policy (2026-10-15 user revision): `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md` supersedes older hardware/matrix blockers below. Implement all features first; retain automatic/feature/native-functional checks. Physical, exhaustive native/size and performance/soak matrices are deferred, not PASS. Gate B implementation is satisfied by V16;08 may start. Gate C/D are functional integration gates. Historical results and product contracts remain unchanged.
 
 ## 选择、依赖、输入输出
-前置01/02/04/06/07/08/09与Gate C；V-1…8/R-40/44。单视频后端仍待research gate锁定；GStreamer safe AppSink为有证据的条件候选，LibVLC回调安全覆盖/包身份未充分核实，不引双后端。
+前置01/02/04/06/07/08/09与Gate C；V-1…8/R-40/44。单视频后端已按末尾I-1评审锁定为独立GStreamer helper；具体版本/分发见ADR-009，不引第二后端。
 输入document私有MediaSlot/source、stage/page/generation/playback epoch；输出SharedFrame控制封装与唯一音频流。audience最终仅08snapshot中的slot/rect/pixels，不读取MediaSlot/path/backend/进度。
 
 ## 文件范围
@@ -12,7 +12,7 @@
 
 ## 原生研究门（实施前）
 锁exact Rust/native版本、safe BGRA/callback、codec/plugin/notice/license与binary来源；cargo-deny仍拒GPL/AGPL，native DLL与Cargo图独立审计，动态链接不是自动政策豁免。优先最小合法plugin集，不拷整包。
-V-8缺DLL启动是硬需求：直接import native DLL可能在进程启动前失败，不能靠gst::init Result降级。研究安全runtime loader或隔离组件方案，拿具体缺DLL启动结果再锁后端；若均不可行，提出明确ADR/需求决策后再实施，不能只测试feature-disabled build。是否隔离进程是技术门待评方案，不先写成实现事实。
+V-8缺DLL启动是硬需求：直接import native DLL可能在进程启动前失败，不能靠gst::init Result降级。研究安全runtime loader或隔离组件方案，拿具体缺DLL启动结果再锁后端；若均不可行，提出明确ADR/需求决策后再实施，不能只测试feature-disabled build。该技术门已由末尾I-1评审和ADR-009解决：独立helper隔离所有native链接；实际GUI缺库观察仍由root集中smoke记录。
 
 ## 数据与生命周期
 GIF/WebP可用纯Rust解码路线，exact许可/feature由本任务确定；输出frames/delays，限制尺寸/总内存，帧不靠UI逐帧解码。视频safe sample mapping需正确stride/pack为BGRA，bytes owner存活，不能留下mapped借用；单decoder、单audio，两窗Arc共享。
@@ -27,3 +27,23 @@ missing library是禁用媒体+typed说明，坏codec/文件只坏slot，不坏�
 ### Shared frame allocation contract (task05 refinement)
 
 BgraFrame::new accepts an owned Vec<u8>, validates packed BGRA geometry and stores private Arc<Vec<u8>> without copying pixels. pixels_bgra returns &[u8]; clone the BgraFrame to share an existing allocation. No mutable pixels or native handles are exposed. See parent design task05 measured frame-storage refinement; task05 owns core frame tests plus all current constructor call-site updates.
+
+## I-1 accepted implementation decision — 2026-10-15
+
+Root reviewed the concrete helper design and approved implementation. ADR-009 and `packaging/media/runtime.json` lock the single backend and selected47-file/18-plugin native closure. Native links exist only in the optional-native helper package, never the GUI. Default CI remains SDK-free. Product backend checks use `scripts/media-native.ps1`; protocol/controller and actual runtime regressions are separate from the deferred foreground/matrix/soak acceptance.
+
+Only one active slot/decoder/audio owner exists. First public autostart wins in document order; selecting another slot retires/reaps the previous child before creating the next. A process-wide checked increasing public instance ID is used by AudienceMediaFrame.slot_id, distinct from the private PDF annotation index. A controller replacement cannot reuse an old texture key. Latest command/frame slots and bounded pipe messages prevent queue growth; stdout/stderr drains and kill/reap run off the UI. Blank/page/Stop/Close/published generation invalidate acceptance immediately; leaving blank does not resume the old instance.
+
+The media setting remains schema v1, height1..2160/default1080, width≤1920, applies to next playback. Existing unknown/future/read-only behavior remains. Source dimensions and cumulative animation allocation are bounded. Geometry is contain into the physical annotation aspect with transparent letterbox, then conservative public intersection crop; the output canvas is bounded before allocation and only the final public BgraFrame is shared with both windows. Media uses each window's existing texture budget and is painted between the PDF and ink/laser. No source/control/notes enter Audience.
+
+First product compilation: pure media and helper default check PASS; native helper feature check PASS; GUI gpui,pdfium,media check PASS. First actual controller→helper MP4/WebM/Ogg and GIF/WebP regression batch7 PASS, silent fakesink. These are intermediate results, not final acceptance.
+
+Final implementation/verification and runtime identities: research/implementation-report.md. Background gates passed; visible/matrix/soak claims remain separate.
+
+## Independent review refinements — 2026-10-15
+
+The fixed native scanner path is the exact manifest entry `libexec/gst-plugin-scanner.exe`; a fresh isolated registry is required in package validation so a prior user registry cannot hide missing package functionality. Staging rejects existing DLL/EXE files outside the selected manifest before writing, without deleting them or changing the selected closure.
+
+Animation pre-decode peak accounting includes retained projected frames, metadata, source/decoder/output scratch and the exact next full contain canvas plus cropped result. The geometry used for this reservation is shared with actual projection. Native child frame sequence must increase within its process; duplicate/regressing messages are typed Protocol failures and cannot replace the retained valid frame. Cross-process isolation still uses the checked opaque playback epoch. Public settings/caps and snapshot privacy are unchanged.
+
+Final independent decisions, command receipts and exact source/binary identities are in `research/independent-review.md`. Root's consolidated foreground observations and user-deferred metrics remain separate.

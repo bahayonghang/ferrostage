@@ -8,6 +8,8 @@ Do not delete existing regression tests, raw evidence or failed receipts. Do not
 
 ## Checks that remain required
 
+Desktop scheduling update2026-10-15: after bounded08 native checks, the user explicitly selected “continue code, consolidate remaining desktop smoke later” because foreground work conflicted with automation. Continue09→10→11 implementation and noninteractive checks now; retain the unexecuted desktop actions as NOT_RUN until the consolidated functional pass. This changes timing, not the required functional checks or their truth values.
+
 - Before implementing: review actual dependency interfaces and planning artifacts; use task.py start on the existing task. Preserve others' edits and dispatch serial implement then check agents.
 - Bug fixes retain meaningful reproducing regressions. Run affected tests, strict lint/typecheck, required feature compilation, cargo deny and just ci after meaningful code changes; reuse prior results only with source applicability evidence.
 - Keep core purity, read-only user PDFs, single PDFium thread, settings atomicity/future-version handling, snapshot-only Audience and private notes/media paths. No license, advisory, unsafe or architectural waiver is granted.
@@ -37,6 +39,8 @@ Functional support for hotplug, single/zero displays, drag/drop, themes, layout 
 
 Parent AC-1–AC-10 retain their full original wording as later qualification targets. At closeout, report each implemented functional subset separately from its deferred physical/performance/visual subset; do not tick a combined full-qualification criterion because only its functional subset passed. "All functionality implemented and checked; extended acceptance deferred by user" is distinct from "all original acceptance passed".
 
-## Submission boundary
+## Submission boundary — latest authorization
 
-This user turn authorizes commits and archival of the completed03/07 work, including the reviewed V16 repair, evidence and this scheduling revision. It does not request a push. The follow-up prompt defaults to leaving new08–11 changes uncommitted and unarchived until a later explicit closeout request. No new task tree is needed.
+2026-10-15 latest user request explicitly authorizes committing current changes and archiving completed tasks, then preparing the next-session Prompt. This supersedes the earlier no-commit/no-archive instruction for this closeout only. Do not push.08–11 are eligible for implementation-scope archival; the parent remains in_progress and owns unresolved functional observations and deferred qualification. New follow-up changes default to uncommitted until separately authorized.
+
+Earlier instructions to leave08–11 uncommitted applied during implementation and are retained in historical reports only. Child archival does not pass unexecuted native actions, full Gate D or original composite parent ACs.

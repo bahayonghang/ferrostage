@@ -1,0 +1,19 @@
+{
+  "recorded_utc": "2026-10-16T01:01:50.230Z",
+  "window": {
+    "app": "process:D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\consolidated-smoke\\partial\\ferrostage.exe",
+    "id": 41422476
+  },
+  "accessibility": null,
+  "screenshots": [
+    {
+      "height": 1707,
+      "id": "screenshot-0",
+      "originX": 2560,
+      "originY": -1142,
+      "width": 1067,
+      "zIndex": 0,
+      "file": "final04-audience-fallback-0.jpg"
+    }
+  ]
+}

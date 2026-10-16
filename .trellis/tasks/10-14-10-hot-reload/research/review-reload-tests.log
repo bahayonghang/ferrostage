@@ -1,0 +1,29 @@
+warning: function `shape` is never used
+   --> vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `harfrust` (lib) generated 1 warning
+   Compiling ferrostage-platform v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-platform)
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 9.61s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-b15f31a9a1f94425.exe)
+
+running 3 tests
+test shell::reload::tests::invalid_pdf_errors_do_not_hide_runtime_failures ... ok
+
+running 1 test
+test shell::reload::tests::runtime_watch_toggle_debounce_and_creation_failure_are_transactional ... ok
+test shell::reload::tests::real_pdfium_two_window_commit_obsolete_ack_rollback_and_latest_state ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 112 filtered out; finished in 2.77s
+
+test shell::reload::tests::real_pdfium_two_window_commit_obsolete_ack_rollback_and_latest_state ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 110 filtered out; finished in 2.80s
+
+mbx[cache]: 0 hits, 0 misses, 2 not looked up, 2 incremental; 0 B downloaded, 0 B uploaded, 0 B stored locally
+mbx[savings]: 91.2 GiB logical of build debris has left the building.

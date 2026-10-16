@@ -1,5 +1,9 @@
 # Implement — 09
 
+## Current checkpoint — 2026-10-15
+
+I-1–I-5 and I-7 implementation/independent automatic gates are complete for U-1–U-11. Review fixed closed-panel layout writes during pending settings application/rollback and verified108 GPUI/real-loader,37 native and162 default CI tests, strict feature/production lint/typecheck, all-feature deny and post-CI build. See `research/independent-review.md` and `review-build-identity.json`. I-6 bounded desktop smoke follows the user's explicit consolidated schedule after11; extended matrices stay DEFERRED_BY_USER and original composite ACs unchecked.08/09 remain unarchived, and execution has proceeded to existing10. No commit/push/archive.
+
 > Current acceptance policy (2026-10-15 user revision): `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md` supersedes older hardware/matrix blockers below. Implement all features first; retain automatic/feature/native-functional checks. Physical, exhaustive native/size and performance/soak matrices are deferred, not PASS. Gate B implementation is satisfied by V16;08 may start. Gate C/D are functional integration gates. Historical results and product contracts remain unchanged.
 
 1. **I-1 消费者评审**：核02/03/07/08接口与上表，语言restart、theme/system事件明确；hot_reload/media capability未就绪禁用，不做循环依赖。
@@ -25,3 +29,8 @@
 ## Resume audit - 2026-10-15
 
 Task07 minimal display panel is implemented; it is not the complete09 settings UI. I-1 remains blocked by08 delivery. Do not fork the shared role/Identify transaction or start planning-status product code. See parent `research/resume-2026-10-15.md` and07 `research/resume-2026-10-15-v16-review.md` for current-code evidence and exact remaining gates. Task status and acceptance checkboxes are unchanged. No commit, push or archive.
+
+
+## Implementation checkpoint — 2026-10-15 (09 implementer)
+
+I-1–I-5 implemented: seven categories with real consumers and transactional application; shared07 role/Identify path; actual raw-key interception and full keymap replacement; runtime CPU/L3 acknowledgement; dual-window GPU preflight and snapshot-only budget application; localized dirty/retry/read-only state. I-6 remains DEFERRED_BY_USER/NOT_RUN per consolidated smoke instruction. I-7 automatic evidence: 107 GPUI/native-loader tests passed; 37 native PDF/document/render tests passed; strict all-feature and production feature clippy passed; final just ci (162 tests + deny) and post-CI gpui,pdfium build passed. Independent check is pending. No commit/push/archive. Raw composite native ACs remain unchecked. See research/implementation-report.md.

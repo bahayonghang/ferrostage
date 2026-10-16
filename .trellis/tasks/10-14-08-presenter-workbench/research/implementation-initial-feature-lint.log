@@ -1,0 +1,125 @@
+warning: function `shape` is never used
+   --> vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+    Checking ferrostage-core v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-core)
+warning: `harfrust` (lib) generated 1 warning
+    Checking ztracing v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+    Checking sum_tree v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+    Checking ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+    Checking ferrostage-platform v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-platform)
+    Checking gpui v0.2.2 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui)
+    Checking ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+    Checking ferrostage-document v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-document)
+    Checking ferrostage-settings v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-settings)
+    Checking gpui_windows v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+    Checking gpui_platform v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+    Checking ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+error: unused import: `ferrostage_pdf::DocumentMetadata`
+  --> crates\ferrostage-ui\src\shell.rs:15:5
+   |
+15 | use ferrostage_pdf::DocumentMetadata;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `-D unused-imports` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(unused_imports)]`
+
+error: unnecessary parentheses
+  --> crates\ferrostage-ui\src\texture_cache.rs:33:37
+   |
+33 |             if bytes.saturating_add((frame.width() as usize * frame.height() as usize * 4)) > budget
+   |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: remove them: `frame.width() as usize * frame.height() as usize * 4`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#double_parens
+   = note: `-D clippy::double-parens` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::double_parens)]`
+
+error: unnecessary parentheses around method argument
+  --> crates\ferrostage-ui\src\texture_cache.rs:33:37
+   |
+33 |             if bytes.saturating_add((frame.width() as usize * frame.height() as usize * 4)) > budget
+   |                                     ^                                                    ^
+   |
+   = note: `-D unused-parens` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(unused_parens)]`
+help: remove these parentheses
+   |
+33 -             if bytes.saturating_add((frame.width() as usize * frame.height() as usize * 4)) > budget
+33 +             if bytes.saturating_add(frame.width() as usize * frame.height() as usize * 4) > budget
+   |
+
+error: unnecessary parentheses around assigned value
+  --> crates\ferrostage-ui\src\texture_cache.rs:44:26
+   |
+44 |                 bytes += (frame.width() as usize * frame.height() as usize * 4);
+   |                          ^                                                    ^
+   |
+help: remove these parentheses
+   |
+44 -                 bytes += (frame.width() as usize * frame.height() as usize * 4);
+44 +                 bytes += frame.width() as usize * frame.height() as usize * 4;
+   |
+
+error: unnecessary parentheses around closure body
+  --> crates\ferrostage-ui\src\texture_cache.rs:61:22
+   |
+61 |             .map(|e| (e.frame.width() as usize * e.frame.height() as usize * 4))
+   |                      ^                                                        ^
+   |
+help: remove these parentheses
+   |
+61 -             .map(|e| (e.frame.width() as usize * e.frame.height() as usize * 4))
+61 +             .map(|e| e.frame.width() as usize * e.frame.height() as usize * 4)
+   |
+
+error: this `if` statement can be collapsed
+    --> crates\ferrostage-ui\src\shell.rs:1510:9
+     |
+1510 | /         if let Some(presenter) = &self.presenter {
+1511 | |             if let Ok(target) = presenter.handle.update(cx, |_, window, _| {
+1512 | |                 let size = window.viewport_size();
+1513 | |                 let scale = window.scale_factor();
+...    |
+1527 | |         }
+     | |_________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#collapsible_if
+     = note: `-D clippy::collapsible-if` implied by `-D warnings`
+     = help: to override `-D warnings` add `#[allow(clippy::collapsible_if)]`
+help: collapse nested if block
+     |
+1510 ~         if let Some(presenter) = &self.presenter
+1511 ~             && let Ok(target) = presenter.handle.update(cx, |_, window, _| {
+1512 |                 let size = window.viewport_size();
+ ...
+1525 |                 self.workbench.presenter_target = Some(target);
+1526 ~             }
+     |
+
+error: useless conversion to the same type: `f32`
+  --> crates\ferrostage-ui\src\slide_surface.rs:21:13
+   |
+21 |     let u = f32::from((position.x - bounds.origin.x) / bounds.size.width);
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: consider removing `f32::from()`: `((position.x - bounds.origin.x) / bounds.size.width)`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#useless_conversion
+   = note: `-D clippy::useless-conversion` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::useless_conversion)]`
+
+error: useless conversion to the same type: `f32`
+  --> crates\ferrostage-ui\src\slide_surface.rs:22:13
+   |
+22 |     let v = f32::from((position.y - bounds.origin.y) / bounds.size.height);
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: consider removing `f32::from()`: `((position.y - bounds.origin.y) / bounds.size.height)`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#useless_conversion
+
+error: could not compile `ferrostage-ui` (lib) due to 7 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `ferrostage-ui` (lib test) due to 8 previous errors
+mbx[cache]: 0 hits, 1 misses, 12 not looked up, 8 incremental; 0 B downloaded, 0 B uploaded, 16.4 MiB stored locally
+mbx[savings]: 88.6 GiB logical of outputs had survived their checkouts. an unnatural state, now corrected.

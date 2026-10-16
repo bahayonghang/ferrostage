@@ -1,0 +1,11 @@
+{
+  "mode": "Rename",
+  "startedUtc": "2026-10-16T00:56:23.1166616Z",
+  "completedUtc": "2026-10-16T00:56:23.1261424Z",
+  "target": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-10-hot-reload\\research\\native\\runtime\\watched.pdf",
+  "source": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-10-hot-reload\\research\\native\\inputs\\reload-orange.pdf",
+  "bytes": 163106,
+  "chunk_delay_ms": null,
+  "targetSha256": "3DB25C68D519F731D866CACE4B91075C530422EFD9D82659944F41A0476D5781",
+  "scope": "External fixture producer only; no application acceptance inferred."
+}

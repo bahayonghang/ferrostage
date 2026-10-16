@@ -21,7 +21,7 @@
 - **H-1** `watch_pdf(path, debounce, sink)`：`notify` 监听父目录（应对"写临时文件再 rename"的替换方式），过滤目标文件名；事件合并后等待 `debounce` 的静默期。
 - **H-2** 300ms静默，大小/mtime间隔采样稳定、尾1KiB EOF，再read+复核stat；EOF仅提示，结构/PDFium完整验证才提交。30s放弃debug无弹窗，旧画面继续。
 - **H-3** IO worker读bytes关句柄；结构worker lopdf+06构建；唯一render worker PrepareCandidate仅PDFium影子加载/PageLabel/尺寸并返回metadata→06建图/定位/crop→PreRenderCandidate明确P0/P1请求→ready，对象不逃逸/另开线程。
-- **H-4** active/candidate独立结果；候选P0/P1齐备，主线程最新attempt校验，同次core descriptor/document/visual提交，再worker Commit/Retire和UI/CPU回收。失败Abort旧代继续，重复/过时不提交。
+- **H-4** active/candidate独立结果；候选P0/P1齐备，主线程最新attempt校验，两窗上传ack→worker reversible Commit ack→同次core descriptor/document/visual提交→Retire和UI/CPU回收；以design.md末尾已评审I-1为具体顺序。提交前失败Abort旧代继续；Commit已成功但过时则凭opaque capability回滚并ack，不以Abort冒充回滚。
 - **H-5** 唯一原始label组+overlay ordinal优先；歧义/缺失旧物理号钳至新物理范围，取≤号的最大content物理页，无则首content（不作Vec下标）。阶段/计时不变，可映射笔画保留/删页丢弃告警，generation失效停媒体。
 - **H-6** 只读保证：本 crate 与调用链对目标路径只使用 `File::open`/`fs::read`；增加单测/评审项确保无写路径（不变量 8）。
 - **H-7** EOF只查尾部；移除SHADOW_TMP_SUFFIX及写PDF注释/测试，设置tmp由Store独立管理，不复用误导名称。

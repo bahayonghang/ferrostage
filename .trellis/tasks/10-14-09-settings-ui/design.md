@@ -11,6 +11,14 @@
 拟建ui/src/settings_view.rs/字段映射模型；嵌入07共享display_settings，不重建其编号/Identify/角色事务。不得将SettingsStore/path/notes传入audience Entity。
 
 ## 键→消费者→生效方式
+
+Task08 concrete pointer contract: laser color/radius reach Audience only through the pure snapshot `LaserStyle`, updated by checked `SetLaserStyle`;09 must use that command and must not pass settings to the audience view. Failed validation leaves runtime and persisted settings unchanged.
+
+Task08 GPU failure refinement: authorized visual metadata may carry a scalar `AudienceVisual.texture_budget_bytes` for the audience's local texture transaction; this is not a settings/controller capability. GPU upload success, not CPU raster availability, commits the new image; failed upload preserves the previous complete image and emits a narrow rendering-error event for Presenter feedback. Each window owns half of total L1, and reserves half its own allocation for one pending upload; committed images use the other half. A shrink that cannot fit retained committed images in the new committed half is rejected, preserving the prior effective budget.09 must preflight Presenter and Audience together before applying/persisting a new L1 setting, so a failed change cannot leave divergent effective budgets. An upload failure is not retried every paint for the same pixel identity; a new identity or document reopen permits another attempt. Consume the final08 implementation/review for the concrete APIs and regression evidence.
+
+Consumer audit2026-10-15: the current RenderHandle accepts CPU/thumbnail budgets only at spawn;09 must add the smallest acknowledged runtime budget-update message to the existing render worker/cache, including immediate eviction and failure handling, to satisfy the table below. Do not rebuild the PDFium worker or label a saved-but-unused cache setting as applied. This necessary consumer adapter extends09's file scope to render worker/protocol/cache and targeted regressions. Also replace existing shortcut registrations rather than accumulating duplicate bindings; the actual GPUI keymap removal/replacement API must be verified before implementation.
+
+Pinned GPUI source supplies `App::bind_keys` and `App::clear_key_bindings` (`vendor/gpui/src/app.rs`, inspected2026-10-15). Rebinding must reinstall the complete application/modal binding set once while retaining a single set of action handlers; clearing keys without restoring modal safety bindings is not a valid replacement.
 | 键 | 实际消费者 | 生效/阶段 |
 | --- | --- | --- |
 | display.monitors / single_monitor_mode / fullscreen | 07角色/窗口协调器 | 即时，运行时失败回滚；保存失败dirty |
@@ -27,6 +35,8 @@
 general recent文件元数据仅设置/讲者控制侧，不能进入snapshot。general.recent_files=[]由02定义、07维护、09清空/限制，unknown merge保留；不引入PDF写回或长期notes存储。
 
 ## 交互/错误/回滚
+
+Concrete09 consumer refinement: `RenderHandle::set_cache_budgets(CacheBudgets) -> Reply<CacheBudgetAck>` is planned as one acknowledged message to the existing worker, updating CPU/thumbnail limits and immediately evicting excess entries on that same thread. The acknowledgement records effective budgets/usage. Shell serializes settings runtime transactions, preflights both GPU caches, waits for worker acknowledgement and rechecks before committing Settings/save; a later rejection rolls worker budgets back to their prior values. Pending edits must not race acknowledgements. Rollback failure is visible, never persisted as success. No extra PDFium worker/restart is introduced.
 拓扑图用03单位/DPI转换并复用07编号；应用屏/PDF屏选择使用07草稿Apply/Cancel，一次更新两项并清除旧角色；每ID一个role，不能旧binding抢先，唯一来源display.monitors；既有duplicate配置展示warning，UI不新建重复。Identify独立3s标号overlay，仅Ready/Idle可用，Presenting禁用，不卡audience安全边界。新屏刷新但不自动role/Start。
 07协调器负责Presenting角色迁移，先保证新目标有效与窗体构建，再提交role/window；失败回原配置/窗口，不能先持久化。≤500ms为实机目标；用户选择“不播放”时（单屏同步presenter_only），先Curtain→Stop→关闭观众，保留页并冻结计时回Ready；有效目标迁移才保持Presenting/运行计时。设置Focus永远讲者，popover不会挂audience。
 显示器目的地使用共享草稿Apply，其余控件按各键约定校验→runtime应用→save；runtime失败回滚该项；save失败保留当前效果、明显未保存与重试，重启取上次落盘。future版本所有写/重置控件禁用；读配置打开目录也不能触发写回。不要让reset覆写未来文件。

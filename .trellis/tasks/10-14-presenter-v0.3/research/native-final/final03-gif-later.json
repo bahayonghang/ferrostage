@@ -1,0 +1,23 @@
+{
+  "recorded_utc": "2026-10-16T00:59:30.717Z",
+  "window": {
+    "app": "process:D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\consolidated-smoke\\complete\\ferrostage.exe",
+    "id": 40637258,
+    "title": "media-smoke.pdf — 演示中 — FerroStage"
+  },
+  "accessibility": {
+    "focused_element": "7 application FerroStage 讲者窗口",
+    "tree": "Window: \"media-smoke.pdf — 演示中 — FerroStage\", App: ferrostage.exe.\n\t0 region media-smoke.pdf — 演示中 — FerroStage Secondary Actions: Raise\n\t\t1 title bar (settable, string) Value: media-smoke.pdf — 演示中 — FerroStage\n\t\t\t2 menu bar System ID: MenuBar\n\t\t\t\t3 menu item System\n\t\t\t4 button Minimize\n\t\t\t5 button Maximize\n\t\t\t6 button Close\n\t\t7 application FerroStage 讲者窗口\n\t\t\t36 button 暂停计时 ID: timer-pause\n\t\t\t37 button 重置计时 ID: timer-reset\n\t\t\t8 button 打开 PDF（不可用） ID: open\n\t\t\t9 button 设置 ID: settings\n\t\t\t10 button 显示器设置 ID: displays\n\t\t\t15 button 逻辑页 1/6 · 步进 1/1 · 物理页 1/6 ID: workbench-progress\n\t\t\t16 button 暂停媒体 1 · 0 / 0 s ID: media-slot-0\n\t\t\t17 button 1 ID: jump-thumbnail-0\n\t\t\t18 button 2 ID: jump-thumbnail-1\n\t\t\t19 button 3 ID: jump-thumbnail-2\n\t\t\t20 button 4 ID: jump-thumbnail-3\n\t\t\t21 button 前一组（不可用） ID: grid-prev\n\t\t\t22 button 后一组 ID: grid-next\n\t\t\t24 button 上一页 ID: previous\n\t\t\t25 button 下一页 ID: next\n\t\t\t26 button 黑屏 ID: black\n\t\t\t27 button 白屏 ID: white\n\t\t\t28 button 导航 ID: navigate\n\t\t\t29 button 激光笔 ID: laser\n\t\t\t30 button 画笔 ID: pen\n\t\t\t31 button 荧光笔 ID: highlighter\n\t\t\t32 button 橡皮 ID: eraser\n\t\t\t33 button 清空笔画 ID: clear-strokes\n\t\t\t34 button 缩略图网格 ID: grid\n\t\t\t35 button 文档选项 ID: document-options\n\t\t\t38 button 结束演示 ID: stop\n\nThe focused UI element is 7 application FerroStage 讲者窗口."
+  },
+  "screenshots": [
+    {
+      "height": 791,
+      "id": "screenshot-0",
+      "originX": 592,
+      "originY": 192,
+      "width": 1102,
+      "zIndex": 0,
+      "file": "final03-gif-later-0.jpg"
+    }
+  ]
+}

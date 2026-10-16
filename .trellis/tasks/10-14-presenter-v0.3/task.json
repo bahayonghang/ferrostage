@@ -3,7 +3,7 @@
   "name": "presenter-v0.3",
   "title": "FerroStage v0.3 演示器实施计划（PDF/Beamer 展示）",
   "description": "基于 ref/implement_plan.md v0.2 修订的 v0.3 总体计划：删除 LaTeX 编辑/PDF 批注写回，新增设置系统、显示器角色识别与显式开始演示生命周期；父任务持有需求集、子任务映射与集成验收",
-  "status": "planning",
+  "status": "in_progress",
   "dev_type": null,
   "scope": null,
   "package": null,
@@ -34,5 +34,12 @@
   "parent": null,
   "relatedFiles": [],
   "notes": "",
-  "meta": {}
+  "meta": {
+    "active_implementation": "08-11_source_complete",
+    "active_phase": "implementation_closeout_and_remaining_acceptance",
+    "desktop_smoke": "core_subset_pass_remaining_not_run_or_unverified",
+    "delivery": "commit_and_archive_authorized_no_push",
+    "automatic_checks": "passed",
+    "remaining_scope": "unobserved_functional_checks_and_deferred_qualification"
+  }
 }

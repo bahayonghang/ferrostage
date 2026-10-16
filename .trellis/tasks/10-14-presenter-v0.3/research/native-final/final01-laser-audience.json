@@ -1,0 +1,19 @@
+{
+  "recorded_utc": "2026-10-16T00:52:55.338Z",
+  "window": {
+    "app": "process:D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\consolidated-smoke\\complete\\ferrostage.exe",
+    "id": 12130840
+  },
+  "accessibility": null,
+  "screenshots": [
+    {
+      "height": 1707,
+      "id": "screenshot-0",
+      "originX": 2560,
+      "originY": -1142,
+      "width": 1067,
+      "zIndex": 0,
+      "file": "final01-laser-audience-0.jpg"
+    }
+  ]
+}

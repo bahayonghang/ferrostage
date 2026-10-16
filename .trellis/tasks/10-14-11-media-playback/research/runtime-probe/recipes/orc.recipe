@@ -1,0 +1,51 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+from cerbero.tools.libtool import LibtoolLibrary
+
+class Recipe(recipe.Recipe):
+    name = 'orc'
+    version = '0.4.42'
+
+    stype = SourceType.TARBALL
+    # These properties are only used when stype is TARBALL
+    url = 'https://gstreamer.freedesktop.org/src/orc/orc-%(version)s.tar.xz'
+    tarball_checksum = '7ec912ab59af3cc97874c456a56a8ae1eec520c385ec447e8a102b2bd122c90c'
+    # These properties are only used when stype is GIT
+    remotes = {'origin': 'https://gitlab.freedesktop.org/gstreamer/orc.git'}
+    commit = 'origin/main'
+
+    patches = []
+
+    btype = BuildType.MESON
+    licenses = [{License.BSD_3_Clause: ['COPYING']}]
+    meson_options = {
+        'benchmarks': 'disabled',
+        'tests': 'disabled',
+        'tools': 'enabled',
+        'orc-test': 'enabled',
+        'hotdoc': 'disabled',
+    }
+
+    files_libs = ['liborc-0.4']
+    files_devel = ['include/orc-0.4', '%(libdir)s/pkgconfig/orc-0.4.pc',
+        'bin/orcc%(bext)s']
+
+    def prepare(self):
+        # Don't build testing helper library on ios
+        if not Platform.is_apple_app_platform(self.config.target_platform):
+            self.files_libs.append('liborc-test-0.4')
+            self.files_devel.append('bin/orc-bugreport%(bext)s')
+        else:
+            self.meson_options['orc-test'] = 'disabled'
+
+    def post_install(self):
+        dependency_libs = []
+        if self.config.target_platform == Platform.ANDROID:
+            dependency_libs += ['-lm', '-llog']
+
+        lib = LibtoolLibrary('orc-0.4', None, None, None, self.config.libdir,
+                self.config.target_platform, deps=dependency_libs)
+        lib.save()
+        if not Platform.is_apple_app_platform(self.config.target_platform):
+            lib = LibtoolLibrary('orc-test-0.4', None, None, None, self.config.libdir,
+                    self.config.target_platform, deps=dependency_libs + ['orc-0.4']).save()
+        super().post_install()

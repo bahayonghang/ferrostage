@@ -1,0 +1,17 @@
+[package]
+name = "ferrostage-media-research-probe"
+version = "0.0.0"
+edition = "2024"
+publish = false
+license = "MIT OR Apache-2.0"
+
+[workspace]
+
+[dependencies]
+gstreamer = "=0.25.4"
+gstreamer-app = "=0.25.2"
+gstreamer-video = "=0.25.2"
+image = { version = "=0.25.10", default-features = false, features = ["gif", "webp"] }
+
+[lints.rust]
+unsafe_code = "forbid"

@@ -1,0 +1,9 @@
+{
+  "utc": "2026-10-15T13:53:16.2213035Z",
+  "pid": 79064,
+  "timeout": false,
+  "exit_code": 0,
+  "exe_sha256": "6D8E9DC2DD2FB526C7FE6FFD07680305A46C87C759D6EE9B50A53D6DB4F4C7D9",
+  "stdout": "native=GStreamer 1.28.8 (GIT) frames=360 packed_bytes=82944000 fingerprint=2675706516317142355 elapsed_ms=205\n",
+  "stderr": "state=Playing pending=VoidPending\n"
+}

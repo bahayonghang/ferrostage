@@ -1,0 +1,24 @@
+{
+  "source_files_verified": 169,
+  "binaries": [
+    {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe",
+      "bytes": 42889216,
+      "sha256": "4BEBEFA5810F93CCB2E9FDA3E8134AACB6EBC24B55E46D0A0D06308387D9CE55",
+      "modified_utc": "2026-10-15T16:41:21.360933+00:00"
+    },
+    {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage-media-helper.exe",
+      "bytes": 799232,
+      "sha256": "312752079A67C00C03F7FCF6C843D57D9E19996FC1445AD82026B56A51B96641",
+      "modified_utc": "2026-10-15T16:41:37.654037+00:00"
+    }
+  ],
+  "variants": [
+    "complete",
+    "partial",
+    "absent"
+  ],
+  "original_notes_pdf_and_pdfium_verified": true,
+  "status": "VERIFIED_AND_COPIED_NOT_LAUNCHED"
+}
