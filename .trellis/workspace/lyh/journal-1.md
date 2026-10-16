@@ -153,3 +153,28 @@
 ### Next Steps
 
 - 读取父任务next-session-prompt.md，继续未观察功能与确认后的修复；网格NOT_VERIFIED、WebP桌面PARTIAL、分块producer NOT_RUN，扩展矩阵延期
+
+
+## Session 5: 放置 PDFium 并让发布版双击打开
+<!-- trellis-session: v=2 fp=9b6e3fd7215a7c2f -->
+
+**Date**: 2026-10-15
+**Task**: 放置 PDFium 并让发布版双击打开
+**Branch**: `main`
+
+### Summary
+
+just dev 与 just build 放置已校验的 pdfium.dll；发布版改为 GUI 子系统。任务已归档。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `e5fee4b` | fix(scripts): 🐛 不依赖 Get-FileHash 校验 PDFium |
+| `5b28c30` | feat(app): ✨ 将 PDFium 放到 exe 旁并无控制台启动发布版 |
+| `f1a28fd` | docs: 📝 更新桌面启动与 PDFium 放置说明 |
+| `0894bec` | docs(task): 📝 记录 PDFium 放置与发布版窗口任务 |
+
+### Status
+
+[OK] **Completed**

@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 4
+- **Total Sessions**: 5
 - **Last Active**: 2026-10-15
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~155 | Active |
+| `journal-1.md` | ~180 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 5 | 2026-10-15 | 放置 PDFium 并让发布版双击打开 | `e5fee4b`, `5b28c30`, `f1a28fd`, `0894bec` | `main` |
 | 4 | 2026-10-15 | 08至11实现交付与核心验收归档 | `15ab278`, `2f95978`, `018f05d` | `main` |
 | 3 | 2026-10-15 | 提交 V16 并归档基础任务，后续按功能优先实施 | `01dcf66`, `5634825`, `192fbce` | `main` |
 | 2 | 2026-10-14 | 提交阶段实现并归档五项已完成任务 | `841e287`, `f246a67`, `92fed9f` | `main` |
