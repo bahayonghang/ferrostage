@@ -1,0 +1,10 @@
+{"file": ".trellis/tasks/10-15-app-icon-harfrust-warning/prd.md", "reason": "Requirements, icon choice, and acceptance"}
+{"file": ".trellis/tasks/10-15-app-icon-harfrust-warning/design.md", "reason": "Resource ID 1 embedding and shape cfg boundary"}
+{"file": ".trellis/tasks/10-15-app-icon-harfrust-warning/implement.md", "reason": "Order, validation commands, and rollback"}
+{"file": ".trellis/tasks/10-15-app-icon-harfrust-warning/research/evidence.md", "reason": "File anchors for the warning and Windows icon load"}
+{"file": ".trellis/spec/frontend/maintained-dependencies.md", "reason": "No new lint allow; vendor delta must be recorded"}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Clippy -D warnings and deny stay mandatory"}
+{"file": "DESIGN.md", "reason": "Primary, canvas, and ink colors for the icon"}
+{"file": "docs/adr/ADR-008-gpui-dependency-gate.md", "reason": "Maintained HarfRust patch boundary"}
+{"file": "vendor/README.md", "reason": "Current HarfRust patch description to extend"}
+{"file": "assets/icons/README.md", "reason": "Reserved Windows ico location"}
