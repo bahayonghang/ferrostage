@@ -4,9 +4,8 @@ fn main() {
         return;
     }
 
-    let manifest_dir = std::path::PathBuf::from(
-        std::env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR"),
-    );
+    let manifest_dir =
+        std::path::PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR"));
     let icon_dir = manifest_dir.join("../../assets/icons");
     let rc = manifest_dir.join("resources/windows/ferrostage.rc");
     println!("cargo:rerun-if-changed={}", rc.display());

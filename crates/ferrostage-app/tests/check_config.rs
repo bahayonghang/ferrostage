@@ -10,6 +10,13 @@ fn ferrostage() -> &'static str {
     env!("CARGO_BIN_EXE_ferrostage")
 }
 
+fn assert_no_startup_error_log(scratch: &Scratch) {
+    assert!(
+        !scratch.child("startup-error.log").exists(),
+        "check-config and successful startup must not write startup-error.log"
+    );
+}
+
 struct Scratch(PathBuf);
 
 impl Scratch {
@@ -63,6 +70,7 @@ fn check_config_leaf_fallback_exits_zero_and_does_not_write() {
         let name = name.to_string_lossy();
         !name.contains(".tmp-") && !name.contains(".broken-")
     }));
+    assert_no_startup_error_log(&scratch);
 }
 
 #[test]
@@ -91,6 +99,7 @@ fn check_config_syntax_error_exits_one_without_backup() {
         let name = entry.expect("entry").file_name();
         !name.to_string_lossy().contains(".broken-")
     }));
+    assert_no_startup_error_log(&scratch);
 }
 
 #[test]
@@ -104,6 +113,7 @@ fn missing_config_exits_one() {
         .expect("run");
     assert_eq!(output.status.code(), Some(1));
     assert!(!path.exists());
+    assert_no_startup_error_log(&scratch);
 }
 
 #[test]
@@ -132,4 +142,40 @@ fn startup_config_fills_missing_sections() {
     assert!(text.contains("target_minutes = 12"), "{text}");
     let stdout = String::from_utf8_lossy(&output.stdout);
     assert!(stdout.contains("skeleton"), "{stdout}");
+    assert_no_startup_error_log(&scratch);
+}
+
+#[test]
+fn startup_directory_config_appends_startup_error_log() {
+    let scratch = Scratch::new("startup-dir");
+    let config_dir = scratch.child("settings-dir");
+    fs::create_dir_all(&config_dir).expect("config dir");
+    let output = Command::new(ferrostage())
+        .arg("--config")
+        .arg(&config_dir)
+        .output()
+        .expect("run");
+    assert_eq!(
+        output.status.code(),
+        Some(1),
+        "stdout {}\nstderr {}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    let reported = stderr
+        .lines()
+        .find(|line| line.starts_with("ferrostage:"))
+        .expect("stderr line");
+    let log = fs::read_to_string(scratch.child("startup-error.log")).expect("startup log");
+    assert!(
+        log.lines().any(|line| line == reported),
+        "stderr {reported}\nlog {log}"
+    );
+    assert!(
+        fs::read_dir(&config_dir)
+            .expect("config dir")
+            .next()
+            .is_none()
+    );
 }

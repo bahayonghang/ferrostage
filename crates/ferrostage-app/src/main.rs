@@ -4,14 +4,17 @@
 //! validate a settings file without writing it. Opening the presenter window
 //! is optional behind the `gpui` feature.
 
+#![cfg_attr(all(windows, not(debug_assertions)), windows_subsystem = "windows")]
+
 use std::fs;
+use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 
 use clap::{Parser, Subcommand};
 use ferrostage_settings::{LoadOutcome, SettingsStore, SettingsWarning, from_toml};
 use ferrostage_ui::{GPUI_KIT_VERSION, ZED_GPUI_TAG};
-use tracing::info;
+use tracing::{info, warn};
 
 #[derive(Debug, Parser)]
 #[command(
@@ -73,10 +76,7 @@ fn start_app(
     );
     let store = match resolve_store(config) {
         Ok(store) => store,
-        Err(message) => {
-            eprintln!("ferrostage: {message}");
-            return ExitCode::from(1);
-        }
+        Err(message) => return fail_before_window(None, &message),
     };
     match store.open_for_startup() {
         Ok(session) => {
@@ -100,10 +100,55 @@ fn start_app(
             }
         }
         Err(error) => {
-            eprintln!("ferrostage: {error}");
-            ExitCode::from(1)
+            let message = error.to_string();
+            fail_before_window(Some(store.path()), &message)
         }
     }
+}
+
+// Pre-window failures stay visible when the release binary has no console.
+// Append the same `ferrostage:` line to startup-error.log in the settings
+// parent, or beside the executable when that directory cannot be used.
+fn fail_before_window(settings_path: Option<&Path>, message: &str) -> ExitCode {
+    let line = format!("ferrostage: {message}");
+    eprintln!("{line}");
+    if let Err(error) = append_startup_error(settings_path, &line) {
+        warn!(error = %error, "failed to append startup-error.log");
+    }
+    ExitCode::from(1)
+}
+
+fn append_startup_error(settings_path: Option<&Path>, line: &str) -> io::Result<()> {
+    let path = startup_log_directory(settings_path)?.join("startup-error.log");
+    let mut file = fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(&path)?;
+    writeln!(file, "{line}")?;
+    Ok(())
+}
+
+fn startup_log_directory(settings_path: Option<&Path>) -> io::Result<PathBuf> {
+    if let Some(directory) = settings_path.and_then(existing_parent_directory) {
+        return Ok(directory);
+    }
+    let executable = std::env::current_exe()?;
+    executable.parent().map(Path::to_path_buf).ok_or_else(|| {
+        io::Error::new(
+            io::ErrorKind::NotFound,
+            "executable path has no parent directory",
+        )
+    })
+}
+
+fn existing_parent_directory(path: &Path) -> Option<PathBuf> {
+    let parent = path.parent()?;
+    let parent = if parent.as_os_str().is_empty() {
+        Path::new(".")
+    } else {
+        parent
+    };
+    parent.is_dir().then(|| parent.to_path_buf())
 }
 
 #[cfg(feature = "gpui")]

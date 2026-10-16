@@ -3,7 +3,7 @@ set windows-shell := ["powershell.exe", "-NoLogo", "-Command"]
 # Default recipe. `just` with no arguments runs CI.
 default: ci
 
-# Format, lint, test, and license check.
+# Format, lint, test, and license check. Default features only.
 ci: fmt-check clippy test deny
 
 # Rewrite Rust sources with rustfmt.
@@ -39,17 +39,23 @@ check-shell:
 deny:
     cargo deny check
 
-# Release build of every crate.
+# Release desktop build. The gpui,pdfium app link is the last cargo step,
+# then the verified PDFium runtime is staged beside target/release/ferrostage.exe.
 build:
-    cargo build --workspace --release
+    cargo build --workspace --release --locked --exclude ferrostage-app
+    cargo build -p ferrostage-app --release --features gpui,pdfium --locked
+    powershell -NoProfile -File scripts/stage-pdfium.ps1 -Destination target/release
 
-# Run the native shell; supply --pdfium-library explicitly for PDF import.
-dev:
-    cargo run -p ferrostage-app --features gpui,pdfium
+# Stage verified PDFium notices and pdfium.dll into target/debug, then run the shell.
+# Extra arguments are forwarded (`just dev -- check-config <path>`).
+dev *args:
+    powershell -NoProfile -File scripts/stage-pdfium.ps1 -Destination target/debug
+    cargo run -p ferrostage-app --features gpui,pdfium --locked -- {{args}}
 
-# Install the ferrostage binary into Cargo's bin directory.
+# Install the gpui,pdfium binary and stage only pdfium.dll beside it.
 install:
-    cargo install --path crates/ferrostage-app --locked
+    cargo install --path crates/ferrostage-app --locked --features gpui,pdfium
+    powershell -NoProfile -File scripts/stage-pdfium.ps1 -DllOnly -CargoBin
 
 # Selected GStreamer runtime preparation and isolated helper (no desktop/audio).
 media-runtime:
