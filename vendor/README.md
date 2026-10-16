@@ -13,6 +13,8 @@ crates retain `unsafe_code = forbid` and warnings-denied lint.
   replaces the old paste dependency under its existing alias. Rust code unchanged.
 - cosmic-text0.19.0 (MIT OR Apache-2.0): dependency-only fontdb0.24 migration.
 - harfrust0.12.0 (MIT): reviewed format2 selection/mapping in two source files.
+  The free function `shape` compiles only with `experimental_font_api`, matching
+  its existing re-export. `Shaper::shape` is unchanged.
 - accesskit_windows0.34.0 (MIT OR Apache-2.0): approved F14 four-file patch
   propagates actual ClientToScreen failure through all four coordinate callers.
   Only ERROR_INVALID_WINDOW_HANDLE maps to UIA_E_ELEMENTNOTAVAILABLE; live
