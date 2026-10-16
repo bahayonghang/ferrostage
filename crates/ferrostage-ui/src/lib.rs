@@ -14,15 +14,23 @@ mod actions;
 mod audience;
 pub mod display_settings;
 #[cfg(feature = "gpui")]
+mod document_load;
+#[cfg(feature = "gpui")]
 mod identify;
 pub mod locale;
 pub mod policy;
 #[cfg(feature = "gpui")]
 mod presenter;
+pub mod settings_panel;
 #[cfg(feature = "gpui")]
 mod shell;
+#[cfg(feature = "gpui")]
+mod slide_surface;
+#[cfg(feature = "gpui")]
+mod texture_cache;
 pub mod theme;
 pub mod transactions;
+pub mod workbench;
 #[cfg(feature = "gpui")]
 pub use shell::{ShellInputs, run};
 
@@ -50,3 +58,6 @@ mod tests {
         assert_ne!(WindowRole::Presenter, WindowRole::Audience);
     }
 }
+
+#[cfg(feature = "gpui")]
+mod media_playback;

@@ -50,3 +50,16 @@ dev:
 # Install the ferrostage binary into Cargo's bin directory.
 install:
     cargo install --path crates/ferrostage-app --locked
+
+# Selected GStreamer runtime preparation and isolated helper (no desktop/audio).
+media-runtime:
+    powershell -NoProfile -File scripts/prepare-media-runtime.ps1
+
+media-helper:
+    powershell -NoProfile -File scripts/media-native.ps1 -Action build
+    powershell -NoProfile -File scripts/media-native.ps1 -Action clippy
+
+# Requires verified FERROSTAGE_TEST_MEDIA_HELPER and FERROSTAGE_TEST_MEDIA_RUNTIME.
+test-media:
+    cargo build -p ferrostage-media --example ipc_stall --features native-tests --locked
+    cargo test -p ferrostage-media --features native-tests --locked

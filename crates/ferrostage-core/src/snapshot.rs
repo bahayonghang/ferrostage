@@ -14,6 +14,7 @@ pub enum AudienceStage {
 /// Pixels authorized for one media slot, without a source path or descriptor.
 #[derive(Clone, Debug, PartialEq)]
 pub struct AudienceMediaFrame {
+    // Public opaque playback-instance identity, not a PDF annotation index.
     slot_id: u64,
     rect_norm: NormalizedRect,
     pixels: BgraFrame,
@@ -55,8 +56,21 @@ impl AudienceMediaFrame {
 /// These fields cannot carry notes, file handles, media sources or cache access.
 #[derive(Clone, Debug, PartialEq)]
 pub struct AudienceVisual {
+    /// UI-authorized total GPU bytes, including retained and candidate images.
+    pub texture_budget_bytes: usize,
     pub page: BgraFrame,
     pub media: Vec<AudienceMediaFrame>,
+}
+/// Public candidate pixels authorized only for invisible pre-upload. This is
+/// never a new committed projection until the assembler publishes its identity.
+#[derive(Clone, Debug, PartialEq)]
+pub struct AudienceStagingFrame {
+    pub attempt: u64,
+    pub generation: DocumentGeneration,
+    pub current_page: PhysicalPage,
+    pub slide_crop: NormalizedRect,
+    pub pixels: BgraFrame,
+    pub texture_budget_bytes: usize,
 }
 
 /// Audience-window blank color. `None` on the snapshot means the slide is visible.
@@ -78,7 +92,9 @@ pub struct AudienceProjectionSnapshot {
     pub current_page: PhysicalPage,
     pub slide_crop: NormalizedRect,
     pub blank_mode: Option<BlankMode>,
+    pub laser_style: crate::LaserStyle,
     pub laser_pos_norm: Option<(f32, f32)>,
     pub strokes: Arc<[NormalizedStroke]>,
     pub visual: Option<AudienceVisual>,
+    pub staging: Option<AudienceStagingFrame>,
 }

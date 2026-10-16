@@ -96,6 +96,32 @@ fn native_golden_and_transaction() {
             .unwrap(),
     )
     .unwrap();
+    // Task09 runtime budgets update on this same native worker, preserving
+    // the active generation and byte-identical PDFium output.
+    let cached_request = request(0, NormalizedRect::FULL, 640, 360);
+    let cached_frame = |worker: &RenderHandle| {
+        worker.submit(cached_request).unwrap();
+        worker
+            .results()
+            .recv_timeout(Duration::from_secs(15))
+            .unwrap()
+            .outcome
+            .unwrap()
+    };
+    let first = cached_frame(&worker);
+    assert!(!first.cache_hit);
+    assert!(cached_frame(&worker).cache_hit);
+    let budgets = CacheBudgets {
+        l2_bytes: 1,
+        l3_bytes: 1,
+    };
+    let ack = receive(worker.set_cache_budgets(budgets).unwrap()).unwrap();
+    assert_eq!(ack.budgets, budgets);
+    assert_eq!((ack.l2_used_bytes, ack.l3_used_bytes), (0, 0));
+    let again = cached_frame(&worker);
+    assert!(!again.cache_hit);
+    assert_eq!(again.frame.pixels_bgra(), first.frame.pixels_bgra());
+    receive(worker.set_cache_budgets(CacheBudgets::default()).unwrap()).unwrap();
     for (invalid, expected) in [
         (
             request(usize::MAX, NormalizedRect::FULL, 320, 180),

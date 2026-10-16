@@ -34,6 +34,29 @@ fn input(labels: &[Option<&str>], w: f32, h: f32) -> (DocumentMetadata, Document
     )
 }
 #[test]
+fn reload_maps_unique_label_ordinal_and_ambiguous_physical_content() {
+    let make = |labels: &[Option<&str>]| {
+        let (m, s) = input(labels, 320., 180.);
+        LoadedDocument::load(&m, &s).unwrap()
+    };
+    let old = make(&[Some("A"), Some("B"), Some("B"), Some("notes:B"), Some("C")]);
+    let next = make(&[Some("X"), Some("A"), Some("B"), Some("B"), Some("notes:B")]);
+    let mapped = old.reload_mapping(&next, PhysicalPage(2));
+    assert_eq!(mapped.position, PhysicalPage(3));
+    assert!(mapped.pages.contains(&(PhysicalPage(2), PhysicalPage(3))));
+    assert!(!mapped.pages.iter().any(|(old, _)| *old == PhysicalPage(4)));
+    let repeated = make(&[Some("B"), Some("X"), Some("B"), Some("notes:B")]);
+    assert_eq!(
+        old.reload_mapping(&repeated, PhysicalPage(4)).position,
+        PhysicalPage(2)
+    );
+    let short = make(&[None]);
+    assert_eq!(
+        old.reload_mapping(&short, PhysicalPage(4)).position,
+        PhysicalPage(0)
+    );
+}
+#[test]
 fn labels_group_only_contiguous_content_and_notes_pair_by_step() {
     let (m, s) = input(
         &[
@@ -233,4 +256,64 @@ fn raw_geometry_mismatch_or_nonfinite_is_rejected_and_mixed_rotation_is_not_crop
         LoadedDocument::load(&m, &s),
         Err(DocumentError::MetadataMismatch)
     );
+}
+
+#[test]
+fn real_media_pdf_slots_keep_parameters_and_public_source_crop() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../fixtures/media");
+    for filename in ["media-smoke.pdf", "media-crop-smoke.pdf"] {
+        let bytes = std::fs::read(root.join(filename)).unwrap();
+        let structure = ferrostage_pdf::structure::extract_structure(&bytes).unwrap();
+        let metadata = DocumentMetadata {
+            pages: structure
+                .pages
+                .iter()
+                .map(|p| {
+                    let (w, h) = p.geometry.visible_size();
+                    ferrostage_pdf::PageMetadata {
+                        page: p.page,
+                        width_points: w,
+                        height_points: h,
+                        rotation_degrees: 0,
+                        label: None,
+                    }
+                })
+                .collect(),
+        };
+        let document = LoadedDocument::build(
+            &metadata,
+            &structure,
+            crate::DocumentOverrides {
+                layout: Some(crate::NotesLayout::Right),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        if filename == "media-crop-smoke.pdf" {
+            assert_eq!(document.media.len(), 3);
+            let public = &document.media[0];
+            assert!(public.slide_rect.is_some());
+            assert_eq!(
+                public.source_crop.unwrap(),
+                ferrostage_core::NormalizedRect::LEFT_HALF
+            );
+            assert!((public.aspect_ratio.unwrap() - 1.6).abs() < 1e-6);
+            assert!(document.media[1].slide_rect.is_none());
+            assert!(document.media[1].source_crop.is_none());
+            assert!(document.media[2].slide_rect.is_some());
+        } else {
+            assert_eq!(document.media.len(), 6);
+            assert_eq!(
+                document.media[2].media.start,
+                Some(ferrostage_pdf::structure::MediaTime::Seconds(2.))
+            );
+            assert_eq!(
+                document.media[2].media.duration,
+                Some(ferrostage_pdf::structure::MediaTime::Seconds(8.))
+            );
+            assert!(
+                matches!(&document.media[4].media.source,Some(ferrostage_pdf::structure::MediaSource::Embedded{bytes,..}) if bytes.len()>500_000)
+            );
+        }
+    }
 }

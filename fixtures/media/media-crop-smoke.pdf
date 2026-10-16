@@ -1,0 +1,181 @@
+%PDF-1.3
+%‚„œ”
+1 0 obj
+<<
+/Producer (pypdf)
+>>
+endobj
+2 0 obj
+<<
+/Type /Pages
+/Count 3
+/Kids [ 5 0 R 8 0 R 11 0 R ]
+>>
+endobj
+3 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+4 0 obj
+<<
+/Type /Font
+/Subtype /Type1
+/BaseFont /Helvetica
+>>
+endobj
+5 0 obj
+<<
+/Type /Page
+/Resources <<
+/Font <<
+/F1 4 0 R
+>>
+>>
+/MediaBox [ 0.0 0.0 640 180 ]
+/Parent 2 0 R
+/Contents 6 0 R
+/Annots [ 7 0 R ]
+/AA <<
+/O <<
+/S /Movie
+/Annotation 7 0 R
+/Operation /Play
+>>
+>>
+>>
+endobj
+6 0 obj
+<<
+/Length 251
+>>
+stream
+0.96 0.94 0.90 rg 0 0 320 180 re f 0.83 0.88 0.96 rg 320 0 320 180 re f 0.25 0.25 0.25 rg 240 30 160 100 re f 0.1 0.1 0.1 rg BT /F1 10 Tf 12 160 Td (Public crop: red or orange only) Tj ET BT /F1 10 Tf 332 160 Td (PRIVATE: green/cyan source half) Tj ET
+endstream
+endobj
+7 0 obj
+<<
+/Type /Annot
+/Subtype /Movie
+/Rect [ 240 30 400 130 ]
+/Movie <<
+/F (synthetic\055public\055private\056gif)
+>>
+/A <<
+/Start [ 0 1000 ]
+/Mode /Repeat
+>>
+>>
+endobj
+8 0 obj
+<<
+/Type /Page
+/Resources <<
+/Font <<
+/F1 4 0 R
+>>
+>>
+/MediaBox [ 0.0 0.0 640 180 ]
+/Parent 2 0 R
+/Contents 9 0 R
+/Annots [ 10 0 R ]
+/AA <<
+/O <<
+/S /Movie
+/Annotation 10 0 R
+/Operation /Play
+>>
+>>
+>>
+endobj
+9 0 obj
+<<
+/Length 250
+>>
+stream
+0.96 0.94 0.90 rg 0 0 320 180 re f 0.83 0.88 0.96 rg 320 0 320 180 re f 0.25 0.25 0.25 rg 350 30 250 100 re f 0.1 0.1 0.1 rg BT /F1 10 Tf 12 160 Td (Notes-only media: audio stays stopped) Tj ET BT /F1 10 Tf 332 160 Td (PRIVATE audio annotation) Tj ET
+endstream
+endobj
+10 0 obj
+<<
+/Type /Annot
+/Subtype /Movie
+/Rect [ 350 30 600 130 ]
+/Movie <<
+/F (synthetic\055ball\055tone\05512s\056ogg)
+>>
+/A <<
+/Start [ 0 1000 ]
+/Mode /Repeat
+>>
+>>
+endobj
+11 0 obj
+<<
+/Type /Page
+/Resources <<
+/Font <<
+/F1 4 0 R
+>>
+>>
+/MediaBox [ 0.0 0.0 640 180 ]
+/Parent 2 0 R
+/Contents 12 0 R
+/Annots [ 13 0 R ]
+/AA <<
+/O <<
+/S /Movie
+/Annotation 13 0 R
+/Operation /Play
+>>
+>>
+>>
+endobj
+12 0 obj
+<<
+/Length 236
+>>
+stream
+0.96 0.94 0.90 rg 0 0 320 180 re f 0.83 0.88 0.96 rg 320 0 320 180 re f 0.25 0.25 0.25 rg 30 30 220 100 re f 0.1 0.1 0.1 rg BT /F1 10 Tf 12 160 Td (Public audio slot: playback allowed) Tj ET BT /F1 10 Tf 332 160 Td (PRIVATE NOTES) Tj ET
+endstream
+endobj
+13 0 obj
+<<
+/Type /Annot
+/Subtype /Movie
+/Rect [ 30 30 250 130 ]
+/Movie <<
+/F (synthetic\055ball\055tone\05512s\056ogg)
+>>
+/A <<
+/Start [ 0 1000 ]
+/Mode /Repeat
+>>
+>>
+endobj
+xref
+0 14
+0000000000 65535 f 
+0000000015 00000 n 
+0000000054 00000 n 
+0000000126 00000 n 
+0000000175 00000 n 
+0000000245 00000 n 
+0000000459 00000 n 
+0000000761 00000 n 
+0000000933 00000 n 
+0000001149 00000 n 
+0000001450 00000 n 
+0000001625 00000 n 
+0000001843 00000 n 
+0000002131 00000 n 
+trailer
+<<
+/Size 14
+/Root 3 0 R
+/Info 1 0 R
+>>
+startxref
+2305
+%%EOF

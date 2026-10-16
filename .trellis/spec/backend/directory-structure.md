@@ -7,7 +7,8 @@ crates/ferrostage-core/        state machine, no GPUI, no file I/O
 crates/ferrostage-document/    notes and media slots
 crates/ferrostage-pdf/         lopdf structure; optional PDFium raster adapter
 crates/ferrostage-render/      single-worker raster protocol, scheduling and cache budgets
-crates/ferrostage-media/       shared BGRA frames
+crates/ferrostage-media/       pure controller/protocol, Rust animation and shared BGRA frames
+crates/ferrostage-media-helper/ optional native GStreamer executable; never a GUI dependency
 crates/ferrostage-platform/    debounce and %%EOF for read-only external PDF replacement
 crates/ferrostage-settings/    TOML
 crates/ferrostage-ui/          GPUI (see frontend spec)
@@ -21,7 +22,8 @@ Each library crate has `src/lib.rs`. Split a crate into modules when a file pass
 ## Dependency direction
 
 - `ferrostage-core` does not depend on any other FerroStage crate.
-- `ferrostage-ui` may depend on `ferrostage-core` and, later, `ferrostage-document` for the presenter only.
+- `ferrostage-ui` uses document/media control APIs only on the Presenter side; Audience consumes the pure snapshot.
+- Native GStreamer bindings belong only to the optional `ferrostage-media-helper` executable. Keep them out of the GUI dependency graph even under workspace feature unification. Default CI does not require its native SDK; explicit helper checks do.
 - `ferrostage-core` must not depend on `ferrostage-ui`, GPUI, `lopdf`, or `notify`.
 - `ferrostage-settings` owns atomic replacement of the configured settings file (unique sibling `<config-file-name>.tmp-<pid>-<seq>`, sync, close, then replace). `ferrostage-platform` watches an externally replaced PDF and does not rename the user's PDF.
 

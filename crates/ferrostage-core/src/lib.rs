@@ -20,11 +20,12 @@ pub use command::PresentationCommand;
 pub use display::{MonitorId, MonitorRole};
 pub use error::CoreError;
 pub use frame::BgraFrame;
-pub use geometry::{NormalizedRect, NormalizedStroke};
+pub use geometry::{LaserStyle, NormalizedRect, NormalizedStroke};
 pub use ids::{DocumentGeneration, LogicalSlide, PhysicalPage};
 pub use session::{DocumentDescriptor, SessionStage};
 pub use slide_map::SlideMap;
 pub use snapshot::{
-    AudienceMediaFrame, AudienceProjectionSnapshot, AudienceStage, AudienceVisual, BlankMode,
+    AudienceMediaFrame, AudienceProjectionSnapshot, AudienceStage, AudienceStagingFrame,
+    AudienceVisual, BlankMode,
 };
 pub use state::PresentationState;

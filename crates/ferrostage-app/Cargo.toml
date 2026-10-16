@@ -13,6 +13,7 @@ path = "src/main.rs"
 
 [features]
 default = []
+media = ["ferrostage-ui/media"]
 pdfium = ["ferrostage-render/pdfium", "ferrostage-ui/pdfium"]
 gpui = ["ferrostage-ui/gpui"]
 

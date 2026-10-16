@@ -101,6 +101,19 @@ fn outcome_from_table(table: toml::Table) -> LoadOutcome {
             | DocumentVersion::Current
             | DocumentVersion::Unrecognized => SCHEMA_VERSION,
         },
+        media: crate::schema::MediaSettings {
+            max_decode_height: section(&table, "media", &mut warnings).map_or(1080, |section| {
+                value::parse_u32_inclusive(
+                    section,
+                    "max_decode_height",
+                    "media.max_decode_height",
+                    1080,
+                    1,
+                    2160,
+                    &mut warnings,
+                )
+            }),
+        },
         general: parse_general(section(&table, "general", &mut warnings), &mut warnings),
         display: parse_display(section(&table, "display", &mut warnings), &mut warnings),
         presenter: parse_presenter(section(&table, "presenter", &mut warnings), &mut warnings),

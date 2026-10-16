@@ -1,6 +1,6 @@
 # Packaging
 
-Not implemented yet. The first package is a Windows 11 executable.
+Development staging is available for the Windows 11 executable and its separately loaded PDFium and media runtimes. An installer is not produced.
 
 - `just install` runs `cargo install --path crates/ferrostage-app --locked`.
 - The optional `pdfium` feature links `pdfium-render =0.9.4` with only `pdfium_7881`. The runtime is acquired separately as described below; no installer is produced by this task.
@@ -58,12 +58,14 @@ developer script and has no product or user-PDF write path.
 
 ## Native shell development build
 
-Build with `cargo build -p ferrostage-app --features gpui,pdfium --locked`.
+Build the complete app with `cargo build -p ferrostage-app --features gpui,pdfium,media --locked`.
 Launch `ferrostage --config <isolated-settings.toml> --pdfium-library <pdfium.dll> <pdf>`.
 The PDF argument is optional; the library defaults to `pdfium.dll` beside the
 executable. A missing runtime leaves the shell available with an import error.
-The shell reads metadata on the single PDFium worker; task07 displays page
-placeholders and does not yet render the presenter workbench.
+The single PDFium worker supplies actual current/next/notes rasters to the presenter
+workbench. The app includes settings, transactional reload, annotations and shared
+public media frames; notes and media sources remain private to the presenter.
+Media playback additionally uses the isolated helper and selected runtime below.
 
 `vendor/README.md` and each maintained package's original notices document the
 approved GPUI0.2.2 source from Zed v1.23.3 and the bounded pulp, metal, cosmic-text
@@ -81,3 +83,28 @@ normal fixture run. Performance runs use `cargo run --release -p ferrostage-rend
 --example poc2 --features pdfium -- <dll-file> <report.json>`; they report 20 warmups
 and every one of 200 uncached worker renders per case. Hardware thresholds are
 reported separately from hosted-CI correctness and do not imply GPU acceptance.
+
+## Media runtime and helper
+
+See ADR-009 and `packaging/media/runtime.json`. Only its47 executable/DLL entries (18 plugins) are distributed, with all15 original notices, source recipes and source URLs. Full upstream wheels include unselected components and must never be copied into the product.
+
+Prepare reproducibly on Windows with MSVC x64 tools and Python available:
+
+```powershell
+./scripts/prepare-media-runtime.ps1
+./scripts/media-native.ps1 -Action build
+./scripts/media-native.ps1 -Action clippy
+cargo build -p ferrostage-media --example ipc_stall --features native-tests --locked
+$env:FERROSTAGE_TEST_MEDIA_HELPER = (Resolve-Path target/debug/ferrostage-media-helper.exe).Path
+$env:FERROSTAGE_TEST_MEDIA_RUNTIME = (Resolve-Path cache/media-runtime).Path
+just test-media
+cargo build -p ferrostage-app --features gpui,pdfium,media --locked
+```
+
+The prepare script downloads only the three pinned archives, verifies complete SHA256/size, extracts only the allowlisted entries, verifies every selected entry, and generates import libraries from those exact DLL exports using existing MSVC tools. `-Offline -Archives <directory>` verifies already acquired archives. Build helpers use SYSTEM_DEPS_*_NO_PKG_CONFIG/LIB/SEARCH_NATIVE and require no installed GStreamer SDK. `-ImportLibraries` overrides the prepared import directory. Default `just ci` and GUI linking have no native media import dependency.
+
+Place `ferrostage-media-helper.exe` beside `ferrostage.exe`; stage the runtime there as `media-runtime/{bin,lib/gstreamer-1.0,libexec,notices,recipes}` using `python scripts/stage-media-runtime.py --archives <verified archive directory> --output <executable-directory>/media-runtime`. The scanner is `libexec/gst-plugin-scanner.exe`, matching the helper environment. Staging rejects unselected DLL/EXE files already in the destination instead of silently including an earlier larger runtime. Include the manifest and source/license mapping. This development preparation is not installer publication or distribution authorization. Preserve dynamically replaceable LGPL libraries: runtime availability checks filenames, not exact installed hashes. Build/package verification still requires pinned originals. VC/Windows system runtimes remain system prerequisites.
+
+The media-enabled GUI does not import GStreamer or GLib. Missing complete/partial media runtime is a localized media-slot failure, leaving PDFs and pure GIF/WebP available. The isolated native helper may fail without DLLs without preventing GUI startup. `scripts/check-media-imports.ps1` verifies the GUI PE import boundary. Runtime missing-library GUI smoke is separate from dependency inspection and background supervisor tests.
+
+Background native tests always use fakesink audio and no OS window; the adversarial ipc_stall helper checks bounded off-UI stop/kill/reap and stderr draining. Product tests use stable `fixtures/media` originals, not active Trellis paths. Hardware audio latency,1080p60 pacing/VRAM/soak and the complete desktop matrix remain deferred by the user's task acceptance policy.

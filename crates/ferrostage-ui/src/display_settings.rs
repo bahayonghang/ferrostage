@@ -102,6 +102,67 @@ pub fn numbered(monitors: &[MonitorInfo]) -> Vec<(usize, &MonitorInfo)> {
         .collect()
 }
 
+pub fn topology_aspect(monitors: &[MonitorInfo]) -> f32 {
+    let min_x = monitors
+        .iter()
+        .map(|m| i64::from(m.position.0))
+        .min()
+        .unwrap_or(0);
+    let min_y = monitors
+        .iter()
+        .map(|m| i64::from(m.position.1))
+        .min()
+        .unwrap_or(0);
+    let max_x = monitors
+        .iter()
+        .map(|m| i64::from(m.position.0) + i64::from(m.native_size.0))
+        .max()
+        .unwrap_or(1);
+    let max_y = monitors
+        .iter()
+        .map(|m| i64::from(m.position.1) + i64::from(m.native_size.1))
+        .max()
+        .unwrap_or(1);
+    (max_x - min_x).max(1) as f32 / (max_y - min_y).max(1) as f32
+}
+
+/// Normalized physical desktop rectangles; negative origins and gaps are retained.
+/// Returned coordinates use a shared physical scale; the view uses the desktop aspect ratio.
+pub fn topology_rectangles(monitors: &[MonitorInfo]) -> Vec<(usize, f32, f32, f32, f32)> {
+    let Some(min_x) = monitors.iter().map(|m| i64::from(m.position.0)).min() else {
+        return Vec::new();
+    };
+    let min_y = monitors
+        .iter()
+        .map(|m| i64::from(m.position.1))
+        .min()
+        .unwrap_or(0);
+    let max_x = monitors
+        .iter()
+        .map(|m| i64::from(m.position.0) + i64::from(m.native_size.0))
+        .max()
+        .unwrap_or(min_x + 1);
+    let max_y = monitors
+        .iter()
+        .map(|m| i64::from(m.position.1) + i64::from(m.native_size.1))
+        .max()
+        .unwrap_or(min_y + 1);
+    let w = (max_x - min_x).max(1) as f32;
+    let h = (max_y - min_y).max(1) as f32;
+    numbered(monitors)
+        .into_iter()
+        .map(|(n, m)| {
+            (
+                n,
+                (i64::from(m.position.0) - min_x) as f32 / w,
+                (i64::from(m.position.1) - min_y) as f32 / h,
+                m.native_size.0 as f32 / w,
+                m.native_size.1 as f32 / h,
+            )
+        })
+        .collect()
+}
+
 #[cfg(feature = "gpui")]
 #[derive(Clone)]
 pub(crate) struct DisplayPanel {
@@ -131,6 +192,7 @@ pub(crate) mod view {
         panel: &DisplayPanel,
         l: Locale,
         p: Palette,
+        detailed: bool,
     ) -> impl IntoElement {
         let roles = policy::roles(&panel.monitors, &panel.effective);
         let windowed = panel.monitors.len() == 1
@@ -165,6 +227,62 @@ pub(crate) mod view {
                     .text_color(rgb(p.muted))
                     .child(l.text("displays-number-help")),
             );
+        if panel.topology_valid && detailed {
+            let source = match roles.source {
+                ferrostage_platform::ResolutionSource::NoMonitors => "displays-source-none",
+                ferrostage_platform::ResolutionSource::SingleMonitor => "displays-source-single",
+                ferrostage_platform::ResolutionSource::Heuristic => "displays-source-heuristic",
+                ferrostage_platform::ResolutionSource::Saved => "displays-source-saved",
+            };
+            content = content.child(div().text_size(px(14.)).child(l.text(source)));
+            for (index, warning) in roles.warnings.iter().enumerate() {
+                let key = match warning {
+                    ferrostage_platform::TopologyWarning::NoMonitors => "displays-empty",
+                    ferrostage_platform::TopologyWarning::SavedAudienceMissing(_) => {
+                        "displays-warning-audience-missing"
+                    }
+                    ferrostage_platform::TopologyWarning::PresenterMissingFallbackPrimary => {
+                        "displays-warning-presenter-missing"
+                    }
+                    _ => "displays-warning-duplicate",
+                };
+                content = content.child(
+                    div()
+                        .id(gpui::SharedString::from(format!(
+                            "topology-warning-{index}"
+                        )))
+                        .role(gpui::Role::Alert)
+                        .text_color(rgb(p.warning))
+                        .child(l.text(key)),
+                );
+            }
+            let mut diagram = div()
+                .id("display-topology")
+                .w_full()
+                .aspect_ratio(topology_aspect(&panel.monitors))
+                .flex_shrink_0()
+                .relative()
+                .bg(rgb(p.card))
+                .rounded(px(theme::RADIUS));
+            for (number, x, y, w, h) in topology_rectangles(&panel.monitors) {
+                diagram = diagram.child(
+                    div()
+                        .absolute()
+                        .left(gpui::relative(x))
+                        .top(gpui::relative(y))
+                        .w(gpui::relative(w))
+                        .h(gpui::relative(h))
+                        .border_1()
+                        .border_color(rgb(p.border))
+                        .bg(rgb(p.soft))
+                        .flex()
+                        .items_center()
+                        .justify_center()
+                        .child(number.to_string()),
+                );
+            }
+            content = content.child(diagram);
+        }
         if panel.topology_valid {
             for (number, monitor) in &numbered {
                 let usage = if roles.presenter.as_ref() == Some(&monitor.id) {
@@ -210,6 +328,18 @@ pub(crate) mod view {
                             .gap(px(4.))
                             .child(div().text_color(rgb(p.ink)).child(label))
                             .child(div().text_size(px(14.)).child(details))
+                            .when(detailed, |view| {
+                                view.child(div().text_size(px(14.)).text_color(rgb(p.muted)).child(
+                                l.text(match monitor.identity_source {
+                                    ferrostage_platform::IdentitySource::DeviceInterfacePath => {
+                                        "displays-id-interface"
+                                    }
+                                    ferrostage_platform::IdentitySource::NameAndResolution => {
+                                        "displays-id-name"
+                                    }
+                                }),
+                            ))
+                            })
                             .child(div().text_size(px(14.)).text_color(rgb(p.muted)).child(
                                 format!(
                                     "{} · {}",
@@ -391,6 +521,20 @@ mod tests {
             identity_source: IdentitySource::DeviceInterfacePath,
             identity_confidence: IdentityConfidence::ConnectionScoped,
         }
+    }
+    #[test]
+    fn topology_diagram_preserves_negative_coordinates_and_physical_aspect() {
+        let mut left = monitor("a");
+        left.position = (-1920, 0);
+        let mut upper = monitor("b");
+        upper.position = (0, -1080);
+        upper.native_size = (1080, 1920);
+        let aspect = topology_aspect(&[left.clone(), upper.clone()]);
+        let rectangles = topology_rectangles(&[upper, left]);
+        assert_eq!(rectangles[0].1, 0.);
+        assert_eq!(rectangles[1].2, 0.);
+        assert!((rectangles[0].3 / rectangles[0].4 * aspect - 1920. / 1080.).abs() < 0.001);
+        assert!((rectangles[1].3 / rectangles[1].4 * aspect - 1080. / 1920.).abs() < 0.001);
     }
     #[test]
     fn numbering_is_shared_stable_and_not_serialized() {

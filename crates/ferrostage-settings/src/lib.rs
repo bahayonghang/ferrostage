@@ -17,7 +17,7 @@ pub use ferrostage_core::MonitorRole;
 pub use parse::{LoadOutcome, SettingsWarning, WritePolicy, from_toml};
 pub use schema::{
     BindingIssue, CacheSettings, DisplaySettings, GeneralSettings, HotReloadSettings, Keybindings,
-    MonitorBinding, PointerSettings, PresenterSettings, SCHEMA_VERSION, Settings,
+    MediaSettings, MonitorBinding, PointerSettings, PresenterSettings, SCHEMA_VERSION, Settings,
     SingleMonitorMode, Theme, TimerMode, TimerSettings,
 };
 pub use store::{SettingsSession, SettingsStore};

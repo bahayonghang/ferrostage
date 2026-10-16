@@ -2,7 +2,7 @@
 
 PDF & Beamer presentation stage。基于 Rust 与 GPUI 的 PDF / Beamer 演示舞台。Windows 11 优先，离线，无遥测。
 
-当前仓库是可编译骨架：状态机、设置、命令行和许可证门禁已经就位。演示窗口、PDFium 光栅和媒体播放尚未接入。
+可选桌面构建已接入讲者工作台、单线程 PDFium 光栅、完整设置、外部 PDF 热重载、GIF/WebP 和隔离进程中的原生媒体播放。默认工作区检查不依赖原生 SDK。当前实施与分项验证见[功能对照](docs/feature-parity.md)；完整硬件、视觉矩阵和性能验收单独记录。
 
 ## 计划纳入 v1.0
 
@@ -34,7 +34,9 @@ just install
 
 工具链：Rust 1.99.0，edition 2024。
 
-GPUI 固定到 Zed 标签 `v1.23.3`（或 `gpui-kit` 0.7.3），不使用 crates.io 上的 `gpui` 0.2.x。
+以上命令使用默认 features。完整桌面 GUI 使用 `cargo build -p ferrostage-app --features gpui,pdfium,media --locked` 构建，再以 `target/debug/ferrostage --config <settings.toml> --pdfium-library <pdfium.dll> <document.pdf>` 启动。PDFium 需单独准备；原生音视频还需要单独构建的媒体助手和置于 GUI 旁的选定运行库。精确来源、许可证和准备命令见[打包说明](docs/packaging.md)。应用不自行下载运行库，也不写用户 PDF。
+
+GPUI 使用基于 Zed 标签 `v1.23.3` 的已审维护源（ADR-008），不使用 crates.io 上的 `gpui` 0.2.x。唯一原生媒体后端为独立助手中的 GStreamer（ADR-009）。
 
 ## 许可
 

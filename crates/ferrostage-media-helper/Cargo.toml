@@ -1,0 +1,27 @@
+[package]
+name = "ferrostage-media-helper"
+description = "Isolated GStreamer offscreen decoder; never linked into the GUI."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+
+[features]
+default = []
+native = ["dep:gstreamer", "dep:gstreamer-app", "dep:gstreamer-video"]
+
+[[bin]]
+name = "ferrostage-media-helper"
+path = "src/main.rs"
+required-features = ["native"]
+
+[dependencies]
+ferrostage-media.workspace = true
+ferrostage-core.workspace = true
+gstreamer = { workspace = true, optional = true }
+gstreamer-app = { workspace = true, optional = true }
+gstreamer-video = { workspace = true, optional = true }
+
+[lints]
+workspace = true

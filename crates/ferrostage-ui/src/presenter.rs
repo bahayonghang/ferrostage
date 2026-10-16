@@ -1,3 +1,5 @@
+mod settings_view;
+mod workbench_view;
 use crate::{
     actions::{self, Intent},
     shell::{Modal, Shell},
@@ -29,12 +31,16 @@ pub(crate) struct PresenterData {
     current: usize,
     preview: Option<usize>,
     recent: Vec<String>,
+    workbench: workbench_view::WorkbenchData,
+    preferences: settings_view::SettingsData,
+    staging: Option<crate::shell::reload::PresenterStaging>,
 }
 
 impl PresenterData {
     pub(crate) fn from_shell(shell: &Shell) -> Self {
         Self {
             theme: shell.settings.settings.general.theme,
+            staging: shell.presenter_staging(),
             stage: shell.state.stage(),
             filename: shell
                 .path
@@ -44,7 +50,11 @@ impl PresenterData {
                 .unwrap_or_else(|| "FerroStage".into()),
             modal: shell.modal.clone(),
             displays: shell.display_panel(),
-            error: shell.error.clone(),
+            error: shell
+                .graphics_error
+                .as_ref()
+                .map(|error| shell.locale.error("wb-upload-error", error))
+                .or_else(|| shell.error.clone()),
             warnings: shell.warnings.clone(),
             start_reason: shell.start_reason(),
             loading: shell.loading,
@@ -55,6 +65,8 @@ impl PresenterData {
             pages: shell.state.page_count(),
             current: shell.state.current_page().0 + 1,
             preview: shell.state.jump_preview().map(|page| page.0 + 1),
+            workbench: workbench_view::WorkbenchData::from_shell(shell),
+            preferences: settings_view::SettingsData::from_shell(shell),
             recent: shell
                 .settings
                 .settings
@@ -76,6 +88,13 @@ pub(crate) struct Presenter {
     modal_focus: FocusHandle,
     return_focus: Option<FocusHandle>,
     had_modal: bool,
+    textures: std::rc::Rc<
+        std::cell::RefCell<crate::texture_cache::TextureCache<crate::workbench::Surface>>,
+    >,
+    split_drag: Option<bool>,
+    settings_drag: std::rc::Rc<std::cell::Cell<Option<&'static str>>>,
+    drawing: std::rc::Rc<std::cell::Cell<bool>>,
+    paint_ms: std::rc::Rc<std::cell::Cell<f64>>,
 }
 
 struct FilenameTooltip {
@@ -101,6 +120,49 @@ impl Render for FilenameTooltip {
 }
 
 impl Presenter {
+    pub(crate) fn staged(&self, attempt: u64) -> bool {
+        self.textures.borrow().staged(attempt)
+    }
+    pub(crate) fn promote(&mut self, attempt: u64, cx: &mut gpui::App) -> bool {
+        self.textures.borrow_mut().promote(attempt, cx)
+    }
+    pub(crate) fn cancel_staging(&mut self, cx: &mut gpui::App) {
+        self.textures.borrow_mut().cancel_stage(cx);
+    }
+    #[cfg(all(test, feature = "test-support"))]
+    pub(crate) fn seed_budget_image(
+        &mut self,
+        frame: ferrostage_core::BgraFrame,
+        budget: usize,
+        window: &mut Window,
+        cx: &mut gpui::App,
+    ) {
+        let mut cache = self.textures.borrow_mut();
+        cache.sync(
+            &[(crate::workbench::Surface::Current, frame)],
+            &[crate::workbench::Surface::Current],
+            budget,
+            window,
+            cx,
+        );
+        assert!(cache.paint(
+            crate::workbench::Surface::Current,
+            None,
+            window,
+            cx,
+            |_, _, _, _| Ok(())
+        ));
+    }
+    #[cfg(all(test, feature = "test-support"))]
+    pub(crate) fn effective_texture_budget(&self) -> usize {
+        self.textures.borrow().effective_budget()
+    }
+    pub(crate) fn accepts_texture_budget(&self, bytes: usize) -> bool {
+        self.textures.borrow().accepts_budget(bytes)
+    }
+    pub(crate) fn apply_texture_budget(&mut self, bytes: usize) -> Result<(), String> {
+        self.textures.borrow_mut().apply_budget(bytes)
+    }
     pub fn new(
         shell: WeakEntity<Shell>,
         locale: crate::locale::Locale,
@@ -117,6 +179,8 @@ impl Presenter {
             })
             .detach();
         }
+        cx.on_release(|presenter, cx| presenter.textures.borrow_mut().release(cx))
+            .detach();
         let focus = cx.focus_handle();
         window.focus(&focus, cx);
         Self {
@@ -127,6 +191,11 @@ impl Presenter {
             modal_focus: cx.focus_handle(),
             return_focus: None,
             had_modal: false,
+            textures: Default::default(),
+            split_drag: None,
+            settings_drag: Default::default(),
+            drawing: Default::default(),
+            paint_ms: Default::default(),
         }
     }
 
@@ -238,6 +307,55 @@ impl Presenter {
 
 impl Render for Presenter {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        let mut prioritized = self
+            .data
+            .workbench
+            .frames
+            .iter()
+            .filter(|(s, _)| *s != crate::workbench::Surface::Audience)
+            .collect::<Vec<_>>();
+        prioritized.sort_by_key(|(surface, _)| match surface {
+            crate::workbench::Surface::Current => 0,
+            crate::workbench::Surface::Media(_) => 1,
+            crate::workbench::Surface::Next => 2,
+            crate::workbench::Surface::Notes(_) => 3,
+            crate::workbench::Surface::Thumbnail(_) => 3,
+            _ => 4,
+        });
+        let mut frames = prioritized
+            .into_iter()
+            .map(|(surface, f)| (*surface, f.frame.clone()))
+            .collect::<Vec<_>>();
+        for frame in &self.data.workbench.media {
+            frames.push((
+                crate::workbench::Surface::Media(frame.slot_id()),
+                frame.pixels().clone(),
+            ));
+        }
+        frames.sort_by_key(|(surface, _)| match surface {
+            crate::workbench::Surface::Current => 0,
+            crate::workbench::Surface::Media(_) => 1,
+            crate::workbench::Surface::Next => 2,
+            crate::workbench::Surface::Notes(_) => 3,
+            _ => 4,
+        });
+        let mut active = self.data.workbench.surfaces.clone();
+        for (surface, _) in &frames {
+            if !active.contains(surface) {
+                active.push(*surface);
+            }
+        }
+        active.retain(|surface| *surface != crate::workbench::Surface::Audience);
+        active.sort_by_key(|surface| match surface {
+            crate::workbench::Surface::Current => 0,
+            crate::workbench::Surface::Media(_) => 1,
+            crate::workbench::Surface::Next => 2,
+            crate::workbench::Surface::Notes(_) => 3,
+            _ => 3,
+        });
+        self.textures
+            .borrow_mut()
+            .sync(&frames, &active, self.data.workbench.budget, window, cx);
         let l = self.locale;
         let dark = matches!(
             window.appearance(),
@@ -253,7 +371,12 @@ impl Render for Presenter {
         let filename = self.data.filename.clone();
         let tooltip_filename = filename.clone();
         let modal = self.data.modal.clone();
-        let error = self.data.error.clone();
+        let error = self
+            .textures
+            .borrow()
+            .error()
+            .map(|error| l.error("wb-upload-error", error))
+            .or_else(|| self.data.error.clone());
         let warnings = self.data.warnings.clone();
         let reason = self.data.start_reason.clone();
         let loading = self.data.loading;
@@ -306,6 +429,12 @@ impl Render for Presenter {
                 }
             });
         }
+        if self.data.staging.is_none() {
+            self.textures.borrow_mut().cancel_stage(cx);
+        }
+        let staging = self.data.staging.clone();
+        let stage_cache = self.textures.clone();
+        let stage_shell = self.shell.clone();
         let root = div()
             .id("presenter-root")
             .role(Role::Application)
@@ -317,6 +446,48 @@ impl Render for Presenter {
             .text_color(rgb(p.body))
             .font(theme::sans_font())
             .text_size(px(16.))
+            .child(
+                gpui::canvas(
+                    |_, _, _| (),
+                    move |_, _, window, cx| {
+                        if let Some(staging) = staging {
+                            let result = stage_cache.borrow_mut().stage(
+                                staging.attempt,
+                                &staging.frames,
+                                window,
+                                cx,
+                                crate::slide_surface::preupload,
+                            );
+                            cx.defer(move |cx| {
+                                let _ = stage_shell.update(cx, |shell, cx| {
+                                    shell.staging_status(staging.attempt, false, result, cx)
+                                });
+                            });
+                        }
+                    },
+                )
+                .absolute()
+                .size_full(),
+            )
+            .capture_key_down(cx.listener(|this, event: &gpui::KeyDownEvent, _, cx| {
+                if this.data.modal == Some(Modal::Settings)
+                    && (this.data.preferences.panel.recording.is_some()
+                        || this.data.preferences.panel.edit.is_some())
+                {
+                    actions::dispatch(
+                        &this.shell,
+                        Intent::SettingsKey {
+                            key: event.keystroke.unparse(),
+                            text: event.keystroke.key_char.clone().or_else(|| {
+                                (event.keystroke.key.len() == 1)
+                                    .then(|| event.keystroke.key.clone())
+                            }),
+                        },
+                        cx,
+                    );
+                    cx.stop_propagation();
+                }
+            }))
             .on_key_down(cx.listener(|this, event: &gpui::KeyDownEvent, window, cx| {
                 let key = event.keystroke.key.as_str();
                 if key == "tab" {
@@ -336,18 +507,30 @@ impl Render for Presenter {
                 }
             }));
         if let Some(modal) = modal {
+            if modal == Modal::Settings {
+                return root
+                    .track_focus(&self.modal_focus)
+                    .key_context("FerroStageModal")
+                    .child(self.settings_panel(p, window))
+                    .into_any_element();
+            }
+            if modal == Modal::Document {
+                return root
+                    .track_focus(&self.modal_focus)
+                    .child(self.document_panel(p))
+                    .into_any_element();
+            }
             if let Some(panel) = &self.data.displays {
                 return root
                     .track_focus(&self.modal_focus)
                     .key_context("FerroStageModal")
-                    .child(crate::display_settings::view::panel(self, panel, l, p))
+                    .child(crate::display_settings::view::panel(
+                        self, panel, l, p, false,
+                    ))
                     .into_any_element();
             }
             let (title, description) = match modal {
-                Modal::Settings => (
-                    l.text("settings"),
-                    l.text("settings-placeholder").to_string(),
-                ),
+                Modal::Settings => unreachable!("settings handled above"),
                 Modal::Jump(ref text) => (
                     l.text("jump"),
                     l.format(
@@ -359,6 +542,7 @@ impl Render for Presenter {
                         ],
                     ),
                 ),
+                Modal::Document => unreachable!("document modal handled above"),
                 Modal::Displays(_) => unreachable!("display modal has prepared drawing data"),
             };
             return root
@@ -372,6 +556,9 @@ impl Render for Presenter {
                 .gap(px(16.))
                 .child(div().text_size(px(20.)).text_color(rgb(p.ink)).child(title))
                 .child(div().child(description))
+                .when(matches!(modal, Modal::Jump(_)), |view| {
+                    view.child(self.jump_preview_panel())
+                })
                 .when_some(error, |view, error| {
                     view.child(div().text_color(rgb(p.error)).child(error))
                 })
@@ -437,42 +624,14 @@ impl Render for Presenter {
                     ),
                 );
         } else {
-            body = body.child(
-                div()
-                    .min_h(px(180.))
-                    .flex_1()
-                    .rounded(px(theme::PANEL_RADIUS))
-                    .border_1()
-                    .border_color(rgb(p.border))
-                    .bg(rgb(p.soft))
-                    .flex()
-                    .flex_col()
-                    .items_center()
-                    .justify_center()
-                    .gap(px(16.))
-                    .child(
-                        div()
-                            .text_size(px(28.))
-                            .text_color(rgb(p.ink))
-                            .child(l.format(
-                                "page-count",
-                                &[
-                                    ("current", current.to_string()),
-                                    ("pages", pages.to_string()),
-                                ],
-                            )),
-                    )
-                    .child(
-                        div()
-                            .text_color(rgb(p.muted))
-                            .child(l.text("page-placeholder")),
-                    ),
-            );
+            body = body.child(self.workbench_panel(p, window, cx));
         }
+
         if let Some(error) = error {
             body = body.child(
                 div()
                     .id("presenter-error")
+                    .debug_selector(|| "presenter-error".into())
                     .role(Role::Alert)
                     .text_color(rgb(p.error))
                     .child(error),
@@ -547,6 +706,7 @@ impl Render for Presenter {
                             .child(filename),
                     )
                     .child(div().text_color(rgb(p.muted)).child(stage_label))
+                    .child(self.timer_panel(p))
                     .child(
                         div()
                             .flex()
@@ -579,6 +739,9 @@ impl Render for Presenter {
                     ),
             )
             .child(body)
+            .when(!self.data.workbench.steps.is_empty(), |view| {
+                view.child(self.tools_panel(p))
+            })
             .child(
                 div()
                     .p(px(16.))

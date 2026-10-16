@@ -1,7 +1,7 @@
 //! Typed settings schema, version 1.
 //!
 //! Defaults match `docs/PROJECT_PLAN.md` section 4.4, plus `debug_overlay`,
-//! `recent_files`, and the two presenter grid keys. There is no `media` section.
+//! `recent_files`, and the two presenter grid keys. The media section defaults compatibly for existing v1 files.
 
 pub use crate::keybindings::{BindingIssue, Keybindings};
 use ferrostage_core::MonitorRole;
@@ -313,6 +313,19 @@ impl Default for HotReloadSettings {
     }
 }
 
+/// Media output limits; changes apply to the next playback instance.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct MediaSettings {
+    pub max_decode_height: u32,
+}
+impl Default for MediaSettings {
+    fn default() -> Self {
+        Self {
+            max_decode_height: 1080,
+        }
+    }
+}
+
 /// Resolved settings for schema version 1.
 ///
 /// This type serializes for tests and for a fresh document. Loading does not
@@ -338,6 +351,7 @@ pub struct Settings {
     pub cache: CacheSettings,
     /// PDF reload watch.
     pub hot_reload: HotReloadSettings,
+    pub media: MediaSettings,
 }
 
 impl Default for Settings {
@@ -352,11 +366,12 @@ impl Default for Settings {
             keybindings: Keybindings::default(),
             cache: CacheSettings::default(),
             hot_reload: HotReloadSettings::default(),
+            media: MediaSettings::default(),
         }
     }
 }
 
-pub(crate) const SECTION_NAMES: [&str; 8] = [
+pub(crate) const SECTION_NAMES: [&str; 9] = [
     "general",
     "display",
     "presenter",
@@ -365,4 +380,5 @@ pub(crate) const SECTION_NAMES: [&str; 8] = [
     "keybindings",
     "cache",
     "hot_reload",
+    "media",
 ];

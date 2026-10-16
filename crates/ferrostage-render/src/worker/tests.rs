@@ -108,6 +108,79 @@ fn simple() -> (RenderHandle, Calls, Arc<Mutex<Vec<DocumentGeneration>>>) {
         removed,
     )
 }
+#[test]
+fn reversible_commit_restores_active_raster_and_rejects_foreign_or_retired_capabilities() {
+    let (worker, _, removed) = simple();
+    let (foreign, _, _) = simple();
+    reply(worker.load_active(DocumentGeneration(1), vec![1]).unwrap()).unwrap();
+    reply(
+        worker
+            .prepare_candidate(DocumentGeneration(2), vec![2])
+            .unwrap(),
+    )
+    .unwrap();
+    let ready = reply(
+        worker
+            .pre_render_candidate(
+                DocumentGeneration(2),
+                vec![req(2, 0, 0, RenderPriority::Audience)],
+            )
+            .unwrap(),
+    )
+    .unwrap();
+    let token = reply(worker.commit_reversible(ready).unwrap()).unwrap();
+    let forged = crate::RollbackToken {
+        worker_identity: token.worker_identity.clone(),
+        generation: token.generation,
+        previous: token.previous,
+        previous_epoch: token.previous_epoch,
+        nonce: token.nonce,
+    };
+    assert_eq!(
+        reply(foreign.rollback_committed(forged).unwrap()).unwrap_err(),
+        RenderError::InvalidRollback
+    );
+    assert_eq!(
+        reply(worker.abort_candidate(DocumentGeneration(2)).unwrap()).unwrap_err(),
+        RenderError::NotCandidate
+    );
+    assert_eq!(
+        reply(worker.rollback_committed(token).unwrap())
+            .unwrap()
+            .generation,
+        DocumentGeneration(1)
+    );
+    reply(worker.retire_generation(DocumentGeneration(2)).unwrap()).unwrap();
+    worker
+        .submit(req(1, 0, 0, RenderPriority::Audience))
+        .unwrap();
+    assert_eq!(
+        event(&worker).outcome.unwrap().request.generation,
+        DocumentGeneration(1)
+    );
+    assert!(removed.lock().unwrap().contains(&DocumentGeneration(2)));
+    reply(
+        worker
+            .prepare_candidate(DocumentGeneration(3), vec![3])
+            .unwrap(),
+    )
+    .unwrap();
+    let ready = reply(
+        worker
+            .pre_render_candidate(
+                DocumentGeneration(3),
+                vec![req(3, 0, 0, RenderPriority::Presenter)],
+            )
+            .unwrap(),
+    )
+    .unwrap();
+    let token = reply(worker.commit_reversible(ready).unwrap()).unwrap();
+    reply(worker.retire_generation(DocumentGeneration(1)).unwrap()).unwrap();
+    assert_eq!(
+        reply(worker.rollback_committed(token).unwrap()).unwrap_err(),
+        RenderError::InvalidRollback
+    );
+}
 fn blocked() -> (RenderHandle, Calls, Receiver<()>, Sender<()>) {
     let calls = Calls::default();
     let (entered_tx, entered) = mpsc::channel();
@@ -339,3 +412,44 @@ fn candidate_batch_yields_to_active_priority_and_uses_its_own_epoch() {
 }
 
 mod contracts;
+
+#[test]
+fn acknowledged_budget_shrink_evicts_both_caches_without_reloading_active_document() {
+    let (handle, calls, removed) = simple();
+    reply(handle.load_active(DocumentGeneration(1), vec![1]).unwrap()).unwrap();
+    for priority in [RenderPriority::Audience, RenderPriority::Thumbnail] {
+        let request = req(1, 0, 0, priority);
+        handle.submit(request).unwrap();
+        assert!(!event(&handle).outcome.unwrap().cache_hit);
+        handle.submit(request).unwrap();
+        assert!(event(&handle).outcome.unwrap().cache_hit);
+    }
+    let budgets = CacheBudgets {
+        l2_bytes: 16,
+        l3_bytes: 8,
+    };
+    let ack = reply(handle.set_cache_budgets(budgets).unwrap()).unwrap();
+    assert_eq!(ack.budgets, budgets);
+    assert_eq!((ack.l2_used_bytes, ack.l3_used_bytes), (0, 0));
+    for priority in [RenderPriority::Audience, RenderPriority::Thumbnail] {
+        handle.submit(req(1, 0, 0, priority)).unwrap();
+        assert!(!event(&handle).outcome.unwrap().cache_hit);
+    }
+    assert_eq!(calls.lock().unwrap().len(), 4);
+    assert!(removed.lock().unwrap().is_empty());
+    let restored = CacheBudgets {
+        l2_bytes: 512 * 1024,
+        l3_bytes: 512 * 1024,
+    };
+    assert_eq!(
+        reply(handle.set_cache_budgets(restored).unwrap())
+            .unwrap()
+            .budgets,
+        restored
+    );
+    let request = req(1, 0, 0, RenderPriority::Audience);
+    handle.submit(request).unwrap();
+    assert!(!event(&handle).outcome.unwrap().cache_hit);
+    handle.submit(request).unwrap();
+    assert!(event(&handle).outcome.unwrap().cache_hit);
+}

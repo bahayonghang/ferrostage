@@ -48,9 +48,9 @@ jobs:
       - name: Native feature dependency license gate
         run: cargo deny --all-features check
       - name: Native GPUI shell compile gate (does not launch windows)
-        run: cargo build -p ferrostage-app --features gpui,pdfium --locked
+        run: cargo build -p ferrostage-app --features gpui,pdfium,media --locked
       - name: Native GPUI shell lint
-        run: cargo clippy -p ferrostage-app -p ferrostage-ui --features gpui,pdfium --all-targets --locked -- -D warnings
+        run: cargo clippy -p ferrostage-app -p ferrostage-ui --features gpui,pdfium,media --all-targets --locked -- -D warnings
       - name: Headless GPUI window and entity regression (TestPlatform only)
         run: cargo test -p ferrostage-ui --features test-support --lib --locked
       - name: Normal native suite must fail with a missing runtime
@@ -61,3 +61,35 @@ jobs:
           if ($LASTEXITCODE -eq 0) { throw 'Native fixture suite incorrectly succeeded without PDFium' }
           if (-not (Select-String native-missing.log -SimpleMatch 'LibraryUnavailable' -Quiet)) { throw 'Unexpected native failure' }
           exit 0
+
+  media-native:
+    name: Isolated GStreamer and silent product media fixtures
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.99.0
+        with:
+          components: clippy
+      - name: Prepare only reviewed runtime and safe import libraries
+        shell: pwsh
+        run: ./scripts/prepare-media-runtime.ps1
+      - name: Native helper build and strict lint
+        shell: pwsh
+        run: |
+          ./scripts/media-native.ps1 -Action build
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          ./scripts/media-native.ps1 -Action clippy
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          cargo build -p ferrostage-media --example ipc_stall --features native-tests --locked
+      - name: Real silent controller/helper, animation, missing-runtime and reap regressions
+        shell: pwsh
+        run: |
+          $env:FERROSTAGE_TEST_MEDIA_HELPER = (Resolve-Path target/debug/ferrostage-media-helper.exe).Path
+          $env:FERROSTAGE_TEST_MEDIA_RUNTIME = (Resolve-Path cache/media-runtime).Path
+          cargo test -p ferrostage-media --features native-tests --locked
+      - name: Media-enabled GUI must not import native media DLLs
+        shell: pwsh
+        run: |
+          cargo build -p ferrostage-app --features gpui,pdfium,media --locked
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          ./scripts/check-media-imports.ps1 -Binary target/debug/ferrostage.exe

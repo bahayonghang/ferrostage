@@ -2,7 +2,7 @@
 
 FerroStage splits the presenter into a pure state machine and IO crates that sit beside it. `ferrostage-core` does not depend on GPUI, PDFium, `lopdf`, or `notify`.
 
-Core lifecycle, injected-time timer, projection types, and settings schema/persistence are present in the current working tree. Window coordination, pixel assembly, and render-worker sections below remain target contracts. See [feature parity](feature-parity.md) for source status, which is separate from task acceptance.
+The current source connects lifecycle/window coordination, public pixel assembly, one PDFium worker, complete settings, external replacement and media playback. See [feature parity](feature-parity.md) for source and scoped verification status; implementation does not imply full native or performance qualification.
 
 ```text
 ferrostage-app            composition root
@@ -10,15 +10,16 @@ ferrostage-app            composition root
   ferrostage-settings     TOML; atomic replace of the configured settings file only
   ferrostage-core         SessionStage, commands, audience snapshot
   ferrostage-document     notes and media slots (presenter only)
-  ferrostage-pdf          read-only structure now; PDFium raster later
+  ferrostage-pdf          read-only structure and optional PDFium adapter
   ferrostage-render       one worker, generation checks, cache budgets
-  ferrostage-media        shared BGRA frames
-  ferrostage-platform     debounce and %%EOF for an externally replaced PDF
+  ferrostage-media        pure animations and isolated-helper supervision
+  ferrostage-platform     monitor topology and read-only external PDF watching
+ferrostage-media-helper   separate optional-native GStreamer process; no GUI dependency
 ```
 
-`PresentationCommand` is the only way UI code changes the deck. The core's `audience_snapshot` produces projection metadata; the UI assembler adds only matching audience pixels before publishing `AudienceProjectionSnapshot`, the audience view's sole input. It never exposes the document, speaker notes, media paths, the full cache, or an arbitrary-page request API. The assembler keeps the previous complete projection until the replacement page frame is ready, so new metadata never accompanies old pixels. `Curtain` and black/white blank cover media, strokes, and laser immediately.
+UI intents route through the coordinator to checked core commands or reload publication. The core's `audience_snapshot` produces projection metadata; the UI assembler adds only matching audience pixels before publishing `AudienceProjectionSnapshot`, the audience view's sole input. It never exposes the document, speaker notes, media paths, the full cache, or an arbitrary-page request API. The assembler keeps the previous complete projection until the replacement page frame is ready, so new metadata never accompanies old pixels. `Curtain` and black/white blank cover media, strokes, and laser immediately.
 
-FerroStage opens the user's PDF read-only and never writes that path. Hot reload handles external replacement: debounce, obtain stable bytes with `%%EOF`, validate and pre-render a candidate, then commit a strictly newer `DocumentGeneration` with its document and visual in one main-thread transaction. EOF alone does not prove a valid or complete replacement. See [ADR-004](adr/ADR-004-lock-free-reload.md). Core accepts `CommitDocument(DocumentDescriptor)` and validates count/generation before updating metadata. The temporary `StageShadowDocument` bridge still carries read bytes for a non-empty check and delegates to that same commit path; task 10 removes the byte payload while adding the full reload transaction. The core does not keep or parse PDF bytes.
+FerroStage opens the user's PDF read-only and never writes that path. Hot reload handles external replacement: debounce, obtain stable bytes with `%%EOF`, validate and pre-render a candidate, then commit a strictly newer `DocumentGeneration` with its document and visual in one main-thread transaction. EOF alone does not prove a valid or complete replacement. See [ADR-004](adr/ADR-004-lock-free-reload.md). Core accepts `CommitDocument(DocumentDescriptor)` and validates count/generation before updating metadata. The production reload path prepares and stages through the document/render/UI layers, awaits an opaque reversible worker commit, then applies `commit_reload` to the latest core state before retiring the old generation. Obsolete commits require rollback acknowledgement. The legacy `StageShadowDocument` compatibility command still performs a non-empty byte check; it is not the production reload transaction. The core does not keep or parse PDF bytes.
 
 Settings use a unique sibling temporary file, such as `settings.toml.tmp-<pid>-<seq>`, followed by sync, close, and atomic replacement of the configured settings path. A custom `--config` filename supplies the temporary file's basename. FerroStage's own artifacts may use their own sibling temporary files. Neither write target is the open PDF.
 
@@ -40,7 +41,7 @@ Idle --LoadDocument(ok)--> Ready --StartPresentation--> Presenting
 | `Ready` | Current, next, notes, preview, settings, monitor choice. Start is available | Absent | Stopped. First entry shows 0 or the countdown target. After Stop, the frozen reading stays |
 | `Presenting` | Full workbench and Stop | Borderless fullscreen on the Audience monitor | Running (pause and reset allowed) |
 
-The audience window exists only in `Presenting`. `AudienceProjectionSnapshot` includes `stage: AudienceStage` (`Curtain` or `Live`). Outside `Presenting` the snapshot is always `Curtain` and carries no visual. `Curtain` draws solid black. Core supplies stage and metadata with `visual=None`; pixel assembly remains task 08.
+The audience window exists only in `Presenting`. `AudienceProjectionSnapshot` includes `stage: AudienceStage` (`Curtain` or `Live`). Outside `Presenting` the snapshot is always `Curtain` and carries no visual. `Curtain` draws solid black. Core supplies stage and metadata with `visual=None`; the UI assembler adds only matching public PDF/media frames.
 
 Commands such as page turns, laser, and blank are accepted in `Ready` and `Presenting`. Only `Presenting` produces audience pixels. Hot reload does not change the stage or the timer.
 
@@ -52,11 +53,11 @@ A display is `MonitorId` plus `MonitorRole` (`Presenter`, `Audience`, `None`), n
 
 `SwapScreens` is an intent to the app role coordinator. One settings transaction exchanges the two role bindings and moves the windows. It does not flip a separate swap flag, and it does not change page or crop. A saved Audience that is missing, or an explicit `None`, does not take another monitor. Presenter absence may fall back to the primary after the saved Audience id is excluded, and warn. If the Audience disappears during `Presenting`: publish `Curtain`, then `Stop`, destroy the audience window, return to `Ready`, and keep the presenter windowed. A newly attached monitor does not take a role, and reconnect does not start the talk. See [ADR-007](adr/ADR-007-monitor-roles.md).
 
-The current source defines `MonitorRole` and settings bindings with string ids. `MonitorId`, enumeration, resolution, and window coordination remain unimplemented. Core has no swap flag and rejects direct `SwapScreens` with `ScreenSwapRequiresCoordinator`. Legacy index settings are retained as unknown data with a rebind warning, not used as role authority.
+The platform implements stable `MonitorId`, enumeration and pure role resolution; UI coordinates native windows and the shared role-settings transaction. Core has no swap flag and rejects direct `SwapScreens` with `ScreenSwapRequiresCoordinator`. Legacy index settings are retained as unknown data with a rebind warning, not used as role authority.
 
 ## Render priority
 
-Render priority, once the worker exists. The rows match [docs/PROJECT_PLAN.md](PROJECT_PLAN.md) §4.6 item for item:
+The render worker uses these priorities. The rows match [docs/PROJECT_PLAN.md](PROJECT_PLAN.md) §4.6 item for item:
 
 | Priority | What |
 | --- | --- |
@@ -68,4 +69,10 @@ Render priority, once the worker exists. The rows match [docs/PROJECT_PLAN.md](P
 
 Each page turn increments an epoch to cancel queued stale work and reject late results. Priority chooses the next queued request; it cannot interrupt a synchronous PDFium call. Requests and results carry generation, page, crop, target pixel size, priority, and epoch.
 
-The active generation continues serving while a candidate loads and pre-renders in a separate namespace/result channel. A candidate must not be rejected merely because it is not the active generation; `ferrostage_render::is_current` is only the skeleton helper for active results. Validate the latest attempt token before committing descriptor, document, and audience visual together, then retire the old generation's resources. All PDFium initialization, loading, rendering, and release stay on the single render worker; only owned metadata and BGRA pixels leave it.
+The active generation continues serving while a candidate loads and pre-renders in a separate namespace/result channel. Candidate identities are checked against their own preparation attempt and worker ownership, separately from active-frame identity checks. Validate the latest attempt token before committing descriptor, document, and audience visual together, then retire the old generation's resources. All PDFium initialization, loading, rendering, and release stay on the single render worker; only owned metadata and BGRA pixels leave it.
+
+## Media ownership
+
+The GUI uses pure GIF/WebP decoding and a background supervisor. Native audio/video lives in the separate optional GStreamer helper; the GUI has no GStreamer/GLib imports. One decoder/audio owner is active, and previous child exit or kill/reap precedes another. Ready and notes-only annotations never start playback. Page, blank, Stop, Close, published generation and successful crop reconfiguration invalidate accepted frames; leaving blank does not revive the old instance.
+
+Source paths, embedded bytes and controls stay on the Presenter side. A bounded annotation-aspect canvas is conservatively cropped to the public intersection before a shared BgraFrame enters the snapshot. The public slot ID is an opaque process-wide playback-instance identity, not a PDF annotation index. Both windows use their existing budgeted texture cache and paint PDF, media, then ink/laser. Missing native runtime leaves PDF and pure animations available. See [ADR-009](adr/ADR-009-media-helper.md) and [packaging](packaging.md) for the selected native closure and its separate license audit.

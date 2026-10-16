@@ -14,3 +14,7 @@
 
 # Keep the independently reviewed maintenance sources and notices intact.
 vendor/** -text
+
+# Preserve upstream media license and build-recipe provenance byte-for-byte.
+packaging/media/notices/** -text
+packaging/media/recipes/** -text

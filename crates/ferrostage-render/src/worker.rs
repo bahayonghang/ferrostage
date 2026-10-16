@@ -31,8 +31,11 @@ pub(super) enum Message {
     Render(Job),
     Epoch(DocumentGeneration, u64, Response<GenerationAck>),
     Commit(CandidateReady, Response<GenerationAck>),
+    CommitReversible(CandidateReady, Response<crate::RollbackToken>),
+    Rollback(crate::RollbackToken, Response<GenerationAck>),
     Abort(DocumentGeneration, Response<GenerationAck>),
     Retire(DocumentGeneration, Response<GenerationAck>),
+    Budgets(CacheBudgets, Response<crate::CacheBudgetAck>),
     Shutdown,
 }
 
@@ -117,6 +120,13 @@ impl RenderHandle {
             .map_err(|_| RenderError::WorkerUnavailable)?;
         Ok(rx)
     }
+    /// Update existing caches on the single worker without replacing its document.
+    pub fn set_cache_budgets(
+        &self,
+        budgets: CacheBudgets,
+    ) -> Result<Reply<crate::CacheBudgetAck>, RenderError> {
+        self.reply(|tx| Message::Budgets(budgets, tx))
+    }
     pub fn probe(&self, bytes: Vec<u8>) -> Result<Reply<DocumentMetadata>, RenderError> {
         self.reply(|tx| Message::Probe(bytes, tx))
     }
@@ -194,6 +204,18 @@ impl RenderHandle {
         generation: DocumentGeneration,
     ) -> Result<Reply<GenerationAck>, RenderError> {
         self.reply(|tx| Message::Abort(generation, tx))
+    }
+    pub fn commit_reversible(
+        &self,
+        ready: CandidateReady,
+    ) -> Result<Reply<crate::RollbackToken>, RenderError> {
+        self.reply(|tx| Message::CommitReversible(ready, tx))
+    }
+    pub fn rollback_committed(
+        &self,
+        token: crate::RollbackToken,
+    ) -> Result<Reply<GenerationAck>, RenderError> {
+        self.reply(|tx| Message::Rollback(token, tx))
     }
     pub fn retire_generation(
         &self,

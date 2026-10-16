@@ -31,6 +31,12 @@ pub(crate) fn merge_document(
     merge_keybindings(&mut doc, &settings.keybindings)?;
     merge_cache(&mut doc, &settings.cache)?;
     merge_hot_reload(&mut doc, &settings.hot_reload)?;
+    with_section(&mut doc, "media", |table| {
+        table.insert(
+            "max_decode_height".into(),
+            u32_value(settings.media.max_decode_height),
+        );
+    });
     Ok(doc)
 }
 

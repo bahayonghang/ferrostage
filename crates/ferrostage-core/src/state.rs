@@ -1,3 +1,4 @@
+use std::collections::BTreeMap;
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
@@ -27,12 +28,58 @@ pub struct PresentationState {
     logical_slide: LogicalSlide,
     slide_crop: NormalizedRect,
     blank_mode: Option<BlankMode>,
+    laser_style: crate::LaserStyle,
     laser_pos_norm: Option<(f32, f32)>,
-    strokes: Vec<NormalizedStroke>,
+    strokes: BTreeMap<usize, Vec<NormalizedStroke>>,
+    active_stroke: bool,
     jump_preview: Option<PhysicalPage>,
 }
 
 impl PresentationState {
+    /// Apply a checked external replacement to the current state, preserving
+    /// timer/stage/blank and remapping only explicitly matched annotation pages.
+    pub fn commit_reload(
+        &mut self,
+        descriptor: DocumentDescriptor,
+        position: PhysicalPage,
+        pages: &[(PhysicalPage, PhysicalPage)],
+    ) -> Result<usize, CoreError> {
+        if self.stage == SessionStage::Idle {
+            return Err(CoreError::NotReady { stage: self.stage });
+        }
+        if descriptor.generation <= self.generation {
+            return Err(CoreError::StaleGeneration {
+                current: self.generation.0,
+                next: descriptor.generation.0,
+            });
+        }
+        if descriptor.slide_map().logical_for(position).is_none()
+            || pages.iter().enumerate().any(|(index, (old, new))| {
+                self.slide_map
+                    .as_ref()
+                    .and_then(|map| map.logical_for(*old))
+                    .is_none()
+                    || descriptor.slide_map().logical_for(*new).is_none()
+                    || pages[..index].iter().any(|(a, b)| a == old || b == new)
+            })
+        {
+            return Err(CoreError::InvalidSlideMap);
+        }
+        let mut remapped = BTreeMap::new();
+        let mut dropped = 0;
+        for (page, strokes) in std::mem::take(&mut self.strokes) {
+            if let Some((_, new)) = pages.iter().find(|(old, _)| old.0 == page) {
+                remapped.insert(new.0, strokes);
+            } else {
+                dropped += 1;
+            }
+        }
+        self.strokes = remapped;
+        self.active_stroke = false;
+        self.laser_pos_norm = None;
+        self.install(descriptor, position);
+        Ok(dropped)
+    }
     /// Prepare the first page without starting a presentation or a timer.
     ///
     /// # Errors
@@ -56,8 +103,10 @@ impl PresentationState {
             logical_slide: LogicalSlide(0),
             slide_crop: NormalizedRect::FULL,
             blank_mode: None,
+            laser_style: crate::LaserStyle::default(),
             laser_pos_norm: None,
-            strokes: Vec::new(),
+            strokes: BTreeMap::new(),
+            active_stroke: false,
             jump_preview: None,
         }
     }
@@ -120,6 +169,7 @@ impl PresentationState {
     #[must_use]
     pub fn audience_snapshot(&self) -> AudienceProjectionSnapshot {
         AudienceProjectionSnapshot {
+            staging: None,
             stage: if self.stage == SessionStage::Presenting {
                 AudienceStage::Live
             } else {
@@ -129,8 +179,13 @@ impl PresentationState {
             current_page: self.current_page,
             slide_crop: self.slide_crop,
             blank_mode: self.blank_mode,
+            laser_style: self.laser_style,
             laser_pos_norm: self.laser_pos_norm,
-            strokes: Arc::from(self.strokes.as_slice()),
+            strokes: Arc::from(
+                self.strokes
+                    .get(&self.current_page.0)
+                    .map_or(&[][..], Vec::as_slice),
+            ),
             visual: None,
         }
     }
@@ -161,6 +216,7 @@ impl PresentationState {
         if !allowed {
             return Err(CoreError::NotReady { stage: self.stage });
         }
+        let previous_page = self.current_page;
         match command {
             PresentationCommand::LoadMappedDocument(descriptor) => self.load_mapped(descriptor),
             PresentationCommand::ReconfigureDocument(descriptor) => self.reconfigure(descriptor)?,
@@ -197,9 +253,53 @@ impl PresentationState {
             PresentationCommand::CommitJump => self.commit_jump(),
             PresentationCommand::CancelJump => self.jump_preview = None,
             PresentationCommand::ToggleBlank(mode) => self.toggle_blank(mode),
-            PresentationCommand::UpdateLaserPointer(pos) => self.laser_pos_norm = pos,
-            PresentationCommand::AppendStrokePoint(point) => self.append_point(point),
-            PresentationCommand::ClearStrokes => self.strokes.clear(),
+            PresentationCommand::SetLaserStyle(style) => {
+                if !style.radius_norm.is_finite()
+                    || style.radius_norm <= 0.0
+                    || style.radius_norm > 0.25
+                {
+                    return Err(CoreError::InvalidPointer);
+                }
+                self.laser_style = style;
+            }
+            PresentationCommand::UpdateLaserPointer(pos) => {
+                if let Some(point) = pos {
+                    Self::validate_point(point)?;
+                }
+                self.laser_pos_norm = pos;
+            }
+            PresentationCommand::BeginStroke {
+                color,
+                width,
+                is_highlighter,
+            } => {
+                if !width.is_finite() || width <= 0.0 || width > 1.0 {
+                    return Err(CoreError::InvalidPointer);
+                }
+                self.strokes
+                    .entry(self.current_page.0)
+                    .or_default()
+                    .push(NormalizedStroke {
+                        points: Vec::new(),
+                        color_bgra: color,
+                        width_norm: width,
+                        is_highlighter,
+                    });
+                self.active_stroke = true;
+            }
+            PresentationCommand::EndStroke => self.active_stroke = false,
+            PresentationCommand::EraseStrokeAt(point) => {
+                Self::validate_point(point)?;
+                if let Some(strokes) = self.strokes.get_mut(&self.current_page.0) {
+                    strokes.retain(|stroke| !crate::geometry::stroke_hit(stroke, point));
+                }
+                self.active_stroke = false;
+            }
+            PresentationCommand::AppendStrokePoint(point) => self.append_point(point)?,
+            PresentationCommand::ClearStrokes => {
+                self.strokes.remove(&self.current_page.0);
+                self.active_stroke = false;
+            }
             PresentationCommand::SwapScreens => {
                 return Err(CoreError::ScreenSwapRequiresCoordinator);
             }
@@ -208,6 +308,10 @@ impl PresentationState {
                 new_generation,
                 bytes,
             } => self.stage_shadow(new_generation, &bytes)?,
+        }
+        if self.current_page != previous_page {
+            self.active_stroke = false;
+            self.laser_pos_norm = None;
         }
         Ok(())
     }
@@ -275,17 +379,33 @@ impl PresentationState {
         };
     }
 
-    fn append_point(&mut self, point: (f32, f32)) {
-        if let Some(stroke) = self.strokes.last_mut() {
-            stroke.points.push(point);
-            return;
+    fn validate_point(point: (f32, f32)) -> Result<(), CoreError> {
+        if !point.0.is_finite()
+            || !point.1.is_finite()
+            || !(0.0..=1.0).contains(&point.0)
+            || !(0.0..=1.0).contains(&point.1)
+        {
+            return Err(CoreError::InvalidPointer);
         }
-        self.strokes.push(NormalizedStroke {
-            points: vec![point],
-            color_bgra: DEFAULT_STROKE_COLOR_BGRA,
-            width_norm: DEFAULT_STROKE_WIDTH_NORM,
-            is_highlighter: false,
-        });
+        Ok(())
+    }
+
+    fn append_point(&mut self, point: (f32, f32)) -> Result<(), CoreError> {
+        Self::validate_point(point)?;
+        let strokes = self.strokes.entry(self.current_page.0).or_default();
+        if !self.active_stroke {
+            strokes.push(NormalizedStroke {
+                points: Vec::new(),
+                color_bgra: DEFAULT_STROKE_COLOR_BGRA,
+                width_norm: DEFAULT_STROKE_WIDTH_NORM,
+                is_highlighter: false,
+            });
+            self.active_stroke = true;
+        }
+        if let Some(stroke) = strokes.last_mut() {
+            stroke.points.push(point);
+        }
+        Ok(())
     }
 
     fn stage_shadow(
@@ -338,6 +458,9 @@ impl PresentationState {
         if descriptor.generation != self.generation || descriptor.page_count() != self.page_count {
             return Err(CoreError::InvalidReconfiguration);
         }
+        self.strokes.clear();
+        self.active_stroke = false;
+        self.laser_pos_norm = None;
         self.install(descriptor, self.current_page);
         Ok(())
     }
@@ -354,6 +477,9 @@ impl PresentationState {
             pages = descriptor.page_count(),
             "committed document descriptor"
         );
+        self.strokes.clear();
+        self.active_stroke = false;
+        self.laser_pos_norm = None;
         self.install(descriptor, self.current_page);
         Ok(())
     }
@@ -370,3 +496,6 @@ mod property_tests;
 
 #[cfg(test)]
 mod mapping_tests;
+
+#[cfg(test)]
+mod annotation_tests;

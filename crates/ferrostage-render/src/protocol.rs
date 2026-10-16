@@ -91,10 +91,31 @@ impl CandidateReady {
 pub struct GenerationAck {
     pub generation: DocumentGeneration,
 }
-#[derive(Clone, Copy, Debug)]
+/// One-use authority to undo an unpublished commit on its issuing worker only.
+#[derive(Debug)]
+pub struct RollbackToken {
+    pub(crate) worker_identity: std::sync::Arc<()>,
+    pub(crate) generation: DocumentGeneration,
+    pub(crate) previous: DocumentGeneration,
+    pub(crate) previous_epoch: u64,
+    pub(crate) nonce: u64,
+}
+impl RollbackToken {
+    pub fn generation(&self) -> DocumentGeneration {
+        self.generation
+    }
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct CacheBudgets {
     pub l2_bytes: usize,
     pub l3_bytes: usize,
+}
+/// Acknowledged only after both worker-owned caches have evicted to their new limits.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct CacheBudgetAck {
+    pub budgets: CacheBudgets,
+    pub l2_used_bytes: usize,
+    pub l3_used_bytes: usize,
 }
 impl Default for CacheBudgets {
     fn default() -> Self {
@@ -120,6 +141,8 @@ pub enum RenderError {
     NotCandidate,
     #[error("candidate readiness token is stale or invalid")]
     NotReady,
+    #[error("unpublished commit rollback capability is stale or invalid")]
+    InvalidRollback,
     #[error("render request was cancelled before publication")]
     Cancelled,
     #[error("cannot retire the active or candidate generation")]

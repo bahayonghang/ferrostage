@@ -1,0 +1,42 @@
+{
+  "fixture-video.mp4": {
+    "bytes": 561982,
+    "sha256": "b5ee8bbb4ec75111faf5a43dde64758390b166d74bb81f2633723e4027be86ee"
+  },
+  "media-crop-smoke.pdf": {
+    "bytes": 2663,
+    "sha256": "79bfc24629fb38c22b055145e5d5e8a907aa02e69e3fda0489d2c35fc48680ec"
+  },
+  "media-smoke.pdf": {
+    "bytes": 566185,
+    "sha256": "cd41d260eba950649552346e5aa95d7e05b2e81e7d3d790879a97cbff2808185"
+  },
+  "movie.pdf": {
+    "bytes": 20760,
+    "sha256": "18fcb84be915745801711f71f7acfbc4280a69f977896eada6970fd068f06a32"
+  },
+  "synthetic-ball-tone-12s.mp4": {
+    "bytes": 561982,
+    "sha256": "b5ee8bbb4ec75111faf5a43dde64758390b166d74bb81f2633723e4027be86ee"
+  },
+  "synthetic-ball-tone-12s.ogg": {
+    "bytes": 27526,
+    "sha256": "ab1ccb23eb0ee1d417864242f9762b0c4508217046c2663440889554e1c6335e"
+  },
+  "synthetic-ball-tone-12s.webm": {
+    "bytes": 148832,
+    "sha256": "b6820844b3717865ab6972ff52d3df5d72a532c7f872464591d3bd6b949bfdc9"
+  },
+  "synthetic-public-private.gif": {
+    "bytes": 937,
+    "sha256": "ae7a7ddccc70386e6e0e384ee102ef33f4b8ab45a0437c00e85f3a354974bedf"
+  },
+  "synthetic-three-frames.gif": {
+    "bytes": 1017,
+    "sha256": "6a576e6f6ba44d730ca6546dd93293997230a039aff8b9215733f6a61a4bea7e"
+  },
+  "synthetic-three-frames.webp": {
+    "bytes": 450,
+    "sha256": "4813f16e9f1867b597e74c7f5015240cfba70ad65fe56b450264827af4b107a1"
+  }
+}

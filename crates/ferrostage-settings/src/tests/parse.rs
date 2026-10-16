@@ -51,6 +51,7 @@ fn deleting_any_section_keeps_the_other_values() {
     settings.display.audience_fullscreen = false;
     settings.pointer.highlighter_alpha = 0.25;
     settings.hot_reload.debounce_ms = 450;
+    settings.media.max_decode_height = 720;
     settings.keybindings.jump = vec!["J".to_owned()];
     let text = toml::to_string(&settings).expect("serialize");
     let mut document: toml::Table = text.parse().expect("table");
@@ -59,6 +60,9 @@ fn deleting_any_section_keeps_the_other_values() {
         stripped.remove(name);
         let parsed = from_toml(&stripped.to_string()).expect("parse");
         assert!(parsed.warnings.is_empty(), "{name}");
+        if name != "media" {
+            assert_eq!(parsed.settings.media.max_decode_height, 720);
+        }
         match name {
             "general" => {
                 assert_eq!(parsed.settings.general, Settings::default().general);
@@ -90,6 +94,10 @@ fn deleting_any_section_keeps_the_other_values() {
             }
             "keybindings" => {
                 assert_eq!(parsed.settings.keybindings, Settings::default().keybindings);
+                assert_eq!(parsed.settings.hot_reload.debounce_ms, 450);
+            }
+            "media" => {
+                assert_eq!(parsed.settings.media, Settings::default().media);
                 assert_eq!(parsed.settings.hot_reload.debounce_ms, 450);
             }
             _ => panic!("unexpected section {name}"),
@@ -427,4 +435,35 @@ fn color_and_ratio_ranges_fall_back_one_leaf() {
     assert_eq!(outcome.settings.presenter.notes_ratio, 0.4);
     assert_eq!(outcome.settings.presenter.grid_columns, 4);
     assert_eq!(outcome.settings.presenter.grid_visible_pages, 8);
+}
+
+#[test]
+fn media_v1_defaults_bounds_unknown_and_future_readonly() {
+    assert_eq!(
+        from_toml("schema_version=1")
+            .unwrap()
+            .settings
+            .media
+            .max_decode_height,
+        1080
+    );
+    for n in [0, 2161] {
+        let outcome = from_toml(&format!(
+            "schema_version=1\n[media]\nmax_decode_height={n}\nunknown='keep'\n"
+        ))
+        .unwrap();
+        assert_eq!(outcome.settings.media.max_decode_height, 1080);
+        assert!(
+            outcome
+                .warnings
+                .iter()
+                .any(|w| w.key == "media.max_decode_height")
+        );
+        let merged =
+            crate::merge::merge_document(&outcome.raw_table, &outcome.settings, &[]).unwrap();
+        assert_eq!(merged["media"]["unknown"].as_str(), Some("keep"));
+    }
+    let future = from_toml("schema_version=99\n[media]\nmax_decode_height=720\n").unwrap();
+    assert!(!future.write_policy.is_writable());
+    assert_eq!(future.settings.media.max_decode_height, 720);
 }

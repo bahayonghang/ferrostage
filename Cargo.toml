@@ -9,6 +9,7 @@ members = [
     "crates/ferrostage-pdf",
     "crates/ferrostage-render",
     "crates/ferrostage-media",
+    "crates/ferrostage-media-helper",
     "crates/ferrostage-platform",
     "crates/ferrostage-settings",
 ]
@@ -31,6 +32,11 @@ ferrostage-settings = { path = "crates/ferrostage-settings" }
 ferrostage-ui = { path = "crates/ferrostage-ui" }
 gpui = { path = "vendor/gpui", default-features = false }
 gpui_platform = { git = "https://github.com/zed-industries/zed", tag = "v1.23.3", default-features = false }
+image = { version = "=0.25.10", default-features = false }
+gstreamer = "=0.25.4"
+gstreamer-app = "=0.25.2"
+gstreamer-video = "=0.25.2"
+chrono = { version = "=0.4.45", default-features = false, features = ["clock"] }
 uuid = { version = "=1.28.0", features = ["v5"] }
 
 # Latest stable crates.io releases as of 2026-10-14.

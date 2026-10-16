@@ -119,6 +119,14 @@ impl FrameCache {
             self.frames.remove(&key);
         }
     }
+    pub fn set_budget(&mut self, bytes: usize) {
+        for key in self.ledger.set_budget(bytes) {
+            self.frames.remove(&key);
+        }
+    }
+    pub fn used_bytes(&self) -> usize {
+        self.ledger.used_bytes()
+    }
     pub fn retire(&mut self, generation: DocumentGeneration) {
         for key in self.ledger.retire(generation) {
             self.frames.remove(&key);

@@ -176,6 +176,13 @@ impl LoadedDocument {
                     annotation,
                     media: entry.clone(),
                     slide_rect,
+                    source_crop: entry
+                        .rect
+                        .and_then(|rect| crate::media_slots::source_crop(rect, slide_crop(layout))),
+                    aspect_ratio: entry.rect.map(|r| {
+                        let (w, h) = page.geometry.visible_size();
+                        r.w * w / (r.h * h)
+                    }),
                 });
             }
         }

@@ -5,6 +5,8 @@ use crate::SessionStage;
 /// Recoverable state-machine failures. Library code returns these; it does not panic.
 #[derive(Debug, Error, PartialEq, Eq)]
 pub enum CoreError {
+    #[error("pointer coordinates or stroke width are invalid")]
+    InvalidPointer,
     #[error("document has no pages")]
     EmptyDocument,
 

@@ -4,7 +4,7 @@ A modern, GPU-accelerated, lock-free PDF & Beamer presentation stage built with 
 
 Windows 11 is the first target. The process stays offline: no telemetry, no account.
 
-This repository is the workspace skeleton. The presenter window, PDFium raster worker, and media playback are not linked yet. Domain types, settings, the CLI, and the license gate do compile.
+The optional desktop build includes the presenter workbench, single-worker PDFium rendering, complete settings, external PDF hot reload, GIF/WebP and isolated native media playback. Default workspace checks remain independent of native SDKs. Implementation and scoped verification status are tracked in [feature parity](docs/feature-parity.md); full hardware, visual-matrix and performance qualification is separate.
 
 ## Planned for v1.0
 
@@ -30,13 +30,14 @@ Suggested topics keep `beamer` and drop `latex` when that topic is set. `beamer`
 | Crate | Role |
 | --- | --- |
 | `ferrostage-app` | Binary. `just dev` runs it. |
-| `ferrostage-ui` | GPUI windows. Pin is Zed `v1.23.3` / `gpui-kit` 0.7.3. Not linked yet. |
+| `ferrostage-ui` | GPUI presenter and snapshot-only Audience; maintained Zed `v1.23.3` source, see ADR-008. |
 | `ferrostage-core` | Presentation state machine. No GPUI and no PDF. |
 | `ferrostage-document` | Pages, speaker notes, media slots. Notes never enter the audience snapshot. |
-| `ferrostage-pdf` | `lopdf` 0.45 structure check. PDFium 0.9.4 and `hayro-syntax` 0.8.0 are pinned, not linked. |
+| `ferrostage-pdf` | Read-only `lopdf` 0.45 structure and optional `pdfium-render` 0.9.4 adapter. |
 | `ferrostage-render` | Single render worker and L1/L2/L3 budgets. |
-| `ferrostage-media` | Offscreen BGRA frames. No child window handles. |
-| `ferrostage-platform` | Hot-reload policy. Links `notify` 8.2.0. |
+| `ferrostage-media` | Pure GIF/WebP decoder, bounded helper protocol and single-owner supervision. |
+| `ferrostage-media-helper` | Optional native GStreamer process; offscreen BGRA, no child window handles. |
+| `ferrostage-platform` | Monitor identity/topology and external-replacement watcher using `notify` 8.2.0. |
 | `ferrostage-settings` | TOML settings. |
 
 ## Commands
@@ -49,6 +50,8 @@ just install  # cargo install --path crates/ferrostage-app --locked
 ```
 
 Toolchain: Rust 1.99.0, edition 2024 (`rust-toolchain.toml`).
+
+Those commands use default features. Build the full desktop GUI with `cargo build -p ferrostage-app --features gpui,pdfium,media --locked`, then launch `target/debug/ferrostage --config <settings.toml> --pdfium-library <pdfium.dll> <document.pdf>`. PDFium is supplied separately; native audio/video also needs the separately built media helper and selected runtime beside the GUI. Follow [packaging and runtime preparation](docs/packaging.md) for exact sources, notices and commands. The application never downloads runtimes or writes the user's PDF.
 
 ## License
 

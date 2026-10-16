@@ -1,3 +1,5 @@
+mod preferences;
+pub(crate) mod reload;
 use crate::{
     actions::{self, Intent},
     audience::Audience,
@@ -11,9 +13,10 @@ use ferrostage_core::{
     AudienceProjectionSnapshot, AudienceStage, BlankMode, MonitorId, PhysicalPage,
     PresentationCommand as Command, PresentationState, SessionStage,
 };
+#[cfg(all(test, feature = "test-support"))]
 use ferrostage_pdf::DocumentMetadata;
 use ferrostage_platform::{MonitorInfo, TopologyEvent, TopologyWatcher};
-use ferrostage_render::{RenderError, RenderHandle, Reply};
+use ferrostage_render::{RenderError, RenderHandle};
 use ferrostage_settings::{DisplaySettings, SettingsSession, SettingsStore, WritePolicy};
 use gpui::{
     AnyWindowHandle, App, AppContext, Bounds, Context, DisplayId, Entity, Global,
@@ -25,7 +28,7 @@ use std::{
     collections::BTreeMap,
     path::PathBuf,
     rc::Rc,
-    sync::mpsc::{Receiver, TryRecvError},
+    sync::mpsc::Receiver,
     time::{Duration, Instant},
 };
 
@@ -50,6 +53,7 @@ impl Global for ShellRoot {}
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(crate) enum Modal {
     Settings,
+    Document,
     Displays(DisplayDraft),
     Jump(String),
 }
@@ -74,13 +78,14 @@ struct ClientResizeAttempt {
 enum TransactionKind {
     Start,
     Assign(DisplaySettings),
+    Preferences(DisplaySettings),
     RecoverPresenter,
 }
 impl TransactionKind {
     fn operation(&self) -> Operation {
         match self {
             Self::Start => Operation::Start,
-            Self::Assign(_) => Operation::Swap,
+            Self::Assign(_) | Self::Preferences(_) => Operation::Swap,
             Self::RecoverPresenter => Operation::RecoverPresenter,
         }
     }
@@ -101,13 +106,18 @@ struct FocusIntent {
 struct ImportReply {
     token: u64,
     path: PathBuf,
-    reply: Reply<DocumentMetadata>,
+    load: crate::document_load::PendingLoad,
 }
 
 pub(crate) struct Shell {
     pub locale: crate::locale::Locale,
     pub state: PresentationState,
+    pub workbench: crate::workbench::Workbench,
+    pub media: crate::media_playback::Playback,
+    next_generation: u64,
     pub settings: SettingsSession,
+    pub preferences: crate::settings_panel::PanelState,
+    preference_change: Option<preferences::PendingPreferences>,
     store: SettingsStore,
     renderer: Result<RenderHandle, RenderError>,
     topology: Receiver<TopologyEvent>,
@@ -125,10 +135,12 @@ pub(crate) struct Shell {
     focus_intent: Option<FocusIntent>,
     focus_token: u64,
     import: Option<ImportReply>,
+    reload: reload::Reload,
     import_token: u64,
     pub loading: bool,
     pub path: Option<PathBuf>,
     pub error: Option<String>,
+    pub graphics_error: Option<String>,
     pub warnings: Vec<String>,
     pub modal: Option<Modal>,
     pub snapshot: Entity<AudienceProjectionSnapshot>,
@@ -210,6 +222,8 @@ impl Shell {
     }
 
     fn stop_tasks(&mut self, reason: &'static str) {
+        self.media.shutdown();
+        self.shutdown_reload();
         // WeakEntity is checked only after a foreground wake. Cancel while the
         // platform dispatcher HWND is still alive so a late background timer
         // cannot enqueue another Shell wake after platform destruction.
@@ -253,8 +267,13 @@ impl Shell {
         Self {
             locale,
             state,
+            workbench: Default::default(),
+            media: Default::default(),
+            next_generation: 1,
             settings: inputs.settings,
             store: inputs.store,
+            preferences: Default::default(),
+            preference_change: None,
             renderer: inputs.renderer,
             topology: inputs.topology,
             _watcher: inputs.watcher,
@@ -271,10 +290,12 @@ impl Shell {
             focus_intent: None,
             focus_token: 0,
             import: None,
+            reload: Default::default(),
             import_token: 0,
             loading: false,
             path: None,
             error,
+            graphics_error: None,
             warnings,
             modal: None,
             snapshot,
@@ -308,7 +329,7 @@ impl Shell {
         if self.state.stage() != SessionStage::Ready {
             return Some(self.locale.text("need-document").into());
         }
-        if self.loading || self.pending.is_some() {
+        if self.busy() {
             return Some(self.locale.text("confirming").into());
         }
         if self._watcher.is_err() {
@@ -323,15 +344,46 @@ impl Shell {
     }
 
     pub fn busy(&self) -> bool {
-        self.pending.is_some() || self.loading
+        self.pending.is_some()
+            || self.loading
+            || self.preference_change.is_some()
+            || self.reload_busy()
     }
 
-    fn publish(&self, curtain: bool, cx: &mut Context<Self>) {
+    fn publish(&mut self, curtain: bool, cx: &mut Context<Self>) {
+        self.media.sync(
+            &self.state,
+            self.workbench.document.as_ref().map(|s| &s.document),
+            self.path.as_deref(),
+            self.settings.settings.media.max_decode_height,
+            curtain,
+        );
         let mut snapshot = self.state.audience_snapshot();
         if curtain {
             snapshot.stage = AudienceStage::Curtain;
             snapshot.visual = None;
         }
+        let mut snapshot = crate::workbench::assemble(
+            snapshot,
+            self.snapshot.read(cx),
+            self.workbench.frame(crate::workbench::Surface::Audience),
+            self.workbench.audience_target,
+            self.settings.settings.cache.l1_gpu_mib as usize * 1024 * 1024 / 2,
+        );
+        if let Some(visual) = &mut snapshot.visual {
+            visual.media = if snapshot.generation == self.state.generation()
+                && snapshot.current_page == self.state.current_page()
+                && snapshot.slide_crop == self.state.slide_crop()
+            {
+                self.media.frames(
+                    &self.state,
+                    self.workbench.document.as_ref().map(|s| &s.document),
+                )
+            } else {
+                vec![]
+            };
+        }
+        snapshot.staging = self.audience_staging();
         self.snapshot.update(cx, |value, cx| {
             *value = snapshot;
             cx.notify();
@@ -347,8 +399,109 @@ impl Shell {
     }
 
     pub fn dispatch(&mut self, intent: Intent, cx: &mut Context<Self>) {
+        if self.dispatch_preference(&intent, cx) {
+            cx.notify();
+            return;
+        }
+        if self.modal == Some(Modal::Settings)
+            && matches!(
+                intent,
+                Intent::Start
+                    | Intent::Stop
+                    | Intent::Swap
+                    | Intent::Next
+                    | Intent::Previous
+                    | Intent::Black
+                    | Intent::White
+                    | Intent::Tool(_)
+            )
+        {
+            return;
+        }
         match intent {
+            Intent::Media(id) => {
+                if self.modal.is_none() && self.state.jump_preview().is_none() {
+                    self.media.select(
+                        id,
+                        &self.state,
+                        self.workbench.document.as_ref().map(|s| &s.document),
+                        self.path.as_deref(),
+                        self.settings.settings.media.max_decode_height,
+                    );
+                    self.publish(self.pending.is_some(), cx);
+                    cx.notify();
+                }
+            }
+            Intent::SurfaceSize(surface, target) => {
+                if self.workbench.surface_targets.get(&surface) != Some(&target) {
+                    self.workbench.surface_targets.insert(surface, target);
+                } else {
+                    return;
+                }
+            }
+            Intent::Core(command) if self.pending.is_none() && self.modal.is_none() => {
+                self.apply(command, cx)
+            }
+            Intent::Tool(tool) => {
+                self.workbench.tool = if self.workbench.tool == tool {
+                    crate::workbench::Tool::Navigate
+                } else {
+                    tool
+                };
+                self.apply(Command::EndStroke, cx);
+                self.apply(Command::UpdateLaserPointer(None), cx);
+            }
+            Intent::Grid => {
+                self.workbench.grid = !self.workbench.grid;
+            }
+            Intent::GridMove(delta) => {
+                let count = self
+                    .workbench
+                    .document
+                    .as_ref()
+                    .map_or(0, |s| s.document.slide_map.steps().len());
+                self.workbench.grid_start = self
+                    .workbench
+                    .grid_start
+                    .saturating_add_signed(delta)
+                    .min(count.saturating_sub(1));
+            }
+            Intent::Preview(page) => {
+                self.apply(Command::JumpPreview(page), cx);
+            }
+            Intent::Document if !self.busy() => self.modal = Some(Modal::Document),
+            Intent::Reconfigure(options) => {
+                if let Some(session) = &mut self.workbench.document {
+                    match session.reconfigure(options).and_then(|document| {
+                        let descriptor = document
+                            .descriptor(self.state.generation())
+                            .map_err(|e| e.to_string())?;
+                        self.state
+                            .apply_at(Command::ReconfigureDocument(descriptor), Instant::now())
+                            .map_err(|e| e.to_string())?;
+                        session.document = document;
+                        Ok(())
+                    }) {
+                        Ok(()) => {
+                            self.workbench.clear_frames();
+                            self.error = None;
+                        }
+                        Err(error) => self.error = Some(error),
+                    }
+                }
+            }
+            Intent::Split { next, notes, save }
+                if !self.busy() && self.settings.write_policy == WritePolicy::Writable =>
+            {
+                self.settings.settings.presenter.next_slide_ratio = next.clamp(0.1, 0.8);
+                self.settings.settings.presenter.notes_ratio = notes.clamp(0.1, 0.8);
+                self.settings.note_edit();
+                if save {
+                    self.save(cx);
+                }
+            }
             Intent::Escape => {
+                self.dismiss_preferences();
                 self.cancel_focus();
                 self.close_identify(cx);
                 match transactions::escape(
@@ -368,21 +521,21 @@ impl Shell {
                 self.request_focus(intent, cx)
             }
             Intent::RefreshDisplays => {
-                if matches!(self.modal, Some(Modal::Displays(_))) && !self.busy() {
+                if self.display_draft().is_some() && !self.busy() {
                     self.detect_displays(cx);
                     self.new_display_draft();
                 }
             }
             Intent::SelectPresenter(id) => {
                 if self.display_editable()
-                    && let Some(Modal::Displays(draft)) = &mut self.modal
+                    && let Some(draft) = self.display_draft_mut()
                 {
                     draft.presenter = Some(id);
                 }
             }
             Intent::SelectPdf(target) => {
                 if self.display_editable()
-                    && let Some(Modal::Displays(draft)) = &mut self.modal
+                    && let Some(draft) = self.display_draft_mut()
                 {
                     draft.pdf = target;
                 }
@@ -395,10 +548,24 @@ impl Shell {
             }
             Intent::Identify => self.identify_displays(cx),
             Intent::Import(path) => self.begin_import(path, cx),
-            Intent::RetrySave => self.save(cx),
+            Intent::RetrySave => {
+                if !self.busy() {
+                    self.save(cx);
+                }
+            }
             Intent::Commit => {
+                if self.modal.is_none() && self.state.jump_preview().is_some() {
+                    self.apply(Command::CommitJump, cx);
+                }
                 if let Some(Modal::Jump(text)) = &self.modal {
-                    if let Some(page) = transactions::jump_page(text, self.state.page_count()) {
+                    if let Some(page) = transactions::jump_page(text, self.state.page_count())
+                        .filter(|page| {
+                            self.state
+                                .slide_map()
+                                .and_then(|map| map.logical_for(PhysicalPage(*page)))
+                                .is_some()
+                        })
+                    {
                         self.apply(Command::JumpPreview(PhysicalPage(page)), cx);
                         self.modal = None;
                         self.apply(Command::CommitJump, cx);
@@ -457,17 +624,22 @@ impl Shell {
     }
 
     pub(crate) fn import_allowed(&self) -> bool {
-        transactions::import_allowed(
-            self.state.stage(),
-            self.pending
-                .as_ref()
-                .map(|pending| pending.kind.operation()),
-        )
+        !self.loading
+            && self.preference_change.is_none()
+            && transactions::import_allowed(
+                self.state.stage(),
+                self.pending
+                    .as_ref()
+                    .map(|pending| pending.kind.operation()),
+            )
     }
 
     fn begin_import(&mut self, path: PathBuf, cx: &mut Context<Self>) {
         if !self.import_allowed() {
             self.error = Some(self.locale.text("stop-before-import").into());
+            return;
+        }
+        if self.queue_reload_import(path.clone()) {
             return;
         }
         if let Err(error) = &self.renderer {
@@ -493,49 +665,64 @@ impl Shell {
         read: gpui::Task<std::io::Result<Vec<u8>>>,
         cx: &mut Context<Self>,
     ) {
-        self.import_read_task = Some(cx.spawn(async move |weak, cx| {
-            let bytes = read.await;
-            if let Err(error) = weak.update(cx, |shell, cx| {
-                if shell.import_token != token {
-                    return;
-                }
-                match bytes {
-                    Ok(bytes) => match shell
-                        .renderer
-                        .as_ref()
-                        .map_err(|e| e.to_string())
-                        .and_then(|worker| worker.probe(bytes).map_err(|e| e.to_string()))
-                    {
-                        Ok(reply) => shell.import = Some(ImportReply { token, path, reply }),
+        self.import_read_task =
+            Some(cx.spawn(async move |weak, cx| {
+                let bytes = read.await;
+                let bytes = match bytes {
+                    Ok(bytes) => {
+                        cx.background_executor()
+                            .spawn(async move {
+                                ferrostage_pdf::structure::extract_structure(&bytes)
+                                    .map(|structure| (bytes, structure))
+                                    .map_err(std::io::Error::other)
+                            })
+                            .await
+                    }
+                    Err(error) => Err(error),
+                };
+                if let Err(error) = weak.update(cx, |shell, cx| {
+                    if shell.import_token != token {
+                        return;
+                    }
+                    match bytes {
+                        Ok((bytes, structure)) => {
+                            let generation = ferrostage_core::DocumentGeneration(
+                                shell.next_generation.max(shell.state.generation().0 + 1),
+                            );
+                            shell.next_generation = generation.0 + 1;
+                            let load = shell.renderer.as_ref().map_err(|e| e.to_string()).and_then(
+                                |worker| {
+                                    crate::document_load::PendingLoad::new(
+                                        worker, generation, bytes, structure,
+                                    )
+                                },
+                            );
+                            match load {
+                                Ok(load) => shell.import = Some(ImportReply { token, path, load }),
+                                Err(error) => {
+                                    shell.loading = false;
+                                    shell.error = Some(error);
+                                }
+                            }
+                        }
                         Err(error) => {
                             shell.loading = false;
-                            shell.error = Some(error);
+                            shell.error = Some(shell.locale.error("read-error", error));
                         }
-                    },
-                    Err(error) => {
-                        shell.loading = false;
-                        shell.error = Some(shell.locale.error("read-error", error));
                     }
+                    cx.notify();
+                }) {
+                    tracing::debug!(%error,"import target closed");
                 }
-                cx.notify();
-            }) {
-                tracing::debug!(%error,"import target closed");
-            }
-        }));
+            }));
     }
 
     fn poll_import(&mut self, cx: &mut Context<Self>) {
-        let result = self
-            .import
-            .as_ref()
-            .and_then(|pending| match pending.reply.try_recv() {
-                Ok(result) => Some(result.map_err(|e| e.to_string())),
-                Err(TryRecvError::Disconnected) => {
-                    Some(Err(self.locale.text("worker-closed").into()))
-                }
-                Err(TryRecvError::Empty) => None,
-            });
-        let Some(result) = result else {
+        let Some(pending) = &mut self.import else {
+            return;
+        };
+        let Ok(worker) = &self.renderer else { return };
+        let Some(result) = pending.load.poll(worker) else {
             return;
         };
         let Some(pending) = self.import.take() else {
@@ -546,35 +733,57 @@ impl Shell {
         }
         self.loading = false;
         match result {
-            Ok(metadata) => {
-                match transactions::commit_import(
-                    &mut self.state,
-                    &mut self.path,
-                    pending.path.clone(),
-                    metadata.pages.len(),
-                    Instant::now(),
-                ) {
-                    Ok(_) => {
-                        self.error = None;
-                        if self.settings.write_policy == WritePolicy::Writable {
-                            let recent = &mut self.settings.settings.general.recent_files;
-                            let path = pending.path.to_string_lossy().into_owned();
-                            recent.retain(|old| old != &path);
-                            recent.insert(0, path);
-                            recent.truncate(
-                                self.settings.settings.general.recent_files_limit as usize,
-                            );
-                            self.settings.note_edit();
-                            self.save(cx);
-                        }
-                        self.publish(false, cx);
-                    }
-                    Err(error) => self.error = Some(error.to_string()),
-                }
-            }
+            Ok(session) => self.finish_import(pending.path, pending.load.generation, session, cx),
             Err(error) => self.error = Some(self.locale.error("import-error", error)),
         }
         cx.notify();
+    }
+
+    fn finish_import(
+        &mut self,
+        path: PathBuf,
+        generation: ferrostage_core::DocumentGeneration,
+        session: crate::workbench::DocumentSession,
+        cx: &mut Context<Self>,
+    ) {
+        let old = self.state.generation();
+        match session
+            .document
+            .descriptor(generation)
+            .and_then(|descriptor| {
+                self.state
+                    .apply_at(Command::LoadMappedDocument(descriptor), Instant::now())
+            }) {
+            Ok(()) => {
+                self.path = Some(path.clone());
+                self.reload.failed_worker = false;
+                self.recover_reload_orphans();
+                if let Err(error) =
+                    self.replace_pdf_watch(&self.settings.settings.hot_reload.clone())
+                {
+                    self.warnings.push(error);
+                }
+                self.workbench.clear_frames();
+                self.workbench.document = Some(session);
+                if old.0 != 0
+                    && let Ok(worker) = &self.renderer
+                {
+                    let _ = worker.retire_generation(old);
+                }
+                self.error = None;
+                if self.settings.write_policy == WritePolicy::Writable {
+                    let recent = &mut self.settings.settings.general.recent_files;
+                    let path = path.to_string_lossy().into_owned();
+                    recent.retain(|old| old != &path);
+                    recent.insert(0, path);
+                    recent.truncate(self.settings.settings.general.recent_files_limit as usize);
+                    self.settings.note_edit();
+                    self.save(cx);
+                }
+                self.publish(false, cx);
+            }
+            Err(error) => self.error = Some(error.to_string()),
+        }
     }
 
     fn cancel_focus(&mut self) {
@@ -676,7 +885,10 @@ impl Shell {
                     }
                 }));
             }
-            Intent::Settings => self.modal = Some(Modal::Settings),
+            Intent::Settings => {
+                self.preferences = Default::default();
+                self.modal = Some(Modal::Settings);
+            }
             Intent::Displays => {
                 self.detect_displays(cx);
                 self.new_display_draft();
@@ -733,7 +945,7 @@ impl Shell {
         };
         let observed = Rc::new(Cell::new(false));
         let flag = observed.clone();
-        let handle = if audience {
+        let handle: AnyWindowHandle = if audience {
             let snapshot = self.snapshot.clone();
             cx.open_window(options, move |window, cx| {
                 Self::intercept_close(window, cx);
@@ -744,7 +956,7 @@ impl Shell {
                         Self::log_bounds(window, cx);
                     })
                     .detach();
-                    Audience { snapshot }
+                    Audience::new(snapshot, cx)
                 })
             })
             .map(Into::into)
@@ -768,6 +980,43 @@ impl Shell {
             .map(Into::into)
         }
         .map_err(|error| error.to_string())?;
+        if audience {
+            let entity = handle
+                .read(cx, |entity: Entity<Audience>, _| entity)
+                .map_err(|error| error.to_string())?;
+            cx.subscribe(
+                &entity,
+                move |shell, _, status: &crate::audience::StagingStatus, cx| {
+                    if shell
+                        .audience
+                        .as_ref()
+                        .is_some_and(|record| record.handle == handle)
+                    {
+                        shell.staging_status(status.0, true, status.1.clone(), cx);
+                    }
+                },
+            )
+            .detach();
+            cx.subscribe(
+                &entity,
+                move |shell, _, status: &crate::audience::RenderStatus, cx| {
+                    let active = shell
+                        .audience
+                        .as_ref()
+                        .is_some_and(|record| record.handle == handle)
+                        || shell
+                            .pending
+                            .as_ref()
+                            .and_then(|pending| pending.audience.as_ref())
+                            .is_some_and(|record| record.handle == handle);
+                    if active {
+                        shell.graphics_error = status.0.clone();
+                        cx.notify();
+                    }
+                },
+            )
+            .detach();
+        }
         tracing::info!(?handle,monitor=?monitor,target_display,fullscreen,audience, "window created behind confirmation gate");
         let record = WindowRecord {
             handle,
@@ -939,6 +1188,7 @@ impl Shell {
 
     fn retire_pending(&mut self, reason: &'static str, cx: &mut Context<Self>) {
         if let Some(pending) = self.pending.take() {
+            let preferences = matches!(pending.kind, TransactionKind::Preferences(_));
             tracing::info!(reason, operation=?pending.kind.operation(), "window transaction cancelled");
             if let Some(window) = pending.audience {
                 Self::log_placement(&window, reason, cx);
@@ -947,6 +1197,9 @@ impl Shell {
             if let Some(window) = pending.presenter {
                 Self::log_placement(&window, reason, cx);
                 Self::close(window, cx);
+            }
+            if preferences {
+                self.rollback_preferences(reason.into(), cx);
             }
         }
     }
@@ -968,6 +1221,7 @@ impl Shell {
     }
 
     fn stop(&mut self, cx: &mut Context<Self>) {
+        self.graphics_error = None;
         self.close_identify(cx);
         self.cancel_focus();
         self.abandon_modal();
@@ -991,7 +1245,7 @@ impl Shell {
     }
 
     fn swap(&mut self, cx: &mut Context<Self>) {
-        if self.pending.is_some() || self.loading {
+        if self.pending.is_some() || self.loading || self.preference_change.is_some() {
             return;
         }
         if self.settings.write_policy != WritePolicy::Writable {
@@ -1036,7 +1290,11 @@ impl Shell {
         match prepared {
             Ok(prepared) => {
                 self.pending = Some(Transaction {
-                    kind: TransactionKind::Assign(settings),
+                    kind: if self.preference_change.is_some() {
+                        TransactionKind::Preferences(settings)
+                    } else {
+                        TransactionKind::Assign(settings)
+                    },
                     presenter: Some(prepared.presenter),
                     audience: prepared.audience,
                     deadline: Instant::now() + CONFIRM_TIMEOUT,
@@ -1095,25 +1353,44 @@ impl Shell {
         tracing::info!(stage=?self.state.stage(), page=self.state.current_page().0,
             elapsed_ms=self.state.elapsed_at(Instant::now()).as_millis(), revision=self.topology_revision,
             "display settings opened");
-        self.modal = Some(Modal::Displays(DisplayDraft::new(
+        let draft = DisplayDraft::new(
             self.topology_revision,
             &self.monitors,
             &self.settings.settings.display,
-        )));
+        );
+        if self.modal == Some(Modal::Settings) {
+            self.preferences.display = Some(draft);
+        } else {
+            self.modal = Some(Modal::Displays(draft));
+        }
     }
 
+    fn display_draft(&self) -> Option<&DisplayDraft> {
+        match &self.modal {
+            Some(Modal::Displays(draft)) => Some(draft),
+            Some(Modal::Settings) => self.preferences.display.as_ref(),
+            _ => None,
+        }
+    }
+    fn display_draft_mut(&mut self) -> Option<&mut DisplayDraft> {
+        match &mut self.modal {
+            Some(Modal::Displays(draft)) => Some(draft),
+            Some(Modal::Settings) => self.preferences.display.as_mut(),
+            _ => None,
+        }
+    }
     fn display_editable(&self) -> bool {
         !self.busy()
             && self.settings.write_policy == WritePolicy::Writable
             && self.topology_valid
             && self.mapped.is_ok()
-            && matches!(&self.modal, Some(Modal::Displays(draft)) if draft.revision == self.topology_revision)
+            && self
+                .display_draft()
+                .is_some_and(|draft| draft.revision == self.topology_revision)
     }
 
     pub(crate) fn display_panel(&self) -> Option<DisplayPanel> {
-        let Some(Modal::Displays(draft)) = &self.modal else {
-            return None;
-        };
+        let draft = self.display_draft()?;
         let problem = if self.settings.write_policy != WritePolicy::Writable {
             Some("displays-readonly")
         } else if !self.topology_valid {
@@ -1183,7 +1460,13 @@ impl Shell {
         ) {
             Ok(settings) => {
                 self.error = None;
-                self.assign_displays(settings, cx);
+                if self.modal == Some(Modal::Settings) {
+                    let mut next = self.settings.settings.clone();
+                    next.display = settings;
+                    self.apply_preferences(next, cx);
+                } else {
+                    self.assign_displays(settings, cx);
+                }
             }
             Err(key) => self.error = Some(self.locale.text(key).into()),
         }
@@ -1343,19 +1626,37 @@ impl Shell {
         } else {
             None
         };
-        let no_play = matches!(&pending.kind, TransactionKind::Assign(settings)
+        let no_play = matches!(&pending.kind, TransactionKind::Assign(settings) | TransactionKind::Preferences(settings)
             if policy::audience_target(&self.monitors, settings).is_err());
+        let old_audience = if pending.audience.is_some() || no_play {
+            // A replacement starts behind Curtain and has not painted yet.
+            // Its future status events own diagnostics after this commit.
+            self.graphics_error = None;
+            std::mem::replace(&mut self.audience, pending.audience)
+        } else {
+            None
+        };
+        if matches!(pending.kind, TransactionKind::Preferences(_)) && !self.commit_preferences(cx) {
+            // Failed final budget application must restore both old windows.
+            if let Some(old) = old_presenter
+                && let Some(new) = self.presenter.replace(old)
+            {
+                Self::close(new, cx);
+            }
+            if let Some(new) = std::mem::replace(&mut self.audience, old_audience) {
+                Self::close(new, cx);
+            }
+            self.publish(false, cx);
+            cx.notify();
+            return;
+        }
         if no_play && self.state.stage() == SessionStage::Presenting {
             // Placement has succeeded. Only now may no-play commit its safe
             // stop; an earlier failure must leave the old session running.
             self.publish(true, cx);
             self.apply(Command::StopPresentation, cx);
         }
-        let old_audience = if pending.audience.is_some() || no_play {
-            std::mem::replace(&mut self.audience, pending.audience)
-        } else {
-            None
-        };
+
         if let TransactionKind::Assign(settings) = pending.kind {
             self.settings.settings.display = settings;
             self.settings.note_edit();
@@ -1384,9 +1685,69 @@ impl Shell {
         {
             self.close_identify(cx);
         }
+        self.poll_preferences(cx);
         self.poll_import(cx);
         self.poll_transaction(cx);
         self.poll_focus(cx);
+        if let Some(audience) = &self.audience {
+            if let Ok(target) = audience.handle.update(cx, |_, window, _| {
+                let size = window.viewport_size();
+                let scale = window.scale_factor();
+                ferrostage_pdf::PixelSize {
+                    width: (f32::from(size.width) * scale).round().max(1.) as u32,
+                    height: (f32::from(size.height) * scale).round().max(1.) as u32,
+                }
+            }) {
+                self.workbench.audience_target = Some(crate::workbench::budgeted_target(
+                    target,
+                    self.settings.settings.cache.l1_gpu_mib as usize * 1024 * 1024 / 4,
+                ));
+            }
+        } else {
+            self.workbench.audience_target = None;
+        }
+        if let Some(presenter) = &self.presenter
+            && let Ok(target) = presenter.handle.update(cx, |_, window, _| {
+                let size = window.viewport_size();
+                let scale = window.scale_factor();
+                ferrostage_pdf::PixelSize {
+                    width: (f32::from(size.width)
+                        * scale
+                        * (1. - self.settings.settings.presenter.next_slide_ratio as f32))
+                        .round()
+                        .max(1.) as u32,
+                    height: ((f32::from(size.height) - 300.).max(100.) * scale)
+                        .round()
+                        .max(1.) as u32,
+                }
+            })
+        {
+            self.workbench.presenter_target = Some(target);
+        }
+        let pointer = &self.settings.settings.pointer;
+        let _ = self.state.apply_at(
+            Command::SetLaserStyle(ferrostage_core::LaserStyle {
+                color_bgra: pointer.laser_color_bgra,
+                radius_norm: pointer.laser_radius_norm as f32,
+            }),
+            Instant::now(),
+        );
+        self.poll_reload(cx);
+        if !self.reload_blocks_render()
+            && let Ok(worker) = &self.renderer
+        {
+            for error in self.workbench.poll(worker) {
+                self.error = Some(error);
+            }
+            if let Err(error) =
+                self.workbench
+                    .schedule(worker, &self.state, &self.settings.settings.presenter)
+            {
+                self.error = Some(error);
+            }
+        }
+        self.publish(self.pending.is_some(), cx);
+        cx.notify();
         // If startup had zero screens, the platform watcher owns recovery.
     }
 
@@ -1397,6 +1758,7 @@ impl Shell {
         }
         self.topology_revision += 1;
         self.close_identify(cx);
+        let settings_open = self.modal == Some(Modal::Settings);
         let display_draft = match &self.modal {
             Some(Modal::Displays(draft)) => Some(draft.clone()),
             _ => None,
@@ -1429,6 +1791,8 @@ impl Shell {
         }
         if let Some(draft) = display_draft {
             self.modal = Some(Modal::Displays(draft));
+        } else if settings_open {
+            self.modal = Some(Modal::Settings);
         }
         self.recover_presenter(cx);
         cx.notify();
@@ -2597,6 +2961,8 @@ mod tests {
         });
     }
 
+    include!("shell/preferences_tests.rs");
+
     fn headless_shell(
         cx: &mut TestAppContext,
     ) -> (Entity<Shell>, std::sync::mpsc::Sender<TopologyEvent>) {
@@ -2654,7 +3020,7 @@ mod tests {
             .unwrap();
     }
 
-    fn input_presenter(cx: &mut TestAppContext) -> (Entity<Shell>, AnyWindowHandle) {
+    pub(super) fn input_presenter(cx: &mut TestAppContext) -> (Entity<Shell>, AnyWindowHandle) {
         let (shell, _) = headless_shell(cx);
         cx.update(|cx| {
             let model = shell.read(cx);
@@ -2705,7 +3071,7 @@ mod tests {
         assert_open_waits_for_owner(&shell, handle, cx);
     }
 
-    fn redraw(handle: AnyWindowHandle, cx: &mut TestAppContext) {
+    pub(super) fn redraw(handle: AnyWindowHandle, cx: &mut TestAppContext) {
         handle
             .update(cx, |_, window, cx| window.draw(cx).clear(cx))
             .unwrap();
@@ -2737,7 +3103,7 @@ mod tests {
         click_control(handle, "settings", cx);
         shell.update(cx, |shell, cx| shell.poll_focus(cx));
         redraw(handle, cx);
-        cx.simulate_keystrokes(handle, "tab enter");
+        cx.simulate_keystrokes(handle, "shift-tab enter");
         assert!(shell.read_with(cx, |shell, _| shell.modal.is_none()));
         redraw(handle, cx);
         let before = handle
@@ -2859,28 +3225,36 @@ mod tests {
     fn v6_import_and_swap_keep_runtime_results_when_saving_fails(cx: &mut TestAppContext) {
         let fixture = SaveFixture::new();
         let (shell, _) = input_presenter(cx);
-        let (sender, reply) = std::sync::mpsc::channel();
-        // Owned worker output exercises poll_import; this is not a PDFium test.
-        sender
-            .send(Ok(DocumentMetadata {
-                pages: vec![ferrostage_pdf::PageMetadata {
-                    page: PhysicalPage(0),
-                    width_points: 640.,
-                    height_points: 480.,
+        let metadata = DocumentMetadata {
+            pages: vec![ferrostage_pdf::PageMetadata {
+                page: PhysicalPage(0),
+                width_points: 640.,
+                height_points: 480.,
+                rotation_degrees: 0,
+                label: None,
+            }],
+        };
+        let structure = ferrostage_pdf::DocumentStructure {
+            pages: vec![ferrostage_pdf::structure::PageStructure {
+                page: PhysicalPage(0),
+                geometry: ferrostage_pdf::structure::PageGeometry {
+                    bounds: [0., 0., 640., 480.],
                     rotation_degrees: 0,
-                    label: None,
-                }],
-            }))
-            .unwrap();
+                },
+                media: vec![],
+            }],
+            diagnostics: vec![],
+        };
+        let session = crate::workbench::DocumentSession::build(metadata, structure).unwrap();
         shell.update(cx, |shell, cx| {
             shell.store = fixture.store();
             shell.error = Some("previous import failure".into());
-            shell.import = Some(ImportReply {
-                token: shell.import_token,
-                path: PathBuf::from("owned-metadata.pdf"),
-                reply,
-            });
-            shell.poll_import(cx);
+            shell.finish_import(
+                PathBuf::from("owned-metadata.pdf"),
+                ferrostage_core::DocumentGeneration(2),
+                session,
+                cx,
+            );
             assert_eq!(shell.state.stage(), SessionStage::Ready);
             assert_eq!(
                 shell.path.as_deref(),
@@ -3186,7 +3560,7 @@ mod tests {
                 cx.notify();
             });
             redraw(handle, cx);
-            cx.simulate_keystrokes(handle, "tab");
+            cx.simulate_keystrokes(handle, "shift-tab");
             redraw(handle, cx);
             cx.simulate_keystrokes(handle, key);
             shell.read_with(cx, |shell, _| {
@@ -3652,7 +4026,7 @@ mod tests {
     }
 
     #[gpui::test]
-    fn unsupported_shortcuts_use_user_visible_feature_names(cx: &mut TestAppContext) {
+    fn workbench_shortcuts_are_wired_without_stale_feature_warnings(cx: &mut TestAppContext) {
         let (shell, _) = headless_shell(cx);
         for language in ["en-US", "zh-CN"] {
             cx.update(|cx| {
@@ -3660,13 +4034,7 @@ mod tests {
                 let locale = crate::locale::Locale::new(language);
                 let warnings = actions::install(shell.downgrade(), &keys, locale, cx);
                 assert!(warnings.iter().all(|warning| !warning.contains("toggle_")));
-                for key in ["feature-laser", "feature-pen"] {
-                    assert!(
-                        warnings
-                            .iter()
-                            .any(|warning| warning.contains(locale.text(key)))
-                    );
-                }
+                assert!(warnings.is_empty());
             });
         }
     }
@@ -3840,6 +4208,333 @@ mod tests {
                 shell.import_token, 1,
                 "current user close takes the explicit quit branch"
             );
+        });
+    }
+    #[gpui::test]
+    fn workbench_split_release_outside_saves_and_future_schema_stays_readonly(
+        cx: &mut TestAppContext,
+    ) {
+        let fixture = SaveFixture::new();
+        fixture.unblock();
+        let (shell, handle) = workbench_fixture(cx);
+        shell.update(cx, |shell, _| shell.store = fixture.store());
+        redraw(handle, cx);
+        {
+            let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+            let split = visual.debug_bounds("horizontal-split").unwrap();
+            visual.simulate_mouse_down(
+                split.center(),
+                gpui::MouseButton::Left,
+                gpui::Modifiers::default(),
+            );
+            visual.simulate_mouse_move(
+                split.center() - gpui::point(px(100.), px(0.)),
+                Some(gpui::MouseButton::Left),
+                gpui::Modifiers::default(),
+            );
+            visual.simulate_mouse_up(
+                gpui::point(px(1.), px(1.)),
+                gpui::MouseButton::Left,
+                gpui::Modifiers::default(),
+            );
+        }
+        shell.read_with(cx, |shell, _| {
+            assert!(!shell.settings.dirty);
+            assert!(shell.settings.settings.presenter.next_slide_ratio > 0.4);
+        });
+        let bytes = std::fs::read(fixture.0.join("blocked/settings.toml")).unwrap();
+        let parsed = std::str::from_utf8(&bytes)
+            .unwrap()
+            .parse::<toml::Table>()
+            .unwrap();
+        let saved = parsed["presenter"]["next_slide_ratio"].as_float().unwrap();
+        shell.read_with(cx, |shell, _| {
+            assert_eq!(saved, shell.settings.settings.presenter.next_slide_ratio)
+        });
+        shell.update(cx, |shell, cx| {
+            shell.settings.write_policy = WritePolicy::ReadOnly {
+                reason: "future schema 99".into(),
+            };
+            shell.dispatch(
+                Intent::Split {
+                    next: 0.2,
+                    notes: 0.3,
+                    save: true,
+                },
+                cx,
+            );
+            assert_eq!(shell.settings.settings.presenter.next_slide_ratio, saved);
+        });
+        assert_eq!(
+            std::fs::read(fixture.0.join("blocked/settings.toml")).unwrap(),
+            bytes
+        );
+    }
+
+    #[gpui::test]
+    fn workbench_narrow_stacks_and_grid_wheel_moves_only_private_preview(cx: &mut TestAppContext) {
+        let (shell, handle) = workbench_fixture(cx);
+        shell.update(cx, |shell, cx| {
+            shell.workbench.grid = true;
+            shell.settings.settings.presenter.grid_columns = 1;
+            shell.settings.settings.presenter.grid_visible_pages = 2;
+            cx.notify();
+        });
+        cx.test_window(handle)
+            .simulate_resize(size(px(700.), px(1200.)));
+        redraw(handle, cx);
+        {
+            let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+            let current = visual.debug_bounds("current-pane").unwrap();
+            let next = visual.debug_bounds("next-notes-pane").unwrap();
+            assert!(next.origin.y >= current.bottom());
+            assert!((next.origin.x - current.origin.x).abs() < px(1.));
+        }
+        cx.test_window(handle)
+            .simulate_resize(size(px(1280.), px(1200.)));
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        visual.simulate_event(gpui::ScrollWheelEvent {
+            position: gpui::point(px(300.), px(450.)),
+            delta: gpui::ScrollDelta::Pixels(gpui::point(px(0.), px(-600.))),
+            ..Default::default()
+        });
+        let tile = visual.debug_bounds("thumbnail-0").unwrap();
+        visual.simulate_mouse_move(
+            tile.origin + gpui::point(px(5.), px(5.)),
+            None,
+            gpui::Modifiers::default(),
+        );
+        visual.simulate_event(gpui::ScrollWheelEvent {
+            position: tile.origin + gpui::point(px(5.), px(5.)),
+            delta: gpui::ScrollDelta::Lines(gpui::point(0., -1.)),
+            ..Default::default()
+        });
+        shell.read_with(&visual.cx, |shell, _| {
+            assert_eq!(shell.workbench.grid_start, 1);
+            assert_eq!(shell.state.current_page(), PhysicalPage(0));
+        });
+    }
+
+    #[gpui::test]
+    fn workbench_pointer_exit_ends_gesture_until_new_press(cx: &mut TestAppContext) {
+        let (shell, handle) = workbench_fixture(cx);
+        shell.update(cx, |shell, cx| {
+            shell.workbench.tool = crate::workbench::Tool::Highlighter;
+            shell.workbench.frames.push((
+                crate::workbench::Surface::Current,
+                crate::workbench::ReadyFrame {
+                    request: crate::workbench::request_for(
+                        shell.state.generation(),
+                        PhysicalPage(0),
+                        shell.state.slide_crop(),
+                    ),
+                    frame: ferrostage_core::BgraFrame::new(4, 3, 16, vec![255; 48]).unwrap(),
+                },
+            ));
+            cx.notify();
+        });
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let surface = visual.debug_bounds("surface-Current").unwrap();
+        let center = surface.center();
+        visual.simulate_mouse_move(center, None, gpui::Modifiers::default());
+        visual.simulate_mouse_down(center, gpui::MouseButton::Left, gpui::Modifiers::default());
+        visual.simulate_mouse_move(
+            gpui::point(px(1.), px(1.)),
+            Some(gpui::MouseButton::Left),
+            gpui::Modifiers::default(),
+        );
+        visual.simulate_mouse_move(
+            center,
+            Some(gpui::MouseButton::Left),
+            gpui::Modifiers::default(),
+        );
+        shell.read_with(&visual.cx, |shell, _| {
+            let snapshot = shell.state.audience_snapshot();
+            assert_eq!(snapshot.strokes.len(), 1);
+            assert!(snapshot.strokes[0].is_highlighter);
+            assert_eq!(snapshot.strokes[0].points.len(), 1);
+        });
+    }
+
+    #[gpui::test]
+    fn audience_budget_failure_is_localized_visible_and_recovers_without_losing_shell_errors(
+        cx: &mut TestAppContext,
+    ) {
+        let (shell, presenter) = workbench_fixture(cx);
+        let audience = shell.update(cx, |shell, cx| {
+            let record = test_window(shell, true, cx);
+            let handle = record.handle;
+            shell.audience = Some(record);
+            shell.snapshot.update(cx, |snapshot, cx| {
+                snapshot.stage = AudienceStage::Live;
+                snapshot.visual = Some(ferrostage_core::AudienceVisual {
+                    page: ferrostage_core::BgraFrame::new(2, 2, 8, vec![255; 16]).unwrap(),
+                    media: vec![],
+                    texture_budget_bytes: 32,
+                });
+                cx.notify();
+            });
+            handle
+        });
+        redraw(audience, cx);
+        shell.update(cx, |shell, cx| {
+            shell.error = Some("independent document diagnostic".into());
+            shell.snapshot.update(cx, |snapshot, cx| {
+                snapshot.visual.as_mut().unwrap().texture_budget_bytes = 16;
+                cx.notify();
+            });
+        });
+        redraw(audience, cx);
+        cx.run_until_parked();
+        shell.read_with(cx, |shell, _| assert!(shell.graphics_error.is_some()));
+        redraw(presenter, cx);
+        let mut visual = gpui::VisualTestContext::from_window(presenter, cx);
+        assert!(visual.debug_bounds("presenter-error").is_some());
+        shell.read_with(cx, |shell, _| {
+            let message = shell
+                .locale
+                .error("wb-upload-error", shell.graphics_error.as_ref().unwrap());
+            assert!(!message.contains("{error}"));
+            assert!(message.contains("GPU budget"));
+        });
+        shell.update(cx, |shell, cx| {
+            shell.snapshot.update(cx, |snapshot, cx| {
+                snapshot.visual.as_mut().unwrap().texture_budget_bytes = 32;
+                cx.notify();
+            })
+        });
+        redraw(audience, cx);
+        cx.run_until_parked();
+        shell.read_with(cx, |shell, _| {
+            assert!(shell.graphics_error.is_none());
+            assert_eq!(
+                shell.error.as_deref(),
+                Some("independent document diagnostic")
+            );
+        });
+        shell.update(cx, |shell, cx| {
+            shell.snapshot.update(cx, |snapshot, cx| {
+                snapshot.stage = AudienceStage::Curtain;
+                snapshot.visual = None;
+                cx.notify();
+            })
+        });
+        redraw(audience, cx);
+        cx.run_until_parked();
+        shell.read_with(cx, |shell, _| assert!(shell.graphics_error.is_none()));
+        shell.update(cx, |shell, cx| {
+            shell.graphics_error = Some("retired audience upload failure".into());
+            let replacement = test_window(shell, true, cx);
+            let replacement_handle = replacement.handle;
+            shell.pending = Some(Transaction {
+                kind: TransactionKind::Start,
+                presenter: None,
+                audience: Some(replacement),
+                deadline: Instant::now() + CONFIRM_TIMEOUT,
+            });
+            shell.poll_transaction(cx);
+            assert!(shell.pending.is_none());
+            assert_eq!(shell.audience.as_ref().unwrap().handle, replacement_handle);
+            assert!(shell.graphics_error.is_none());
+            assert_eq!(
+                shell.error.as_deref(),
+                Some("independent document diagnostic")
+            );
+        });
+    }
+
+    fn workbench_fixture(cx: &mut TestAppContext) -> (Entity<Shell>, AnyWindowHandle) {
+        let (shell, handle) = input_presenter(cx);
+        shell.update(cx, |shell, cx| {
+            let metadata = DocumentMetadata {
+                pages: (0..4)
+                    .map(|index| ferrostage_pdf::PageMetadata {
+                        page: PhysicalPage(index),
+                        width_points: 640.,
+                        height_points: 480.,
+                        rotation_degrees: 0,
+                        label: Some(["1", "notes:1", "2", "3"][index].into()),
+                    })
+                    .collect(),
+            };
+            let structure = ferrostage_pdf::DocumentStructure {
+                pages: (0..4)
+                    .map(|index| ferrostage_pdf::structure::PageStructure {
+                        page: PhysicalPage(index),
+                        geometry: ferrostage_pdf::structure::PageGeometry {
+                            bounds: [0., 0., 640., 480.],
+                            rotation_degrees: 0,
+                        },
+                        media: vec![],
+                    })
+                    .collect(),
+                diagnostics: vec![],
+            };
+            let session = crate::workbench::DocumentSession::build(metadata, structure).unwrap();
+            shell
+                .state
+                .apply_at(
+                    Command::LoadMappedDocument(
+                        session
+                            .document
+                            .descriptor(ferrostage_core::DocumentGeneration(2))
+                            .unwrap(),
+                    ),
+                    Instant::now(),
+                )
+                .unwrap();
+            shell.workbench.document = Some(session);
+            cx.notify();
+        });
+        redraw(handle, cx);
+        (shell, handle)
+    }
+
+    #[gpui::test]
+    fn workbench_controls_reconfigure_preview_and_keep_note_pages_private(cx: &mut TestAppContext) {
+        let (shell, handle) = workbench_fixture(cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let pen = visual.debug_bounds("pen").unwrap();
+        visual.simulate_click(pen.center(), gpui::Modifiers::default());
+        assert_eq!(
+            shell.read_with(cx, |shell, _| shell.workbench.tool),
+            crate::workbench::Tool::Pen
+        );
+        shell.update(cx, |shell, cx| {
+            shell.dispatch(Intent::Preview(PhysicalPage(2)), cx);
+            assert_eq!(shell.state.current_page(), PhysicalPage(0));
+            shell.modal = Some(Modal::Jump("2".into())); // physical 2 is a private notes page
+            shell.dispatch(Intent::Commit, cx);
+            assert!(shell.modal.is_some());
+            assert_eq!(shell.state.current_page(), PhysicalPage(0));
+            shell.dispatch(Intent::Escape, cx);
+            assert!(shell.state.jump_preview().is_none());
+            shell.dispatch(Intent::Preview(PhysicalPage(2)), cx);
+            shell.dispatch(Intent::Commit, cx);
+            assert_eq!(shell.state.current_page(), PhysicalPage(2));
+            shell.dispatch(Intent::Document, cx);
+            let mut options = shell
+                .workbench
+                .document
+                .as_ref()
+                .unwrap()
+                .document
+                .overrides;
+            options.layout = Some(ferrostage_document::NotesLayout::Right);
+            let generation = shell.state.generation();
+            shell.dispatch(Intent::Reconfigure(options), cx);
+            assert_eq!(shell.state.generation(), generation);
+            assert_eq!(
+                shell.state.slide_crop(),
+                ferrostage_core::NormalizedRect::LEFT_HALF
+            );
+            shell.loading = true;
+            let token = shell.import_token;
+            shell.dispatch(Intent::Import(PathBuf::from("must-not-supersede.pdf")), cx);
+            assert_eq!(shell.import_token, token);
+            assert!(!shell.import_allowed());
         });
     }
 }

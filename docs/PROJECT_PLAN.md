@@ -1,5 +1,7 @@
 # FerroStage 实施计划 v0.3
 
+2026-10-15 当前实施进度：01–07已按修订范围归档；08–11全部功能源码及串行独立自动检查完成。最终180项默认CI、119项父UI测试加一次隔离重放、40项PDFium、17项媒体测试以及严格feature/lint/typecheck/deny/build通过。按用户快速验收要求，最终构建已完成工作台核心、设置主题保存重启、实际外部替换热重载、双窗GIF/MP4及缺失DLL降级冒烟，四次运行均正常退出。其余桌面动作保持NOT_RUN/NOT_VERIFIED，扩展矩阵DEFERRED_BY_USER；具体范围见父research/consolidated-functional-report.md。用户本轮已授权提交并按实施范围归档08–11；父任务继续承接未验收清单。下文原始验收目标和历史状态不代表当前阻塞或全量PASS。
+
 > 2026-10-15 implementation-first revision: `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md` is authoritative for current gates.03/07 meet the revised implementation scope;08 may proceed, followed by09/10/11. Physical, exhaustive native/size and performance/soak qualification is deferred by the user, not passed. Functional requirements and automatic/native-functional checks remain required. The detailed original targets below are retained for later qualification.
 
 状态：01/02/04/05/06技术交付已独立验证；03自动与静态检查通过，物理验收待验；Gate A已通过。07已采用原获批五包维护源及三个精确许可证例外；2026-10-15另获明确授权接入第六包accesskit_windows0.34.0的已审四文件F14修复，验证以当前恢复索引为准。历史v6产品自动检查通过（49 GPUI/145默认测试、严格lint、native build），焦点恢复与保存重试反馈已修复并通过独立检查和原生复测；原生A/B/C、主题/语言、错误导入、选择器与保存角色重启已部分验证。物理拓扑、完整原生矩阵与Gate B仍未完成；08–11、Gate C/D、M1/M2未完成。上游HarfRust六项既存直接lint失败保留，无lint/安全通告豁免。当前恢复索引见 `.trellis/tasks/10-14-presenter-v0.3/execution-state.md`。本文件是 v0.2 方案（`ref/implement_plan.md`，未入库）的修订版，也是 Trellis 父任务 `10-14-presenter-v0.3` 的来源需求。
@@ -44,10 +46,10 @@ FerroStage 是一个 clean-room 的 PDF / Beamer 双屏演示器。目标行为�
 ## 2. 已锁定技术决策
 
 - Rust edition 2024，工具链 1.99.0（`rust-toolchain.toml`）。
-- UI：GPUI 来自 Zed tag `v1.23.3`，或 `gpui-kit` / `gpui-component` 0.7.3（内含 `gpui-pre` 0.3.9）。不使用 crates.io `gpui` 0.2.x。仅按需使用 gpui-base 的无样式原语（可拖拽分割、虚拟列表、焦点环）。
+- UI：采用基于 Zed tag `v1.23.3` 的已审 GPUI 维护源与六个限定维护包，精确版本/补丁/许可见 ADR-008；不混用其他 GPUI 家族，不使用 crates.io `gpui` 0.2.x。
 - PDF 光栅：`pdfium-render` 0.9.4，`PdfBitmapFormat::BGRA`，内存加载（读入 `Arc<Vec<u8>>` 后立即关闭文件句柄），单一专用渲染线程。
 - PDF 结构：`lopdf` 0.45.0（已链接）读取 /Annots 中的媒体字典与页树；`hayro-syntax` 0.8.0 为备选第二读取器，未链接。PageLabel 由单渲染线程内的 PDFium 安全接口读取，以 owned metadata 返回。Rust 绑定不提供/自动下载 PDFium 动态库；05 单独锁 binary 来源、构建号与 checksum。
-- 媒体：离屏 BGRA 帧，单解码器/单音频双窗口共享 `Arc`，无子 HWND。后端在 `11-media-playback` 内二选一后再锁定。
+- 媒体：离屏 BGRA 帧，单解码器/单音频双窗口共享 `Arc`，无子 HWND。ADR-009 锁定独立助手中的 GStreamer；GUI 仅依赖纯 Rust 控制/协议与 GIF/WebP，不引入第二后端或原生媒体导入。
 - 文件监听：`notify` 8.2.0，300 ms 防抖，等待 `%%EOF`，影子文档，严格更新 `DocumentGeneration`。FerroStage 不写用户 PDF。
 - 设置：TOML，`toml` 1.1.8 + `serde`；配置目录由平台约定决定（见 §4.4）。
 - 缓存预算：L1 GPU 256 MiB（current ±2），L2 CPU 512 MiB（current ±6），L3 缩略图 64 MiB。

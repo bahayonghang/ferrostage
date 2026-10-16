@@ -7,6 +7,10 @@ pub struct MediaSlot {
     pub media: MediaAnnotation,
     /// Rectangle relative to the selected slide crop; None when entirely outside it.
     pub slide_rect: Option<NormalizedRect>,
+    /// Public intersection in source-media coordinates. Decode/crop off the UI thread.
+    pub source_crop: Option<NormalizedRect>,
+    /// Physical annotation aspect ratio before the slide/notes intersection.
+    pub aspect_ratio: Option<f32>,
 }
 pub(crate) fn in_crop(rect: NormalizedRect, crop: NormalizedRect) -> Option<NormalizedRect> {
     let x = rect.x.max(crop.x);
@@ -22,4 +26,8 @@ pub(crate) fn in_crop(rect: NormalizedRect, crop: NormalizedRect) -> Option<Norm
         w: (right - x) / crop.w,
         h: (bottom - y) / crop.h,
     })
+}
+
+pub(crate) fn source_crop(rect: NormalizedRect, crop: NormalizedRect) -> Option<NormalizedRect> {
+    in_crop(crop, rect)
 }

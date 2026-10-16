@@ -17,12 +17,34 @@ actions!(
         Jump,
         Escape,
         Commit,
-        ActivateButton
+        ActivateButton,
+        Laser,
+        Pen
     ]
 );
 
 #[derive(Clone, Debug)]
 pub(crate) enum Intent {
+    Media(u64),
+    SettingsCategory(crate::settings_panel::Category),
+    EditSetting(&'static str, String),
+    BeginSettingEdit(&'static str),
+    SettingsKey { key: String, text: Option<String> },
+    RecordBinding(&'static str),
+    RemoveBinding(&'static str, usize),
+    ResetBindings,
+    ClearRecent,
+    OpenConfigDirectory,
+    ResetPreferences(bool),
+    SurfaceSize(crate::workbench::Surface, ferrostage_pdf::PixelSize),
+    Core(ferrostage_core::PresentationCommand),
+    Tool(crate::workbench::Tool),
+    Grid,
+    GridMove(isize),
+    Preview(ferrostage_core::PhysicalPage),
+    Document,
+    Reconfigure(ferrostage_document::DocumentOverrides),
+    Split { next: f64, notes: f64, save: bool },
     Next,
     Previous,
     Start,
@@ -62,12 +84,31 @@ pub(crate) fn install(
     locale: crate::locale::Locale,
     cx: &mut App,
 ) -> Vec<String> {
+    let editing = shell.clone();
+    cx.intercept_keystrokes(move |_, window, cx| {
+        if let Some(shell) = editing.upgrade() {
+            let shell = shell.read(cx);
+            if shell.captures_preferences(window.window_handle().window_id()) {
+                // Preserve the raw event for Presenter capture; skip keymap actions.
+                cx.stop_propagation();
+            }
+        }
+    })
+    .detach();
     macro_rules! register {
         ($action:ident, $intent:ident) => {{
             let target = shell.clone();
             cx.on_action(move |_: &$action, cx| dispatch(&target, Intent::$intent, cx));
         }};
     }
+    let target = shell.clone();
+    cx.on_action(move |_: &Laser, cx| {
+        dispatch(&target, Intent::Tool(crate::workbench::Tool::Laser), cx)
+    });
+    let target = shell.clone();
+    cx.on_action(move |_: &Pen, cx| {
+        dispatch(&target, Intent::Tool(crate::workbench::Tool::Pen), cx)
+    });
     register!(Next, Next);
     register!(Previous, Previous);
     register!(Start, Start);
@@ -80,6 +121,15 @@ pub(crate) fn install(
     register!(Jump, Jump);
     register!(Escape, Escape);
     register!(Commit, Commit);
+    replace_bindings(settings, locale, cx)
+}
+
+pub(crate) fn replace_bindings(
+    settings: &ferrostage_settings::Keybindings,
+    locale: crate::locale::Locale,
+    cx: &mut App,
+) -> Vec<String> {
+    cx.clear_key_bindings();
     let (bindings, mut warnings) = policy::bindings(settings, locale);
     for (key, action) in bindings {
         // Escape is routed once, with modal/preview consumption before stop.
@@ -98,6 +148,8 @@ pub(crate) fn install(
             "settings" => cx.bind_keys([KeyBinding::new(&key, Settings, None)]),
             "commit" => cx.bind_keys([KeyBinding::new(&key, Commit, None)]),
             "jump" => cx.bind_keys([KeyBinding::new(&key, Jump, None)]),
+            "toggle_laser" => cx.bind_keys([KeyBinding::new(&key, Laser, None)]),
+            "toggle_pen" => cx.bind_keys([KeyBinding::new(&key, Pen, None)]),
             _ => {
                 let label = match action {
                     "toggle_laser" => locale.text("feature-laser"),
@@ -132,6 +184,13 @@ pub(crate) fn install(
         "backspace",
     ] {
         cx.bind_keys([KeyBinding::new(key, gpui::NoAction, Some("FerroStageJump"))]);
+    }
+    for key in ["left", "right", "up", "down", "home", "end"] {
+        cx.bind_keys([KeyBinding::new(
+            key,
+            gpui::NoAction,
+            Some("FerroStageSettingsSlider"),
+        )]);
     }
     warnings
 }

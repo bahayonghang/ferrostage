@@ -28,6 +28,7 @@ struct Engine<'a> {
     newest: Option<DocumentGeneration>,
     epochs: HashMap<DocumentGeneration, u64>,
     ready: Option<(DocumentGeneration, u64, u64)>,
+    rollback: Option<(DocumentGeneration, DocumentGeneration, u64, u64)>,
     nonce: u64,
     batch: Option<Batch>,
     scheduler: Scheduler,
@@ -50,6 +51,7 @@ pub(super) fn run(
         newest: None,
         epochs: HashMap::new(),
         ready: None,
+        rollback: None,
         nonce: 0,
         batch: None,
         scheduler: Scheduler::default(),
@@ -126,6 +128,17 @@ impl Engine<'_> {
     fn message(&mut self, message: Message) -> bool {
         match message {
             Message::Shutdown => return false,
+            Message::Budgets(budgets, reply) => {
+                self.l2.set_budget(budgets.l2_bytes);
+                self.l3.set_budget(budgets.l3_bytes);
+                reply
+                    .send(Ok(CacheBudgetAck {
+                        budgets,
+                        l2_used_bytes: self.l2.used_bytes(),
+                        l3_used_bytes: self.l3.used_bytes(),
+                    }))
+                    .ok();
+            }
             Message::Probe(bytes, reply) => {
                 reply
                     .send(self.backend.probe(bytes).map_err(Into::into))
@@ -220,6 +233,7 @@ impl Engine<'_> {
                     && self.ready == Some((token.generation, token.epoch, token.nonce))
                     && self.candidate == Some(token.generation)
                 {
+                    self.rollback = None;
                     if let Some(old) = self.active.replace(token.generation) {
                         self.invalidate(old);
                     }
@@ -228,6 +242,55 @@ impl Engine<'_> {
                     Ok(Self::ack(token.generation))
                 } else {
                     Err(RenderError::NotReady)
+                };
+                reply.send(result).ok();
+            }
+            Message::CommitReversible(token, reply) => {
+                let result = if Arc::ptr_eq(&self.worker_identity, &token.worker_identity)
+                    && self.ready == Some((token.generation, token.epoch, token.nonce))
+                    && self.candidate == Some(token.generation)
+                    && self.active.is_some()
+                    && self.rollback.is_none()
+                {
+                    let previous = self
+                        .active
+                        .replace(token.generation)
+                        .expect("checked active");
+                    let previous_epoch = self.epochs[&previous];
+                    self.invalidate(previous);
+                    self.candidate = None;
+                    self.ready = None;
+                    self.rollback = Some((token.generation, previous, previous_epoch, token.nonce));
+                    Ok(RollbackToken {
+                        worker_identity: self.worker_identity.clone(),
+                        generation: token.generation,
+                        previous,
+                        previous_epoch,
+                        nonce: token.nonce,
+                    })
+                } else {
+                    Err(RenderError::NotReady)
+                };
+                reply.send(result).ok();
+            }
+            Message::Rollback(token, reply) => {
+                let result = if Arc::ptr_eq(&self.worker_identity, &token.worker_identity)
+                    && self.rollback
+                        == Some((
+                            token.generation,
+                            token.previous,
+                            token.previous_epoch,
+                            token.nonce,
+                        ))
+                    && self.active == Some(token.generation)
+                    && self.epochs.get(&token.previous) == Some(&token.previous_epoch)
+                {
+                    self.rollback = None;
+                    self.active = Some(token.previous);
+                    self.invalidate(token.generation);
+                    Ok(Self::ack(token.previous))
+                } else {
+                    Err(RenderError::InvalidRollback)
                 };
                 reply.send(result).ok();
             }
@@ -245,6 +308,12 @@ impl Engine<'_> {
                     if self.active == Some(generation) || self.candidate == Some(generation) {
                         Err(RenderError::GenerationInUse)
                     } else {
+                        if self
+                            .rollback
+                            .is_some_and(|(_, previous, _, _)| previous == generation)
+                        {
+                            self.rollback = None;
+                        }
                         self.invalidate(generation);
                         self.epochs.remove(&generation);
                         self.backend.remove(generation);

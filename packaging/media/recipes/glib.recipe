@@ -1,0 +1,272 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+import shlex
+import shutil
+from cerbero.tools.libtool import LibtoolLibrary
+from cerbero.tools.libtool import get_libtool_versions
+from cerbero.utils import messages as m
+
+GLIB_CONFIG_UNVERSAL='''\
+#ifdef __i386__
+#include "i386/glibconfig.h"
+#elif defined(__ppc__)
+#include "ppc/glibconfig.h"
+#elif defined(__x86_64__)
+#include "x86_64/glibconfig.h"
+#elif defined(__arm__)
+#include "arm/glibconfig.h"
+#elif defined(__arm64__)
+#include "arm64/glibconfig.h"
+#else
+#error "Unsupported Architecture"
+#endif
+'''
+
+class Recipe(recipe.Recipe):
+    ###
+    # Glib now requires gobject-introspection to be available beforehand.
+    # To break the circular dependency, they recommend building a
+    # introspection-less Glib first, then gobject-introspection.
+    # See https://gitlab.gnome.org/GNOME/glib/-/commit/fe32c3f5c5155eab5cd4838867b0c95beefa2239
+    ###
+
+    name = 'glib' # 'glib-base'
+    version = '2.82.4'
+    stype = SourceType.TARBALL
+    url = 'gnome://glib/%(maj_ver)s/glib-%(version)s.tar.xz'
+    tarball_dirname = 'glib-%(version)s'
+    tarball_checksum = '37dd0877fe964cd15e9a2710b044a1830fb1bd93652a6d0cb6b8b2dff187c709'
+    licenses = [License.LGPLv2Plus]
+    btype = BuildType.MESON
+    meson_options = {'libmount': 'disabled', 'dtrace': 'false', 'tests': 'false', 'introspection': 'disabled'}
+    deps = ['libffi', 'zlib', 'pcre2']
+
+    patches = [
+        'glib/0001-Add-support-for-loading-GIO-modules-from-the-distro-.patch',
+        'glib/0002-Allow-for-a-second-distro-GIO-module-path-as-used-on.patch',
+        'glib/0003-Unhide-_g_io_modules_ensure_extension_points_registe.patch',
+        # TODO upstreaming
+        'glib/0004-gtypes.h-workaround-for-g_uint64_checked_mul-issue-w.patch',
+        # TODO upstreaming
+        'glib/0005-gio-fix-duplicate-g_trace_-symbols-in-static-libs-wi.patch',
+        # https://gitlab.gnome.org/GNOME/glib/-/merge_requests/4954
+        'glib/0006-glib-compile-resources-Fix-MSVC-heap-exhaustion-when.patch',
+        # https://gitlab.gnome.org/GNOME/glib/-/merge_requests/4987
+        'glib/0007-giomodule-Simplify-macro-usage-for-getting-the-giomo.patch',
+        'glib/0008-giomodule-Do-not-try-to-use-GIO_MODULE_DIR-on-iOS.patch',
+        # https://gitlab.gnome.org/GNOME/glib/-/merge_requests/4992
+        'glib/0009-gbacktrace-Don-t-attempt-to-get-a-stack-trace-on-san.patch',
+        'glib/0010-gtestutils-Don-t-implement-g_test_trap_fork-on-tvOS-.patch',
+        'glib/0011-meson-Remove-unused-check-for-iOS.patch',
+        'glib/0012-gspawn-Replace-with-stubs-that-abort-on-tvOS-watchOS.patch',
+        'glib/0013-gdbus-Disable-testing-framework-when-process-spawnin.patch',
+        'glib/0014-gio-Don-t-build-gio-launch-desktop-when-process-spaw.patch',
+    ]
+
+    files_libs = [
+        'libglib-2.0', 'libgio-2.0', 'libgmodule-2.0', 'libgobject-2.0',
+        'libgthread-2.0']
+    files_bins = ['gsettings', 'gdbus', 'gio-querymodules', 'glib-compile-schemas']
+    files_schemas = ['share/glib-2.0/schemas']
+    # Fill it when needed
+    #files_gio = ['%(libdir)s/gio/modules']
+    files_devel = [
+        'bin/glib-gettextize',
+        'bin/glib-mkenums',
+        'bin/glib-compile-resources%(bext)s',
+        'bin/glib-genmarshal',
+        'bin/gresource%(bext)s',
+        'bin/gdbus-codegen',
+        'bin/gio-querymodules%(bext)s',
+        '%(libdir)s/glib-2.0/include',
+        '%(libdir)s/pkgconfig/gio-2.0.pc',
+        '%(libdir)s/pkgconfig/glib-2.0.pc',
+        '%(libdir)s/pkgconfig/gmodule-2.0.pc',
+        '%(libdir)s/pkgconfig/gmodule-export-2.0.pc',
+        '%(libdir)s/pkgconfig/gmodule-no-export-2.0.pc',
+        '%(libdir)s/pkgconfig/gobject-2.0.pc',
+        '%(libdir)s/pkgconfig/gthread-2.0.pc',
+        'include/glib-2.0',
+        'share/aclocal/glib-2.0.m4',
+        'share/aclocal/glib-gettext.m4'
+    ]
+    platform_files_devel = {
+        Platform.WINDOWS: ['%(libdir)s/pkgconfig/gio-windows-2.0.pc', 'include/gio-win32-2.0'],
+        Platform.LINUX: ['%(libdir)s/pkgconfig/gio-unix-2.0.pc', 'include/gio-unix-2.0'],
+        Platform.ANDROID: ['%(libdir)s/pkgconfig/gio-unix-2.0.pc', 'include/gio-unix-2.0'],
+        Platform.DARWIN: ['%(libdir)s/pkgconfig/gio-unix-2.0.pc', 'include/gio-unix-2.0'],
+        Platform.IOS: ['%(libdir)s/pkgconfig/gio-unix-2.0.pc', 'include/gio-unix-2.0'],
+        Platform.TVOS: ['%(libdir)s/pkgconfig/gio-unix-2.0.pc', 'include/gio-unix-2.0'],
+    }
+
+    files_lang = ['glib20']
+
+    def _set_gio_flags(self, path1=None, path2=None, use_old_uri_scheme=False):
+        self.append_env('CFLAGS', *self._gio_flags(path1, path2, use_old_uri_scheme))
+
+    def _gio_flags(self, path1=None, path2=None, use_old_uri_scheme=False):
+        flags = []
+        def escape(path):
+            # We want the define the macro to a C string, then we quote it
+            # because it is expanded inside cerbero to set c_args in the cross
+            # file or to pass directly to meson using the env var for native
+            # builds
+            return shlex.quote('"{}"'.format(path))
+        if path1 is not None:
+            flags.append('-DGST_SDK_GLIB_GIO_DISTRO_GIO_MODULE_PATH=' + escape(path1))
+        if path2 is not None:
+            flags.append('-DGST_SDK_GLIB_GIO_DISTRO_GIO_MODULE_PATH2=' + escape(path2))
+        if use_old_uri_scheme:
+            flags.append('-DGST_SDK_GLIB_GIO_OLD_URI_SCHEME_HANDLERS=1')
+        return flags
+
+    def prepare(self):
+        # Glib doesn't support static libraries on Windows yet
+        if self.config.target_platform == Platform.WINDOWS:
+            self.library_type = LibraryType.SHARED
+
+        # Glib needs special process spawning helpers on Windows
+        if self.config.target_platform == Platform.WINDOWS:
+            if self.config.target_arch in [Architecture.X86_64, Architecture.ARM64]:
+                self.files_bins.append('gspawn-win64-helper')
+                self.files_bins.append('gspawn-win64-helper-console')
+            elif self.config.target_arch == Architecture.X86 or Architecture.is_arm32(self.config.target_arch):
+                self.files_bins.append('gspawn-win32-helper')
+                self.files_bins.append('gspawn-win32-helper-console')
+            else:
+                m.warning(f'Unsupported Windows architecture {self.config.target_arch}')
+
+        if self.config.target_platform != Platform.LINUX:
+            # Disable valgrind code on non-Linux, in the best case it just
+            # gives us compiler errors :)
+            self.append_env('CFLAGS', '-DNVALGRIND=1')
+            self.meson_options.update({'xattr': 'false'})
+            self.deps.append('proxy-libintl')
+
+        # Android only provides libiconv with API level >=28 (Pie and newer)
+        if self.config.target_platform == Platform.ANDROID and DistroVersion.get_android_api_version(self.config.target_distro_version) < 28:
+            self.deps.append('libiconv')
+
+        if self.config.target_platform == Platform.WINDOWS:
+            # Want secure versions of stdlib functions. Glib already defines
+            # _WIN32_WINNT, so undefine it on the cmdline to avoid warnings
+            self.append_env('CFLAGS', '-DMINGW_HAS_SECURE_API=1', '-U_WIN32_WINNT')
+            # Old MinGW requires this define for using llu in inttypes.h
+            self.append_env('CFLAGS', '-D__USE_MINGW_ANSI_STDIO=1')
+        elif Platform.is_apple(self.config.target_platform):
+            self.files_devel.append('%(libdir)s/glib-2.0/include/*/glibconfig.h')
+
+        elif self.config.target_platform == Platform.LINUX:
+            path1 = '/usr/lib/gio/modules'
+            path2 = None
+            use_old_uri_scheme = False
+            self.meson_options.update({'selinux': 'disabled'})
+            # Old Debian/Ubuntu
+            if self.config.target_distro_version in [DistroVersion.DEBIAN_SQUEEZE,
+                                                     DistroVersion.UBUNTU_LUCID,
+                                                     DistroVersion.UBUNTU_MAVERICK]:
+                use_old_uri_scheme = True
+            # Ubuntu, cannot check self.config.target_distro here because it's
+            # set to Distro.DEBIAN
+            elif self.config.target_distro_version.startswith('ubuntu_'):
+                if self.config.target_arch == Architecture.X86:
+                    path2 = '/usr/lib/i386-linux-gnu/gio/modules'
+                elif self.config.target_arch == Architecture.X86_64:
+                    path2 = '/usr/lib/x86_64-linux-gnu/gio/modules'
+            # Debian
+            elif self.config.target_distro == Distro.DEBIAN:
+                if self.config.target_arch == Architecture.X86:
+                    path1 = '/usr/lib/i386-linux-gnu/gio/modules'
+                elif self.config.target_arch == Architecture.X86_64:
+                    path1 = '/usr/lib/x86_64-linux-gnu/gio/modules'
+            # RedHat
+            elif self.config.target_distro == Distro.REDHAT:
+                if self.config.target_arch == Architecture.X86_64:
+                    path1 = '/usr/lib64/gio/modules/'
+            # Suse
+            elif self.config.target_distro == Distro.SUSE:
+                if self.config.target_arch == Architecture.X86_64:
+                    path1 = '/usr/lib64/gio/modules/'
+            # Arch
+            elif self.config.target_distro == Distro.ARCH:
+                path1 = '/usr/lib/gio/modules/'
+            # Gentoo
+            elif self.config.target_distro == Distro.GENTOO:
+                path1 = '/usr/lib/gio/modules/'
+            elif self.config.target_distro == Distro.NONE:
+                if self.config.target_distro_version == DistroVersion.NONE_UCLIBC:
+                    self.deps += ('proxy-libintl', 'libiconv')
+            else:
+                raise FatalError(_("Add specific for other Linux distributions here"))
+            self._set_gio_flags(path1, path2, use_old_uri_scheme)
+
+        if self.config.variants.noassert:
+            self.meson_options.update({'glib_assert': 'false'})
+
+        if self.config.variants.nochecks:
+            self.meson_options.update({'glib_checks': 'false'})
+
+    def post_install(self):
+        if Platform.is_apple(self.config.target_platform):
+            # For the universal build we need to ship glibconfig.h of both
+            # architectures in a subfolder and include the correct one depending
+            # on the compiler architecture
+            arch = self.config.target_arch
+            if arch == Architecture.X86:
+                arch = 'i386'
+            elif arch == Architecture.ARM64:
+                arch = 'arm64'
+            elif Architecture.is_arm(arch):
+                arch = 'arm'
+
+            arch_dir = os.path.join(self.config.libdir, 'glib-2.0',
+                                     'include', arch)
+            if not os.path.exists(arch_dir):
+                os.makedirs(arch_dir)
+            shutil.copyfile(os.path.join(self.build_dir, 'glib', 'glibconfig.h'),
+                        os.path.join(arch_dir, 'glibconfig.h'))
+            with open(os.path.join(self.config.libdir, 'glib-2.0',
+                                   'include', 'glibconfig.h'), 'w+') as f:
+                f.write(GLIB_CONFIG_UNVERSAL)
+
+        if Platform.is_apple(self.config.target_platform):
+            # Meson doesn't yet introduce rpaths properly.
+            # https://github.com/mesonbuild/meson/issues/2121#issuecomment-347535874
+            files = [
+                f'{self.config.libdir}/pkgconfig/glib-2.0.pc',
+            ]
+            for f in files:
+                shell.replace(f, {'Libs:': 'Libs: -Wl,-rpath,${libdir}'})
+
+        major, minor, micro = get_libtool_versions(self.version)
+        # Meson does not generate la files
+        LibtoolLibrary('glib-2.0', major, minor, micro,
+                self.config.libdir, self.config.target_platform,
+                deps=['pcre2-8']).save()
+        LibtoolLibrary('gobject-2.0', major, minor, micro,
+                self.config.libdir, self.config.target_platform,
+                deps=['glib-2.0', 'ffi']).save()
+        LibtoolLibrary('gmodule-2.0', major, minor, micro,
+                self.config.libdir, self.config.target_platform,
+                deps=['glib-2.0']).save()
+        LibtoolLibrary('gthread-2.0', major, minor, micro,
+                self.config.libdir, self.config.target_platform,
+                deps=['glib-2.0']).save()
+        LibtoolLibrary('gio-2.0', major, minor, micro,
+                self.config.libdir, self.config.target_platform,
+                deps=['gobject-2.0', 'gmodule-2.0', 'z']).save()
+        super().post_install()
+
+# Uncomment the following when reenabling introspection support
+# class GlibWithIntrospection(Recipe):
+#     name = 'glib'
+#     meson_options = {'libmount': 'disabled', 'dtrace': 'false', 'tests': 'true' }
+
+#     def prepare(self):
+#         Recipe.prepare(self)
+
+#         # gobject-introspection is now required, but upstream is not aware of
+#         # cross-compilation; it assumes the Python interpreter to be Meson's
+#         # but uses the host machine's compiler
+#         if self.config.variants.gi:
+#             self.deps.append('gobject-introspection')
+
