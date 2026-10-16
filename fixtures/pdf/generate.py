@@ -80,5 +80,12 @@ pdf += f"xref\n0 {len(offsets)}\n0000000000 65535 f \n".encode()
 pdf += b"".join(f"{offset:010} 00000 n \n".encode() for offset in offsets[1:])
 pdf += f"trailer\n<< /Size {len(offsets)} /Root {catalog} 0 R >>\nstartxref\n{xref}\n%%EOF\n".encode()
 (ROOT / "raster.pdf").write_bytes(pdf)
-manifest = {"raster.pdf": hashlib.sha256(pdf).hexdigest(), "embedded_type3_glyphs_sha256": hashlib.sha256(json.dumps(glyphs, sort_keys=True).encode()).hexdigest(), "fonts": "original embedded Type3 geometric E=mc^2; no system font dependency"}
+manifest = {
+    "raster.pdf": hashlib.sha256(pdf).hexdigest(),
+    "embedded_type3_glyphs_sha256": hashlib.sha256(json.dumps(glyphs, sort_keys=True).encode()).hexdigest(),
+    "fonts": "original embedded Type3 geometric E=mc^2; no system font dependency",
+}
+performance = ROOT / "perf-100.pdf"
+if performance.is_file():
+    manifest["perf-100.pdf"] = hashlib.sha256(performance.read_bytes()).hexdigest()
 (ROOT / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
