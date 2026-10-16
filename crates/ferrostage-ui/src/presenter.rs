@@ -303,6 +303,138 @@ impl Presenter {
                 })
             })
     }
+
+    fn command_bar(&self, p: Palette, window: &Window) -> gpui::AnyElement {
+        let l = self.locale;
+        let stage = self.data.stage;
+        let busy = self.data.busy;
+        let stage_label = match stage {
+            SessionStage::Idle => l.text("stage-idle"),
+            SessionStage::Ready => l.text("stage-ready"),
+            SessionStage::Presenting => l.text("stage-presenting"),
+        };
+        let filename = self.data.filename.clone();
+        let narrow = window.viewport_size().width < px(800.);
+        let hide_stage =
+            stage == SessionStage::Presenting && window.viewport_size().width < px(1200.);
+        let control = px(theme::CONTROL + (theme::FOCUS_WIDTH + theme::FOCUS_GAP) * 2.);
+        let tooltip_filename = filename.clone();
+        let mut identity = div()
+            .flex()
+            .items_center()
+            .gap(px(12.))
+            .min_w_0()
+            .flex_1()
+            .child(
+                div()
+                    .id("document-title")
+                    .debug_selector(|| "document-title".into())
+                    .aria_label(filename.clone())
+                    .tooltip(move |_, cx| {
+                        cx.new(|_| FilenameTooltip {
+                            filename: tooltip_filename.clone(),
+                            palette: p,
+                        })
+                        .into()
+                    })
+                    .min_h(control)
+                    .flex_1()
+                    .min_w_0()
+                    .flex()
+                    .items_center()
+                    .text_size(px(16.))
+                    .text_color(rgb(p.ink))
+                    .truncate()
+                    .child(filename.clone()),
+            );
+        if !hide_stage {
+            identity = identity.child(
+                div()
+                    .id("stage-label")
+                    .debug_selector(|| "stage-label".into())
+                    .flex_shrink_0()
+                    .min_h(control)
+                    .flex()
+                    .items_center()
+                    .text_size(px(14.))
+                    .text_color(rgb(p.muted))
+                    .child(stage_label),
+            );
+        }
+        if !self.data.workbench.steps.is_empty() {
+            identity = identity.child(div().flex_shrink_0().child(self.button(
+                "workbench-progress".into(),
+                self.data.workbench.progress.clone(),
+                true,
+                false,
+                Intent::Jump,
+                p,
+            )));
+        }
+        let timer = div()
+            .flex_shrink_0()
+            .min_h(control)
+            .flex()
+            .items_center()
+            .child(self.timer_panel(p));
+        let actions = div()
+            .id("presenter-actions")
+            .debug_selector(|| "presenter-actions".into())
+            .flex()
+            .items_center()
+            .gap(px(8.))
+            .flex_shrink_0()
+            .child(self.button(
+                "open".into(),
+                l.text("open").into(),
+                self.data.can_open,
+                false,
+                Intent::Open,
+                p,
+            ))
+            .child(self.button(
+                "settings".into(),
+                l.text("settings").into(),
+                !busy,
+                false,
+                Intent::Settings,
+                p,
+            ))
+            .child(self.button(
+                "displays".into(),
+                l.text("displays").into(),
+                !busy,
+                false,
+                Intent::Displays,
+                p,
+            ));
+        let mut bar = div()
+            .id("presenter-bar")
+            .debug_selector(|| "presenter-bar".into())
+            .px(px(16.))
+            .pt(px(8.))
+            .pb(px(8.))
+            .border_b_1()
+            .border_color(rgb(p.border))
+            .flex()
+            .items_center()
+            .gap(px(12.));
+        if narrow {
+            bar = bar.flex_col().child(
+                div()
+                    .flex()
+                    .items_center()
+                    .gap(px(12.))
+                    .min_w_0()
+                    .w_full()
+                    .child(identity)
+                    .child(timer),
+            );
+        } else {
+            bar = bar.child(identity).child(timer);
+        }
+        bar.child(actions).into_any_element()
+    }
 }
 
 impl Render for Presenter {
@@ -369,7 +501,6 @@ impl Render for Presenter {
             SessionStage::Presenting => l.text("stage-presenting"),
         };
         let filename = self.data.filename.clone();
-        let tooltip_filename = filename.clone();
         let modal = self.data.modal.clone();
         let error = self
             .textures
@@ -589,15 +720,17 @@ impl Render for Presenter {
                 .into_any_element();
         }
         let drop_target = self.shell.clone();
+        let document_open = stage != SessionStage::Idle;
         let mut body = div()
             .id("presenter-content")
             .flex_1()
             .min_h_0()
-            .overflow_y_scroll()
-            .p(px(24.))
-            .gap(px(16.))
+            .p(px(if document_open { 12. } else { 24. }))
+            .gap(px(if document_open { 8. } else { 16. }))
             .flex()
-            .flex_col();
+            .flex_col()
+            .when(document_open, |view| view.overflow_hidden())
+            .when(!document_open, |view| view.overflow_y_scroll());
         if stage == SessionStage::Idle {
             body = body
                 .child(
@@ -624,7 +757,14 @@ impl Render for Presenter {
                     ),
                 );
         } else {
-            body = body.child(self.workbench_panel(p, window, cx));
+            body = body.child(
+                div()
+                    .flex_1()
+                    .min_h_0()
+                    .flex()
+                    .flex_col()
+                    .child(self.workbench_panel(p, window, cx)),
+            );
         }
 
         if let Some(error) = error {
@@ -632,47 +772,58 @@ impl Render for Presenter {
                 div()
                     .id("presenter-error")
                     .debug_selector(|| "presenter-error".into())
+                    .flex_shrink_0()
                     .role(Role::Alert)
                     .text_color(rgb(p.error))
                     .child(error),
             );
         }
         for warning in warnings {
-            body = body.child(div().text_color(rgb(p.warning)).child(warning));
+            body = body.child(
+                div()
+                    .flex_shrink_0()
+                    .text_color(rgb(p.warning))
+                    .child(warning),
+            );
         }
         if dirty {
             body = body
                 .child(
-                    div().text_color(rgb(p.warning)).child(
+                    div().flex_shrink_0().text_color(rgb(p.warning)).child(
                         save_error
                             .map(|error| l.error("save-error", error))
                             .unwrap_or_else(|| l.text("unsaved").into()),
                     ),
                 )
-                .child(self.button(
+                .child(div().flex_shrink_0().child(self.button(
                     "retry-save".into(),
                     l.text("retry-save").into(),
                     true,
                     false,
                     Intent::RetrySave,
                     p,
-                ));
+                )));
         }
         if stage != SessionStage::Presenting && !recent.is_empty() {
-            body = body.child(div().text_color(rgb(p.muted)).child(l.text("recent")));
+            body = body.child(
+                div()
+                    .flex_shrink_0()
+                    .text_color(rgb(p.muted))
+                    .child(l.text("recent")),
+            );
             for (index, path) in recent.into_iter().enumerate() {
                 let label = std::path::Path::new(&path)
                     .file_name()
                     .map(|name| name.to_string_lossy().into_owned())
                     .unwrap_or_else(|| path.clone());
-                body = body.child(self.button(
+                body = body.child(div().flex_shrink_0().child(self.button(
                     format!("recent-{index}"),
                     label,
                     !busy,
                     false,
                     Intent::Import(path.into()),
                     p,
-                ));
+                )));
             }
         }
         root.track_focus(&self.focus)
@@ -681,63 +832,7 @@ impl Render for Presenter {
                     actions::dispatch(&drop_target, Intent::Import(path.clone()), cx);
                 }
             })
-            .child(
-                div()
-                    .p(px(16.))
-                    .border_b_1()
-                    .border_color(rgb(p.border))
-                    .flex()
-                    .flex_col()
-                    .gap(px(8.))
-                    .child(
-                        div()
-                            .id("document-title")
-                            .aria_label(filename.clone())
-                            .tooltip(move |_, cx| {
-                                cx.new(|_| FilenameTooltip {
-                                    filename: tooltip_filename.clone(),
-                                    palette: p,
-                                })
-                                .into()
-                            })
-                            .text_size(px(20.))
-                            .text_color(rgb(p.ink))
-                            .truncate()
-                            .child(filename),
-                    )
-                    .child(div().text_color(rgb(p.muted)).child(stage_label))
-                    .child(self.timer_panel(p))
-                    .child(
-                        div()
-                            .flex()
-                            .flex_wrap()
-                            .gap(px(8.))
-                            .child(self.button(
-                                "open".into(),
-                                l.text("open").into(),
-                                self.data.can_open,
-                                false,
-                                Intent::Open,
-                                p,
-                            ))
-                            .child(self.button(
-                                "settings".into(),
-                                l.text("settings").into(),
-                                !busy,
-                                false,
-                                Intent::Settings,
-                                p,
-                            ))
-                            .child(self.button(
-                                "displays".into(),
-                                l.text("displays").into(),
-                                !busy,
-                                false,
-                                Intent::Displays,
-                                p,
-                            )),
-                    ),
-            )
+            .child(self.command_bar(p, window))
             .child(body)
             .when(!self.data.workbench.steps.is_empty(), |view| {
                 view.child(self.tools_panel(p))

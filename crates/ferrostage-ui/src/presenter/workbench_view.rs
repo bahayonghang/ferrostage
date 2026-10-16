@@ -19,7 +19,7 @@ pub(super) struct WorkbenchData {
     pub steps: Vec<ferrostage_core::PhysicalPage>,
     options: DocumentOverrides,
     diagnostics: String,
-    progress: String,
+    pub progress: String,
     timer: String,
     clock: Option<String>,
     warning: u8,
@@ -361,6 +361,8 @@ impl Presenter {
     pub(super) fn timer_panel(&self, p: Palette) -> gpui::AnyElement {
         let data = &self.data.workbench;
         div()
+            .id("presenter-timer")
+            .debug_selector(|| "presenter-timer".into())
             .flex()
             .items_center()
             .gap(px(12.))
@@ -496,8 +498,8 @@ impl Presenter {
     ) -> gpui::AnyElement {
         let ratio = self.data.workbench.settings.next_slide_ratio as f32;
         let notes = self.data.workbench.settings.notes_ratio as f32;
-        let height = (f32::from(window.viewport_size().height) - 360.).max(240.);
         let stacked = window.viewport_size().width < px(800.);
+        let grid_open = self.data.workbench.grid;
         let mut notes_frames = self
             .data
             .workbench
@@ -517,27 +519,35 @@ impl Presenter {
             _ => 0,
         });
         notes_frames.dedup();
+        let scale = self.data.workbench.settings.notes_font_scale as f32;
         let mut note_panel = div()
             .id("notes-panel")
-            .flex_1()
+            .debug_selector(|| "notes-panel".into())
+            .flex_grow(notes.max(0.15))
+            .flex_shrink(1.)
+            .flex_basis(gpui::relative(0.))
             .min_h_0()
             .overflow_scroll()
             .flex()
             .flex_col()
-            .gap(px(4.));
+            .gap(px(4.))
+            .p(px(12.))
+            .rounded(px(theme::RADIUS))
+            .bg(rgb(p.card));
         if notes_frames.is_empty() {
-            note_panel = note_panel.child(self.locale.text("wb-no-notes"));
+            note_panel = note_panel.child(
+                div()
+                    .text_color(rgb(p.muted))
+                    .child(self.locale.text("wb-no-notes")),
+            );
         }
         for surface in notes_frames {
             note_panel = note_panel.child(
                 div()
-                    .w(gpui::relative(
-                        self.data.workbench.settings.notes_font_scale as f32,
-                    ))
-                    .h(px(height
-                        * notes
-                        * self.data.workbench.settings.notes_font_scale as f32))
-                    .flex_shrink_0()
+                    .w_full()
+                    .flex_grow(1.)
+                    .flex_basis(gpui::relative(0.))
+                    .min_h(px(80. * scale))
                     .child(self.picture(surface, false)),
             );
         }
@@ -548,9 +558,13 @@ impl Presenter {
         let next_measure = next_bounds.clone();
         let content = div()
             .id("workbench-splits")
+            .debug_selector(|| "workbench-splits".into())
             .relative()
-            .h(px(if stacked { height * 2. } else { height }))
-            .flex_shrink_0()
+            .flex_1()
+            .min_h_0()
+            .when(grid_open, |view| {
+                view.min_h(gpui::relative(0.5)).flex_shrink_0()
+            })
             .flex()
             .when(stacked, |view| view.flex_col())
             .gap(px(6.))
@@ -607,7 +621,8 @@ impl Presenter {
                     .id("current-pane")
                     .debug_selector(|| "current-pane".into())
                     .when(!stacked, |view| view.w(gpui::relative(1. - ratio)).h_full())
-                    .when(stacked, |view| view.w_full().h(px(height)).flex_shrink_0())
+                    .when(stacked, |view| view.w_full().flex_1().min_h_0())
+                    .overflow_hidden()
                     .child(self.picture(Surface::Current, self.data.preview.is_none())),
             )
             .when(!stacked, |view| {
@@ -636,7 +651,8 @@ impl Presenter {
                     .flex_1()
                     .min_w_0()
                     .when(!stacked, |view| view.h_full())
-                    .when(stacked, |view| view.w_full().min_h(px(height)))
+                    .when(stacked, |view| view.w_full().flex_1().min_h_0())
+                    .overflow_hidden()
                     .flex()
                     .flex_col()
                     .gap(px(4.))
@@ -650,13 +666,20 @@ impl Presenter {
                     )
                     .child(
                         div()
-                            .h(px(height * (1. - notes)))
+                            .id("next-pane")
+                            .debug_selector(|| "next-pane".into())
+                            .flex_grow((1. - notes).max(0.15))
+                            .flex_shrink(1.)
+                            .flex_basis(gpui::relative(0.))
+                            .min_h_0()
+                            .overflow_hidden()
                             .child(self.picture(Surface::Next, false)),
                     )
                     .child(
                         div()
                             .id("vertical-split")
                             .debug_selector(|| "vertical-split".into())
+                            .flex_shrink_0()
                             .h(px(6.))
                             .w_full()
                             .bg(rgb(p.border))
@@ -672,19 +695,14 @@ impl Presenter {
                     .child(note_panel),
             );
         let mut view = div()
+            .id("workbench")
+            .debug_selector(|| "workbench".into())
+            .flex_1()
+            .min_h_0()
+            .w_full()
             .flex()
             .flex_col()
             .gap(px(8.))
-            .when(!self.data.workbench.steps.is_empty(), |view| {
-                view.child(self.button(
-                    "workbench-progress".into(),
-                    self.data.workbench.progress.clone(),
-                    true,
-                    false,
-                    Intent::Jump,
-                    p,
-                ))
-            })
             .child(content);
         for slot in &self.data.workbench.slots {
             let action = if slot.active && !slot.paused {
@@ -719,8 +737,16 @@ impl Presenter {
             }
             view = view.child(row);
         }
-        if self.data.workbench.grid || self.data.workbench.settings.show_thumbnail_strip {
-            view = view.child(self.grid_panel(p));
+        if grid_open || self.data.workbench.settings.show_thumbnail_strip {
+            view = view.child(
+                div()
+                    .id("thumbnail-slot")
+                    .when(grid_open, |slot| {
+                        slot.flex_1().min_h_0().overflow_y_scroll()
+                    })
+                    .when(!grid_open, |slot| slot.flex_shrink_0())
+                    .child(self.grid_panel(p)),
+            );
         }
         if let Some(debug) = &self.data.workbench.debug {
             view = view.child(format!(
@@ -747,6 +773,7 @@ impl Presenter {
     fn grid_panel(&self, p: Palette) -> gpui::AnyElement {
         let data = &self.data.workbench;
         let columns = data.settings.grid_columns as usize;
+        let compact = !data.grid;
         let visible = if data.grid {
             data.settings.grid_visible_pages as usize
         } else {
@@ -780,8 +807,9 @@ impl Presenter {
                 let mut tile = div()
                     .id(SharedString::from(format!("thumbnail-{index}")))
                     .debug_selector(|| format!("thumbnail-{index}"))
+                    .relative()
                     .w(gpui::relative(1. / columns as f32))
-                    .h(px(135.))
+                    .h(px(if compact { 72. } else { 135. }))
                     .flex()
                     .flex_col()
                     .child(
@@ -789,8 +817,22 @@ impl Presenter {
                             .flex_1()
                             .min_h_0()
                             .child(self.picture(Surface::Thumbnail(*index), false)),
-                    )
-                    .child(self.button(
+                    );
+                if compact {
+                    tile = tile.child(
+                        div()
+                            .absolute()
+                            .bottom(px(4.))
+                            .left(px(4.))
+                            .px(px(4.))
+                            .rounded(px(4.))
+                            .bg(rgb(p.card))
+                            .text_size(px(12.))
+                            .text_color(rgb(p.ink))
+                            .child(format!("{}", page.0 + 1)),
+                    );
+                } else {
+                    tile = tile.child(self.button(
                         format!("jump-thumbnail-{index}"),
                         format!("{}", page.0 + 1),
                         true,
@@ -798,6 +840,7 @@ impl Presenter {
                         Intent::Preview(page),
                         p,
                     ));
+                }
                 tile = tile.on_hover(move |hovered, _, cx| {
                     if *hovered {
                         actions::dispatch(&target, Intent::Preview(page), cx);
@@ -807,27 +850,29 @@ impl Presenter {
             }
             grid = grid.child(line);
         }
-        grid.child(
-            div()
-                .flex()
-                .child(self.button(
-                    "grid-prev".into(),
-                    self.locale.text("wb-earlier").into(),
-                    data.grid_start > 0,
-                    false,
-                    Intent::GridMove(-(visible as isize)),
-                    p,
-                ))
-                .child(self.button(
-                    "grid-next".into(),
-                    self.locale.text("wb-later").into(),
-                    data.grid_start + visible < data.steps.len(),
-                    false,
-                    Intent::GridMove(visible as isize),
-                    p,
-                )),
-        )
-        .into_any_element()
+        if !compact {
+            grid = grid.child(
+                div()
+                    .flex()
+                    .child(self.button(
+                        "grid-prev".into(),
+                        self.locale.text("wb-earlier").into(),
+                        data.grid_start > 0,
+                        false,
+                        Intent::GridMove(-(visible as isize)),
+                        p,
+                    ))
+                    .child(self.button(
+                        "grid-next".into(),
+                        self.locale.text("wb-later").into(),
+                        data.grid_start + visible < data.steps.len(),
+                        false,
+                        Intent::GridMove(visible as isize),
+                        p,
+                    )),
+            );
+        }
+        grid.into_any_element()
     }
     pub(super) fn document_panel(&self, p: Palette) -> gpui::AnyElement {
         let options = self.data.workbench.options;

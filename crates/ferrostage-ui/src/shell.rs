@@ -1718,7 +1718,9 @@ impl Shell {
                         * (1. - self.settings.settings.presenter.next_slide_ratio as f32))
                         .round()
                         .max(1.) as u32,
-                    height: ((f32::from(size.height) - 300.).max(100.) * scale)
+                    // Command bar, tool row, and start control. The canvas
+                    // reports the real pane size on the following frame.
+                    height: ((f32::from(size.height) - 220.).max(100.) * scale)
                         .round()
                         .max(1.) as u32,
                 }
@@ -4544,5 +4546,66 @@ mod tests {
             assert_eq!(shell.import_token, token);
             assert!(!shell.import_allowed());
         });
+    }
+
+    fn same_row(origin: gpui::Pixels, other: gpui::Pixels) -> bool {
+        (f32::from(origin) - f32::from(other)).abs() < 8.
+    }
+
+    #[gpui::test]
+    fn presenter_bar_shares_one_row_and_notes_fill_the_column(cx: &mut TestAppContext) {
+        let (shell, handle) = workbench_fixture(cx);
+        shell.update(cx, |shell, cx| {
+            shell.settings.settings.presenter.notes_ratio = 0.4;
+            shell.settings.settings.presenter.show_thumbnail_strip = true;
+            cx.notify();
+        });
+        cx.test_window(handle)
+            .simulate_resize(size(px(1100.), px(760.)));
+        redraw(handle, cx);
+        {
+            let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+            let title = visual.debug_bounds("document-title").unwrap();
+            let progress = visual.debug_bounds("workbench-progress").unwrap();
+            let timer = visual.debug_bounds("presenter-timer").unwrap();
+            let open = visual.debug_bounds("open").unwrap();
+            assert!(
+                same_row(title.origin.y, progress.origin.y)
+                    && same_row(title.origin.y, timer.origin.y)
+                    && same_row(title.origin.y, open.origin.y),
+                "title {title:?} progress {progress:?} timer {timer:?} open {open:?}"
+            );
+            let notes = visual.debug_bounds("notes-panel").unwrap();
+            let right = visual.debug_bounds("next-notes-pane").unwrap();
+            assert!(notes.size.height >= right.size.height * 0.35);
+            let tools = visual.debug_bounds("previous").unwrap();
+            assert!(notes.bottom() <= tools.origin.y);
+            let current = visual.debug_bounds("current-pane").unwrap();
+            let splits = visual.debug_bounds("workbench-splits").unwrap();
+            assert!((current.size.height - splits.size.height).abs() < px(1.));
+            assert!(current.size.height > px(200.));
+        }
+        shell.update(cx, |shell, cx| {
+            shell.workbench.grid = true;
+            cx.notify();
+        });
+        redraw(handle, cx);
+        {
+            let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+            let current = visual.debug_bounds("current-pane").unwrap();
+            let workbench = visual.debug_bounds("workbench").unwrap();
+            assert!(current.size.height + px(8.) >= workbench.size.height * 0.5);
+        }
+        cx.test_window(handle)
+            .simulate_resize(size(px(700.), px(900.)));
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let title = visual.debug_bounds("document-title").unwrap();
+        let open = visual.debug_bounds("open").unwrap();
+        assert!(open.origin.y > title.bottom());
+        let current = visual.debug_bounds("current-pane").unwrap();
+        let next = visual.debug_bounds("next-notes-pane").unwrap();
+        assert!(next.origin.y >= current.bottom());
+        assert!(current.size.height > px(40.));
     }
 }
