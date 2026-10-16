@@ -1807,6 +1807,7 @@ name = "ferrostage-app"
 version = "0.1.0"
 dependencies = [
  "clap",
+ "embed-resource",
  "ferrostage-core",
  "ferrostage-pdf",
  "ferrostage-platform",
