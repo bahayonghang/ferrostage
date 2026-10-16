@@ -116,3 +116,40 @@
 ### Next Steps
 
 - 从08开始，按acceptance-policy.md连续完成09/10/11；新改动默认不提交、不归档、不推送。
+
+
+## Session 4: 08至11实现交付与核心验收归档
+<!-- trellis-session: v=2 fp=d4af768e2cb0c596 -->
+
+**Date**: 2026-10-15
+**Task**: 08至11实现交付与核心验收归档
+**Branch**: `main`
+
+### Summary
+
+完成工作台、完整设置、通用PDF热重载和隔离媒体播放；独立自动门禁与核心native子集已验证。用户授权提交并按实施范围归档08至11，父任务保留未验收清单，不推送。
+
+### Main Changes
+
+- 08至11已归档，243份研究证据字节不变，父任务作为续接入口
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `15ab278` | feat: 完成工作台设置热重载及隔离媒体播放 |
+| `2f95978` | chore: 保留媒体上游许可证原始字节 |
+| `018f05d` | docs: 保存08至11独立检查原生证据与续接计划 |
+
+### Testing
+
+- [OK] 169源码身份匹配；180默认CI、119父UI加一次隔离重放、40PDFium、17媒体及严格feature/lint/typecheck/deny/build；四次核心native正常退出
+- [OK] 归档后父和11子上下文12/12通过；第一方暂存空白检查通过，上游原文空白诊断保留
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- 读取父任务next-session-prompt.md，继续未观察功能与确认后的修复；网格NOT_VERIFIED、WebP桌面PARTIAL、分块producer NOT_RUN，扩展矩阵延期
