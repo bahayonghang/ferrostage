@@ -1,5 +1,5 @@
 //! Shared display-assignment draft. Numbers are view labels; only IDs become settings.
-use crate::policy;
+use crate::{locale::Locale, policy};
 use ferrostage_core::{MonitorId, MonitorRole};
 use ferrostage_platform::MonitorInfo;
 use ferrostage_settings::{DisplaySettings, MonitorBinding, SingleMonitorMode};
@@ -102,6 +102,127 @@ pub fn numbered(monitors: &[MonitorInfo]) -> Vec<(usize, &MonitorInfo)> {
         .collect()
 }
 
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(crate) struct ScreenCopy {
+    pub title: String,
+    pub meta: String,
+    pub identify: String,
+}
+
+/// One label for the card, the role controls, and Identify.
+pub(crate) fn screen_copy(
+    locale: Locale,
+    monitors: &[MonitorInfo],
+    monitor: &MonitorInfo,
+) -> ScreenCopy {
+    let resolution = format!("{}×{}", monitor.native_size.0, monitor.native_size.1);
+    let portrait = is_portrait(monitor);
+    let model = distinct_model(&monitor.name);
+    let title = if let Some(model) = model {
+        if monitor.built_in {
+            format!("{} {model}", locale.text("displays-builtin"))
+        } else {
+            model.to_owned()
+        }
+    } else if monitor.built_in {
+        locale.text("displays-builtin").to_owned()
+    } else if portrait {
+        locale.text("displays-portrait").to_owned()
+    } else {
+        resolution.clone()
+    };
+    let mut meta = Vec::new();
+    if title != resolution {
+        meta.push(resolution);
+    }
+    if portrait && title != locale.text("displays-portrait") {
+        meta.push(locale.text("displays-portrait").to_owned());
+    }
+    if monitor.is_primary {
+        meta.push(locale.text("displays-primary").to_owned());
+    }
+    if let Some(key) = placement_key(monitors, monitor) {
+        meta.push(locale.text(key).to_owned());
+    }
+    let meta = meta.join(" · ");
+    let identify = if meta.is_empty() {
+        title.clone()
+    } else {
+        format!("{title} · {meta}")
+    };
+    ScreenCopy {
+        title,
+        meta,
+        identify,
+    }
+}
+
+fn is_portrait(monitor: &MonitorInfo) -> bool {
+    matches!(monitor.rotation_degrees, 90 | 270) || monitor.native_size.1 > monitor.native_size.0
+}
+
+fn distinct_model(name: &str) -> Option<&str> {
+    let trimmed = name.trim();
+    let lower = trimmed.to_ascii_lowercase();
+    if trimmed.is_empty()
+        || lower == "generic pnp monitor"
+        || lower == "generic monitor"
+        || lower == "generic non-pnp monitor"
+        || lower.starts_with("generic pnp monitor")
+        || lower.starts_with("generic monitor")
+    {
+        None
+    } else {
+        Some(trimmed)
+    }
+}
+
+fn placement_key(monitors: &[MonitorInfo], monitor: &MonitorInfo) -> Option<&'static str> {
+    if monitors.len() < 2 {
+        return None;
+    }
+    let center = |item: &MonitorInfo| {
+        (
+            f64::from(item.position.0) + f64::from(item.native_size.0) / 2.0,
+            f64::from(item.position.1) + f64::from(item.native_size.1) / 2.0,
+        )
+    };
+    let (x, y) = center(monitor);
+    let centers = monitors.iter().map(center).collect::<Vec<_>>();
+    let (min_x, max_x, min_y, max_y) = centers.iter().fold(
+        (f64::MAX, f64::MIN, f64::MAX, f64::MIN),
+        |(min_x, max_x, min_y, max_y), (cx, cy)| {
+            (
+                min_x.min(*cx),
+                max_x.max(*cx),
+                min_y.min(*cy),
+                max_y.max(*cy),
+            )
+        },
+    );
+    let span_x = max_x - min_x;
+    let span_y = max_y - min_y;
+    if span_x < 1.0 && span_y < 1.0 {
+        return None;
+    }
+    let edge = |value: f64, min: f64, max: f64, low: &'static str, high: &'static str| {
+        if (value - min).abs() <= 1.0 {
+            Some(low)
+        } else if (value - max).abs() <= 1.0 {
+            Some(high)
+        } else if monitor.is_primary {
+            None
+        } else {
+            Some("displays-center")
+        }
+    };
+    if span_x >= span_y {
+        edge(x, min_x, max_x, "displays-left", "displays-right")
+    } else {
+        edge(y, min_y, max_y, "displays-above", "displays-below")
+    }
+}
+
 pub fn topology_aspect(monitors: &[MonitorInfo]) -> f32 {
     let min_x = monitors
         .iter()
@@ -195,9 +316,14 @@ pub(crate) mod view {
         detailed: bool,
     ) -> impl IntoElement {
         let roles = policy::roles(&panel.monitors, &panel.effective);
-        let windowed = panel.monitors.len() == 1
-            && panel.effective.single_monitor_mode == SingleMonitorMode::WindowedAudience;
         let numbered = numbered(&panel.monitors);
+        let role_label = |text: String, active: bool| {
+            if active {
+                l.format("displays-role-picked", &[("label", text)])
+            } else {
+                text
+            }
+        };
         let mut content = div()
             .id("display-panel-content")
             .flex_1()
@@ -283,76 +409,6 @@ pub(crate) mod view {
             }
             content = content.child(diagram);
         }
-        if panel.topology_valid {
-            for (number, monitor) in &numbered {
-                let usage = if roles.presenter.as_ref() == Some(&monitor.id) {
-                    if windowed {
-                        "displays-use-windowed"
-                    } else {
-                        "displays-app"
-                    }
-                } else if roles.audience.as_ref() == Some(&monitor.id) {
-                    "displays-pdf"
-                } else {
-                    "displays-unused"
-                };
-                let label = format!("{number} · {}", monitor.name);
-                let details = format!(
-                    "{} × {}{} · {}",
-                    monitor.native_size.0,
-                    monitor.native_size.1,
-                    if monitor.is_primary {
-                        format!(" · {}", l.text("displays-primary"))
-                    } else {
-                        String::new()
-                    },
-                    l.text(usage)
-                );
-                let identity = if monitor.identity_confidence
-                    == ferrostage_platform::IdentityConfidence::Degraded
-                {
-                    "displays-id-degraded"
-                } else {
-                    "displays-id-connection"
-                };
-                content =
-                    content.child(
-                        div()
-                            .p(px(12.))
-                            .rounded(px(theme::RADIUS))
-                            .bg(rgb(p.soft))
-                            .border_1()
-                            .border_color(rgb(p.border))
-                            .flex()
-                            .flex_col()
-                            .gap(px(4.))
-                            .child(div().text_color(rgb(p.ink)).child(label))
-                            .child(div().text_size(px(14.)).child(details))
-                            .when(detailed, |view| {
-                                view.child(div().text_size(px(14.)).text_color(rgb(p.muted)).child(
-                                l.text(match monitor.identity_source {
-                                    ferrostage_platform::IdentitySource::DeviceInterfacePath => {
-                                        "displays-id-interface"
-                                    }
-                                    ferrostage_platform::IdentitySource::NameAndResolution => {
-                                        "displays-id-name"
-                                    }
-                                }),
-                            ))
-                            })
-                            .child(div().text_size(px(14.)).text_color(rgb(p.muted)).child(
-                                format!(
-                                    "{} · {}",
-                                    l.text(identity),
-                                    l.format(
-                                        "displays-scale-source",
-                                        &[("ratio", format!("{:.2}", monitor.scale_factor))]
-                                    )
-                                ),
-                            )),
-                    );
-            }
-        }
         content = content
             .child(
                 div()
@@ -380,75 +436,167 @@ pub(crate) mod view {
                 div()
                     .text_size(px(14.))
                     .text_color(rgb(p.muted))
+                    .whitespace_normal()
                     .child(l.text("displays-identify-help")),
             );
-        let selected = |label: String, is_selected: bool| {
-            if is_selected {
-                l.format("displays-selected", &[("label", label)])
-            } else {
-                label
-            }
-        };
-        let mut apps = div().flex().flex_wrap().gap(px(8.));
-        for (number, monitor) in &numbered {
-            let active = panel.draft.presenter.as_ref() == Some(&monitor.id);
-            apps = apps.child(view.button(
-                format!("display-app-{number}"),
-                selected(format!("{number} · {}", monitor.name), active),
+        if panel.topology_valid {
+            let none = panel.draft.pdf == PdfTarget::None;
+            content = content.child(view.button(
+                "display-pdf-none".into(),
+                role_label(l.text("displays-no-play").into(), none),
                 panel.editable,
-                active,
-                Intent::SelectPresenter(monitor.id.clone()),
+                none,
+                Intent::SelectPdf(PdfTarget::None),
                 p,
             ));
-        }
-        let mut pdf = div().flex().flex_wrap().gap(px(8.)).child(view.button(
-            "display-pdf-none".into(),
-            selected(
-                l.text("displays-no-play").into(),
-                panel.draft.pdf == PdfTarget::None,
-            ),
-            panel.editable,
-            panel.draft.pdf == PdfTarget::None,
-            Intent::SelectPdf(PdfTarget::None),
-            p,
-        ));
-        if numbered.len() == 1 {
-            pdf = pdf.child(view.button(
-                "display-pdf-windowed".into(),
-                selected(
-                    l.text("displays-windowed").into(),
-                    panel.draft.pdf == PdfTarget::Windowed,
-                ),
-                panel.editable,
-                panel.draft.pdf == PdfTarget::Windowed,
-                Intent::SelectPdf(PdfTarget::Windowed),
-                p,
-            ));
-        } else {
-            for (number, monitor) in numbered {
-                let target = PdfTarget::Display(monitor.id.clone());
-                let active = panel.draft.pdf == target;
-                pdf = pdf.child(view.button(
-                    format!("display-pdf-{number}"),
-                    selected(format!("{number} · {}", monitor.name), active),
-                    panel.editable,
-                    active,
-                    Intent::SelectPdf(target),
-                    p,
-                ));
+            for (number, monitor) in &numbered {
+                let copy = screen_copy(l, &panel.monitors, monitor);
+                let presenter_here = panel.draft.presenter.as_ref() == Some(&monitor.id);
+                let (pdf_id, pdf_label, pdf_active, pdf_intent) = if numbered.len() == 1 {
+                    (
+                        "display-pdf-windowed".to_owned(),
+                        l.text("displays-role-windowed").to_owned(),
+                        panel.draft.pdf == PdfTarget::Windowed,
+                        Intent::SelectPdf(PdfTarget::Windowed),
+                    )
+                } else {
+                    let target = PdfTarget::Display(monitor.id.clone());
+                    let active = panel.draft.pdf == target;
+                    (
+                        format!("display-pdf-{number}"),
+                        l.text("displays-role-pdf").to_owned(),
+                        active,
+                        Intent::SelectPdf(target),
+                    )
+                };
+                let identity = if monitor.identity_confidence
+                    == ferrostage_platform::IdentityConfidence::Degraded
+                {
+                    "displays-id-degraded"
+                } else {
+                    "displays-id-connection"
+                };
+                content = content.child(
+                    div()
+                        .id(gpui::SharedString::from(format!("display-card-{number}")))
+                        .w_full()
+                        .min_w_0()
+                        .p(px(12.))
+                        .rounded(px(theme::RADIUS))
+                        .bg(rgb(p.soft))
+                        .border_1()
+                        .border_color(rgb(if presenter_here || pdf_active {
+                            p.focus
+                        } else {
+                            p.border
+                        }))
+                        .flex()
+                        .flex_col()
+                        .gap(px(8.))
+                        .child(
+                            div().flex().gap(px(12.)).min_w_0().child(
+                                div().flex().flex_1().min_w_0().gap(px(12.)).child(
+                                    div()
+                                        .id(gpui::SharedString::from(format!(
+                                            "display-index-{number}"
+                                        )))
+                                        .flex_shrink_0()
+                                        .w(px(theme::CONTROL))
+                                        .h(px(theme::CONTROL))
+                                        .rounded(px(theme::RADIUS))
+                                        .border_1()
+                                        .border_color(rgb(p.border))
+                                        .bg(rgb(p.card))
+                                        .flex()
+                                        .items_center()
+                                        .justify_center()
+                                        .text_size(px(20.))
+                                        .text_color(rgb(p.ink))
+                                        .child(number.to_string()),
+                                ).child(
+                                    div()
+                                        .flex()
+                                        .flex_col()
+                                        .flex_1()
+                                        .min_w_0()
+                                        .justify_center()
+                                        .gap(px(2.))
+                                        .child(
+                                            div()
+                                                .text_size(px(16.))
+                                                .text_color(rgb(p.ink))
+                                                .whitespace_normal()
+                                                .child(copy.title.clone()),
+                                        )
+                                        .when(!copy.meta.is_empty(), |column| {
+                                            column.child(
+                                                div()
+                                                    .text_size(px(14.))
+                                                    .text_color(rgb(p.muted))
+                                                    .whitespace_normal()
+                                                    .child(copy.meta.clone()),
+                                            )
+                                        }),
+                                ),
+                            ),
+                        )
+                        .when(detailed, |card| {
+                            card.child(
+                                div()
+                                    .text_size(px(14.))
+                                    .text_color(rgb(p.muted))
+                                    .whitespace_normal()
+                                    .child(l.text(match monitor.identity_source {
+                                        ferrostage_platform::IdentitySource::DeviceInterfacePath => {
+                                            "displays-id-interface"
+                                        }
+                                        ferrostage_platform::IdentitySource::NameAndResolution => {
+                                            "displays-id-name"
+                                        }
+                                    })),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(14.))
+                                    .text_color(rgb(p.muted))
+                                    .whitespace_normal()
+                                    .child(format!(
+                                        "{} · {}",
+                                        l.text(identity),
+                                        l.format(
+                                            "displays-scale-source",
+                                            &[("ratio", format!("{:.2}", monitor.scale_factor))]
+                                        )
+                                    )),
+                            )
+                        })
+                        .child(
+                            div().flex().flex_wrap().gap(px(8.)).child(view.button(
+                                format!("display-app-{number}"),
+                                role_label(l.text("displays-role-app").into(), presenter_here),
+                                panel.editable,
+                                presenter_here,
+                                Intent::SelectPresenter(monitor.id.clone()),
+                                p,
+                            )).child(view.button(
+                                pdf_id,
+                                role_label(pdf_label, pdf_active),
+                                panel.editable,
+                                pdf_active,
+                                pdf_intent,
+                                p,
+                            )),
+                        ),
+                );
             }
-        }
-        content = content
-            .child(div().text_color(rgb(p.ink)).child(l.text("displays-app")))
-            .child(apps)
-            .child(div().text_color(rgb(p.ink)).child(l.text("displays-pdf")))
-            .child(pdf)
-            .child(
+            content = content.child(
                 div()
                     .text_size(px(14.))
                     .text_color(rgb(p.muted))
+                    .whitespace_normal()
                     .child(l.text("displays-draft-help")),
             );
+        }
         if let Some(problem) = &panel.problem {
             content = content.child(
                 div()
@@ -614,5 +762,96 @@ mod tests {
             roundtrip.settings.display.single_monitor_mode,
             SingleMonitorMode::PresenterOnly
         );
+    }
+    fn placed(
+        id: &str,
+        name: &str,
+        built_in: bool,
+        size: (u32, u32),
+        position: (i32, i32),
+        rotation: u16,
+        primary: bool,
+    ) -> MonitorInfo {
+        let mut monitor = monitor(id);
+        monitor.name = name.into();
+        monitor.built_in = built_in;
+        monitor.native_size = size;
+        monitor.position = position;
+        monitor.rotation_degrees = rotation;
+        monitor.is_primary = primary;
+        monitor
+    }
+    #[test]
+    fn identical_driver_names_become_distinct_cards() {
+        let screens = vec![
+            placed("bkx", "BKX270", false, (2560, 1440), (0, 0), 0, true),
+            placed(
+                "boe",
+                "NE160QDM-NM9",
+                true,
+                (2560, 1600),
+                (-2560, -169),
+                0,
+                false,
+            ),
+            placed(
+                "rtk",
+                "Generic PnP Monitor",
+                false,
+                (1600, 2560),
+                (2560, -1142),
+                270,
+                false,
+            ),
+        ];
+        let zh = crate::locale::Locale::new("zh-CN");
+        let copies = screens
+            .iter()
+            .map(|monitor| screen_copy(zh, &screens, monitor).identify)
+            .collect::<Vec<_>>();
+        assert_eq!(copies.len(), 3);
+        assert!(
+            copies
+                .iter()
+                .all(|copy| copies.iter().filter(|other| *other == copy).count() == 1)
+        );
+        assert_eq!(copies[0], "BKX270 · 2560×1440 · 主屏");
+        assert_eq!(copies[1], "内置屏 NE160QDM-NM9 · 2560×1600 · 左侧");
+        assert_eq!(copies[2], "竖屏 · 1600×2560 · 右侧");
+        let en = crate::locale::Locale::new("en-US");
+        let english = screens
+            .iter()
+            .map(|monitor| screen_copy(en, &screens, monitor).identify)
+            .collect::<Vec<_>>();
+        assert_eq!(english[0], "BKX270 · 2560×1440 · Primary");
+        assert_eq!(english[1], "Built-in NE160QDM-NM9 · 2560×1600 · Left");
+        assert_eq!(english[2], "Portrait · 1600×2560 · Right");
+        let twins = vec![
+            placed(
+                "a",
+                "Generic PnP Monitor",
+                false,
+                (1920, 1080),
+                (0, 0),
+                0,
+                true,
+            ),
+            placed(
+                "b",
+                "Generic PnP Monitor",
+                false,
+                (1920, 1080),
+                (1920, 0),
+                0,
+                false,
+            ),
+        ];
+        let left = screen_copy(zh, &twins, &twins[0]).identify;
+        let right = screen_copy(zh, &twins, &twins[1]).identify;
+        assert_ne!(left, right);
+        assert!(left.contains("主屏"));
+        assert!(right.contains("右侧"));
+        assert!(!left.contains("Generic"));
+        assert!(!right.contains("Generic"));
     }
 }

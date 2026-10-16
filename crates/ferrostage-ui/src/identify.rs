@@ -23,6 +23,13 @@ impl Render for Identify {
             .border_color(rgb(palette.focus))
             .p(px(16.))
             .child(div().text_size(px(72.)).child(self.number.to_string()))
-            .child(div().text_size(px(16.)).child(self.name.clone()))
+            .child(
+                div()
+                    .w_full()
+                    .text_center()
+                    .text_size(px(16.))
+                    .whitespace_normal()
+                    .child(self.name.clone()),
+            )
     }
 }

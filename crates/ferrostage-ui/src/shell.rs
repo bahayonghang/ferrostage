@@ -1509,10 +1509,12 @@ impl Shell {
                     .into_iter()
                     .find(|d| u64::from(d.id()) == display_id)
                     .ok_or(ShellError::AmbiguousDisplays)?;
+                let copy = display_settings::screen_copy(self.locale, &self.monitors, monitor);
                 Ok((
                     number,
                     monitor.id.clone(),
-                    monitor.name.clone(),
+                    copy.title,
+                    copy.identify,
                     display_id,
                     display.bounds(),
                 ))
@@ -1525,8 +1527,8 @@ impl Shell {
                 return;
             }
         };
-        for (number, monitor, name, display_id, bounds) in targets {
-            let size = size(px(300.), px(180.));
+        for (number, monitor, title, name, display_id, bounds) in targets {
+            let size = size(px(460.), px(240.));
             let origin = point(
                 bounds.origin.x + (bounds.size.width - size.width) / 2.,
                 bounds.origin.y + (bounds.size.height - size.height) / 2.,
@@ -1545,7 +1547,7 @@ impl Shell {
                 },
                 move |window, cx| {
                     Self::intercept_close(window, cx);
-                    window.set_window_title(&format!("FerroStage — {number} — {name}"));
+                    window.set_window_title(&format!("FerroStage {number} · {title}"));
                     cx.new(|cx| {
                         cx.observe_window_bounds(window, |_, window, cx| {
                             Self::log_bounds(window, cx)
@@ -2676,7 +2678,12 @@ mod tests {
                 .root(cx)
                 .unwrap();
             assert_eq!(label.read(cx).number, 1);
-            assert_eq!(label.read(cx).name, test_monitor().name);
+            let caption = crate::display_settings::screen_copy(
+                shell.locale,
+                &shell.monitors,
+                &shell.monitors[0],
+            );
+            assert_eq!(label.read(cx).name, caption.identify);
             assert!(shell.audience.is_none());
             shell.identify_deadline = Some(Instant::now() - Duration::from_secs(1));
             shell.tick(cx);
