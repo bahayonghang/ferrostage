@@ -520,6 +520,7 @@ mod tests {
             is_primary: id == "a",
             identity_source: IdentitySource::DeviceInterfacePath,
             identity_confidence: IdentityConfidence::ConnectionScoped,
+            built_in: false,
         }
     }
     #[test]

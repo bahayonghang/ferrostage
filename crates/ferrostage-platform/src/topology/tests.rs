@@ -15,6 +15,7 @@ pub(crate) fn monitor(id: &str, primary: bool, size: (u32, u32)) -> MonitorInfo 
         is_primary: primary,
         identity_source: IdentitySource::DeviceInterfacePath,
         identity_confidence: IdentityConfidence::ConnectionScoped,
+        built_in: false,
     }
 }
 

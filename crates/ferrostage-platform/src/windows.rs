@@ -93,6 +93,21 @@ fn devices() -> Result<BTreeMap<String, Device>, PlatformError> {
     Ok(devices)
 }
 
+fn friendly_registry_value(path: &str) -> Option<String> {
+    let subkey = crate::friendly::display_enum_subkey(path)?;
+    let value = winsafe::HKEY::LOCAL_MACHINE
+        .RegGetValue(
+            Some(&subkey),
+            Some("FriendlyName"),
+            co::RRF::RT_REG_SZ | co::RRF::RT_REG_EXPAND_SZ,
+        )
+        .ok()?;
+    match value {
+        winsafe::RegistryValue::Sz(text) | winsafe::RegistryValue::ExpandSz(text) => Some(text),
+        _ => None,
+    }
+}
+
 fn native_error(operation: &'static str, error: co::ERROR) -> PlatformError {
     PlatformError::NativeEnumeration {
         operation,
@@ -205,11 +220,14 @@ fn combine(
         {
             return Err(PlatformError::InvalidGeometry { connection });
         }
-        let name = device.name;
-        let (id, identity_source, identity_confidence) = identity(&device.path, &name, info.size);
+        let driver_name = device.name;
+        let friendly = friendly_registry_value(&device.path);
+        let resolved = crate::friendly::human_name(&driver_name, friendly.as_deref());
+        let (id, identity_source, identity_confidence) =
+            identity(&device.path, &driver_name, info.size);
         result.push(MonitorInfo {
             id,
-            name,
+            name: resolved.name,
             connection_name: connection,
             native_size: info.size,
             position: info.position,
@@ -219,6 +237,7 @@ fn combine(
             is_primary: info.primary,
             identity_source,
             identity_confidence,
+            built_in: resolved.built_in,
         });
     }
     result.sort_by(|a, b| a.id.cmp(&b.id));

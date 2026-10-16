@@ -3861,6 +3861,7 @@ mod tests {
             is_primary: true,
             identity_source: ferrostage_platform::IdentitySource::DeviceInterfacePath,
             identity_confidence: ferrostage_platform::IdentityConfidence::ConnectionScoped,
+            built_in: false,
         }
     }
 

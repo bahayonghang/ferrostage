@@ -7,6 +7,7 @@
 
 use std::time::Duration;
 
+mod friendly;
 mod monitor;
 mod reload;
 mod topology;

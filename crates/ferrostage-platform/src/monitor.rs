@@ -40,6 +40,9 @@ pub struct MonitorInfo {
     pub is_primary: bool,
     pub identity_source: IdentitySource,
     pub identity_confidence: IdentityConfidence,
+    /// Windows marked this panel as an integrated monitor. A false value does
+    /// not prove the panel is external.
+    pub built_in: bool,
 }
 
 #[derive(Clone, Debug, Error, PartialEq, Eq)]

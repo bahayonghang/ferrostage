@@ -152,4 +152,6 @@ fn output_owns_physical_units_and_does_not_promote_handle_or_missing_path() {
         crate::IdentityConfidence::Degraded
     );
     assert!(!infos[0].id.0.contains("99"));
+    assert_eq!(infos[0].name, "same-model");
+    assert!(!infos[0].built_in);
 }
