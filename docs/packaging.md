@@ -3,7 +3,7 @@
 Development staging is available for the Windows 11 executable and its separately loaded PDFium and media runtimes. An installer is not produced.
 
 - `just ci` stays on default features and does not require `pdfium.dll`.
-- `just dev` stages the verified `pdfium.dll`, `LICENSE`, and `licenses/` into `target/debug`, then runs `cargo run -p ferrostage-app --features gpui,pdfium --locked`.
+- `just dev` first builds `ferrostage-app` with `gpui,pdfium`, stages the verified `pdfium.dll`, `LICENSE`, and `licenses/` into `target/debug`, then runs `cargo run -p ferrostage-app --features gpui,pdfium --locked`. Building first lets Cargo restore a collected target-cache directory before staging into a `target` symlink.
 - `just build` builds the other workspace crates, links `ferrostage-app` with `gpui,pdfium` last, then stages those same files into `target/release`. The double-click artifact is `target\release\ferrostage.exe`.
 - `just install` runs `cargo install --path crates/ferrostage-app --locked --features gpui,pdfium`, then stages only the verified `pdfium.dll` beside that binary. The full notice tree stays with `target\release`.
 - The optional `pdfium` feature links `pdfium-render =0.9.4` with only `pdfium_7881`. The runtime is acquired separately as described below; no installer is produced by this task.

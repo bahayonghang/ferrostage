@@ -46,9 +46,11 @@ build:
     cargo build -p ferrostage-app --release --features gpui,pdfium --locked
     powershell -NoProfile -File scripts/stage-pdfium.ps1 -Destination target/release
 
+# Build first so Cargo can restore a collected target-cache directory before staging.
 # Stage verified PDFium notices and pdfium.dll into target/debug, then run the shell.
 # Extra arguments are forwarded (`just dev -- check-config <path>`).
 dev *args:
+    cargo build -p ferrostage-app --features gpui,pdfium --locked
     powershell -NoProfile -File scripts/stage-pdfium.ps1 -Destination target/debug
     cargo run -p ferrostage-app --features gpui,pdfium --locked -- {{args}}
 

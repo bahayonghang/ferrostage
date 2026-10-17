@@ -1,5 +1,7 @@
 //! Shared display-assignment draft. Numbers are view labels; only IDs become settings.
-use crate::{locale::Locale, policy};
+#[cfg(any(feature = "gpui", test))]
+use crate::locale::Locale;
+use crate::policy;
 use ferrostage_core::{MonitorId, MonitorRole};
 use ferrostage_platform::MonitorInfo;
 use ferrostage_settings::{DisplaySettings, MonitorBinding, SingleMonitorMode};
@@ -102,6 +104,7 @@ pub fn numbered(monitors: &[MonitorInfo]) -> Vec<(usize, &MonitorInfo)> {
         .collect()
 }
 
+#[cfg(any(feature = "gpui", test))]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(crate) struct ScreenCopy {
     pub title: String,
@@ -110,6 +113,7 @@ pub(crate) struct ScreenCopy {
 }
 
 /// One label for the card, the role controls, and Identify.
+#[cfg(any(feature = "gpui", test))]
 pub(crate) fn screen_copy(
     locale: Locale,
     monitors: &[MonitorInfo],
@@ -157,10 +161,12 @@ pub(crate) fn screen_copy(
     }
 }
 
+#[cfg(any(feature = "gpui", test))]
 fn is_portrait(monitor: &MonitorInfo) -> bool {
     matches!(monitor.rotation_degrees, 90 | 270) || monitor.native_size.1 > monitor.native_size.0
 }
 
+#[cfg(any(feature = "gpui", test))]
 fn distinct_model(name: &str) -> Option<&str> {
     let trimmed = name.trim();
     let lower = trimmed.to_ascii_lowercase();
@@ -177,6 +183,7 @@ fn distinct_model(name: &str) -> Option<&str> {
     }
 }
 
+#[cfg(any(feature = "gpui", test))]
 fn placement_key(monitors: &[MonitorInfo], monitor: &MonitorInfo) -> Option<&'static str> {
     if monitors.len() < 2 {
         return None;
