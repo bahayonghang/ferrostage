@@ -1,0 +1,12 @@
+    Checking windows-sys v0.61.2
+    Checking chrono v0.4.45
+    Checking ferrostage-core v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-core)
+    Checking lopdf v0.45.0
+    Checking pdfium-render v0.9.4
+    Checking tempfile v3.27.0
+    Checking rusty-fork v0.3.1
+    Checking proptest v1.12.0
+    Checking ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+    Checking ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.84s
+EXIT_CODE=0

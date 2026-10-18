@@ -1,0 +1,33 @@
+{
+  "id": "09-settings-ui",
+  "name": "09-settings-ui",
+  "title": "设置界面：通用/显示器角色分配/讲者布局/计时/指针/快捷键",
+  "description": "仅挂载于讲者窗口的设置界面：显示器拓扑预览与 Identify 覆盖层、角色分配下拉、主题与语言、讲者布局比例、计时器预警、指针与画笔、快捷键编辑、缓存高级项；即时生效并原子保存",
+  "status": "completed",
+  "dev_type": null,
+  "scope": null,
+  "package": null,
+  "priority": "P1",
+  "creator": "lyh",
+  "assignee": "lyh",
+  "createdAt": "2026-10-14",
+  "completedAt": "2026-10-15",
+  "branch": "main",
+  "base_branch": "main",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [],
+  "parent": "10-14-presenter-v0.3",
+  "relatedFiles": [],
+  "notes": "2026-10-15 implementer: I-1..I-5 complete; I-7 automatic PASS107 GPUI/native-loader,37 native suite,162 just-ci incl deny,strict feature lint and final gpui,pdfium build. Ready for independent check. I-6 and composite native matrix deferred by user. Uncommitted/unarchived. See research/implementation-report.md and build-identity.json. Latest2026-10-15: user authorized commit/archive of completed implementation; parent retains NOT_RUN/NOT_VERIFIED/PARTIAL native and deferred qualification. No push.",
+  "meta": {
+    "implementation_status": "complete",
+    "automatic_checks": "passed",
+    "native_remaining": "bounded_core_observed_remaining_not_run_or_unverified",
+    "completion_scope": "implementation_and_independent_checks_with_bounded_core_native",
+    "remaining_acceptance_owner": "10-14-presenter-v0.3",
+    "archive_authorization": "explicit_user_2026-10-15"
+  }
+}

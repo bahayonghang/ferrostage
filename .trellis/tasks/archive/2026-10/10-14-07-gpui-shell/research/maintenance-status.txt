@@ -1,0 +1,85 @@
+2026-10-14: User approved isolated maintenance evaluation; product/policy unchanged.
+RUNNING: cargo fetch --manifest-path cache/gpui-maintenance-candidate/Cargo.toml (primary-source API inspection inputs; not final candidate graph)
+INITIAL FETCH EXIT: 101
+RUNNING: approved retry cargo fetch --manifest-path cache/gpui-maintenance-candidate/Cargo.toml
+FETCH EXIT: 0
+PREPARE EXIT: 0; candidate uses exact resvg/usvg0.48.1 patch release, preserving SVGZ feature explicitly
+RUNNING: cargo build --manifest-path cache/gpui-maintenance-candidate/Cargo.toml
+INITIAL BUILD EXIT: 101
+RUNNING: approved retry cargo build --manifest-path cache/gpui-maintenance-candidate/Cargo.toml
+BUILD EXIT: 0
+RUNNING: cargo test --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --locked --offline --test image
+IMAGE TEST EXIT: 0
+RUNNING: cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/gpui/Cargo.toml --offline --target-dir cache/gpui-maintenance-candidate/target --lib svg_renderer
+INITIAL SVG TEST EXIT: 101
+RUNNING: approved cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/gpui/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --no-default-features --lib svg_renderer
+SVG TEST EXIT: 0
+RUNNING: cargo deny --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --config deny.toml --locked --offline check
+INITIAL DENY EXIT: 1
+RUNNING: approved retry cargo deny --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --config deny.toml --locked --offline check
+STAGE1 DENY EXIT: 5
+RUNNING: cargo test --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --offline --tests (stage2 cosmic/fontdb patch and recorded EXR fixtures)
+HARNESS TEST EXIT: 0
+RUNNING: cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/pulp/Cargo.toml --offline --target-dir cache/gpui-maintenance-candidate/target --lib
+pulp INITIAL UPSTREAM TEST EXIT: 101
+RUNNING: cargo test --manifest-path cache/gpui-maintenance-candidate/validation/fontdb/Cargo.toml --offline --target-dir cache/gpui-maintenance-candidate/target --tests
+fontdb INITIAL UPSTREAM TEST EXIT: 101
+RUNNING: cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/cosmic-text/Cargo.toml --offline --target-dir cache/gpui-maintenance-candidate/target --lib
+cosmic INITIAL UPSTREAM TEST EXIT: 101
+RUNNING: cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/pulp/Cargo.toml --offline --target-dir cache/gpui-maintenance-candidate/target --lib
+pulp UPSTREAM TEST EXIT: 101
+RUNNING: cargo test --manifest-path cache/gpui-maintenance-candidate/validation/fontdb/Cargo.toml --offline --target-dir cache/gpui-maintenance-candidate/target --tests
+fontdb UPSTREAM TEST EXIT: 101
+RUNNING: cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/cosmic-text/Cargo.toml --offline --target-dir cache/gpui-maintenance-candidate/target --lib
+cosmic UPSTREAM TEST EXIT: 101
+RUNNING: approved cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/pulp/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --lib
+pulp RETRY UPSTREAM TEST EXIT: 0
+RUNNING: approved cargo test --manifest-path cache/gpui-maintenance-candidate/validation/fontdb/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --tests
+fontdb RETRY UPSTREAM TEST EXIT: 0
+RUNNING: approved cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/cosmic-text/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --lib
+cosmic RETRY UPSTREAM TEST EXIT: 0
+RUNNING: cargo build --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --locked --offline
+final-build EXIT: 0
+RUNNING: cargo clippy --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --all-targets --locked --offline -- -D warnings
+clippy EXIT: 0
+RUNNING: cargo clippy --manifest-path cache/gpui-maintenance-candidate/vendor/gpui/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --no-default-features --lib --offline -- -D warnings
+gpui-clippy EXIT: 101
+RUNNING: cargo check --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --all-targets --locked --offline
+typecheck EXIT: 0
+RUNNING: cargo deny --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --config deny.toml --locked --offline check (stage2 complete graph)
+FINAL DENY EXIT: 4
+PHI PROOF COMPILE EXIT: 1
+RUNNING: rustc --edition=2024 maintenance-golden-ratio-proof.rs -o cache/gpui-maintenance-candidate/artifacts/golden-ratio-proof.exe; then execute the one-shot proof
+GOLDEN_RATIO PROOF COMPILE EXIT: 0
+GOLDEN_RATIO PROOF RUN EXIT: 0
+RUNNING: cargo clippy --manifest-path cache/gpui-maintenance-candidate/vendor/gpui/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --no-default-features --lib --locked --offline -- -D warnings (GOLDEN_RATIO compatibility patch)
+GPUI CLIPPY RETRY EXIT: 101
+CORRECTION: preparation preceding GPUI CLIPPY RETRY failed (git -C cache source Permission denied,128 / Python1); the shell continued and clippy tested unchanged original geometry. Retry log101 is valid failure, not patched-code evidence. Preparation now validates HEAD/ref through read-only file access.
+FINAL PREPARE EXIT: 0
+RUNNING: cargo clippy --manifest-path cache/gpui-maintenance-candidate/vendor/gpui/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --no-default-features --lib --locked --offline -- -D warnings (prepared bit-identical GOLDEN_RATIO patch)
+FINAL GPUI CLIPPY EXIT: 0
+RUNNING: rustfmt --check --edition 2024 candidate modified Rust files + retained harness sources
+FORMAT EXIT: 0
+RUNNING: cargo check --manifest-path cache/gpui-maintenance-candidate/Cargo.toml -p gpui_wgpu --locked --offline (Windows-host consumer API compile, no native Web/Apple acceptance)
+WGPU HOST TYPECHECK EXIT: 101
+RUNNING: git --no-optional-locks -C tagged-source diff --exit-code exact-revision -- copied/manifest/font paths (source byte validation)
+TAG SOURCE INITIAL EXIT: 128
+RUNNING: approved read-only tagged-source git diff/status exact copied/manifest/font path set
+TAG SOURCE DIFF EXIT: 0
+TAG SOURCE STATUS EXIT: 0
+RUNNING: cargo check --manifest-path cache/gpui-maintenance-candidate/validation/wgpu-consumer/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --offline (direct consumer API compile)
+WGPU CONSUMER TYPECHECK EXIT: 0
+RUNNING: cargo tree --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --locked --offline --target all -e normal,build,dev
+TREE ALL EXIT: 0
+RUNNING: cargo tree --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --locked --offline --target x86_64-pc-windows-msvc -e normal,build
+TREE WINDOWS EXIT: 0
+RUNNING: cargo tree --manifest-path cache/gpui-maintenance-candidate/validation/wgpu-consumer/Cargo.toml --locked --offline --target x86_64-pc-windows-msvc -e normal,build
+TREE WGPU CONSUMER EXIT: 0
+RUNNING: cargo build --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --locked --offline (final source)
+FINAL SOURCE BUILD EXIT: 0
+RUNNING: cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/gpui/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --no-default-features --lib svg_renderer --locked --offline (final source)
+FINAL SOURCE SVG TEST EXIT: 0
+RUNNING: cargo clippy --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --all-targets --locked --offline -- -D warnings (final source)
+FINAL SOURCE CLIPPY EXIT: 0
+FORMAT EXACT ARGV (completed exit0 above): rustfmt --check --edition 2024 cache/gpui-maintenance-candidate/vendor/gpui/src/svg_renderer.rs cache/gpui-maintenance-candidate/vendor/gpui/src/geometry.rs .trellis/tasks/10-14-07-gpui-shell/research/maintenance-svg-tests.rs .trellis/tasks/10-14-07-gpui-shell/research/maintenance-regression-image.rs .trellis/tasks/10-14-07-gpui-shell/research/maintenance-regression-fonts.rs .trellis/tasks/10-14-07-gpui-shell/research/maintenance-golden-ratio-proof.rs
+WORKSPACE DIFF CHECK EXIT: 0

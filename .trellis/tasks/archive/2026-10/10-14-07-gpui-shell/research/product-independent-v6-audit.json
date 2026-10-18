@@ -1,0 +1,65 @@
+{
+  "captured_utc": "2026-10-15T02:34:00.804145+00:00",
+  "command": "python .trellis/tasks/10-14-07-gpui-shell/research/product-independent-v6-audit.py",
+  "scope": "Integrity and retained-evidence review only. No native launch or Cargo rerun; no Gate B acceptance.",
+  "freeze_sha256": "b7df3a62ff2b1b7212924e47f79d72468ff86356265a1aaf650c0694adb6d7ea",
+  "source_snapshot_sha256": "b71eb54d7da71f9b30ac5ab3bdb58fc1ada637bf2991adde10041f0a172170be",
+  "source_files_verified": 602,
+  "source_mismatches": [],
+  "v5_to_v6_delta": {
+    "crates/ferrostage-ui/src/presenter.rs": {
+      "v5": "a42c0cbe5ed6ec594354d30f42ecaec0058be57cbce6c1a7e54e3ffd569eb6f9",
+      "v6": "49e3662d3e59ed1eb29b01aff95b808b1d82febe34eea2d0624307af4375b6c0"
+    },
+    "crates/ferrostage-ui/src/shell.rs": {
+      "v5": "3ef506a2ebf70b62f4589c711ebf8a429e4e15c746233bb5e3fa6b7d57857099",
+      "v6": "4ec7f6738d5a83685e469ac5a3d7ffb3aa802a425bc0a70ebc61234410dcdfb0"
+    }
+  },
+  "v5_source_baselines_match": {
+    "presenter": true,
+    "shell": true
+  },
+  "current_crate_files": 94,
+  "unlisted_crate_files": [],
+  "binary_sha256": "d4f2e653ee793176b384034797ad99e1ad665aa0da6535a454ba88a36b055074",
+  "native_v5_manifest_sha256": "ddfec0154c3dfe6731eb08b2c5dcf4b9b27c2a49ccfd54589a05f2ed295d73d0",
+  "native_v5_records_verified": 108,
+  "native_v5_mismatches": [],
+  "implementation_manifest_sha256": "dac5512c8887bbb3278e0b9c68fc8a622731fbc40eea187aa7dfef090a40912c",
+  "implementation_records_verified": 26,
+  "implementation_mismatches": [],
+  "vendor_records_verified": 498,
+  "vendor_mismatches": [],
+  "default_test_counts": [
+    0,
+    4,
+    28,
+    5,
+    0,
+    1,
+    11,
+    22,
+    2,
+    0,
+    16,
+    0,
+    0,
+    38,
+    18
+  ],
+  "default_test_total": 145,
+  "freeze_bound_build_log": {
+    "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-v6-build.log",
+    "resolved_path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-v6-build.log",
+    "bytes": 533,
+    "sha256": "1b5d62f419c55a136979d171b24c63eb3742ae4906f0f7fd5a1c0d19937aa9aa"
+  },
+  "freeze_bound_clippy_log": {
+    "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-v6-clippy.log",
+    "resolved_path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-v6-clippy.log",
+    "bytes": 533,
+    "sha256": "e7ae579c59184cd785e444f5cf6f2987ffb8a0a733051f96982c99c1d1747450"
+  },
+  "exit_code": 0
+}

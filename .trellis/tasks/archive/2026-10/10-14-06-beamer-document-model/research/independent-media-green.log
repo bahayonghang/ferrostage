@@ -1,0 +1,16 @@
+   Compiling ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.03s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_pdf-e11c5b4e2820dfd0.exe)
+
+running 8 tests
+test structure::tests::rect_transform_all_rotations_and_clipping ... ok
+test structure::tests::authored_media_paths_times_and_inherited_geometry ... ok
+test structure::tests::actual_beamer_movie_fixture_emits_scaled_times ... ok
+test structure::tests::richmedia_selection_membership_and_screen_precedence_are_explicit ... ok
+test structure::tests::movie_title_targets_must_be_unique_and_action_overrides_take_precedence ... ok
+test structure::tests::movie_action_unsupported_parameters_are_diagnosed ... ok
+test structure::tests::malformed_embedded_file_dictionary_does_not_become_an_external_source ... ok
+test structure::tests::malformed_geometry_and_unresolved_actions_are_reported ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.01s
+

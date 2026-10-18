@@ -1,0 +1,11 @@
+{
+  "checked_utc": "2026-10-15T04:24:41.386047+00:00",
+  "status": "PASS",
+  "source_count": 609,
+  "source_hash": "c878f413d947d2933c3569b84b399f5888a009e72e99eaf42060aec6428a5f4f",
+  "binary_sha256": "d30138eb0bc8d90cfbf2b7044d781eaac144afe187dbfd2060f28e40cd9406da",
+  "freeze_sha256": "4bd0a8840a4eeb6ca8d3be1976f8fe527eadd9c8c5851a61c4a2bf101f2a4130",
+  "evidence_count": 44,
+  "evidence_manifest_sha256": "31472fa60cb84d85a5350be6e1f4bc3af478f3d3733f560b8f4635babf250080",
+  "mismatches": []
+}

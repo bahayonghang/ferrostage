@@ -1,0 +1,96 @@
+{
+  "utc": "2026-10-15T03:52:46.485582+00:00",
+  "scope": "Existing parent and eleven children context validation after independent display-assignment planning review; not product/native acceptance",
+  "results": [
+    {
+      "task": ".trellis/tasks/10-14-presenter-v0.3",
+      "status": "planning",
+      "exit_code": 0,
+      "stdout": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-presenter-v0.3\n\n  \u001b[1;33mimplement.jsonl:6: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33219 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (19 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:4: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33219 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (20 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n",
+      "stderr": ""
+    },
+    {
+      "task": ".trellis/tasks/archive/2026-10/10-14-01-docs-sync",
+      "status": "completed",
+      "exit_code": 0,
+      "stdout": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-01-docs-sync\n\n  \u001b[1;33mimplement.jsonl:4: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33219 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (9 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:4: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33219 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (9 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n",
+      "stderr": ""
+    },
+    {
+      "task": ".trellis/tasks/archive/2026-10/10-14-02-settings-schema",
+      "status": "completed",
+      "exit_code": 0,
+      "stdout": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-02-settings-schema\n\n  \u001b[1;33mimplement.jsonl:9: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33219 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (16 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:6: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33219 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (13 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n",
+      "stderr": ""
+    },
+    {
+      "task": ".trellis/tasks/10-14-03-monitor-topology",
+      "status": "in_progress",
+      "exit_code": 0,
+      "stdout": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-03-monitor-topology\n\n  \u001b[1;33mimplement.jsonl:9: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33219 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (18 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:6: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33219 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (15 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n",
+      "stderr": ""
+    },
+    {
+      "task": ".trellis/tasks/archive/2026-10/10-14-04-session-lifecycle",
+      "status": "completed",
+      "exit_code": 0,
+      "stdout": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-04-session-lifecycle\n\n  \u001b[1;33mimplement.jsonl:11: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33219 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (18 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:7: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33219 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (14 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n",
+      "stderr": ""
+    },
+    {
+      "task": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster",
+      "status": "completed",
+      "exit_code": 0,
+      "stdout": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-05-pdf-raster\n\n  \u001b[1;33mimplement.jsonl:8: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33219 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (16 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:5: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33219 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (13 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n",
+      "stderr": ""
+    },
+    {
+      "task": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model",
+      "status": "completed",
+      "exit_code": 0,
+      "stdout": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-06-beamer-document-model\n\n  \u001b[1;33mimplement.jsonl:10: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33219 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (20 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:6: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33219 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (16 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n",
+      "stderr": ""
+    },
+    {
+      "task": ".trellis/tasks/10-14-07-gpui-shell",
+      "status": "in_progress",
+      "exit_code": 0,
+      "stdout": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\n\n  \u001b[1;33mimplement.jsonl:11: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33219 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[1;33mimplement.jsonl:17: Warning: .trellis/tasks/10-14-07-gpui-shell/implement.md is 50716 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (37 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:5: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33219 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[1;33mcheck.jsonl:11: Warning: .trellis/tasks/10-14-07-gpui-shell/implement.md is 50716 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (39 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n",
+      "stderr": ""
+    },
+    {
+      "task": ".trellis/tasks/10-14-08-presenter-workbench",
+      "status": "planning",
+      "exit_code": 0,
+      "stdout": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-08-presenter-workbench\n\n  \u001b[1;33mimplement.jsonl:10: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33219 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (21 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:5: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33219 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (17 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n",
+      "stderr": ""
+    },
+    {
+      "task": ".trellis/tasks/10-14-09-settings-ui",
+      "status": "planning",
+      "exit_code": 0,
+      "stdout": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-09-settings-ui\n\n  \u001b[1;33mimplement.jsonl:11: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33219 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (23 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:5: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33219 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (18 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n",
+      "stderr": ""
+    },
+    {
+      "task": ".trellis/tasks/10-14-10-hot-reload",
+      "status": "planning",
+      "exit_code": 0,
+      "stdout": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-10-hot-reload\n\n  \u001b[1;33mimplement.jsonl:9: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33219 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (22 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:5: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33219 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (18 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n",
+      "stderr": ""
+    },
+    {
+      "task": ".trellis/tasks/10-14-11-media-playback",
+      "status": "planning",
+      "exit_code": 0,
+      "stdout": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-11-media-playback\n\n  \u001b[1;33mimplement.jsonl:11: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33219 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (21 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:7: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33219 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (17 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n",
+      "stderr": ""
+    }
+  ],
+  "diff_check": {
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "warning: in the working copy of '.trellis/tasks/10-14-03-monitor-topology/design.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-03-monitor-topology/implement.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-03-monitor-topology/prd.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-07-gpui-shell/check.jsonl', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-07-gpui-shell/design.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-07-gpui-shell/implement.jsonl', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-07-gpui-shell/implement.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-07-gpui-shell/prd.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-08-presenter-workbench/design.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-08-presenter-workbench/implement.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-08-presenter-workbench/prd.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-09-settings-ui/design.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-09-settings-ui/implement.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-09-settings-ui/prd.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/design.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/execution-state.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/implement.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/implementation-prompts.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/next-session-prompt.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/prd.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/traceability.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'DESIGN.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'crates/ferrostage-app/src/main.rs', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'crates/ferrostage-ui/src/shell.rs', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'docs/PROJECT_PLAN.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'docs/feature-parity.md', LF will be replaced by CRLF the next time Git touches it\n"
+  },
+  "archived_or_task_metadata_diff": ""
+}

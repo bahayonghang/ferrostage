@@ -1,0 +1,11 @@
+{
+  "file": "reload-green-chunked.pdf",
+  "bytes": 4357120,
+  "sha256": "8c0316e0f67d974ab69fa57ac964a7357f47a9cc94f902eda03ae48db0c96738",
+  "chunk_bytes": 65536,
+  "delay_per_chunk_ms": 50,
+  "chunks": 67,
+  "source_unchanged": true,
+  "pages_and_content_readback": "PASS",
+  "product_parse_render_reload": "NOT_RUN"
+}

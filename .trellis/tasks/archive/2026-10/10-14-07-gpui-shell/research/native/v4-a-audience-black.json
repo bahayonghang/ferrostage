@@ -1,0 +1,19 @@
+{
+  "capturedAt": "2026-10-15T01:38:24.805Z",
+  "window": {
+    "app": "process:D:\\mbx-cache\\targets\\v1\\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0\\debug\\ferrostage.exe",
+    "id": 83432310
+  },
+  "accessibility": null,
+  "screenshots": [
+    {
+      "file": "v4-a-audience-black-0.jpg",
+      "sha256": "45e964aa1ee44fde370174b535b89af2c15940297464cfef11e735d1a06c7068",
+      "id": "screenshot-0",
+      "width": 1707,
+      "height": 1067,
+      "originX": -2560,
+      "originY": -169
+    }
+  ]
+}

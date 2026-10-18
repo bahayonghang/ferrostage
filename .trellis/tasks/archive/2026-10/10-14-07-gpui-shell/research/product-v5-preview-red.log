@@ -1,0 +1,47 @@
+warning: function `shape` is never used
+   --> vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `harfrust` (lib) generated 1 warning
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+warning: unused variable: `cx`
+    --> crates\ferrostage-ui\src\shell.rs:1488:34
+     |
+1488 |         shell.update(cx, |shell, cx| {
+     |                                  ^^ help: if this is intentional, prefix it with an underscore: `_cx`
+     |
+     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `ferrostage-ui` (lib test) generated 1 warning (run `cargo fix --lib -p ferrostage-ui --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.08s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-f6f69bc716fb3e17.exe)
+
+running 2 tests
+test shell::tests::v5_swap_failure_discards_abandoned_jump_preview ... FAILED
+test shell::tests::v5_stop_discards_jump_preview_before_following_navigation ... FAILED
+
+failures:
+
+---- shell::tests::v5_swap_failure_discards_abandoned_jump_preview stdout ----
+
+thread 'shell::tests::v5_swap_failure_discards_abandoned_jump_preview' (167300) panicked at crates\ferrostage-ui\src\shell.rs:1527:13:
+assertion failed: shell.state.jump_preview().is_none()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- shell::tests::v5_stop_discards_jump_preview_before_following_navigation stdout ----
+
+thread 'shell::tests::v5_stop_discards_jump_preview_before_following_navigation' (45652) panicked at crates\ferrostage-ui\src\shell.rs:1499:13:
+assertion failed: shell.state.jump_preview().is_none()
+
+
+failures:
+    shell::tests::v5_stop_discards_jump_preview_before_following_navigation
+    shell::tests::v5_swap_failure_discards_abandoned_jump_preview
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 39 filtered out; finished in 0.02s
+
+error: test failed, to rerun pass `-p ferrostage-ui --lib`

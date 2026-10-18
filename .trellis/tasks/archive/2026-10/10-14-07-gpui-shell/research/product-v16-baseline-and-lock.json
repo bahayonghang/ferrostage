@@ -1,0 +1,42 @@
+{
+  "v15_freeze_sha256": "0d6a9c2a7bbb10fe6f6c7d24e7c4f7faf10340d456fd5185fdfe631acdc4370f",
+  "v15_source_precheck": "622/622 matched before adoption, as recorded in session tool output",
+  "unchanged_v15_artifacts": {
+    "binary": "006904815a9a3b0af5367e234442bbd6b18f61c37ff8f0e22b48ca3d3c775dbe",
+    "fixture": "e939e35f931c184fd93b2e9b95e560db73ba6a6f6dfccbb0963262f0b359dfeb",
+    "pdfium": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118"
+  },
+  "final_lock_sha256": "575780195da7f12f5a62f15eeb97edfebd5521db5c9510501e29e29fbe6e259e",
+  "package_count": 744,
+  "changes": [
+    {
+      "before": {
+        "name": "accesskit_windows",
+        "version": "0.34.0",
+        "source": "registry+https://github.com/rust-lang/crates.io-index",
+        "checksum": "106c2b961215864d1c2e703ee63269c25c4e80a577ffb2c1017b9c17dcdf83a1",
+        "dependencies": [
+          "accesskit",
+          "accesskit_consumer",
+          "hashbrown 0.16.1",
+          "static_assertions",
+          "windows 0.62.2",
+          "windows-core 0.62.2"
+        ]
+      },
+      "after": {
+        "name": "accesskit_windows",
+        "version": "0.34.0",
+        "dependencies": [
+          "accesskit",
+          "accesskit_consumer",
+          "hashbrown 0.16.1",
+          "static_assertions",
+          "windows 0.62.2",
+          "windows-core 0.62.2"
+        ]
+      }
+    }
+  ],
+  "intermediate_resolver_drift": "Initial cargo update rewrote three unrelated dependency edges. Preserved product-v16-lock-before-tightening.txt; restored those edges before final-lock checks. No version/dependency change retained."
+}

@@ -1,0 +1,138 @@
+{
+  "captured_utc": "2026-10-15T00:18:21.170710+00:00",
+  "meaning": "Context file validity only, not implementation or native acceptance.",
+  "tasks": [
+    {
+      "task": "10-14-01-docs-sync",
+      "command": [
+        "python",
+        ".trellis/scripts/task.py",
+        "validate",
+        ".trellis/tasks/10-14-01-docs-sync"
+      ],
+      "exit": 0,
+      "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-01-docs-sync\n\n  \u001b[0;32mimplement.jsonl: ✓ (9 entries)\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (9 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n"
+    },
+    {
+      "task": "10-14-02-settings-schema",
+      "command": [
+        "python",
+        ".trellis/scripts/task.py",
+        "validate",
+        ".trellis/tasks/10-14-02-settings-schema"
+      ],
+      "exit": 0,
+      "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-02-settings-schema\n\n  \u001b[0;32mimplement.jsonl: ✓ (16 entries)\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (13 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n"
+    },
+    {
+      "task": "10-14-03-monitor-topology",
+      "command": [
+        "python",
+        ".trellis/scripts/task.py",
+        "validate",
+        ".trellis/tasks/10-14-03-monitor-topology"
+      ],
+      "exit": 0,
+      "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-03-monitor-topology\n\n  \u001b[0;32mimplement.jsonl: ✓ (17 entries)\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (14 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n"
+    },
+    {
+      "task": "10-14-04-session-lifecycle",
+      "command": [
+        "python",
+        ".trellis/scripts/task.py",
+        "validate",
+        ".trellis/tasks/10-14-04-session-lifecycle"
+      ],
+      "exit": 0,
+      "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-04-session-lifecycle\n\n  \u001b[0;32mimplement.jsonl: ✓ (18 entries)\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (14 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n"
+    },
+    {
+      "task": "10-14-05-pdf-raster",
+      "command": [
+        "python",
+        ".trellis/scripts/task.py",
+        "validate",
+        ".trellis/tasks/10-14-05-pdf-raster"
+      ],
+      "exit": 0,
+      "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-05-pdf-raster\n\n  \u001b[0;32mimplement.jsonl: ✓ (16 entries)\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (13 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n"
+    },
+    {
+      "task": "10-14-06-beamer-document-model",
+      "command": [
+        "python",
+        ".trellis/scripts/task.py",
+        "validate",
+        ".trellis/tasks/10-14-06-beamer-document-model"
+      ],
+      "exit": 0,
+      "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-06-beamer-document-model\n\n  \u001b[0;32mimplement.jsonl: ✓ (20 entries)\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (16 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n"
+    },
+    {
+      "task": "10-14-07-gpui-shell",
+      "command": [
+        "python",
+        ".trellis/scripts/task.py",
+        "validate",
+        ".trellis/tasks/10-14-07-gpui-shell"
+      ],
+      "exit": 0,
+      "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\n\n  \u001b[0;32mimplement.jsonl: ✓ (32 entries)\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (29 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n"
+    },
+    {
+      "task": "10-14-08-presenter-workbench",
+      "command": [
+        "python",
+        ".trellis/scripts/task.py",
+        "validate",
+        ".trellis/tasks/10-14-08-presenter-workbench"
+      ],
+      "exit": 0,
+      "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-08-presenter-workbench\n\n  \u001b[0;32mimplement.jsonl: ✓ (20 entries)\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (16 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n"
+    },
+    {
+      "task": "10-14-09-settings-ui",
+      "command": [
+        "python",
+        ".trellis/scripts/task.py",
+        "validate",
+        ".trellis/tasks/10-14-09-settings-ui"
+      ],
+      "exit": 0,
+      "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-09-settings-ui\n\n  \u001b[0;32mimplement.jsonl: ✓ (22 entries)\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (17 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n"
+    },
+    {
+      "task": "10-14-10-hot-reload",
+      "command": [
+        "python",
+        ".trellis/scripts/task.py",
+        "validate",
+        ".trellis/tasks/10-14-10-hot-reload"
+      ],
+      "exit": 0,
+      "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-10-hot-reload\n\n  \u001b[0;32mimplement.jsonl: ✓ (22 entries)\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (18 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n"
+    },
+    {
+      "task": "10-14-11-media-playback",
+      "command": [
+        "python",
+        ".trellis/scripts/task.py",
+        "validate",
+        ".trellis/tasks/10-14-11-media-playback"
+      ],
+      "exit": 0,
+      "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-11-media-playback\n\n  \u001b[0;32mimplement.jsonl: ✓ (21 entries)\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (17 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n"
+    },
+    {
+      "task": "10-14-presenter-v0.3",
+      "command": [
+        "python",
+        ".trellis/scripts/task.py",
+        "validate",
+        ".trellis/tasks/10-14-presenter-v0.3"
+      ],
+      "exit": 0,
+      "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-presenter-v0.3\n\n  \u001b[0;32mimplement.jsonl: ✓ (18 entries)\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (18 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n"
+    }
+  ]
+}

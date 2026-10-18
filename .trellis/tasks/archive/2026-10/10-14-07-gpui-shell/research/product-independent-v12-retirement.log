@@ -1,0 +1,22 @@
+warning: function `shape` is never used
+   --> vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `harfrust` (lib) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.18s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-22e71ba2dde21bfc.exe)
+
+running 6 tests
+test shell::tests::retirement_v12_app_shutdown_cancels_pending_poll_wake ... ok
+test shell::tests::retirement_v12_nonowner_close_keeps_live_polling ... ok
+test shell::tests::retirement_v12_presenter_close_cancels_pending_poll_wake ... ok
+test shell::tests::retirement_v8_pending_and_retired_close_requests_cannot_quit_replacement ... ok
+test shell::tests::retirement_v8_queued_activation_does_not_visit_removed_window ... ok
+test shell::tests::retirement_v8_user_close_is_deferred_and_stops_projection ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 67 filtered out; finished in 0.05s
+

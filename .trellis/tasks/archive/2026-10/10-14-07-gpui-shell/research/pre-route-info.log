@@ -1,0 +1,30 @@
+    Updating crates.io index
+ Downloading crates ...
+  Downloaded gpui-pre v0.3.9
+gpui-pre #desktop #gui #immediate
+Zed's GPU-accelerated UI framework (gpui-pre snapshot of zed@93d7456)
+version: 0.3.9
+license: Apache-2.0
+rust-version: unknown
+documentation: https://docs.rs/gpui-pre/0.3.9
+homepage: https://gpui.rs
+repository: https://github.com/zed-industries/zed
+crates.io: https://crates.io/crates/gpui-pre/0.3.9
+features:
+ +default          = [font-kit, wayland, x11, windows-manifest]
+  font-kit         = []
+  wayland          = []
+  windows-manifest = [dep:embed-resource]
+  x11              = [scap?/x11]
+  bench            = [bench-support]
+  bench-support    = [profiler, dep:criterion, dep:bench_metrics]
+  inspector        = [gpui_macros/inspector]
+  leak-detection   = []
+  objc2            = [dep:objc2]
+  objc2-metal      = [dep:objc2-metal]
+  profiler         = [dep:hdrhistogram]
+  proptest         = [dep:proptest]
+  scap             = [dep:scap]
+  screen-capture   = [scap]
+  stacker          = [dep:stacksafe]
+  test-support     = [collections/test-support, http_client/test-support, wayland, x11, proptest, dep:futures-concurrency, dep:postage, dep:web-time]

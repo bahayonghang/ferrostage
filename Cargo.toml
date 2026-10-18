@@ -1,5 +1,6 @@
 [workspace]
 resolver = "3"
+exclude = ["vendor/gpui", "vendor/pulp", "vendor/metal", "vendor/cosmic-text", "vendor/harfrust", "vendor/accesskit_windows"]
 members = [
     "crates/ferrostage-app",
     "crates/ferrostage-ui",
@@ -8,6 +9,7 @@ members = [
     "crates/ferrostage-pdf",
     "crates/ferrostage-render",
     "crates/ferrostage-media",
+    "crates/ferrostage-media-helper",
     "crates/ferrostage-platform",
     "crates/ferrostage-settings",
 ]
@@ -28,6 +30,14 @@ ferrostage-media = { path = "crates/ferrostage-media" }
 ferrostage-platform = { path = "crates/ferrostage-platform" }
 ferrostage-settings = { path = "crates/ferrostage-settings" }
 ferrostage-ui = { path = "crates/ferrostage-ui" }
+gpui = { path = "vendor/gpui", default-features = false }
+gpui_platform = { git = "https://github.com/zed-industries/zed", tag = "v1.23.3", default-features = false }
+image = { version = "=0.25.10", default-features = false }
+gstreamer = "=0.25.4"
+gstreamer-app = "=0.25.2"
+gstreamer-video = "=0.25.2"
+chrono = { version = "=0.4.45", default-features = false, features = ["clock"] }
+uuid = { version = "=1.28.0", features = ["v5"] }
 
 # Latest stable crates.io releases as of 2026-10-14.
 # Heavy native / GPUI crates are pinned here but not linked by the default build.
@@ -42,7 +52,10 @@ lopdf = "0.45.0"
 proptest = "1.12.0"
 # notify 8.2.0 is the latest stable (9.0.0 is still a release candidate).
 notify = "8.2.0"
-# pdfium-render 0.9.4 (pdfium_7881). Not a default dependency: it downloads PDFium.
+# Reviewed safe Windows monitor adapters; target-gated by platform.
+winsafe = { version = "=0.0.29", features = ["gdi", "advapi"] }
+# Optional dynamic bindings only; the application supplies the PDFium runtime.
+pdfium-render = { version = "=0.9.4", default-features = false, features = ["pdfium_7881"] }
 # hayro-syntax 0.8.0 (MSRV 1.92). Not linked until the syntax PoC calls a stable API.
 # gpui-kit / gpui-component 0.7.3 (2026-10-12), built on gpui-pre 0.3.9.
 # Zed GPUI git pin: zed-industries/zed tag v1.23.3 (published 2026-10-12).
@@ -53,3 +66,13 @@ unsafe_code = "forbid"
 
 [workspace.lints.clippy]
 all = { level = "warn", priority = -1 }
+
+[patch."https://github.com/zed-industries/zed"]
+gpui = { path = "vendor/gpui" }
+
+[patch.crates-io]
+pulp = { path = "vendor/pulp" }
+metal = { path = "vendor/metal" }
+cosmic-text = { path = "vendor/cosmic-text" }
+harfrust = { path = "vendor/harfrust" }
+accesskit_windows = { path = "vendor/accesskit_windows" }

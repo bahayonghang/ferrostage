@@ -1,0 +1,24 @@
+{
+  "utc": "2026-10-15T07:34:37.609Z",
+  "window": {
+    "app": "process:D:\\mbx-cache\\targets\\v1\\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0\\debug\\ferrostage.exe",
+    "id": 28705952,
+    "title": "raster.pdf — 准备就绪 — FerroStage"
+  },
+  "accessibility": {
+    "focused_element": "68 button 打开 PDF ID: open",
+    "tree": "Window: \"raster.pdf — 准备就绪 — FerroStage\", App: ferrostage.exe.\n\t0 region raster.pdf — 准备就绪 — FerroStage Secondary Actions: Raise\n\t\t1 title bar (settable, string) Value: raster.pdf — 准备就绪 — FerroStage\n\t\t\t2 menu bar System ID: MenuBar\n\t\t\t\t3 menu item System\n\t\t\t4 button Minimize\n\t\t\t5 button Maximize\n\t\t\t6 button Close\n\t\t7 application FerroStage 讲者窗口\n\t\t\t68 button 打开 PDF ID: open\n\t\t\t69 button 设置 ID: settings\n\t\t\t70 button 显示器设置 ID: displays\n\t\t\t71 button raster.pdf ID: recent-0\n\t\t\t72 button 开始演示 ID: start\n\nThe focused UI element is 68 button 打开 PDF ID: open."
+  },
+  "screenshots": [
+    {
+      "height": 631,
+      "id": "screenshot-0",
+      "originX": 592,
+      "originY": 192,
+      "width": 802,
+      "zIndex": 0,
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/native/v14-dark-keyboard-post-cancel-tab-clean-0.jpg",
+      "sha256": "193a06a9f1d5b3d30bb9b47c4bb316c4411c3258a15e5832f405b740185d1d74"
+    }
+  ]
+}

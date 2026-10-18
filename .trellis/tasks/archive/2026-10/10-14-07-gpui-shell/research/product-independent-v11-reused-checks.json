@@ -1,0 +1,107 @@
+{
+  "just-ci": {
+    "argv": [
+      "just",
+      "ci"
+    ],
+    "exit_code": 0,
+    "tests": 150,
+    "completion": [
+      "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.80s",
+      "    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.67s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s",
+      "test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s",
+      "test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+      "test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+      "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 38 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.41s",
+      "test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "advisories ok, bans ok, licenses ok, sources ok"
+    ]
+  },
+  "headless-final": {
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "ferrostage-ui",
+      "--features",
+      "test-support",
+      "--lib",
+      "--locked",
+      "--offline"
+    ],
+    "exit_code": 0,
+    "tests": 70,
+    "completion": [
+      "    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.65s",
+      "test result: ok. 70 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s"
+    ]
+  },
+  "clippy": {
+    "argv": [
+      "cargo",
+      "clippy",
+      "-p",
+      "ferrostage-app",
+      "-p",
+      "ferrostage-ui",
+      "--all-features",
+      "--all-targets",
+      "--locked",
+      "--offline",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "exit_code": 0,
+    "tests": 0,
+    "completion": [
+      "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.24s"
+    ]
+  },
+  "deny": {
+    "argv": [
+      "cargo",
+      "deny",
+      "--all-features",
+      "--locked",
+      "--offline",
+      "check"
+    ],
+    "exit_code": 0,
+    "tests": 0,
+    "completion": [
+      "advisories ok, bans ok, licenses ok, sources ok"
+    ]
+  },
+  "build": {
+    "argv": [
+      "cargo",
+      "build",
+      "-p",
+      "ferrostage-app",
+      "--features",
+      "gpui,pdfium",
+      "--locked",
+      "--offline"
+    ],
+    "exit_code": 0,
+    "tests": 0,
+    "completion": [
+      "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 6.16s"
+    ]
+  },
+  "test_split": {
+    "actual_gpui": 47,
+    "pure": 23
+  }
+}

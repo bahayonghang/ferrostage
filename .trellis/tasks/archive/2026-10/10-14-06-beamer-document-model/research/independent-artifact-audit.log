@@ -1,0 +1,19 @@
+PASS: original implementation manifest SHA and canonical compact-JSON source snapshot match.
+PASS: initial review matched all 117 source/24 evidence entries (recorded at review start).
+PASS: current source changes are exactly the 11 review/coordination-owned paths below.
+.trellis/spec/backend/directory-structure.md
+.trellis/tasks/10-14-06-beamer-document-model/design.md
+.trellis/tasks/10-14-06-beamer-document-model/implement.md
+.trellis/tasks/10-14-06-beamer-document-model/prd.md
+crates/ferrostage-core/src/state/lifecycle_tests.rs
+crates/ferrostage-core/src/state/mapping_tests.rs
+crates/ferrostage-core/src/state.rs
+crates/ferrostage-pdf/src/structure/media.rs
+crates/ferrostage-pdf/src/structure/source.rs
+crates/ferrostage-pdf/src/structure/tests.rs
+docs/beamer-notes.md
+PASS: only media-field-contract.md changed among original evidence; implementation logs and manifest remain intact.
+PASS: all 19 fixture/source and 10 external input hashes still match provenance.
+PASS: 16 task05 frame/native/raster/render files unchanged.
+PASS: final default128/native63, zero failed or ignored.
+PASS: no fixture PDFs modified; no product write/compiler/media-execution path introduced.

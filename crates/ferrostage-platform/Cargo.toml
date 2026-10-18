@@ -9,6 +9,16 @@ rust-version.workspace = true
 
 [dependencies]
 notify.workspace = true
+ferrostage-core.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+
+[target.'cfg(target_os = "windows")'.dependencies]
+winsafe.workspace = true
+
+[dev-dependencies]
+proptest.workspace = true
+ferrostage-settings.workspace = true
 
 [lints]
 workspace = true

@@ -1,0 +1,22 @@
+     Locking 1 package to highest Rust 1.99.0 compatible version
+      Adding cosmic-text v0.19.0 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\vendor\cosmic-text)
+    Checking windows-core v0.62.2
+    Checking pulp v0.22.3 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\vendor\pulp)
+   Compiling gpui v0.2.2 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\vendor\gpui)
+    Checking windows-collections v0.3.2
+    Checking windows-numerics v0.3.1
+    Checking windows-future v0.3.2
+    Checking windows v0.62.2
+    Checking exr v1.74.2
+    Checking image v0.25.10
+error: approximate value of `f{32, 64}::consts::GOLDEN_RATIO` found
+    --> src\geometry.rs:3723:14
+     |
+3723 |     relative(1.618_034)
+     |              ^^^^^^^^^
+     |
+     = help: consider using the constant directly
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#approx_constant
+     = note: `#[deny(clippy::approx_constant)]` on by default
+
+error: could not compile `gpui` (lib) due to 1 previous error

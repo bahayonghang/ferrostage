@@ -1,0 +1,66 @@
+{
+  "at_utc": "2026-10-15T04:55:45.188058+00:00",
+  "scope": "Independent V10 source/automated review only; native acceptance remains Root-owned",
+  "files": {
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v10-check.py": {
+      "bytes": 4015,
+      "sha256": "1823ef5ea009e1ebb6421428fd4905323f07b3e4ae6c2bc1ac93ac5568451e20"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v10-diff.json": {
+      "bytes": 260,
+      "sha256": "1cc09d661f299d4975ad9176c46bb1cae59910694830bec10c65a60421691579"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v10-diff.log": {
+      "bytes": 4557,
+      "sha256": "77fcd39d6f499d9d9aad54bd8fa115ac9acd22cd478b0a479d9c25cea1bdf292"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v10-final-source-identity.json": {
+      "bytes": 543,
+      "sha256": "5a7001d23911cef9ac8c1ff8ff5f5bc6a56855e36362ad6b7b0a67a371597410"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v10-identity.json": {
+      "bytes": 878,
+      "sha256": "de098caacce9c0be934e4fd76e225087e3b5a551f9408552ecc8331b145f6f8c"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v10-lint.json": {
+      "bytes": 434,
+      "sha256": "4a2f1ade0f32d07e4cc7106e850e11a0a839068d292e55b7f01598589dd457e4"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v10-lint.log": {
+      "bytes": 329,
+      "sha256": "74b1f788c689a3e41e2d4c8717234da5dbbaf6b5e5a1af519c6ee1b219debc56"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v10-narrow.json": {
+      "bytes": 425,
+      "sha256": "d32dcfd7132b9cd5939c429b3eb4550f1118b121d8577ac861af755c102f78c1"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v10-narrow.log": {
+      "bytes": 616,
+      "sha256": "52261f840f8ec2e165fa5d62e97669ebafe43b34e99e561a1f3d940f4725d23b"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v10-placement.json": {
+      "bytes": 431,
+      "sha256": "bc55db0b415d4e08a8d7f59771bf6c16e89c626320868a484045372e742a538d"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v10-placement.log": {
+      "bytes": 880,
+      "sha256": "3cb608c0522b4f1cdafacbb2a4f2fddbca33f638876cc6c810de2fe3fe7dfe3c"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v10-reused-checks.json": {
+      "bytes": 3509,
+      "sha256": "9c9a50fa61c3c9468229473dacb4956002bcd42ea5269cfe54ef4d44c82dc58f"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v10-review.md": {
+      "bytes": 7899,
+      "sha256": "52a23faa6136385a225ea615fcd0e8bf3abb6bfee6261fe3ccb3db69f096ce96"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v10-types.json": {
+      "bytes": 395,
+      "sha256": "b34c00e3661468469ba572b70c6dfd346c2c17c17699e4150b61834764163987"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v10-types.log": {
+      "bytes": 521,
+      "sha256": "51d2a4fcb4dd3a4108a3a906f1bcfe8e47f2a14bf1b85e68775b2f8462c24bf1"
+    }
+  }
+}

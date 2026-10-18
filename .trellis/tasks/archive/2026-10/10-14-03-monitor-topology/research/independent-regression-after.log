@@ -1,0 +1,10 @@
+    Blocking waiting for file lock on package cache
+   Compiling ferrostage-platform v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-platform)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.10s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_platform-1201f670d6354736.exe)
+
+running 1 test
+test windows::tests::every_required_native_mode_field_must_be_present ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 21 filtered out; finished in 0.00s
+

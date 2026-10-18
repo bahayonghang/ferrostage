@@ -1,0 +1,32 @@
+    Checking byteorder v1.5.0
+    Checking log v0.4.34
+    Checking widestring v1.2.1
+    Checking windows-sys v0.61.2
+    Checking windows-strings v0.5.1
+    Checking windows-result v0.4.1
+    Checking tracing-core v0.1.36
+    Checking windows-threading v0.2.1
+    Checking scopeguard v1.2.0
+    Checking winsafe v0.0.29
+    Checking thiserror v2.0.21
+    Checking serde v1.0.229
+    Checking windows-core v0.62.2
+    Checking fxhash v0.2.1
+    Checking tracing v0.1.44
+    Checking windows-future v0.3.2
+    Checking windows-numerics v0.3.1
+    Checking windows-collections v0.3.2
+    Checking ferrostage-core v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-core)
+    Checking winapi-util v0.1.11
+    Checking tempfile v3.27.0
+    Checking ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+    Checking same-file v1.0.6
+    Checking windows v0.62.2
+    Checking rusty-fork v0.3.1
+    Checking ferrostage-settings v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-settings)
+    Checking walkdir v2.5.0
+    Checking proptest v1.12.0
+    Checking notify v8.2.0
+    Checking display-info v0.5.9
+    Checking ferrostage-platform v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-platform)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 9.08s

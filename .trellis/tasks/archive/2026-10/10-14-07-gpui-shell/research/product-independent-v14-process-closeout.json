@@ -1,0 +1,10 @@
+{
+  "captured_utc": "2026-10-15T07:10:51.6227052Z",
+  "process_names": [
+    "cargo.exe",
+    "rustc.exe",
+    "ferrostage.exe"
+  ],
+  "processes": [],
+  "status": "EMPTY"
+}

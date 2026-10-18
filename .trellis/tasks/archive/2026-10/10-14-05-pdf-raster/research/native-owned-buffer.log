@@ -1,0 +1,22 @@
+   Compiling ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+   Compiling ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.09s
+     Running tests\native.rs (target\debug\deps\native-61f55e3b4dfd6f6e.exe)
+
+running 1 test
+
+thread 'native_golden_and_transaction' (153184) panicked at crates\ferrostage-render\tests\native.rs:79:5:
+assertion failed: matches!(RenderHandle::spawn(changed, CacheBudgets::default()),
+    Err(RenderError::Pdf(PdfError::RuntimeConfigurationChanged)))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test native_golden_and_transaction ... FAILED
+
+failures:
+
+failures:
+    native_golden_and_transaction
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.20s
+
+error: test failed, to rerun pass `-p ferrostage-render --test native`
+EXIT_CODE=101

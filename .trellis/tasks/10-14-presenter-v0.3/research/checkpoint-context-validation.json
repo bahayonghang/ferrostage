@@ -1,0 +1,126 @@
+{
+  "captured_utc": "2026-10-14T17:35:13.097265+00:00",
+  "checks": [
+    {
+      "directory": ".trellis/tasks/10-14-presenter-v0.3",
+      "status": "planning",
+      "exit": 0
+    },
+    {
+      "directory": ".trellis/tasks/10-14-01-docs-sync",
+      "status": "in_progress",
+      "exit": 0
+    },
+    {
+      "directory": ".trellis/tasks/10-14-02-settings-schema",
+      "status": "in_progress",
+      "exit": 0
+    },
+    {
+      "directory": ".trellis/tasks/10-14-03-monitor-topology",
+      "status": "in_progress",
+      "exit": 0
+    },
+    {
+      "directory": ".trellis/tasks/10-14-04-session-lifecycle",
+      "status": "in_progress",
+      "exit": 0
+    },
+    {
+      "directory": ".trellis/tasks/10-14-05-pdf-raster",
+      "status": "in_progress",
+      "exit": 0
+    },
+    {
+      "directory": ".trellis/tasks/10-14-06-beamer-document-model",
+      "status": "in_progress",
+      "exit": 0
+    },
+    {
+      "directory": ".trellis/tasks/10-14-07-gpui-shell",
+      "status": "in_progress",
+      "exit": 0
+    },
+    {
+      "directory": ".trellis/tasks/10-14-08-presenter-workbench",
+      "status": "planning",
+      "exit": 0
+    },
+    {
+      "directory": ".trellis/tasks/10-14-09-settings-ui",
+      "status": "planning",
+      "exit": 0
+    },
+    {
+      "directory": ".trellis/tasks/10-14-10-hot-reload",
+      "status": "planning",
+      "exit": 0
+    },
+    {
+      "directory": ".trellis/tasks/10-14-11-media-playback",
+      "status": "planning",
+      "exit": 0
+    }
+  ],
+  "child_count": 11,
+  "unique_child_count": 11,
+  "parent_links": [
+    {
+      "directory": "10-14-01-docs-sync",
+      "parent": "10-14-presenter-v0.3",
+      "match": true
+    },
+    {
+      "directory": "10-14-02-settings-schema",
+      "parent": "10-14-presenter-v0.3",
+      "match": true
+    },
+    {
+      "directory": "10-14-03-monitor-topology",
+      "parent": "10-14-presenter-v0.3",
+      "match": true
+    },
+    {
+      "directory": "10-14-04-session-lifecycle",
+      "parent": "10-14-presenter-v0.3",
+      "match": true
+    },
+    {
+      "directory": "10-14-05-pdf-raster",
+      "parent": "10-14-presenter-v0.3",
+      "match": true
+    },
+    {
+      "directory": "10-14-06-beamer-document-model",
+      "parent": "10-14-presenter-v0.3",
+      "match": true
+    },
+    {
+      "directory": "10-14-07-gpui-shell",
+      "parent": "10-14-presenter-v0.3",
+      "match": true
+    },
+    {
+      "directory": "10-14-08-presenter-workbench",
+      "parent": "10-14-presenter-v0.3",
+      "match": true
+    },
+    {
+      "directory": "10-14-09-settings-ui",
+      "parent": "10-14-presenter-v0.3",
+      "match": true
+    },
+    {
+      "directory": "10-14-10-hot-reload",
+      "parent": "10-14-presenter-v0.3",
+      "match": true
+    },
+    {
+      "directory": "10-14-11-media-playback",
+      "parent": "10-14-presenter-v0.3",
+      "match": true
+    }
+  ],
+  "all_pass": true,
+  "boundary": "Only task context and tree links. No technical acceptance inferred."
+}

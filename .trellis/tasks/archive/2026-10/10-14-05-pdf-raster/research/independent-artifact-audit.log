@@ -1,0 +1,14 @@
+sources: 88 checked; changed=['crates/ferrostage-render/src/protocol.rs', 'crates/ferrostage-render/src/worker/engine.rs', 'crates/ferrostage-render/src/worker/tests.rs', 'crates/ferrostage-render/tests/native.rs']
+evidence: 34 checked; changed=[]
+local_artifacts: 3 checked; changed=[]
+Exact pdfium-render 0.9.4 upstream source: all 5 hashes matched
+Runtime notices: all 16 hashes matched
+full_4k: N=200, median_ms=12.479, P95_ms=13.7167
+full_4k_previous_frame_retained: N=200, median_ms=12.88515, P95_ms=13.9641
+wide_full_same_density: N=200, median_ms=24.992150000000002, P95_ms=26.973
+wide_crop_4k: N=200, median_ms=11.643450000000001, P95_ms=13.0335
+tall_full_same_density: N=200, median_ms=24.374299999999998, P95_ms=25.32
+tall_crop_4k: N=200, median_ms=11.143250000000002, P95_ms=12.345099999999999
+wide_crop_4k/FULL median ratio: 0.4658842876663272
+tall_crop_4k/FULL median ratio: 0.4571721034039953
+All verification assertions PASS; no benchmark rerun

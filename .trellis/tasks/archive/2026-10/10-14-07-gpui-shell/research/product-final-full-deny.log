@@ -1,0 +1,10 @@
+2026-10-15 00:59:20 [ERROR] failed to fetch crates: error: failed to download `web-sys v0.3.106`
+
+Caused by:
+  attempting to make an HTTP request, but --offline was specified
+
+2026-10-15 00:59:20 [ERROR] `cargo metadata` exited with an error: error: failed to download `accesskit_atspi_common v0.19.1`
+
+Caused by:
+  attempting to make an HTTP request, but --offline was specified
+

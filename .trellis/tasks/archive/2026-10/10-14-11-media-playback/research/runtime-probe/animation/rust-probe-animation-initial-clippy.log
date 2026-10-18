@@ -1,0 +1,33 @@
+   Compiling num-traits v0.2.19
+    Checking pxfm v0.1.30
+    Checking weezl v0.1.12
+    Checking color_quant v1.1.0
+    Checking quick-error v2.0.1
+    Checking byteorder-lite v0.1.0
+    Checking bytemuck v1.25.2
+    Checking gif v0.14.2
+    Checking image-webp v0.2.4
+    Checking num-integer v0.1.47
+    Checking moxcms v0.8.1
+    Checking num-rational v0.4.2
+    Checking gstreamer v0.25.4
+    Checking image v0.25.10
+    Checking gstreamer-base v0.25.4
+    Checking gstreamer-video v0.25.2
+    Checking gstreamer-app v0.25.2
+    Checking ferrostage-media-research-probe v0.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\cache\media-research\rust-probe)
+error: using `chunks_exact_mut` with a constant chunk size
+  --> src\bin\animation.rs:15:29
+   |
+15 |         for pixel in packed.chunks_exact_mut(4) { pixel.swap(0, 2); }
+   |                             ^^^^^^^^^^^^^^^^^^^ help: consider using `as_chunks_mut` instead: `as_chunks_mut::<4>().0`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#chunks_exact_to_as_chunks
+   = note: `-D clippy::chunks-exact-to-as-chunks` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::chunks_exact_to_as_chunks)]`
+
+error: could not compile `ferrostage-media-research-probe` (bin "animation" test) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `ferrostage-media-research-probe` (bin "animation") due to 1 previous error
+mbx[cache]: 7 hits, 0 misses, 18 not looked up; 0 B downloaded, 0 B uploaded, 25.6 MiB stored locally
+mbx[savings]: 88.6 GiB logical of target/ had outlived its checkouts. it has been dealt with.

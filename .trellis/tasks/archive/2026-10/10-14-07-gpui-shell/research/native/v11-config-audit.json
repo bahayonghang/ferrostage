@@ -1,0 +1,214 @@
+[
+  {
+    "run": "v11-main",
+    "before_sha256": "fd9004c7b16f967a42e90bc1a6302d827bc24e0e674ff4fb47de78543b5f9d08",
+    "after_sha256": "23b646a92a5ec6aed608c9d732dc8a13096dc138a89e9d220d87adde1386a186",
+    "bytes_identical": false,
+    "parsed_identical": false,
+    "display_before": {
+      "audience_fullscreen": true,
+      "presenter_start_fullscreen": false,
+      "single_monitor_mode": "presenter_only",
+      "monitors": [
+        {
+          "friendly_name": "Generic PnP Monitor",
+          "id": "device:\\\\?\\display#bkx2700#5&16631d0&0&uid8451#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+          "role": "audience"
+        },
+        {
+          "friendly_name": "Generic PnP Monitor",
+          "id": "device:\\\\?\\display#boe0d5a#5&16631d0&0&uid8448#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+          "role": "none"
+        },
+        {
+          "friendly_name": "Generic PnP Monitor",
+          "id": "device:\\\\?\\display#rtk2560#4&2878f4bf&0&uid69#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+          "role": "presenter"
+        }
+      ]
+    },
+    "display_after": {
+      "audience_fullscreen": true,
+      "presenter_start_fullscreen": false,
+      "single_monitor_mode": "presenter_only",
+      "monitors": [
+        {
+          "friendly_name": "Generic PnP Monitor",
+          "id": "device:\\\\?\\display#bkx2700#5&16631d0&0&uid8451#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+          "role": "presenter"
+        },
+        {
+          "friendly_name": "Generic PnP Monitor",
+          "id": "device:\\\\?\\display#boe0d5a#5&16631d0&0&uid8448#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+          "role": "none"
+        },
+        {
+          "friendly_name": "Generic PnP Monitor",
+          "id": "device:\\\\?\\display#rtk2560#4&2878f4bf&0&uid69#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+          "role": "audience"
+        }
+      ]
+    },
+    "before_crlf": 0,
+    "after_crlf": 0
+  },
+  {
+    "run": "v11-relaunch",
+    "before_sha256": "23b646a92a5ec6aed608c9d732dc8a13096dc138a89e9d220d87adde1386a186",
+    "after_sha256": "23b646a92a5ec6aed608c9d732dc8a13096dc138a89e9d220d87adde1386a186",
+    "bytes_identical": true,
+    "parsed_identical": true,
+    "display_before": {
+      "audience_fullscreen": true,
+      "presenter_start_fullscreen": false,
+      "single_monitor_mode": "presenter_only",
+      "monitors": [
+        {
+          "friendly_name": "Generic PnP Monitor",
+          "id": "device:\\\\?\\display#bkx2700#5&16631d0&0&uid8451#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+          "role": "presenter"
+        },
+        {
+          "friendly_name": "Generic PnP Monitor",
+          "id": "device:\\\\?\\display#boe0d5a#5&16631d0&0&uid8448#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+          "role": "none"
+        },
+        {
+          "friendly_name": "Generic PnP Monitor",
+          "id": "device:\\\\?\\display#rtk2560#4&2878f4bf&0&uid69#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+          "role": "audience"
+        }
+      ]
+    },
+    "display_after": {
+      "audience_fullscreen": true,
+      "presenter_start_fullscreen": false,
+      "single_monitor_mode": "presenter_only",
+      "monitors": [
+        {
+          "friendly_name": "Generic PnP Monitor",
+          "id": "device:\\\\?\\display#bkx2700#5&16631d0&0&uid8451#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+          "role": "presenter"
+        },
+        {
+          "friendly_name": "Generic PnP Monitor",
+          "id": "device:\\\\?\\display#boe0d5a#5&16631d0&0&uid8448#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+          "role": "none"
+        },
+        {
+          "friendly_name": "Generic PnP Monitor",
+          "id": "device:\\\\?\\display#rtk2560#4&2878f4bf&0&uid69#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+          "role": "audience"
+        }
+      ]
+    },
+    "before_crlf": 0,
+    "after_crlf": 0
+  },
+  {
+    "run": "v11-future",
+    "before_sha256": "79adcde8486b985c373c99b19bf37757636fe80c791de0706ff4ee962d9f9167",
+    "after_sha256": "79adcde8486b985c373c99b19bf37757636fe80c791de0706ff4ee962d9f9167",
+    "bytes_identical": true,
+    "parsed_identical": true,
+    "display_before": {
+      "audience_fullscreen": true,
+      "presenter_start_fullscreen": false,
+      "single_monitor_mode": "presenter_only",
+      "monitors": [
+        {
+          "friendly_name": "Native acceptance A",
+          "id": "device:\\\\?\\display#boe0d5a#5&16631d0&0&uid8448#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+          "role": "audience"
+        },
+        {
+          "friendly_name": "Native acceptance B",
+          "id": "device:\\\\?\\display#bkx2700#5&16631d0&0&uid8451#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+          "role": "presenter"
+        },
+        {
+          "friendly_name": "Native acceptance C",
+          "id": "device:\\\\?\\display#rtk2560#4&2878f4bf&0&uid69#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+          "role": "none"
+        }
+      ]
+    },
+    "display_after": {
+      "audience_fullscreen": true,
+      "presenter_start_fullscreen": false,
+      "single_monitor_mode": "presenter_only",
+      "monitors": [
+        {
+          "friendly_name": "Native acceptance A",
+          "id": "device:\\\\?\\display#boe0d5a#5&16631d0&0&uid8448#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+          "role": "audience"
+        },
+        {
+          "friendly_name": "Native acceptance B",
+          "id": "device:\\\\?\\display#bkx2700#5&16631d0&0&uid8451#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+          "role": "presenter"
+        },
+        {
+          "friendly_name": "Native acceptance C",
+          "id": "device:\\\\?\\display#rtk2560#4&2878f4bf&0&uid69#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+          "role": "none"
+        }
+      ]
+    },
+    "before_crlf": 90,
+    "after_crlf": 90
+  },
+  {
+    "run": "v11-dark",
+    "before_sha256": "f174d092ed63177d6abe76ecc38585fc47df826051a34101cc82422f61c51969",
+    "after_sha256": "b96b8708fcb7207f7673c322be62d1f2f68d1c9ff382fe3607fbf7d0d7249ab9",
+    "bytes_identical": false,
+    "parsed_identical": true,
+    "display_before": {
+      "audience_fullscreen": true,
+      "presenter_start_fullscreen": false,
+      "single_monitor_mode": "presenter_only",
+      "monitors": [
+        {
+          "friendly_name": "Native acceptance A",
+          "id": "device:\\\\?\\display#boe0d5a#5&16631d0&0&uid8448#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+          "role": "audience"
+        },
+        {
+          "friendly_name": "Native acceptance B",
+          "id": "device:\\\\?\\display#bkx2700#5&16631d0&0&uid8451#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+          "role": "presenter"
+        },
+        {
+          "friendly_name": "Native acceptance C",
+          "id": "device:\\\\?\\display#rtk2560#4&2878f4bf&0&uid69#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+          "role": "none"
+        }
+      ]
+    },
+    "display_after": {
+      "audience_fullscreen": true,
+      "presenter_start_fullscreen": false,
+      "single_monitor_mode": "presenter_only",
+      "monitors": [
+        {
+          "friendly_name": "Native acceptance A",
+          "id": "device:\\\\?\\display#boe0d5a#5&16631d0&0&uid8448#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+          "role": "audience"
+        },
+        {
+          "friendly_name": "Native acceptance B",
+          "id": "device:\\\\?\\display#bkx2700#5&16631d0&0&uid8451#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+          "role": "presenter"
+        },
+        {
+          "friendly_name": "Native acceptance C",
+          "id": "device:\\\\?\\display#rtk2560#4&2878f4bf&0&uid69#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+          "role": "none"
+        }
+      ]
+    },
+    "before_crlf": 90,
+    "after_crlf": 0
+  }
+]

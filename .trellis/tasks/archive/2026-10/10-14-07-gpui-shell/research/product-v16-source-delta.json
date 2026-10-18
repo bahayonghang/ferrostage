@@ -1,0 +1,54 @@
+{
+  "changes": {
+    ".trellis/spec/frontend/maintained-dependencies.md": {
+      "v15": "c555e877bab54baebc27a9aa25d3e26d9cb2ccb09680fd1aaef33b2f188bac0a",
+      "v16": "bc95a6e27232dfd177b0afa92a4cc21cd1e0e670c75d89a52b3725327ce72eda"
+    },
+    "Cargo.lock": {
+      "v15": "fa54d205b9e059f99df19eb76c63f2a8671318a89696edb7c8a5fe848c839107",
+      "v16": "575780195da7f12f5a62f15eeb97edfebd5521db5c9510501e29e29fbe6e259e"
+    },
+    "Cargo.toml": {
+      "v15": "8e593ebee153b083185ac229d7729ec0243cb1b945811c2f87b9f1f0f0371c5d",
+      "v16": "4c6ec820b656a19b50bdf521aa76bed637ed2c916f894500158157864ce4e33b"
+    },
+    "docs/adr/ADR-008-gpui-dependency-gate.md": {
+      "v15": "9eb05252558ab7151e8bddae619064a2053927feb60b70ae0029dcb06616c490",
+      "v16": "516c527772a70e11f4eb70316650db0fc04abcb5c8177f3fb787dc2d0b6112c1"
+    },
+    "vendor/README.md": {
+      "v15": "d119275c0856aa9dda3fc7d01940031973eb91ce5f92e4f24d901adf19997d93",
+      "v16": "053599381963a58924d976199dd10de06ab1daef891048655010b0dcede9297d"
+    }
+  },
+  "added": {
+    "vendor/accesskit_windows/.cargo_vcs_info.json": "7b556e30d8d54e863f20727b9547512b6955849fc5d6c1819b01301c8a0bd764",
+    "vendor/accesskit_windows/Cargo.lock": "a45d3595200859d8a401238de180c1b2b6f749a7ec8c06ef44c95a5542663bb6",
+    "vendor/accesskit_windows/Cargo.toml": "baad411ffb33b69d13765a538db985128def773bc93e6722183c34efcd5289b2",
+    "vendor/accesskit_windows/Cargo.toml.orig": "71d45e050aab4e968e634c93e161f7fd3609d8b783374ca07e52e3f4b619bd97",
+    "vendor/accesskit_windows/CHANGELOG.md": "a30775fb0f1a725f3e001db5182e8b88a7a39c6b4e4b6c0e07e02cf38432b1e3",
+    "vendor/accesskit_windows/LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+    "vendor/accesskit_windows/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "vendor/accesskit_windows/README.md": "622db8e92d711b64279a91e25ae9345959c82bb4d47157dbf5c3a6a53f80f6d6",
+    "vendor/accesskit_windows/examples/hello_world.rs": "5a7dc1b1856e08773367c9c5ec7a857e4ad60afda0cb460852fb0c4573132e4c",
+    "vendor/accesskit_windows/src/adapter.rs": "6519a7e59a380c8afadca814fd998d0697e91ad8be94da8e11ac8e5580d47edf",
+    "vendor/accesskit_windows/src/context.rs": "c07ac570891456fb12389c9a7af4073920e35247b3dbcbfcc390df4848e7d0a7",
+    "vendor/accesskit_windows/src/filters.rs": "744374b547065b153123c80028f129f5c6bb53052660205e1a2f231c3e169f64",
+    "vendor/accesskit_windows/src/lib.rs": "8a6f20ed5354c9834d88a59091c764f65aa31359f81c57386fe06e9d806e9396",
+    "vendor/accesskit_windows/src/node.rs": "ce80e7623d7f3d1b6b3c944c8824e7e8bb2faedaa3bfee682d3b5df9282e792f",
+    "vendor/accesskit_windows/src/subclass.rs": "69bb742d5451f2cff1c2110e77782948cb751aaad3302c5b1453ebf8b3d20a9e",
+    "vendor/accesskit_windows/src/text.rs": "4491d9440df9141b8b3ef1a8e757e7776e38931aef6803c6ba906e465a95d743",
+    "vendor/accesskit_windows/src/util.rs": "5c58c7cafd5ce0275161724027c8dcaa98da80678c15add346b3332f33bf8138",
+    "vendor/accesskit_windows/src/window_handle.rs": "dec1d78c81784a18c50f066e89d57d0fe02a7c9199a11e47a0833f8b9113d8c2",
+    "vendor/accesskit_windows/src/tests/mod.rs": "5ea818811560d2af26cade33f7ec162c5f718ee62b2c9b3dd3dc822677d30409",
+    "vendor/accesskit_windows/src/tests/simple.rs": "8bd3eb20e258f2a9d5379671f5c3b4121623a66a95f6acfa9f70412323c87691",
+    "vendor/accesskit_windows/src/tests/subclassed.rs": "0987f1d442d1b57657f17fac6a9623ae012603531f47afcb31ff6ca73cb8e932",
+    "AGENTS.md": "ee7c795ac8e4a3820e210253056fe57848eeeeedc7151717446b93c832d1957e",
+    "docs/adr/ADR-001-gpui-from-zed-tag.md": "2fc5893680bf58192e3dc6a4f8a7df09cb12526891a0eafd0a3f427768015dda",
+    "docs/PROJECT_PLAN.md": "89878ef31fed152c3b47ca9d8ef8f04cd008a9799f429e205b6531c3049f8fa1",
+    ".trellis/tasks/10-14-07-gpui-shell/research/native-v16-plan.md": "9c35c9613810a29ee2d83e7f564b7320508bd625877d173567f7ead59f113183",
+    ".trellis/tasks/10-14-07-gpui-shell/research/native/run-native-v16.ps1": "8888786b4ec630781582aa46984d3a19a4af84294c01fed256f85d052ce2334d"
+  },
+  "source_count": 648,
+  "unchanged_count": 617
+}

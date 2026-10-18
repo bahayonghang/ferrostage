@@ -1,20 +1,32 @@
 # Feature parity
 
-The behavior target is a dual-screen PDF / Beamer presenter. Nothing below is a port of another project's source. The skeleton implements the state types, not the windows.
+> Current2026-10-15 user revision: Gate B implementation PASS on verified V16 evidence; original extended hardware/native qualification DEFERRED_BY_USER.03/07 are eligible for implementation-scope archive,08 is unblocked. See `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md`; older incomplete/blocking statements below are historical under the previous policy. No old test outcome is changed.
 
-| Feature | Priority | Skeleton |
+The behavior target is a dual-screen PDF / Beamer presenter. Priorities match [docs/PROJECT_PLAN.md](PROJECT_PLAN.md) §1 and §3. Nothing below is a port of another project's source. The table records source and scoped evidence through task10 on2026-10-15, not completed parent acceptance. Tasks08/09/10 have independent automatic checks;08 also has bounded native PDF/notes/preview/timer/pen observations. Remaining desktop smoke follows11 implementation at the user's request.11 source integration is implemented and finishing regressions/strict gates before independent review; extended qualification is deferred.
+
+| Feature | Priority | Current source |
 | --- | --- | --- |
-| Open a PDF from the CLI | P0 | Not started |
-| Presenter and audience windows | P0 | Roles exist; GPUI is not linked |
+| Open a PDF (CLI, dialog, drag-and-drop, recent files) | P0 | Task07 has CLI/dialog/drop/recent routing. CLI, native valid/error recent imports and V6 successful native chooser import observed; PDF bytes unchanged. Drag/drop remains unverified |
+| Session lifecycle (Ready → Start) | P0 | Core Idle/Ready/Presenting, audience availability guard, injected-time timer, and Curtain projection verified in task 04. Native window transaction remains task 07 |
+| Presenter and audience windows | P0 | GPUI links through the optional feature; task07 source and automated checks are independently reviewed. [ADR-008](adr/ADR-008-gpui-dependency-gate.md) records the original five maintained packages, separately approved four-file AccessKit repair as the sixth package, and unchanged three exact license exceptions. V16 product checks and bounded native placement, Start/Stop/restart, modal routing and owner/Audience close pass. Gate B remains incomplete for physical topology and the remaining native matrix |
+| Monitor roles / three-screen | P0 | Core IDs/roles, pure resolution, complete Windows enumeration and cancellable polling are implemented; static three-screen probe passed. GPUI A/B/C placement observed in07.09 embeds the shared role transaction and adds the physical topology/identity view with independent automated checks;09 desktop smoke is pending, physical port-change/hotplug timing deferred |
+| PDF raster and render scheduling | P0 | Task05 single PDFium worker and bounded CPU caches remain; task08 adds exact-key surface scheduling and transactional GPU upload/rollback with bounded retained-plus-candidate bytes. Independent GPUI regressions pass; historical task05 CPU timings are fixture-specific and do not establish GPU Present latency |
 | Next / previous page | P0 | Implemented in `ferrostage-core` |
-| Speaker notes | P0 | Stored in `ferrostage-document`, excluded from the snapshot |
-| Beamer overlay steps | P0 | Not started; logical slide equals physical page |
-| Notes-page crop (left half) | P0 | `NormalizedRect::LEFT_HALF` exists; parser does not |
-| Blank black / white | P0 | Implemented |
-| Laser pointer | P0 | Position is stored; no window draws it |
-| Pen strokes | P0 | Points are stored; no window draws them |
-| Screen swap | P0 | Flag flips; snapshot page stays |
-| Hot reload | P0 | Policy constants and generation check; watcher loop not started |
-| Thumbnails and cache budgets | P1 | Budgets only |
-| Video / GIF | P1 | `SharedFrame` length check only |
-| Installer | P2 | Not started |
+| Speaker notes | P0 | Task06 ordered mappings feed task08 actual private note rasters with scroll/zoom. Native03A/03B notes and paired public-only Audience crops observed; notes remain outside the snapshot |
+| Beamer overlay steps | P0 | Task06 content-only SlideMap groups contiguous nonempty original labels, with physical-pages override. Real Beamer fixtures tested; repeated producer labels remain an explicit heuristic limitation. Independent review passed |
+| Beamer notes crop and manual override | P0 | Task06 five layouts/ratio diagnostics and document-local overrides are consumed by task08 document controls; reconfiguration preserves stage/timer. Automatic real-PDFium and mapping checks pass; remaining manual options smoke is scheduled later |
+| Blank black / white | P0 | Core state and07 audience black/white output implemented; native black on A and white on C observed |
+| Screen swap | P0 | Core routes the intent to the app coordinator without changing page/crop. Task07 implements confirmed replacement-window migration and settings persistence. Native page/blank continuity, actual locked-file failure, single unsaved feedback, successful Retry/read-back and saved-role relaunch observed |
+| Settings system + UI | P0/P1 | Task02 provides the original v1 eight-section schema (11 adds the compatible media section), `LoadOutcome`, `SettingsStore`, startup persistence and read-only `check-config`. Task07's minimal display panel applies and persists roles with scoped native evidence. Task09 implements all seven presenter-only categories, schema-validated controls, shared role/Identify transactions and topology diagnostics, live layout/timer/pointer/theme/keymap/cache consumers, acknowledged worker budgets, two-window GPU preflight, restart-language selection and save retry/read-only handling. Actual GPUI input/consumer and real PDFium budget regressions pass; final bounded native settings open/theme save/restart passed; other desktop consumers remain NOT_RUN |
+| Jump preview | P0 | Task08 numeric/thumbnail/grid preview is isolated until Commit, with automated Enter/Escape and input tests. Native numeric preview left Audience on physical4, and Escape cancelled; task08 native commit remains in the consolidated smoke backlog |
+| Claude visual theme | P0/P1 | Root `DESIGN.md` and task 07/08/09 plans define shared light/dark tokens and control states. Task07 shared theme/locale implemented; native light/dark/system initial appearance, Chinese fallback and en-US captured. Disappearing-control focus repair passed V6 native retest; full logical-client size/state matrix and live OS theme event remain pending |
+| Laser pointer | P1 | Task08 normalized pointer and checked LaserStyle render through the shared slide surface in both windows. Automated edge/identity/cover tests pass; final bounded native laser smoke passed on both windows; timing/matrix remains deferred |
+| Pen strokes | P1 | Task08 normalized pen/highlighter/eraser/clear render in both windows, scoped to the session/page. Native synchronized red pen observed; other tools await consolidated smoke |
+| 1–16 page thumbnail grid | P1 | Task08 implements thumbnail strip and virtual grid, independent1–4 columns/1–16 visible pages, wheel preview and explicit commit. GPUI regressions pass; native grid smoke and long-run benchmark remain separate |
+| Hot reload | P2 | Task10 implements read-only parent-directory watching, quiet/stable/tail-first EOF checks, isolated candidate parsing/raster/upload, acknowledged reversible worker commits, latest-state page/ink mapping and retirement. Advanced settings enable/debounce are live. Independent real notify/PDFium/headless two-window and failure regressions pass; visible desktop replacement smoke remains scheduled after11 |
+| Video / GIF | P2 | Task11 now connects pure Rust GIF/WebP plus an isolated GStreamer helper, safe shared BGRA snapshots, Presenter controls, source cropping, one audio owner, invalidation and the v1 media height consumer. Actual controller/helper decode, animation and lifecycle regressions pass; final strict gates and independent review pass; final bounded GIF/MP4 two-window playback, pause and one-missing-DLL graceful fallback passed; other desktop media paths and extended qualification remain NOT_RUN |
+
+
+## Display-selection implementation (2026-10-15)
+
+Task07 implements explicit display assignment: detected count/number list, matching Identify, application/PDF destination selectors and Apply/Cancel. V16 native evidence verifies all three numbers, actual placement, conflict/Cancel, migration preserving page/white/running timer, no-play timer freeze and saved-role relaunch. Task08 reuses this surface; task09 embeds the same draft/Identify/window transaction in its complete settings UI and adds physical topology geometry and source diagnostics. Physical single/zero-display and hotplug acceptance remain NOT_RUN; the size matrix is user-deferred. Gate B and all P2 requirements remain unchanged. See task07 `research/native-v16-core-results.md` and `research/native-v16-independent-review.md`; historical Swap/configuration receipts alone do not prove the new workflow.

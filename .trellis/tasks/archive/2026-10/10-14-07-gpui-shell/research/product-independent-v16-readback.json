@@ -1,0 +1,82 @@
+{
+  "captured_utc": "2026-10-15T10:08:11.937764+00:00",
+  "freeze_sha256": "0e2b1ed8ef9299676ba249e7600bd8ab6734f00c6ae17f677467405ad60402d3",
+  "source_count": 648,
+  "aggregate": "3e208cf586dcf37ab0420228e8eb3fba8ee07c0b73a8597c318a7f6a219c35b8",
+  "binary": {
+    "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe",
+    "resolved_path": "D:\\mbx-cache\\targets\\v1\\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0\\debug\\ferrostage.exe",
+    "bytes": 37262848,
+    "sha256": "cf228c03655ddd45d25520bd88dab025c219af9bec9195314ce541dbb1cd89d1"
+  },
+  "pdfium": {
+    "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll",
+    "resolved_path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll",
+    "bytes": 7211520,
+    "sha256": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118"
+  },
+  "fixture": {
+    "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\notes-functional\\pympress-notes.pdf",
+    "resolved_path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\notes-functional\\pympress-notes.pdf",
+    "bytes": 129701,
+    "sha256": "e939e35f931c184fd93b2e9b95e560db73ba6a6f6dfccbb0963262f0b359dfeb"
+  },
+  "implementation_manifest_count": 62,
+  "implementation_manifest_sha256": "1e004a195f04725d2fe511036c1013d6be4bd5346ffc01e93dae76b4bac71f63",
+  "all_harness_source_and_manifest_adaptations_verified": true,
+  "lock_only_same_version_accesskit_source_removal": true,
+  "unchanged_first_party_files_from_v15": 97,
+  "reused_checks": {
+    "a11y-cache-access": {
+      "receipt_sha256": "a50d0f764b2a9b2856cbc1bf2faaf1c46ddb88d64ba0339e42e743fe84b1718f",
+      "log_sha256": "1e6ed159c2501e096fcdd3e8c1231b007d8af192f770c3df09996a2defef037a",
+      "status": "VERIFIED_REUSE_NOT_RERUN"
+    },
+    "hidden-compile": {
+      "receipt_sha256": "652e84f38777fcb4756b94c6d425ed7c4082110f64d85ffe0e3fe2e3233293ab",
+      "log_sha256": "c9c95e6c34add79de4a47b89ecde9bc798b0bcc5bc4e4a76b59fc18d2dcd712e",
+      "status": "VERIFIED_REUSE_NOT_RERUN"
+    },
+    "just-ci": {
+      "receipt_sha256": "368a4cdd87e1703689a89bec111beb395f83e7a8fb0aef2172e66e8e22d7c706",
+      "log_sha256": "f16e27ed26a0b3475e5845778782911e8b8316d7762020cb9086ea3d3bcf548c",
+      "status": "VERIFIED_REUSE_NOT_RERUN"
+    },
+    "headless-final-lock": {
+      "receipt_sha256": "1244756b31ae0e79230501fc43496020623ec20ee6cd25b10b17d88873a7eefd",
+      "log_sha256": "dad35a5e27b20b7974e0cc9dd026f087d230830a618f1feb598bb0e1f797e03f",
+      "status": "VERIFIED_REUSE_NOT_RERUN"
+    },
+    "typecheck": {
+      "receipt_sha256": "7f41659bf6aa6b4e1f2e884c4702aca4caef85472b8e5942131639e82171d34f",
+      "log_sha256": "d4267eadbf9b36926d54d604b69ad0fd7130f28162756f24d36f29f355fa30cb",
+      "status": "VERIFIED_REUSE_NOT_RERUN"
+    },
+    "clippy": {
+      "receipt_sha256": "7fe0253c93d55a25bd9f4261d8b13085a0cc941ad8002949d86594b3320c2e49",
+      "log_sha256": "6ac8e2c8665dbbb7d030309f18e9a26f7ce1c2fca5366f8ae43b6af5a965d869",
+      "status": "VERIFIED_REUSE_NOT_RERUN"
+    },
+    "deny": {
+      "receipt_sha256": "26ab0b166a910b69b8807ea254d6305fc19ec8270cba667bdbf6ceefcab653d7",
+      "log_sha256": "7f766bd35a93c007f101d3bab4ff16468b84cbbdfc1fff96fb3acb35b4f52846",
+      "status": "VERIFIED_REUSE_NOT_RERUN"
+    },
+    "build": {
+      "receipt_sha256": "d93cccead9a343dc8538b6e4f4f8774eb7048b9196bcc448c25771ce847371ef",
+      "log_sha256": "86ac2d6cc0bb2af28e48cf6fc23e4ec19af76232d1cc7e8b4a100c04d762e886",
+      "status": "VERIFIED_REUSE_NOT_RERUN"
+    }
+  },
+  "diff_check": {
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "warning: in the working copy of '.trellis/tasks/10-14-07-gpui-shell/design.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-07-gpui-shell/implement.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/design.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/execution-state.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'Cargo.lock', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'Cargo.toml', LF will be replaced by CRLF the next time Git touches it\n"
+  },
+  "baseline_receipt_clarification": {
+    "sealed_receipt_observed_binary": "006904815a9a3b0af5367e234442bbd6b18f61c37ff8f0e22b48ca3d3c775dbe",
+    "authoritative_v15_frozen_binary": "d40bb0d113e363df6f2bae5d331fd13d8473a8fbcf5820e4438b3da5489e8fab",
+    "status": "MISMATCH: do not use the baseline receipt binary field as a V15 frozen identity or acceptance receipt. Original preserved; current V16 identity independently verified."
+  },
+  "native_executed_by_reviewer": false
+}

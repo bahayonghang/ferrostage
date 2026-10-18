@@ -4,18 +4,21 @@ GPU-accelerated PDF and Beamer presenter. Rust edition 2024, toolchain 1.99.0 (`
 
 ## Commands
 
-- `just ci` — fmt, clippy `-D warnings`, test, `cargo deny`
-- `just build` — release build of the workspace
-- `just dev` — `cargo run -p ferrostage-app`
-- `just install` — `cargo install --path crates/ferrostage-app --locked`
+- `just ci` — fmt, clippy `-D warnings`, test, `cargo deny`. Default features, no PDFium DLL.
+- `just build` — release workspace without the app, then `ferrostage-app` with `gpui,pdfium`, then the pinned `pdfium.dll` beside `target/release/ferrostage.exe`. Double-click that exe.
+- `just dev` — stage that DLL into `target/debug`, then `cargo run -p ferrostage-app --features gpui,pdfium --locked`
+- `just install` — `cargo install --path crates/ferrostage-app --locked --features gpui,pdfium`, then only `pdfium.dll` beside the installed exe
 
 ## Crate rules
 
 - `ferrostage-core` is the state machine. It must not depend on GPUI, PDFium, `lopdf`, or `notify`.
 - The audience window reads `AudienceProjectionSnapshot` only. That type has no speaker notes. Notes stay in `ferrostage-document`.
-- GPUI pin, when linked: Zed tag `v1.23.3` or `gpui-kit` 0.7.3. Not crates.io `gpui` 0.2.x. The skeleton does not link it.
+- The audience window exists only in `Presenting`. `AudienceProjectionSnapshot` includes `AudienceStage`.
+- Displays are `MonitorId` + `MonitorRole`, not indexes.
+- GPUI is optional. Task07 uses the user-approved maintained source based on Zed tag `v1.23.3` (exact revision and five original local package patches in ADR-008), plus the separately approved four-file AccessKit Windows 0.34.0 F14 repair as the sixth maintained package. Only the three exact license exceptions in ADR-005 apply. Do not use crates.io `gpui` 0.2.x, mix GPUI families, or add advisory/lint waivers. Product checks and native acceptance are separate.
 - PDF raster, when linked: `pdfium-render` 0.9.4, BGRA8, one render thread. `lopdf` 0.45 is already linked for structure checks.
-- Hot reload: 300 ms debounce, wait for `%%EOF`, strictly newer `DocumentGeneration`. Never truncate the user's PDF; write `*.ferrostage.tmp` and rename.
+- Hot reload is generic external PDF replacement: 300 ms debounce, wait for `%%EOF`, strictly newer `DocumentGeneration`. FerroStage opens user PDFs read-only and never writes them.
+- Atomic temporary-file replacement is only for settings files and FerroStage's own artifacts, never the user's PDF. Settings use a unique sibling `<config-file-name>.tmp-<pid>-<seq>` (for example, `settings.toml.tmp-<pid>-<seq>`) and replace the configured settings path.
 - No child HWND for video. Shared frames are BGRA8.
 - `cargo deny` rejects GPL and AGPL (no MuPDF).
 

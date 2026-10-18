@@ -1,0 +1,889 @@
+--- v4/crates/ferrostage-ui/src/actions.rs
++++ v5/crates/ferrostage-ui/src/actions.rs
+@@ -5,7 +5,19 @@
+ actions!(
+     ferrostage,
+     [
+-        Next, Previous, Start, Stop, Black, White, Swap, Open, Settings, Jump, Escape, Commit
++        Next,
++        Previous,
++        Start,
++        Stop,
++        Black,
++        White,
++        Swap,
++        Open,
++        Settings,
++        Jump,
++        Escape,
++        Commit,
++        ActivateButton
+     ]
+ );
+ 
+@@ -94,5 +106,26 @@
+         }
+     }
+     cx.bind_keys([KeyBinding::new("escape", Escape, None)]);
++    cx.bind_keys([
++        KeyBinding::new("enter", ActivateButton, Some("FerroStageButton")),
++        KeyBinding::new("space", ActivateButton, Some("FerroStageButton")),
++    ]);
++    // Leave these events to the existing Jump editor instead of presentation
++    // bindings. GPUI NoAction suppresses matching global bindings in context.
++    for key in [
++        "0",
++        "1",
++        "2",
++        "3",
++        "4",
++        "5",
++        "6",
++        "7",
++        "8",
++        "9",
++        "backspace",
++    ] {
++        cx.bind_keys([KeyBinding::new(key, gpui::NoAction, Some("FerroStageJump"))]);
++    }
+     warnings
+ }
+--- v4/crates/ferrostage-ui/src/presenter.rs
++++ v5/crates/ferrostage-ui/src/presenter.rs
+@@ -21,6 +21,7 @@
+     start_reason: Option<String>,
+     loading: bool,
+     busy: bool,
++    can_open: bool,
+     dirty: bool,
+     save_error: Option<String>,
+     pages: usize,
+@@ -46,6 +47,7 @@
+             start_reason: shell.start_reason(),
+             loading: shell.loading,
+             busy: shell.busy(),
++            can_open: shell.import_allowed() && !shell.busy(),
+             dirty: shell.settings.dirty,
+             save_error: shell.settings.save_error.as_ref().map(ToString::to_string),
+             pages: shell.state.page_count(),
+@@ -163,6 +165,7 @@
+             .id(SharedString::from(id.clone()))
+             .debug_selector(|| id.clone())
+             .role(Role::Button)
++            .key_context("FerroStageButton")
+             .max_w_full()
+             .min_w_0()
+             .accessibility_id(SharedString::from(id.clone()))
+@@ -217,9 +220,9 @@
+                     actions::dispatch(&target, click.clone(), cx);
+                 }
+             })
+-            .on_key_down(move |event, _, cx| {
+-                if enabled && ["enter", "space"].contains(&event.keystroke.key.as_str()) {
+-                    cx.stop_propagation();
++            .on_action(move |_: &actions::ActivateButton, _, cx| {
++                cx.stop_propagation();
++                if enabled {
+                     actions::dispatch(&keyboard, intent.clone(), cx);
+                 }
+             })
+@@ -318,6 +321,11 @@
+             };
+             return root
+                 .track_focus(&self.modal_focus)
++                .key_context(if matches!(modal, Modal::Jump(_)) {
++                    "FerroStageJump"
++                } else {
++                    "FerroStageModal"
++                })
+                 .p(px(24.))
+                 .gap(px(16.))
+                 .child(div().text_size(px(20.)).text_color(rgb(p.ink)).child(title))
+@@ -380,7 +388,7 @@
+                             l.text("open")
+                         }
+                         .into(),
+-                        !busy,
++                        self.data.can_open,
+                         true,
+                         Intent::Open,
+                         p,
+@@ -505,7 +513,7 @@
+                             .child(self.button(
+                                 "open".into(),
+                                 l.text("open").into(),
+-                                stage != SessionStage::Presenting && !busy,
++                                self.data.can_open,
+                                 false,
+                                 Intent::Open,
+                                 p,
+--- v4/crates/ferrostage-ui/src/shell.rs
++++ v5/crates/ferrostage-ui/src/shell.rs
+@@ -82,6 +82,7 @@
+ 
+ struct FocusIntent {
+     intent: Intent,
++    open_rejected: bool,
+     presenter: WindowId,
+     deadline: Instant,
+ }
+@@ -101,6 +102,7 @@
+     _watcher: Result<TopologyWatcher, ferrostage_platform::PlatformError>,
+     monitors: Vec<MonitorInfo>,
+     topology_valid: bool,
++    recover_windowed: bool,
+     mapped: Result<BTreeMap<MonitorId, u64>, ShellError>,
+     presenter: Option<WindowRecord>,
+     audience: Option<WindowRecord>,
+@@ -210,6 +212,7 @@
+             .0
+             .iter()
+             .any(|(key, action)| key == "escape" && *action == "stop_presentation");
++        let recover_windowed = !topology_valid || monitors.is_empty();
+         Self {
+             locale,
+             state,
+@@ -220,6 +223,7 @@
+             _watcher: inputs.watcher,
+             monitors,
+             topology_valid,
++            recover_windowed,
+             mapped: Err(ShellError::AmbiguousDisplays),
+             presenter: None,
+             audience: None,
+@@ -330,7 +334,11 @@
+                     }
+                 }
+             }
+-            action if self.modal.is_none() && self.pending.is_none() => {
++            action
++                if self.modal.is_none()
++                    && self.pending.is_none()
++                    && self.state.stage() != SessionStage::Idle =>
++            {
+                 let command = match action {
+                     Intent::Next => Some(Command::NextStep),
+                     Intent::Previous => Some(Command::PreviousStep),
+@@ -373,13 +381,17 @@
+         }
+     }
+ 
+-    fn begin_import(&mut self, path: PathBuf, cx: &mut Context<Self>) {
+-        if !transactions::import_allowed(
++    pub(crate) fn import_allowed(&self) -> bool {
++        transactions::import_allowed(
+             self.state.stage(),
+             self.pending
+                 .as_ref()
+                 .map(|pending| pending.kind.operation()),
+-        ) {
++        )
++    }
++
++    fn begin_import(&mut self, path: PathBuf, cx: &mut Context<Self>) {
++        if !self.import_allowed() {
+             self.error = Some(self.locale.text("stop-before-import").into());
+             return;
+         }
+@@ -500,6 +512,7 @@
+             return;
+         }
+         self.focus_intent = Some(FocusIntent {
++            open_rejected: matches!(intent, Intent::Open) && !self.import_allowed(),
+             intent,
+             presenter: handle.window_id(),
+             deadline: Instant::now() + CONFIRM_TIMEOUT,
+@@ -542,6 +555,9 @@
+         };
+         tracing::info!(window=?handle.window_id(),"presenter activation confirmed");
+         match pending.intent {
++            Intent::Open if pending.open_rejected || !self.import_allowed() => {
++                self.error = Some(self.locale.text("stop-before-import").into());
++            }
+             Intent::Open => {
+                 let focus_token = self.focus_token;
+                 let receiver = cx.prompt_for_paths(PathPromptOptions {
+@@ -763,9 +779,20 @@
+         self.publish(false, cx);
+     }
+ 
++    fn abandon_modal(&mut self) {
++        self.modal = None;
++        if self.state.jump_preview().is_some()
++            && let Err(error) = self.state.apply_at(Command::CancelJump, Instant::now())
++        {
++            self.error = Some(error.to_string());
++        }
++        // The caller publishes its Curtain/transaction result. Do not publish
++        // a Live snapshot while Stop or Swap is abandoning the Jump UI.
++    }
++
+     fn stop(&mut self, cx: &mut Context<Self>) {
+         self.cancel_focus();
+-        self.modal = None;
++        self.abandon_modal();
+         for step in transactions::shutdown() {
+             match step {
+                 Shutdown::Curtain => self.publish(true, cx),
+@@ -805,7 +832,7 @@
+             return;
+         };
+         self.cancel_focus();
+-        self.modal = None;
++        self.abandon_modal();
+         self.publish(true, cx);
+         let prepared =
+             transactions::prepare(self.state.stage() == SessionStage::Presenting, |audience| {
+@@ -844,15 +871,24 @@
+         else {
+             return;
+         };
+-        if self
+-            .presenter
++        let Some(display) = self
++            .mapped
+             .as_ref()
+-            .is_some_and(|p| self.monitors.iter().any(|m| m.id == p.monitor))
+-        {
+-            return;
+-        }
+-        let fullscreen =
+-            self.presenter.is_none() && self.settings.settings.display.presenter_start_fullscreen;
++            .ok()
++            .and_then(|mapping| mapping.get(&target))
++        else {
++            return;
++        };
++        if self.presenter.as_ref().is_some_and(|p| {
++            p.monitor == target
++                && p.display == *display
++                && (!self.recover_windowed || !p.fullscreen)
++        }) {
++            return;
++        }
++        let fullscreen = self.presenter.is_none()
++            && !self.recover_windowed
++            && self.settings.settings.display.presenter_start_fullscreen;
+         match self.open(target, fullscreen, false, cx) {
+             Ok(presenter) => {
+                 self.pending = Some(Transaction {
+@@ -958,6 +994,7 @@
+                     .is_ok_and(|mapping| mapping.get(&window.monitor) == Some(&window.display))
+             });
+             if !self.topology_valid || self.monitors.is_empty() || !audience_valid {
++                self.recover_windowed = true;
+                 self.stop(cx);
+             } else {
+                 self.publish(false, cx);
+@@ -1129,6 +1166,590 @@
+         let (shell, handle) = input_presenter(cx);
+         cx.simulate_keystrokes(handle, "ctrl-o");
+         assert_open_waits_for_owner(&shell, handle, cx);
++    }
++
++    fn redraw(handle: AnyWindowHandle, cx: &mut TestAppContext) {
++        handle
++            .update(cx, |_, window, cx| window.draw(cx).clear(cx))
++            .unwrap();
++    }
++
++    #[gpui::test]
++    fn v5_tab_focused_open_consumes_enter_and_space_before_global_actions(cx: &mut TestAppContext) {
++        let (shell, handle) = input_presenter(cx);
++        shell.update(cx, |shell, cx| {
++            load_ready(shell);
++            cx.notify();
++        });
++        redraw(handle, cx);
++        cx.simulate_keystrokes(handle, "tab");
++        redraw(handle, cx);
++        for key in ["space", "enter"] {
++            cx.simulate_keystrokes(handle, key);
++            let token = shell.read_with(cx, |shell, _| shell.focus_token);
++            handle
++                .update(cx, |_, window, cx| {
++                    use gpui::InputEvent;
++                    window.dispatch_event(
++                        gpui::KeyUpEvent {
++                            keystroke: gpui::Keystroke::parse(key).unwrap(),
++                        }
++                        .to_platform_input(),
++                        cx,
++                    );
++                })
++                .unwrap();
++            assert_eq!(
++                shell.read_with(cx, |shell, _| shell.focus_token),
++                token,
++                "keyup must not activate twice"
++            );
++            shell.read_with(cx, |shell, _| {
++                assert_eq!(
++                    shell.state.current_page(),
++                    PhysicalPage(0),
++                    "{key} must not navigate from a focused button"
++                )
++            });
++            assert_open_waits_for_owner(&shell, handle, cx);
++        }
++    }
++
++    #[gpui::test]
++    fn v5_nonbutton_navigation_and_disabled_controls_keep_their_scope(cx: &mut TestAppContext) {
++        let (shell, handle) = input_presenter(cx);
++        shell.update(cx, |shell, cx| {
++            load_ready(shell);
++            cx.notify();
++        });
++        redraw(handle, cx);
++        cx.simulate_keystrokes(handle, "space");
++        assert_eq!(
++            shell.read_with(cx, |shell, _| shell.state.current_page()),
++            PhysicalPage(1)
++        );
++        cx.simulate_keystrokes(handle, "tab shift-tab");
++        redraw(handle, cx);
++        // Start is disabled without a watcher. Reverse traversal must skip it
++        // and reach Swap, the last enabled control in this Ready fixture.
++        cx.simulate_keystrokes(handle, "space");
++        shell.read_with(cx, |shell, _| {
++            assert_eq!(shell.state.current_page(), PhysicalPage(1));
++            assert_eq!(
++                shell.error.as_deref(),
++                Some(shell.locale.text("cannot-swap"))
++            );
++        });
++        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
++        let bounds = visual.debug_bounds("start").unwrap();
++        visual.simulate_click(bounds.center(), gpui::Modifiers::default());
++        assert!(shell.read_with(cx, |shell, _| shell.pending.is_none()));
++
++        cx.simulate_keystrokes(handle, "tab"); // Return to Open.
++        redraw(handle, cx);
++        shell.update(cx, |shell, cx| {
++            shell.error = None;
++            shell
++                .state
++                .apply_at(
++                    Command::StartPresentation {
++                        audience_available: true,
++                    },
++                    Instant::now(),
++                )
++                .unwrap();
++            cx.notify();
++        });
++        redraw(handle, cx);
++        cx.simulate_keystrokes(handle, "space enter"); // Same now-disabled Open.
++        shell.read_with(cx, |shell, _| {
++            assert_eq!(shell.state.stage(), SessionStage::Presenting);
++            assert_eq!(shell.state.current_page(), PhysicalPage(1));
++            assert!(shell.focus_intent.is_none());
++            assert!(shell.error.is_none());
++        });
++        assert!(!cx.did_prompt_for_paths());
++    }
++
++    #[gpui::test]
++    fn v5_tab_focused_stop_consumes_enter_and_space(cx: &mut TestAppContext) {
++        for key in ["space", "enter"] {
++            let (shell, handle) = input_presenter(cx);
++            shell.update(cx, |shell, cx| {
++                load_ready(shell);
++                shell
++                    .state
++                    .apply_at(
++                        Command::StartPresentation {
++                            audience_available: true,
++                        },
++                        Instant::now(),
++                    )
++                    .unwrap();
++                cx.notify();
++            });
++            redraw(handle, cx);
++            cx.simulate_keystrokes(handle, "tab shift-tab");
++            redraw(handle, cx);
++            cx.simulate_keystrokes(handle, key);
++            shell.read_with(cx, |shell, _| {
++                assert_eq!(
++                    shell.state.stage(),
++                    SessionStage::Ready,
++                    "{key} must activate Stop"
++                );
++                assert_eq!(shell.state.current_page(), PhysicalPage(0));
++            });
++            handle
++                .update(cx, |_, window, _| window.remove_window())
++                .unwrap();
++        }
++    }
++
++    #[gpui::test]
++    fn v5_modal_close_button_has_priority_over_global_enter_and_space(cx: &mut TestAppContext) {
++        let (shell, handle) = input_presenter(cx);
++        shell.update(cx, |shell, cx| {
++            load_ready(shell);
++            cx.notify();
++        });
++        for key in ["space", "enter"] {
++            shell.update(cx, |shell, cx| {
++                shell.modal = Some(Modal::Settings);
++                cx.notify();
++            });
++            redraw(handle, cx);
++            cx.simulate_keystrokes(handle, "tab");
++            redraw(handle, cx);
++            cx.simulate_keystrokes(handle, key);
++            shell.read_with(cx, |shell, _| {
++                assert!(
++                    shell.modal.is_none(),
++                    "{key} must activate the focused Close button"
++                );
++                assert_eq!(shell.state.stage(), SessionStage::Ready);
++                assert_eq!(shell.state.current_page(), PhysicalPage(0));
++            });
++            redraw(handle, cx);
++        }
++    }
++
++    #[gpui::test]
++    fn v5_idle_navigation_and_blank_actions_do_not_report_core_errors(cx: &mut TestAppContext) {
++        let (shell, handle) = input_presenter(cx);
++        for key in ["space", "pagedown", "pageup", "b", "w", "escape"] {
++            cx.simulate_keystrokes(handle, key);
++            shell.read_with(cx, |shell, cx| {
++                assert!(shell.error.is_none(), "{key}: {:?}", shell.error);
++                assert_eq!(shell.state.stage(), SessionStage::Idle);
++                assert_eq!(
++                    shell.state.generation(),
++                    ferrostage_core::DocumentGeneration(0)
++                );
++                assert_eq!(shell.snapshot.read(cx).stage, AudienceStage::Curtain);
++                assert!(shell.audience.is_none());
++            });
++        }
++        assert_eq!(cx.windows(), vec![handle]);
++    }
++
++    #[gpui::test]
++    fn v5_jump_editing_precedes_global_backspace_and_numeric_bindings(cx: &mut TestAppContext) {
++        let (shell, handle) = input_presenter(cx);
++        shell.update(cx, |shell, cx| {
++            load_ready(shell);
++            cx.notify();
++        });
++        for numeric_binding in [false, true] {
++            if numeric_binding {
++                shell.update(cx, |shell, cx| {
++                    shell.settings.settings.keybindings.next.push("2".into());
++                    actions::install(
++                        cx.weak_entity(),
++                        &shell.settings.settings.keybindings,
++                        shell.locale,
++                        cx,
++                    );
++                });
++            }
++            cx.simulate_keystrokes(handle, "g");
++            shell.update(cx, |shell, cx| shell.poll_focus(cx));
++            redraw(handle, cx);
++            cx.simulate_keystrokes(handle, "2 3 backspace");
++            shell.read_with(cx, |shell, _| {
++                assert_eq!(
++                    shell.modal,
++                    Some(Modal::Jump("2".into())),
++                    "numeric binding: {numeric_binding}"
++                );
++                assert_eq!(shell.state.current_page(), PhysicalPage(0));
++                assert_eq!(shell.state.jump_preview(), Some(PhysicalPage(1)));
++            });
++            cx.simulate_keystrokes(handle, "escape");
++            redraw(handle, cx);
++        }
++        cx.simulate_keystrokes(handle, "g");
++        shell.update(cx, |shell, cx| shell.poll_focus(cx));
++        redraw(handle, cx);
++        cx.simulate_keystrokes(handle, "2 enter");
++        shell.read_with(cx, |shell, _| {
++            assert_eq!(shell.state.current_page(), PhysicalPage(1));
++            assert!(shell.modal.is_none());
++        });
++    }
++
++    #[gpui::test]
++    fn v5_jump_numeric_text_precedes_configured_navigation(cx: &mut TestAppContext) {
++        let (shell, handle) = input_presenter(cx);
++        shell.update(cx, |shell, cx| {
++            load_ready(shell);
++            shell.settings.settings.keybindings.next.push("2".into());
++            actions::install(
++                cx.weak_entity(),
++                &shell.settings.settings.keybindings,
++                shell.locale,
++                cx,
++            );
++        });
++        cx.simulate_keystrokes(handle, "g");
++        shell.update(cx, |shell, cx| shell.poll_focus(cx));
++        redraw(handle, cx);
++        cx.simulate_keystrokes(handle, "2");
++        assert_eq!(
++            shell.read_with(cx, |shell, _| shell.modal.clone()),
++            Some(Modal::Jump("2".into()))
++        );
++    }
++
++    #[gpui::test]
++    fn v5_presenting_open_refuses_chooser_after_presenter_activation(cx: &mut TestAppContext) {
++        let (shell, presenter) = input_presenter(cx);
++        let audience = shell.update(cx, |shell, cx| {
++            load_ready(shell);
++            shell
++                .state
++                .apply_at(
++                    Command::StartPresentation {
++                        audience_available: true,
++                    },
++                    Instant::now(),
++                )
++                .unwrap();
++            shell.audience = Some(test_window(shell, true, cx));
++            cx.notify();
++            shell.audience.as_ref().unwrap().handle
++        });
++        audience
++            .update(cx, |_, window, _| window.activate_window())
++            .unwrap();
++        cx.run_until_parked();
++        cx.simulate_keystrokes(audience, "ctrl-o");
++        assert!(!cx.did_prompt_for_paths());
++        assert!(
++            shell.read_with(cx, |shell, _| shell.error.is_none()),
++            "warning waits for Presenter confirmation"
++        );
++        shell.update(cx, |shell, cx| shell.poll_focus(cx));
++        assert!(
++            !cx.did_prompt_for_paths(),
++            "Presenting must never enter a file chooser"
++        );
++        assert_eq!(cx.update(|cx| cx.active_window()), Some(presenter));
++        shell.read_with(cx, |shell, _| {
++            assert_eq!(
++                shell.error.as_deref(),
++                Some(shell.locale.text("stop-before-import"))
++            );
++            assert_eq!(shell.state.stage(), SessionStage::Presenting);
++            assert_eq!(shell.state.current_page(), PhysicalPage(0));
++            assert_eq!(shell.import_token, 0);
++        });
++    }
++
++    #[gpui::test]
++    fn v5_open_rechecks_stage_when_activation_resolves(cx: &mut TestAppContext) {
++        let (shell, presenter) = input_presenter(cx);
++        shell.update(cx, |shell, cx| {
++            load_ready(shell);
++            cx.notify();
++        });
++        cx.simulate_keystrokes(presenter, "ctrl-o");
++        shell.update(cx, |shell, cx| {
++            shell
++                .state
++                .apply_at(
++                    Command::StartPresentation {
++                        audience_available: true,
++                    },
++                    Instant::now(),
++                )
++                .unwrap();
++            shell.poll_focus(cx);
++        });
++        assert!(
++            !cx.did_prompt_for_paths(),
++            "a stage change before activation must reject the queued chooser"
++        );
++        assert!(shell.read_with(cx, |shell, _| shell.focus_intent.is_none()));
++    }
++
++    #[gpui::test]
++    fn v5_stop_discards_jump_preview_before_following_navigation(cx: &mut TestAppContext) {
++        let (shell, handle) = input_presenter(cx);
++        shell.update(cx, |shell, cx| {
++            load_ready(shell);
++            shell
++                .state
++                .apply_at(
++                    Command::StartPresentation {
++                        audience_available: true,
++                    },
++                    Instant::now(),
++                )
++                .unwrap();
++            cx.notify();
++        });
++        cx.simulate_keystrokes(handle, "g");
++        shell.update(cx, |shell, cx| shell.poll_focus(cx));
++        redraw(handle, cx);
++        cx.simulate_keystrokes(handle, "2");
++        cx.dispatch_action(handle, actions::Stop);
++        shell.read_with(cx, |shell, _| {
++            assert!(shell.modal.is_none());
++            assert!(shell.state.jump_preview().is_none());
++            assert_eq!(shell.state.stage(), SessionStage::Ready);
++        });
++        redraw(handle, cx);
++        cx.simulate_keystrokes(handle, "pagedown");
++        assert_eq!(
++            shell.read_with(cx, |shell, _| shell.state.current_page()),
++            PhysicalPage(1)
++        );
++    }
++
++    #[gpui::test]
++    fn v5_swap_failure_discards_abandoned_jump_preview(cx: &mut TestAppContext) {
++        let (shell, handle) = input_presenter(cx);
++        shell.update(cx, |shell, cx| {
++            load_ready(shell);
++            let first = test_monitor();
++            let mut second = first.clone();
++            second.id = MonitorId("other-test-display".into());
++            second.connection_name = "other-test".into();
++            second.is_primary = false;
++            shell.settings.settings.display.monitors = vec![
++                ferrostage_settings::MonitorBinding {
++                    id: first.id.0.clone(),
++                    friendly_name: first.name.clone(),
++                    role: ferrostage_core::MonitorRole::Presenter,
++                    source_occurrence: None,
++                },
++                ferrostage_settings::MonitorBinding {
++                    id: second.id.0.clone(),
++                    friendly_name: second.name.clone(),
++                    role: ferrostage_core::MonitorRole::Audience,
++                    source_occurrence: None,
++                },
++            ];
++            shell.monitors = vec![first, second];
++            shell.modal = Some(Modal::Jump("2".into()));
++            shell
++                .state
++                .apply_at(Command::JumpPreview(PhysicalPage(1)), Instant::now())
++                .unwrap();
++            cx.notify();
++        });
++        cx.dispatch_action(handle, actions::Swap);
++        shell.read_with(cx, |shell, _| {
++            assert!(
++                shell.error.is_some(),
++                "unmapped test display makes replacement fail"
++            );
++            assert!(shell.modal.is_none());
++            assert!(shell.state.jump_preview().is_none());
++            assert!(shell.pending.is_none());
++        });
++        redraw(handle, cx);
++        cx.simulate_keystrokes(handle, "pagedown");
++        assert_eq!(
++            shell.read_with(cx, |shell, _| shell.state.current_page()),
++            PhysicalPage(1)
++        );
++    }
++
++    #[gpui::test]
++    fn v5_escape_from_jump_cancels_preview_without_stopping(cx: &mut TestAppContext) {
++        let (shell, handle) = input_presenter(cx);
++        shell.update(cx, |shell, cx| {
++            load_ready(shell);
++            shell
++                .state
++                .apply_at(
++                    Command::StartPresentation {
++                        audience_available: true,
++                    },
++                    Instant::now(),
++                )
++                .unwrap();
++            shell
++                .state
++                .apply_at(Command::JumpPreview(PhysicalPage(1)), Instant::now())
++                .unwrap();
++            shell.modal = Some(Modal::Jump("2".into()));
++            cx.notify();
++        });
++        redraw(handle, cx);
++        cx.simulate_keystrokes(handle, "escape");
++        shell.read_with(cx, |shell, _| {
++            assert!(shell.modal.is_none());
++            assert!(shell.state.jump_preview().is_none());
++            assert_eq!(shell.state.stage(), SessionStage::Presenting);
++        });
++    }
++
++    fn test_monitor() -> MonitorInfo {
++        MonitorInfo {
++            id: MonitorId("headless-test-display".into()),
++            name: "Headless display".into(),
++            connection_name: "test-display".into(),
++            native_size: (1920, 1080),
++            position: (0, 0),
++            scale_factor: 1.0,
++            scale_source: ferrostage_platform::ScaleSource::GdiDeviceCapsRatio,
++            rotation_degrees: 0,
++            is_primary: true,
++            identity_source: ferrostage_platform::IdentitySource::DeviceInterfacePath,
++            identity_confidence: ferrostage_platform::IdentityConfidence::ConnectionScoped,
++        }
++    }
++
++    fn topology_recovery_is_windowed(event: TopologyEvent, cx: &mut TestAppContext) {
++        let (shell, sender) = headless_shell(cx);
++        let original = shell.update(cx, |shell, cx| {
++            load_ready(shell);
++            shell
++                .state
++                .apply_at(
++                    Command::StartPresentation {
++                        audience_available: true,
++                    },
++                    Instant::now(),
++                )
++                .unwrap();
++            shell.monitors = vec![test_monitor()];
++            shell.recover_windowed = false;
++            shell.settings.settings.display.presenter_start_fullscreen = true;
++            let mut presenter = test_window(shell, false, cx);
++            presenter
++                .handle
++                .update(cx, |_, window, _| window.toggle_fullscreen())
++                .unwrap();
++            presenter.fullscreen = true;
++            let handle = presenter.handle;
++            shell.presenter = Some(presenter);
++            shell.audience = Some(test_window(shell, true, cx));
++            shell
++                .state
++                .apply_at(Command::JumpPreview(PhysicalPage(1)), Instant::now())
++                .unwrap();
++            shell.modal = Some(Modal::Jump("2".into()));
++            handle
++        });
++        sender.send(event).unwrap();
++        shell.update(cx, |shell, cx| shell.tick(cx));
++        shell.read_with(cx, |shell, cx| {
++            assert_eq!(shell.state.stage(), SessionStage::Ready);
++            assert!(shell.audience.is_none());
++            assert!(shell.state.jump_preview().is_none());
++            assert!(
++                shell.pending.is_none(),
++                "unmapped TestDisplay must not authorize placement"
++            );
++            assert_eq!(shell.snapshot.read(cx).stage, AudienceStage::Curtain);
++        });
++        sender
++            .send(TopologyEvent::Changed(vec![test_monitor()]))
++            .unwrap();
++        shell.update(cx, |shell, cx| {
++            shell.tick(cx);
++            // TestPlatform has a random UUID, with no physical GDI connection.
++            // Mapping is separately validated; supply its owned result here
++            // only after the real Changed event and refusal of unmapped input.
++            shell.mapped = Ok([(test_monitor().id, u64::from(cx.displays()[0].id()))].into());
++            shell.recover_presenter(cx);
++            assert!(
++                shell.pending.is_some(),
++                "fullscreen survivor must be replaced after unsafe topology"
++            );
++            assert!(
++                !shell
++                    .pending
++                    .as_ref()
++                    .unwrap()
++                    .presenter
++                    .as_ref()
++                    .unwrap()
++                    .fullscreen
++            );
++            shell.poll_transaction(cx);
++        });
++        shell.read_with(cx, |shell, _| {
++            assert_eq!(shell.state.stage(), SessionStage::Ready);
++            assert!(!shell.presenter.as_ref().unwrap().fullscreen);
++            assert_ne!(shell.presenter.as_ref().unwrap().handle, original);
++            assert!(shell.audience.is_none());
++        });
++        assert!(!cx.windows().contains(&original));
++    }
++
++    #[gpui::test]
++    fn v5_topology_unavailable_recovers_windowed_without_restart(cx: &mut TestAppContext) {
++        topology_recovery_is_windowed(
++            TopologyEvent::Unavailable {
++                error: ferrostage_platform::PlatformError::UnsupportedPlatform,
++                last_known: vec![test_monitor()],
++            },
++            cx,
++        );
++    }
++
++    #[gpui::test]
++    fn v5_audience_loss_recovers_fullscreen_presenter_windowed(cx: &mut TestAppContext) {
++        topology_recovery_is_windowed(TopologyEvent::Changed(vec![test_monitor()]), cx);
++    }
++
++    #[gpui::test]
++    fn v5_recovery_replaces_stale_display_but_preserves_initial_fullscreen(
++        cx: &mut TestAppContext,
++    ) {
++        let (shell, _) = headless_shell(cx);
++        shell.update(cx, |shell, cx| {
++            shell.monitors = vec![test_monitor()];
++            shell.recover_windowed = false;
++            shell.settings.settings.display.presenter_start_fullscreen = true;
++            let mut presenter = test_window(shell, false, cx);
++            presenter
++                .handle
++                .update(cx, |_, window, _| window.toggle_fullscreen())
++                .unwrap();
++            presenter.fullscreen = true;
++            let original = presenter.handle;
++            shell.presenter = Some(presenter);
++            shell.recover_presenter(cx);
++            assert!(
++                shell.pending.is_none(),
++                "ordinary initial topology retains configured fullscreen"
++            );
++            shell.presenter.as_mut().unwrap().display = u64::MAX;
++            shell.recover_presenter(cx);
++            assert!(
++                shell.pending.is_some(),
++                "same MonitorId with stale GPUI identity needs replacement"
++            );
++            shell.poll_transaction(cx);
++            assert_ne!(shell.presenter.as_ref().unwrap().handle, original);
++            assert!(!shell.presenter.as_ref().unwrap().fullscreen);
++        });
+     }
+ 
+     #[gpui::test]
+@@ -1322,12 +1943,20 @@
+             assert_eq!(shell.snapshot.read(cx).stage, AudienceStage::Live);
+             assert_eq!(shell.import_token, 0);
+         });
++        shell.update(cx, |shell, _| {
++            shell
++                .state
++                .apply_at(Command::JumpPreview(PhysicalPage(2)), Instant::now())
++                .unwrap();
++            shell.modal = Some(Modal::Jump("3".into()));
++        });
+         audience
+             .update(cx, |_, window, _| window.remove_window())
+             .unwrap();
+         shell.read_with(cx, |shell, cx| {
+             assert_eq!(shell.state.stage(), SessionStage::Ready);
+             assert!(shell.audience.is_none());
++            assert!(shell.state.jump_preview().is_none());
+             assert_eq!(shell.snapshot.read(cx).stage, AudienceStage::Curtain);
+             assert_eq!(shell.presenter.as_ref().unwrap().handle, presenter);
+         });

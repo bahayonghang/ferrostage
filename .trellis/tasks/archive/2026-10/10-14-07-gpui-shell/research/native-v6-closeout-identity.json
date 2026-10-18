@@ -1,0 +1,48 @@
+{
+  "utc": "2026-10-15T02:52:58.649825+00:00",
+  "command": "python .trellis/tasks/10-14-07-gpui-shell/research/native-v6-closeout.py",
+  "scope": "Native receipt integrity, unchanged compiled inputs and documentation-only closeout. Not task07/Gate B acceptance.",
+  "head": "ab78a84d96c7cf4a0bbc8dfd4f8e45da180bafb3",
+  "frozen_source_count": 602,
+  "unchanged_source_count": 601,
+  "post_native_documentation_delta": {
+    "DESIGN.md": {
+      "frozen": "1b13bda5cc6460a8f320a637e047c836813f817231315533d200ed873d31f4d6",
+      "current": "88a7a31303e10d3adfc0be373bf326d16751123b54a2b211984ba9bfd6fe99c9"
+    }
+  },
+  "design_changed_lines": [
+    151
+  ],
+  "crate_files_matched": 94,
+  "binary_sha256": "d4f2e653ee793176b384034797ad99e1ad665aa0da6535a454ba88a36b055074",
+  "fixture_sha256": "25a7932f46ee8fcd4866011921c574b4f5b343af05b793bc397b7e93ed0df013",
+  "prior_manifests_verified": {
+    "native-v5-evidence-manifest.json": {
+      "sha256": "ddfec0154c3dfe6731eb08b2c5dcf4b9b27c2a49ccfd54589a05f2ed295d73d0",
+      "records_matched": 108
+    },
+    "product-v6-evidence-manifest.json": {
+      "sha256": "dac5512c8887bbb3278e0b9c68fc8a622731fbc40eea187aa7dfef090a40912c",
+      "records_matched": 26
+    },
+    "product-independent-v6-manifest.json": {
+      "sha256": "252a22e5ab5173b7c9a03da0e6a15768edd2d904b6cfd5404c42c9f72c101fb5",
+      "records_matched": 141
+    }
+  },
+  "owned_native_runs": {
+    "v6-focus-save": {
+      "utc": "2026-10-15T02:45:52.7934372Z",
+      "pid": 29092,
+      "exit_code": 0
+    },
+    "v6-relaunch": {
+      "pid": 175992,
+      "utc": "2026-10-15T02:46:51.0990641Z",
+      "exit_code": 0
+    }
+  },
+  "git_diff_check_exit": 0,
+  "working_tree_status_entries": 219
+}

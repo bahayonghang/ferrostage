@@ -1,0 +1,26 @@
+{
+  "product-v7-evidence-manifest.json": {
+    "count": 22,
+    "mismatches": []
+  },
+  "native-v6-independent-manifest.json": {
+    "count": 213,
+    "mismatches": []
+  },
+  "native-v6-evidence-manifest.json": {
+    "count": 54,
+    "mismatches": []
+  },
+  "native-v5-evidence-manifest.json": {
+    "count": 108,
+    "mismatches": []
+  },
+  "product-v6-evidence-manifest.json": {
+    "count": 26,
+    "mismatches": []
+  },
+  "product-independent-v6-manifest.json": {
+    "count": 141,
+    "mismatches": []
+  }
+}

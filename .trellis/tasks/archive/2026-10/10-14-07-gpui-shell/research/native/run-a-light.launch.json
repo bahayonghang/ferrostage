@@ -1,0 +1,9 @@
+{
+  "dll": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll",
+  "config": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\a-light.toml",
+  "exe": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe",
+  "started_utc": "2026-10-15T01:03:48.3258615Z",
+  "sha256": "9452899CDA26E8B1820C74C34B84CD531472A9EF431DD1598190E71EA3FFF591",
+  "pid": 30816,
+  "mode": "Idle"
+}

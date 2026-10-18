@@ -1,11 +1,23 @@
 //! PDF backend boundary.
 //!
 //! The default build links `lopdf` 0.45 for structure checks only. PDFium
-//! (`pdfium-render` 0.9.4, BGRA8, memory load, single render thread) and
-//! `hayro-syntax` 0.8.0 stay unwired until their proof-of-concept tasks.
+//! (`pdfium-render` 0.9.4) is optional and driven by the single render worker.
+//! `hayro-syntax` 0.8.0 remains unlinked.
 //! This crate does not open a window and does not convert BGRA to RGBA.
 
 use thiserror::Error;
+
+mod metadata;
+pub mod structure;
+pub use structure::{DocumentStructure, extract_structure};
+pub mod raster;
+pub use metadata::{DocumentMetadata, PageMetadata};
+pub use raster::{BgraBitmap, PdfError, PixelSize, RuntimeConfig};
+#[cfg(feature = "pdfium")]
+mod native;
+#[cfg(feature = "pdfium")]
+#[doc(hidden)]
+pub use native::with_native_session;
 
 /// Versions the rest of the workspace should pin. Kept as constants so a docs
 /// change and the crate graph cannot drift silently.
@@ -20,6 +32,10 @@ pub const RASTER_PIXEL_FORMAT: &str = "BGRA8";
 pub enum PdfStructureError {
     #[error("lopdf could not parse the buffer")]
     Unreadable,
+    #[error("invalid or cyclic page geometry")]
+    InvalidPageGeometry,
+    #[error("non-default UserUnit is outside the structure geometry subset")]
+    UnsupportedUserUnit,
 }
 
 /// Returns `Ok(())` when `lopdf` accepts the buffer as a PDF.

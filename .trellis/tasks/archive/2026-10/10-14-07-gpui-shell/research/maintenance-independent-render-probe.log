@@ -1,0 +1,26 @@
+   Compiling ferrostage-maintenance-cmap-proof v0.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-cmap-proof)
+warning: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-cmap-proof\target\debug\incremental\ferrostage_maintenance_cmap_proof-37xgnhnsgm8ex\s-hn7vwi4nve-0d79qbf-working`
+
+warning: `ferrostage-maintenance-cmap-proof` (bin "ferrostage-maintenance-cmap-proof" test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.80s
+     Running unittests src\main.rs (cache\gpui-maintenance-cmap-proof\target\debug\deps\ferrostage_maintenance_cmap_proof-0519a06fa4d15eda.exe)
+
+running 1 test
+SVG fallback format13: old painted=268 calls=1; repaired painted=268 calls=1
+SVG fallback format13: exact pixels equal=true
+SVG fallback format2: old painted=268 calls=1; repaired painted=304 calls=2
+SVG fallback format2: exact pixels equal=false
+
+thread 'compare_real_svg_fallback_across_text_stacks' (60984) panicked at src\main.rs:482:5:
+old supported rendering lost: ["format2"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test compare_real_svg_fallback_across_text_stacks ... FAILED
+
+failures:
+
+failures:
+    compare_real_svg_fallback_across_text_stacks
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `--bin ferrostage-maintenance-cmap-proof`

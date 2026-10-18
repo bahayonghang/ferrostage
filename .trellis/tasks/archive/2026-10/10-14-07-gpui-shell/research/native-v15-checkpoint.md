@@ -1,0 +1,11 @@
+# V15 native checkpoint — user stopped Computer Use before launch
+
+Root prepared the frozen V15 core-function run using `fixtures/notes-functional/pympress-notes.pdf`, with full backtrace enabled in the planned launch. No resize/width matrix or physical topology operation was scheduled.
+
+Before any V15 application launch, Computer Use `sky.list_windows()` reported: “Computer Use was stopped by the user with the physical Escape key.” Root stopped desktop operations immediately. No V15 FerroStage application was launched and no V15 product screenshot, placement, runtime notes display or shutdown result exists. These checks are **NOT_RUN**, not PASS or a product regression. Existing historical V14 receipts remain unchanged.
+
+Completed outside product-native acceptance: XeLaTeX fixture compilation; five-page visual/text/label checks; actual document/PDFium notes crop/overlay integration; F13 real Windows DC regression and product checks; Root's separately scoped16-cycle owned-hidden-HWND F14 candidate regression. See `product-v15-implementation.md`, `product-v15-root-a11y-results.md` and independent V15 review when returned. The research candidate is not linked to the product. F14 remains unresolved in V15.
+
+On a later explicit Computer Use resume, verify disk/agents/processes and the frozen source/EXE/PDF identity before using `native-v15-plan.md`. Current freeze:622 inputs, source `fdc00fc36ad02e46234398899ef924892e690810caf24f290cc5b0ec070d835a`; EXE `d40bb0d113e363df6f2bae5d331fd13d8473a8fbcf5820e4438b3da5489e8fab`; PDF `e939e35f931c184fd93b2e9b95e560db73ba6a6f6dfccbb0963262f0b359dfeb`. Require completed serial independent handoff before launch. The four-file AccessKit proposal remains outside the authorized five-package maintenance set until an explicit scope decision; no sixth package has been adopted.
+
+Task07 still has page placeholders. Actual presenter notes rendering/audience content isolation in the UI remain NOT_IMPLEMENTED/NOT_RUN for task08, gated by Gate B. Gate B INCOMPLETE;08–11 dependency-gated; P2 unchanged. All edits remain uncommitted; no push, archive or add_session. Physical unplug/reconnect/port and actual single/zero-display items remain NOT_RUN without another request.

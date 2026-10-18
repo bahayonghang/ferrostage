@@ -1,0 +1,36 @@
+[
+  {
+    "command": [
+      "python",
+      "-X",
+      "utf8",
+      "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\maintenance-independent-final-preparation\\maintenance-prepare.py"
+    ],
+    "exit": 0,
+    "output": "{\"prepared\": \"D:\\\\Documents\\\\Code\\\\Rust\\\\Exp\\\\ferrostage\\\\cache\\\\gpui-maintenance-independent-final-reproduction\", \"inherited_dependencies\": 62, \"copied_gpui_license\": \"Apache-2.0\"}\n"
+  },
+  {
+    "command": [
+      "python",
+      "-X",
+      "utf8",
+      "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\maintenance-independent-repair.py",
+      "cache/gpui-maintenance-independent-final-reproduction",
+      ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-final-preparation"
+    ],
+    "exit": 0,
+    "output": "{\"path\": \"D:\\\\Documents\\\\Code\\\\Rust\\\\Exp\\\\ferrostage\\\\cache\\\\gpui-maintenance-independent-final-reproduction\\\\vendor\\\\gpui\\\\src\\\\svg_renderer.rs\", \"sha256\": \"ea017ea77bc0d45682e6fbec0278921661dd448e69c4f04a00d50b1d5e8314de\"}\n"
+  },
+  {
+    "command": [
+      "python",
+      "-X",
+      "utf8",
+      "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\maintenance-independent-harfrust-repair.py",
+      "cache/gpui-maintenance-independent-final-reproduction",
+      ".trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-final-preparation"
+    ],
+    "exit": 0,
+    "output": "{\"harfrust_copy\": \"D:\\\\Documents\\\\Code\\\\Rust\\\\Exp\\\\ferrostage\\\\cache\\\\gpui-maintenance-independent-final-reproduction\\\\vendor\\\\harfrust\", \"source_files_modified\": [\"src/hb/tables.rs\", \"src/hb/charmap.rs\"]}\n"
+  }
+]

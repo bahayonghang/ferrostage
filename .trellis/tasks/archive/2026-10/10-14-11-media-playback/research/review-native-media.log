@@ -1,0 +1,46 @@
+cargo build -p ferrostage-media --example ipc_stall --features native-tests --locked
+   Compiling ferrostage-media v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-media)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.24s
+mbx[cache]: 0 hits, 0 misses, 2 not looked up, 2 incremental; 0 B downloaded, 0 B uploaded, 0 B stored locally
+mbx[savings]: 112.9 GiB logical tidied away. you may continue not thinking about it.
+cargo test -p ferrostage-media --features native-tests --locked
+   Compiling ferrostage-media v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-media)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.69s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_media-e76ea1836181da01.exe)
+
+running 8 tests
+test protocol::tests::rejects_hostile_header_before_body_allocation ... ok
+test protocol::tests::frame_roundtrip_preserves_bgra_and_identity_sequence ... ok
+test supervisor::child::tests::child_frames_reject_duplicate_and_regressing_sequence ... ok
+test tests::limits_keep_proportion_and_reject_unbounded_input ... ok
+test animation::tests::crop_removes_private_pixels_and_preserves_alpha ... ok
+test supervisor::child::tests::scanner_path_matches_selected_runtime_manifest ... ok
+test animation::tests::animation_budget_reserves_contain_canvas_before_decoding ... ok
+test supervisor::child::tests::embedded_payload_is_owned_create_new_and_removed_after_release ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\playback.rs (target\debug\deps\playback-ec68512f70959e91.exe)
+
+running 9 tests
+test contain_letterbox_then_crop_is_bounded_and_never_stretches_private_half ... ok
+test actual_missing_runtime_is_typed_and_does_not_poison_animation ... ok
+test actual_animation_delays_bgra_limits_pause_and_epoch_cancellation ... ok
+test unnamed_embedded_gif_webp_use_pure_decoder_and_output_bounds ... ok
+test original_beamer_movie_metadata_drives_real_helper_playback ... ok
+mbx[progress]: 15s elapsed; 0 hits, 0 misses, 0 bypassed, 2 not looked up; ~0s compiler work saved
+test actual_helper_video_seek_repeat_pause_audio_and_reap ... ok
+test helper_parent_pipe_eof_terminates_process_during_startup ... ok
+test partial_runtime_real_helper_and_embedded_video_are_independent_failures ... ok
+test unresponsive_child_stderr_is_drained_then_killed_and_reaped_off_caller ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 21.93s
+
+   Doc-tests ferrostage_media
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+mbx[cache]: 0 hits, 0 misses, 2 not looked up, 2 incremental, 1 bypassed; 0 B downloaded, 0 B uploaded, 0 B stored locally
+mbx[savings]: escorted 110.2 GiB logical of ownerless outputs off the premises.

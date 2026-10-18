@@ -1,0 +1,8 @@
+{"file": ".trellis/tasks/10-15-stage-pdfium-gui/prd.md", "reason": "Acceptance criteria and out-of-scope media"}
+{"file": ".trellis/tasks/10-15-stage-pdfium-gui/design.md", "reason": "No unsafe console attach; recipe must not clobber the GUI exe"}
+{"file": ".trellis/tasks/10-15-stage-pdfium-gui/research/evidence.md", "reason": "Two independent failures and the install sibling"}
+{"file": "docs/packaging.md", "reason": "Runtime layout and the rule that the app never downloads"}
+{"file": "docs/pdfium-runtime.json", "reason": "Hash contract for the staged DLL and notices"}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Default CI must not grow a PDFium dependency"}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "check-config stays read-only; startup failure stays an exit code"}
+{"file": ".trellis/spec/backend/database-guidelines.md", "reason": "check-config and startup fill must not gain a new settings write"}

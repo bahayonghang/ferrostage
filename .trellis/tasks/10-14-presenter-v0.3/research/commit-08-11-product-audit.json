@@ -1,0 +1,882 @@
+{
+  "client_date": "2026-10-15",
+  "baseline": "8b1cb0f",
+  "product_commit": "15ab278",
+  "provenance_commit": "2f95978843f76bc1dc538f17d9a3836daf50febb",
+  "source_inputs_match": 169,
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 909,
+      "raw_sha256": "e0f34da32e5df852949c5b23144e0eddb5a06afd13c34a618a3dc4cdff323257",
+      "committed_sha256": "988eb1e4a81c7cbef53d9688a72b4577ea62c942b726453e80e6694d7dab48e3",
+      "exact_bytes": false
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "bytes": 4322,
+      "raw_sha256": "7d77528aa9333058b900fa61591d2cf3296dcb1568c871c2e5186ac2e622c8d2",
+      "committed_sha256": "1132b616af10c7e38e3ff028870c00cef5d3776004a61c3ee82c455b84ea196b",
+      "exact_bytes": false
+    },
+    {
+      "path": ".trellis/spec/backend/database-guidelines.md",
+      "bytes": 3330,
+      "raw_sha256": "3e016ab92f08c5773b5980f652fce75fffbc202995973694e3e4379ee4a8d289",
+      "committed_sha256": "3e016ab92f08c5773b5980f652fce75fffbc202995973694e3e4379ee4a8d289",
+      "exact_bytes": true
+    },
+    {
+      "path": ".trellis/spec/backend/directory-structure.md",
+      "bytes": 6317,
+      "raw_sha256": "0d1197923ddee2678482fc3a24ae4c971fbf3b4acae1076b88f0b654cb1c1d64",
+      "committed_sha256": "fd25a60646cd028934817077c61dcd042597c1152f8e925d37a24871faf9ea28",
+      "exact_bytes": false
+    },
+    {
+      "path": ".trellis/spec/frontend/state-management.md",
+      "bytes": 23975,
+      "raw_sha256": "0a8cb30f73a3e39906979d8937b5e6ef166a69b9ebebc39a52d2dd8eb791ff5a",
+      "committed_sha256": "0a8cb30f73a3e39906979d8937b5e6ef166a69b9ebebc39a52d2dd8eb791ff5a",
+      "exact_bytes": true
+    },
+    {
+      "path": "Cargo.lock",
+      "bytes": 192525,
+      "raw_sha256": "c7f643464352fb1a534da865417d0b70120cdeffb52ba9593ced9c73304b8109",
+      "committed_sha256": "c7f643464352fb1a534da865417d0b70120cdeffb52ba9593ced9c73304b8109",
+      "exact_bytes": true
+    },
+    {
+      "path": "Cargo.toml",
+      "bytes": 3176,
+      "raw_sha256": "f2929b0de161aff85884e9fef7d46cc76d0e984d0f726de56366eb86240d0c22",
+      "committed_sha256": "5947fd7ccf7227773208e8f5581294270a63487fcc0fe61e371276616e0a2363",
+      "exact_bytes": false
+    },
+    {
+      "path": "README.md",
+      "bytes": 3951,
+      "raw_sha256": "2851e95b0c987b1b1755d699178d71a2186b8df3c18727ba178c986a5acb9b79",
+      "committed_sha256": "2851e95b0c987b1b1755d699178d71a2186b8df3c18727ba178c986a5acb9b79",
+      "exact_bytes": true
+    },
+    {
+      "path": "README.zh-CN.md",
+      "bytes": 2591,
+      "raw_sha256": "5fdacb3f95afb057f1620a19b173e2e96f8602d5c235ce0a3c199551cf84a96e",
+      "committed_sha256": "5fdacb3f95afb057f1620a19b173e2e96f8602d5c235ce0a3c199551cf84a96e",
+      "exact_bytes": true
+    },
+    {
+      "path": "assets/locales/en-US/app.toml",
+      "bytes": 11149,
+      "raw_sha256": "add2cb3778cb1ede2f060898ae21b791963e511e8d967f7f8e06a693bbb29bf3",
+      "committed_sha256": "06a28a2286732eb1240f2ab9cb7b12a3ea94d87fe9b1b6ea5134215f5e971007",
+      "exact_bytes": false
+    },
+    {
+      "path": "assets/locales/zh-CN/app.toml",
+      "bytes": 10912,
+      "raw_sha256": "a9249013fec55bc73eb0737ce0b8cf257aa43dd110824684378ec3a09be1c86d",
+      "committed_sha256": "35429429cf2bc419134ca2f68b2279e79bc41497c3ce9767983110fea7787e3a",
+      "exact_bytes": false
+    },
+    {
+      "path": "crates/ferrostage-app/Cargo.toml",
+      "bytes": 798,
+      "raw_sha256": "85d99ff65cda53165c97c9d55e0e20d02dc3ccc74a77197bb106805c9233e184",
+      "committed_sha256": "e230a507d290ec23aaf068013c21b773c65c25ca937c93d64caa804ca371b886",
+      "exact_bytes": false
+    },
+    {
+      "path": "crates/ferrostage-core/src/command.rs",
+      "bytes": 3146,
+      "raw_sha256": "f5a14be625ca5a7aa9268d0704ac785683550a74c0e7fd9b5c38e3338129de5f",
+      "committed_sha256": "f5a14be625ca5a7aa9268d0704ac785683550a74c0e7fd9b5c38e3338129de5f",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-core/src/error.rs",
+      "bytes": 1904,
+      "raw_sha256": "6f4dc2b0ce2d44903fb22106b02a8225895b6b962efac6f7398f043c7457f2f8",
+      "committed_sha256": "856651ce55b4218a537e871c22395e16f56beaf803182cc7c2948920d7f439cf",
+      "exact_bytes": false
+    },
+    {
+      "path": "crates/ferrostage-core/src/geometry.rs",
+      "bytes": 2928,
+      "raw_sha256": "bcd747da8f22445e02daec813ff96c0f3bfdecc5de5b75fa996b5248548dcd36",
+      "committed_sha256": "bcd747da8f22445e02daec813ff96c0f3bfdecc5de5b75fa996b5248548dcd36",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-core/src/lib.rs",
+      "bytes": 929,
+      "raw_sha256": "e6ef05235c9a5d9c1b6805e0b07231db6d53cb983cc19c44c53f243f7f2e4379",
+      "committed_sha256": "e6ef05235c9a5d9c1b6805e0b07231db6d53cb983cc19c44c53f243f7f2e4379",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-core/src/snapshot.rs",
+      "bytes": 3096,
+      "raw_sha256": "364df53a1df2f7cb7db24247b03bc02f0b0386ae369d5beb8c52ac15fa962b63",
+      "committed_sha256": "1255944db829d107f6be0600f645c6ccf768cdb7ead86e55d83d78a4dcbcae47",
+      "exact_bytes": false
+    },
+    {
+      "path": "crates/ferrostage-core/src/state.rs",
+      "bytes": 17530,
+      "raw_sha256": "f1ea8b2e7461a12a3d90e32705d5996a25abaa0701bcc398d333927bed961af7",
+      "committed_sha256": "f1ea8b2e7461a12a3d90e32705d5996a25abaa0701bcc398d333927bed961af7",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-core/src/state/annotation_tests.rs",
+      "bytes": 5538,
+      "raw_sha256": "5d6bbbf89913e2d6ca001c95d906b40e813bd6ec1657b931fb0eb56d51157e52",
+      "committed_sha256": "5d6bbbf89913e2d6ca001c95d906b40e813bd6ec1657b931fb0eb56d51157e52",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-document/src/builder.rs",
+      "bytes": 8996,
+      "raw_sha256": "48b65ed8d7fda411493fbb5512a00b3d8a5469717ae002b8f5b94078d72e32ac",
+      "committed_sha256": "48b65ed8d7fda411493fbb5512a00b3d8a5469717ae002b8f5b94078d72e32ac",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-document/src/builder/tests.rs",
+      "bytes": 10869,
+      "raw_sha256": "e4db725b2de0ff09bdb8a257769ff1689c3a5899ac382b0838356033ac919bda",
+      "committed_sha256": "e4db725b2de0ff09bdb8a257769ff1689c3a5899ac382b0838356033ac919bda",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-document/src/lib.rs",
+      "bytes": 556,
+      "raw_sha256": "7bdecc7e890275781ed8e6500cce40c43eeaf9f1c61578754494d062326f4a69",
+      "committed_sha256": "7bdecc7e890275781ed8e6500cce40c43eeaf9f1c61578754494d062326f4a69",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-document/src/media_slots.rs",
+      "bytes": 1285,
+      "raw_sha256": "2817bbe1608915949ceb1aca51cfe4b490a60e0c2c552855ad14c0adb96776f9",
+      "committed_sha256": "589d9b73f4f68e93ad5befab0ce1978d3df8d4ce7cc7a2ca00ba2949ae47f27d",
+      "exact_bytes": false
+    },
+    {
+      "path": "crates/ferrostage-document/src/reload.rs",
+      "bytes": 1997,
+      "raw_sha256": "93b2323aa57f082aad0f57e2cfc7f3aa7eba91fa2876d80706d04ef611131fb7",
+      "committed_sha256": "93b2323aa57f082aad0f57e2cfc7f3aa7eba91fa2876d80706d04ef611131fb7",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-media-helper/Cargo.toml",
+      "bytes": 713,
+      "raw_sha256": "cdff467fc1e8eaded0401f4973f93cfb0fa68050ce01b9ee9c922f37fcd20d8e",
+      "committed_sha256": "cdff467fc1e8eaded0401f4973f93cfb0fa68050ce01b9ee9c922f37fcd20d8e",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-media-helper/src/lib.rs",
+      "bytes": 111,
+      "raw_sha256": "13e204205896fb0080305845da1750ed25ce837bb52bfff2a442c4c5ffbf1a6d",
+      "committed_sha256": "13e204205896fb0080305845da1750ed25ce837bb52bfff2a442c4c5ffbf1a6d",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-media-helper/src/main.rs",
+      "bytes": 1408,
+      "raw_sha256": "39fbbde647f138eddb588572909fe0da054dab54b8c23972e9810aa8d1a26b94",
+      "committed_sha256": "39fbbde647f138eddb588572909fe0da054dab54b8c23972e9810aa8d1a26b94",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-media-helper/src/native.rs",
+      "bytes": 10462,
+      "raw_sha256": "c5b50311f62d6264d39c0cb7ff4192d187fa8f0c0f0674912fdbe9108aa190be",
+      "committed_sha256": "e366f9bd79b3ad4577778515944738f7442ec914868c70235508019e4a06acf6",
+      "exact_bytes": false
+    },
+    {
+      "path": "crates/ferrostage-media/Cargo.toml",
+      "bytes": 621,
+      "raw_sha256": "e592477f6470a884881b66c79e0adc48e9747af7616c1cda5929a9107cf93d7d",
+      "committed_sha256": "9d40512259160fbfb9494fb30ae0e2d737493df7cbec7af80bcb394289eebc05",
+      "exact_bytes": false
+    },
+    {
+      "path": "crates/ferrostage-media/examples/ipc_stall.rs",
+      "bytes": 478,
+      "raw_sha256": "6083b547cfb068fa6be284a1ff3e606d6479023c0fce7e5e0d65d2db3c1839ea",
+      "committed_sha256": "6083b547cfb068fa6be284a1ff3e606d6479023c0fce7e5e0d65d2db3c1839ea",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-media/src/animation.rs",
+      "bytes": 10785,
+      "raw_sha256": "59a9e0df94d27ec23ad56bc95a6b0317e0168a43883c7728ec957e99b459c4a8",
+      "committed_sha256": "59a9e0df94d27ec23ad56bc95a6b0317e0168a43883c7728ec957e99b459c4a8",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-media/src/lib.rs",
+      "bytes": 2508,
+      "raw_sha256": "7b3ff5c310c32306ef274495f4894dc69ede77fa14183d4ae1664eddfa5832ec",
+      "committed_sha256": "7b3ff5c310c32306ef274495f4894dc69ede77fa14183d4ae1664eddfa5832ec",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-media/src/protocol.rs",
+      "bytes": 7352,
+      "raw_sha256": "383a6f45eb6c600ed8e235f983cab6d62c5caed68f21e014ab4685f912bf3b2a",
+      "committed_sha256": "383a6f45eb6c600ed8e235f983cab6d62c5caed68f21e014ab4685f912bf3b2a",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-media/src/runtime-files.txt",
+      "bytes": 1284,
+      "raw_sha256": "1c4ae4792f1d1fe382a830896684736b76d72298acd1aa70f63b0015bfc140bb",
+      "committed_sha256": "4a32ce289b4a5d675f0cdeb72b13e33739e8dd845cea578730cd5a0651b04db7",
+      "exact_bytes": false
+    },
+    {
+      "path": "crates/ferrostage-media/src/supervisor.rs",
+      "bytes": 12305,
+      "raw_sha256": "a9073d54b1d18b69798645bb4f4301eb288ef235d8ba1513d0872af45d5ecc13",
+      "committed_sha256": "a9073d54b1d18b69798645bb4f4301eb288ef235d8ba1513d0872af45d5ecc13",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-media/src/supervisor/child.rs",
+      "bytes": 12166,
+      "raw_sha256": "4db7686acd8bdbf70fd86836275d84155536d81f6327f5e1842de0ad332d5b3b",
+      "committed_sha256": "4db7686acd8bdbf70fd86836275d84155536d81f6327f5e1842de0ad332d5b3b",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-media/tests/playback.rs",
+      "bytes": 15732,
+      "raw_sha256": "01fcd03ee1183bfdf7e1fef4ce0552f0fa588b93d7caa180af357151809bb592",
+      "committed_sha256": "901f52ee428a3c4d8e1ecab9c5aa2234030a92595c03c86e824f5e08da0566e0",
+      "exact_bytes": false
+    },
+    {
+      "path": "crates/ferrostage-platform/src/lib.rs",
+      "bytes": 2193,
+      "raw_sha256": "1b1c1ba8db76b509f83008aa082241fcf2d4b27d036c8f5fdd9844f4aed42e42",
+      "committed_sha256": "1b1c1ba8db76b509f83008aa082241fcf2d4b27d036c8f5fdd9844f4aed42e42",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-platform/src/reload.rs",
+      "bytes": 11992,
+      "raw_sha256": "a57ce11364f3f265df7841b69b6c245980b585a945a83cfde569e7a4f9a643ff",
+      "committed_sha256": "a57ce11364f3f265df7841b69b6c245980b585a945a83cfde569e7a4f9a643ff",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-render/src/cache.rs",
+      "bytes": 6604,
+      "raw_sha256": "0c9da6ddb552609c6477681c70347656ed3402cd640bb72f37ccfd123426079c",
+      "committed_sha256": "0c9da6ddb552609c6477681c70347656ed3402cd640bb72f37ccfd123426079c",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-render/src/protocol.rs",
+      "bytes": 5890,
+      "raw_sha256": "368b0eb3b762d63eb9f895982a57e7e73eca0fefa392cc3548ce7b8055aa251a",
+      "committed_sha256": "368b0eb3b762d63eb9f895982a57e7e73eca0fefa392cc3548ce7b8055aa251a",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-render/src/worker.rs",
+      "bytes": 8125,
+      "raw_sha256": "1170474447704f18745f60c214f7ebf8f50c6ff3996f3c2e3061e3fe1744625c",
+      "committed_sha256": "1170474447704f18745f60c214f7ebf8f50c6ff3996f3c2e3061e3fe1744625c",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-render/src/worker/engine.rs",
+      "bytes": 15962,
+      "raw_sha256": "1d06b56c70869bf5b2991872a229e73277a4f04a764d1707abcc232f2eaa6f7c",
+      "committed_sha256": "1d06b56c70869bf5b2991872a229e73277a4f04a764d1707abcc232f2eaa6f7c",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-render/src/worker/tests.rs",
+      "bytes": 14793,
+      "raw_sha256": "da2bb81ff0a53f0958189c50056dc368bed0f77051ae998729f11ffdc541e148",
+      "committed_sha256": "da2bb81ff0a53f0958189c50056dc368bed0f77051ae998729f11ffdc541e148",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-render/tests/native.rs",
+      "bytes": 10251,
+      "raw_sha256": "d768f5a2c3c8b6a1c99b857b508ac4e9fdc2d7c880abcdfab8e3d7d95570052a",
+      "committed_sha256": "d768f5a2c3c8b6a1c99b857b508ac4e9fdc2d7c880abcdfab8e3d7d95570052a",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-settings/src/lib.rs",
+      "bytes": 905,
+      "raw_sha256": "d71eb244288cbd49ffbda6da19df1f26db1138a033ee8383543ceab87f64f4ca",
+      "committed_sha256": "e7eda921a3de3a49ab191cffe2a6f5b0817164afd58fc2a0ec0953205580ea4a",
+      "exact_bytes": false
+    },
+    {
+      "path": "crates/ferrostage-settings/src/merge.rs",
+      "bytes": 10478,
+      "raw_sha256": "0ce647b06d4074594570ca064c5716c822d5ef45fb79269269f1c73a325a347d",
+      "committed_sha256": "0ce647b06d4074594570ca064c5716c822d5ef45fb79269269f1c73a325a347d",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-settings/src/parse.rs",
+      "bytes": 8614,
+      "raw_sha256": "b2d3cfd58d28829b7bdd23ceac16d8edc3ea2798e27e61a708efc4e8b50801ee",
+      "committed_sha256": "b2d3cfd58d28829b7bdd23ceac16d8edc3ea2798e27e61a708efc4e8b50801ee",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-settings/src/schema.rs",
+      "bytes": 11648,
+      "raw_sha256": "677a483903e1249c4dc221248389b94838eebb77091b6785fab0ce1cb5fac4a4",
+      "committed_sha256": "677a483903e1249c4dc221248389b94838eebb77091b6785fab0ce1cb5fac4a4",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-settings/src/tests/parse.rs",
+      "bytes": 15146,
+      "raw_sha256": "1ce76744002e0f73d3cf0473fb0e297f8d1aa6caf50263a81d5ed369b6a8f69b",
+      "committed_sha256": "650bf5b2e100b685f19a9118927b406d4b3606ed1951a3c2ca26782605a760a1",
+      "exact_bytes": false
+    },
+    {
+      "path": "crates/ferrostage-ui/Cargo.toml",
+      "bytes": 1204,
+      "raw_sha256": "f26b121eafc0ec2de6a2a0d781be77f29f3fec030ab5f6fe4e1a4313110867c4",
+      "committed_sha256": "46d4f6eb39273c682ece5f00753ed92e5a0dd99009f77e217cea48151b75b2b8",
+      "exact_bytes": false
+    },
+    {
+      "path": "crates/ferrostage-ui/src/actions.rs",
+      "bytes": 6499,
+      "raw_sha256": "e78f127cec7fa97cbd915fc9fcefe1a979bf6d7f2da3ba85dad3d87dfd23278e",
+      "committed_sha256": "71ab072f71f70a4d5dfea5d72912d22135b3a4e651ddc6667f653f03e01a3ab8",
+      "exact_bytes": false
+    },
+    {
+      "path": "crates/ferrostage-ui/src/audience.rs",
+      "bytes": 8691,
+      "raw_sha256": "4605a77fdecf9d1e24e30e8199f2892f0af3f4435370449e9f05a6dcacc61b3c",
+      "committed_sha256": "4605a77fdecf9d1e24e30e8199f2892f0af3f4435370449e9f05a6dcacc61b3c",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-ui/src/display_settings.rs",
+      "bytes": 23252,
+      "raw_sha256": "6040f885d1a08a3a36c3781cfb968b22782f799809b1a1f86251395803c61afc",
+      "committed_sha256": "6040f885d1a08a3a36c3781cfb968b22782f799809b1a1f86251395803c61afc",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-ui/src/document_load.rs",
+      "bytes": 8816,
+      "raw_sha256": "1faf9f3557cc6569a70495838173e952407d6e39c46c77f6fcb827a2124dd7de",
+      "committed_sha256": "1faf9f3557cc6569a70495838173e952407d6e39c46c77f6fcb827a2124dd7de",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-ui/src/lib.rs",
+      "bytes": 1723,
+      "raw_sha256": "2c4a77940e58514ce46e3fde9d2db732030b1797c855eadec9c3183f0aa5433d",
+      "committed_sha256": "108a5f7ba4a1aa5b0217491eb0cd5864039b2ead7b80cc1219b6dc37f067585b",
+      "exact_bytes": false
+    },
+    {
+      "path": "crates/ferrostage-ui/src/media_playback.rs",
+      "bytes": 16388,
+      "raw_sha256": "0a0fd97c17fd84eb1510743aab6fbf1742c8343f6d31a466e25b3466bef0104d",
+      "committed_sha256": "0a0fd97c17fd84eb1510743aab6fbf1742c8343f6d31a466e25b3466bef0104d",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-ui/src/presenter.rs",
+      "bytes": 29782,
+      "raw_sha256": "51251bc38ffea816cf2aa2c6224707da34aacb80e4beb50027ac001bafcc867d",
+      "committed_sha256": "51251bc38ffea816cf2aa2c6224707da34aacb80e4beb50027ac001bafcc867d",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-ui/src/presenter/settings_view.rs",
+      "bytes": 22959,
+      "raw_sha256": "9891b10a87871d61281c33aade9bf0677d0c0c45ecaaeaf62ba7433c8415a94e",
+      "committed_sha256": "9891b10a87871d61281c33aade9bf0677d0c0c45ecaaeaf62ba7433c8415a94e",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-ui/src/presenter/workbench_view.rs",
+      "bytes": 35779,
+      "raw_sha256": "6f48b56af423638504332c41dc43cc079e95976d3e52862c16c3aba129608db7",
+      "committed_sha256": "6f48b56af423638504332c41dc43cc079e95976d3e52862c16c3aba129608db7",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-ui/src/settings_panel.rs",
+      "bytes": 11610,
+      "raw_sha256": "129ecf54c7455bafbbb6d7628416ad2c68b82164a8d2dd0ca86d1331e433e9b1",
+      "committed_sha256": "129ecf54c7455bafbbb6d7628416ad2c68b82164a8d2dd0ca86d1331e433e9b1",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-ui/src/shell.rs",
+      "bytes": 185210,
+      "raw_sha256": "2757239a991351b52e26661b44feb62a25bc2893e2f7243362acb604c4f65ca3",
+      "committed_sha256": "e35911c5b86ce2d37c9a0ab6b3acba3e49da2cd376b568e85da2d1f2ac41c82f",
+      "exact_bytes": false
+    },
+    {
+      "path": "crates/ferrostage-ui/src/shell/preferences.rs",
+      "bytes": 17430,
+      "raw_sha256": "fca61d48160d4cb002e61d11acd2410e9055c2fbcac572022b1e1f7413d0b13d",
+      "committed_sha256": "fca61d48160d4cb002e61d11acd2410e9055c2fbcac572022b1e1f7413d0b13d",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-ui/src/shell/preferences_tests.rs",
+      "bytes": 24210,
+      "raw_sha256": "c93dc07975933f2285c40f3a1eca24790a81bf4cc2d1fd4bdf58be15be0feacf",
+      "committed_sha256": "c93dc07975933f2285c40f3a1eca24790a81bf4cc2d1fd4bdf58be15be0feacf",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-ui/src/shell/reload.rs",
+      "bytes": 32405,
+      "raw_sha256": "8f0bfb630c14e600ea73045ed56befd5fe484d21771cd6356fd3984b20644b16",
+      "committed_sha256": "8f0bfb630c14e600ea73045ed56befd5fe484d21771cd6356fd3984b20644b16",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-ui/src/shell/reload/tests.rs",
+      "bytes": 23191,
+      "raw_sha256": "c41f81ece232aa7d461526b048bcbc4b7ccea7844e4bcc3898ee8227f2728a1e",
+      "committed_sha256": "c41f81ece232aa7d461526b048bcbc4b7ccea7844e4bcc3898ee8227f2728a1e",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-ui/src/slide_surface.rs",
+      "bytes": 17809,
+      "raw_sha256": "e4978e8612fcddc0efa006572ff674b71fd323ebbd86921a9c391b19cd092a33",
+      "committed_sha256": "e4978e8612fcddc0efa006572ff674b71fd323ebbd86921a9c391b19cd092a33",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-ui/src/texture_cache.rs",
+      "bytes": 28317,
+      "raw_sha256": "3264bdad671788a6a0de2f1ca5a2aaec8058c5ee38358db1db5c03d5385217f7",
+      "committed_sha256": "3264bdad671788a6a0de2f1ca5a2aaec8058c5ee38358db1db5c03d5385217f7",
+      "exact_bytes": true
+    },
+    {
+      "path": "crates/ferrostage-ui/src/workbench.rs",
+      "bytes": 13480,
+      "raw_sha256": "40285ba92c95cf830ced58089f03d3ec0d8a9a540cdff97cb4cfb0cc76acf50d",
+      "committed_sha256": "451a4fd92643dc31f4fb69d739c7687b3e9219862f4c09f5a95277218d47039f",
+      "exact_bytes": false
+    },
+    {
+      "path": "crates/ferrostage-ui/src/workbench/tests.rs",
+      "bytes": 5360,
+      "raw_sha256": "2dd6490f3434bf4470c0b26f45e72aab3dd43a426fd646690555ba1aa4c856d4",
+      "committed_sha256": "2dd6490f3434bf4470c0b26f45e72aab3dd43a426fd646690555ba1aa4c856d4",
+      "exact_bytes": true
+    },
+    {
+      "path": "docs/PROJECT_PLAN.md",
+      "bytes": 26734,
+      "raw_sha256": "903a9ea5e6de67623b6d50cfab42b56fb570c68c9d921503d33ea4bbfc0e50b6",
+      "committed_sha256": "780f6d3006891aa64ae616bc543d409af4e145c24b5ada69225071b973a234c0",
+      "exact_bytes": false
+    },
+    {
+      "path": "docs/adr/ADR-009-media-helper.md",
+      "bytes": 3435,
+      "raw_sha256": "a6ea21af3e033e14bf3668afaad38cffbdaed49bf4e05fe0f4549c60e0e46d82",
+      "committed_sha256": "547eab082518ff96e1851b5281384401a6e25e3cfcd5f6d4a5b3cf8e8cd32a5e",
+      "exact_bytes": false
+    },
+    {
+      "path": "docs/architecture.md",
+      "bytes": 9004,
+      "raw_sha256": "0ac705582afbbe79c8b8f98728035927c436c6043576a3cb77a322fa1424b963",
+      "committed_sha256": "d2acc58842a4dab31f49cfe2cfdd6425ab0fe9a68e60ad721052b8d6b1ca959f",
+      "exact_bytes": false
+    },
+    {
+      "path": "docs/feature-parity.md",
+      "bytes": 8133,
+      "raw_sha256": "ffe6776496886d6b8b2a9aedb0e621132f8c282c07d012fab71a85cf6691d76d",
+      "committed_sha256": "9925713a3bba9177a3a3301512e1dca984b6f5b4fda105679cbf73531b1795c2",
+      "exact_bytes": false
+    },
+    {
+      "path": "docs/packaging.md",
+      "bytes": 8942,
+      "raw_sha256": "30c7d0aebb6d2474c3a832f9a9fbf6c1304c04d8fca26f3d3dda0fdb6986c964",
+      "committed_sha256": "31304d2f7c10535958b61752ac8e15f09b32201f464dd4bc9dcff136d197be72",
+      "exact_bytes": false
+    },
+    {
+      "path": "fixtures/media/README.md",
+      "bytes": 1261,
+      "raw_sha256": "141f83e8e0bf917bbed3df77d4103d3256b592e196f27f84fd34aa9c5161d22c",
+      "committed_sha256": "8699e268f8edd9408cc31a8d841adeb41ae0deda1d470142f218f5211f09d850",
+      "exact_bytes": false
+    },
+    {
+      "path": "fixtures/media/fixture-video.mp4",
+      "bytes": 561982,
+      "raw_sha256": "b5ee8bbb4ec75111faf5a43dde64758390b166d74bb81f2633723e4027be86ee",
+      "committed_sha256": "b5ee8bbb4ec75111faf5a43dde64758390b166d74bb81f2633723e4027be86ee",
+      "exact_bytes": true
+    },
+    {
+      "path": "fixtures/media/identities.json",
+      "bytes": 1407,
+      "raw_sha256": "42cc7fc481579c19160f681c5a7a42c08023f7b4847757e6d1c3b5c8fef14b40",
+      "committed_sha256": "328a7111d20721b9f951595e08b7e64f93a320a2b95c4d3953777b82856472ae",
+      "exact_bytes": false
+    },
+    {
+      "path": "fixtures/media/media-crop-smoke.pdf",
+      "bytes": 2663,
+      "raw_sha256": "79bfc24629fb38c22b055145e5d5e8a907aa02e69e3fda0489d2c35fc48680ec",
+      "committed_sha256": "79bfc24629fb38c22b055145e5d5e8a907aa02e69e3fda0489d2c35fc48680ec",
+      "exact_bytes": true
+    },
+    {
+      "path": "fixtures/media/media-smoke.pdf",
+      "bytes": 566185,
+      "raw_sha256": "cd41d260eba950649552346e5aa95d7e05b2e81e7d3d790879a97cbff2808185",
+      "committed_sha256": "cd41d260eba950649552346e5aa95d7e05b2e81e7d3d790879a97cbff2808185",
+      "exact_bytes": true
+    },
+    {
+      "path": "fixtures/media/movie.pdf",
+      "bytes": 20760,
+      "raw_sha256": "18fcb84be915745801711f71f7acfbc4280a69f977896eada6970fd068f06a32",
+      "committed_sha256": "18fcb84be915745801711f71f7acfbc4280a69f977896eada6970fd068f06a32",
+      "exact_bytes": true
+    },
+    {
+      "path": "fixtures/media/synthetic-ball-tone-12s.mp4",
+      "bytes": 561982,
+      "raw_sha256": "b5ee8bbb4ec75111faf5a43dde64758390b166d74bb81f2633723e4027be86ee",
+      "committed_sha256": "b5ee8bbb4ec75111faf5a43dde64758390b166d74bb81f2633723e4027be86ee",
+      "exact_bytes": true
+    },
+    {
+      "path": "fixtures/media/synthetic-ball-tone-12s.ogg",
+      "bytes": 27526,
+      "raw_sha256": "ab1ccb23eb0ee1d417864242f9762b0c4508217046c2663440889554e1c6335e",
+      "committed_sha256": "ab1ccb23eb0ee1d417864242f9762b0c4508217046c2663440889554e1c6335e",
+      "exact_bytes": true
+    },
+    {
+      "path": "fixtures/media/synthetic-ball-tone-12s.webm",
+      "bytes": 148832,
+      "raw_sha256": "b6820844b3717865ab6972ff52d3df5d72a532c7f872464591d3bd6b949bfdc9",
+      "committed_sha256": "b6820844b3717865ab6972ff52d3df5d72a532c7f872464591d3bd6b949bfdc9",
+      "exact_bytes": true
+    },
+    {
+      "path": "fixtures/media/synthetic-public-private.gif",
+      "bytes": 937,
+      "raw_sha256": "ae7a7ddccc70386e6e0e384ee102ef33f4b8ab45a0437c00e85f3a354974bedf",
+      "committed_sha256": "ae7a7ddccc70386e6e0e384ee102ef33f4b8ab45a0437c00e85f3a354974bedf",
+      "exact_bytes": true
+    },
+    {
+      "path": "fixtures/media/synthetic-three-frames.gif",
+      "bytes": 1017,
+      "raw_sha256": "6a576e6f6ba44d730ca6546dd93293997230a039aff8b9215733f6a61a4bea7e",
+      "committed_sha256": "6a576e6f6ba44d730ca6546dd93293997230a039aff8b9215733f6a61a4bea7e",
+      "exact_bytes": true
+    },
+    {
+      "path": "fixtures/media/synthetic-three-frames.webp",
+      "bytes": 450,
+      "raw_sha256": "4813f16e9f1867b597e74c7f5015240cfba70ad65fe56b450264827af4b107a1",
+      "committed_sha256": "4813f16e9f1867b597e74c7f5015240cfba70ad65fe56b450264827af4b107a1",
+      "exact_bytes": true
+    },
+    {
+      "path": "justfile",
+      "bytes": 2302,
+      "raw_sha256": "e03cd80b69b25f402d6f37a6bdc8011d3e8e846798349f88d5c43bf4af14a82d",
+      "committed_sha256": "7caf47a5f98f6aae9f1a5e684f4af8b21d4f22c4e236689d2bdfbf966b5d47b0",
+      "exact_bytes": false
+    },
+    {
+      "path": "packaging/media/native-runtime-sources.md",
+      "bytes": 4294,
+      "raw_sha256": "0c64e0dc2c3775a69c24376b6223eefeaee1c04c3a3f9198608109e46b866281",
+      "committed_sha256": "15b8286456f83c85d06f856ff6326e8e0c5055d9bc4ad03f915f9cc57774ccf3",
+      "exact_bytes": false
+    },
+    {
+      "path": "packaging/media/notices/bzip2-LICENSE",
+      "bytes": 1938,
+      "raw_sha256": "9102b70091e84168c468d57dcca64ec1f60c76cefbc83b66e1754725b9dd90cf",
+      "committed_sha256": "9102b70091e84168c468d57dcca64ec1f60c76cefbc83b66e1754725b9dd90cf",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/notices/glib-LGPL-2.1-or-later.txt",
+      "bytes": 25967,
+      "raw_sha256": "fa6f36630bb1e0c571d34b2bbdf188d08495c9dbf58f28cac112f303fc1f58fb",
+      "committed_sha256": "fa6f36630bb1e0c571d34b2bbdf188d08495c9dbf58f28cac112f303fc1f58fb",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/notices/gst-plugins-bad-COPYING",
+      "bytes": 26530,
+      "raw_sha256": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551",
+      "committed_sha256": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/notices/gst-plugins-base-COPYING",
+      "bytes": 26431,
+      "raw_sha256": "ad2eec519ebd4b5df86ea84dff24ae3bfa2edea846a703b58902dd221ae375db",
+      "committed_sha256": "ad2eec519ebd4b5df86ea84dff24ae3bfa2edea846a703b58902dd221ae375db",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/notices/gst-plugins-good-COPYING",
+      "bytes": 26432,
+      "raw_sha256": "6095e9ffa777dd22839f7801aa845b31c9ed07f3d6bf8a26dc5d2dec8ccc0ef3",
+      "committed_sha256": "6095e9ffa777dd22839f7801aa845b31c9ed07f3d6bf8a26dc5d2dec8ccc0ef3",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/notices/gstreamer-COPYING",
+      "bytes": 26431,
+      "raw_sha256": "ad2eec519ebd4b5df86ea84dff24ae3bfa2edea846a703b58902dd221ae375db",
+      "committed_sha256": "ad2eec519ebd4b5df86ea84dff24ae3bfa2edea846a703b58902dd221ae375db",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/notices/libffi-LICENSE-verified",
+      "bytes": 1153,
+      "raw_sha256": "f02e8e7361fa83bbe845f029571bbd1248bed85320f6dad0541db8ec66d90178",
+      "committed_sha256": "f02e8e7361fa83bbe845f029571bbd1248bed85320f6dad0541db8ec66d90178",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/notices/libogg-COPYING",
+      "bytes": 1466,
+      "raw_sha256": "d2ab5758336489da61c12cc5bb757da5339c4ae9001f9bb0562b4370249af814",
+      "committed_sha256": "d2ab5758336489da61c12cc5bb757da5339c4ae9001f9bb0562b4370249af814",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/notices/libvorbis-COPYING",
+      "bytes": 1470,
+      "raw_sha256": "ec1815db59fcd302846df949d7424876cb2e2dc5ed1606c5fb0b36787b1cf43a",
+      "committed_sha256": "ec1815db59fcd302846df949d7424876cb2e2dc5ed1606c5fb0b36787b1cf43a",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/notices/libvpx-LICENSE",
+      "bytes": 1537,
+      "raw_sha256": "8267348d5af1262c11d1a08de2f5afc77457755f1ac658627dd9acf71011d615",
+      "committed_sha256": "8267348d5af1262c11d1a08de2f5afc77457755f1ac658627dd9acf71011d615",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/notices/libvpx-PATENTS",
+      "bytes": 1436,
+      "raw_sha256": "cc3273e0694ea5896145e0677699b53471b03ea43021ddc50e7923fbb9f5023c",
+      "committed_sha256": "cc3273e0694ea5896145e0677699b53471b03ea43021ddc50e7923fbb9f5023c",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/notices/orc-COPYING",
+      "bytes": 3124,
+      "raw_sha256": "4f5dabb1b44bb6fc5cd53820b1f103147ad61b395a57903991325bd1b85d97bf",
+      "committed_sha256": "4f5dabb1b44bb6fc5cd53820b1f103147ad61b395a57903991325bd1b85d97bf",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/notices/pcre2-LICENCE",
+      "bytes": 3477,
+      "raw_sha256": "87d884eceb7fc54611470ce9f74280d28612b0c877adfc767e9676892a638987",
+      "committed_sha256": "87d884eceb7fc54611470ce9f74280d28612b0c877adfc767e9676892a638987",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/notices/proxy-libintl-COPYING",
+      "bytes": 25292,
+      "raw_sha256": "d245807f90032872d1438d741ed21e2490e1175dc8aa3afa5ddb6c8e529b58e5",
+      "committed_sha256": "d245807f90032872d1438d741ed21e2490e1175dc8aa3afa5ddb6c8e529b58e5",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/notices/zlib-README",
+      "bytes": 5317,
+      "raw_sha256": "d106dcdb2a0b3087cb3a2380b9f00a0bbadc7eb835cd80408f94a2d78d69727d",
+      "committed_sha256": "d106dcdb2a0b3087cb3a2380b9f00a0bbadc7eb835cd80408f94a2d78d69727d",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/recipes/bzip2.recipe",
+      "bytes": 811,
+      "raw_sha256": "db3c9a4a6aee33f7d09f13dab18bbd08bbe47bb37b9878033466bbdf9197ed34",
+      "committed_sha256": "db3c9a4a6aee33f7d09f13dab18bbd08bbe47bb37b9878033466bbdf9197ed34",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/recipes/custom.py",
+      "bytes": 8352,
+      "raw_sha256": "d65579ff67e9ae48c5f021b9cbdfb779137364bef0eeeecaf31987b7c4ec14bb",
+      "committed_sha256": "d65579ff67e9ae48c5f021b9cbdfb779137364bef0eeeecaf31987b7c4ec14bb",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/recipes/glib.recipe",
+      "bytes": 13151,
+      "raw_sha256": "7fc465d9370fd726e2331ad464c1b15f04dbc25a7700578491030d8de9d22ad0",
+      "committed_sha256": "7fc465d9370fd726e2331ad464c1b15f04dbc25a7700578491030d8de9d22ad0",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/recipes/gst-plugins-bad-1.0.recipe",
+      "bytes": 35733,
+      "raw_sha256": "82b8fe6cd7e5fec9651bd8f94225236945f81d60a98b5ee0847f921617cf9e1c",
+      "committed_sha256": "82b8fe6cd7e5fec9651bd8f94225236945f81d60a98b5ee0847f921617cf9e1c",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/recipes/gst-plugins-base-1.0.recipe",
+      "bytes": 8851,
+      "raw_sha256": "fc8b6fa50500ffeffaf5b1505dcc6ae50f9a4d9698b583254145d250a3fc0f7e",
+      "committed_sha256": "fc8b6fa50500ffeffaf5b1505dcc6ae50f9a4d9698b583254145d250a3fc0f7e",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/recipes/gst-plugins-good-1.0.recipe",
+      "bytes": 16568,
+      "raw_sha256": "fe7e118f39ed02c306af28391e8086a236013350c203fd7a096eccdc1ad9a053",
+      "committed_sha256": "fe7e118f39ed02c306af28391e8086a236013350c203fd7a096eccdc1ad9a053",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/recipes/gstreamer-1.0.recipe",
+      "bytes": 3128,
+      "raw_sha256": "27af4c5ea5ce0c1ce49cafe677d172390aeef17e825022ca996604208f18f0e3",
+      "committed_sha256": "27af4c5ea5ce0c1ce49cafe677d172390aeef17e825022ca996604208f18f0e3",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/recipes/libffi.recipe",
+      "bytes": 868,
+      "raw_sha256": "dda01768646f7dc441850342eb0343f843d6ede78115e2e54e78113e00a19cc5",
+      "committed_sha256": "dda01768646f7dc441850342eb0343f843d6ede78115e2e54e78113e00a19cc5",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/recipes/libogg.recipe",
+      "bytes": 889,
+      "raw_sha256": "87379a13d772fc1bd7cb763a410fcdcd702967e0989567b53c9d57399003ac5c",
+      "committed_sha256": "87379a13d772fc1bd7cb763a410fcdcd702967e0989567b53c9d57399003ac5c",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/recipes/libvorbis.recipe",
+      "bytes": 1651,
+      "raw_sha256": "3a55edeaf66bbda56a71edb5a3033d47ec88b1d7abd0553854315967c9e58410",
+      "committed_sha256": "3a55edeaf66bbda56a71edb5a3033d47ec88b1d7abd0553854315967c9e58410",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/recipes/libvpx.recipe",
+      "bytes": 2256,
+      "raw_sha256": "8fbf73c7cb302c8d30f95106d602d905922f517554ff5cde54b06fa784e09905",
+      "committed_sha256": "8fbf73c7cb302c8d30f95106d602d905922f517554ff5cde54b06fa784e09905",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/recipes/orc.recipe",
+      "bytes": 1970,
+      "raw_sha256": "4ad51966e5855effda8220658b1d1923f7f525aadff39543d78cf143d4c3b261",
+      "committed_sha256": "4ad51966e5855effda8220658b1d1923f7f525aadff39543d78cf143d4c3b261",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/recipes/pcre2.recipe",
+      "bytes": 1325,
+      "raw_sha256": "6889a7278809c99bd36a0ea04d725da66b443b6aa6d90b5e2a0c9dffa17e96f1",
+      "committed_sha256": "6889a7278809c99bd36a0ea04d725da66b443b6aa6d90b5e2a0c9dffa17e96f1",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/recipes/proxy-libintl.recipe",
+      "bytes": 885,
+      "raw_sha256": "123fd69100d658d1719aff4da4de0df46f8fc32dfda9334bd5efbb711050b208",
+      "committed_sha256": "123fd69100d658d1719aff4da4de0df46f8fc32dfda9334bd5efbb711050b208",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/recipes/zlib.recipe",
+      "bytes": 975,
+      "raw_sha256": "0d656e46af8adbfc997409d0530a0613adb498fb65832cedafc201e3b8903641",
+      "committed_sha256": "0d656e46af8adbfc997409d0530a0613adb498fb65832cedafc201e3b8903641",
+      "exact_bytes": true
+    },
+    {
+      "path": "packaging/media/runtime.json",
+      "bytes": 39070,
+      "raw_sha256": "5c8acc5097c19ee7e1f0e90f4989c0e48971956572d43fc18114b50e411bc364",
+      "committed_sha256": "19ca31b2fe9f0c2fb458aa77d29d151831589e3d458a92278086122d3f77ebaf",
+      "exact_bytes": false
+    },
+    {
+      "path": "scripts/check-media-imports.ps1",
+      "bytes": 830,
+      "raw_sha256": "91562484289f9660aff744340b6cec59b688e84a1f04460f4ac7211a8c2fda25",
+      "committed_sha256": "d4f8a1dc495266952e602a2b941c732bbadaf00bc45eaa7d54dc39ca74ed33cd",
+      "exact_bytes": false
+    },
+    {
+      "path": "scripts/media-native.ps1",
+      "bytes": 1156,
+      "raw_sha256": "d0bbe592b54ca4eca72e72dd0dee6b6812533d8f66463223b8c39529a9272eab",
+      "committed_sha256": "2311f2def83fb2275d8ab8fc67cef53b8444af1243edf57f2be1167ca3b1df18",
+      "exact_bytes": false
+    },
+    {
+      "path": "scripts/prepare-media-runtime.ps1",
+      "bytes": 2653,
+      "raw_sha256": "491f27d005b47905ec94603a0f4ab9a7445fa8e0d5c4b6e1874b95d1524b0b68",
+      "committed_sha256": "e318ff3277e3c73c5f532ca12998188f3f96386ccd22b335390f5dc3cb94b702",
+      "exact_bytes": false
+    },
+    {
+      "path": "scripts/stage-media-runtime.py",
+      "bytes": 2595,
+      "raw_sha256": "4294c9ce6e9f428a21a0d2af3ad977bbdf8df79bc5b372b757fbca3d08ec70ca",
+      "committed_sha256": "75125884a11b8a16f33a4536a3fb95d500c5103e3096d688a27a70e37290a113",
+      "exact_bytes": false
+    }
+  ],
+  "diff_checks": {
+    "full": 2,
+    "first_party": 0
+  },
+  "upstream_note": "Full diff retains original upstream whitespace; first-party check passes. All upstream license/recipe bytes match; no lint/advisory waiver."
+}

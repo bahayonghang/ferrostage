@@ -1,0 +1,90 @@
+{
+  "utc": "2026-10-15T08:17:46.557307+00:00",
+  "compiler": "XeLaTeX / TeX Live 2025, -no-shell-escape",
+  "pdf": {
+    "path": "pympress-notes.pdf",
+    "bytes": 129701,
+    "sha256": "e939e35f931c184fd93b2e9b95e560db73ba6a6f6dfccbb0963262f0b359dfeb"
+  },
+  "source": {
+    "path": "pympress-notes.tex",
+    "bytes": 4236,
+    "sha256": "9552dc97c6ac5216e488b448846773befc8cb7952fd0665197db25bec275bc34"
+  },
+  "pages": [
+    {
+      "physical_page": 1,
+      "label": "1",
+      "width_pt": 907.09,
+      "height_pt": 255.12,
+      "left_public_marker": "FS-SLIDE-01",
+      "right_private_marker": "FS-NOTE-ONLY-01",
+      "audience_text_isolation": "PASS"
+    },
+    {
+      "physical_page": 2,
+      "label": "2",
+      "width_pt": 907.09,
+      "height_pt": 255.12,
+      "left_public_marker": "FS-SLIDE-02",
+      "right_private_marker": "FS-NOTE-ONLY-02",
+      "audience_text_isolation": "PASS"
+    },
+    {
+      "physical_page": 3,
+      "label": "3",
+      "width_pt": 907.09,
+      "height_pt": 255.12,
+      "left_public_marker": "FS-SLIDE-03-STEP-1",
+      "right_private_marker": "FS-NOTE-ONLY-03A",
+      "audience_text_isolation": "PASS"
+    },
+    {
+      "physical_page": 4,
+      "label": "3",
+      "width_pt": 907.09,
+      "height_pt": 255.12,
+      "left_public_marker": "FS-SLIDE-03-STEP-2",
+      "right_private_marker": "FS-NOTE-ONLY-03B",
+      "audience_text_isolation": "PASS"
+    },
+    {
+      "physical_page": 5,
+      "label": "4",
+      "width_pt": 907.09,
+      "height_pt": 255.12,
+      "left_public_marker": "FS-SLIDE-04",
+      "right_private_marker": "FS-NOTE-ONLY-04",
+      "audience_text_isolation": "PASS"
+    }
+  ],
+  "preview_files": [
+    {
+      "path": "preview/page-1.png",
+      "bytes": 56837,
+      "sha256": "789c362a7163c920b2d3994ff5273cb24ed8729fcfcd31ff4b2b81967a67b847"
+    },
+    {
+      "path": "preview/page-2.png",
+      "bytes": 58435,
+      "sha256": "c853a088f3c62b0c96fa9508a98675b38ba3da45fb08186e12f4394d665d4900"
+    },
+    {
+      "path": "preview/page-3.png",
+      "bytes": 29609,
+      "sha256": "48043cb0ad518d0f452938b16ad11419c16bb67e3400d3a82ebd0c3beb83f14a"
+    },
+    {
+      "path": "preview/page-4.png",
+      "bytes": 34511,
+      "sha256": "d5c4a1beabadb076384b4a1bd19fb1e538399807bbfe4cce487d9362a2d3168f"
+    },
+    {
+      "path": "preview/page-5.png",
+      "bytes": 55429,
+      "sha256": "8bee582e9854e887132925896203ff8b34e90fe048a579ba89abd2785e27215d"
+    }
+  ],
+  "visual_review": "Root inspected all five final Poppler pages: readable Chinese, code, public markers and private notes, no clipping",
+  "limits": "File/crop evidence only; actual FerroStage PDFium regression and native notes UI acceptance are separate. Task07 UI placeholders do not prove notes display."
+}

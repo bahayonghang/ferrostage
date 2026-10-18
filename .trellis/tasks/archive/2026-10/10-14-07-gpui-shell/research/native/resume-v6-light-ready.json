@@ -1,0 +1,20 @@
+{
+  "utc": "2026-10-15T03:23:21.437Z",
+  "window": {
+    "app": "process:D:\\mbx-cache\\targets\\v1\\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0\\debug\\ferrostage.exe",
+    "id": 21499000,
+    "title": "raster.pdf — 准备就绪 — FerroStage"
+  },
+  "accessibility": null,
+  "screenshots": [
+    {
+      "height": 929,
+      "id": "screenshot-0",
+      "originX": -2105,
+      "originY": 38,
+      "width": 1323,
+      "zIndex": 0,
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-light-ready-0.jpg"
+    }
+  ]
+}

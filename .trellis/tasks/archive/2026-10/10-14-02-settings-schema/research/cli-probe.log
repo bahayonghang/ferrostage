@@ -1,0 +1,100 @@
+   Compiling ferrostage-app v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.86s
+     Running `target\debug\ferrostage.exe check-config C:\Users\lyh\AppData\Local\Temp\ferrostage-cli-probe-356a96e3e67d4a85babfcc20e0d43c68.toml`
+2026-10-14T14:24:11.224949Z  WARN ferrostage_settings::parse: settings warning key="timer.target_minutes" reason=timer.target_minutes must be greater than 0; using 45
+Settings {
+    schema_version: 1,
+    general: GeneralSettings {
+        language: "zh-CN",
+        theme: Dark,
+        reopen_last_document: false,
+        recent_files_limit: 10,
+        recent_files: [],
+        debug_overlay: false,
+    },
+    display: DisplaySettings {
+        single_monitor_mode: PresenterOnly,
+        audience_fullscreen: true,
+        presenter_start_fullscreen: false,
+        monitors: [],
+    },
+    presenter: PresenterSettings {
+        next_slide_ratio: 0.35,
+        notes_ratio: 0.4,
+        notes_font_scale: 1.0,
+        show_clock: true,
+        show_thumbnail_strip: true,
+        grid_columns: 4,
+        grid_visible_pages: 16,
+    },
+    timer: TimerSettings {
+        mode: CountDown,
+        target_minutes: 45,
+        warn_yellow_remaining_min: 10,
+        warn_red_remaining_min: 3,
+    },
+    pointer: PointerSettings {
+        laser_color_bgra: [
+            0,
+            0,
+warning: timer.target_minutes: timer.target_minutes must be greater than 0; using 45
+            255,
+            255,
+        ],
+        laser_radius_norm: 0.008,
+        pen_color_bgra: [
+            0,
+            0,
+            255,
+            255,
+        ],
+        pen_width_norm: 0.004,
+        highlighter_alpha: 0.5,
+    },
+    keybindings: Keybindings {
+        next: [
+            "PageDown",
+            "Space",
+            "Right",
+        ],
+        previous: [
+            "PageUp",
+            "Backspace",
+            "Left",
+        ],
+        start_presentation: [
+            "F5",
+        ],
+        stop_presentation: [
+            "Escape",
+        ],
+        blank_black: [
+            "B",
+        ],
+        blank_white: [
+            "W",
+        ],
+        swap_screens: [
+            "S",
+        ],
+        toggle_laser: [
+            "L",
+        ],
+        toggle_pen: [
+            "P",
+        ],
+        jump: [
+            "G",
+        ],
+    },
+    cache: CacheSettings {
+        l1_gpu_mib: 256,
+        l2_cpu_mib: 512,
+        l3_thumb_mib: 64,
+    },
+    hot_reload: HotReloadSettings {
+        enabled: true,
+        debounce_ms: 300,
+    },
+}
+command_exit=0 SHA256_before=C007F8055D104F188F99506CBF97431A4B1A617C670DEFC1547EBB574A7AB97D SHA256_after=C007F8055D104F188F99506CBF97431A4B1A617C670DEFC1547EBB574A7AB97D unchanged=True

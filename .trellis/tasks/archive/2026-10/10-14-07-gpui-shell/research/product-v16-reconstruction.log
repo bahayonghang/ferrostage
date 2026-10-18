@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "files": 21,
+  "runtime_changes": [
+    "src/context.rs",
+    "src/node.rs",
+    "src/text.rs",
+    "src/util.rs"
+  ],
+  "manifest_sha256": "baad411ffb33b69d13765a538db985128def773bc93e6722183c34efcd5289b2",
+  "patch_sha256": "93563d304909e2bca657dc0136382ba9179e638b71799d9c6823918ad2a9f2f0"
+}

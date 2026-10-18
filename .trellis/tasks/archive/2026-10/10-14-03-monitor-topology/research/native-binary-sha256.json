@@ -1,0 +1,7 @@
+{
+  "recorded_at_utc": "2026-10-14T15:16:55.316060+00:00",
+  "path": "target\\debug\\examples\\monitor_probe.exe",
+  "sha256": "69e80a6cd95eef8aa51670101361425adebf281d198dd03dc5ffbc2918b1964b",
+  "profile": "dev",
+  "target": "x86_64-pc-windows-msvc"
+}

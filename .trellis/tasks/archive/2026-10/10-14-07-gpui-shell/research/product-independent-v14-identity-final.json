@@ -1,0 +1,31 @@
+{
+  "at_utc": "2026-10-15T07:10:51.477014+00:00",
+  "source_count": 609,
+  "source_sha256": "9764bfa0d94764c314fd559d8df2b55e056fc8f6ef77882cdde89662fe5d4413",
+  "binary_sha256": "4be903dc34b4bb47163816cc88a67caf8c9f9806772f931b209bf27a9d3dbcd1",
+  "freeze_sha256": "3f00b403a9668d3a841e0ba15564d28ad804934f8b740c3d4f1803b82da41a1c",
+  "manifests": {
+    "product-v14-evidence-manifest.json": {
+      "count": 34,
+      "sha256": "54d47ceaab215335cb7345788826df9d316715a4a08b3c061907c21302cca00e"
+    },
+    "native-v13-evidence-manifest.json": {
+      "count": 92,
+      "sha256": "e08f7bb83832a0e6ccbd23b0ea5abb6a489181baad8ef85f27bc224475d4aedf"
+    },
+    "native-v13-independent-manifest.json": {
+      "count": 2,
+      "sha256": "078eb2e0093273e56684731ec6cc6b30f3eaadb683b46ff08e1f1618685399a9"
+    },
+    "native-v11-evidence-manifest.json": {
+      "count": 115,
+      "sha256": "a5d41534ce86215aa364ef608c66e83b2aeeca47a00b7eca36e4a4760b1e61a5"
+    },
+    "native-v9-evidence-manifest.json": {
+      "count": 37,
+      "sha256": "7e9d42e2894e5319770966bf2c602b62b5cbc13cb5771b85d19dbc96ff229822"
+    }
+  },
+  "mismatches": [],
+  "status": "PASS"
+}

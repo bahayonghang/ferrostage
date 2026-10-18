@@ -1,0 +1,23 @@
+{
+  "recorded_utc": "2026-10-16T00:54:37.680Z",
+  "window": {
+    "app": "process:D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\consolidated-smoke\\complete\\ferrostage.exe",
+    "id": 21763334,
+    "title": "pympress-notes.pdf — 演示中 — FerroStage"
+  },
+  "accessibility": {
+    "focused_element": "72 button 浅色 ID: setting-general.theme-light",
+    "tree": "Window: \"pympress-notes.pdf — 演示中 — FerroStage\", App: ferrostage.exe.\n\t0 region pympress-notes.pdf — 演示中 — FerroStage Secondary Actions: Raise\n\t\t1 title bar (settable, string) Value: pympress-notes.pdf — 演示中 — FerroStage\n\t\t\t2 menu bar System ID: MenuBar\n\t\t\t\t3 menu item System\n\t\t\t4 button Minimize\n\t\t\t5 button Maximize\n\t\t\t6 button Close\n\t\t7 application FerroStage 讲者窗口\n\t\t\t62 button 通用 ID: settings-category-general\n\t\t\t63 button 显示器 ID: settings-category-displays\n\t\t\t64 button 讲者布局 ID: settings-category-presenter\n\t\t\t65 button 计时器 ID: settings-category-timer\n\t\t\t66 button 指针与画笔 ID: settings-category-pointer\n\t\t\t67 button 快捷键 ID: settings-category-keys\n\t\t\t68 button 高级 ID: settings-category-advanced\n\t\t\t69 button 简体中文 ID: setting-general.language-zh-CN\n\t\t\t70 button English ID: setting-general.language-en-US\n\t\t\t71 button 深色 ID: setting-general.theme-dark\n\t\t\t72 button 浅色 ID: setting-general.theme-light\n\t\t\t73 button 跟随系统 ID: setting-general.theme-system\n\t\t\t74 button 关闭 ID: setting-general.reopen_last_document\n\t\t\t75 button − ID: setting-general.recent_files_limit-minus\n\t\t\t76 button 10 ID: setting-general.recent_files_limit-value\n\t\t\t77 button + ID: setting-general.recent_files_limit-plus\n\t\t\t78 button 清空最近文件 ID: settings-clear-recent\n\t\t\t79 button 关闭 ID: close-settings\n\nThe focused UI element is 72 button 浅色 ID: setting-general.theme-light."
+  },
+  "screenshots": [
+    {
+      "height": 791,
+      "id": "screenshot-0",
+      "originX": 592,
+      "originY": 192,
+      "width": 1102,
+      "zIndex": 0,
+      "file": "final01-settings-light-0.jpg"
+    }
+  ]
+}

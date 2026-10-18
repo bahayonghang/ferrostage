@@ -1,0 +1,172 @@
+{
+  "captured_utc": "2026-10-15T10:23:58.073431+00:00",
+  "freeze_sha256": "0e2b1ed8ef9299676ba249e7600bd8ab6734f00c6ae17f677467405ad60402d3",
+  "source_count": 648,
+  "source_sha256": "3e208cf586dcf37ab0420228e8eb3fba8ee07c0b73a8597c318a7f6a219c35b8",
+  "source_mismatches": [],
+  "artifact_sha256": {
+    "binary": "cf228c03655ddd45d25520bd88dab025c219af9bec9195314ce541dbb1cd89d1",
+    "pdfium": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118",
+    "fixture": "e939e35f931c184fd93b2e9b95e560db73ba6a6f6dfccbb0963262f0b359dfeb"
+  },
+  "runs": {
+    "v16-core-main": {
+      "launch": {
+        "freeze_sha256": "0E2B1ED8EF9299676BA249E7600BD8AB6734F00C6AE17F677467405AD60402D3",
+        "dll_sha256": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118",
+        "pid": 42672,
+        "pdf_sha256": "e939e35f931c184fd93b2e9b95e560db73ba6a6f6dfccbb0963262f0b359dfeb",
+        "rust_backtrace": "full",
+        "source_sha256": "3e208cf586dcf37ab0420228e8eb3fba8ee07c0b73a8597c318a7f6a219c35b8",
+        "config": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\v16-core.toml",
+        "exe": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe",
+        "freeze": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-native-freeze-v16.json",
+        "rust_log": "info,ferrostage_ui=debug",
+        "config_sha256": "4C3ABBC78F4E4151B6EF14F44BBCA008FDD5042E9D01FCC7BFBA33509877C5E7",
+        "utc": "2026-10-15T10:10:36.5092751Z",
+        "argv": [
+          "--config",
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\v16-core.toml",
+          "--pdfium-library",
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll",
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\notes-functional\\pympress-notes.pdf"
+        ],
+        "exe_sha256": "cf228c03655ddd45d25520bd88dab025c219af9bec9195314ce541dbb1cd89d1"
+      },
+      "exit": {
+        "exit_code": 0,
+        "pid": 42672,
+        "utc": "2026-10-15T10:19:07.7565187Z"
+      },
+      "post_exit": {
+        "utc": "2026-10-15T10:19:17.829Z",
+        "windows": []
+      },
+      "log_lines": {
+        "stdout": 126,
+        "stderr": 0
+      },
+      "diagnostics": {
+        "stdout": [],
+        "stderr": []
+      },
+      "placements": [
+        "2026-10-15T10:10:37.288778Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:887: window placement observation reason=\"confirmed\" window=WindowId(1v1) monitor=MonitorId(\"device:\\\\\\\\?\\\\display#bkx2700#5&16631d0&0&uid8451#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}\") requested_display=65729 requested_fullscreen=false actual_display=Some(65729) actual_display_bounds=Some([0.0, 0.0, 2048.0, 1152.0]) actual_usable_bounds=Some([0.0, 0.0, 2048.0, 1104.0]) requested_client_size=Size { 1100px × 760px } actual_bounds=[474.4, 184.0, 1100.0, 760.0] actual_fullscreen=false bounds_observed=true",
+        "2026-10-15T10:13:45.576303Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:887: window placement observation reason=\"confirmed\" window=WindowId(4v7) monitor=MonitorId(\"device:\\\\\\\\?\\\\display#boe0d5a#5&16631d0&0&uid8448#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}\") requested_display=131073 requested_fullscreen=false actual_display=Some(131073) actual_display_bounds=Some([-1706.6666, -112.666664, 1706.6666, 1066.6666]) actual_usable_bounds=Some([-1706.6666, -112.666664, 1706.6666, 1018.6667]) requested_client_size=Size { 1100px × 760px } actual_bounds=[-1402.0, 31.333334, 1100.0, 760.0] actual_fullscreen=false bounds_observed=true",
+        "2026-10-15T10:14:51.832290Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:887: window placement observation reason=\"confirmed\" window=WindowId(2v9) monitor=MonitorId(\"device:\\\\\\\\?\\\\display#rtk2560#4&2878f4bf&0&uid69#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}\") requested_display=65733 requested_fullscreen=false actual_display=Some(65733) actual_display_bounds=Some([1706.6666, -761.3333, 1066.6666, 1706.6666]) actual_usable_bounds=Some([1706.6666, -761.3333, 1066.6666, 1658.6666]) requested_client_size=Size { 1002.6666px × 760px } actual_bounds=[1740.0, -297.33334, 1002.6667, 760.0] actual_fullscreen=false bounds_observed=true",
+        "2026-10-15T10:15:24.300808Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:887: window placement observation reason=\"confirmed\" window=WindowId(1v7) monitor=MonitorId(\"device:\\\\\\\\?\\\\display#bkx2700#5&16631d0&0&uid8451#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}\") requested_display=65729 requested_fullscreen=true actual_display=Some(65729) actual_display_bounds=Some([0.0, 0.0, 2048.0, 1152.0]) actual_usable_bounds=Some([0.0, 0.0, 2048.0, 1104.0]) requested_client_size=Size { 800px × 760px } actual_bounds=[0.0, 0.0, 2048.0, 1152.0] actual_fullscreen=true bounds_observed=true",
+        "2026-10-15T10:17:26.055310Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:887: window placement observation reason=\"confirmed\" window=WindowId(3v11) monitor=MonitorId(\"device:\\\\\\\\?\\\\display#bkx2700#5&16631d0&0&uid8451#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}\") requested_display=65729 requested_fullscreen=false actual_display=Some(65729) actual_display_bounds=Some([0.0, 0.0, 2048.0, 1152.0]) actual_usable_bounds=Some([0.0, 0.0, 2048.0, 1104.0]) requested_client_size=Size { 1100px × 760px } actual_bounds=[474.4, 184.0, 1100.0, 760.0] actual_fullscreen=false bounds_observed=true",
+        "2026-10-15T10:17:26.055563Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:887: window placement observation reason=\"confirmed\" window=WindowId(4v11) monitor=MonitorId(\"device:\\\\\\\\?\\\\display#boe0d5a#5&16631d0&0&uid8448#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}\") requested_display=131073 requested_fullscreen=true actual_display=Some(131073) actual_display_bounds=Some([-1706.6666, -112.666664, 1706.6666, 1066.6666]) actual_usable_bounds=Some([-1706.6666, -112.666664, 1706.6666, 1018.6667]) requested_client_size=Size { 800px × 760px } actual_bounds=[-1706.6666, -112.666664, 1706.6666, 1066.6666] actual_fullscreen=true bounds_observed=true",
+        "2026-10-15T10:18:36.086377Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:887: window placement observation reason=\"confirmed\" window=WindowId(2v11) monitor=MonitorId(\"device:\\\\\\\\?\\\\display#bkx2700#5&16631d0&0&uid8451#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}\") requested_display=65729 requested_fullscreen=false actual_display=Some(65729) actual_display_bounds=Some([0.0, 0.0, 2048.0, 1152.0]) actual_usable_bounds=Some([0.0, 0.0, 2048.0, 1104.0]) requested_client_size=Size { 1100px × 760px } actual_bounds=[474.4, 184.0, 1100.0, 760.0] actual_fullscreen=false bounds_observed=false"
+      ],
+      "session_observations": [
+        "2026-10-15T10:10:37.288975Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:1371: window transaction committed stage=Ready page=0 elapsed_ms=0 presenter=Some(AnyWindowHandle { id: WindowId(1v1), state_type: TypeId(0x5905a21d0c0d1a40a53509df29d9e165), root_entity_type_name: \"ferrostage_ui::presenter::Presenter\" }) audience=None",
+        "2026-10-15T10:11:16.920718Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:1095: display settings opened stage=Ready page=0 elapsed_ms=0 revision=0",
+        "2026-10-15T10:13:17.620308Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:1095: display settings opened stage=Ready page=0 elapsed_ms=0 revision=0",
+        "2026-10-15T10:13:45.580876Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:1371: window transaction committed stage=Ready page=0 elapsed_ms=0 presenter=Some(AnyWindowHandle { id: WindowId(4v7), state_type: TypeId(0x5905a21d0c0d1a40a53509df29d9e165), root_entity_type_name: \"ferrostage_ui::presenter::Presenter\" }) audience=None",
+        "2026-10-15T10:13:58.238604Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:1095: display settings opened stage=Ready page=0 elapsed_ms=0 revision=0",
+        "2026-10-15T10:14:51.836430Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:1371: window transaction committed stage=Ready page=0 elapsed_ms=0 presenter=Some(AnyWindowHandle { id: WindowId(2v9), state_type: TypeId(0x5905a21d0c0d1a40a53509df29d9e165), root_entity_type_name: \"ferrostage_ui::presenter::Presenter\" }) audience=None",
+        "2026-10-15T10:14:59.128811Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:1095: display settings opened stage=Ready page=0 elapsed_ms=0 revision=0",
+        "2026-10-15T10:15:24.301104Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:1371: window transaction committed stage=Presenting page=0 elapsed_ms=0 presenter=Some(AnyWindowHandle { id: WindowId(2v9), state_type: TypeId(0x5905a21d0c0d1a40a53509df29d9e165), root_entity_type_name: \"ferrostage_ui::presenter::Presenter\" }) audience=Some(AnyWindowHandle { id: WindowId(1v7), state_type: TypeId(0xec34cabcdb3de295088d28594e65c4bd), root_entity_type_name: \"ferrostage_ui::audience::Audience\" })",
+        "2026-10-15T10:16:52.068146Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:1095: display settings opened stage=Presenting page=2 elapsed_ms=87767 revision=0",
+        "2026-10-15T10:17:26.059596Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:1371: window transaction committed stage=Presenting page=2 elapsed_ms=121758 presenter=Some(AnyWindowHandle { id: WindowId(3v11), state_type: TypeId(0x5905a21d0c0d1a40a53509df29d9e165), root_entity_type_name: \"ferrostage_ui::presenter::Presenter\" }) audience=Some(AnyWindowHandle { id: WindowId(4v11), state_type: TypeId(0xec34cabcdb3de295088d28594e65c4bd), root_entity_type_name: \"ferrostage_ui::audience::Audience\" })",
+        "2026-10-15T10:18:09.437610Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:1095: display settings opened stage=Presenting page=2 elapsed_ms=165136 revision=0",
+        "2026-10-15T10:18:36.092057Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:1371: window transaction committed stage=Ready page=2 elapsed_ms=191785 presenter=Some(AnyWindowHandle { id: WindowId(2v11), state_type: TypeId(0x5905a21d0c0d1a40a53509df29d9e165), root_entity_type_name: \"ferrostage_ui::presenter::Presenter\" }) audience=None",
+        "2026-10-15T10:18:59.164054Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:1095: display settings opened stage=Ready page=2 elapsed_ms=191785 revision=0"
+      ]
+    },
+    "v16-core-relaunch": {
+      "launch": {
+        "argv": [
+          "--config",
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\v16-core.toml",
+          "--pdfium-library",
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll",
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\notes-functional\\pympress-notes.pdf"
+        ],
+        "dll_sha256": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118",
+        "config_sha256": "7B190057C5120649774B36300F117BC323A6255A50BA32F04497380937D26393",
+        "utc": "2026-10-15T10:19:19.4275152Z",
+        "rust_log": "info,ferrostage_ui=debug",
+        "pdf_sha256": "e939e35f931c184fd93b2e9b95e560db73ba6a6f6dfccbb0963262f0b359dfeb",
+        "pid": 58568,
+        "freeze_sha256": "0E2B1ED8EF9299676BA249E7600BD8AB6734F00C6AE17F677467405AD60402D3",
+        "config": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\v16-core.toml",
+        "rust_backtrace": "full",
+        "freeze": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-native-freeze-v16.json",
+        "exe": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe",
+        "exe_sha256": "cf228c03655ddd45d25520bd88dab025c219af9bec9195314ce541dbb1cd89d1",
+        "source_sha256": "3e208cf586dcf37ab0420228e8eb3fba8ee07c0b73a8597c318a7f6a219c35b8"
+      },
+      "exit": {
+        "utc": "2026-10-15T10:21:18.4957160Z",
+        "exit_code": 0,
+        "pid": 58568
+      },
+      "post_exit": {
+        "utc": "2026-10-15T10:21:41.493Z",
+        "windows": []
+      },
+      "log_lines": {
+        "stdout": 48,
+        "stderr": 0
+      },
+      "diagnostics": {
+        "stdout": [],
+        "stderr": []
+      },
+      "placements": [
+        "2026-10-15T10:19:20.208572Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:887: window placement observation reason=\"confirmed\" window=WindowId(1v1) monitor=MonitorId(\"device:\\\\\\\\?\\\\display#bkx2700#5&16631d0&0&uid8451#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}\") requested_display=65729 requested_fullscreen=false actual_display=Some(65729) actual_display_bounds=Some([0.0, 0.0, 2048.0, 1152.0]) actual_usable_bounds=Some([0.0, 0.0, 2048.0, 1104.0]) requested_client_size=Size { 1100px × 760px } actual_bounds=[474.4, 184.0, 1100.0, 760.0] actual_fullscreen=false bounds_observed=true",
+        "2026-10-15T10:19:59.967013Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:887: window placement observation reason=\"confirmed\" window=WindowId(2v1) monitor=MonitorId(\"device:\\\\\\\\?\\\\display#bkx2700#5&16631d0&0&uid8451#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}\") requested_display=65729 requested_fullscreen=false actual_display=Some(65729) actual_display_bounds=Some([0.0, 0.0, 2048.0, 1152.0]) actual_usable_bounds=Some([0.0, 0.0, 2048.0, 1104.0]) requested_client_size=Size { 1100px × 760px } actual_bounds=[474.4, 184.0, 1100.0, 760.0] actual_fullscreen=false bounds_observed=false",
+        "2026-10-15T10:20:11.533193Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:887: window placement observation reason=\"confirmed\" window=WindowId(1v3) monitor=MonitorId(\"device:\\\\\\\\?\\\\display#rtk2560#4&2878f4bf&0&uid69#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}\") requested_display=65733 requested_fullscreen=true actual_display=Some(65733) actual_display_bounds=Some([1706.6666, -761.3333, 1066.6666, 1706.6666]) actual_usable_bounds=Some([1706.6666, -761.3333, 1066.6666, 1658.6666]) requested_client_size=Size { 800px × 760px } actual_bounds=[1706.6666, -761.3333, 1066.6666, 1706.6666] actual_fullscreen=true bounds_observed=true",
+        "2026-10-15T10:20:46.617967Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:887: window placement observation reason=\"confirmed\" window=WindowId(1v5) monitor=MonitorId(\"device:\\\\\\\\?\\\\display#rtk2560#4&2878f4bf&0&uid69#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}\") requested_display=65733 requested_fullscreen=true actual_display=Some(65733) actual_display_bounds=Some([1706.6666, -761.3333, 1066.6666, 1706.6666]) actual_usable_bounds=Some([1706.6666, -761.3333, 1066.6666, 1658.6666]) requested_client_size=Size { 800px × 760px } actual_bounds=[1706.6666, -761.3333, 1066.6666, 1706.6666] actual_fullscreen=true bounds_observed=true",
+        "2026-10-15T10:21:11.408361Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:887: window placement observation reason=\"confirmed\" window=WindowId(1v7) monitor=MonitorId(\"device:\\\\\\\\?\\\\display#rtk2560#4&2878f4bf&0&uid69#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}\") requested_display=65733 requested_fullscreen=true actual_display=Some(65733) actual_display_bounds=Some([1706.6666, -761.3333, 1066.6666, 1706.6666]) actual_usable_bounds=Some([1706.6666, -761.3333, 1066.6666, 1658.6666]) requested_client_size=Size { 800px × 760px } actual_bounds=[1706.6666, -761.3333, 1066.6666, 1706.6666] actual_fullscreen=true bounds_observed=true"
+      ],
+      "session_observations": [
+        "2026-10-15T10:19:20.208862Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:1371: window transaction committed stage=Ready page=0 elapsed_ms=0 presenter=Some(AnyWindowHandle { id: WindowId(1v1), state_type: TypeId(0x5905a21d0c0d1a40a53509df29d9e165), root_entity_type_name: \"ferrostage_ui::presenter::Presenter\" }) audience=None",
+        "2026-10-15T10:19:41.688660Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:1095: display settings opened stage=Ready page=0 elapsed_ms=0 revision=0",
+        "2026-10-15T10:19:59.971112Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:1371: window transaction committed stage=Ready page=0 elapsed_ms=0 presenter=Some(AnyWindowHandle { id: WindowId(2v1), state_type: TypeId(0x5905a21d0c0d1a40a53509df29d9e165), root_entity_type_name: \"ferrostage_ui::presenter::Presenter\" }) audience=None",
+        "2026-10-15T10:20:11.533468Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:1371: window transaction committed stage=Presenting page=0 elapsed_ms=0 presenter=Some(AnyWindowHandle { id: WindowId(2v1), state_type: TypeId(0x5905a21d0c0d1a40a53509df29d9e165), root_entity_type_name: \"ferrostage_ui::presenter::Presenter\" }) audience=Some(AnyWindowHandle { id: WindowId(1v3), state_type: TypeId(0xec34cabcdb3de295088d28594e65c4bd), root_entity_type_name: \"ferrostage_ui::audience::Audience\" })",
+        "2026-10-15T10:20:46.618259Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:1371: window transaction committed stage=Presenting page=0 elapsed_ms=0 presenter=Some(AnyWindowHandle { id: WindowId(2v1), state_type: TypeId(0x5905a21d0c0d1a40a53509df29d9e165), root_entity_type_name: \"ferrostage_ui::presenter::Presenter\" }) audience=Some(AnyWindowHandle { id: WindowId(1v5), state_type: TypeId(0xec34cabcdb3de295088d28594e65c4bd), root_entity_type_name: \"ferrostage_ui::audience::Audience\" })",
+        "2026-10-15T10:21:11.408650Z  INFO ferrostage_ui::shell: crates\\ferrostage-ui\\src\\shell.rs:1371: window transaction committed stage=Presenting page=0 elapsed_ms=0 presenter=Some(AnyWindowHandle { id: WindowId(2v1), state_type: TypeId(0x5905a21d0c0d1a40a53509df29d9e165), root_entity_type_name: \"ferrostage_ui::presenter::Presenter\" }) audience=Some(AnyWindowHandle { id: WindowId(1v7), state_type: TypeId(0xec34cabcdb3de295088d28594e65c4bd), root_entity_type_name: \"ferrostage_ui::audience::Audience\" })"
+      ]
+    }
+  },
+  "no_play_frozen_elapsed_ms": 191785,
+  "no_play_observation_gap_seconds": 23.071997,
+  "cancel_config": {
+    "before_sha256": "d97a7e55c0ef19f93d3a815369603e9a2a903401df636355048d09db1efaa587",
+    "after_sha256": "d97a7e55c0ef19f93d3a815369603e9a2a903401df636355048d09db1efaa587",
+    "bytes_equal": true,
+    "launch_semantic_equal": true
+  },
+  "final_display_config": {
+    "audience_fullscreen": true,
+    "presenter_start_fullscreen": false,
+    "single_monitor_mode": "presenter_only",
+    "monitors": [
+      {
+        "friendly_name": "Generic PnP Monitor",
+        "id": "device:\\\\?\\display#bkx2700#5&16631d0&0&uid8451#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+        "role": "presenter"
+      },
+      {
+        "friendly_name": "Generic PnP Monitor",
+        "id": "device:\\\\?\\display#boe0d5a#5&16631d0&0&uid8448#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+        "role": "none"
+      },
+      {
+        "friendly_name": "Generic PnP Monitor",
+        "id": "device:\\\\?\\display#rtk2560#4&2878f4bf&0&uid69#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+        "role": "audience"
+      }
+    ]
+  },
+  "hidden_owned_windows": 16,
+  "post_destruction_com_queries": 64,
+  "limits": [
+    "Bounded native runs, no claim of complete lifetime/race or HWND-reuse safety",
+    "Page placeholders only; actual PDF/notes UI not implemented by07",
+    "Physical topology and real single/zero displays NOT_RUN; size matrix deferred; Gate B INCOMPLETE"
+  ]
+}

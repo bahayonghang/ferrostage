@@ -1,0 +1,11 @@
+{
+  "helper_source": "vendor/gpui/src/svg_renderer.rs",
+  "helper_sha256": "4d21bc4f372df246c73f806790f3553737a0917e3025b7f210c9ec0e8776c461",
+  "product_harfrust": "../../vendor/harfrust",
+  "old_graph": "Diagnostic only; original ttf-parser/resvg remain outside product graph",
+  "files": {
+    "cache\\gpui-product-proof\\Cargo.lock": "13b9af37390bfff0ee707512faf24e0a93466dce5a44909cad0eb1da0515d5f2",
+    "cache\\gpui-product-proof\\Cargo.toml": "732d7342dbe81ef03ea2d5994371171ce55674e6c1068a29c0aee890b1af37e3",
+    "cache\\gpui-product-proof\\src\\main.rs": "556e9be92b24122f7f3fd6c8a24afd5cb56d1ae4cb1bfc73f7c513c3652539b4"
+  }
+}

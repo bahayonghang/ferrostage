@@ -1,0 +1,287 @@
+   Compiling serde_core v1.0.229
+   Compiling typeid v1.0.3
+   Compiling erased-serde v0.4.10
+   Compiling memchr v2.8.3
+   Compiling libm v0.2.16
+   Compiling smallvec v1.16.3
+   Compiling simd-adler32 v0.3.10
+   Compiling crc32fast v1.5.2
+   Compiling stable_deref_trait v1.2.1
+   Compiling serde v1.0.229
+   Compiling num-traits v0.2.19
+   Compiling arrayvec v0.7.8
+   Compiling version_check v0.9.5
+   Compiling futures-core v0.3.34
+   Compiling foldhash v0.2.0
+   Compiling anyhow v1.0.104
+   Compiling syn v3.0.9
+   Compiling syn v2.0.119
+   Compiling zerocopy v0.8.63
+   Compiling zmij v1.0.23
+   Compiling futures-io v0.3.34
+   Compiling find-msvc-tools v0.1.14
+   Compiling writeable v0.6.4
+   Compiling shlex v2.0.1
+   Compiling futures-sink v0.3.34
+   Compiling litemap v0.8.3
+   Compiling miniz_oxide v0.9.1
+   Compiling serde_json v1.0.154
+   Compiling lock_api v0.4.14
+   Compiling icu_normalizer_data v2.3.0
+   Compiling utf8_iter v1.0.4
+   Compiling which v8.0.6
+   Compiling icu_properties_data v2.3.0
+   Compiling aho-corasick v1.1.5
+   Compiling slotmap v1.1.1
+   Compiling futures-channel v0.3.34
+   Compiling cc v1.8.0
+   Compiling futures-task v0.3.34
+   Compiling slab v0.4.12
+   Compiling rustc-hash v2.1.3
+   Compiling getrandom v0.3.4
+   Compiling parking_lot_core v0.9.12
+   Compiling miniz_oxide v0.8.9
+   Compiling float-cmp v0.9.0
+   Compiling parking v2.2.1
+   Compiling pulp v0.22.3 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\pulp)
+   Compiling regex-automata v0.4.18
+   Compiling polycool v0.4.0
+   Compiling fdeflate v0.3.7
+   Compiling flate2 v1.1.10
+   Compiling windows-sys v0.61.2
+   Compiling sha1_smol v1.0.1
+   Compiling arrayref v0.3.9
+   Compiling strict-num v0.1.1
+   Compiling unicode-segmentation v1.13.3
+   Compiling percent-encoding v2.3.2
+   Compiling ref-cast v1.0.27
+   Compiling zune-core v0.5.3
+   Compiling weezl v0.1.12
+   Compiling quick-error v2.0.1
+   Compiling libbz2-rs-sys v0.2.5
+   Compiling semver v1.0.28
+   Compiling fastrand v2.5.0
+   Compiling form_urlencoded v1.2.2
+   Compiling png v0.18.1
+   Compiling kurbo v0.13.1
+   Compiling raw-cpuid v11.6.0
+   Compiling convert_case v0.10.0
+   Compiling synstructure v0.14.0
+   Compiling rustc_version v0.4.1
+   Compiling vswhom-sys v0.1.3
+   Compiling zune-jpeg v0.5.15
+   Compiling serde_derive_internals v0.30.0
+   Compiling parking_lot v0.12.5
+   Compiling rand_core v0.9.5
+   Compiling ztracing v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling reborrow v0.5.5
+   Compiling bzip2 v0.6.1
+   Compiling pastey v0.2.3
+   Compiling heapless v0.9.3
+   Compiling color_quant v1.1.0
+   Compiling unicode-xid v0.2.6
+   Compiling memmap2 v0.9.11
+   Compiling pulp-wasm-simd-flag v0.1.1
+   Compiling thiserror v1.0.69
+   Compiling byteorder-lite v0.1.0
+   Compiling compression-core v0.4.33
+   Compiling siphasher v1.0.4
+   Compiling gif v0.14.2
+   Compiling event-listener v5.4.2
+   Compiling spin v0.9.9
+   Compiling compression-codecs v0.4.45
+   Compiling euclid v0.22.14
+   Compiling http v1.5.0
+   Compiling roxmltree v0.21.1
+   Compiling image-webp v0.2.4
+   Compiling zune-inflate v0.2.54
+   Compiling hash32 v0.3.1
+   Compiling serde_fmt v1.1.0
+   Compiling indexmap v2.14.2
+   Compiling serde_spanned v1.1.2
+   Compiling toml_datetime v1.1.2+spec-1.1.0
+   Compiling uuid v1.28.0
+   Compiling svgtypes v0.16.1
+   Compiling dyn-clone v1.0.20
+   Compiling unicode-script v0.5.8
+   Compiling unicode-vo v0.1.0
+   Compiling toml v1.1.8+spec-1.1.0
+   Compiling float_next_after v1.0.0
+   Compiling zerocopy-derive v0.8.63
+   Compiling tracing-attributes v0.1.31
+   Compiling bytemuck_derive v1.12.1
+   Compiling serde_derive v1.0.229
+   Compiling zerofrom-derive v0.1.8
+   Compiling yoke-derive v0.8.4
+   Compiling value-bag-serde1 v1.14.1
+   Compiling zerovec-derive v0.11.6
+   Compiling displaydoc v0.2.7
+   Compiling value-bag v1.14.1
+   Compiling thiserror-impl v2.0.21
+   Compiling futures-macro v0.3.34
+   Compiling windows-interface v0.59.3
+   Compiling windows-implement v0.60.2
+   Compiling lyon_geom v1.0.19
+   Compiling matchers v0.2.0
+   Compiling log v0.4.34
+   Compiling vswhom v0.1.0
+   Compiling winreg v0.56.0
+   Compiling lyon_path v1.0.19
+   Compiling ref-cast-impl v1.0.27
+   Compiling enumn v0.1.14
+   Compiling pin-project-internal v1.1.13
+   Compiling gpui_util v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling tracing-log v0.2.0
+   Compiling simplecss v0.2.2
+   Compiling fontdb v0.24.0
+   Compiling embed-resource v3.0.12
+   Compiling bytemuck v1.25.2
+   Compiling collections v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling tracing v0.1.44
+   Compiling schemars_derive v1.2.3
+   Compiling thiserror-impl v1.0.69
+   Compiling derive_more-impl v2.1.1
+   Compiling pico-args v0.5.0
+   Compiling lebe v0.5.3
+   Compiling font-types v0.12.6
+   Compiling tiny-skia-path v0.12.0
+   Compiling num-complex v0.4.6
+   Compiling accesskit v0.24.1
+   Compiling futures-util v0.3.34
+   Compiling zerofrom v0.1.8
+   Compiling windows-core v0.62.2
+   Compiling tracing-subscriber v0.3.23
+   Compiling ryu v1.0.23
+   Compiling rustc-demangle v0.1.28
+   Compiling pxfm v0.1.30
+   Compiling thiserror v2.0.21
+   Compiling yoke v0.8.3
+   Compiling read-fonts v0.41.0
+   Compiling data-url v0.3.2
+   Compiling zerovec v0.11.8
+   Compiling zerotrie v0.2.5
+   Compiling windows-collections v0.3.2
+   Compiling windows-future v0.3.2
+   Compiling windows-numerics v0.3.1
+   Compiling base64 v0.23.1
+   Compiling pin-project v1.1.13
+   Compiling ztracing_macro v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling imagesize v0.15.0
+   Compiling unicode-properties v0.1.3
+   Compiling fax v0.2.7
+   Compiling xmlwriter v0.1.0
+   Compiling bit_field v0.10.3
+   Compiling static_assertions v1.1.0
+   Compiling tiny-skia v0.12.0
+   Compiling tinystr v0.8.4
+   Compiling potential_utf v0.1.6
+   Compiling windows v0.62.2
+   Compiling stringprep v0.1.5
+   Compiling backtrace v0.3.76
+   Compiling gpui v0.2.2 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui)
+   Compiling ferrostage-core v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-core)
+   Compiling icu_collections v2.3.0
+   Compiling icu_locale_core v2.3.0
+   Compiling qoi v0.4.1
+   Compiling rgb v0.8.53
+   Compiling lyon_algorithms v1.0.21
+   Compiling lyon_tessellation v1.0.22
+   Compiling http-body v1.1.0
+   Compiling strum_macros v0.28.0
+   Compiling profiling-procmacros v1.0.18
+   Compiling derive_refineable v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling async-compression v0.4.50
+   Compiling flume v0.12.0
+   Compiling event-listener-strategy v0.5.4
+   Compiling futures-lite v2.6.1
+   Compiling chrono v0.4.45
+   Compiling icu_provider v2.3.1
+   Compiling schemars v1.2.3
+   Compiling perf v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling serde_urlencoded v0.7.1
+   Compiling nom v8.0.0
+   Compiling hashbrown v0.16.1
+   Compiling icu_normalizer v2.3.0
+   Compiling icu_properties v2.3.0
+   Compiling moxcms v0.8.1
+   Compiling windows-registry v0.6.1
+   Compiling concurrent-queue v2.5.0
+   Compiling crossbeam-queue v0.3.14
+   Compiling futures-executor v0.3.34
+   Compiling link-section v0.19.3
+   Compiling web-time v1.1.0
+   Compiling smol_str v0.3.6
+   Compiling futures v0.3.34
+   Compiling fixedbitset v0.5.7
+   Compiling atomic v0.5.3
+   Compiling zlog v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling linktime-proc-macro v0.2.3
+   Compiling pollster v0.2.5
+   Compiling async-task v4.7.1
+   Compiling svg_fmt v0.4.5
+   Compiling futures-concurrency v7.7.1
+   Compiling derive_more v2.1.1
+   Compiling postage v0.5.0
+   Compiling accesskit_consumer v0.38.0
+   Compiling gpui_windows v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling gpui_shared_string v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling async-channel v2.5.0
+   Compiling etagere v0.2.15
+   Compiling util_macros v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling refineable v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling profiling v1.0.18
+   Compiling pdfium-render v0.9.4
+   Compiling lyon v1.0.19
+   Compiling regex v1.13.1
+   Compiling idna_adapter v1.2.2
+   Compiling sum_tree v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling gpui_macros v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling half v2.7.1
+   Compiling ppv-lite86 v0.2.21
+   Compiling ctor v1.0.13
+   Compiling strum v0.28.0
+   Compiling taffy v0.13.0
+   Compiling spin v0.10.1
+   Compiling itertools v0.14.0
+   Compiling num_cpus v1.17.0
+   Compiling waker-fn v1.2.0
+   Compiling pollster v0.4.0
+   Compiling seahash v4.1.0
+   Compiling idna v1.1.0
+   Compiling raw-window-handle v0.6.2
+   Compiling inventory v0.3.25
+   Compiling dunce v1.0.5
+   Compiling notify v8.2.0
+   Compiling clap_derive v4.6.7
+   Compiling rand_chacha v0.9.0
+   Compiling exr v1.74.2
+   Compiling tiff v0.11.3
+   Compiling url v2.5.8
+   Compiling rand v0.9.5
+   Compiling ferrostage-platform v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-platform)
+   Compiling lopdf v0.45.0
+   Compiling http_client v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling scheduler v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling clap v4.6.7
+   Compiling skrifa v0.44.0
+   Compiling harfrust v0.12.0 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\harfrust)
+   Compiling image v0.25.10
+warning: function `shape` is never used
+   --> vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+   Compiling usvg v0.48.1
+warning: `harfrust` (lib) generated 1 warning
+   Compiling resvg v0.48.1
+   Compiling ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+   Compiling ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+   Compiling ferrostage-settings v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-settings)
+   Compiling accesskit_windows v0.34.0
+   Compiling gpui_platform v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+   Compiling ferrostage-app v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 55.52s

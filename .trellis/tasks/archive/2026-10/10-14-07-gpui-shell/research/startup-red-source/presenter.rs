@@ -1,0 +1,492 @@
+use crate::{
+    actions::{self, Intent},
+    shell::{Modal, Shell},
+    theme::{self, Palette},
+};
+use ferrostage_core::SessionStage;
+use gpui::{
+    AccessibleAction, Context, Div, ExternalPaths, FocusHandle, Render, Role, SharedString,
+    Stateful, WeakEntity, Window, WindowAppearance, div, prelude::*, px, rgb,
+};
+
+pub(crate) struct Presenter {
+    shell: WeakEntity<Shell>,
+    locale: crate::locale::Locale,
+    focus: FocusHandle,
+    modal_focus: FocusHandle,
+    return_focus: Option<FocusHandle>,
+    had_modal: bool,
+}
+
+impl Presenter {
+    pub fn new(
+        shell: WeakEntity<Shell>,
+        locale: crate::locale::Locale,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) -> Self {
+        if let Some(model) = shell.upgrade() {
+            cx.observe(&model, |_, _, cx| cx.notify()).detach();
+        }
+        let focus = cx.focus_handle();
+        window.focus(&focus, cx);
+        Self {
+            shell,
+            locale,
+            focus,
+            modal_focus: cx.focus_handle(),
+            return_focus: None,
+            had_modal: false,
+        }
+    }
+
+    fn button(
+        &self,
+        id: String,
+        label: String,
+        enabled: bool,
+        primary: bool,
+        intent: Intent,
+        palette: Palette,
+    ) -> Stateful<Div> {
+        let target = self.shell.clone();
+        let keyboard = target.clone();
+        let a11y = target.clone();
+        let click = intent.clone();
+        let accessible = intent.clone();
+        let fill = if !enabled {
+            palette.card
+        } else if primary {
+            theme::PRIMARY
+        } else {
+            palette.soft
+        };
+        let ink = if !enabled {
+            palette.muted
+        } else if primary {
+            theme::ON_PRIMARY
+        } else {
+            palette.body
+        };
+        div()
+            .id(SharedString::from(id.clone()))
+            .role(Role::Button)
+            .max_w_full()
+            .min_w_0()
+            .accessibility_id(SharedString::from(id.clone()))
+            .aria_label(if enabled {
+                label.clone()
+            } else {
+                self.locale
+                    .format("disabled-label", &[("label", label.clone())])
+            })
+            .tab_index(0)
+            .tab_stop(enabled)
+            .border(px(theme::FOCUS_WIDTH))
+            .border_color(rgb(palette.canvas))
+            .rounded(px(theme::RADIUS + theme::FOCUS_GAP))
+            .p(px(theme::FOCUS_GAP))
+            .focus(|style| style.border_color(rgb(palette.focus)))
+            .child(
+                div()
+                    .id(SharedString::from(format!("{id}-face")))
+                    .min_h(px(theme::CONTROL))
+                    .px(px(theme::SPACING))
+                    .flex()
+                    .items_center()
+                    .justify_center()
+                    .rounded(px(theme::RADIUS))
+                    .bg(rgb(fill))
+                    .text_color(rgb(ink))
+                    .border_1()
+                    .border_color(rgb(palette.border))
+                    .min_w_0()
+                    .text_size(px(14.))
+                    .child(div().truncate().child(label))
+                    .when(enabled, |view| {
+                        view.hover(move |style| {
+                            style.bg(rgb(if primary {
+                                theme::PRIMARY_HOVER
+                            } else {
+                                palette.card
+                            }))
+                        })
+                        .active(move |style| {
+                            style.bg(rgb(if primary {
+                                theme::PRIMARY_ACTIVE
+                            } else {
+                                palette.card
+                            }))
+                        })
+                    }),
+            )
+            .on_click(move |_, _, cx| {
+                if enabled {
+                    actions::dispatch(&target, click.clone(), cx);
+                }
+            })
+            .on_key_down(move |event, _, cx| {
+                if enabled && ["enter", "space"].contains(&event.keystroke.key.as_str()) {
+                    cx.stop_propagation();
+                    actions::dispatch(&keyboard, intent.clone(), cx);
+                }
+            })
+            .when(enabled, |view| {
+                view.on_a11y_action(AccessibleAction::Click, move |_, _, cx| {
+                    actions::dispatch(&a11y, accessible.clone(), cx)
+                })
+            })
+    }
+}
+
+impl Render for Presenter {
+    fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        let Some(entity) = self.shell.upgrade() else {
+            return div().into_any_element();
+        };
+        let shell = entity.read(cx);
+        let l = self.locale;
+        let dark = matches!(
+            window.appearance(),
+            WindowAppearance::Dark | WindowAppearance::VibrantDark
+        );
+        let p = theme::palette(shell.settings.settings.general.theme, dark);
+        let stage = shell.state.stage();
+        let stage_label = match stage {
+            SessionStage::Idle => l.text("stage-idle"),
+            SessionStage::Ready => l.text("stage-ready"),
+            SessionStage::Presenting => l.text("stage-presenting"),
+        };
+        let filename = shell
+            .path
+            .as_ref()
+            .and_then(|path| path.file_name())
+            .map(|name| name.to_string_lossy().into_owned())
+            .unwrap_or_else(|| "FerroStage".into());
+        let modal = shell.modal.clone();
+        let error = shell.error.clone();
+        let warnings = shell.warnings.clone();
+        let reason = shell.start_reason();
+        let loading = shell.loading;
+        let busy = shell.busy();
+        let dirty = shell.settings.dirty;
+        let save_error = shell.settings.save_error.as_ref().map(ToString::to_string);
+        let pages = shell.state.page_count();
+        let current = shell.state.current_page().0 + 1;
+        let preview = shell.state.jump_preview().map(|page| page.0 + 1);
+        let recent = shell
+            .settings
+            .settings
+            .general
+            .recent_files
+            .iter()
+            .take(3)
+            .cloned()
+            .collect::<Vec<_>>();
+        window.set_window_title(&format!("{filename} — {stage_label} — FerroStage"));
+        if modal.is_some() && !self.had_modal {
+            self.return_focus = window.focused(cx);
+            window.focus(&self.modal_focus, cx);
+        }
+        if modal.is_none() && self.had_modal {
+            window.focus(self.return_focus.as_ref().unwrap_or(&self.focus), cx);
+            self.return_focus = None;
+        }
+        self.had_modal = modal.is_some();
+        let root = div()
+            .id("presenter-root")
+            .role(Role::Application)
+            .aria_label(l.text("presenter-label"))
+            .size_full()
+            .flex()
+            .flex_col()
+            .bg(rgb(p.canvas))
+            .text_color(rgb(p.body))
+            .font_family(theme::SANS)
+            .text_size(px(16.))
+            .on_key_down(cx.listener(|this, event: &gpui::KeyDownEvent, window, cx| {
+                let key = event.keystroke.key.as_str();
+                if key == "tab" {
+                    if event.keystroke.modifiers.shift {
+                        window.focus_prev(cx);
+                    } else {
+                        window.focus_next(cx);
+                    }
+                    cx.stop_propagation();
+                } else if this.had_modal
+                    && (key == "backspace" || key.len() == 1 && key.as_bytes()[0].is_ascii_digit())
+                {
+                    if let Err(error) = this.shell.update(cx, |shell, cx| shell.jump_key(key, cx)) {
+                        tracing::debug!(%error,"jump target closed");
+                    }
+                    cx.stop_propagation();
+                }
+            }));
+        if let Some(modal) = modal {
+            let (title, description) = match modal {
+                Modal::Settings => (
+                    l.text("settings"),
+                    l.text("settings-placeholder").to_string(),
+                ),
+                Modal::Jump(ref text) => (
+                    l.text("jump"),
+                    l.format(
+                        "jump-description",
+                        &[
+                            ("pages", pages.to_string()),
+                            ("text", text.clone()),
+                            ("preview", preview.unwrap_or(current).to_string()),
+                        ],
+                    ),
+                ),
+            };
+            return root
+                .track_focus(&self.modal_focus)
+                .p(px(24.))
+                .gap(px(16.))
+                .child(div().text_size(px(20.)).text_color(rgb(p.ink)).child(title))
+                .child(div().child(description))
+                .when_some(error, |view, error| {
+                    view.child(div().text_color(rgb(p.error)).child(error))
+                })
+                .child(
+                    div()
+                        .flex()
+                        .flex_wrap()
+                        .gap(px(8.))
+                        .when(matches!(modal, Modal::Jump(_)), |view| {
+                            view.child(self.button(
+                                "commit-jump".into(),
+                                l.text("confirm-jump").into(),
+                                true,
+                                true,
+                                Intent::Commit,
+                                p,
+                            ))
+                        })
+                        .child(self.button(
+                            "close-modal".into(),
+                            l.text("close").into(),
+                            true,
+                            false,
+                            Intent::Escape,
+                            p,
+                        )),
+                )
+                .into_any_element();
+        }
+        let drop_target = self.shell.clone();
+        let mut body = div()
+            .id("presenter-content")
+            .flex_1()
+            .min_h_0()
+            .overflow_y_scroll()
+            .p(px(24.))
+            .gap(px(16.))
+            .flex()
+            .flex_col();
+        if stage == SessionStage::Idle {
+            body = body
+                .child(
+                    div()
+                        .font_family(theme::DISPLAY)
+                        .text_size(px(28.))
+                        .text_color(rgb(p.ink))
+                        .child("FerroStage"),
+                )
+                .child(div().child(l.text("welcome")))
+                .child(
+                    self.button(
+                        "welcome-open".into(),
+                        if loading {
+                            l.text("loading")
+                        } else {
+                            l.text("open")
+                        }
+                        .into(),
+                        !busy,
+                        true,
+                        Intent::Open,
+                        p,
+                    ),
+                );
+        } else {
+            body = body.child(
+                div()
+                    .min_h(px(180.))
+                    .flex_1()
+                    .rounded(px(theme::PANEL_RADIUS))
+                    .border_1()
+                    .border_color(rgb(p.border))
+                    .bg(rgb(p.soft))
+                    .flex()
+                    .flex_col()
+                    .items_center()
+                    .justify_center()
+                    .gap(px(16.))
+                    .child(
+                        div()
+                            .text_size(px(28.))
+                            .text_color(rgb(p.ink))
+                            .child(l.format(
+                                "page-count",
+                                &[
+                                    ("current", current.to_string()),
+                                    ("pages", pages.to_string()),
+                                ],
+                            )),
+                    )
+                    .child(
+                        div()
+                            .text_color(rgb(p.muted))
+                            .child(l.text("page-placeholder")),
+                    ),
+            );
+        }
+        if let Some(error) = error {
+            body = body.child(
+                div()
+                    .id("presenter-error")
+                    .role(Role::Alert)
+                    .text_color(rgb(p.error))
+                    .child(error),
+            );
+        }
+        for warning in warnings {
+            body = body.child(div().text_color(rgb(p.warning)).child(warning));
+        }
+        if dirty {
+            body = body
+                .child(
+                    div().text_color(rgb(p.warning)).child(
+                        save_error
+                            .map(|error| l.error("save-error", error))
+                            .unwrap_or_else(|| l.text("unsaved").into()),
+                    ),
+                )
+                .child(self.button(
+                    "retry-save".into(),
+                    l.text("retry-save").into(),
+                    true,
+                    false,
+                    Intent::RetrySave,
+                    p,
+                ));
+        }
+        if stage != SessionStage::Presenting && !recent.is_empty() {
+            body = body.child(div().text_color(rgb(p.muted)).child(l.text("recent")));
+            for (index, path) in recent.into_iter().enumerate() {
+                let label = std::path::Path::new(&path)
+                    .file_name()
+                    .map(|name| name.to_string_lossy().into_owned())
+                    .unwrap_or_else(|| path.clone());
+                body = body.child(self.button(
+                    format!("recent-{index}"),
+                    label,
+                    !busy,
+                    false,
+                    Intent::Import(path.into()),
+                    p,
+                ));
+            }
+        }
+        root.track_focus(&self.focus)
+            .on_drop::<ExternalPaths>(move |paths, _, cx| {
+                if let Some(path) = paths.paths().first() {
+                    actions::dispatch(&drop_target, Intent::Import(path.clone()), cx);
+                }
+            })
+            .child(
+                div()
+                    .p(px(16.))
+                    .border_b_1()
+                    .border_color(rgb(p.border))
+                    .flex()
+                    .flex_col()
+                    .gap(px(8.))
+                    .child(
+                        div()
+                            .id("document-title")
+                            .aria_label(filename.clone())
+                            .text_size(px(20.))
+                            .text_color(rgb(p.ink))
+                            .truncate()
+                            .child(filename),
+                    )
+                    .child(div().text_color(rgb(p.muted)).child(stage_label))
+                    .child(
+                        div()
+                            .flex()
+                            .flex_wrap()
+                            .gap(px(8.))
+                            .child(self.button(
+                                "open".into(),
+                                l.text("open").into(),
+                                stage != SessionStage::Presenting && !busy,
+                                false,
+                                Intent::Open,
+                                p,
+                            ))
+                            .child(self.button(
+                                "settings".into(),
+                                l.text("settings").into(),
+                                !busy,
+                                false,
+                                Intent::Settings,
+                                p,
+                            ))
+                            .child(self.button(
+                                "swap".into(),
+                                l.text("swap").into(),
+                                !busy,
+                                false,
+                                Intent::Swap,
+                                p,
+                            )),
+                    ),
+            )
+            .child(body)
+            .child(
+                div()
+                    .p(px(16.))
+                    .border_t_1()
+                    .border_color(rgb(p.border))
+                    .flex()
+                    .flex_col()
+                    .gap(px(8.))
+                    .child(if stage == SessionStage::Presenting {
+                        self.button(
+                            "stop".into(),
+                            l.text("stop").into(),
+                            true,
+                            true,
+                            Intent::Stop,
+                            p,
+                        )
+                    } else {
+                        self.button(
+                            "start".into(),
+                            if busy {
+                                l.text("preparing")
+                            } else {
+                                l.text("start")
+                            }
+                            .into(),
+                            reason.is_none(),
+                            true,
+                            Intent::Start,
+                            p,
+                        )
+                    })
+                    .when_some(
+                        if stage != SessionStage::Presenting {
+                            reason
+                        } else {
+                            None
+                        },
+                        |view, reason| view.child(div().text_color(rgb(p.muted)).child(reason)),
+                    ),
+            )
+            .into_any_element()
+    }
+}

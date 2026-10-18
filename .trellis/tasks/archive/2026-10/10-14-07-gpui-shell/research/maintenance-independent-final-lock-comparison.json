@@ -1,0 +1,107 @@
+[
+  {
+    "path": "Cargo.lock",
+    "removed": [],
+    "added": [],
+    "changed": [
+      {
+        "package": [
+          "harfrust",
+          "0.12.0"
+        ],
+        "old": {
+          "name": "harfrust",
+          "version": "0.12.0",
+          "source": "registry+https://github.com/rust-lang/crates.io-index",
+          "checksum": "c03d949a14aa089bbb282f7dd76a498a7f684428e4257202efc119ec010376f9",
+          "dependencies": [
+            "bitflags",
+            "bytemuck",
+            "read-fonts 0.41.0",
+            "smallvec"
+          ]
+        },
+        "new": {
+          "name": "harfrust",
+          "version": "0.12.0",
+          "dependencies": [
+            "bitflags",
+            "bytemuck",
+            "read-fonts 0.41.0",
+            "smallvec"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "path": "vendor/gpui/Cargo.lock",
+    "removed": [],
+    "added": [],
+    "changed": [
+      {
+        "package": [
+          "harfrust",
+          "0.12.0"
+        ],
+        "old": {
+          "name": "harfrust",
+          "version": "0.12.0",
+          "source": "registry+https://github.com/rust-lang/crates.io-index",
+          "checksum": "c03d949a14aa089bbb282f7dd76a498a7f684428e4257202efc119ec010376f9",
+          "dependencies": [
+            "bitflags 2.13.2",
+            "bytemuck",
+            "read-fonts 0.41.0",
+            "smallvec"
+          ]
+        },
+        "new": {
+          "name": "harfrust",
+          "version": "0.12.0",
+          "dependencies": [
+            "bitflags 2.13.2",
+            "bytemuck",
+            "read-fonts 0.41.0",
+            "smallvec"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "path": "validation/wgpu-consumer/Cargo.lock",
+    "removed": [],
+    "added": [],
+    "changed": [
+      {
+        "package": [
+          "harfrust",
+          "0.12.0"
+        ],
+        "old": {
+          "name": "harfrust",
+          "version": "0.12.0",
+          "source": "registry+https://github.com/rust-lang/crates.io-index",
+          "checksum": "c03d949a14aa089bbb282f7dd76a498a7f684428e4257202efc119ec010376f9",
+          "dependencies": [
+            "bitflags",
+            "bytemuck",
+            "read-fonts 0.41.0",
+            "smallvec"
+          ]
+        },
+        "new": {
+          "name": "harfrust",
+          "version": "0.12.0",
+          "dependencies": [
+            "bitflags",
+            "bytemuck",
+            "read-fonts 0.41.0",
+            "smallvec"
+          ]
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,219 @@
+--- V12/shell.rs
++++ V13/shell.rs
+@@ -134,6 +134,8 @@
+     pub snapshot: Entity<AudienceProjectionSnapshot>,
+     escape_stops: bool,
+     poll_task: Option<gpui::Task<()>>,
++    import_read_task: Option<gpui::Task<()>>,
++    path_prompt_task: Option<gpui::Task<()>>,
+ }
+ 
+ pub fn run(inputs: ShellInputs) {
+@@ -207,18 +209,20 @@
+         }));
+     }
+ 
+-    fn stop_polling(&mut self, reason: &'static str) {
++    fn stop_tasks(&mut self, reason: &'static str) {
+         // WeakEntity is checked only after a foreground wake. Cancel while the
+         // platform dispatcher HWND is still alive so a late background timer
+         // cannot enqueue another Shell wake after platform destruction.
+         if self.poll_task.take().is_some() {
+             tracing::debug!(reason, "shell polling task cancelled before quit");
+         }
++        drop(self.import_read_task.take());
++        drop(self.path_prompt_task.take());
+     }
+ 
+     fn new(inputs: ShellInputs, cx: &mut Context<Self>) -> Self {
+         cx.on_app_quit(|shell, _| {
+-            shell.stop_polling("app shutdown");
++            shell.stop_tasks("app shutdown");
+             async {}
+         })
+         .detach();
+@@ -276,6 +280,8 @@
+             snapshot,
+             escape_stops,
+             poll_task: None,
++            import_read_task: None,
++            path_prompt_task: None,
+         }
+     }
+ 
+@@ -477,7 +483,17 @@
+         let read = cx
+             .background_executor()
+             .spawn(async move { std::fs::read(read_path) });
+-        cx.spawn(async move |weak, cx| {
++        self.await_import_read(path, token, read, cx);
++    }
++
++    fn await_import_read(
++        &mut self,
++        path: PathBuf,
++        token: u64,
++        read: gpui::Task<std::io::Result<Vec<u8>>>,
++        cx: &mut Context<Self>,
++    ) {
++        self.import_read_task = Some(cx.spawn(async move |weak, cx| {
+             let bytes = read.await;
+             if let Err(error) = weak.update(cx, |shell, cx| {
+                 if shell.import_token != token {
+@@ -505,8 +521,7 @@
+             }) {
+                 tracing::debug!(%error,"import target closed");
+             }
+-        })
+-        .detach();
++        }));
+     }
+ 
+     fn poll_import(&mut self, cx: &mut Context<Self>) {
+@@ -635,7 +650,7 @@
+                     multiple: false,
+                     prompt: Some(self.locale.text("open").into()),
+                 });
+-                cx.spawn(async move |weak, cx| {
++                self.path_prompt_task = Some(cx.spawn(async move |weak, cx| {
+                     let result = receiver.await;
+                     if let Err(error) = weak.update(cx, |shell, cx| {
+                         // A retired owner must not deliver a late import.
+@@ -659,8 +674,7 @@
+                     }) {
+                         tracing::debug!(%error,"dialog owner closed");
+                     }
+-                })
+-                .detach();
++                }));
+             }
+             Intent::Settings => self.modal = Some(Modal::Settings),
+             Intent::Displays => {
+@@ -1443,7 +1457,7 @@
+                 self.stop(cx);
+             }
+             transactions::Closed::Presenter => {
+-                self.stop_polling("presenter closed");
++                self.stop_tasks("presenter closed");
+                 self.presenter = None;
+                 self.stop(cx);
+                 self.import_token += 1;
+@@ -1473,6 +1487,118 @@
+     use super::*;
+     use crate::display_settings::PdfTarget;
+     use gpui::TestAppContext;
++
++    fn pending_import_read(
++        shell: &Entity<Shell>,
++        cx: &mut TestAppContext,
++    ) -> std::sync::Arc<std::sync::atomic::AtomicBool> {
++        let completed = std::sync::Arc::new(std::sync::atomic::AtomicBool::new(false));
++        let flag = completed.clone();
++        shell.update(cx, |shell, cx| {
++            let timer = cx.background_executor().timer(Duration::from_millis(100));
++            let read = cx.background_executor().spawn(async move {
++                timer.await;
++                flag.store(true, std::sync::atomic::Ordering::SeqCst);
++                Err(std::io::Error::other("controlled pending read"))
++            });
++            shell.loading = true;
++            shell.await_import_read(
++                PathBuf::from("controlled.pdf"),
++                shell.import_token,
++                read,
++                cx,
++            );
++        });
++        cx.run_until_parked();
++        completed
++    }
++
++    fn pending_path_prompt(
++        shell: &Entity<Shell>,
++        presenter: AnyWindowHandle,
++        cx: &mut TestAppContext,
++    ) {
++        cx.simulate_keystrokes(presenter, "ctrl-o");
++        cx.run_until_parked();
++        shell.update(cx, |shell, cx| shell.poll_focus(cx));
++        cx.run_until_parked();
++        assert!(cx.did_prompt_for_paths());
++    }
++
++    #[gpui::test]
++    fn retirement_v13_presenter_close_cancels_pending_import_read(cx: &mut TestAppContext) {
++        let (shell, presenter) = input_presenter(cx);
++        let completed = pending_import_read(&shell, cx);
++        let mut visual = gpui::VisualTestContext::from_window(presenter, cx);
++        assert!(!visual.simulate_close());
++        cx.run_until_parked();
++        cx.executor().advance_clock(Duration::from_millis(200));
++        cx.run_until_parked();
++        assert!(
++            !completed.load(std::sync::atomic::Ordering::SeqCst),
++            "closing the owner must drop its pending read awaiter before a later delivery"
++        );
++        assert!(cx.windows().is_empty());
++        assert!(shell.read_with(cx, |shell, _| shell.error.is_none()));
++    }
++
++    #[gpui::test]
++    fn retirement_v13_shutdown_cancels_pending_import_read(cx: &mut TestAppContext) {
++        let (shell, _) = input_presenter(cx);
++        let completed = pending_import_read(&shell, cx);
++        cx.update(|cx| cx.shutdown());
++        cx.run_until_parked();
++        cx.executor().advance_clock(Duration::from_millis(200));
++        cx.run_until_parked();
++        assert!(
++            !completed.load(std::sync::atomic::Ordering::SeqCst),
++            "app shutdown must cancel a pending read independently of its import token"
++        );
++        assert!(shell.read_with(cx, |shell, _| shell.error.is_none()));
++    }
++
++    #[gpui::test]
++    fn retirement_v13_shutdown_cancels_pending_path_prompt(cx: &mut TestAppContext) {
++        let (shell, presenter) = input_presenter(cx);
++        pending_path_prompt(&shell, presenter, cx);
++        cx.update(|cx| cx.shutdown());
++        cx.run_until_parked();
++        cx.simulate_path_prompt_response(|_| Some(vec![PathBuf::from("late-choice.pdf")]));
++        cx.run_until_parked();
++        assert!(
++            shell.read_with(cx, |shell, _| shell.error.is_none()),
++            "a retained entity must not process a dialog response after shutdown"
++        );
++    }
++
++    #[gpui::test]
++    fn retirement_v13_nonowner_close_preserves_read_and_prompt_completion(cx: &mut TestAppContext) {
++        let (shell, presenter) = input_presenter(cx);
++        pending_path_prompt(&shell, presenter, cx);
++        let completed = pending_import_read(&shell, cx);
++        let retired = shell.update(cx, |shell, cx| test_window(shell, false, cx).handle);
++        let mut visual = gpui::VisualTestContext::from_window(retired, cx);
++        assert!(!visual.simulate_close());
++        cx.run_until_parked();
++        cx.executor().advance_clock(Duration::from_millis(200));
++        cx.run_until_parked();
++        assert!(completed.load(std::sync::atomic::Ordering::SeqCst));
++        shell.update(cx, |shell, _| {
++            assert!(
++                shell
++                    .error
++                    .as_ref()
++                    .unwrap()
++                    .contains("controlled pending read")
++            );
++            assert!(!shell.loading);
++            shell.error = None;
++        });
++        cx.simulate_path_prompt_response(|_| Some(vec![PathBuf::from("live-choice.pdf")]));
++        cx.run_until_parked();
++        assert!(shell.read_with(cx, |shell, _| shell.error.is_some()));
++        assert!(cx.windows().contains(&presenter));
++    }
+ 
+     #[gpui::test]
+     fn retirement_v12_presenter_close_cancels_pending_poll_wake(cx: &mut TestAppContext) {

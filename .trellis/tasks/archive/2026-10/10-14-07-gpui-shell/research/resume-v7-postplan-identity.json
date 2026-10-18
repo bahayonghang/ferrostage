@@ -1,0 +1,53 @@
+{
+  "utc": "2026-10-15T03:48:18.579683+00:00",
+  "scope": "Post-planning V7 identity; DESIGN.md changed after native exit, no product input changes. This does not accept the planned UI.",
+  "source_total": 602,
+  "source_matches": 601,
+  "source_changes": [
+    {
+      "path": "DESIGN.md",
+      "frozen_sha256": "88a7a31303e10d3adfc0be373bf326d16751123b54a2b211984ba9bfd6fe99c9",
+      "current_sha256": "15af5b4b9ebf9aa88df75b4fc1a10a1aae52ff48c04faa5bad0066a3810c9d92"
+    }
+  ],
+  "missing": [],
+  "saved_preplan_design_matches_freeze": true,
+  "identities": {
+    "binary": {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe",
+      "current_sha256": "14dfd1f97b35df5611d94a034e7cd474a4d0556f9f5481ff2b76002f5839b309",
+      "frozen_sha256": "14dfd1f97b35df5611d94a034e7cd474a4d0556f9f5481ff2b76002f5839b309",
+      "matches": true
+    },
+    "pdfium": {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll",
+      "current_sha256": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118",
+      "frozen_sha256": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118",
+      "matches": true
+    },
+    "cargo_lock": {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\Cargo.lock",
+      "current_sha256": "2557e10b37fa5cfe63e78ce19965b8bbbd83438bdd540eed50405fbbc3dbc23e",
+      "frozen_sha256": "2557e10b37fa5cfe63e78ce19965b8bbbd83438bdd540eed50405fbbc3dbc23e",
+      "matches": true
+    },
+    "fixture": {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\pdf\\raster.pdf",
+      "current_sha256": "25a7932f46ee8fcd4866011921c574b4f5b343af05b793bc397b7e93ed0df013",
+      "frozen_sha256": "25a7932f46ee8fcd4866011921c574b4f5b343af05b793bc397b7e93ed0df013",
+      "matches": true
+    },
+    "final_build_log": {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-v7-build.log",
+      "current_sha256": "68bd6085bfd330ed9b046f441902e2448c273e734b0e9b11e72d9254a9f9b554",
+      "frozen_sha256": "68bd6085bfd330ed9b046f441902e2448c273e734b0e9b11e72d9254a9f9b554",
+      "matches": true
+    },
+    "final_native_clippy_log": {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-v7-clippy.log",
+      "current_sha256": "64041d396ef90b4ddddeafaf15fa287e0fed558460ce91b563e025a72413e643",
+      "frozen_sha256": "64041d396ef90b4ddddeafaf15fa287e0fed558460ce91b563e025a72413e643",
+      "matches": true
+    }
+  }
+}

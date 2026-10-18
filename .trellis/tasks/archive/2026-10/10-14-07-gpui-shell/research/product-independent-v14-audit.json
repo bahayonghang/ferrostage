@@ -1,0 +1,235 @@
+{
+  "at_utc": "2026-10-15T07:11:35.088257+00:00",
+  "status": "PASS scoped source and receipts; native pending",
+  "source_delta": {
+    "changed": 7,
+    "unchanged": 602,
+    "files": {
+      ".trellis/spec/frontend/component-guidelines.md": {
+        "v13": "20b0366b7e816e9c2677c95df00ca98857f76e8ea85eec1130895d6c48c3174d",
+        "v14": "1e064f50ef2db56991fc7f8a32677dade4e44093639950da194455ce0bac771a"
+      },
+      ".trellis/spec/frontend/maintained-dependencies.md": {
+        "v13": "6eb3754570b5771935f5cb4781fcda2d7bf62746fa483eb07a564f751a8bfaf4",
+        "v14": "a049a217490484ed27e4b18ae1be9cd0e064debe41e48d4a4646700627363d98"
+      },
+      "crates/ferrostage-ui/src/shell.rs": {
+        "v13": "e65a3bcf3dba2e4d1fdb158b6a2d85e84c452dc774b173742408d2b098fb9b3b",
+        "v14": "b0c6501a972aaf672689d36bed975c34b894625d03b4cf32a103b874cb736f48"
+      },
+      "docs/adr/ADR-008-gpui-dependency-gate.md": {
+        "v13": "8602bcf8e3d005e175b456ce6cadb9c2d155c94ad154000eb5b2d468ae778e3f",
+        "v14": "9eb05252558ab7151e8bddae619064a2053927feb60b70ae0029dcb06616c490"
+      },
+      "vendor/gpui/src/app/test_context.rs": {
+        "v13": "b57dd9f67b1b6a344c9859bb5adf9b4405bcf7e21cf0a0bece3fda93b8afda56",
+        "v14": "37a67380e38f387d3e279585009b767d97678393cdbe8e0387fff8b8d50bd272"
+      },
+      "vendor/gpui/src/platform/test/window.rs": {
+        "v13": "e31520f95c8910c6e378a39a4fc59312ed02f157aa7f2aaf2ab59d04a29553b9",
+        "v14": "bd4432119f709deaa2c09626a3d05ee5592ac1cbbb1a134727dfc030a7cc1a7c"
+      },
+      "vendor/gpui/src/window.rs": {
+        "v13": "2855e6e478bda7170f222735ef80572c8bf9cb3884ac8c481f815b9aa81dba56",
+        "v14": "a123a399b90a9d9d73c77109e427061f9830fe3a841ecc71a7aeaadfc8343267"
+      }
+    }
+  },
+  "ui_suite": {
+    "passed": 82,
+    "actual_gpui": 59,
+    "pure": 23,
+    "ignored": 0,
+    "gpui_names": [
+      "shell::tests::retirement_v12_app_shutdown_cancels_pending_poll_wake",
+      "shell::tests::close_hook_topology_cancels_pending_under_controller_lease",
+      "shell::tests::close_hook_timeout_preserves_ready_and_current_presenter",
+      "shell::tests::close_hook_replacement_keeps_live_session_and_user_close_stops",
+      "shell::tests::retirement_v13_presenter_close_cancels_pending_import_read",
+      "shell::tests::input_route_ctrl_o_releases_window_before_activation",
+      "shell::tests::displays_v8_identify_is_label_only_expires_and_is_refused_presenting",
+      "shell::tests::retirement_v14_deferred_appearance_rechecks_owner",
+      "shell::tests::retirement_v12_presenter_close_cancels_pending_poll_wake",
+      "shell::tests::displays_v8_topology_revision_invalidates_draft_and_distinguishes_failure",
+      "shell::tests::retirement_v13_shutdown_cancels_pending_import_read",
+      "shell::tests::displays_v8_no_play_waits_for_success_then_stops_freezes_and_closes",
+      "shell::tests::displays_v8_failed_no_play_placement_and_creation_roll_back_running_session",
+      "shell::tests::presenter_creation_draws_while_controller_is_leased",
+      "shell::tests::placement_v11_windows_frame_delta_is_corrected_from_actual_readback",
+      "shell::tests::placement_v10_scaled_client_size_cannot_commit",
+      "shell::tests::input_route_audience_open_activates_presenter_and_escape_cancels",
+      "shell::tests::retirement_v14_live_callbacks_apply_and_leased_errors_remain_visible",
+      "shell::tests::retirement_v14_retained_hover_cannot_visit_removed_window",
+      "shell::tests::retirement_v14_retained_input_hit_test_and_frame_are_inert",
+      "shell::tests::unsupported_shortcuts_use_user_visible_feature_names",
+      "shell::tests::input_route_open_button_releases_window_before_activation",
+      "shell::tests::retirement_v14_retained_notifications_cannot_visit_removed_window",
+      "shell::tests::placement_v10_uncorrected_client_times_out_and_keeps_running_owner",
+      "shell::tests::retirement_v13_shutdown_cancels_pending_path_prompt",
+      "shell::tests::displays_v8_valid_migration_preserves_page_blank_timer_and_save_retry",
+      "shell::tests::retirement_v8_queued_activation_does_not_visit_removed_window",
+      "shell::tests::retirement_v12_nonowner_close_keeps_live_polling",
+      "shell::tests::retirement_v13_nonowner_close_preserves_read_and_prompt_completion",
+      "shell::tests::retirement_v8_user_close_is_deferred_and_stops_projection",
+      "shell::tests::v5_escape_from_jump_cancels_preview_without_stopping",
+      "shell::tests::retirement_v8_pending_and_retired_close_requests_cannot_quit_replacement",
+      "shell::tests::v5_recovery_replaces_stale_display_but_preserves_initial_fullscreen",
+      "shell::tests::v5_jump_numeric_text_precedes_configured_navigation",
+      "shell::tests::v5_audience_loss_recovers_fullscreen_presenter_windowed",
+      "shell::tests::v5_modal_close_button_has_priority_over_global_enter_and_space",
+      "shell::tests::v5_open_rechecks_stage_when_activation_resolves",
+      "shell::tests::displays_v8_mouse_draft_cancel_keeps_windows_core_and_disk",
+      "shell::tests::v5_presenting_open_refuses_chooser_after_presenter_activation",
+      "shell::tests::displays_v8_future_settings_disable_mouse_keyboard_and_apply",
+      "shell::tests::v5_idle_navigation_and_blank_actions_do_not_report_core_errors",
+      "shell::tests::v6_notify_preserves_valid_control_and_audience_activation",
+      "shell::tests::v5_topology_unavailable_recovers_windowed_without_restart",
+      "shell::tests::v5_stop_discards_jump_preview_before_following_navigation",
+      "shell::tests::v5_nonbutton_navigation_and_disabled_controls_keep_their_scope",
+      "shell::tests::placement_v11_large_or_nonconvergent_frame_response_stops_and_rolls_back",
+      "shell::tests::v5_swap_failure_discards_abandoned_jump_preview",
+      "shell::tests::v6_removed_modal_button_restores_keyboard_traversal",
+      "shell::tests::v6_removed_jump_commit_restores_keyboard_traversal",
+      "shell::tests::v5_tab_focused_open_consumes_enter_and_space_before_global_actions",
+      "shell::tests::v6_focus_chosen_after_draw_wins_over_deferred_recovery",
+      "shell::tests::v6_import_and_swap_keep_runtime_results_when_saving_fails",
+      "shell::tests::v5_jump_editing_precedes_global_backspace_and_numeric_bindings",
+      "shell::tests::v6_removed_stop_restores_keyboard_traversal",
+      "shell::tests::v6_save_failure_has_one_owner_and_keeps_unrelated_error",
+      "shell::tests::v5_tab_focused_stop_consumes_enter_and_space",
+      "shell::tests::v6_retry_success_clears_save_feedback_and_restores_keyboard",
+      "shell::tests::displays_v9_conflict_and_offline_draft_refuse_apply_from_real_controls",
+      "shell::tests::narrow_v10_display_panel_keeps_apply_cancel_inside_client"
+    ]
+  },
+  "reused_current_v14_checks": {
+    "headless": {
+      "receipt": "product-v14-headless.json",
+      "exit_code": 0,
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "ferrostage-ui",
+        "--features",
+        "test-support",
+        "--lib",
+        "--locked",
+        "--offline"
+      ],
+      "receipt_sha256": "d430f37a62748abb0822ea03df298b41e3b63e3ca442e02ad611cbb8b55d5950"
+    },
+    "fmt": {
+      "receipt": "product-v14-fmt.json",
+      "exit_code": 0,
+      "argv": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "receipt_sha256": "fcc28150e4bcefa4dd5e4793cc73be1dc5f819a1ae0279e0556f3f96f6217ad1"
+    },
+    "vendor-fmt": {
+      "receipt": "product-v14-vendor-fmt.json",
+      "exit_code": 0,
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "vendor/gpui/src/window.rs",
+        "vendor/gpui/src/platform/test/window.rs",
+        "vendor/gpui/src/app/test_context.rs"
+      ],
+      "receipt_sha256": "213fa991fad61cdb419a1c4b9467b1c605a11e5db2af954fab42849d7b098114"
+    },
+    "typecheck": {
+      "receipt": "product-v14-typecheck.json",
+      "exit_code": 0,
+      "argv": [
+        "cargo",
+        "check",
+        "-p",
+        "ferrostage-app",
+        "-p",
+        "ferrostage-ui",
+        "--all-features",
+        "--all-targets",
+        "--locked",
+        "--offline"
+      ],
+      "receipt_sha256": "8bb5166fd601104d68d332349f72e2199e488a332e5f4ec071a5abbdfe7d8c80"
+    },
+    "clippy": {
+      "receipt": "product-v14-clippy.json",
+      "exit_code": 0,
+      "argv": [
+        "cargo",
+        "clippy",
+        "-p",
+        "ferrostage-app",
+        "-p",
+        "ferrostage-ui",
+        "--all-features",
+        "--all-targets",
+        "--locked",
+        "--offline",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "receipt_sha256": "a71e5286d70d13a70a952415f1dfbba3e093afa610084fb3a287659a7295fa6c"
+    },
+    "build": {
+      "receipt": "product-v14-build.json",
+      "exit_code": 0,
+      "argv": [
+        "cargo",
+        "build",
+        "-p",
+        "ferrostage-app",
+        "--features",
+        "gpui,pdfium",
+        "--locked",
+        "--offline"
+      ],
+      "receipt_sha256": "86d2f448b27408f5e47adea6f8015da64cec20b9a59fec0485bf4069973e2402"
+    },
+    "deny": {
+      "receipt": "product-v14-deny.json",
+      "exit_code": 0,
+      "argv": [
+        "cargo",
+        "deny",
+        "--all-features",
+        "--locked",
+        "--offline",
+        "check"
+      ],
+      "receipt_sha256": "d82d3e33c22cd725ec3c5860bbc55a347ff0c18d792e815bc13ce8132312f307"
+    }
+  },
+  "default_reuse": {
+    "receipt": "product-v14-default-reuse.json",
+    "unchanged_inputs": 101,
+    "default_tests": 150,
+    "original_version": "V12",
+    "rerun": false
+  },
+  "independent_checks": [
+    "lint",
+    "types",
+    "retirement",
+    "diff"
+  ],
+  "source_fix_required": false,
+  "native_v14": "NOT_RUN by reviewer; Root retest required",
+  "historical_F12": "FAIL retained",
+  "Gate_B": "INCOMPLETE",
+  "audit_helper_failures": [
+    "First source test-count scan used Windows GBK default and failed before creating this artifact; retry explicitly uses UTF-8.",
+    "Initial process-closeout.json is invalid: CIM access denied, so its EMPTY status is not evidence; process-closeout-correction.json supersedes it."
+  ]
+}

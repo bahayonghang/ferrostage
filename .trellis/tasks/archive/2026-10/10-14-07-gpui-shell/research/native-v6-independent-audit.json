@@ -1,0 +1,182 @@
+{
+  "utc": "2026-10-15T02:59:14.439832+00:00",
+  "command": "python .trellis/tasks/10-14-07-gpui-shell/research/native-v6-independent-audit.py",
+  "environment": {
+    "platform": "Windows-11-10.0.26300-SP0",
+    "python": "3.14.7 (tags/v3.14.7:823f032, Aug  5 2026, 10:51:32) [MSC v.1944 64 bit (AMD64)]"
+  },
+  "scope": "Retained native evidence and post-native documentation delta; no Cargo or UI run.",
+  "manifests": {
+    "native-v6-evidence-manifest.json": {
+      "sha256": "6c7551fa9c38890252c0500951c90597500b2f7a690d1e52aefe89986a6ac1a0",
+      "records_matched": 54
+    },
+    "native-v5-evidence-manifest.json": {
+      "sha256": "ddfec0154c3dfe6731eb08b2c5dcf4b9b27c2a49ccfd54589a05f2ed295d73d0",
+      "records_matched": 108
+    },
+    "product-v6-evidence-manifest.json": {
+      "sha256": "dac5512c8887bbb3278e0b9c68fc8a622731fbc40eea187aa7dfef090a40912c",
+      "records_matched": 26
+    },
+    "product-independent-v6-manifest.json": {
+      "sha256": "252a22e5ab5173b7c9a03da0e6a15768edd2d904b6cfd5404c42c9f72c101fb5",
+      "records_matched": 141
+    }
+  },
+  "identity": {
+    "freeze_sha256": "b7df3a62ff2b1b7212924e47f79d72468ff86356265a1aaf650c0694adb6d7ea",
+    "frozen_count": 602,
+    "frozen_aggregate": "b71eb54d7da71f9b30ac5ab3bdb58fc1ada637bf2991adde10041f0a172170be",
+    "current_match_count": 601,
+    "delta": {
+      "DESIGN.md": {
+        "frozen": "1b13bda5cc6460a8f320a637e047c836813f817231315533d200ed873d31f4d6",
+        "current": "88a7a31303e10d3adfc0be373bf326d16751123b54a2b211984ba9bfd6fe99c9"
+      }
+    },
+    "changed_design_lines": [
+      151
+    ],
+    "original_design_sha256": "1b13bda5cc6460a8f320a637e047c836813f817231315533d200ed873d31f4d6",
+    "crate_files_matched": 94,
+    "artifacts": {
+      "binary": {
+        "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe",
+        "resolved_path": "D:\\mbx-cache\\targets\\v1\\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0\\debug\\ferrostage.exe",
+        "bytes": 36987904,
+        "sha256": "d4f2e653ee793176b384034797ad99e1ad665aa0da6535a454ba88a36b055074"
+      },
+      "pdfium": {
+        "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll",
+        "resolved_path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll",
+        "bytes": 7211520,
+        "sha256": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118"
+      },
+      "cargo_lock": {
+        "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\Cargo.lock",
+        "resolved_path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\Cargo.lock",
+        "bytes": 186387,
+        "sha256": "2557e10b37fa5cfe63e78ce19965b8bbbd83438bdd540eed50405fbbc3dbc23e"
+      },
+      "fixture": {
+        "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\pdf\\raster.pdf",
+        "resolved_path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\pdf\\raster.pdf",
+        "bytes": 8853,
+        "sha256": "25a7932f46ee8fcd4866011921c574b4f5b343af05b793bc397b7e93ed0df013"
+      }
+    }
+  },
+  "runs": {
+    "v6-focus-save": {
+      "launch": {
+        "config": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\a-dark.toml",
+        "utc": "2026-10-15T02:35:34.4585002Z",
+        "exe_sha256": "d4f2e653ee793176b384034797ad99e1ad665aa0da6535a454ba88a36b055074",
+        "pid": 29092,
+        "exe": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe",
+        "argv": [
+          "--config",
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\a-dark.toml",
+          "--pdfium-library",
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll",
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\pdf\\raster.pdf"
+        ],
+        "config_sha256": "41798CB34079E64D46078604E4C382EC1698D1AD925977870CAF8C71E66FEFE3",
+        "window_style": "Normal",
+        "freeze": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-native-freeze-v6.json",
+        "source_sha256": "b71eb54d7da71f9b30ac5ab3bdb58fc1ada637bf2991adde10041f0a172170be"
+      },
+      "exit": {
+        "utc": "2026-10-15T02:45:52.7934372Z",
+        "pid": 29092,
+        "exit_code": 0
+      },
+      "config_after_sha256": "b96b8708fcb7207f7673c322be62d1f2f68d1c9ff382fe3607fbf7d0d7249ab9"
+    },
+    "v6-relaunch": {
+      "launch": {
+        "argv": [
+          "--config",
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\a-dark.toml",
+          "--pdfium-library",
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll"
+        ],
+        "pid": 175992,
+        "exe_sha256": "d4f2e653ee793176b384034797ad99e1ad665aa0da6535a454ba88a36b055074",
+        "source_sha256": "b71eb54d7da71f9b30ac5ab3bdb58fc1ada637bf2991adde10041f0a172170be",
+        "exe": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe",
+        "utc": "2026-10-15T02:46:10.3499682Z",
+        "config_sha256": "B96B8708FCB7207F7673C322BE62D1F2F68D1C9FF382FE3607FBF7D0D7249AB9",
+        "config": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\a-dark.toml",
+        "window_style": "Normal",
+        "freeze": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-native-freeze-v6.json"
+      },
+      "exit": {
+        "pid": 175992,
+        "utc": "2026-10-15T02:46:51.0990641Z",
+        "exit_code": 0
+      },
+      "config_after_sha256": "b96b8708fcb7207f7673c322be62d1f2f68d1c9ff382fe3607fbf7d0d7249ab9"
+    }
+  },
+  "settings_readback": {
+    "utc": "2026-10-15T02:40:49.897362+00:00",
+    "sha256": "b96b8708fcb7207f7673c322be62d1f2f68d1c9ff382fe3607fbf7d0d7249ab9",
+    "roles": [
+      {
+        "friendly_name": "Native acceptance A",
+        "id": "device:\\\\?\\display#boe0d5a#5&16631d0&0&uid8448#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+        "role": "audience"
+      },
+      {
+        "friendly_name": "Native acceptance B",
+        "id": "device:\\\\?\\display#bkx2700#5&16631d0&0&uid8451#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+        "role": "presenter"
+      },
+      {
+        "friendly_name": "Native acceptance C",
+        "id": "device:\\\\?\\display#rtk2560#4&2878f4bf&0&uid69#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+        "role": "none"
+      }
+    ],
+    "lock_held_sha": "41798CB34079E64D46078604E4C382EC1698D1AD925977870CAF8C71E66FEFE3",
+    "result": "Actual UI Swap A->B; locked bytes unchanged; Retry after release persisted A audience/B presenter; single warning cleared and Tab focuses Open. Not physical topology proof."
+  },
+  "lock_release": {
+    "status": "RELEASE_REQUESTED",
+    "utc": "2026-10-15T02:40:03.5486764Z",
+    "config": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\a-dark.toml"
+  },
+  "lock_release_boundary": "unlock receipt is written after FileStream.Dispose; helper exit0 is Root's recorded command observation, not a field in this receipt",
+  "final_window_inventory": {
+    "utc": "2026-10-15T02:52:10.180Z",
+    "ferrostageWindows": []
+  },
+  "screenshots_checked": [
+    "v6-chooser-import-pass-0.jpg",
+    "v6-close-modal-tab-open-pass-0.jpg",
+    "v6-dark-ready-a-0.jpg",
+    "v6-jump-cancel-tab-pass-0.jpg",
+    "v6-jump-commit-tab-pass-0.jpg",
+    "v6-relaunch-dark-settings-placeholder-0.jpg",
+    "v6-retry-removed-tab-open-pass-0.jpg",
+    "v6-retry-still-locked-0.jpg",
+    "v6-retry-success-clears-error-0.jpg",
+    "v6-save-failure-single-message-0.jpg",
+    "v6-start-tab-settings-pass-0.jpg",
+    "v6-stop-tab-open-pass-0.jpg"
+  ],
+  "document_read_versions": {
+    ".trellis/tasks/10-14-07-gpui-shell/prd.md": "e62c3709385cb430e88a6bb1d34c1b7c01df390d2185365197e1f614a17ae4d1",
+    ".trellis/tasks/10-14-presenter-v0.3/prd.md": "a9e0e312afeac04a9852cdaaf8090e3551f1aec489c8a5953c3bd0e3ae32d8d7",
+    ".trellis/tasks/10-14-presenter-v0.3/design.md": "88f39565e68df4ed4a2db71d339ff2be6ac8cb7c87645077e9b97904064b4867",
+    ".trellis/tasks/10-14-presenter-v0.3/traceability.md": "5ef693575cf175343211785ec2cd9f530be23fb3b30eb98db468c6387db177c4",
+    ".trellis/tasks/10-14-presenter-v0.3/execution-state.md": "b7d2bb1fe91d55c917d3ddb898adda160186a14af1090ffb6c13db63ead1bd8e",
+    ".trellis/tasks/10-14-presenter-v0.3/research/gate-b.md": "c2f035b446006c2260f7b0bf19cf9666fa3bf650f46595fbfa3711328e02c6d0",
+    "docs/feature-parity.md": "a3d3a4100e03b264b20938dceb0aed5f2128ae993f082fcd3741913cfcdf4e4e",
+    "docs/PROJECT_PLAN.md": "41ac240cd072a149ebb01df8a1d432f795e3ffaac9e5be45c879fc9b054abc0d",
+    "DESIGN.md": "88a7a31303e10d3adfc0be373bf326d16751123b54a2b211984ba9bfd6fe99c9"
+  },
+  "exit_code": 0
+}

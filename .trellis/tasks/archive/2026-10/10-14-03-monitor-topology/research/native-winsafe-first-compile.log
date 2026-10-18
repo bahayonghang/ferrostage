@@ -1,0 +1,28 @@
+   Compiling winsafe v0.0.29
+   Compiling ferrostage-platform v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-platform)
+error[E0599]: no associated function or constant named `NULL` found for struct `HWND` in the current scope
+   --> crates\ferrostage-platform\src\windows.rs:107:25
+    |
+107 |     let desktop = HWND::NULL
+    |                         ^^^^ associated function or constant not found in `HWND`
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: trait `Handle` which provides `NULL` is implemented but not in scope; perhaps you want to import it
+    |
+  2 + use winsafe::prelude::Handle;
+    |
+
+error[E0599]: no method named `has` found for struct `MONITORINFOF` in the current scope
+   --> crates\ferrostage-platform\src\windows.rs:157:31
+    |
+157 |         primary: info.dwFlags.has(co::MONITORINFOF::PRIMARY),
+    |                               ^^^
+    |
+help: there is a method `hash` with a similar name
+    |
+157 |         primary: info.dwFlags.hash(co::MONITORINFOF::PRIMARY),
+    |                                  +
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `ferrostage-platform` (lib) due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...

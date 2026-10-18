@@ -1,0 +1,31 @@
+schema_version = 1
+
+[general]
+language = "zh-CN"
+theme = "light"
+reopen_last_document = false
+recent_files = ['D:\Documents\Code\Rust\Exp\ferrostage\.trellis\tasks\10-14-07-gpui-shell\research\native\malformed-owned-fixture.pdf', 'D:\Documents\Code\Rust\Exp\ferrostage\.trellis\tasks\10-14-07-gpui-shell\research\native\missing-owned-fixture.pdf']
+
+[display]
+single_monitor_mode = "presenter_only"
+audience_fullscreen = true
+presenter_start_fullscreen = false
+
+[[display.monitors]]
+id = "device:\\\\?\\display#boe0d5a#5&16631d0&0&uid8448#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}"
+friendly_name = "Native acceptance A"
+role = "audience"
+
+[[display.monitors]]
+id = "device:\\\\?\\display#bkx2700#5&16631d0&0&uid8451#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}"
+friendly_name = "Native acceptance B"
+role = "presenter"
+
+[[display.monitors]]
+id = "device:\\\\?\\display#rtk2560#4&2878f4bf&0&uid69#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}"
+friendly_name = "Native acceptance C"
+role = "none"
+
+[keybindings]
+next = ["Space"]
+previous = ["Space"]

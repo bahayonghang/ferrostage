@@ -1,0 +1,4 @@
+COMMAND "C:\Program Files\Python314\python.exe" .trellis/scripts/task.py current
+.trellis/tasks/10-14-07-gpui-shell
+
+EXIT 0

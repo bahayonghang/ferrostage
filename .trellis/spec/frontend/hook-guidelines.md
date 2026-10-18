@@ -4,15 +4,15 @@ There are no React hooks, no `useEffect`, and no data-fetching hooks.
 
 ## What to do instead
 
-GPUI will notify a view through its context (`cx.notify()` after a model update). Until that dependency exists, the only update API is `PresentationState::apply`:
+GPUI will notify a view through its context (`cx.notify()` after a model update). Until that dependency exists, commands use `PresentationState::apply_at` with the app's monotonic clock sample:
 
 ```rust
 presentation
-    .apply(PresentationCommand::ToggleBlank(BlankMode::Black))?;
+    .apply_at(PresentationCommand::ToggleBlank(BlankMode::Black), now)?;
 let snapshot = presentation.audience_snapshot();
 ```
 
-Subscribe to the snapshot. Do not poll the filesystem from a view. Hot reload is `ferrostage-platform`'s job (300 ms debounce, then `StageShadowDocument`).
+Subscribe to the snapshot. Do not poll the filesystem from a view. Hot reload is `ferrostage-platform`'s job (300 ms debounce, validation, then a coordinated descriptor/document/visual commit). The temporary `StageShadowDocument` bridge does not implement that transaction.
 
 ## Forbidden
 

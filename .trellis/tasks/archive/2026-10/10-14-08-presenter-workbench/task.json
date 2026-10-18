@@ -1,0 +1,33 @@
+{
+  "id": "08-presenter-workbench",
+  "name": "08-presenter-workbench",
+  "title": "讲者工作台：当前页/下一页/备注/计时/缩略图/激光笔/画笔",
+  "description": "讲者端视图：当前页与下一页预览、备注面板、计时器与时钟、进度、跳页预览、1-16 页网格缩略图、归一化激光笔与手绘批注叠加、黑/白屏、交换屏幕",
+  "status": "completed",
+  "dev_type": null,
+  "scope": null,
+  "package": null,
+  "priority": "P1",
+  "creator": "lyh",
+  "assignee": "lyh",
+  "createdAt": "2026-10-14",
+  "completedAt": "2026-10-15",
+  "branch": "main",
+  "base_branch": "main",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [],
+  "parent": "10-14-presenter-v0.3",
+  "relatedFiles": [],
+  "notes": " Latest2026-10-15: user authorized commit/archive of completed implementation; parent retains NOT_RUN/NOT_VERIFIED/PARTIAL native and deferred qualification. No push.",
+  "meta": {
+    "implementation_status": "complete",
+    "automatic_checks": "passed",
+    "native_remaining": "bounded_core_observed_remaining_not_run_or_unverified",
+    "completion_scope": "implementation_and_independent_checks_with_bounded_core_native",
+    "remaining_acceptance_owner": "10-14-presenter-v0.3",
+    "archive_authorization": "explicit_user_2026-10-15"
+  }
+}

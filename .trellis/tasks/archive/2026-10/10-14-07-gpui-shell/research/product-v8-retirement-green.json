@@ -1,0 +1,20 @@
+{
+  "started_utc": "2026-10-15T04:01:27.141081+00:00",
+  "argv": [
+    "cargo",
+    "test",
+    "-p",
+    "ferrostage-ui",
+    "--features",
+    "test-support",
+    "--lib",
+    "--offline",
+    "retirement_v8",
+    "--",
+    "--test-threads=1"
+  ],
+  "status": "RETURNED",
+  "log": "product-v8-retirement-green.log",
+  "exit_code": 0,
+  "ended_utc": "2026-10-15T04:01:49.333137+00:00"
+}

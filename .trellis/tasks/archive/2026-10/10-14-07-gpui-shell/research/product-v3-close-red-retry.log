@@ -1,0 +1,45 @@
+warning: function `shape` is never used
+   --> vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `harfrust` (lib) generated 1 warning
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.95s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-f6f69bc716fb3e17.exe)
+
+running 3 tests
+test shell::tests::close_hook_timeout_preserves_ready_and_current_presenter ... FAILED
+test shell::tests::close_hook_topology_cancels_pending_under_controller_lease ... FAILED
+test shell::tests::close_hook_replacement_keeps_live_session_and_user_close_stops ... FAILED
+
+failures:
+
+---- shell::tests::close_hook_timeout_preserves_ready_and_current_presenter stdout ----
+
+thread 'shell::tests::close_hook_timeout_preserves_ready_and_current_presenter' (125624) panicked at vendor\gpui\src\app\entity_map.rs:164:36:
+cannot update ferrostage_ui::shell::Shell while it is already being updated
+
+---- shell::tests::close_hook_topology_cancels_pending_under_controller_lease stdout ----
+
+thread 'shell::tests::close_hook_topology_cancels_pending_under_controller_lease' (87520) panicked at vendor\gpui\src\app\entity_map.rs:164:36:
+cannot update ferrostage_ui::shell::Shell while it is already being updated
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- shell::tests::close_hook_replacement_keeps_live_session_and_user_close_stops stdout ----
+
+thread 'shell::tests::close_hook_replacement_keeps_live_session_and_user_close_stops' (164096) panicked at vendor\gpui\src\app\entity_map.rs:164:36:
+cannot update ferrostage_ui::shell::Shell while it is already being updated
+
+
+failures:
+    shell::tests::close_hook_replacement_keeps_live_session_and_user_close_stops
+    shell::tests::close_hook_timeout_preserves_ready_and_current_presenter
+    shell::tests::close_hook_topology_cancels_pending_under_controller_lease
+
+test result: FAILED. 0 passed; 3 failed; 0 ignored; 0 measured; 19 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p ferrostage-ui --lib`

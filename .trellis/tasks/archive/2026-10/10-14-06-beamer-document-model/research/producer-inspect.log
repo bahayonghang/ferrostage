@@ -1,0 +1,13 @@
+   Compiling ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.23s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_pdf-e11c5b4e2820dfd0.exe)
+
+running 1 test
+Producer dictionary (11, 0): <</S /GoTo/D [13 0 R /Fit]>>
+Producer dictionary (14, 0): <</Type /Annot/Subtype /Movie/T (mmdefaultlabel1)/Border [0 0 0]/Movie <</F (fixture-video.mp4)>>/A <</Start [256 128]/Duration [1024 128]/Mode /Repeat>>/Rect [28.346 130.83 102.909 145.18]>>
+Producer dictionary (15, 0): <</S /Movie/T (mmdefaultlabel1)/Operation /Play>>
+Producer dictionary (16, 0): <</Type /Annot/Subtype /Widget/FT /Btn/Ff 65537/T (wid@mmdefaultlabel1)/AA <</PO 15 0 R>>/Rect [102.909 134.217 102.909 134.217]>>
+test structure::tests::actual_beamer_movie_fixture_emits_scaled_times ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+

@@ -1,0 +1,18 @@
+Recovery note transcribed from the tool result; this is not a redirected raw log.
+
+Before applying the GOLDEN_RATIO patch, maintenance-prepare.py attempted:
+git -C C:\Users\lyh\.cargo\git\checkouts\zed-a70e2ad075855582\96a1b1b rev-parse HEAD
+
+Tool output:
+fatal: cannot change to 'C:\Users\lyh\.cargo\git\checkouts\zed-a70e2ad075855582\96a1b1b': Permission denied
+subprocess.CalledProcessError: Command '['git', '-C', 'C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b', 'rev-parse', 'HEAD']' returned non-zero exit status 128.
+
+Python exited1 before modifying the candidate. The PowerShell command mistakenly
+continued to direct GPUI clippy, which returned101 against the old literal.
+maintenance-gpui-clippy-retry.log records that real unchanged-code lint failure.
+It is not evidence against the successfully prepared compatibility patch.
+
+Recovery: read-only HEAD/ref identity validation in the preparer, followed by
+separate approved read-only exact-revision diff/status over the source paths.
+Final preparation and patched direct GPUI clippy returned0; both source identity
+and source byte verification are recorded separately.

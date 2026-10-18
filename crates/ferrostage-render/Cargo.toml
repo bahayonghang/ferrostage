@@ -7,8 +7,18 @@ license.workspace = true
 publish.workspace = true
 rust-version.workspace = true
 
+[features]
+default = []
+pdfium = ["ferrostage-pdf/pdfium"]
+
 [dependencies]
+ferrostage-pdf.workspace = true
+thiserror.workspace = true
 ferrostage-core.workspace = true
 
 [lints]
 workspace = true
+
+[[example]]
+name = "poc2"
+required-features = ["pdfium"]

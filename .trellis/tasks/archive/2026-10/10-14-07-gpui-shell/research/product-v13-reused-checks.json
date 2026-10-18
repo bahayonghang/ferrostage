@@ -1,0 +1,123 @@
+{
+  "just-ci": {
+    "version": "v12",
+    "receipt_sha256": "4cc92a8ac57c91a5cd16720cccc5f188b2c17c96ac71ef3456ce232a48cfc469",
+    "argv": [
+      "just",
+      "ci"
+    ],
+    "exit_code": 0,
+    "tests": 150
+  },
+  "deny": {
+    "version": "v12",
+    "receipt_sha256": "df56e2136457cfa8a07e734d961aaa3b68783625dd093fff65fa9bea6612cc3c",
+    "argv": [
+      "cargo",
+      "deny",
+      "--all-features",
+      "--locked",
+      "--offline",
+      "check"
+    ],
+    "exit_code": 0,
+    "tests": 0
+  },
+  "headless": {
+    "version": "v13",
+    "receipt_sha256": "2d9f9d9640aaf355e53b4c4457c060fe0c93f3094f344b74d342673e8df2d1af",
+    "argv": [
+      "cargo",
+      "test",
+      "-p",
+      "ferrostage-ui",
+      "--features",
+      "test-support",
+      "--lib",
+      "--locked",
+      "--offline"
+    ],
+    "exit_code": 0,
+    "tests": 77
+  },
+  "clippy": {
+    "version": "v13",
+    "receipt_sha256": "75b409eeb8659df61e42340da148c9141029258d6fc47b86e5e342066f9b8674",
+    "argv": [
+      "cargo",
+      "clippy",
+      "-p",
+      "ferrostage-app",
+      "-p",
+      "ferrostage-ui",
+      "--all-features",
+      "--all-targets",
+      "--locked",
+      "--offline",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "exit_code": 0,
+    "tests": 0
+  },
+  "types": {
+    "version": "v13",
+    "receipt_sha256": "4584f274ebb32b8b544692d19b8867dfd0cb571696eede2d88bd3985421e1f40",
+    "argv": [
+      "cargo",
+      "check",
+      "-p",
+      "ferrostage-app",
+      "-p",
+      "ferrostage-ui",
+      "--all-features",
+      "--all-targets",
+      "--locked",
+      "--offline"
+    ],
+    "exit_code": 0,
+    "tests": 0
+  },
+  "build": {
+    "version": "v13",
+    "receipt_sha256": "e01acd5ad4bf5f65bd778d34344a4998059d1bf8588bd57465d6b2e7bf8c2692",
+    "argv": [
+      "cargo",
+      "build",
+      "-p",
+      "ferrostage-app",
+      "--features",
+      "gpui,pdfium",
+      "--locked",
+      "--offline"
+    ],
+    "exit_code": 0,
+    "tests": 0
+  },
+  "fmt": {
+    "version": "v13",
+    "receipt_sha256": "fb5d7af4574f49fcb087e3c95296d280c2fe700eb2ffc7be7b755cd581f15a2d",
+    "argv": [
+      "cargo",
+      "fmt",
+      "--all",
+      "--",
+      "--check"
+    ],
+    "exit_code": 0,
+    "tests": 0
+  },
+  "diff": {
+    "version": "v13",
+    "receipt_sha256": "afbe57bddbe4c9023a00d25056ab4ebf53c944e291c75d7a4da5d153f23d654b",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit_code": 0,
+    "tests": 0
+  },
+  "reuse_basis": "V12 default pure source inputs and dependency graph unchanged; shell is GPUI-feature-only. Final formatting, full affected GPUI suite, all-feature lint/typecheck and native build rerun. V12 default150 and full deny are reused, not claimed newly run."
+}

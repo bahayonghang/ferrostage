@@ -1,0 +1,20 @@
+   Compiling accesskit_windows v0.34.0 (D:\Documents\Code\Rust\Exp\ferrostage\.trellis\tasks\10-14-07-gpui-shell\research\product-v16-accesskit-harness)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.51s
+     Running unittests src\lib.rs (target\debug\deps\accesskit_windows-0bb4b68c2d6c1b51.exe)
+
+running 8 tests
+test v16_regression_tests::empty_geometry_with_live_hwnd_keeps_upstream_results ... ok
+test v16_regression_tests::empty_geometry_with_retained_invalid_hwnd_keeps_upstream_results ... ok
+test v16_regression_tests::live_desktop_coordinate_query_still_succeeds ... ok
+test v16_regression_tests::live_provider_all_four_coordinate_methods_preserve_values ... ok
+test v16_regression_tests::retained_context_com_queries_return_element_not_available ... ok
+test v16_regression_tests::retained_text_context_queries_return_element_not_available ... ok
+test v16_regression_tests::retired_hwnd_coordinate_query_does_not_panic ... ok
+test v16_regression_tests::retired_hwnd_coordinate_query_returns_element_not_available ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+mbx[cache]: 0 hits, 0 misses, 1 not looked up; 0 B downloaded, 0 B uploaded, 12.6 MiB stored locally
+mbx[gc]: removed 1 target directories (42.6 GiB logical, 0 abandoned and 1 live); 63.8 GiB logical remain
+mbx[gc]: evicted 0 objects and 0 action results (8.0 KiB logical); 1.9 GiB logical remain
+mbx[savings]: disposed of 91.2 GiB logical without being asked. that is rather the point.

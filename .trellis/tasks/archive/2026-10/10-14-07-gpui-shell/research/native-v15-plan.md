@@ -1,0 +1,10 @@
+# V15 core native continuation
+
+User deferred further size testing. Root operates Computer Use only after implement→independent check and a new source/EXE/fixture freeze. Do not launch while build/test processes are live. Use `fixtures/notes-functional/pympress-notes.pdf`, never raster.pdf as a substitute for the requested notes input.
+
+1. Confirm current GPUI DPI context enumerates all3 monitors with the same MonitorIds/native resolutions/positions and maps actual windows correctly after the desktop-DC acquisition fix. Check the new Displays list and configured app/PDF roles. Test actual Apply migration, Cancel invariance, Start, overlay page navigation, Stop and owner/nonowner close; no resize matrix.
+2. Preserve source/executable/PDFium/new-PDF SHA and launch arguments. Set `RUST_BACKTRACE=full` for complete diagnostics if F14 recurs. Check full stdout/stderr after actual process completion and capture a fresh empty window inventory. A bounded clean run does not repair or erase V14's known F14 AccessKit panic.
+3. The new notes PDF has5physical pages and4logical frames; Task07 shows page placeholders. Record successful load/navigation separately from NOT_IMPLEMENTED presenter PDF/notes UI and NOT_RUN actual notes-on-projector isolation. Document/PDFium tests already establish left-only audience snapshot crop and separate notes pixels; they are not a native GUI PASS.
+4. F14's direct AccessKit COM boundary is outside the approved five-package maintenance set. Complete the exact research-only proposal and independent review before any necessary scope approval. Do not disable accessibility or mask all errors. Native testing of the authorized F13 build may proceed with the known unresolved F14 limitation recorded.
+
+Gate B remains INCOMPLETE until all required evidence and defects are resolved. Physical unplug/reconnect/port, real single/zero and physical latency are NOT_RUN by the user's instruction. No08–11 integration before their gates, noP2 expansion, commits, pushes, archival or add_session.

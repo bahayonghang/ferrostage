@@ -1,0 +1,90 @@
+% Original functional fixture. Uses documented Beamer syntax, no Pympress code.
+\PassOptionsToPackage{pdfpagelabels=false}{hyperref}
+\documentclass[aspectratio=169,10pt]{beamer}
+\usepackage[UTF8,fontset=windows]{ctex}
+\usepackage{pgfpages}
+\setbeameroption{show notes on second screen=right}
+\setbeamertemplate{note page}[plain]
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{\hfill\usebeamercolor[fg]{structure}\scriptsize FerroStage notes test\quad\insertframenumber/\inserttotalframenumber\hspace{1em}\vspace{0.7em}}
+\definecolor{ink}{HTML}{202C3B}
+\definecolor{accent}{HTML}{215F80}
+\definecolor{paper}{HTML}{F8F7F3}
+\setbeamercolor{normal text}{fg=ink,bg=paper}
+\setbeamercolor{structure}{fg=accent}
+\setbeamercolor{frametitle}{fg=accent}
+\setbeamerfont{frametitle}{size=\Large,series=\bfseries}
+\setbeamerfont{note page}{size=\large}
+\title{Pympress 与 Beamer 讲者备注}
+\author{FerroStage 功能测试}
+\date{2026-10-15}
+\begin{document}
+% XeLaTeX + pgfpages otherwise labels both virtual pages as physical pages.
+% Declare this fixture's five physical-page labels in the TeX-produced PDF.
+\special{pdf:put @catalog << /PageLabels << /Nums [0 << /P (1) >> 1 << /P (2) >> 2 << /P (3) >> 3 << /P (3) >> 4 << /P (4) >>] >> >>}
+
+\begin{frame}{Pympress：双屏 PDF 演示}
+  \textbf{同一份 PDF，面向两类读者。}
+  \vspace{0.7em}
+  \begin{itemize}
+    \item 观众屏展示当前投影片；讲者屏提供备注与演示控制。
+    \item 支持 Beamer 的第二屏备注，以及独立备注页。
+    \item 本测试使用标准 Beamer 生成正文与备注左右并排的页面。
+  \end{itemize}
+  \vfill
+  {\color{ink}\small \texttt{FS-SLIDE-01}\quad 此页正文可公开。}
+  \note{\textbf{讲者备注 1}\par
+    \texttt{FS-NOTE-ONLY-01}\par\medskip
+    先用一句话介绍双屏演示，再指出观众只应看到左侧正文。
+    这段中文和上面的专用标记只能出现在讲者端。\par\medskip
+    提问提示：准备好后翻到下一页。}
+\end{frame}
+
+\begin{frame}[fragile]{如何在 TeX 中写 notes}
+  \begin{block}{双屏备注设置}
+\begin{verbatim}
+\usepackage{pgfpages}
+\setbeameroption{show notes on second screen=right}
+% Inside a frame:
+\note{Speaker-only notes.}
+\end{verbatim}
+  \end{block}
+  {\color{ink}\small \texttt{FS-SLIDE-02}\quad 左侧为正文，右侧为备注；不要投影整张宽页。}
+  \note{\textbf{讲者备注 2}\par
+    \texttt{FS-NOTE-ONLY-02}\par\medskip
+    解释：编译结果的每个物理页包含两个逻辑屏幕。播放端需要选择正文半页，讲者端显示备注半页。
+    此页测试中文、英文与等宽代码同时存在。\par\medskip
+    检查：翻页后此标记必须替换掉上一页的 01 标记。}
+\end{frame}
+
+\begin{frame}{逐步显示：同一张投影片的两步}
+  \begin{enumerate}
+    \item<1-> 第一项先出现：建立上下文。
+    \item<2-> 第二项随后出现：补充结果。
+  \end{enumerate}
+  \vfill
+  \only<1>{\textcolor{ink}{\texttt{FS-SLIDE-03-STEP-1}}}
+  \only<2>{\textcolor{ink}{\texttt{FS-SLIDE-03-STEP-2}}}
+  \note<1>{\textbf{讲者备注：第 3 页，第 1 步}\par
+    \texttt{FS-NOTE-ONLY-03A}\par\medskip
+    此时只讲第一项。下一次翻页应进入第二步，而不是跳到最后一页。}
+  \note<2>{\textbf{讲者备注：第 3 页，第 2 步}\par
+    \texttt{FS-NOTE-ONLY-03B}\par\medskip
+    现在补充第二项。注意备注已从 03A 换成 03B；反向翻页应恢复 03A。}
+\end{frame}
+
+\begin{frame}{验收：内容、同步与隔离}
+  \begin{enumerate}
+    \item 正文可读：文字与代码可见，宽页不会挤成整页投影。
+    \item 备注同步：翻页、返回与逐步显示均对应正确备注。
+    \item 投影隔离：观众端看不到任何备注专用标记。
+  \end{enumerate}
+  \vfill
+  {\color{ink}\small \texttt{FS-SLIDE-04}\quad 预期：4 个逻辑 frame，5 个物理 PDF 页。}
+  \note{\textbf{结束页的私有检查}\par
+    \texttt{FS-NOTE-ONLY-04}\par\medskip
+    私有校验词：蓝色纸鹤。\par
+    此词只用于检查隔离，不应出现在观众屏。\par\medskip
+    停止演示后保留当前页；再次开始前核对目标屏幕。}
+\end{frame}
+\end{document}

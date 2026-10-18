@@ -1,0 +1,610 @@
+vendor/cosmic-text/.github/PULL_REQUEST_TEMPLATE.md:8: new blank line at EOF.
+vendor/cosmic-text/benches/layout.rs:75: trailing whitespace.
++Call me Ishmael. Some years ago- never mind how long precisely- having little 
+vendor/cosmic-text/benches/layout.rs:76: trailing whitespace.
++or no money in my purse, and nothing particular to interest me on shore, I 
+vendor/cosmic-text/benches/layout.rs:77: trailing whitespace.
++thought I would sail about a little and see the watery part of the world. It is 
+vendor/cosmic-text/benches/layout.rs:78: trailing whitespace.
++a way I have of driving off the spleen and regulating the circulation. Whenever 
+vendor/cosmic-text/benches/layout.rs:79: trailing whitespace.
++I find myself growing grim about the mouth; whenever it is a damp, drizzly 
+vendor/cosmic-text/benches/layout.rs:80: trailing whitespace.
++November in my soul; whenever I find myself involuntarily pausing before coffin 
+vendor/cosmic-text/benches/layout.rs:81: trailing whitespace.
++warehouses, and bringing up the rear of every funeral I meet; and especially 
+vendor/cosmic-text/benches/layout.rs:82: trailing whitespace.
++whenever my hypos get such an upper hand of me, that it requires a strong moral 
+vendor/cosmic-text/benches/layout.rs:83: trailing whitespace.
++principle to prevent me from deliberately stepping into the street, and 
+vendor/cosmic-text/benches/layout.rs:84: trailing whitespace.
++methodically knocking people’s hats off- then, I account it high time to get 
+vendor/cosmic-text/benches/layout.rs:85: trailing whitespace.
++to sea as soon as I can. This is my substitute for pistol and ball. With a 
+vendor/cosmic-text/benches/layout.rs:86: trailing whitespace.
++philosophical flourish Cato throws himself upon his sword; I quietly take to 
+vendor/cosmic-text/benches/layout.rs:87: trailing whitespace.
++the ship. There is nothing surprising in this. If they but knew it, almost all 
+vendor/cosmic-text/benches/layout.rs:88: trailing whitespace.
++men in their degree, some time or other, cherish very nearly the same feelings 
+vendor/cosmic-text/benches/layout.rs:91: trailing whitespace.
++There now is your insular city of the Manhattoes, belted round by wharves as 
+vendor/cosmic-text/benches/layout.rs:92: trailing whitespace.
++Indian isles by coral reefs- commerce surrounds it with her surf. Right and 
+vendor/cosmic-text/benches/layout.rs:93: trailing whitespace.
++left, the streets take you waterward. Its extreme downtown is the battery, 
+vendor/cosmic-text/benches/layout.rs:94: trailing whitespace.
++where that noble mole is washed by waves, and cooled by breezes, which a few 
+vendor/cosmic-text/benches/layout.rs:95: trailing whitespace.
++hours previous were out of sight of land. Look at the crowds of water-gazers 
+vendor/cosmic-text/benches/layout.rs:98: trailing whitespace.
++Circumambulate the city of a dreamy Sabbath afternoon. Go from Corlears Hook to 
+vendor/cosmic-text/benches/layout.rs:99: trailing whitespace.
++Coenties Slip, and from thence, by Whitehall, northward. What do you see?- 
+vendor/cosmic-text/benches/layout.rs:100: trailing whitespace.
++Posted like silent sentinels all around the town, stand thousands upon 
+vendor/cosmic-text/benches/layout.rs:101: trailing whitespace.
++thousands of mortal men fixed in ocean reveries. Some leaning against the 
+vendor/cosmic-text/benches/layout.rs:102: trailing whitespace.
++spiles; some seated upon the pier-heads; some looking over the bulwarks of 
+vendor/cosmic-text/benches/layout.rs:103: trailing whitespace.
++ships from China; some high aloft in the rigging, as if striving to get a still 
+vendor/cosmic-text/benches/layout.rs:104: trailing whitespace.
++better seaward peep. But these are all landsmen; of week days pent up in lath 
+vendor/cosmic-text/benches/layout.rs:105: trailing whitespace.
++and plaster- tied to counters, nailed to benches, clinched to desks. How then 
+vendor/cosmic-text/benches/layout.rs:108: trailing whitespace.
++But look! here come more crowds, pacing straight for the water, and seemingly 
+vendor/cosmic-text/benches/layout.rs:109: trailing whitespace.
++bound for a dive. Strange! Nothing will content them but the extremest limit of 
+vendor/cosmic-text/benches/layout.rs:110: trailing whitespace.
++the land; loitering under the shady lee of yonder warehouses will not suffice. 
+vendor/cosmic-text/benches/layout.rs:111: trailing whitespace.
++No. They must get just as nigh the water as they possibly can without falling 
+vendor/cosmic-text/benches/layout.rs:112: trailing whitespace.
++And there they stand- miles of them- leagues. Inlanders all, they come from 
+vendor/cosmic-text/benches/layout.rs:113: trailing whitespace.
++lanes and alleys, streets avenues- north, east, south, and west. Yet here they 
+vendor/cosmic-text/benches/layout.rs:114: trailing whitespace.
++all unite. Tell me, does the magnetic virtue of the needles of the compasses of 
+vendor/cosmic-text/benches/layout.rs:117: trailing whitespace.
++Once more. Say you are in the country; in some high land of lakes. Take almost 
+vendor/cosmic-text/benches/layout.rs:118: trailing whitespace.
++any path you please, and ten to one it carries you down in a dale, and leaves 
+vendor/cosmic-text/benches/layout.rs:119: trailing whitespace.
++you there by a pool in the stream. There is magic in it. Let the most 
+vendor/cosmic-text/benches/layout.rs:120: trailing whitespace.
++absent-minded of men be plunged in his deepest reveries- stand that man on his 
+vendor/cosmic-text/benches/layout.rs:121: trailing whitespace.
++legs, set his feet a-going, and he will infallibly lead you to water, if water 
+vendor/cosmic-text/benches/layout.rs:122: trailing whitespace.
++there be in all that region. Should you ever be athirst in the great American 
+vendor/cosmic-text/benches/layout.rs:123: trailing whitespace.
++desert, try this experiment, if your caravan happen to be supplied with a 
+vendor/cosmic-text/benches/layout.rs:124: trailing whitespace.
++metaphysical professor. Yes, as every one knows, meditation and water are 
+vendor/cosmic-text/benches/layout.rs:127: trailing whitespace.
++But here is an artist. He desires to paint you the dreamiest, shadiest, 
+vendor/cosmic-text/benches/layout.rs:128: trailing whitespace.
++quietest, most enchanting bit of romantic landscape in all the valley of the 
+vendor/cosmic-text/benches/layout.rs:129: trailing whitespace.
++Saco. What is the chief element he employs? There stand his trees, each with a 
+vendor/cosmic-text/benches/layout.rs:130: trailing whitespace.
++hollow trunk, as if a hermit and a crucifix were within; and here sleeps his 
+vendor/cosmic-text/benches/layout.rs:131: trailing whitespace.
++meadow, and there sleep his cattle; and up from yonder cottage goes a sleepy 
+vendor/cosmic-text/benches/layout.rs:132: trailing whitespace.
++smoke. Deep into distant woodlands winds a mazy way, reaching to overlapping 
+vendor/cosmic-text/benches/layout.rs:133: trailing whitespace.
++spurs of mountains bathed in their hill-side blue. But though the picture lies 
+vendor/cosmic-text/benches/layout.rs:134: trailing whitespace.
++thus tranced, and though this pine-tree shakes down its sighs like leaves upon 
+vendor/cosmic-text/benches/layout.rs:135: trailing whitespace.
++this shepherd’s head, yet all were vain, unless the shepherd’s eye were 
+vendor/cosmic-text/benches/layout.rs:136: trailing whitespace.
++fixed upon the magic stream before him. Go visit the Prairies in June, when for 
+vendor/cosmic-text/benches/layout.rs:137: trailing whitespace.
++scores on scores of miles you wade knee-deep among Tiger-lilies- what is the 
+vendor/cosmic-text/benches/layout.rs:138: trailing whitespace.
++one charm wanting?- Water- there is not a drop of water there! Were Niagara but 
+vendor/cosmic-text/benches/layout.rs:139: trailing whitespace.
++a cataract of sand, would you travel your thousand miles to see it? Why did the 
+vendor/cosmic-text/benches/layout.rs:140: trailing whitespace.
++poor poet of Tennessee, upon suddenly receiving two handfuls of silver, 
+vendor/cosmic-text/benches/layout.rs:141: trailing whitespace.
++deliberate whether to buy him a coat, which he sadly needed, or invest his 
+vendor/cosmic-text/benches/layout.rs:142: trailing whitespace.
++money in a pedestrian trip to Rockaway Beach? Why is almost every robust 
+vendor/cosmic-text/benches/layout.rs:143: trailing whitespace.
++healthy boy with a robust healthy soul in him, at some time or other crazy to 
+vendor/cosmic-text/benches/layout.rs:144: trailing whitespace.
++go to sea? Why upon your first voyage as a passenger, did you yourself feel 
+vendor/cosmic-text/benches/layout.rs:145: trailing whitespace.
++such a mystical vibration, when first told that you and your ship were now out 
+vendor/cosmic-text/benches/layout.rs:146: trailing whitespace.
++of sight of land? Why did the old Persians hold the sea holy? Why did the 
+vendor/cosmic-text/benches/layout.rs:147: trailing whitespace.
++Greeks give it a separate deity, and own brother of Jove? Surely all this is 
+vendor/cosmic-text/benches/layout.rs:148: trailing whitespace.
++not without meaning. And still deeper the meaning of that story of Narcissus, 
+vendor/cosmic-text/benches/layout.rs:149: trailing whitespace.
++who because he could not grasp the tormenting, mild image he saw in the 
+vendor/cosmic-text/benches/layout.rs:150: trailing whitespace.
++fountain, plunged into it and was drowned. But that same image, we ourselves 
+vendor/cosmic-text/benches/layout.rs:151: trailing whitespace.
++see in all rivers and oceans. It is the image of the ungraspable phantom of 
+vendor/cosmic-text/benches/layout.rs:154: trailing whitespace.
++Now, when I say that I am in the habit of going to sea whenever I begin to grow 
+vendor/cosmic-text/benches/layout.rs:155: trailing whitespace.
++hazy about the eyes, and begin to be over conscious of my lungs, I do not mean 
+vendor/cosmic-text/benches/layout.rs:156: trailing whitespace.
++to have it inferred that I ever go to sea as a passenger. For to go as a 
+vendor/cosmic-text/benches/layout.rs:157: trailing whitespace.
++passenger you must needs have a purse, and a purse is but a rag unless you have 
+vendor/cosmic-text/benches/layout.rs:158: trailing whitespace.
++something in it. Besides, passengers get sea-sick- grow quarrelsome- don’t 
+vendor/cosmic-text/benches/layout.rs:159: trailing whitespace.
++sleep of nights- do not enjoy themselves much, as a general thing;- no, I never 
+vendor/cosmic-text/benches/layout.rs:160: trailing whitespace.
++go as a passenger; nor, though I am something of a salt, do I ever go to sea as 
+vendor/cosmic-text/benches/layout.rs:161: trailing whitespace.
++a Commodore, or a Captain, or a Cook. I abandon the glory and distinction of 
+vendor/cosmic-text/benches/layout.rs:162: trailing whitespace.
++such offices to those who like them. For my part, I abominate all honorable 
+vendor/cosmic-text/benches/layout.rs:163: trailing whitespace.
++respectable toils, trials, and tribulations of every kind whatsoever. It is 
+vendor/cosmic-text/benches/layout.rs:164: trailing whitespace.
++quite as much as I can do to take care of myself, without taking care of ships, 
+vendor/cosmic-text/benches/layout.rs:165: trailing whitespace.
++barques, brigs, schooners, and what not. And as for going as cook,- though I 
+vendor/cosmic-text/benches/layout.rs:166: trailing whitespace.
++confess there is considerable glory in that, a cook being a sort of officer on 
+vendor/cosmic-text/benches/layout.rs:167: trailing whitespace.
++ship-board- yet, somehow, I never fancied broiling fowls;- though once broiled, 
+vendor/cosmic-text/benches/layout.rs:168: trailing whitespace.
++judiciously buttered, and judgmatically salted and peppered, there is no one 
+vendor/cosmic-text/benches/layout.rs:169: trailing whitespace.
++who will speak more respectfully, not to say reverentially, of a broiled fowl 
+vendor/cosmic-text/benches/layout.rs:170: trailing whitespace.
++than I will. It is out of the idolatrous dotings of the old Egyptians upon 
+vendor/cosmic-text/benches/layout.rs:171: trailing whitespace.
++broiled ibis and roasted river horse, that you see the mummies of those 
+vendor/cosmic-text/benches/layout.rs:174: trailing whitespace.
++No, when I go to sea, I go as a simple sailor, right before the mast, plumb 
+vendor/cosmic-text/benches/layout.rs:175: trailing whitespace.
++down into the fore-castle, aloft there to the royal mast-head. True, they 
+vendor/cosmic-text/benches/layout.rs:176: trailing whitespace.
++rather order me about some, and make me jump from spar to spar, like a 
+vendor/cosmic-text/benches/layout.rs:177: trailing whitespace.
++grasshopper in a May meadow. And at first, this sort of thing is unpleasant 
+vendor/cosmic-text/benches/layout.rs:178: trailing whitespace.
++enough. It touches one’s sense of honor, particularly if you come of an old 
+vendor/cosmic-text/benches/layout.rs:179: trailing whitespace.
++established family in the land, the Van Rensselaers, or Randolphs, or 
+vendor/cosmic-text/benches/layout.rs:180: trailing whitespace.
++Hardicanutes. And more than all, if just previous to putting your hand into the 
+vendor/cosmic-text/benches/layout.rs:181: trailing whitespace.
++tar-pot, you have been lording it as a country schoolmaster, making the tallest 
+vendor/cosmic-text/benches/layout.rs:182: trailing whitespace.
++boys stand in awe of you. The transition is a keen one, I assure you, from a 
+vendor/cosmic-text/benches/layout.rs:183: trailing whitespace.
++schoolmaster to a sailor, and requires a strong decoction of Seneca and the 
+vendor/cosmic-text/benches/layout.rs:186: trailing whitespace.
++What of it, if some old hunks of a sea-captain orders me to get a broom and 
+vendor/cosmic-text/benches/layout.rs:187: trailing whitespace.
++sweep down the decks? What does that indignity amount to, weighed, I mean, in 
+vendor/cosmic-text/benches/layout.rs:188: trailing whitespace.
++the scales of the New Testament? Do you think the archangel Gabriel thinks 
+vendor/cosmic-text/benches/layout.rs:189: trailing whitespace.
++anything the less of me, because I promptly and respectfully obey that old 
+vendor/cosmic-text/benches/layout.rs:190: trailing whitespace.
++hunks in that particular instance? Who ain’t a slave? Tell me that. Well, 
+vendor/cosmic-text/benches/layout.rs:191: trailing whitespace.
++then, however the old sea-captains may order me about- however they may thump 
+vendor/cosmic-text/benches/layout.rs:192: trailing whitespace.
++and punch me about, I have the satisfaction of knowing that it is all right; 
+vendor/cosmic-text/benches/layout.rs:193: trailing whitespace.
++that everybody else is one way or other served in much the same way- either in 
+vendor/cosmic-text/benches/layout.rs:194: trailing whitespace.
++a physical or metaphysical point of view, that is; and so the universal thump 
+vendor/cosmic-text/benches/layout.rs:195: trailing whitespace.
++is passed round, and all hands should rub each other’s shoulder-blades, and 
+vendor/cosmic-text/benches/layout.rs:198: trailing whitespace.
++Again, I always go to sea as a sailor, because they make a point of paying me 
+vendor/cosmic-text/benches/layout.rs:199: trailing whitespace.
++for my trouble, whereas they never pay passengers a single penny that I ever 
+vendor/cosmic-text/benches/layout.rs:200: trailing whitespace.
++heard of. On the contrary, passengers themselves must pay. And there is all the 
+vendor/cosmic-text/benches/layout.rs:201: trailing whitespace.
++difference in the world between paying and being paid. The act of paying is 
+vendor/cosmic-text/benches/layout.rs:202: trailing whitespace.
++perhaps the most uncomfortable infliction that the two orchard thieves entailed 
+vendor/cosmic-text/benches/layout.rs:203: trailing whitespace.
++upon us. But being paid,- what will compare with it? The urbane activity with 
+vendor/cosmic-text/benches/layout.rs:204: trailing whitespace.
++which a man receives money is really marvellous, considering that we so 
+vendor/cosmic-text/benches/layout.rs:205: trailing whitespace.
++earnestly believe money to be the root of all earthly ills, and that on no 
+vendor/cosmic-text/benches/layout.rs:206: trailing whitespace.
++account can a monied man enter heaven. Ah! how cheerfully we consign ourselves 
+vendor/cosmic-text/benches/layout.rs:209: trailing whitespace.
++Finally, I always go to sea as a sailor, because of the wholesome exercise and 
+vendor/cosmic-text/benches/layout.rs:210: trailing whitespace.
++pure air of the fore-castle deck. For as in this world, head winds are far more 
+vendor/cosmic-text/benches/layout.rs:211: trailing whitespace.
++prevalent than winds from astern (that is, if you never violate the Pythagorean 
+vendor/cosmic-text/benches/layout.rs:212: trailing whitespace.
++maxim), so for the most part the Commodore on the quarter-deck gets his 
+vendor/cosmic-text/benches/layout.rs:213: trailing whitespace.
++atmosphere at second hand from the sailors on the forecastle. He thinks he 
+vendor/cosmic-text/benches/layout.rs:214: trailing whitespace.
++breathes it first; but not so. In much the same way do the commonalty lead 
+vendor/cosmic-text/benches/layout.rs:215: trailing whitespace.
++their leaders in many other things, at the same time that the leaders little 
+vendor/cosmic-text/benches/layout.rs:216: trailing whitespace.
++suspect it. But wherefore it was that after having repeatedly smelt the sea as 
+vendor/cosmic-text/benches/layout.rs:217: trailing whitespace.
++a merchant sailor, I should now take it into my head to go on a whaling voyage; 
+vendor/cosmic-text/benches/layout.rs:218: trailing whitespace.
++this the invisible police officer of the Fates, who has the constant 
+vendor/cosmic-text/benches/layout.rs:219: trailing whitespace.
++surveillance of me, and secretly dogs me, and influences me in some 
+vendor/cosmic-text/benches/layout.rs:220: trailing whitespace.
++unaccountable way- he can better answer than any one else. And, doubtless, my 
+vendor/cosmic-text/benches/layout.rs:221: trailing whitespace.
++going on this whaling voyage, formed part of the grand programme of Providence 
+vendor/cosmic-text/benches/layout.rs:222: trailing whitespace.
++that was drawn up a long time ago. It came in as a sort of brief interlude and 
+vendor/cosmic-text/benches/layout.rs:223: trailing whitespace.
++solo between more extensive performances. I take it that this part of the bill 
+vendor/cosmic-text/benches/layout.rs:226: trailing whitespace.
++“Grand Contested Election for the Presidency of the United States.“WHALING 
+vendor/cosmic-text/benches/layout.rs:229: trailing whitespace.
++Though I cannot tell why it was exactly that those stage managers, the Fates, 
+vendor/cosmic-text/benches/layout.rs:230: trailing whitespace.
++put me down for this shabby part of a whaling voyage, when others were set down 
+vendor/cosmic-text/benches/layout.rs:231: trailing whitespace.
++for magnificent parts in high tragedies, and short and easy parts in genteel 
+vendor/cosmic-text/benches/layout.rs:232: trailing whitespace.
++comedies, and jolly parts in farces- though I cannot tell why this was exactly; 
+vendor/cosmic-text/benches/layout.rs:233: trailing whitespace.
++yet, now that I recall all the circumstances, I think I can see a little into 
+vendor/cosmic-text/benches/layout.rs:234: trailing whitespace.
++the springs and motives which being cunningly presented to me under various 
+vendor/cosmic-text/benches/layout.rs:235: trailing whitespace.
++disguises, induced me to set about performing the part I did, besides cajoling 
+vendor/cosmic-text/benches/layout.rs:236: trailing whitespace.
++me into the delusion that it was a choice resulting from my own unbiased 
+vendor/cosmic-text/benches/layout.rs:239: trailing whitespace.
++Chief among these motives was the overwhelming idea of the great whale himself. 
+vendor/cosmic-text/benches/layout.rs:240: trailing whitespace.
++Such a portentous and mysterious monster roused all my curiosity. Then the wild 
+vendor/cosmic-text/benches/layout.rs:241: trailing whitespace.
++and distant seas where he rolled his island bulk; the undeliverable, nameless 
+vendor/cosmic-text/benches/layout.rs:242: trailing whitespace.
++perils of the whale; these, with all the attending marvels of a thousand 
+vendor/cosmic-text/benches/layout.rs:243: trailing whitespace.
++Patagonian sights and sounds, helped to sway me to my wish. With other men, 
+vendor/cosmic-text/benches/layout.rs:244: trailing whitespace.
++perhaps, such things would not have been inducements; but as for me, I am 
+vendor/cosmic-text/benches/layout.rs:245: trailing whitespace.
++tormented with an everlasting itch for things remote. I love to sail forbidden 
+vendor/cosmic-text/benches/layout.rs:246: trailing whitespace.
++seas, and land on barbarous coasts. Not ignoring what is good, I am quick to 
+vendor/cosmic-text/benches/layout.rs:247: trailing whitespace.
++perceive a horror, and could still be social with it- would they let me- since 
+vendor/cosmic-text/benches/layout.rs:248: trailing whitespace.
++it is but well to be on friendly terms with all the inmates of the place one 
+vendor/cosmic-text/benches/layout.rs:251: trailing whitespace.
++By reason of these things, then, the whaling voyage was welcome; the great 
+vendor/cosmic-text/benches/layout.rs:252: trailing whitespace.
++flood-gates of the wonder-world swung open, and in the wild conceits that 
+vendor/cosmic-text/benches/layout.rs:253: trailing whitespace.
++swayed me to my purpose, two and two there floated into my inmost soul, endless 
+vendor/cosmic-text/benches/layout.rs:254: trailing whitespace.
++processions of the whale, and, mid most of them all, one grand hooded phantom, 
+vendor/cosmic-text/fonts/FiraMono-LICENSE:21: trailing whitespace.
++fonts, including any derivative works, can be bundled, embedded, 
+vendor/cosmic-text/fonts/Inter-LICENSE:1: trailing whitespace.
++Copyright 2020 The Inter Project Authors (https://github.com/rsms/inter)
+vendor/cosmic-text/fonts/Inter-LICENSE:2: trailing whitespace.
++
+vendor/cosmic-text/fonts/Inter-LICENSE:3: trailing whitespace.
++This Font Software is licensed under the SIL Open Font License, Version 1.1.
+vendor/cosmic-text/fonts/Inter-LICENSE:4: trailing whitespace.
++This license is copied below, and is also available with a FAQ at:
+vendor/cosmic-text/fonts/Inter-LICENSE:5: trailing whitespace.
++https://openfontlicense.org
+vendor/cosmic-text/fonts/Inter-LICENSE:6: trailing whitespace.
++
+vendor/cosmic-text/fonts/Inter-LICENSE:7: trailing whitespace.
++
+vendor/cosmic-text/fonts/Inter-LICENSE:8: trailing whitespace.
++-----------------------------------------------------------
+vendor/cosmic-text/fonts/Inter-LICENSE:9: trailing whitespace.
++SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+vendor/cosmic-text/fonts/Inter-LICENSE:10: trailing whitespace.
++-----------------------------------------------------------
+vendor/cosmic-text/fonts/Inter-LICENSE:11: trailing whitespace.
++
+vendor/cosmic-text/fonts/Inter-LICENSE:12: trailing whitespace.
++PREAMBLE
+vendor/cosmic-text/fonts/Inter-LICENSE:13: trailing whitespace.
++The goals of the Open Font License (OFL) are to stimulate worldwide
+vendor/cosmic-text/fonts/Inter-LICENSE:14: trailing whitespace.
++development of collaborative font projects, to support the font creation
+vendor/cosmic-text/fonts/Inter-LICENSE:15: trailing whitespace.
++efforts of academic and linguistic communities, and to provide a free and
+vendor/cosmic-text/fonts/Inter-LICENSE:16: trailing whitespace.
++open framework in which fonts may be shared and improved in partnership
+vendor/cosmic-text/fonts/Inter-LICENSE:17: trailing whitespace.
++with others.
+vendor/cosmic-text/fonts/Inter-LICENSE:18: trailing whitespace.
++
+vendor/cosmic-text/fonts/Inter-LICENSE:19: trailing whitespace.
++The OFL allows the licensed fonts to be used, studied, modified and
+vendor/cosmic-text/fonts/Inter-LICENSE:20: trailing whitespace.
++redistributed freely as long as they are not sold by themselves. The
+vendor/cosmic-text/fonts/Inter-LICENSE:21: trailing whitespace.
++fonts, including any derivative works, can be bundled, embedded, 
+vendor/cosmic-text/fonts/Inter-LICENSE:22: trailing whitespace.
++redistributed and/or sold with any software provided that any reserved
+vendor/cosmic-text/fonts/Inter-LICENSE:23: trailing whitespace.
++names are not used by derivative works. The fonts and derivatives,
+vendor/cosmic-text/fonts/Inter-LICENSE:24: trailing whitespace.
++however, cannot be released under any other type of license. The
+vendor/cosmic-text/fonts/Inter-LICENSE:25: trailing whitespace.
++requirement for fonts to remain under this license does not apply
+vendor/cosmic-text/fonts/Inter-LICENSE:26: trailing whitespace.
++to any document created using the fonts or their derivatives.
+vendor/cosmic-text/fonts/Inter-LICENSE:27: trailing whitespace.
++
+vendor/cosmic-text/fonts/Inter-LICENSE:28: trailing whitespace.
++DEFINITIONS
+vendor/cosmic-text/fonts/Inter-LICENSE:29: trailing whitespace.
++"Font Software" refers to the set of files released by the Copyright
+vendor/cosmic-text/fonts/Inter-LICENSE:30: trailing whitespace.
++Holder(s) under this license and clearly marked as such. This may
+vendor/cosmic-text/fonts/Inter-LICENSE:31: trailing whitespace.
++include source files, build scripts and documentation.
+vendor/cosmic-text/fonts/Inter-LICENSE:32: trailing whitespace.
++
+vendor/cosmic-text/fonts/Inter-LICENSE:33: trailing whitespace.
++"Reserved Font Name" refers to any names specified as such after the
+vendor/cosmic-text/fonts/Inter-LICENSE:34: trailing whitespace.
++copyright statement(s).
+vendor/cosmic-text/fonts/Inter-LICENSE:35: trailing whitespace.
++
+vendor/cosmic-text/fonts/Inter-LICENSE:36: trailing whitespace.
++"Original Version" refers to the collection of Font Software components as
+vendor/cosmic-text/fonts/Inter-LICENSE:37: trailing whitespace.
++distributed by the Copyright Holder(s).
+vendor/cosmic-text/fonts/Inter-LICENSE:38: trailing whitespace.
++
+vendor/cosmic-text/fonts/Inter-LICENSE:39: trailing whitespace.
++"Modified Version" refers to any derivative made by adding to, deleting,
+vendor/cosmic-text/fonts/Inter-LICENSE:40: trailing whitespace.
++or substituting -- in part or in whole -- any of the components of the
+vendor/cosmic-text/fonts/Inter-LICENSE:41: trailing whitespace.
++Original Version, by changing formats or by porting the Font Software to a
+vendor/cosmic-text/fonts/Inter-LICENSE:42: trailing whitespace.
++new environment.
+vendor/cosmic-text/fonts/Inter-LICENSE:43: trailing whitespace.
++
+vendor/cosmic-text/fonts/Inter-LICENSE:44: trailing whitespace.
++"Author" refers to any designer, engineer, programmer, technical
+vendor/cosmic-text/fonts/Inter-LICENSE:45: trailing whitespace.
++writer or other person who contributed to the Font Software.
+vendor/cosmic-text/fonts/Inter-LICENSE:46: trailing whitespace.
++
+vendor/cosmic-text/fonts/Inter-LICENSE:47: trailing whitespace.
++PERMISSION & CONDITIONS
+vendor/cosmic-text/fonts/Inter-LICENSE:48: trailing whitespace.
++Permission is hereby granted, free of charge, to any person obtaining
+vendor/cosmic-text/fonts/Inter-LICENSE:49: trailing whitespace.
++a copy of the Font Software, to use, study, copy, merge, embed, modify,
+vendor/cosmic-text/fonts/Inter-LICENSE:50: trailing whitespace.
++redistribute, and sell modified and unmodified copies of the Font
+vendor/cosmic-text/fonts/Inter-LICENSE:51: trailing whitespace.
++Software, subject to the following conditions:
+vendor/cosmic-text/fonts/Inter-LICENSE:52: trailing whitespace.
++
+vendor/cosmic-text/fonts/Inter-LICENSE:53: trailing whitespace.
++1) Neither the Font Software nor any of its individual components,
+vendor/cosmic-text/fonts/Inter-LICENSE:54: trailing whitespace.
++in Original or Modified Versions, may be sold by itself.
+vendor/cosmic-text/fonts/Inter-LICENSE:55: trailing whitespace.
++
+vendor/cosmic-text/fonts/Inter-LICENSE:56: trailing whitespace.
++2) Original or Modified Versions of the Font Software may be bundled,
+vendor/cosmic-text/fonts/Inter-LICENSE:57: trailing whitespace.
++redistributed and/or sold with any software, provided that each copy
+vendor/cosmic-text/fonts/Inter-LICENSE:58: trailing whitespace.
++contains the above copyright notice and this license. These can be
+vendor/cosmic-text/fonts/Inter-LICENSE:59: trailing whitespace.
++included either as stand-alone text files, human-readable headers or
+vendor/cosmic-text/fonts/Inter-LICENSE:60: trailing whitespace.
++in the appropriate machine-readable metadata fields within text or
+vendor/cosmic-text/fonts/Inter-LICENSE:61: trailing whitespace.
++binary files as long as those fields can be easily viewed by the user.
+vendor/cosmic-text/fonts/Inter-LICENSE:62: trailing whitespace.
++
+vendor/cosmic-text/fonts/Inter-LICENSE:63: trailing whitespace.
++3) No Modified Version of the Font Software may use the Reserved Font
+vendor/cosmic-text/fonts/Inter-LICENSE:64: trailing whitespace.
++Name(s) unless explicit written permission is granted by the corresponding
+vendor/cosmic-text/fonts/Inter-LICENSE:65: trailing whitespace.
++Copyright Holder. This restriction only applies to the primary font name as
+vendor/cosmic-text/fonts/Inter-LICENSE:66: trailing whitespace.
++presented to the users.
+vendor/cosmic-text/fonts/Inter-LICENSE:67: trailing whitespace.
++
+vendor/cosmic-text/fonts/Inter-LICENSE:68: trailing whitespace.
++4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font
+vendor/cosmic-text/fonts/Inter-LICENSE:69: trailing whitespace.
++Software shall not be used to promote, endorse or advertise any
+vendor/cosmic-text/fonts/Inter-LICENSE:70: trailing whitespace.
++Modified Version, except to acknowledge the contribution(s) of the
+vendor/cosmic-text/fonts/Inter-LICENSE:71: trailing whitespace.
++Copyright Holder(s) and the Author(s) or with their explicit written
+vendor/cosmic-text/fonts/Inter-LICENSE:72: trailing whitespace.
++permission.
+vendor/cosmic-text/fonts/Inter-LICENSE:73: trailing whitespace.
++
+vendor/cosmic-text/fonts/Inter-LICENSE:74: trailing whitespace.
++5) The Font Software, modified or unmodified, in part or in whole,
+vendor/cosmic-text/fonts/Inter-LICENSE:75: trailing whitespace.
++must be distributed entirely under this license, and must not be
+vendor/cosmic-text/fonts/Inter-LICENSE:76: trailing whitespace.
++distributed under any other license. The requirement for fonts to
+vendor/cosmic-text/fonts/Inter-LICENSE:77: trailing whitespace.
++remain under this license does not apply to any document created
+vendor/cosmic-text/fonts/Inter-LICENSE:78: trailing whitespace.
++using the Font Software.
+vendor/cosmic-text/fonts/Inter-LICENSE:79: trailing whitespace.
++
+vendor/cosmic-text/fonts/Inter-LICENSE:80: trailing whitespace.
++TERMINATION
+vendor/cosmic-text/fonts/Inter-LICENSE:81: trailing whitespace.
++This license becomes null and void if any of the above conditions are
+vendor/cosmic-text/fonts/Inter-LICENSE:82: trailing whitespace.
++not met.
+vendor/cosmic-text/fonts/Inter-LICENSE:83: trailing whitespace.
++
+vendor/cosmic-text/fonts/Inter-LICENSE:84: trailing whitespace.
++DISCLAIMER
+vendor/cosmic-text/fonts/Inter-LICENSE:85: trailing whitespace.
++THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+vendor/cosmic-text/fonts/Inter-LICENSE:86: trailing whitespace.
++EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+vendor/cosmic-text/fonts/Inter-LICENSE:87: trailing whitespace.
++MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+vendor/cosmic-text/fonts/Inter-LICENSE:88: trailing whitespace.
++OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE
+vendor/cosmic-text/fonts/Inter-LICENSE:89: trailing whitespace.
++COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+vendor/cosmic-text/fonts/Inter-LICENSE:90: trailing whitespace.
++INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+vendor/cosmic-text/fonts/Inter-LICENSE:91: trailing whitespace.
++DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+vendor/cosmic-text/fonts/Inter-LICENSE:92: trailing whitespace.
++FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+vendor/cosmic-text/fonts/Inter-LICENSE:93: trailing whitespace.
++OTHER DEALINGS IN THE FONT SOFTWARE.
+vendor/cosmic-text/fonts/NotoSans-LICENSE:21: trailing whitespace.
++fonts, including any derivative works, can be bundled, embedded, 
+vendor/cosmic-text/sample/crlf.txt:1: trailing whitespace.
++These are two lines
+vendor/cosmic-text/sample/crlf.txt:2: trailing whitespace.
++in a CRLF file
+vendor/cosmic-text/sample/hebrew.txt:3: trailing whitespace.
++Many computer programs fail to display bidirectional text correctly. For example, this page is mostly LTR English script, and here is the RTL Hebrew name Sarah: שרה, spelled sin (ש) on the right, resh (ר) in the middle, and heh (ה) on the left. 
+vendor/cosmic-text/sample/hello.txt:66: trailing whitespace.
++    Plains Cree: tânisi 
+vendor/fixtures/fonts/ibm-plex-sans/license.txt:20: trailing whitespace.
++fonts, including any derivative works, can be bundled, embedded, 
+vendor/fixtures/fonts/lilex/OFL.txt:21: trailing whitespace.
++fonts, including any derivative works, can be bundled, embedded, 
+vendor/gpui/src/_accessibility.rs:236: trailing whitespace.
++//!     
+vendor/gpui/src/_accessibility.rs:240: trailing whitespace.
++//!     
+vendor/harfrust/FERROSTAGE-MAINTENANCE.txt:1: trailing whitespace.
++Isolated MIT harfrust0.12.0 compatibility evaluation. Original license retained.
+vendor/harfrust/FERROSTAGE-MAINTENANCE.txt:2: trailing whitespace.
++Two internal files add checked format2 cmap selection/mapping to both constructors.
+vendor/harfrust/FERROSTAGE-MAINTENANCE.txt:3: trailing whitespace.
++No feature, shaping algorithm, public API, or encoding-priority change.
+vendor/harfrust/src/hb/face.rs:542: trailing whitespace.
++    /// properties.    
+vendor/harfrust/src/hb/p:59: new blank line at EOF.
+vendor/metal/README.md:4: trailing whitespace.
++> 
+vendor/metal/README.md:5: trailing whitespace.
++> Use of this crate is deprecated as the [`objc`] ecosystem of mac system bindings are unmaintained. 
+vendor/metal/examples/raytracing/README.md:3: trailing whitespace.
++A good showcase of Metal 3 raytracing features. 
+vendor/pulp/src/core_arch/mod.rs:367: space before tab in indent.
++                	#[allow(clippy::too_many_arguments)]
+vendor/pulp/src/lib.rs:149: space before tab in indent.
++    	$ret
+vendor/pulp/src/lib.rs:3406: space before tab in indent.
++            	$(let $arg: [_; 2] = cast!($arg);)*
+vendor/pulp/src/lib.rs:3439: space before tab in indent.
++            	$(let $arg: [_; 2] = cast!($arg);)*
+vendor/pulp/src/x86/v4.rs:3659: trailing whitespace.
++	/// Shift the bits of each lane of `a` to the left by `AMOUNT`, while shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3666: trailing whitespace.
++	/// Shift the bits of each lane of `a` to the left by `AMOUNT`, while shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3673: trailing whitespace.
++	/// Shift the bits of each lane of `a` to the left by `AMOUNT`, while shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3680: trailing whitespace.
++	/// Shift the bits of each lane of `a` to the left by `AMOUNT`, while shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3687: trailing whitespace.
++	/// Shift the bits of each lane of `a` to the left by `AMOUNT`, while shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3694: trailing whitespace.
++	/// Shift the bits of each lane of `a` to the left by `AMOUNT`, while shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3702: trailing whitespace.
++	/// `amount`, while shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3710: trailing whitespace.
++	/// `amount`, while shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3718: trailing whitespace.
++	/// `amount`, while shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3726: trailing whitespace.
++	/// `amount`, while shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3734: trailing whitespace.
++	/// shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3742: trailing whitespace.
++	/// shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3750: trailing whitespace.
++	/// shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3758: trailing whitespace.
++	/// shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3766: trailing whitespace.
++	/// shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3774: trailing whitespace.
++	/// shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3781: trailing whitespace.
++	/// Shift the bits of each lane of `a` to the right by `AMOUNT`, while shifting in sign bits.  
+vendor/pulp/src/x86/v4.rs:3789: trailing whitespace.
++	/// Shift the bits of each lane of `a` to the right by `AMOUNT`, while shifting in sign bits.  
+vendor/pulp/src/x86/v4.rs:3797: trailing whitespace.
++	/// Shift the bits of each lane of `a` to the right by `AMOUNT`, while shifting in sign bits.  
+vendor/pulp/src/x86/v4.rs:3805: trailing whitespace.
++	/// Shift the bits of each lane of `a` to the right by `AMOUNT`, while shifting in sign bits.  
+vendor/pulp/src/x86/v4.rs:3813: trailing whitespace.
++	/// Shift the bits of each lane of `a` to the right by `AMOUNT`, while shifting in sign bits.  
+vendor/pulp/src/x86/v4.rs:3821: trailing whitespace.
++	/// Shift the bits of each lane of `a` to the right by `AMOUNT`, while shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3828: trailing whitespace.
++	/// Shift the bits of each lane of `a` to the right by `AMOUNT`, while shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3835: trailing whitespace.
++	/// Shift the bits of each lane of `a` to the right by `AMOUNT`, while shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3843: trailing whitespace.
++	/// `amount`, while shifting in sign bits.  
+vendor/pulp/src/x86/v4.rs:3852: trailing whitespace.
++	/// `amount`, while shifting in sign bits.  
+vendor/pulp/src/x86/v4.rs:3861: trailing whitespace.
++	/// `amount`, while shifting in sign bits.  
+vendor/pulp/src/x86/v4.rs:3870: trailing whitespace.
++	/// `amount`, while shifting in sign bits.  
+vendor/pulp/src/x86/v4.rs:3879: trailing whitespace.
++	/// `amount`, while shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3887: trailing whitespace.
++	/// `amount`, while shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3895: trailing whitespace.
++	/// shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3904: trailing whitespace.
++	/// shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3913: trailing whitespace.
++	/// shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3922: trailing whitespace.
++	/// shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3931: trailing whitespace.
++	/// shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3940: trailing whitespace.
++	/// shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3948: trailing whitespace.
++	/// shifting in zeros.  
+vendor/pulp/src/x86/v4.rs:3956: trailing whitespace.
++	/// shifting in zeros.  

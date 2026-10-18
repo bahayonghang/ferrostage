@@ -1,0 +1,19 @@
+{
+  "started_utc": "2026-10-15T09:56:20.422654+00:00",
+  "argv": [
+    "cargo",
+    "test",
+    "--manifest-path",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-v16-accesskit-harness\\Cargo.toml",
+    "--lib",
+    "--offline",
+    "v16_regression_tests",
+    "--",
+    "--test-threads=1",
+    "--nocapture"
+  ],
+  "status": "RETURNED",
+  "log": "product-v16-a11y.log",
+  "exit_code": 1,
+  "ended_utc": "2026-10-15T09:56:20.682606+00:00"
+}

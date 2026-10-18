@@ -1,0 +1,293 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
+class Recipe(custom.GStreamer):
+    name = 'gst-plugins-good-1.0'
+    btype = BuildType.MESON
+    tarball_checksum = 'a7670ed900d3d03be744d25c1873b239896e9a82ce6d17f8febc6fffbaee9521'
+    meson_options = {# enabled plugins
+                     'amrnb': 'enabled',
+                     'amrwbdec': 'enabled',
+                     'adaptivedemux2': 'enabled',
+                     'cairo': 'enabled',
+                     'dv': 'enabled',
+                     'flac': 'enabled',
+                     'gdk-pixbuf': 'enabled',
+                     'jpeg': 'enabled',
+                     'lame': 'enabled',
+                     'mpg123': 'enabled',
+                     'png': 'enabled',
+                     'soup': 'enabled',
+                     'speex': 'enabled',
+                     'taglib': 'enabled',
+                     'vpx': 'enabled',
+                     'wavpack': 'enabled',
+                     # disabled plugins
+                     'aalib': 'disabled',
+                     'dv1394': 'disabled',
+                     'gtk3': 'disabled',
+                     'jack': 'disabled', # Enabled in prepare()
+                     'libcaca': 'disabled',
+                     'oss': 'disabled',
+                     'oss4': 'disabled',
+                     'qt5': 'disabled', # Enabled in prepare()
+                     'qt6': 'disabled', # Enabled in prepare()
+                     'shout2': 'disabled',
+                     'twolame': 'disabled',
+                     'waveform': 'disabled',}
+    deps = ['gstreamer-1.0', 'gst-plugins-base-1.0', 'libjpeg-turbo', 'libpng',
+            'speex', 'gdk-pixbuf', 'libsoup', 'mpg123', 'lame',
+            'orc', 'wavpack', 'flac', 'taglib', 'bzip2', 'zlib',
+            'libvpx', 'libdv', 'cairo', 'opencore-amr', 'libxml2']
+    platform_deps = {
+        Platform.LINUX: ['alsa', 'x11', 'libpulse'],
+    }
+
+    files_lang = ['gst-plugins-good-1.0']
+
+    files_plugins_core = [
+             '%(libdir)s/gstreamer-1.0/libgstautodetect%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstvideofilter%(mext)s',
+    ]
+
+    files_plugins_core_devel = [
+             '%(libdir)s/gstreamer-1.0/libgstautodetect.a', '%(libdir)s/gstreamer-1.0/libgstautodetect.la',
+             '%(libdir)s/gstreamer-1.0/libgstvideofilter.a', '%(libdir)s/gstreamer-1.0/libgstvideofilter.la',
+    ]
+
+    files_plugins_effects = [
+             '%(libdir)s/gstreamer-1.0/libgstalpha%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstalphacolor%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstaudiofx%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstcairo%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstcutter%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstdebug%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstdeinterlace%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstdtmf%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgsteffectv%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstequalizer%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstgdkpixbuf%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstimagefreeze%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstinterleave%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstlevel%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstmultifile%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstreplaygain%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstshapewipe%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstsmpte%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstspectrum%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstvideobox%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstvideocrop%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstvideomixer%(mext)s',
+    ]
+
+    files_plugins_effects_devel = [
+             '%(libdir)s/gstreamer-1.0/libgstalpha.a', '%(libdir)s/gstreamer-1.0/libgstalpha.la',
+             '%(libdir)s/gstreamer-1.0/libgstalphacolor.a', '%(libdir)s/gstreamer-1.0/libgstalphacolor.la',
+             '%(libdir)s/gstreamer-1.0/libgstaudiofx.a', '%(libdir)s/gstreamer-1.0/libgstaudiofx.la',
+             '%(libdir)s/gstreamer-1.0/libgstcairo.a', '%(libdir)s/gstreamer-1.0/libgstcairo.la',
+             '%(libdir)s/gstreamer-1.0/libgstcutter.a', '%(libdir)s/gstreamer-1.0/libgstcutter.la',
+             '%(libdir)s/gstreamer-1.0/libgstdebug.a', '%(libdir)s/gstreamer-1.0/libgstdebug.la',
+             '%(libdir)s/gstreamer-1.0/libgstdeinterlace.a', '%(libdir)s/gstreamer-1.0/libgstdeinterlace.la',
+             '%(libdir)s/gstreamer-1.0/libgstdtmf.a', '%(libdir)s/gstreamer-1.0/libgstdtmf.la',
+             '%(libdir)s/gstreamer-1.0/libgsteffectv.a', '%(libdir)s/gstreamer-1.0/libgsteffectv.la',
+             '%(libdir)s/gstreamer-1.0/libgstequalizer.a', '%(libdir)s/gstreamer-1.0/libgstequalizer.la',
+             '%(libdir)s/gstreamer-1.0/libgstgdkpixbuf.a', '%(libdir)s/gstreamer-1.0/libgstgdkpixbuf.la',
+             '%(libdir)s/gstreamer-1.0/libgstimagefreeze.a', '%(libdir)s/gstreamer-1.0/libgstimagefreeze.la',
+             '%(libdir)s/gstreamer-1.0/libgstinterleave.a', '%(libdir)s/gstreamer-1.0/libgstinterleave.la',
+             '%(libdir)s/gstreamer-1.0/libgstlevel.a', '%(libdir)s/gstreamer-1.0/libgstlevel.la',
+             '%(libdir)s/gstreamer-1.0/libgstmultifile.a', '%(libdir)s/gstreamer-1.0/libgstmultifile.la',
+             '%(libdir)s/gstreamer-1.0/libgstreplaygain.a', '%(libdir)s/gstreamer-1.0/libgstreplaygain.la',
+             '%(libdir)s/gstreamer-1.0/libgstshapewipe.a', '%(libdir)s/gstreamer-1.0/libgstshapewipe.la',
+             '%(libdir)s/gstreamer-1.0/libgstsmpte.a', '%(libdir)s/gstreamer-1.0/libgstsmpte.la',
+             '%(libdir)s/gstreamer-1.0/libgstspectrum.a', '%(libdir)s/gstreamer-1.0/libgstspectrum.la',
+             '%(libdir)s/gstreamer-1.0/libgstvideobox.a', '%(libdir)s/gstreamer-1.0/libgstvideobox.la',
+             '%(libdir)s/gstreamer-1.0/libgstvideocrop.a', '%(libdir)s/gstreamer-1.0/libgstvideocrop.la',
+             '%(libdir)s/gstreamer-1.0/libgstvideomixer.a', '%(libdir)s/gstreamer-1.0/libgstvideomixer.la',
+    ]
+
+    files_plugins_codecs = [
+             '%(libdir)s/gstreamer-1.0/libgstadaptivedemux2%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstalaw%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstamrnb%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstamrwbdec%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstapetag%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstaudioparsers%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstauparse%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstavi%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstdv%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstflac%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstflv%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstflxdec%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgsticydemux%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstid3demux%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstisomp4%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstjpeg%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstlame%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstmatroska%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstmpg123%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstmulaw%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstmultipart%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstpng%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstspeex%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgsttaglib%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstvpx%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstwavenc%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstwavpack%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstwavparse%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstxingmux%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgsty4m%(mext)s',
+    ]
+
+    files_plugins_codecs_devel = [
+             '%(libdir)s/gstreamer-1.0/libgstadaptivedemux2.a', '%(libdir)s/gstreamer-1.0/libgstadaptivedemux2.la',
+             '%(libdir)s/gstreamer-1.0/libgstalaw.a', '%(libdir)s/gstreamer-1.0/libgstalaw.la',
+             '%(libdir)s/gstreamer-1.0/libgstamrnb.a', '%(libdir)s/gstreamer-1.0/libgstamrnb.la',
+             '%(libdir)s/gstreamer-1.0/libgstamrwbdec.a', '%(libdir)s/gstreamer-1.0/libgstamrwbdec.la',
+             '%(libdir)s/gstreamer-1.0/libgstapetag.a', '%(libdir)s/gstreamer-1.0/libgstapetag.la',
+             '%(libdir)s/gstreamer-1.0/libgstaudioparsers.a', '%(libdir)s/gstreamer-1.0/libgstaudioparsers.la',
+             '%(libdir)s/gstreamer-1.0/libgstauparse.a', '%(libdir)s/gstreamer-1.0/libgstauparse.la',
+             '%(libdir)s/gstreamer-1.0/libgstavi.a', '%(libdir)s/gstreamer-1.0/libgstavi.la',
+             '%(libdir)s/gstreamer-1.0/libgstdv.a', '%(libdir)s/gstreamer-1.0/libgstdv.la',
+             '%(libdir)s/gstreamer-1.0/libgstflac.a', '%(libdir)s/gstreamer-1.0/libgstflac.la',
+             '%(libdir)s/gstreamer-1.0/libgstflv.a', '%(libdir)s/gstreamer-1.0/libgstflv.la',
+             '%(libdir)s/gstreamer-1.0/libgstflxdec.a', '%(libdir)s/gstreamer-1.0/libgstflxdec.la',
+             '%(libdir)s/gstreamer-1.0/libgsticydemux.a', '%(libdir)s/gstreamer-1.0/libgsticydemux.la',
+             '%(libdir)s/gstreamer-1.0/libgstid3demux.a', '%(libdir)s/gstreamer-1.0/libgstid3demux.la',
+             '%(libdir)s/gstreamer-1.0/libgstisomp4.a', '%(libdir)s/gstreamer-1.0/libgstisomp4.la',
+             '%(libdir)s/gstreamer-1.0/libgstjpeg.a', '%(libdir)s/gstreamer-1.0/libgstjpeg.la',
+             '%(libdir)s/gstreamer-1.0/libgstlame.a', '%(libdir)s/gstreamer-1.0/libgstlame.la',
+             '%(libdir)s/gstreamer-1.0/libgstmatroska.a', '%(libdir)s/gstreamer-1.0/libgstmatroska.la',
+             '%(libdir)s/gstreamer-1.0/libgstmpg123.a', '%(libdir)s/gstreamer-1.0/libgstmpg123.la',
+             '%(libdir)s/gstreamer-1.0/libgstmulaw.a', '%(libdir)s/gstreamer-1.0/libgstmulaw.la',
+             '%(libdir)s/gstreamer-1.0/libgstmultipart.a', '%(libdir)s/gstreamer-1.0/libgstmultipart.la',
+             '%(libdir)s/gstreamer-1.0/libgstpng.a', '%(libdir)s/gstreamer-1.0/libgstpng.la',
+             '%(libdir)s/gstreamer-1.0/libgstspeex.a', '%(libdir)s/gstreamer-1.0/libgstspeex.la',
+             '%(libdir)s/gstreamer-1.0/libgsttaglib.a', '%(libdir)s/gstreamer-1.0/libgsttaglib.la',
+             '%(libdir)s/gstreamer-1.0/libgstvpx.a', '%(libdir)s/gstreamer-1.0/libgstvpx.la',
+             '%(libdir)s/gstreamer-1.0/libgstwavenc.a', '%(libdir)s/gstreamer-1.0/libgstwavenc.la',
+             '%(libdir)s/gstreamer-1.0/libgstwavpack.a', '%(libdir)s/gstreamer-1.0/libgstwavpack.la',
+             '%(libdir)s/gstreamer-1.0/libgstwavparse.a', '%(libdir)s/gstreamer-1.0/libgstwavparse.la',
+             '%(libdir)s/gstreamer-1.0/libgstxingmux.a', '%(libdir)s/gstreamer-1.0/libgstxingmux.la',
+             '%(libdir)s/gstreamer-1.0/libgsty4m.a', '%(libdir)s/gstreamer-1.0/libgsty4m.la',
+    ]
+
+    files_plugins_net = [
+             '%(libdir)s/gstreamer-1.0/libgstrtsp%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstrtp%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstrtpmanager%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstsoup%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstudp%(mext)s',
+    ]
+
+    files_plugins_net_devel = [
+             '%(libdir)s/gstreamer-1.0/libgstrtsp.a', '%(libdir)s/gstreamer-1.0/libgstrtsp.la',
+             '%(libdir)s/gstreamer-1.0/libgstrtp.a', '%(libdir)s/gstreamer-1.0/libgstrtp.la',
+             '%(libdir)s/gstreamer-1.0/libgstrtpmanager.a', '%(libdir)s/gstreamer-1.0/libgstrtpmanager.la',
+             '%(libdir)s/gstreamer-1.0/libgstsoup.a', '%(libdir)s/gstreamer-1.0/libgstsoup.la',
+             '%(libdir)s/gstreamer-1.0/libgstudp.a', '%(libdir)s/gstreamer-1.0/libgstudp.la',
+    ]
+
+    files_plugins_vis = [
+             '%(libdir)s/gstreamer-1.0/libgstgoom%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstgoom2k1%(mext)s',
+    ]
+
+    files_plugins_vis_devel = [
+             '%(libdir)s/gstreamer-1.0/libgstgoom.a', '%(libdir)s/gstreamer-1.0/libgstgoom.la',
+             '%(libdir)s/gstreamer-1.0/libgstgoom2k1.a', '%(libdir)s/gstreamer-1.0/libgstgoom2k1.la',
+    ]
+
+    files_plugins_capture = []
+    files_plugins_capture_devel = []
+
+    files_plugins_sys = []
+    files_plugins_sys_devel = []
+
+    platform_files_plugins_sys = {
+        Platform.WINDOWS: [
+             '%(libdir)s/gstreamer-1.0/libgstdirectsound%(mext)s',
+        ],
+        Platform.DARWIN: [
+             '%(libdir)s/gstreamer-1.0/libgstosxaudio%(mext)s',
+             '%(libdir)s/gstreamer-1.0/libgstosxvideo%(mext)s',
+        ],
+        Platform.IOS: [
+             '%(libdir)s/gstreamer-1.0/libgstosxaudio%(mext)s'
+        ],
+        Platform.TVOS: [
+             '%(libdir)s/gstreamer-1.0/libgstosxaudio%(mext)s'
+        ],
+    }
+
+    platform_files_plugins_sys_devel = {
+        Platform.WINDOWS: [
+             '%(libdir)s/gstreamer-1.0/libgstdirectsound.a', '%(libdir)s/gstreamer-1.0/libgstdirectsound.la',
+        ],
+        Platform.DARWIN: [
+             '%(libdir)s/gstreamer-1.0/libgstosxaudio.a', '%(libdir)s/gstreamer-1.0/libgstosxaudio.la',
+             '%(libdir)s/gstreamer-1.0/libgstosxvideo.a', '%(libdir)s/gstreamer-1.0/libgstosxvideo.la',
+        ],
+        Platform.IOS: [
+             '%(libdir)s/gstreamer-1.0/libgstosxaudio.a', '%(libdir)s/gstreamer-1.0/libgstosxaudio.la',
+        ],
+        Platform.TVOS: [
+             '%(libdir)s/gstreamer-1.0/libgstosxaudio.a', '%(libdir)s/gstreamer-1.0/libgstosxaudio.la',
+        ],
+    }
+
+
+    def prepare(self):
+        self.append_env('CFLAGS', '-DLIBSOUP_DOES_NOT_STEAL_OUR_CONTEXT=1')
+
+        if self.config.target_platform == Platform.WINDOWS:
+            self.meson_options['directsound'] = 'enabled'
+            self.enable_plugin('jack', 'sys')
+        elif self.config.target_platform == Platform.DARWIN:
+            self.meson_options['osxaudio'] = 'enabled'
+            self.meson_options['osxvideo'] = 'enabled'
+            self.enable_plugin('jack', 'sys')
+        elif Platform.is_apple_app_platform(self.config.target_platform):
+            self.meson_options['osxaudio'] = 'enabled'
+        elif self.config.target_platform == Platform.LINUX:
+            self.enable_plugin('jack', 'sys')
+
+        self.enable_plugin('video4linux2', 'capture', variant='v4l2', option='v4l2')
+        self.enable_plugin('ximagesrc', 'capture', variant='x11')
+        self.enable_plugin('pulseaudio', 'sys', variant='pulse', option='pulse')
+
+        if self.using_msvc() and self.config.target_arch == Architecture.ARM64:
+            # Needs MinGW
+            self.disable_plugin('mpg123', 'codecs', dep='mpg123')
+
+        # Enable qt5 plugin if possible and selected
+        can_enable_qt5 = True
+        if self.config.target_platform == Platform.IOS:
+            # iOS Qt5 binaries support arm64 and x86
+            if self.config.target_arch not in (Architecture.ARM64, Architecture.X86_64):
+                can_enable_qt5 = False
+        elif self.config.target_platform == Platform.ANDROID:
+            # Android Qt5 binaries support armv7, arm64, x86
+            if self.config.target_arch == Architecture.X86_64:
+                can_enable_qt5 = False
+        if can_enable_qt5:
+            self.enable_plugin('qmlgl', 'qt5', 'qt5', option='qt5')
+
+        # Enable qt6 plugin if possible and selected
+        can_enable_qt6 = False
+        if self.config.target_platform in (Platform.LINUX, Platform.DARWIN, Platform.WINDOWS):
+            can_enable_qt6 = True
+        if can_enable_qt6:
+            self.enable_plugin('qml6', 'qt6', 'qt6', option='qt6')
+
+        if self.config.target_platform != Platform.LINUX:
+            # Don't want to find Qt using pkg-config on non-Linux because:
+            # 1. It's actually not recommended by Qt
+            # 2. It causes gstqmlgl.pc to contain references to those pkgconfig
+            #    files, but on non-Linux, you're using the official Qt binaries
+            #    which require --define-prefix with pkg-config, which breaks
+            #    static linking of gstreamer plugins, so we don't want that
+            # 3. --define-prefix makes cerbero's relocatable pkgconfig files
+            #    completely useless
+            self.meson_options['qt-method'] = 'qmake'
+
+        if self.config.variants.nodebug:
+            self.append_env('CFLAGS', '-DGST_LEVEL_MAX=GST_LEVEL_FIXME')

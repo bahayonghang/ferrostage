@@ -1,0 +1,17 @@
+{
+  "utc": "2026-10-15T04:56:54.327994+00:00",
+  "scope": "Root native V10 startup F10 FAIL; owned process cleaned up",
+  "files": {
+    ".trellis/tasks/10-14-07-gpui-shell/research/native/v10-main-stopped-inventory.json": "019a52cb421a039da083aa47c1460fffcd01eea7da5201335dc81e5469c0b6c1",
+    ".trellis/tasks/10-14-07-gpui-shell/research/native/v10-main-timeout-inventory.json": "551eca0d92c260de646de9281d600e73db09f3b8c294ee1828380358bd2064e7",
+    ".trellis/tasks/10-14-07-gpui-shell/research/native/v10-main.config-after.toml": "fd9004c7b16f967a42e90bc1a6302d827bc24e0e674ff4fb47de78543b5f9d08",
+    ".trellis/tasks/10-14-07-gpui-shell/research/native/v10-main.config-before.toml": "fd9004c7b16f967a42e90bc1a6302d827bc24e0e674ff4fb47de78543b5f9d08",
+    ".trellis/tasks/10-14-07-gpui-shell/research/native/v10-main.exit.json": "c9bc07bf35319797ce3159211ac14d33723b272b0b0deb5be869eee16a5b7844",
+    ".trellis/tasks/10-14-07-gpui-shell/research/native/v10-main.launch.json": "7d46c365b376b2e2e276ed989db302f9ca7c6abe4ed80a21d4af65a01fda0e54",
+    ".trellis/tasks/10-14-07-gpui-shell/research/native/v10-main.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".trellis/tasks/10-14-07-gpui-shell/research/native/v10-main.stdout.log": "3e09f6a73fa77b1e56d227605f3aabc84f786143fb40f9170ccd04e4c33886c9",
+    ".trellis/tasks/10-14-07-gpui-shell/research/native/v10-system-settings-discovery.json": "975ed8d9cbe92abba5c347df778366da916f379f1a308879a37f8639f96f3726",
+    ".trellis/tasks/10-14-07-gpui-shell/research/native-v10-checkpoint.md": "1154afe92c54cb0a9128a20c1ca5913929d48d520f4f724d03a735065dd07b30",
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-native-freeze-v10.json": "d911f84ec364ba9600709d1230112a9ed1eb41f063c807c2a588e69198076059"
+  }
+}

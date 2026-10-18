@@ -1,0 +1,18 @@
+   Compiling ferrostage-media v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-media)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.69s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_media-df37ae2c5779aadf.exe)
+
+running 8 tests
+test protocol::tests::rejects_hostile_header_before_body_allocation ... ok
+test supervisor::child::tests::scanner_path_matches_selected_runtime_manifest ... ok
+test supervisor::child::tests::child_frames_reject_duplicate_and_regressing_sequence ... ok
+test animation::tests::animation_budget_reserves_contain_canvas_before_decoding ... ok
+test tests::limits_keep_proportion_and_reject_unbounded_input ... ok
+test animation::tests::crop_removes_private_pixels_and_preserves_alpha ... ok
+test protocol::tests::frame_roundtrip_preserves_bgra_and_identity_sequence ... ok
+test supervisor::child::tests::embedded_payload_is_owned_create_new_and_removed_after_release ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+mbx[cache]: 0 hits, 0 misses, 1 not looked up, 1 incremental; 0 B downloaded, 0 B uploaded, 0 B stored locally
+mbx[savings]: 112.9 GiB logical of old files removed to date. the broom sends its regards.

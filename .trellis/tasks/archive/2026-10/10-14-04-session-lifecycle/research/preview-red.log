@@ -1,0 +1,34 @@
+   Compiling ferrostage-core v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.06s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_core-3a2625eaad205ea5.exe)
+
+running 3 tests
+test state::tests::preview_out_of_range_is_an_error_and_stale_generation_is_rejected ... ok
+test state::tests::preview_does_not_change_the_audience_page ... FAILED
+test state::tests::preview_navigation_requires_explicit_commit ... FAILED
+
+failures:
+
+---- state::tests::preview_does_not_change_the_audience_page stdout ----
+
+thread 'state::tests::preview_does_not_change_the_audience_page' (145252) panicked at crates\ferrostage-core\src\state.rs:232:9:
+assertion `left == right` failed
+  left: PhysicalPage(2)
+ right: PhysicalPage(0)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- state::tests::preview_navigation_requires_explicit_commit stdout ----
+
+thread 'state::tests::preview_navigation_requires_explicit_commit' (39120) panicked at crates\ferrostage-core\src\state.rs:244:9:
+assertion `left == right` failed
+  left: PhysicalPage(1)
+ right: PhysicalPage(0)
+
+
+failures:
+    state::tests::preview_does_not_change_the_audience_page
+    state::tests::preview_navigation_requires_explicit_commit
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 9 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p ferrostage-core --lib`

@@ -1,0 +1,103 @@
+warning: Cargo.toml: `lints.clippy.large-stack-arrays` is deprecated in favor of `lints.clippy.large_stack_arrays` and will not work in a future edition
+warning: `harfrust` (manifest) generated 1 warning
+    Checking harfrust v0.12.0 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-harfrust-baseline)
+error: function `shape` is never used
+   --> src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `-D dead-code` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
+
+error: manual implementation of `midpoint` which can overflow
+   --> src\hb\aat\layout_trak_table.rs:157:28
+    |
+157 |                     return (v0 + v1) * 0.5;
+    |                            ^^^^^^^^^^^^^^^ help: use `f32::midpoint` instead: `f32::midpoint(v0, v1)`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#manual_midpoint
+    = note: `-D clippy::manual-midpoint` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::manual_midpoint)]`
+
+error: this block may be rewritten with the `?` operator
+   --> src\hb\glyph_metrics.rs:199:16
+    |
+199 |           } else if let Some(extents) = self.bounds(gid, coords) {
+    |  ________________^
+200 | |             return Some(extents.x_min);
+201 | |         } else {
+202 | |             return None;
+203 | |         };
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#question_mark
+    = note: `-D clippy::question-mark` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::question_mark)]`
+help: replace it with
+    |
+199 ~         } else {
+200 +             let extents = self.bounds(gid, coords)?;
+201 +             return Some(extents.x_min);
+202 ~         };
+    |
+
+error: this block may be rewritten with the `?` operator
+   --> src\hb\glyph_metrics.rs:247:27
+    |
+247 |           let mut bearing = if let Some(vmtx) = self.vmtx.as_ref() {
+    |  ___________________________^
+248 | |             vmtx.side_bearing(gid).unwrap_or_default() as i32
+249 | |         } else {
+250 | |             return None;
+251 | |         };
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#question_mark
+help: replace it with
+    |
+247 ~         let mut bearing = {
+248 +             let vmtx = self.vmtx.as_ref()?;
+249 +             vmtx.side_bearing(gid).unwrap_or_default() as i32
+250 ~         };
+    |
+
+error: this block may be rewritten with the `?` operator
+   --> src\hb\unicode.rs:614:9
+    |
+614 | /         if let Some(value) = v {
+615 | |             u = HB_CODEPOINT_DECODE3_11_7_14_3(value);
+616 | |         } else {
+617 | |             return None;
+618 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#question_mark
+help: replace it with
+    |
+614 ~         {
+615 +             let value = v?;
+616 +             u = HB_CODEPOINT_DECODE3_11_7_14_3(value);
+617 +         }
+    |
+
+error: this block may be rewritten with the `?` operator
+   --> src\hb\unicode.rs:631:9
+    |
+631 | /         if let Some(value) = v {
+632 | |             u = HB_CODEPOINT_DECODE3_3(value);
+633 | |         } else {
+634 | |             return None;
+635 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#question_mark
+help: replace it with
+    |
+631 ~         {
+632 +             let value = v?;
+633 +             u = HB_CODEPOINT_DECODE3_3(value);
+634 +         }
+    |
+
+error: could not compile `harfrust` (lib) due to 6 previous errors

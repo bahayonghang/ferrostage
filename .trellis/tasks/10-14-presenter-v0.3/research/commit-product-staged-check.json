@@ -1,0 +1,206 @@
+{
+  "full": {
+    "exit_code": 2,
+    "flagged_files": [
+      "vendor/cosmic-text/.github/PULL_REQUEST_TEMPLATE.md",
+      "vendor/cosmic-text/benches/layout.rs",
+      "vendor/cosmic-text/fonts/FiraMono-LICENSE",
+      "vendor/cosmic-text/fonts/Inter-LICENSE",
+      "vendor/cosmic-text/fonts/NotoSans-LICENSE",
+      "vendor/cosmic-text/sample/crlf.txt",
+      "vendor/cosmic-text/sample/hebrew.txt",
+      "vendor/cosmic-text/sample/hello.txt",
+      "vendor/fixtures/fonts/ibm-plex-sans/license.txt",
+      "vendor/fixtures/fonts/lilex/OFL.txt",
+      "vendor/gpui/src/_accessibility.rs",
+      "vendor/harfrust/FERROSTAGE-MAINTENANCE.txt",
+      "vendor/harfrust/src/hb/face.rs",
+      "vendor/harfrust/src/hb/p",
+      "vendor/metal/README.md",
+      "vendor/metal/examples/raytracing/README.md",
+      "vendor/pulp/src/core_arch/mod.rs",
+      "vendor/pulp/src/lib.rs",
+      "vendor/pulp/src/x86/v4.rs"
+    ]
+  },
+  "first_party": {
+    "exit_code": 0,
+    "flagged_files": []
+  },
+  "raw_bytes_match": 477,
+  "lfs_payload_matches": [
+    {
+      "path": "vendor/cosmic-text/fonts/FiraMono-Medium.ttf",
+      "sha256": "5f9173ce3d05fadef74c7eed06570d54e4f75bd0cd9860726fb2987a7f848292",
+      "bytes": 173516
+    },
+    {
+      "path": "vendor/cosmic-text/fonts/Inter-Regular.ttf",
+      "sha256": "3127f0b873387ee37e2040135a06e9e9c05030f509eb63689529becf28b50384",
+      "bytes": 310252
+    },
+    {
+      "path": "vendor/cosmic-text/fonts/InterVariable-Italic.ttf",
+      "sha256": "d6f1f6a172d9e588438db9f986fd5cfad7b30f644374080a8a9d4d91e344586f",
+      "bytes": 910252
+    },
+    {
+      "path": "vendor/cosmic-text/fonts/InterVariable.ttf",
+      "sha256": "4989b125924991b90d05b2d16e0e388c48f7d5bb8b30539bbf9c755278d0ccaf",
+      "bytes": 879708
+    },
+    {
+      "path": "vendor/cosmic-text/fonts/NotoSans-Regular.ttf",
+      "sha256": "2ec33f84606cbaa0a1a944488e14f97faf2f6a25ecdd8354f5358f06da13c7d9",
+      "bytes": 556216
+    },
+    {
+      "path": "vendor/cosmic-text/fonts/NotoSansArabic.ttf",
+      "sha256": "ee489b994b3e62def9874c918145e32b133b625abaf98cec60502bdb40102c56",
+      "bytes": 765740
+    },
+    {
+      "path": "vendor/cosmic-text/fonts/NotoSansHebrew.ttf",
+      "sha256": "3d4fef85b449ade4d165de982969374fa30b2a5fe7bc679f5a3f5bfc047fb703",
+      "bytes": 183688
+    },
+    {
+      "path": "vendor/cosmic-text/screenshots/arabic.png",
+      "sha256": "38994360da746e9331c0f0ffcc637d3342be5d0d568c25ffeb7d908b5c40be95",
+      "bytes": 213934
+    },
+    {
+      "path": "vendor/cosmic-text/screenshots/chinese-simplified.png",
+      "sha256": "84f494ab596674e29b47f4b367bd2695ef21d63010e568fa432edea4f94265ca",
+      "bytes": 263370
+    },
+    {
+      "path": "vendor/cosmic-text/screenshots/hindi.png",
+      "sha256": "28ddfa78fffabea00d1caedee477b071c0a40064701d54ef9371b3a596d91fa5",
+      "bytes": 256033
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/a_hebrew_paragraph.png",
+      "sha256": "2f72802a3ee4244c55f3ee0e1841a0f07dfe19904c57e29f8ab1d18f0e06dcab",
+      "bytes": 23101
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/a_hebrew_word.png",
+      "sha256": "e0bc89c5a0fc5b9e79cf30bf66fd456cbf8e3fdca0f8dff110ab2706030e0c43",
+      "bytes": 3421
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/an_arabic_paragraph.png",
+      "sha256": "3e7cab5e17e253b6a3ba175fb08468cf79f69877122e1470ccc3a17f3e297512",
+      "bytes": 23740
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/an_arabic_word.png",
+      "sha256": "2805960705f701c297ff700840b9fcc296bd0803a0a33d2c7209d7c6ba208c2e",
+      "bytes": 3697
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_bidi_isolates_middle_bug.png",
+      "sha256": "ec1a2e5611f55301bb332c354eab1f342b0e40361ee19549360e2b1826425614",
+      "bytes": 5136
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_ltr_end_single_line.png",
+      "sha256": "73d2223f481fd301d2f28553e1efb61b0598c1ab6e11c93f7a2ddfe4b40d0326",
+      "bytes": 5556
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_ltr_end_single_line_aligned_right.png",
+      "sha256": "12ec72d420500ed60b7e01be3f3b67d4103d2d52b06c1d05072ef50a4f725526",
+      "bytes": 5698
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_ltr_end_two_lines.png",
+      "sha256": "161c1a36c05548109847a9f18fa8efd3560c28185bba85736eb2e244b204eeb5",
+      "bytes": 12696
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_ltr_middle_single_line.png",
+      "sha256": "f345206eb456e4e689be51afaf0de25934bfa99cc466c2abe62db8352152cfe5",
+      "bytes": 5771
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_ltr_middle_small_buffer.png",
+      "sha256": "4cfbb42f584b56040a99ddb82eebdecc967a89ce340d393aa651c2a441fd7fcf",
+      "bytes": 764
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_ltr_single_word_middle_two_lines.png",
+      "sha256": "ac15ef08a12fd4ca4dd7c7daa56bfc659b33d20d331012a831f690c9adfde6c8",
+      "bytes": 12406
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_ltr_start_single_line.png",
+      "sha256": "e2a705f931aae72c693a2a1ae56ad2455ee3a8f7f2309ca99864eedbf7c59d40",
+      "bytes": 5518
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_mixed_end_single_line.png",
+      "sha256": "6438bf5df040bfe61566af722823f2f78d519e4719547c766fbe19e2dc4a07f6",
+      "bytes": 5985
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_mixed_ltr_rtl_ltr_middle_three_lines.png",
+      "sha256": "9575c7ddc027ed59e1b8ce465b3f52e0a9d53cfb9eac438221026de1e0c601d6",
+      "bytes": 16419
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_mixed_ltr_rtl_middle_two_lines.png",
+      "sha256": "36156e31793901ede07b4db53ddf671b5c134afe82a8328fd7eacad1cebcd339",
+      "bytes": 8960
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_mixed_middle_single_line.png",
+      "sha256": "88bf081f80aac508baa685718fce15e3acf888b43c199aa902494a2c47ed22e3",
+      "bytes": 5501
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_mixed_rtl_ltr_middle_two_lines.png",
+      "sha256": "9a3eb2c4514c4e2cc94db4bba650fae8df46ffc330d541618804d351808b6dca",
+      "bytes": 12227
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/ellipsize_rtl_end_single_line.png",
+      "sha256": "0e9d984a59003766fda15d1bb35069d6f5a9638b00c0560f2fad3431c0283aa9",
+      "bytes": 5585
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/some_english_mixed_with_arabic.png",
+      "sha256": "d292af9a584bbb04d89b515db917c175f57267602f934c6a9dd30906a75a99aa",
+      "bytes": 22853
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/some_english_mixed_with_hebrew.png",
+      "sha256": "e46e15f44eef847fd76a751ec2b198862cafc61e821ac2b5dbdc7c33480a73be",
+      "bytes": 57239
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/text_decoration_bidi.png",
+      "sha256": "d83b58ede597fede243ebb042c31668c0847069a3843dc9b279c3624e1387728",
+      "bytes": 15146
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/text_decoration_multiline_bidi.png",
+      "sha256": "6e332dc9edc0d8c2fd6dd7d9361dc1441b4c979023e79571ac26b7f4f1f1b274",
+      "bytes": 15305
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/text_decoration_rtl.png",
+      "sha256": "0492623759b02a0fa6e56ad2d2662a2c8f0352ed034cf5c8f085ea2184c5517c",
+      "bytes": 12481
+    },
+    {
+      "path": "vendor/cosmic-text/tests/images/text_decorations.png",
+      "sha256": "8639df22ce9e580c5e75dd1163cf05a79691d18ed49156d173a9e7222db44538",
+      "bytes": 16685
+    }
+  ],
+  "lfs_fsck_exit": 0,
+  "commit": "841e287b289d294e8a4e482bec64bceb934f57d6",
+  "interpretation": "All first-party text passes. Full check retains original vendor whitespace. Initial raw Git blob equality assertion stopped at a legitimate upstream LFS font pointer; corrected read-back verifies every pointer SHA/size against payload and git lfs fsck. No product bytes changed or policy waived. Git preserves PDFs/evidence/vendor bytes using attributes."
+}

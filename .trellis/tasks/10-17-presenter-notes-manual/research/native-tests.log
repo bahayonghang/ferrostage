@@ -1,0 +1,109 @@
+cargo test -p ferrostage-pdf -p ferrostage-render -p ferrostage-document --features pdfium --all-targets --locked
+   Compiling num-traits v0.2.19
+   Compiling syn v3.0.9
+   Compiling tracing-core v0.1.36
+   Compiling log v0.4.34
+   Compiling bytemuck v1.25.2
+   Compiling thiserror-impl v2.0.21
+   Compiling tracing v0.1.44
+   Compiling thiserror v2.0.21
+   Compiling ferrostage-core v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-core)
+mbx[progress]: 15s elapsed; 2 hits, 3 misses, 0 bypassed, 6 not looked up; ~2.73s compiler work saved
+   Compiling chrono v0.4.45
+   Compiling lopdf v0.45.0
+   Compiling pdfium-render v0.9.4
+mbx[progress]: 30s elapsed; 2 hits, 3 misses, 1 bypassed, 8 not looked up; ~2.73s compiler work saved
+   Compiling ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+   Compiling ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+   Compiling ferrostage-document v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-document)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 36.55s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_document-bd6b20d09e15ca6c.exe)
+
+running 7 tests
+test builder::tests::crop_halves_and_media_projection_are_explicit ... ok
+test builder::tests::raw_geometry_mismatch_or_nonfinite_is_rejected_and_mixed_rotation_is_not_cropped ... ok
+test builder::tests::reload_maps_unique_label_ordinal_and_ambiguous_physical_content ... ok
+test builder::tests::labels_group_only_contiguous_content_and_notes_pair_by_step ... ok
+test builder::tests::invalid_models_are_rejected_and_projection_has_no_secrets ... ok
+test builder::tests::layout_candidates_overrides_counterexamples_and_reload_scope ... ok
+test builder::tests::real_media_pdf_slots_keep_parameters_and_public_source_crop ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\native.rs (target\debug\deps\native-0e03704ec111e1a8.exe)
+
+running 1 test
+test actual_pdfium_metadata_builds_fixture_models ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+     Running tests\notes_native.rs (target\debug\deps\notes_native-3f703dd3552f089a.exe)
+
+running 1 test
+test compiled_beamer_notes_project_only_slide_pixels_and_preserve_overlays ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.27s
+
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_pdf-21fa8b637fdbcdd4.exe)
+
+running 11 tests
+test structure::tests::rect_transform_all_rotations_and_clipping ... ok
+test tests::version_pins_match_the_workspace_plan ... ok
+test raster::tests::fits_crop_aspect_and_rejects_invalid_input ... ok
+test tests::empty_buffer_is_not_a_pdf ... ok
+test structure::tests::actual_beamer_movie_fixture_emits_scaled_times ... ok
+test structure::tests::authored_media_paths_times_and_inherited_geometry ... ok
+test structure::tests::movie_action_unsupported_parameters_are_diagnosed ... ok
+test structure::tests::richmedia_selection_membership_and_screen_precedence_are_explicit ... ok
+test structure::tests::movie_title_targets_must_be_unique_and_action_overrides_take_precedence ... ok
+test structure::tests::malformed_geometry_and_unresolved_actions_are_reported ... ok
+test structure::tests::malformed_embedded_file_dictionary_does_not_become_an_external_source ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_render-2b8d20b67573dfa2.exe)
+
+running 18 tests
+test cache::tests::generations_share_one_budget ... ok
+test cache::tests::cpu_frames_are_released_and_oversized_frame_is_not_cached ... ok
+test scheduler::tests::next_dispatch_obeys_priority_and_epoch_cancels_queued_work ... ok
+test protocol::tests::thumbnail_target_keeps_180_height_even_for_narrow_pages ... ok
+test cache::tests::spare_vec_capacity_is_charged_to_the_budget ... ok
+test cache::tests::lru_bytes_oversize_resize_and_retirement ... ok
+test worker::tests::old_generation_inflight_cannot_publish_after_load ... ok
+test worker::tests::acknowledged_budget_shrink_evicts_both_caches_without_reloading_active_document ... ok
+test worker::tests::contracts::failed_candidate_render_releases_only_candidate_resources ... ok
+test worker::tests::contracts::issued_readiness_expires_on_epoch_reprepare_and_abort ... ok
+test worker::tests::candidate_metadata_prerender_commit_abort_and_retire_are_separate ... ok
+test worker::tests::superseded_prerender_cannot_complete_a_new_batch ... ok
+test worker::tests::cache_hit_has_no_render_timing_and_uncached_always_renders ... ok
+test worker::tests::in_flight_is_not_preempted_but_old_epoch_is_never_published ... ok
+test worker::tests::candidate_batch_yields_to_active_priority_and_uses_its_own_epoch ... ok
+test worker::tests::contracts::cache_identity_includes_pixels_but_replies_echo_new_epoch_and_priority ... ok
+test worker::tests::contracts::readiness_from_a_stopped_worker_cannot_commit_a_replacement_worker ... ok
+test worker::tests::reversible_commit_restores_active_raster_and_rejects_foreign_or_retired_capabilities ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\native.rs (target\debug\deps\native-d115788c93a372b1.exe)
+
+running 1 test
+test native_golden_and_transaction ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.28s
+
+     Running tests\native_missing.rs (target\debug\deps\native_missing-5352759e8f349d76.exe)
+
+running 1 test
+test missing_library_is_typed_before_any_successful_initialization ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running unittests examples\poc2.rs (target\debug\examples\poc2-7dc1d8f2e9c735f6.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+mbx[cache]: 2 hits, 3 misses, 19 not looked up, 12 incremental, 1 bypassed; 0 B downloaded, 0 B uploaded, 85.0 MiB stored locally
+mbx[savings]: has quietly disposed of 313.1 GiB logical of build leftovers. nobody saw anything.

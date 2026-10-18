@@ -1,0 +1,81 @@
+   Compiling ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.29s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_core-207f3f6adc26d9fc.exe)
+
+running 21 tests
+test display::tests::core_manifest_does_not_link_io_crates ... ok
+test frame::tests::packed_frame_shares_bgra_without_conversion ... ok
+test state::lifecycle_tests::descriptor_commit_is_atomic_clamps_position_and_preserves_session_timer ... ok
+test frame::tests::invalid_geometry_stride_and_length_are_rejected ... ok
+test state::tests::halves_cover_the_unit_square_without_overlap ... ok
+test state::lifecycle_tests::legal_lifecycle_edges_control_projection_and_document_resets ... ok
+test display::tests::roles_are_distinct ... ok
+test state::tests::swap_screens_does_not_change_the_audience_page ... ok
+test state::lifecycle_tests::timer_pause_resume_stop_and_restart_use_only_injected_time ... ok
+test state::tests::audience_snapshot_tracks_generation_and_has_no_notes_field ... ok
+test state::tests::blank_toggle_is_shown_on_the_snapshot_and_clears_on_repeat ... ok
+test state::tests::empty_document_is_rejected ... ok
+test state::lifecycle_tests::illegal_lifecycle_edges_leave_every_field_unchanged ... ok
+test state::tests::preview_does_not_change_the_audience_page ... ok
+test state::tests::preview_navigation_requires_explicit_commit ... ok
+test state::tests::preview_out_of_range_is_an_error_and_stale_generation_is_rejected ... ok
+test state::tests::preview_steps_clamp_in_both_directions_and_cancel_keeps_committed_page ... ok
+test state::lifecycle_tests::navigation_and_tools_require_a_document_but_not_a_live_session ... ok
+test state::tests::step_clamps_at_both_ends ... ok
+test ids::order_tests::generation_order_matches_the_inner_integer ... ok
+test state::property_tests::arbitrary_commands_preserve_stage_privacy_and_error_atomicity ... ok
+
+test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_pdf-f46503704491ea24.exe)
+
+running 3 tests
+test raster::tests::fits_crop_aspect_and_rejects_invalid_input ... ok
+test tests::version_pins_match_the_workspace_plan ... ok
+test tests::empty_buffer_is_not_a_pdf ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_render-32f2bac9c6c9b458.exe)
+
+running 16 tests
+test cache::tests::lru_bytes_oversize_resize_and_retirement ... ok
+test cache::tests::cpu_frames_are_released_and_oversized_frame_is_not_cached ... ok
+test cache::tests::spare_vec_capacity_is_charged_to_the_budget ... ok
+test cache::tests::generations_share_one_budget ... ok
+test protocol::tests::thumbnail_target_keeps_180_height_even_for_narrow_pages ... ok
+test scheduler::tests::next_dispatch_obeys_priority_and_epoch_cancels_queued_work ... ok
+test worker::tests::old_generation_inflight_cannot_publish_after_load ... ok
+test worker::tests::contracts::failed_candidate_render_releases_only_candidate_resources ... ok
+test worker::tests::cache_hit_has_no_render_timing_and_uncached_always_renders ... ok
+test worker::tests::in_flight_is_not_preempted_but_old_epoch_is_never_published ... ok
+test worker::tests::contracts::issued_readiness_expires_on_epoch_reprepare_and_abort ... ok
+test worker::tests::candidate_metadata_prerender_commit_abort_and_retire_are_separate ... ok
+test worker::tests::superseded_prerender_cannot_complete_a_new_batch ... ok
+test worker::tests::contracts::readiness_from_a_stopped_worker_cannot_commit_a_replacement_worker ... ok
+test worker::tests::candidate_batch_yields_to_active_priority_and_uses_its_own_epoch ... ok
+test worker::tests::contracts::cache_identity_includes_pixels_but_replies_echo_new_epoch_and_priority ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\native.rs (target\debug\deps\native-2b9147176758cebf.exe)
+
+running 1 test
+test native_golden_and_transaction ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.13s
+
+     Running tests\native_missing.rs (target\debug\deps\native_missing-8c8217eb5a16c1ca.exe)
+
+running 1 test
+test missing_library_is_typed_before_any_successful_initialization ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests examples\poc2.rs (target\debug\examples\poc2-856de12e8d29460d.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+exit=0

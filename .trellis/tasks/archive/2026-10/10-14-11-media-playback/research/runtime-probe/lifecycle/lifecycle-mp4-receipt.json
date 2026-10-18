@@ -1,0 +1,9 @@
+{
+  "utc": "2026-10-15T14:37:58.5701890Z",
+  "pid": 40608,
+  "timeout": false,
+  "exit_code": 0,
+  "exe_sha256": "709D455473B81D4BDA92AB51FF5B23D199F334528CF00D4DCF16D5396292B7A5",
+  "stdout": "cycle=0 paused_position=0:00:02.306480700 unchanged=true\ncycle=0 resumed=true frames=30 EOS=true\ncycle=1 paused_position=0:00:02.306655000 unchanged=true\ncycle=1 resumed=true frames=30 EOS=true\nfinal_state=Null audio_output=fakesink\n",
+  "stderr": ""
+}

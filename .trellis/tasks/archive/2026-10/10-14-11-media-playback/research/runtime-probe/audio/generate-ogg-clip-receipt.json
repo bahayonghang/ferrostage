@@ -1,0 +1,26 @@
+{
+  "pid": 13412,
+  "arguments": [
+    "-e",
+    "audiotestsrc",
+    "num-buffers=1200",
+    "samplesperbuffer=480",
+    "wave=sine",
+    "volume=0.05",
+    "!",
+    "audio/x-raw,rate=48000,channels=1",
+    "!",
+    "audioconvert",
+    "!",
+    "vorbisenc",
+    "!",
+    "oggmux",
+    "!",
+    "filesink",
+    "location=D:/Documents/Code/Rust/Exp/ferrostage/cache/media-research/synthetic-ball-tone-12s.ogg"
+  ],
+  "timeout": false,
+  "exit_code": 0,
+  "stdout": "Use Windows high-resolution clock, precision: 1 ms\r\nSetting pipeline to PAUSED ...\r\nPipeline is PREROLLING ...\r\nRedistribute latency...\r\nPipeline is PREROLLED ...\r\nSetting pipeline to PLAYING ...\r\nRedistribute latency...\r\nNew clock: GstSystemClock\r\nGot EOS from element \"pipeline0\".\r\nEOS received - stopping pipeline...\r\nExecution ended after 0:00:00.037261600\r\nSetting pipeline to NULL ...\r\nFreeing pipeline ...\r\n",
+  "stderr": ""
+}

@@ -1,0 +1,14 @@
+{
+  "started_utc": "2026-10-15T09:56:10.496985+00:00",
+  "argv": [
+    "cargo",
+    "update",
+    "-p",
+    "accesskit_windows",
+    "--offline"
+  ],
+  "status": "RETURNED",
+  "log": "product-v16-lock.log",
+  "exit_code": 0,
+  "ended_utc": "2026-10-15T09:56:15.106547+00:00"
+}

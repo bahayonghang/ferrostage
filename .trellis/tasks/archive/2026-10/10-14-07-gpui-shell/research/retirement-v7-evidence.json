@@ -1,0 +1,134 @@
+{
+  "captured_utc": "2026-10-15T03:28:46.567368+00:00",
+  "scope": "Frozen V6 diagnosis, source read only; no newly executed product regression",
+  "logs": {
+    "v6-focus-save.stdout.log": {
+      "sha256": "a0afda9a0fee6218ae128aa35a85d802496e326395052fd2a6cf8ff6b02b010a",
+      "errors": [
+        {
+          "line": 17,
+          "text": "2026-10-15T02:35:35.748029Z ERROR : window not found"
+        },
+        {
+          "line": 33,
+          "text": "2026-10-15T02:39:23.263525Z ERROR : window not found"
+        },
+        {
+          "line": 37,
+          "text": "2026-10-15T02:45:52.662544Z ERROR : window not found"
+        },
+        {
+          "line": 38,
+          "text": "2026-10-15T02:45:52.663345Z ERROR gpui_windows::window: Invalid window handle (0x80040102)"
+        },
+        {
+          "line": 39,
+          "text": "2026-10-15T02:45:52.663936Z ERROR gpui_windows::window: Invalid window handle. (0x80070578)"
+        },
+        {
+          "line": 40,
+          "text": "2026-10-15T02:45:52.710132Z ERROR gpui_windows::dispatcher: Invalid window handle. (0x80070578)"
+        }
+      ],
+      "exit_receipt": {
+        "utc": "2026-10-15T02:45:52.7934372Z",
+        "pid": 29092,
+        "exit_code": 0
+      },
+      "exit_receipt_sha256": "718eaa92ab8a2aa9557630740c8bd240e7be05f3ec3ff255d1541ce28ceb4181"
+    },
+    "v6-relaunch.stdout.log": {
+      "sha256": "09630d6ed3f38a771288b188c99e5fc2d49ba92cf292d0af7143c01f63d32ab1",
+      "errors": [
+        {
+          "line": 17,
+          "text": "2026-10-15T02:46:11.611875Z ERROR : window not found"
+        },
+        {
+          "line": 18,
+          "text": "2026-10-15T02:46:11.647990Z ERROR : window not found"
+        },
+        {
+          "line": 20,
+          "text": "2026-10-15T02:46:51.049054Z ERROR : window not found"
+        },
+        {
+          "line": 21,
+          "text": "2026-10-15T02:46:51.049370Z ERROR gpui_windows::window: Invalid window handle (0x80040102)"
+        },
+        {
+          "line": 22,
+          "text": "2026-10-15T02:46:51.049576Z ERROR gpui_windows::window: Invalid window handle. (0x80070578)"
+        }
+      ],
+      "exit_receipt": {
+        "pid": 175992,
+        "utc": "2026-10-15T02:46:51.0990641Z",
+        "exit_code": 0
+      },
+      "exit_receipt_sha256": "6be6369cd6ad215cf7c60f6804c30b7666a00e4f687ef4117596c8f33d594d9c"
+    },
+    "resume-v6-light.stdout.log": {
+      "sha256": "5c6ab32a645344278395008f1147ccc4ce6c11de1638445ea0c44f34202e1eaa",
+      "errors": [
+        {
+          "line": 15,
+          "text": "2026-10-15T03:22:37.886952Z ERROR : window not found"
+        }
+      ],
+      "exit_receipt": {
+        "exit_code": 0,
+        "utc": "2026-10-15T03:23:24.9132377Z",
+        "pid": 64092
+      },
+      "exit_receipt_sha256": "5a5e9d771a2f6dfbf2a7f381ad8ee7b69e40353ca13a9aa52ed6e34f540e8766"
+    },
+    "resume-v6-dark.stdout.log": {
+      "sha256": "cbb8a269bbb438471b957b3986cc8a8d25754927395c75ce31045d69189dde29",
+      "errors": [
+        {
+          "line": 15,
+          "text": "2026-10-15T03:24:09.277329Z ERROR : window not found"
+        },
+        {
+          "line": 22,
+          "text": "2026-10-15T03:25:30.224160Z ERROR : window not found"
+        },
+        {
+          "line": 23,
+          "text": "2026-10-15T03:26:14.281278Z ERROR : window not found"
+        },
+        {
+          "line": 24,
+          "text": "2026-10-15T03:26:14.281893Z ERROR gpui_windows::window: Invalid window handle (0x80040102)"
+        },
+        {
+          "line": 25,
+          "text": "2026-10-15T03:26:14.282598Z ERROR gpui_windows::window: Invalid window handle. (0x80070578)"
+        }
+      ],
+      "exit_receipt": {
+        "utc": "2026-10-15T03:26:14.3545452Z",
+        "exit_code": 0,
+        "pid": 108560
+      },
+      "exit_receipt_sha256": "be746148cbec8664d8093327029aa98fb0468e475311afbb7bd5fb52ed9105e1"
+    }
+  },
+  "sources": {
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\Cargo.lock": "2557e10b37fa5cfe63e78ce19965b8bbbd83438bdd540eed50405fbbc3dbc23e",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\vendor\\gpui\\src\\app.rs": "09920cb50857041e0ec3e0063e60f95f165da975f53b53a7f933919b8c3f11bb",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\vendor\\gpui\\src\\window.rs": "75ebfde34c284ed6afce96989bfc8794dcd7fb79b3b228d36e87a930688cf86b",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\vendor\\gpui\\src\\platform\\test\\platform.rs": "3a95163b4974fa09a6ee6b4c3f9dd579698e642afb80a8529d4e17989b23ce22",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\vendor\\gpui\\src\\app\\test_context.rs": "b57dd9f67b1b6a344c9859bb5adf9b4405bcf7e21cf0a0bece3fda93b8afda56",
+    "C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\gpui_util\\src\\lib.rs": "7f9c064f1172fbb89ee6be083fefdb9636b68b23b2296abb1c141839752b1e0c",
+    "C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\gpui_windows\\src\\window.rs": "35ca36a271ca0f3be6b8bcd9619d16763704abeab10d825c85a234c2cb208058",
+    "C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\gpui_windows\\src\\events.rs": "7458a01f0b2c6569a251441054a8375cf3910e1d7399b3edad2ca80bc43b0f8c",
+    "C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\gpui_windows\\src\\dispatcher.rs": "a24daa0105ceadc2a4d50f0d1afab5a4af441a6a1254412d9811a04095f8cdd4",
+    "C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\gpui_windows\\src\\platform.rs": "192b2eb120d0fd2d5dd54a65a56d5a6af4a935d0cea0bf17f9157d9e092bf658",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-v7-before-main.rs": "63f09f79ef599946897a5e159975f6f68836d1e760557f8c3054f64a6ca36d3a",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-v7-before-shell.rs": "4ec7f6738d5a83685e469ac5a3d7ffb3aa802a425bc0a70ebc61234410dcdfb0"
+  },
+  "unknown_exit_trigger": "resume-v6-light; exit0 is not a normal-close PASS",
+  "external_git_check": "NOT_VERIFIED: git -C external checkout failed permission denied"
+}

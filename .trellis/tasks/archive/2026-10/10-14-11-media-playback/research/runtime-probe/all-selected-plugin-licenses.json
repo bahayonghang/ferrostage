@@ -1,0 +1,202 @@
+[
+  {
+    "file": "gstapp.dll",
+    "sha256": "16dd9a5782b35f1aebe88724cda5a69840590cbd6c5a71444e5e78d4aab5deca",
+    "pid": 77848,
+    "timeout": false,
+    "exit_code": 0,
+    "stdout": "Plugin Details:\r\n  Name                     app\r\n  Description              Elements used to communicate with applications\r\n  Filename                 D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\media-research\\minimal-runtime\\lib\\gstreamer-1.0\\gstapp.dll\r\n  Version                  1.28.8.1\r\n  License                  LGPL\r\n  Source module            gst-plugins-base\r\n  Documentation            https://gstreamer.freedesktop.org/documentation/app/\r\n  Binary package           GStreamer Base Plug-ins git\r\n  Origin URL               Unknown package origin\r\n\r\n  appsink: AppSink\r\n  appsrc: AppSrc\r\n\r\n  2 features:\r\n  +-- 2 elements\r\n\r\n",
+    "stderr": "",
+    "license": "License                  LGPL"
+  },
+  {
+    "file": "gstaudioconvert.dll",
+    "sha256": "d9157b4f4c939d161c547de76016c7f9cf36762900222ced1149d00f9db1a6ec",
+    "pid": 78748,
+    "timeout": false,
+    "exit_code": 0,
+    "stdout": "Plugin Details:\r\n  Name                     audioconvert\r\n  Description              Convert audio to different formats\r\n  Filename                 D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\media-research\\minimal-runtime\\lib\\gstreamer-1.0\\gstaudioconvert.dll\r\n  Version                  1.28.8.1\r\n  License                  LGPL\r\n  Source module            gst-plugins-base\r\n  Documentation            https://gstreamer.freedesktop.org/documentation/audioconvert/\r\n  Binary package           GStreamer Base Plug-ins git\r\n  Origin URL               Unknown package origin\r\n\r\n  audioconvert: Audio converter\r\n\r\n  1 features:\r\n  +-- 1 elements\r\n\r\n",
+    "stderr": "",
+    "license": "License                  LGPL"
+  },
+  {
+    "file": "gstaudioresample.dll",
+    "sha256": "faa9ac48b6f71ea18fb34cade5b987d9a1c15f961dc00af822d7f772d01a19ea",
+    "pid": 80092,
+    "timeout": false,
+    "exit_code": 0,
+    "stdout": "Plugin Details:\r\n  Name                     audioresample\r\n  Description              Resamples audio\r\n  Filename                 D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\media-research\\minimal-runtime\\lib\\gstreamer-1.0\\gstaudioresample.dll\r\n  Version                  1.28.8.1\r\n  License                  LGPL\r\n  Source module            gst-plugins-base\r\n  Documentation            https://gstreamer.freedesktop.org/documentation/audioresample/\r\n  Binary package           GStreamer Base Plug-ins git\r\n  Origin URL               Unknown package origin\r\n\r\n  audioresample: Audio resampler\r\n\r\n  1 features:\r\n  +-- 1 elements\r\n\r\n",
+    "stderr": "",
+    "license": "License                  LGPL"
+  },
+  {
+    "file": "gstaudiotestsrc.dll",
+    "sha256": "cb2f0540d07bb2cd7c11b9148000044c9483cdfb76964e883fa010c7210cc170",
+    "pid": 61184,
+    "timeout": false,
+    "exit_code": 0,
+    "stdout": "Plugin Details:\r\n  Name                     audiotestsrc\r\n  Description              Creates audio test signals of given frequency and volume\r\n  Filename                 D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\media-research\\minimal-runtime\\lib\\gstreamer-1.0\\gstaudiotestsrc.dll\r\n  Version                  1.28.8.1\r\n  License                  LGPL\r\n  Source module            gst-plugins-base\r\n  Documentation            https://gstreamer.freedesktop.org/documentation/audiotestsrc/\r\n  Binary package           GStreamer Base Plug-ins git\r\n  Origin URL               Unknown package origin\r\n\r\n  audiotestsrc: Audio test source\r\n\r\n  1 features:\r\n  +-- 1 elements\r\n\r\n",
+    "stderr": "",
+    "license": "License                  LGPL"
+  },
+  {
+    "file": "gstautodetect.dll",
+    "sha256": "5d056d0b7f6d90fc97f0b6d8382585fe0f8d4eda53cad8dd99f00b3984ef3dbf",
+    "pid": 65368,
+    "timeout": false,
+    "exit_code": 0,
+    "stdout": "Plugin Details:\r\n  Name                     autodetect\r\n  Description              Plugin contains auto-detection plugins for video/audio in- and outputs\r\n  Filename                 D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\media-research\\minimal-runtime\\lib\\gstreamer-1.0\\gstautodetect.dll\r\n  Version                  1.28.8.1\r\n  License                  LGPL\r\n  Source module            gst-plugins-good\r\n  Documentation            https://gstreamer.freedesktop.org/documentation/autodetect/\r\n  Binary package           GStreamer Good Plug-ins git\r\n  Origin URL               Unknown package origin\r\n\r\n  autoaudiosink: Auto audio sink\r\n  autoaudiosrc: Auto audio source\r\n  autovideosink: Auto video sink\r\n  autovideosrc: Auto video source\r\n\r\n  4 features:\r\n  +-- 4 elements\r\n\r\n",
+    "stderr": "",
+    "license": "License                  LGPL"
+  },
+  {
+    "file": "gstcoreelements.dll",
+    "sha256": "0c0f41342d8a9fafeb89c0327e9951bb48efc343361af01807f86066d29cf36a",
+    "pid": 79452,
+    "timeout": false,
+    "exit_code": 0,
+    "stdout": "Plugin Details:\r\n  Name                     coreelements\r\n  Description              GStreamer core elements\r\n  Filename                 D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\media-research\\minimal-runtime\\lib\\gstreamer-1.0\\gstcoreelements.dll\r\n  Version                  1.28.8.1\r\n  License                  LGPL\r\n  Source module            gstreamer\r\n  Documentation            https://gstreamer.freedesktop.org/documentation/coreelements/\r\n  Binary package           GStreamer git\r\n  Origin URL               Unknown package origin\r\n\r\n  capsfilter: CapsFilter\r\n  clocksync: ClockSync\r\n  concat: Concat\r\n  dataurisrc: data: URI source element\r\n  downloadbuffer: DownloadBuffer\r\n  fakesink: Fake Sink\r\n  fakesrc: Fake Source\r\n  fdsink: Filedescriptor Sink\r\n  fdsrc: Filedescriptor Source\r\n  filesink: File Sink\r\n  filesrc: File Source\r\n  funnel: Funnel pipe fitting\r\n  identity: Identity\r\n  input-selector: Input selector\r\n  multiqueue: MultiQueue\r\n  output-selector: Output selector\r\n  queue: Queue\r\n  queue2: Queue 2\r\n  streamiddemux: Streamid Demux\r\n  tee: Tee pipe fitting\r\n  typefind: TypeFind\r\n  valve: Valve element\r\n\r\n  22 features:\r\n  +-- 22 elements\r\n\r\n",
+    "stderr": "",
+    "license": "License                  LGPL"
+  },
+  {
+    "file": "gstd3d11.dll",
+    "sha256": "694661d2e182d29a8f42772c56baddb1a58c187ce63afd5296b40b4b87178808",
+    "pid": 66072,
+    "timeout": false,
+    "exit_code": 0,
+    "stdout": "Plugin Details:\r\n  Name                     d3d11\r\n  Description              Direct3D11 plugin\r\n  Filename                 D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\media-research\\minimal-runtime\\lib\\gstreamer-1.0\\gstd3d11.dll\r\n  Version                  1.28.8.1\r\n  License                  LGPL\r\n  Source module            gst-plugins-bad\r\n  Documentation            https://gstreamer.freedesktop.org/documentation/d3d11/\r\n  Binary package           GStreamer Bad Plug-ins git\r\n  Origin URL               Unknown package origin\r\n\r\n  d3d11av1dec: Direct3D11/DXVA AV1 NVIDIA GeForce RTX 5090 Laptop GPU Decoder\r\n  d3d11av1device1dec: Direct3D11/DXVA AV1 Intel(R) Graphics Decoder\r\n  d3d11av1device2dec: Direct3D11/DXVA AV1 NVIDIA GeForce RTX 5090 Laptop GPU Decoder\r\n  d3d11av1device3dec: Direct3D11/DXVA AV1 NVIDIA GeForce RTX 5090 Laptop GPU Decoder\r\n  d3d11av1device4dec: Direct3D11/DXVA AV1 NVIDIA GeForce RTX 5090 Laptop GPU Decoder\r\n  d3d11colorconvert: Direct3D11 Colorspace Converter\r\n  d3d11compositor: Direct3D11 Compositor\r\n  d3d11convert: Direct3D11 Converter\r\n  d3d11deinterlace: Direct3D11 NVIDIA GeForce RTX 5090 Laptop GPU Deinterlacer Bin\r\n  d3d11deinterlaceelement: Direct3D11 NVIDIA GeForce RTX 5090 Laptop GPU Deinterlacer\r\n  d3d11device1deinterlace: Direct3D11 Intel(R) Graphics Deinterlacer Bin\r\n  d3d11device1deinterlaceelement: Direct3D11 Intel(R) Graphics Deinterlacer\r\n  d3d11device2deinterlace: Direct3D11 NVIDIA GeForce RTX 5090 Laptop GPU Deinterlacer Bin\r\n  d3d11device2deinterlaceelement: Direct3D11 NVIDIA GeForce RTX 5090 Laptop GPU Deinterlacer\r\n  d3d11device3deinterlace: Direct3D11 NVIDIA GeForce RTX 5090 Laptop GPU Deinterlacer Bin\r\n  d3d11device3deinterlaceelement: Direct3D11 NVIDIA GeForce RTX 5090 Laptop GPU Deinterlacer\r\n  d3d11device4deinterlace: Direct3D11 NVIDIA GeForce RTX 5090 Laptop GPU Deinterlacer Bin\r\n  d3d11device4deinterlaceelement: Direct3D11 NVIDIA GeForce RTX 5090 Laptop GPU Deinterlacer\r\n  d3d11download: Direct3D11 Downloader\r\n  d3d11h264dec: Direct3D11/DXVA H.264 NVIDIA GeForce RTX 5090 Laptop GPU Decoder\r\n  d3d11h264device1dec: Direct3D11/DXVA H.264 Intel(R) Graphics Decoder\r\n  d3d11h264device2dec: Direct3D11/DXVA H.264 NVIDIA GeForce RTX 5090 Laptop GPU Decoder\r\n  d3d11h264device3dec: Direct3D11/DXVA H.264 NVIDIA GeForce RTX 5090 Laptop GPU Decoder\r\n  d3d11h264device4dec: Direct3D11/DXVA H.264 NVIDIA GeForce RTX 5090 Laptop GPU Decoder\r\n  d3d11h265dec: Direct3D11/DXVA H.265 NVIDIA GeForce RTX 5090 Laptop GPU Decoder\r\n  d3d11h265device1dec: Direct3D11/DXVA H.265 Intel(R) Graphics Decoder\r\n  d3d11h265device2dec: Direct3D11/DXVA H.265 NVIDIA GeForce RTX 5090 Laptop GPU Decoder\r\n  d3d11h265device3dec: Direct3D11/DXVA H.265 NVIDIA GeForce RTX 5090 Laptop GPU Decoder\r\n  d3d11h265device4dec: Direct3D11/DXVA H.265 NVIDIA GeForce RTX 5090 Laptop GPU Decoder\r\n  d3d11ipcsink: Direct3D11 IPC Sink\r\n  d3d11ipcsrc: Direct3D11 IPC Source\r\n  d3d11mpeg2dec: Direct3D11/DXVA MPEG2 NVIDIA GeForce RTX 5090 Laptop GPU Decoder\r\n  d3d11mpeg2device1dec: Direct3D11/DXVA MPEG2 Intel(R) Graphics Decoder\r\n  d3d11mpeg2device2dec: Direct3D11/DXVA MPEG2 NVIDIA GeForce RTX 5090 Laptop GPU Decoder\r\n  d3d11mpeg2device3dec: Direct3D11/DXVA MPEG2 NVIDIA GeForce RTX 5090 Laptop GPU Decoder\r\n  d3d11mpeg2device4dec: Direct3D11/DXVA MPEG2 NVIDIA GeForce RTX 5090 Laptop GPU Decoder\r\n  d3d11overlay: Direct3D11 Overlay\r\n  d3d11scale: Direct3D11 Scaler\r\n  d3d11screencapturedeviceprovider: Direct3D11 Screen Capture Device Provider\r\n  d3d11screencapturesrc: Direct3D11 Screen Capture Source\r\n  d3d11testsrc: Direct3D11 Test Source\r\n  d3d11upload: Direct3D11 Uploader\r\n  d3d11videosink: Direct3D11 Video Sink\r\n  d3d11vp9dec: Direct3D11/DXVA VP9 NVIDIA GeForce RTX 5090 Laptop GPU Decoder\r\n  d3d11vp9device1dec: Direct3D11/DXVA VP9 Intel(R) Graphics Decoder\r\n  d3d11vp9device2dec: Direct3D11/DXVA VP9 NVIDIA GeForce RTX 5090 Laptop GPU Decoder\r\n  d3d11vp9device3dec: Direct3D11/DXVA VP9 NVIDIA GeForce RTX 5090 Laptop GPU Decoder\r\n  d3d11vp9device4dec: Direct3D11/DXVA VP9 NVIDIA GeForce RTX 5090 Laptop GPU Decoder\r\n\r\n  48 features:\r\n  +-- 47 elements\r\n  +-- 1 device providers\r\n\r\n",
+    "stderr": "",
+    "license": "License                  LGPL"
+  },
+  {
+    "file": "gstisomp4.dll",
+    "sha256": "d3489687b888915206b1244361c4c6fd3a7847579e10adc4cab9d4869a1df2a3",
+    "pid": 73156,
+    "timeout": false,
+    "exit_code": 0,
+    "stdout": "Plugin Details:\r\n  Name                     isomp4\r\n  Description              ISO base media file format support (mp4, 3gpp, qt, mj2)\r\n  Filename                 D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\media-research\\minimal-runtime\\lib\\gstreamer-1.0\\gstisomp4.dll\r\n  Version                  1.28.8.1\r\n  License                  LGPL\r\n  Source module            gst-plugins-good\r\n  Documentation            https://gstreamer.freedesktop.org/documentation/isomp4/\r\n  Binary package           GStreamer Good Plug-ins git\r\n  Origin URL               Unknown package origin\r\n\r\n  3gppmux: 3GPP Muxer\r\n  ismlmux: ISML Muxer\r\n  mj2mux: MJ2 Muxer\r\n  mp4mux: MP4 Muxer\r\n  qtdemux: QuickTime demuxer\r\n  qtmoovrecover: QT Moov Recover\r\n  qtmux: QuickTime Muxer\r\n  rtpxqtdepay: RTP packet depayloader\r\n\r\n  8 features:\r\n  +-- 8 elements\r\n\r\n",
+    "stderr": "",
+    "license": "License                  LGPL"
+  },
+  {
+    "file": "gstmatroska.dll",
+    "sha256": "c1bb979454b8a071bfad3cfeed40f8e36ef291b989194ef7fe89afb32d85b5a2",
+    "pid": 71160,
+    "timeout": false,
+    "exit_code": 0,
+    "stdout": "Plugin Details:\r\n  Name                     matroska\r\n  Description              Matroska and WebM stream handling\r\n  Filename                 D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\media-research\\minimal-runtime\\lib\\gstreamer-1.0\\gstmatroska.dll\r\n  Version                  1.28.8.1\r\n  License                  LGPL\r\n  Source module            gst-plugins-good\r\n  Documentation            https://gstreamer.freedesktop.org/documentation/matroska/\r\n  Binary package           GStreamer Good Plug-ins git\r\n  Origin URL               Unknown package origin\r\n\r\n  matroskademux: Matroska demuxer\r\n  matroskamux: Matroska muxer\r\n  matroskaparse: Matroska parser\r\n  webmmux: WebM muxer\r\n\r\n  4 features:\r\n  +-- 4 elements\r\n\r\n",
+    "stderr": "",
+    "license": "License                  LGPL"
+  },
+  {
+    "file": "gstmediafoundation.dll",
+    "sha256": "fb6450e53c13f19483dd41b8b3100481b2a8cc52da4890975635a30fafb24ef0",
+    "pid": 58836,
+    "timeout": false,
+    "exit_code": 0,
+    "stdout": "Plugin Details:\r\n  Name                     mediafoundation\r\n  Description              Microsoft Media Foundation plugin\r\n  Filename                 D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\media-research\\minimal-runtime\\lib\\gstreamer-1.0\\gstmediafoundation.dll\r\n  Version                  1.28.8.1\r\n  License                  LGPL\r\n  Source module            gst-plugins-bad\r\n  Documentation            https://gstreamer.freedesktop.org/documentation/mediafoundation/\r\n  Binary package           GStreamer Bad Plug-ins git\r\n  Origin URL               Unknown package origin\r\n\r\n  mfaacdec: Media Foundation Microsoft AAC Audio Decoder MFT\r\n  mfaacenc: Media Foundation Microsoft AAC Audio Encoder MFT\r\n  mfdeviceprovider: Media Foundation Device Provider\r\n  mfh264device1enc: Media Foundation Intel® Quick Sync Video H.264 Encoder MFT\r\n  mfh264device2enc: Media Foundation NVIDIA H.264 Encoder MFT\r\n  mfh264device3enc: Media Foundation NVIDIA H.264 Encoder MFT\r\n  mfh264device4enc: Media Foundation NVIDIA H.264 Encoder MFT\r\n  mfh264device5enc: Media Foundation H264 Encoder MFT\r\n  mfh264enc: Media Foundation NVIDIA H.264 Encoder MFT\r\n  mfh265device1enc: Media Foundation Intel® Hardware H265 Encoder MFT\r\n  mfh265device2enc: Media Foundation NVIDIA HEVC Encoder MFT\r\n  mfh265device3enc: Media Foundation NVIDIA HEVC Encoder MFT\r\n  mfh265device4enc: Media Foundation NVIDIA HEVC Encoder MFT\r\n  mfh265device5enc: Media Foundation HEVCVideoExtensionEncoder\r\n  mfh265enc: Media Foundation NVIDIA HEVC Encoder MFT\r\n  mfmp3dec: Media Foundation MP3 Decoder MFT\r\n  mfmp3enc: Media Foundation MP3 Encoder ACM Wrapper MFT\r\n  mfvideosrc: Media Foundation Video Source\r\n  mfvp9device1enc: Media Foundation VP9VideoExtensionEncoder\r\n  mfvp9enc: Media Foundation Intel® Hardware VP9 Encoder MFT\r\n\r\n  20 features:\r\n  +-- 19 elements\r\n  +-- 1 device providers\r\n\r\n",
+    "stderr": "",
+    "license": "License                  LGPL"
+  },
+  {
+    "file": "gstogg.dll",
+    "sha256": "0f684bad04645fd43f56b674932741b3c29c3477ddbaa501f51eeedff0405883",
+    "pid": 70156,
+    "timeout": false,
+    "exit_code": 0,
+    "stdout": "Plugin Details:\r\n  Name                     ogg\r\n  Description              ogg stream manipulation (info about ogg: http://xiph.org)\r\n  Filename                 D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\media-research\\minimal-runtime\\lib\\gstreamer-1.0\\gstogg.dll\r\n  Version                  1.28.8.1\r\n  License                  LGPL\r\n  Source module            gst-plugins-base\r\n  Documentation            https://gstreamer.freedesktop.org/documentation/ogg/\r\n  Binary package           GStreamer Base Plug-ins git\r\n  Origin URL               Unknown package origin\r\n\r\n  oggaviparse: Ogg AVI parser\r\n  oggdemux: Ogg demuxer\r\n  oggmux: Ogg muxer\r\n  oggparse: Ogg parser\r\n  ogmaudioparse: OGM audio stream parser\r\n  ogmtextparse: OGM text stream parser\r\n  ogmvideoparse: OGM video stream parser\r\n\r\n  7 features:\r\n  +-- 7 elements\r\n\r\n",
+    "stderr": "",
+    "license": "License                  LGPL"
+  },
+  {
+    "file": "gstplayback.dll",
+    "sha256": "a94d580773eb7cbe4c536e5956b5fd3bf327fbadb86b87992929f874f6d053a7",
+    "pid": 72796,
+    "timeout": false,
+    "exit_code": 0,
+    "stdout": "Plugin Details:\r\n  Name                     playback\r\n  Description              various playback elements\r\n  Filename                 D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\media-research\\minimal-runtime\\lib\\gstreamer-1.0\\gstplayback.dll\r\n  Version                  1.28.8.1\r\n  License                  LGPL\r\n  Source module            gst-plugins-base\r\n  Documentation            https://gstreamer.freedesktop.org/documentation/playback/\r\n  Binary package           GStreamer Base Plug-ins git\r\n  Origin URL               Unknown package origin\r\n\r\n  decodebin: Decoder Bin\r\n  decodebin3: Decoder Bin 3\r\n  parsebin: Parse Bin\r\n  playbin: Player Bin 2\r\n  playbin3: Player Bin 3\r\n  playsink: Player Sink\r\n  streamsynchronizer: Stream Synchronizer\r\n  subtitleoverlay: Subtitle Overlay\r\n  uridecodebin: URI Decoder\r\n  uridecodebin3: URI Decoder\r\n  urisourcebin: URI reader\r\n\r\n  11 features:\r\n  +-- 11 elements\r\n\r\n",
+    "stderr": "",
+    "license": "License                  LGPL"
+  },
+  {
+    "file": "gsttypefindfunctions.dll",
+    "sha256": "e7a28f148542ffabbe293bf10fa172d5d24863e0083843f72a1901897477015d",
+    "pid": 20168,
+    "timeout": false,
+    "exit_code": 0,
+    "stdout": "Plugin Details:\r\n  Name                     typefindfunctions\r\n  Description              default typefind functions\r\n  Filename                 D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\media-research\\minimal-runtime\\lib\\gstreamer-1.0\\gsttypefindfunctions.dll\r\n  Version                  1.28.8.1\r\n  License                  LGPL\r\n  Source module            gst-plugins-base\r\n  Documentation            https://gstreamer.freedesktop.org/documentation/typefindfunctions/\r\n  Binary package           GStreamer Base Plug-ins git\r\n  Origin URL               Unknown package origin\r\n\r\n  application/dash+xml: mpd, MPD\r\n  application/gxf: no extensions\r\n  application/itc: itc\r\n  application/msword: doc\r\n  application/mxf: mxf\r\n  application/octet-stream: no extensions\r\n  application/ogg: ogg, oga, ogv, ogm, ogx, spx, anx, axa, axv\r\n  application/pdf: pdf\r\n  application/postscript: ps\r\n  application/sdp: sdp\r\n  application/smil: smil\r\n  application/ttml+xml: ttml+xml\r\n  application/vnd.apple-fcp+xml: fcpxml\r\n  application/vnd.apple-xmeml+xml: xmeml\r\n  application/vnd.ms-sstr+xml: no extensions\r\n  application/vnd.pixar.opentimelineio+json: otio\r\n  application/vnd.rn-realmedia: ra, ram, rm, rmvb\r\n  application/vnd.smaf: mmf\r\n  application/x-3gp: 3gp\r\n  application/x-ape: ape\r\n  application/x-apetag: mp3, ape, mpc, wv\r\n  application/x-ar: a\r\n  application/x-bzip: bz2\r\n  application/x-compress: Z\r\n  application/x-executable: no extensions\r\n  application/x-gzip: gz\r\n  application/x-hls: m3u8\r\n  application/x-id3v1: mp3, mp2, mp1, mpga, ogg, flac, tta\r\n  application/x-id3v2: mp3, mp2, mp1, mpga, ogg, flac, tta\r\n  application/x-iff: no extensions\r\n  application/x-ipmovie: no extensions\r\n  application/x-mcc: mcc\r\n  application/x-mm: no extensions\r\n  application/x-mmsh: no extensions\r\n  application/x-ms-dos-executable: dll, exe, ocx, sys, scr, msstyles, cpl\r\n  application/x-nut: nut\r\n  application/x-ogg-skeleton: no extensions\r\n  application/x-ogm-audio: no extensions\r\n  application/x-ogm-text: no extensions\r\n  application/x-ogm-video: no extensions\r\n  application/x-pn-realaudio: ra, ram, rm, rmvb\r\n  application/x-pxstr: pxstr\r\n  application/x-rar: rar\r\n  application/x-scc: scc\r\n  application/x-shockwave-flash: swf, swfl\r\n  application/x-smk: smk\r\n  application/x-sol: sol\r\n  application/x-ssa: ssa, ass\r\n  application/x-subtitle-vtt: vtt\r\n  application/x-tar: tar\r\n  application/x-vmd: vmd\r\n  application/x-wc3movie: wc3movie\r\n  application/x-wsaud: wsaud\r\n  application/x-wsvqa: wsvqa\r\n  application/x-yuv4mpeg: y4m\r\n  application/xges: xges\r\n  application/xml: xml\r\n  application/zip: zip\r\n  audio/aac: aac, adts, adif, loas\r\n  audio/audible: aa, aax\r\n  audio/iLBC-sh: ilbc\r\n  audio/midi: mid, midi\r\n  audio/mobile-xmf: mxmf\r\n  audio/mpeg: mp3, mp2, mp1, mpga\r\n  audio/qcelp: qcp\r\n  audio/riff-midi: mid, midi\r\n  audio/x-ac3: ac3, eac3\r\n  audio/x-aiff: aiff, aif, aifc\r\n  audio/x-amr-nb-sh: amr\r\n  audio/x-amr-wb-sh: amr\r\n  audio/x-au: au, snd\r\n  audio/x-ay: ay\r\n  audio/x-bfstm: bfstm, bcstm\r\n  audio/x-brstm: brstm\r\n  audio/x-caf: caf\r\n  audio/x-celt: no extensions\r\n  audio/x-dsf: no extensions\r\n  audio/x-dts: dts\r\n  audio/x-flac: flac\r\n  audio/x-gbs: gbs\r\n  audio/x-gsm: gsm\r\n  audio/x-gym: gym\r\n  audio/x-imelody: imy, ime, imelody\r\n  audio/x-ircam: sf\r\n  audio/x-kss: kss\r\n  audio/x-m4a: m4a\r\n  audio/x-mod: 669, amf, ams, dbm, digi, dmf, dsm, gdm, far, imf, it, j2b, mdl, med, mod, mt2, mtm, okt, psm, ptm, sam, s3m, stm, stx, ult, umx, xm\r\n  audio/x-musepack: mpc, mpp, mp+\r\n  audio/x-nist: nist\r\n  audio/x-nsf: nsf\r\n  audio/x-paris: paf\r\n  audio/x-rf64: rf64\r\n  audio/x-sap: sap\r\n  audio/x-sbc: sbc\r\n  audio/x-sds: sds\r\n  audio/x-shorten: shn\r\n  audio/x-sid: sid\r\n  audio/x-spc: spc\r\n  audio/x-speex: no extensions\r\n  audio/x-svx: iff, svx\r\n  audio/x-tap-dmp: dmp\r\n  audio/x-tap-tap: tap\r\n  audio/x-ttafile: tta\r\n  audio/x-vgm: vgm\r\n  audio/x-voc: voc\r\n  audio/x-vorbis: no extensions\r\n  audio/x-w64: w64\r\n  audio/x-wav: wav\r\n  audio/x-wavpack: wv, wvp\r\n  audio/x-wavpack-correction: wvc\r\n  audio/x-xi: xi\r\n  audio/x-xwma: no extensions\r\n  image/bmp: bmp\r\n  image/gif: gif\r\n  image/jp2: jp2\r\n  image/jpeg: jpg, jpe, jpeg\r\n  image/png: png\r\n  image/svg+xml: svg\r\n  image/tiff: tif, tiff\r\n  image/vnd.adobe.photoshop: psd\r\n  image/vnd.wap.wbmp: no extensions\r\n  image/webp: webp\r\n  image/x-degas: no extensions\r\n  image/x-exr: exr\r\n  image/x-icon: no extensions\r\n  image/x-jng: jng\r\n  image/x-jpc: jpc, j2k\r\n  image/x-portable-pixmap: pnm, ppm, pgm, pbm\r\n  image/x-quicktime: qif, qtif, qti\r\n  image/x-sun-raster: ras\r\n  image/x-xcf: xcf\r\n  image/x-xpixmap: xpm\r\n  multipart/x-mixed-replace: no extensions\r\n  subtitle/x-kate: no extensions\r\n  text/html: htm, html\r\n  text/plain: txt\r\n  text/uri-list: ram\r\n  text/utf-16: txt\r\n  text/utf-32: txt\r\n  text/x-cmml: no extensions\r\n  video/mj2: mj2\r\n  video/mpeg-elementary: mpv, mpeg, mpg\r\n  video/mpeg-sys: mpe, mpeg, mpg\r\n  video/mpeg4: m4v\r\n  video/mpegts: ts, mts\r\n  video/quicktime: mov, mp4\r\n  video/vivo: viv\r\n  video/x-4xm: no extensions\r\n  video/x-av1: av1\r\n  video/x-avs: no extensions\r\n  video/x-cdxa: dat\r\n  video/x-dirac: no extensions\r\n  video/x-dv: dv, dif\r\n  video/x-ea: no extensions\r\n  video/x-film-cpk: cpk\r\n  video/x-fli: flc, fli\r\n  video/x-flv: flv\r\n  video/x-h263: h263, 263\r\n  video/x-h264: h264, x264, 264\r\n  video/x-h265: h265, x265, 265\r\n  video/x-h266: h266, 266\r\n  video/x-idcin: no extensions\r\n  video/x-ivf: ivf\r\n  video/x-matroska: mkv, mka, mk3d, webm\r\n  video/x-mng: mng\r\n  video/x-ms-asf: asf, wm, wma, wmv\r\n  video/x-msvideo: avi\r\n  video/x-mve: mve\r\n  video/x-nsv: nsv\r\n  video/x-nuv: nuv\r\n  video/x-pva: pva\r\n  video/x-theora: no extensions\r\n  video/x-vcd: dat\r\n\r\n  173 features:\r\n  +-- 173 typefinders\r\n\r\n",
+    "stderr": "",
+    "license": "License                  LGPL"
+  },
+  {
+    "file": "gstvideoconvertscale.dll",
+    "sha256": "f09ef47ece05b570cf1af3e5dcb4fe6bc0815b43c28acb795caddceba5a78830",
+    "pid": 80400,
+    "timeout": false,
+    "exit_code": 0,
+    "stdout": "Plugin Details:\r\n  Name                     videoconvertscale\r\n  Description              Convert video colorspaces and resizes video frames\r\n  Filename                 D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\media-research\\minimal-runtime\\lib\\gstreamer-1.0\\gstvideoconvertscale.dll\r\n  Version                  1.28.8.1\r\n  License                  LGPL\r\n  Source module            gst-plugins-base\r\n  Documentation            https://gstreamer.freedesktop.org/documentation/videoconvertscale/\r\n  Binary package           GStreamer Base Plug-ins git\r\n  Origin URL               Unknown package origin\r\n\r\n  videoconvert: Video colorspace converter\r\n  videoconvertscale: Video colorspace converter and scaler\r\n  videoscale: Video scaler\r\n\r\n  3 features:\r\n  +-- 3 elements\r\n\r\n",
+    "stderr": "",
+    "license": "License                  LGPL"
+  },
+  {
+    "file": "gstvideoparsersbad.dll",
+    "sha256": "7d842f82613ac7f836889792f4a5dc0a98dab048fb0370a16af7930e2be8f9e4",
+    "pid": 71644,
+    "timeout": false,
+    "exit_code": 0,
+    "stdout": "Plugin Details:\r\n  Name                     videoparsersbad\r\n  Description              videoparsers\r\n  Filename                 D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\media-research\\minimal-runtime\\lib\\gstreamer-1.0\\gstvideoparsersbad.dll\r\n  Version                  1.28.8.1\r\n  License                  LGPL\r\n  Source module            gst-plugins-bad\r\n  Documentation            https://gstreamer.freedesktop.org/documentation/videoparsersbad/\r\n  Binary package           GStreamer Bad Plug-ins git\r\n  Origin URL               Unknown package origin\r\n\r\n  av1parse: AV1 parser\r\n  diracparse: Dirac parser\r\n  h263parse: H.263 parser\r\n  h264parse: H.264 parser\r\n  h265parse: H.265 parser\r\n  h266parse: H.266 parser\r\n  jpeg2000parse: JPEG 2000 parser\r\n  mpeg4videoparse: MPEG 4 video elementary stream parser\r\n  mpegvideoparse: MPEG video elementary stream parser\r\n  pngparse: PNG parser\r\n  vc1parse: VC1 parser\r\n  vp9parse: VP9 parser\r\n\r\n  12 features:\r\n  +-- 12 elements\r\n\r\n",
+    "stderr": "",
+    "license": "License                  LGPL"
+  },
+  {
+    "file": "gstvideotestsrc.dll",
+    "sha256": "ad6657fbf9e459dc9c858227366b50d729dd4510b45b668204f3f663bf662ac0",
+    "pid": 57892,
+    "timeout": false,
+    "exit_code": 0,
+    "stdout": "Plugin Details:\r\n  Name                     videotestsrc\r\n  Description              Creates a test video stream\r\n  Filename                 D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\media-research\\minimal-runtime\\lib\\gstreamer-1.0\\gstvideotestsrc.dll\r\n  Version                  1.28.8.1\r\n  License                  LGPL\r\n  Source module            gst-plugins-base\r\n  Documentation            https://gstreamer.freedesktop.org/documentation/videotestsrc/\r\n  Binary package           GStreamer Base Plug-ins git\r\n  Origin URL               Unknown package origin\r\n\r\n  videotestsrc: Video test source\r\n\r\n  1 features:\r\n  +-- 1 elements\r\n\r\n",
+    "stderr": "",
+    "license": "License                  LGPL"
+  },
+  {
+    "file": "gstvorbis.dll",
+    "sha256": "8e0e395841b6fe5135e04a1b94af3fb4fa448c52169c527ec50285d0e0098cce",
+    "pid": 34268,
+    "timeout": false,
+    "exit_code": 0,
+    "stdout": "Plugin Details:\r\n  Name                     vorbis\r\n  Description              Vorbis plugin library\r\n  Filename                 D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\media-research\\minimal-runtime\\lib\\gstreamer-1.0\\gstvorbis.dll\r\n  Version                  1.28.8.1\r\n  License                  LGPL\r\n  Source module            gst-plugins-base\r\n  Documentation            https://gstreamer.freedesktop.org/documentation/vorbis/\r\n  Binary package           GStreamer Base Plug-ins git\r\n  Origin URL               Unknown package origin\r\n\r\n  vorbisdec: Vorbis audio decoder\r\n  vorbisenc: Vorbis audio encoder\r\n  vorbisparse: VorbisParse\r\n  vorbistag: VorbisTag\r\n\r\n  4 features:\r\n  +-- 4 elements\r\n\r\n",
+    "stderr": "",
+    "license": "License                  LGPL"
+  },
+  {
+    "file": "gstvpx.dll",
+    "sha256": "e027f3202e2563b1de39b22f1b3f7cc656783a9b8245e525fa49740ad0f86d5a",
+    "pid": 55064,
+    "timeout": false,
+    "exit_code": 0,
+    "stdout": "Plugin Details:\r\n  Name                     vpx\r\n  Description              VP8/VP9 video encoding and decoding based on libvpx\r\n  Filename                 D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\media-research\\minimal-runtime\\lib\\gstreamer-1.0\\gstvpx.dll\r\n  Version                  1.28.8.1\r\n  License                  LGPL\r\n  Source module            gst-plugins-good\r\n  Documentation            https://gstreamer.freedesktop.org/documentation/vpx/\r\n  Binary package           GStreamer Good Plug-ins git\r\n  Origin URL               Unknown package origin\r\n\r\n  vp8dec: On2 VP8 Decoder\r\n  vp8enc: On2 VP8 Encoder\r\n  vp9dec: On2 VP9 Decoder\r\n  vp9enc: On2 VP9 Encoder\r\n\r\n  4 features:\r\n  +-- 4 elements\r\n\r\n",
+    "stderr": "",
+    "license": "License                  LGPL"
+  },
+  {
+    "file": "gstwasapi.dll",
+    "sha256": "4254c636ad3c9a97346c5e4fd608782c16836a09a863d63f730bd94d497cfb53",
+    "pid": 37760,
+    "timeout": false,
+    "exit_code": 0,
+    "stdout": "Plugin Details:\r\n  Name                     wasapi\r\n  Description              Windows audio session API plugin\r\n  Filename                 D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\media-research\\minimal-runtime\\lib\\gstreamer-1.0\\gstwasapi.dll\r\n  Version                  1.28.8.1\r\n  License                  LGPL\r\n  Source module            gst-plugins-bad\r\n  Documentation            https://gstreamer.freedesktop.org/documentation/wasapi/\r\n  Binary package           GStreamer Bad Plug-ins git\r\n  Origin URL               Unknown package origin\r\n\r\n  wasapideviceprovider: WASAPI (Windows Audio Session API) Device Provider\r\n  wasapisink: WasapiSrc\r\n  wasapisrc: WasapiSrc\r\n\r\n  3 features:\r\n  +-- 2 elements\r\n  +-- 1 device providers\r\n\r\n",
+    "stderr": "",
+    "license": "License                  LGPL"
+  },
+  {
+    "file": "gstwasapi2.dll",
+    "sha256": "4f98fd226860e45eedc5f8db86aac0827efa1afd72ab76dad6c208a7422d1cab",
+    "pid": 74828,
+    "timeout": false,
+    "exit_code": 0,
+    "stdout": "Plugin Details:\r\n  Name                     wasapi2\r\n  Description              Windows audio session API plugin\r\n  Filename                 D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\media-research\\minimal-runtime\\lib\\gstreamer-1.0\\gstwasapi2.dll\r\n  Version                  1.28.8.1\r\n  License                  LGPL\r\n  Source module            gst-plugins-bad\r\n  Documentation            https://gstreamer.freedesktop.org/documentation/wasapi2/\r\n  Binary package           GStreamer Bad Plug-ins git\r\n  Origin URL               Unknown package origin\r\n\r\n  wasapi2deviceprovider: WASAPI (Windows Audio Session API) Device Provider\r\n  wasapi2sink: Wasapi2Sink\r\n  wasapi2src: Wasapi2Src\r\n\r\n  3 features:\r\n  +-- 2 elements\r\n  +-- 1 device providers\r\n\r\n",
+    "stderr": "",
+    "license": "License                  LGPL"
+  }
+]

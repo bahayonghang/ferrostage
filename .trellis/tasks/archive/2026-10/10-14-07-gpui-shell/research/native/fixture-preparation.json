@@ -1,0 +1,14 @@
+{
+  "fixtures\\pdf\\raster.pdf": {
+    "sha256": "25a7932f46ee8fcd4866011921c574b4f5b343af05b793bc397b7e93ed0df013",
+    "bytes": 8853
+  },
+  ".trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\演示验收_Claude主题_中文字体回退_超长文件名不应覆盖开始演示按钮_2026.pdf": {
+    "sha256": "25a7932f46ee8fcd4866011921c574b4f5b343af05b793bc397b7e93ed0df013",
+    "bytes": 8853
+  },
+  ".trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\malformed-owned-fixture.pdf": {
+    "sha256": "f4e3885d1af47b846cb2b9916268d283ceb66df3afade6f518ab0f4b78126ee0",
+    "bytes": 60
+  }
+}

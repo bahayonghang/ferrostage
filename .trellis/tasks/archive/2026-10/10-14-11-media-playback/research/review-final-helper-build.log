@@ -1,0 +1,4 @@
+   Compiling ferrostage-media-helper v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-media-helper)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.68s
+mbx[cache]: 0 hits, 0 misses, 1 not looked up, 1 incremental; 0 B downloaded, 0 B uploaded, 0 B stored locally
+mbx[savings]: 110.2 GiB logical of target/ was waiting for checkouts that are never coming back. it has stopped waiting.

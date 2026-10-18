@@ -11,6 +11,18 @@ pub struct NormalizedRect {
 }
 
 impl NormalizedRect {
+    pub const TOP_HALF: Self = Self {
+        x: 0.0,
+        y: 0.0,
+        w: 1.0,
+        h: 0.5,
+    };
+    pub const BOTTOM_HALF: Self = Self {
+        x: 0.0,
+        y: 0.5,
+        w: 1.0,
+        h: 0.5,
+    };
     pub const FULL: Self = Self {
         x: 0.0,
         y: 0.0,
@@ -58,4 +70,37 @@ pub struct NormalizedStroke {
     pub color_bgra: [u8; 4],
     pub width_norm: f32,
     pub is_highlighter: bool,
+}
+
+/// Hit test whole strokes, including the space between sampled points.
+pub(crate) fn stroke_hit(stroke: &NormalizedStroke, point: (f32, f32)) -> bool {
+    let radius = (stroke.width_norm * 0.5).max(0.015);
+    let distance = |a: (f32, f32), b: (f32, f32)| (a.0 - b.0).hypot(a.1 - b.1);
+    stroke.points.iter().any(|p| distance(*p, point) <= radius)
+        || stroke.points.windows(2).any(|segment| {
+            let (a, b) = (segment[0], segment[1]);
+            let (dx, dy) = (b.0 - a.0, b.1 - a.1);
+            let length = dx * dx + dy * dy;
+            let t = if length > 0.0 {
+                ((point.0 - a.0) * dx + (point.1 - a.1) * dy) / length
+            } else {
+                0.0
+            }
+            .clamp(0.0, 1.0);
+            distance((a.0 + t * dx, a.1 + t * dy), point) <= radius
+        })
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct LaserStyle {
+    pub color_bgra: [u8; 4],
+    pub radius_norm: f32,
+}
+impl Default for LaserStyle {
+    fn default() -> Self {
+        Self {
+            color_bgra: [0, 0, 255, 255],
+            radius_norm: 0.008,
+        }
+    }
 }

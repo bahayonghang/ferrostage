@@ -1,0 +1,27 @@
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib v6_ --locked --offline (F7/F8 actual input/save red)
+V6 RED EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib v6_ --locked --offline (approved shared target red retry)
+V6 RED RETRY EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib v6_ --locked --offline (complete MonitorBinding test fixture)
+V6 RED 2 EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib v6_ --locked --offline (correct String friendly_name test fixture)
+V6 RED 3 EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib v6_ --locked --offline (F8 green, Retry removal F7 red)
+V6 FOCUS RED EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib --locked --offline (v6 deferred actual-tree focus recovery)
+V6 GREEN EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib v6_ --locked --offline (v5 Presenter, focus contract red with valid-return traversal assertion)
+V6 FOCUS RED FINAL EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib --locked --offline (v6 complete F7/F8 green)
+V6 GREEN FINAL EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib --locked --offline (v6 retain modal return handle through validation)
+V6 GREEN 2 EXIT: 0
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib --locked --offline (v6 final input plus import/replacement/save coverage)
+V6 HEADLESS FINAL EXIT: 0
+RUNNING: just ci (v6 F7/F8)
+V6 JUST CI EXIT: 0
+RUNNING: cargo clippy -p ferrostage-app -p ferrostage-ui --all-features --all-targets --locked --offline -- -D warnings (v6)
+V6 CLIPPY EXIT: 0
+RUNNING: cargo build -p ferrostage-app --features gpui,pdfium --locked --offline (v6 freeze)
+V6 NATIVE BUILD EXIT: 0
+V6 DIFF CHECK EXIT: 0

@@ -1,0 +1,23 @@
+{
+  "capturedAt": "2026-10-15T02:46:50.650Z",
+  "window": {
+    "app": "process:D:\\mbx-cache\\targets\\v1\\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0\\debug\\ferrostage.exe",
+    "id": 13966742,
+    "title": "FerroStage — 未打开文档 — FerroStage"
+  },
+  "accessibility": {
+    "focused_element": "7 application FerroStage 讲者窗口",
+    "tree": "Window: \"FerroStage — 未打开文档 — FerroStage\", App: ferrostage.exe.\n\t0 region FerroStage — 未打开文档 — FerroStage Secondary Actions: Raise\n\t\t1 title bar (settable, string) Value: FerroStage — 未打开文档 — FerroStage\n\t\t\t2 menu bar System ID: MenuBar\n\t\t\t\t3 menu item System\n\t\t\t4 button Minimize\n\t\t\t5 button Maximize\n\t\t\t6 button Close\n\t\t7 application FerroStage 讲者窗口\n\t\t\t14 button 关闭 ID: close-modal\n\nThe focused UI element is 7 application FerroStage 讲者窗口."
+  },
+  "screenshots": [
+    {
+      "file": "v6-relaunch-dark-settings-placeholder-0.jpg",
+      "sha256": "89951df3fd18280894dfde4d0872a1f6bd20d8f1322a7d382a87a94978b3614b",
+      "id": "screenshot-0",
+      "width": 1102,
+      "height": 791,
+      "originX": 592,
+      "originY": 222
+    }
+  ]
+}

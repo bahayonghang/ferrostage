@@ -1,0 +1,16 @@
+{"file": ".trellis/spec/backend/index.md", "reason": "Backend crate rules and quality checklist"}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "just ci and forbidden patterns"}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "thiserror in libraries, ExitCode in binary"}
+{"file": ".trellis/spec/frontend/type-safety.md", "reason": "Newtypes and the notes boundary"}
+{"file": "docs/PROJECT_PLAN.md", "reason": "v0.3 source plan: scope, invariants, settings schema, monitor roles"}
+{"file": ".trellis/tasks/10-14-presenter-v0.3/design.md", "reason": "Cross-task shared contracts (SessionStage, MonitorId, Settings layout)"}
+{"file": ".trellis/tasks/10-14-presenter-v0.3/prd.md", "reason": "Source requirements, milestone scope and dependency map"}
+{"file": ".trellis/tasks/10-14-presenter-v0.3/traceability.md", "reason": "Requirement to owner, design step and verification coverage"}
+{"file": ".trellis/tasks/10-14-presenter-v0.3/research/repository-baseline.md", "reason": "Verified skeleton and semantic scan ledger; task 01 spec conflicts"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/prd.md", "reason": "Child requirements and explicit dependencies"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/design.md", "reason": "Reviewed design choices, ownership, errors and rollback"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/implement.md", "reason": "Ordered steps and layered verification gates"}
+{"file": ".trellis/tasks/10-14-presenter-v0.3/research/behavior-evidence.md", "reason": "Allowed user-facing behavior evidence, independent Rust design and limitations"}
+{"file": ".trellis/tasks/10-14-presenter-v0.3/research/native-research-resume.md", "reason": "Pinned runtime and independent development fixture tooling availability; no model or native pass implied"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/independent-check.md", "reason": "Verified task05 metadata/frame/candidate delivery and exact native/performance evidence boundaries"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/native-api-audit.md", "reason": "Pinned PDFium worker lifetime, owned metadata, runtime configuration and licensing constraints"}

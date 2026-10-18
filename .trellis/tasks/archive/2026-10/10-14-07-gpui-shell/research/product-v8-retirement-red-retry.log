@@ -1,0 +1,71 @@
+warning: function `shape` is never used
+   --> vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `harfrust` (lib) generated 1 warning
+   Compiling ztracing v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling sum_tree v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling gpui v0.2.2 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui)
+   Compiling gpui_windows v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling gpui_platform v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+error[E0277]: the trait bound `for<'writer> Arc<std::sync::Mutex<Vec<u8>>>: MakeWriter<'writer>` is not satisfied
+    --> crates\ferrostage-ui\src\shell.rs:1091:26
+     |
+1091 |             .with_writer(output.clone())
+     |              ----------- ^^^^^^^^^^^^^^ the trait `for<'writer> MakeWriter<'writer>` is not implemented for `Arc<std::sync::Mutex<Vec<u8>>>`
+     |              |
+     |              required by a bound introduced by this call
+     |
+help: the trait `MakeWriter<'_>` is conditionally implemented for `Arc<W>`
+    --> C:\Users\lyh\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tracing-subscriber-0.3.23\src\fmt\writer.rs:694:1
+     |
+ 694 | / impl<'a, W> MakeWriter<'a> for Arc<W>
+ 695 | | where
+ 696 | |     &'a W: io::Write + 'a,
+     | |____________---------_____^
+     |              |
+     |              unsatisfied requirement introduced here: `&std::sync::Mutex<Vec<u8>>: std::io::Write`
+note: required by a bound in `SubscriberBuilder::<N, E, F, W>::with_writer`
+    --> C:\Users\lyh\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tracing-subscriber-0.3.23\src\fmt\mod.rs:1059:13
+     |
+1057 |     pub fn with_writer<W2>(self, make_writer: W2) -> SubscriberBuilder<N, E, F, W2>
+     |            ----------- required by a bound in this associated function
+1058 |     where
+1059 |         W2: for<'writer> MakeWriter<'writer> + 'static,
+     |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `SubscriberBuilder::<N, E, F, W>::with_writer`
+
+error[E0599]: the method `try_init` exists for struct `SubscriberBuilder<DefaultFields, Format, LevelFilter, Arc<std::sync::Mutex<Vec<u8>>>>`, but its trait bounds were not satisfied
+    --> crates\ferrostage-ui\src\shell.rs:1092:14
+     |
+1086 | /         tracing_subscriber::fmt()
+1087 | |             .with_ansi(false)
+1088 | |             .with_file(true)
+1089 | |             .with_line_number(true)
+1090 | |             .with_max_level(tracing::Level::ERROR)
+1091 | |             .with_writer(output.clone())
+1092 | |             .try_init()
+     | |_____________-^^^^^^^^
+     |
+    ::: C:\Users\lyh\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tracing-subscriber-0.3.23\src\fmt\fmt_layer.rs:64:1
+     |
+  64 | / pub struct Layer<
+  65 | |     S,
+  66 | |     N = format::DefaultFields,
+  67 | |     E = format::Format<format::Full>,
+  68 | |     W = fn() -> io::Stdout,
+  69 | | > {
+     | |_- doesn't satisfy `_: Layer<Registry>`
+     |
+     = note: the following trait bounds were not satisfied:
+             `Arc<std::sync::Mutex<Vec<u8>>>: MakeWriter<'writer>`
+             `Arc<std::sync::Mutex<Vec<u8>>>: MakeWriter<'writer>`
+             which is required by `tracing_subscriber::fmt::Layer<Registry, DefaultFields, Format, Arc<std::sync::Mutex<Vec<u8>>>>: __tracing_subscriber_Layer<Registry>`
+
+Some errors have detailed explanations: E0277, E0599.
+For more information about an error, try `rustc --explain E0277`.
+error: could not compile `ferrostage-ui` (lib test) due to 2 previous errors

@@ -1,0 +1,29 @@
+{
+  "capturedAt": "2026-10-15T01:40:54.835Z",
+  "window": {
+    "app": "process:D:\\mbx-cache\\targets\\v1\\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0\\debug\\ferrostage.exe",
+    "id": 43124864,
+    "title": "演示验收_Claude主题_中文字体回退_超长文件名不应覆盖开始演示按钮_2026.pdf — 演示中 — FerroStage"
+  },
+  "accessibility": null,
+  "screenshots": [
+    {
+      "file": "v4-dialog-text-injection-unverified-0.jpg",
+      "sha256": "b6dace9c14097cf9c4691a63d860001e3307c8dc29823930e929acdfd1f54504",
+      "id": "screenshot-0",
+      "width": 1323,
+      "height": 929,
+      "originX": -2105,
+      "originY": 38
+    },
+    {
+      "file": "v4-dialog-text-injection-unverified-1.jpg",
+      "sha256": "ccfb53fa5557d3dda886d2321643dd295ee341434c644fa6b93baa56a359d51d",
+      "id": "screenshot-1",
+      "width": 841,
+      "height": 527,
+      "originX": -2094,
+      "originY": 83
+    }
+  ]
+}

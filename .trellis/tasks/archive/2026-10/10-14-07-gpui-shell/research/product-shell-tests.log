@@ -1,0 +1,24 @@
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.04s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-ee109a6616010885.exe)
+
+running 16 tests
+test tests::gpui_pin_is_the_zed_tag_not_crates_io ... ok
+test transactions::tests::focus_waits_for_both_observations_and_rejects_retired_owners ... ok
+test policy::tests::fullscreen_request_without_native_bounds_evidence_is_not_confirmation ... ok
+test theme::tests::used_text_and_focus_pairs_meet_design_contrast ... ok
+test transactions::tests::failed_second_replacement_returns_only_new_resources_for_cleanup ... ok
+test policy::tests::uuid_includes_terminator_and_full_utf16_buffer ... ok
+test transactions::tests::invalid_jump_text_cannot_commit_a_previous_valid_preview ... ok
+test policy::tests::single_monitor_requires_explicit_windowed_mode ... ok
+test transactions::tests::retiring_old_windows_cannot_stop_replacements ... ok
+test policy::tests::swap_prepares_authority_without_mutating_old_settings ... ok
+test policy::tests::configured_bindings_cannot_collide_with_shell_shortcuts ... ok
+test policy::tests::conflicts_are_disabled_after_normalization ... ok
+test policy::tests::mapping_rejects_partial_duplicate_and_unknown_sets ... ok
+test transactions::tests::settings_escape_does_not_send_cancel_jump_into_idle_core ... ok
+test transactions::tests::shutdown_never_publishes_live_between_curtain_and_close ... ok
+test transactions::tests::startup_import_survives_presenter_confirmation_only ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

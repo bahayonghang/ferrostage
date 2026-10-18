@@ -1,0 +1,82 @@
+[
+  {
+    "file": "synthetic-three-frames.gif",
+    "bytes": 1017,
+    "sha256": "6a576e6f6ba44d730ca6546dd93293997230a039aff8b9215733f6a61a4bea7e",
+    "frames": 3,
+    "dimensions": [
+      160,
+      90
+    ],
+    "encoded_delay_ms": [
+      120,
+      240,
+      360
+    ],
+    "pillow_delay_ms": [
+      120,
+      240,
+      360
+    ],
+    "corner_rgba": [
+      [
+        210,
+        65,
+        40,
+        255
+      ],
+      [
+        40,
+        160,
+        90,
+        255
+      ],
+      [
+        60,
+        95,
+        210,
+        255
+      ]
+    ]
+  },
+  {
+    "file": "synthetic-three-frames.webp",
+    "bytes": 450,
+    "sha256": "4813f16e9f1867b597e74c7f5015240cfba70ad65fe56b450264827af4b107a1",
+    "frames": 3,
+    "dimensions": [
+      160,
+      90
+    ],
+    "encoded_delay_ms": [
+      120,
+      240,
+      360
+    ],
+    "pillow_delay_ms": [
+      120,
+      240,
+      360
+    ],
+    "corner_rgba": [
+      [
+        210,
+        65,
+        40,
+        255
+      ],
+      [
+        40,
+        160,
+        90,
+        255
+      ],
+      [
+        60,
+        95,
+        210,
+        255
+      ]
+    ]
+  }
+]

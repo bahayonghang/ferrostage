@@ -1,0 +1,14 @@
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib close_hook --locked --offline (actual synchronous removal callback red)
+V3 CLOSE RED EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib close_hook --locked --offline (approved shared target retry)
+V3 CLOSE RED RETRY EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib --locked --offline (v3 deferred close)
+V3 CLOSE GREEN EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib --locked --offline (v3 trace identifier repair)
+V3 CLOSE GREEN 2 EXIT: 0
+RUNNING: just ci (v3 deferred close repair)
+V3 JUST CI EXIT: 0
+RUNNING: cargo clippy -p ferrostage-app -p ferrostage-ui --all-features --all-targets --locked --offline -- -D warnings (v3)
+V3 CLIPPY EXIT: 0
+RUNNING: cargo build -p ferrostage-app --features gpui,pdfium --locked --offline (v3 freeze)
+V3 NATIVE BUILD EXIT: 0

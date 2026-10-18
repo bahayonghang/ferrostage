@@ -1,0 +1,183 @@
+{
+  "captured_utc": "2026-10-15T06:38:00.523Z",
+  "scope": "Read-only independent audit of five completed V13 native runs; V14 work is outside this evidence identity.",
+  "outcome": "FAIL: F12 on fifth run; first four closes are scoped successful observations",
+  "pre_release_identity": {
+    "source_count": 609,
+    "source_sha256": "77aa180c7f60bcc39de7315554d9781d5f2f39effd211078a1da43cf7ed40d4a",
+    "exe": "d1164919dcdc09053df4fc6caae09be249329cccd0ad8bd482a67347561a6435",
+    "fixture": "25a7932f46ee8fcd4866011921c574b4f5b343af05b793bc397b7e93ed0df013",
+    "runs": {
+      "v13-main": {
+        "pid": 182160,
+        "started": "2026-10-15T06:01:37.3112813Z",
+        "ended": "2026-10-15T06:11:40.7554620Z",
+        "exit_code": 0,
+        "final_windows": [],
+        "warnings_errors": [],
+        "quit_cancel_logged": true,
+        "config_before": "23b646a92a5ec6aed608c9d732dc8a13096dc138a89e9d220d87adde1386a186",
+        "config_after": "23b646a92a5ec6aed608c9d732dc8a13096dc138a89e9d220d87adde1386a186",
+        "bytes_identical": true,
+        "parsed_identical": true,
+        "only_crlf": true,
+        "theme": "light",
+        "language": "zh-CN",
+        "exact_required_sizes": [
+          [
+            390,
+            844
+          ],
+          [
+            800,
+            600
+          ]
+        ]
+      },
+      "v13-dark": {
+        "pid": 53500,
+        "started": "2026-10-15T06:11:59.1864029Z",
+        "ended": "2026-10-15T06:14:02.2166260Z",
+        "exit_code": 0,
+        "final_windows": [],
+        "warnings_errors": [],
+        "quit_cancel_logged": true,
+        "config_before": "b96b8708fcb7207f7673c322be62d1f2f68d1c9ff382fe3607fbf7d0d7249ab9",
+        "config_after": "b96b8708fcb7207f7673c322be62d1f2f68d1c9ff382fe3607fbf7d0d7249ab9",
+        "bytes_identical": true,
+        "parsed_identical": true,
+        "only_crlf": true,
+        "theme": "dark",
+        "language": "zh-CN",
+        "exact_required_sizes": [
+          [
+            320,
+            640
+          ]
+        ]
+      },
+      "v13-en": {
+        "pid": 184232,
+        "started": "2026-10-15T06:14:20.9780268Z",
+        "ended": "2026-10-15T06:23:25.2475947Z",
+        "exit_code": 0,
+        "final_windows": [],
+        "warnings_errors": [],
+        "quit_cancel_logged": true,
+        "config_before": "b29e71750a478c6b4e55910a158e599afe8f8a831fa3b081692321b287274676",
+        "config_after": "d142b6541e9c2e22f1e21292ba620fa7be70384d9aa64ff9182b83568db444b1",
+        "bytes_identical": false,
+        "parsed_identical": true,
+        "only_crlf": true,
+        "theme": "light",
+        "language": "en-US",
+        "exact_required_sizes": [
+          [
+            1440,
+            900
+          ]
+        ]
+      },
+      "v13-open": {
+        "pid": 183852,
+        "started": "2026-10-15T06:23:56.9674108Z",
+        "ended": "2026-10-15T06:26:41.2129441Z",
+        "exit_code": 0,
+        "final_windows": [],
+        "warnings_errors": [],
+        "quit_cancel_logged": true,
+        "config_before": "23b646a92a5ec6aed608c9d732dc8a13096dc138a89e9d220d87adde1386a186",
+        "config_after": "23b646a92a5ec6aed608c9d732dc8a13096dc138a89e9d220d87adde1386a186",
+        "bytes_identical": true,
+        "parsed_identical": true,
+        "only_crlf": true,
+        "theme": "light",
+        "language": "zh-CN",
+        "exact_required_sizes": []
+      }
+    }
+  },
+  "fifth_run": {
+    "run": "v13-light-small",
+    "launch": {
+      "argv": [
+        "--config",
+        "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\v8-light.toml",
+        "--pdfium-library",
+        "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll",
+        "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\pdf\\raster.pdf"
+      ],
+      "config": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\v8-light.toml",
+      "pid": 172512,
+      "exe": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe",
+      "exe_sha256": "d1164919dcdc09053df4fc6caae09be249329cccd0ad8bd482a67347561a6435",
+      "utc": "2026-10-15T06:28:19.5049810Z",
+      "freeze": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-native-freeze-v13.json",
+      "source_sha256": "77aa180c7f60bcc39de7315554d9781d5f2f39effd211078a1da43cf7ed40d4a",
+      "config_sha256": "23B646A92A5EC6AED608C9D732DC8A13096DC138A89E9D220D87ADDE1386A186",
+      "window_style": "Normal"
+    },
+    "end": {
+      "exit_code": 0,
+      "pid": 172512,
+      "utc": "2026-10-15T06:30:22.1067235Z"
+    },
+    "bytes_identical": true,
+    "parsed_identical": true,
+    "before_sha256": "23b646a92a5ec6aed608c9d732dc8a13096dc138a89e9d220d87adde1386a186",
+    "after_sha256": "23b646a92a5ec6aed608c9d732dc8a13096dc138a89e9d220d87adde1386a186",
+    "classification": "FAIL: ERROR window not found after polling cancellation",
+    "final_windows": []
+  },
+  "sealed_evidence": {
+    "native_manifest_records": 92,
+    "native_manifest_sha256": "e08f7bb83832a0e6ccbd23b0ea5abb6a489181baad8ef85f27bc224475d4aedf",
+    "checkpoint_sha256": "eab0096ca3287e04370db6abb8f67c1c47c69de05e69f7b3e7fb7505dc9adbb2",
+    "root_audit_sha256": "274d2edcad1145ea5c9a46c4cf7ebdd8058bc54c4af9593fae7ce9d9c587974b",
+    "pre_release_identity_sha256": "3eac2d457a86d2ab3d953227599010e47dd7c5310d04d6d8d840e83b7da9f918",
+    "screenshot_hashes_verified": 26,
+    "mismatches": [],
+    "review_helper_note": "Initial read-only schema scan encountered the root summary image entries without path; corrected selector to actual screenshot metadata records. No files or product changed."
+  },
+  "size_theme_matrix": {
+    "1440x900": {
+      "light": "observed v13-en",
+      "dark": "NOT_RUN, feasible after repair"
+    },
+    "800x600": {
+      "light": "observed v13-main",
+      "dark": "NOT_RUN, feasible after repair"
+    },
+    "390x844": {
+      "light": "observed v13-main C150%",
+      "dark": "NOT_RUN; V11 389.6 is not exact390"
+    },
+    "320x640": {
+      "light": "geometry observed v13-light-small; close FAIL F12",
+      "dark": "observed v13-dark; scoped clean close"
+    }
+  },
+  "remaining": {
+    "feasible": [
+      "dark1440x900/800x600/exact390x844",
+      "individually recorded feasible keyboard/focus/control states; narrow Presenting/Stop and new-panel keyboard Cancel/return focus"
+    ],
+    "hardware_not_run": [
+      "physical unplug/reconnect/port identity/latency",
+      "true single/zero monitor hardware"
+    ],
+    "recorded_tool_limits_not_run": [
+      "live OS theme event without targetable Settings surface",
+      "cross-window PDF drag unsupported by within-window drag API"
+    ],
+    "unverified": [
+      "transient Curtain/loading native frames",
+      "complete audience cursor behavior"
+    ]
+  },
+  "gate_b": "INCOMPLETE",
+  "gate_c_d": "NOT_RUN",
+  "source_mutations": 0,
+  "native_launches": 0,
+  "reviewer_commands": "All returned; no pending sessions"
+}

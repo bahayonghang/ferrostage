@@ -1,0 +1,31 @@
+warning[license-exception-not-encountered]: license exception was not encountered
+   ┌─ D:\Documents\Code\Rust\Exp\ferrostage\deny.toml:11:16
+   │
+11 │     { crate = "arrayref@0.3.9", allow = ["BSD-2-Clause"] },
+   │                ━━━━━━━━━━━━━━ unmatched license exception
+
+warning[license-exception-not-encountered]: license exception was not encountered
+   ┌─ D:\Documents\Code\Rust\Exp\ferrostage\deny.toml:12:16
+   │
+12 │     { crate = "libbz2-rs-sys@0.2.5", allow = ["bzip2-1.0.6"] },
+   │                ━━━━━━━━━━━━━━━━━━━ unmatched license exception
+
+warning[license-exception-not-encountered]: license exception was not encountered
+   ┌─ D:\Documents\Code\Rust\Exp\ferrostage\deny.toml:13:16
+   │
+13 │     { crate = "cbindgen@0.28.0", allow = ["MPL-2.0"] },
+   │                ━━━━━━━━━━━━━━━ unmatched license exception
+
+warning[license-not-encountered]: license was not encountered
+   ┌─ D:\Documents\Code\Rust\Exp\ferrostage\deny.toml:24:6
+   │
+24 │     "CC0-1.0",
+   │      ━━━━━━━ unmatched license allowance
+
+warning[license-not-encountered]: license was not encountered
+   ┌─ D:\Documents\Code\Rust\Exp\ferrostage\deny.toml:21:6
+   │
+21 │     "ISC",
+   │      ━━━ unmatched license allowance
+
+advisories ok, bans ok, licenses ok, sources ok

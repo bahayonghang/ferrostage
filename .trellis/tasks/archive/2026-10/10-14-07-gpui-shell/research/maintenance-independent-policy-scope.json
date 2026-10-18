@@ -1,0 +1,30 @@
+{
+  "final_rejections": 3,
+  "status": "advisories ok, bans ok, licenses FAILED, sources ok",
+  "local_exception_files": [
+    {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\deny.exceptions.toml",
+      "exists": false
+    },
+    {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.deny.exceptions.toml",
+      "exists": false
+    },
+    {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.cargo\\deny.exceptions.toml",
+      "exists": false
+    },
+    {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\gpui-maintenance-candidate\\deny.exceptions.toml",
+      "exists": false
+    },
+    {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\gpui-maintenance-candidate\\.deny.exceptions.toml",
+      "exists": false
+    },
+    {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\gpui-maintenance-candidate\\.cargo\\deny.exceptions.toml",
+      "exists": false
+    }
+  ]
+}

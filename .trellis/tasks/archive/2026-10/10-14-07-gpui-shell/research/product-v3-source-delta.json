@@ -1,0 +1,13 @@
+{
+  "v2_source_reconstructed_and_hash_verified": true,
+  "changes": {
+    "crates/ferrostage-ui/src/shell.rs": {
+      "v2": "3491c367a137cf06a47d3091bb582594698e8c33f441c8520f2184a65bb2d89d",
+      "v3": "e579664dbeb33267d24e93c2a646956bc28f9f4c088deb1b07721ae74feeada9"
+    }
+  },
+  "unchanged_source_count": 601,
+  "new_or_removed_files": [],
+  "lock_unchanged": true,
+  "focused_patch_sha256": "a60cd6e38024a49a51a8185e533b912d98331aa27d9db556f8e7a18711041b35"
+}

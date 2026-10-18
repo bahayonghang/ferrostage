@@ -1,0 +1,59 @@
+{
+  "utc": "2026-10-15T03:21:57.736679+00:00",
+  "head": "3ac1ec2e19d15e40c94e14a875b57698ed445798",
+  "source_count": 602,
+  "source_deltas": [
+    {
+      "path": "DESIGN.md",
+      "expected": "1b13bda5cc6460a8f320a637e047c836813f817231315533d200ed873d31f4d6",
+      "actual": "88a7a31303e10d3adfc0be373bf326d16751123b54a2b211984ba9bfd6fe99c9"
+    }
+  ],
+  "crate_files_matched": 94,
+  "external": {
+    "binary": {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe",
+      "sha256": "d4f2e653ee793176b384034797ad99e1ad665aa0da6535a454ba88a36b055074",
+      "matches": true
+    },
+    "pdfium": {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll",
+      "sha256": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118",
+      "matches": true
+    },
+    "fixture": {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\pdf\\raster.pdf",
+      "sha256": "25a7932f46ee8fcd4866011921c574b4f5b343af05b793bc397b7e93ed0df013",
+      "matches": true
+    }
+  },
+  "manifests": {
+    "native-v6-independent-manifest.json": {
+      "count": 213,
+      "mismatches": [],
+      "sha256": "0aec8d0e6f68591adcc695f3cd89fdfc29efb601f0bcda575b0e47c66910fb5e"
+    },
+    "native-v6-evidence-manifest.json": {
+      "count": 54,
+      "mismatches": [],
+      "sha256": "6c7551fa9c38890252c0500951c90597500b2f7a690d1e52aefe89986a6ac1a0"
+    },
+    "native-v5-evidence-manifest.json": {
+      "count": 108,
+      "mismatches": [],
+      "sha256": "ddfec0154c3dfe6731eb08b2c5dcf4b9b27c2a49ccfd54589a05f2ed295d73d0"
+    },
+    "product-v6-evidence-manifest.json": {
+      "count": 26,
+      "mismatches": [],
+      "sha256": "dac5512c8887bbb3278e0b9c68fc8a622731fbc40eea187aa7dfef090a40912c"
+    },
+    "product-independent-v6-manifest.json": {
+      "count": 141,
+      "mismatches": [],
+      "sha256": "252a22e5ab5173b7c9a03da0e6a15768edd2d904b6cfd5404c42c9f72c101fb5"
+    }
+  },
+  "process_observation": "CIM denied in sandbox; Get-Process found no matching FerroStage/build processes; Sky inventory has no FerroStage window",
+  "scope": "Resume identity audit only; physical tests skipped by user, NOT_RUN; no gate waiver"
+}

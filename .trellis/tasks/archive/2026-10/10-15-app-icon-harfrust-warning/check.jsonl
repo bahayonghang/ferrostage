@@ -1,0 +1,7 @@
+{"file": ".trellis/tasks/10-15-app-icon-harfrust-warning/prd.md", "reason": "Acceptance criteria for icon and warning"}
+{"file": ".trellis/tasks/10-15-app-icon-harfrust-warning/design.md", "reason": "Allowed files and the cfg-only HarfRust change"}
+{"file": ".trellis/tasks/10-15-app-icon-harfrust-warning/research/evidence.md", "reason": "Evidence the free function is unused without the feature"}
+{"file": ".trellis/spec/frontend/maintained-dependencies.md", "reason": "Reject a new allow and unrelated HarfRust edits"}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Consumer lint and license gates"}
+{"file": "docs/adr/ADR-008-gpui-dependency-gate.md", "reason": "Do not widen the approved maintenance set silently"}
+{"file": "DESIGN.md", "reason": "Icon colors must match the recorded tokens"}

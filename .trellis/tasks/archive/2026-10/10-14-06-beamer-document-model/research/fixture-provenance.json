@@ -1,0 +1,42 @@
+{
+  "tools": "pdfTeX 3.141592653-2.6-1.40.27 TeX Live 2025; Beamer 3.72; pgfpages 0.02; multimedia 0.02",
+  "files": {
+    "fixtures\\beamer\\bottom-classic.pdf": "aeda063a416a37d179de8bd658bbbd6c6b01ef360d331916106a4a615a166ac1",
+    "fixtures\\beamer\\bottom-wide.pdf": "aa97b1e490300d481549ffcca7210419cfae1b13029d8284e9c1991cbb7c20bb",
+    "fixtures\\beamer\\expected.json": "d98196a1bac816a74f070635bf1d3da6d79ae3a821dc4594229ab60a9b254341",
+    "fixtures\\beamer\\generate.py": "ce1385accebb9551040e7354e08489a2e74bd14b1684f56072de852f53b4ac4a",
+    "fixtures\\beamer\\independent.pdf": "c5f6204da4c5a7c2c7775c3484bb2327652c15509261e2add95d40ae8afc2568",
+    "fixtures\\beamer\\media.pdf": "a6174f5c6abe45bb3ea5f04cf1673372943f7d2bc76205bbf2f068cb9cdb403f",
+    "fixtures\\beamer\\mixed.pdf": "4b0b65f62e4498962a77bed22ef46daa83cae0aefa8e3cd9342563e1ae8aca68",
+    "fixtures\\beamer\\movie.pdf": "18fcb84be915745801711f71f7acfbc4280a69f977896eada6970fd068f06a32",
+    "fixtures\\beamer\\movie.tex": "092711bdc4a4f16f5f411ade1d0cd2dccd750b5458d51c65854028fd7ab00b22",
+    "fixtures\\beamer\\notes-right.pdf": "a0b857f6fd1009db87b17317139c603518af2ad27a0be8ee9b67d009e29a94a7",
+    "fixtures\\beamer\\notes-right.tex": "3395081cd7bc9ecf728b688e62d21957de4009399ecaecf56000543e43fbbb52",
+    "fixtures\\beamer\\ordinary.pdf": "8dee2795e4584edde264ec4c83f2e509b852bb27d3bd248918374af8411cb5eb",
+    "fixtures\\beamer\\overlays.pdf": "2547bcdbfd7be179dd4a9cf570f7078ae8a4562cfde07364a04ec070ff57c687",
+    "fixtures\\beamer\\overlays.tex": "ebc5cc12cc0676646b95fdbc669311a40a219e71e3774d86004926c9ea9832a3",
+    "fixtures\\beamer\\portrait-counterexample.pdf": "aeda063a416a37d179de8bd658bbbd6c6b01ef360d331916106a4a615a166ac1",
+    "fixtures\\beamer\\README.md": "42dd6bbbd19b02ece9a5e8e0fea85672fc57aa87a0fd253b5b4f4df4c68f8546",
+    "fixtures\\beamer\\tall-ordinary.pdf": "6e4756c48df00dbc135bd69e2bbee92413e3fc82083c2b722e2fcfa501bc4001",
+    "fixtures\\beamer\\top-rotated.pdf": "2f170ebccfc2184b5a05bd1c0f498308f9a6fc88cb5fbce0bb953ddf26637f82",
+    "fixtures\\beamer\\wide-counterexample.pdf": "567456ee1e95986bccf15ec41e651084b6a263ff9133a3ba3228b6e38d551111"
+  },
+  "external_inputs": {
+    "C:\\texlive\\2025\\bin\\windows\\pdflatex.exe": "4b582d0be712b74ae5090aba2d7338f185082f6446cbee7b26115e8ab6e21184",
+    "C:\\texlive\\2025\\bin\\windows\\pdffonts.exe": "3b12de9f1dc310ce672cd20500fb984c21a82206808452cfe0fabd1da6c97915",
+    "C:\\texlive\\2025\\texmf-dist\\doc\\fonts\\amsfonts\\OFL.txt": "aa783fdd47e92743bafe79277ac4067d20339344dc5b64a09c2d0f869b2999dc",
+    "C:\\texlive\\2025\\texmf-dist\\doc\\fonts\\amsfonts\\README": "2e2ced3494d3e5f04345804b85c1acb67c23bdd742f3e71f8772f768a59ed451",
+    "C:\\texlive\\2025\\texmf-dist\\fonts\\type1\\public\\amsfonts\\cm\\cmss9.pfb": "abf756f5c0c4fd2edf9b3811e3a4182f5d2ba7723b6ffaeb98237e026661a2fc",
+    "C:\\texlive\\2025\\texmf-dist\\fonts\\type1\\public\\amsfonts\\cm\\cmss10.pfb": "c9071fd676395df32520c3d906f2829898ea735f66c40a40578dec3c0ac51738",
+    "C:\\texlive\\2025\\texmf-dist\\fonts\\type1\\public\\amsfonts\\cm\\cmss12.pfb": "f64255358fe4e6cd89066d08371a60efc33ae0c475854e87b8d0a49a47c29d41",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdf-spec\\pdfreference1.7.pdf": "4aa598e7e2cc88867565fae793db38c140a10ca2b5551dccdb45e2124282ce29",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdf-spec\\adobe-supplement-extension3.pdf": "638f531b57ceb50b4f0b86a6740a57438ccecb0e434e32f0209d9c8200ecc44b",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118"
+  },
+  "pdffonts": {
+    "overlays": "name                                 type              encoding         emb sub uni object ID\n------------------------------------ ----------------- ---------------- --- --- --- ---------\nRKSWTG+CMSS12                        Type 1            Builtin          yes yes yes     18  0\nFXBXOB+CMSS10                        Type 1            Builtin          yes yes yes     19  0\n",
+    "notes-right": "name                                 type              encoding         emb sub uni object ID\n------------------------------------ ----------------- ---------------- --- --- --- ---------\nCEOSRK+CMSS12                        Type 1            Builtin          yes yes yes     19  0\nOXKLAN+CMSS10                        Type 1            Builtin          yes yes yes     20  0\nFDTZKS+CMSS9                         Type 1            Builtin          yes yes yes     21  0\n",
+    "movie": "name                                 type              encoding         emb sub uni object ID\n------------------------------------ ----------------- ---------------- --- --- --- ---------\nRHMPDY+CMSS12                        Type 1            Builtin          yes yes yes     22  0\nSBFFCE+CMSS10                        Type 1            Builtin          yes yes yes     23  0\n"
+  },
+  "synthetic_regeneration_pdf_hashes_unchanged": true
+}

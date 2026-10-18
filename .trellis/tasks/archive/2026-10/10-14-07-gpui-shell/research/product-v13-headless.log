@@ -1,0 +1,94 @@
+warning: function `shape` is never used
+   --> vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `harfrust` (lib) generated 1 warning
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.93s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-22e71ba2dde21bfc.exe)
+
+running 77 tests
+test policy::tests::fullscreen_request_without_native_bounds_evidence_is_not_confirmation ... ok
+test policy::tests::placement_v10_work_area_and_narrow_clients_leave_native_frame_space ... ok
+test policy::tests::single_monitor_requires_explicit_windowed_mode ... ok
+test display_settings::tests::stale_missing_ambiguous_and_conflicting_destinations_are_rejected ... ok
+test policy::tests::swap_prepares_authority_without_mutating_old_settings ... ok
+test policy::tests::placement_v10_portrait_native_overflow_is_not_confirmation ... ok
+test policy::tests::mapping_rejects_partial_duplicate_and_unknown_sets ... ok
+test policy::tests::uuid_includes_terminator_and_full_utf16_buffer ... ok
+test display_settings::tests::numbering_is_shared_stable_and_not_serialized ... ok
+test policy::tests::configured_bindings_cannot_collide_with_shell_shortcuts ... ok
+test locale::tests::catalogs_have_identical_keys_and_interpolation_fields ... ok
+test policy::tests::conflicts_are_disabled_after_normalization ... ok
+test display_settings::tests::single_screen_choices_roundtrip_without_duplicate_role_or_inherited_mode ... ok
+test shell::tests::retirement_v12_app_shutdown_cancels_pending_poll_wake ... ok
+test shell::tests::close_hook_topology_cancels_pending_under_controller_lease ... ok
+test shell::tests::retirement_v12_presenter_close_cancels_pending_poll_wake ... ok
+test shell::tests::retirement_v13_presenter_close_cancels_pending_import_read ... ok
+test shell::tests::presenter_creation_draws_while_controller_is_leased ... ok
+test shell::tests::close_hook_timeout_preserves_ready_and_current_presenter ... ok
+test shell::tests::placement_v11_windows_frame_delta_is_corrected_from_actual_readback ... ok
+test shell::tests::placement_v10_scaled_client_size_cannot_commit ... ok
+test shell::tests::close_hook_replacement_keeps_live_session_and_user_close_stops ... ok
+test shell::tests::displays_v8_identify_is_label_only_expires_and_is_refused_presenting ... ok
+test shell::tests::unsupported_shortcuts_use_user_visible_feature_names ... ok
+test shell::tests::retirement_v13_shutdown_cancels_pending_import_read ... ok
+test shell::tests::displays_v8_failed_no_play_placement_and_creation_roll_back_running_session ... ok
+test shell::tests::input_route_open_button_releases_window_before_activation ... ok
+test shell::tests::displays_v8_topology_revision_invalidates_draft_and_distinguishes_failure ... ok
+test shell::tests::input_route_ctrl_o_releases_window_before_activation ... ok
+test shell::tests::displays_v8_no_play_waits_for_success_then_stops_freezes_and_closes ... ok
+test shell::tests::retirement_v8_user_close_is_deferred_and_stops_projection ... ok
+test shell::tests::placement_v10_uncorrected_client_times_out_and_keeps_running_owner ... ok
+test shell::tests::retirement_v8_queued_activation_does_not_visit_removed_window ... ok
+test shell::tests::retirement_v12_nonowner_close_keeps_live_polling ... ok
+test shell::tests::v5_escape_from_jump_cancels_preview_without_stopping ... ok
+test shell::tests::retirement_v13_nonowner_close_preserves_read_and_prompt_completion ... ok
+test shell::tests::input_route_audience_open_activates_presenter_and_escape_cancels ... ok
+test shell::tests::retirement_v13_shutdown_cancels_pending_path_prompt ... ok
+test shell::tests::v5_audience_loss_recovers_fullscreen_presenter_windowed ... ok
+test shell::tests::v5_recovery_replaces_stale_display_but_preserves_initial_fullscreen ... ok
+test shell::tests::retirement_v8_pending_and_retired_close_requests_cannot_quit_replacement ... ok
+test shell::tests::displays_v8_valid_migration_preserves_page_blank_timer_and_save_retry ... ok
+test shell::tests::v5_swap_failure_discards_abandoned_jump_preview ... ok
+test shell::tests::v5_open_rechecks_stage_when_activation_resolves ... ok
+test shell::tests::v5_presenting_open_refuses_chooser_after_presenter_activation ... ok
+test shell::tests::v5_topology_unavailable_recovers_windowed_without_restart ... ok
+test shell::tests::v5_idle_navigation_and_blank_actions_do_not_report_core_errors ... ok
+test shell::tests::v5_stop_discards_jump_preview_before_following_navigation ... ok
+test tests::gpui_pin_is_the_zed_tag_not_crates_io ... ok
+test theme::tests::used_text_and_focus_pairs_meet_design_contrast ... ok
+test transactions::tests::failed_second_replacement_returns_only_new_resources_for_cleanup ... ok
+test transactions::tests::focus_waits_for_both_observations_and_rejects_retired_owners ... ok
+test transactions::tests::invalid_import_preserves_document_state_and_presenter_path ... ok
+test transactions::tests::invalid_jump_text_cannot_commit_a_previous_valid_preview ... ok
+test shell::tests::v5_jump_numeric_text_precedes_configured_navigation ... ok
+test transactions::tests::retiring_old_windows_cannot_stop_replacements ... ok
+test transactions::tests::settings_escape_does_not_send_cancel_jump_into_idle_core ... ok
+test transactions::tests::shutdown_never_publishes_live_between_curtain_and_close ... ok
+test transactions::tests::startup_import_survives_presenter_confirmation_only ... ok
+test shell::tests::v5_modal_close_button_has_priority_over_global_enter_and_space ... ok
+test shell::tests::v6_notify_preserves_valid_control_and_audience_activation ... ok
+test shell::tests::v5_tab_focused_open_consumes_enter_and_space_before_global_actions ... ok
+test shell::tests::displays_v8_future_settings_disable_mouse_keyboard_and_apply ... ok
+test shell::tests::v6_focus_chosen_after_draw_wins_over_deferred_recovery ... ok
+test shell::tests::displays_v8_mouse_draft_cancel_keeps_windows_core_and_disk ... ok
+test shell::tests::placement_v11_large_or_nonconvergent_frame_response_stops_and_rolls_back ... ok
+test shell::tests::v5_nonbutton_navigation_and_disabled_controls_keep_their_scope ... ok
+test shell::tests::v6_removed_modal_button_restores_keyboard_traversal ... ok
+test shell::tests::v6_import_and_swap_keep_runtime_results_when_saving_fails ... ok
+test shell::tests::v6_removed_jump_commit_restores_keyboard_traversal ... ok
+test shell::tests::v5_jump_editing_precedes_global_backspace_and_numeric_bindings ... ok
+test shell::tests::v6_save_failure_has_one_owner_and_keeps_unrelated_error ... ok
+test shell::tests::v6_removed_stop_restores_keyboard_traversal ... ok
+test shell::tests::v5_tab_focused_stop_consumes_enter_and_space ... ok
+test shell::tests::v6_retry_success_clears_save_feedback_and_restores_keyboard ... ok
+test shell::tests::displays_v9_conflict_and_offline_draft_refuse_apply_from_real_controls ... ok
+test shell::tests::narrow_v10_display_panel_keeps_apply_cancel_inside_client ... ok
+
+test result: ok. 77 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.22s
+

@@ -1,0 +1,391 @@
+{
+  "utc": "2026-10-15T06:33:03.950792+00:00",
+  "scope": "Completed V13 native runs; first four scoped clean, fifth F12 FAIL. No current-source assertion after release.",
+  "freeze_sha256": "d3689820edf788e4e55d485b644f58007c4616e6ca49262de9aa057d5e86fb91",
+  "pre_release_identity": {
+    "utc": "2026-10-15T06:31:45.484282+00:00",
+    "source_count": 609,
+    "mismatches": [],
+    "exe_match": true,
+    "reason": "V13 native F12 on_hover_status_change; all five processes exited before source release"
+  },
+  "runs": [
+    {
+      "tag": "v13-main",
+      "pid": 182160,
+      "started": "2026-10-15T06:01:37.3112813Z",
+      "exited": "2026-10-15T06:11:40.7554620Z",
+      "exit_code": 0,
+      "empty_final_windows": true,
+      "config_before_sha256": "23b646a92a5ec6aed608c9d732dc8a13096dc138a89e9d220d87adde1386a186",
+      "config_after_sha256": "23b646a92a5ec6aed608c9d732dc8a13096dc138a89e9d220d87adde1386a186",
+      "config_bytes_equal": true,
+      "config_parsed_equal": true,
+      "final_display": {
+        "audience_fullscreen": true,
+        "presenter_start_fullscreen": false,
+        "single_monitor_mode": "presenter_only",
+        "monitors": [
+          {
+            "friendly_name": "Generic PnP Monitor",
+            "id": "device:\\\\?\\display#bkx2700#5&16631d0&0&uid8451#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+            "role": "presenter"
+          },
+          {
+            "friendly_name": "Generic PnP Monitor",
+            "id": "device:\\\\?\\display#boe0d5a#5&16631d0&0&uid8448#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+            "role": "none"
+          },
+          {
+            "friendly_name": "Generic PnP Monitor",
+            "id": "device:\\\\?\\display#rtk2560#4&2878f4bf&0&uid69#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+            "role": "audience"
+          }
+        ]
+      },
+      "final_general": {
+        "debug_overlay": false,
+        "language": "zh-CN",
+        "recent_files": [
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\pdf\\raster.pdf"
+        ],
+        "recent_files_limit": 10,
+        "reopen_last_document": false,
+        "theme": "light"
+      },
+      "findings": [],
+      "stderr_empty": true,
+      "poll_cancel_before_quit": true,
+      "close_result": "PASS_SCOPED"
+    },
+    {
+      "tag": "v13-dark",
+      "pid": 53500,
+      "started": "2026-10-15T06:11:59.1864029Z",
+      "exited": "2026-10-15T06:14:02.2166260Z",
+      "exit_code": 0,
+      "empty_final_windows": true,
+      "config_before_sha256": "b96b8708fcb7207f7673c322be62d1f2f68d1c9ff382fe3607fbf7d0d7249ab9",
+      "config_after_sha256": "b96b8708fcb7207f7673c322be62d1f2f68d1c9ff382fe3607fbf7d0d7249ab9",
+      "config_bytes_equal": true,
+      "config_parsed_equal": true,
+      "final_display": {
+        "audience_fullscreen": true,
+        "presenter_start_fullscreen": false,
+        "single_monitor_mode": "presenter_only",
+        "monitors": [
+          {
+            "friendly_name": "Native acceptance A",
+            "id": "device:\\\\?\\display#boe0d5a#5&16631d0&0&uid8448#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+            "role": "audience"
+          },
+          {
+            "friendly_name": "Native acceptance B",
+            "id": "device:\\\\?\\display#bkx2700#5&16631d0&0&uid8451#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+            "role": "presenter"
+          },
+          {
+            "friendly_name": "Native acceptance C",
+            "id": "device:\\\\?\\display#rtk2560#4&2878f4bf&0&uid69#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+            "role": "none"
+          }
+        ]
+      },
+      "final_general": {
+        "debug_overlay": false,
+        "language": "zh-CN",
+        "recent_files": [
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\pdf\\raster.pdf"
+        ],
+        "recent_files_limit": 10,
+        "reopen_last_document": false,
+        "theme": "dark"
+      },
+      "findings": [],
+      "stderr_empty": true,
+      "poll_cancel_before_quit": true,
+      "close_result": "PASS_SCOPED"
+    },
+    {
+      "tag": "v13-en",
+      "pid": 184232,
+      "started": "2026-10-15T06:14:20.9780268Z",
+      "exited": "2026-10-15T06:23:25.2475947Z",
+      "exit_code": 0,
+      "empty_final_windows": true,
+      "config_before_sha256": "b29e71750a478c6b4e55910a158e599afe8f8a831fa3b081692321b287274676",
+      "config_after_sha256": "d142b6541e9c2e22f1e21292ba620fa7be70384d9aa64ff9182b83568db444b1",
+      "config_bytes_equal": false,
+      "config_parsed_equal": true,
+      "final_display": {
+        "audience_fullscreen": true,
+        "presenter_start_fullscreen": false,
+        "single_monitor_mode": "presenter_only",
+        "monitors": [
+          {
+            "friendly_name": "Native acceptance A",
+            "id": "device:\\\\?\\display#boe0d5a#5&16631d0&0&uid8448#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+            "role": "audience"
+          },
+          {
+            "friendly_name": "Native acceptance B",
+            "id": "device:\\\\?\\display#bkx2700#5&16631d0&0&uid8451#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+            "role": "presenter"
+          },
+          {
+            "friendly_name": "Native acceptance C",
+            "id": "device:\\\\?\\display#rtk2560#4&2878f4bf&0&uid69#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+            "role": "none"
+          }
+        ]
+      },
+      "final_general": {
+        "debug_overlay": false,
+        "language": "en-US",
+        "recent_files": [
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\pdf\\raster.pdf"
+        ],
+        "recent_files_limit": 10,
+        "reopen_last_document": false,
+        "theme": "light"
+      },
+      "findings": [],
+      "stderr_empty": true,
+      "poll_cancel_before_quit": true,
+      "close_result": "PASS_SCOPED"
+    },
+    {
+      "tag": "v13-open",
+      "pid": 183852,
+      "started": "2026-10-15T06:23:56.9674108Z",
+      "exited": "2026-10-15T06:26:41.2129441Z",
+      "exit_code": 0,
+      "empty_final_windows": true,
+      "config_before_sha256": "23b646a92a5ec6aed608c9d732dc8a13096dc138a89e9d220d87adde1386a186",
+      "config_after_sha256": "23b646a92a5ec6aed608c9d732dc8a13096dc138a89e9d220d87adde1386a186",
+      "config_bytes_equal": true,
+      "config_parsed_equal": true,
+      "final_display": {
+        "audience_fullscreen": true,
+        "presenter_start_fullscreen": false,
+        "single_monitor_mode": "presenter_only",
+        "monitors": [
+          {
+            "friendly_name": "Generic PnP Monitor",
+            "id": "device:\\\\?\\display#bkx2700#5&16631d0&0&uid8451#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+            "role": "presenter"
+          },
+          {
+            "friendly_name": "Generic PnP Monitor",
+            "id": "device:\\\\?\\display#boe0d5a#5&16631d0&0&uid8448#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+            "role": "none"
+          },
+          {
+            "friendly_name": "Generic PnP Monitor",
+            "id": "device:\\\\?\\display#rtk2560#4&2878f4bf&0&uid69#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+            "role": "audience"
+          }
+        ]
+      },
+      "final_general": {
+        "debug_overlay": false,
+        "language": "zh-CN",
+        "recent_files": [
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\pdf\\raster.pdf"
+        ],
+        "recent_files_limit": 10,
+        "reopen_last_document": false,
+        "theme": "light"
+      },
+      "findings": [],
+      "stderr_empty": true,
+      "poll_cancel_before_quit": true,
+      "close_result": "PASS_SCOPED"
+    },
+    {
+      "tag": "v13-light-small",
+      "pid": 172512,
+      "started": "2026-10-15T06:28:19.5049810Z",
+      "exited": "2026-10-15T06:30:22.1067235Z",
+      "exit_code": 0,
+      "empty_final_windows": true,
+      "config_before_sha256": "23b646a92a5ec6aed608c9d732dc8a13096dc138a89e9d220d87adde1386a186",
+      "config_after_sha256": "23b646a92a5ec6aed608c9d732dc8a13096dc138a89e9d220d87adde1386a186",
+      "config_bytes_equal": true,
+      "config_parsed_equal": true,
+      "final_display": {
+        "audience_fullscreen": true,
+        "presenter_start_fullscreen": false,
+        "single_monitor_mode": "presenter_only",
+        "monitors": [
+          {
+            "friendly_name": "Generic PnP Monitor",
+            "id": "device:\\\\?\\display#bkx2700#5&16631d0&0&uid8451#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+            "role": "presenter"
+          },
+          {
+            "friendly_name": "Generic PnP Monitor",
+            "id": "device:\\\\?\\display#boe0d5a#5&16631d0&0&uid8448#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+            "role": "none"
+          },
+          {
+            "friendly_name": "Generic PnP Monitor",
+            "id": "device:\\\\?\\display#rtk2560#4&2878f4bf&0&uid69#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+            "role": "audience"
+          }
+        ]
+      },
+      "final_general": {
+        "debug_overlay": false,
+        "language": "zh-CN",
+        "recent_files": [
+          "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\pdf\\raster.pdf"
+        ],
+        "recent_files_limit": 10,
+        "reopen_last_document": false,
+        "theme": "light"
+      },
+      "findings": [
+        {
+          "line": 18,
+          "text": "2026-10-15T06:30:21.938645Z ERROR : vendor\\gpui\\src\\window.rs:1943: window not found"
+        }
+      ],
+      "stderr_empty": true,
+      "poll_cancel_before_quit": true,
+      "close_result": "FAIL_F12"
+    }
+  ],
+  "screenshots": [
+    {
+      "metadata": "v13-c-initial-placement.json",
+      "image": "v13-c-initial-placement-0.jpg",
+      "sha256": "3eae60d438181059cb3b1282b3104fbc02687eee14390da4c32065477ea85a13"
+    },
+    {
+      "metadata": "v13-dark-320x640-displays-bottom.json",
+      "image": "v13-dark-320x640-displays-bottom-0.jpg",
+      "sha256": "cd68b8bca0da1f43cd63d4a52ecb82295c88119f8111613211fb251c2e674477"
+    },
+    {
+      "metadata": "v13-dark-320x640-displays-top.json",
+      "image": "v13-dark-320x640-displays-top-0.jpg",
+      "sha256": "28624d6762a5430089a87c93f32abcf98f3b0daf99dfc5694f30cf872725841f"
+    },
+    {
+      "metadata": "v13-dark-320x640-draft.json",
+      "image": "v13-dark-320x640-draft-0.jpg",
+      "sha256": "82f5568d186866b5596df69b2b644e258721421387c54b4655d91905b8144ac1"
+    },
+    {
+      "metadata": "v13-dark-320x640-ready.json",
+      "image": "v13-dark-320x640-ready-0.jpg",
+      "sha256": "d181539f0fccd6f33d0c3f844b78334afc3422313b5334197f1f4f7320d17314"
+    },
+    {
+      "metadata": "v13-displays-b-c.json",
+      "image": "v13-displays-b-c-0.jpg",
+      "sha256": "d9731adb5db20034ce10bb70cb6ae6952533e4960725056e9ec009efd1947a47"
+    },
+    {
+      "metadata": "v13-en-1440x900-displays.json",
+      "image": "v13-en-1440x900-displays-0.jpg",
+      "sha256": "f83729ef7467394468364921c1e195e33332452021ebe55450a5c43c4bad9de7"
+    },
+    {
+      "metadata": "v13-en-1440x900-ready.json",
+      "image": "v13-en-1440x900-ready-0.jpg",
+      "sha256": "9ff37adc34b097412ceb17f7cc4184ba51cd97b98dc23a550723fda5b24959da"
+    },
+    {
+      "metadata": "v13-en-audience-close-ready.json",
+      "image": "v13-en-audience-close-ready-0.jpg",
+      "sha256": "46e3d333bbf924361731f4d0710329fd228d0b69865bf9d390eabbc0fce2904b"
+    },
+    {
+      "metadata": "v13-en-audience.json",
+      "image": "v13-en-audience-0.jpg",
+      "sha256": "8c7bc7777caa26f20dd17725c2f549efa45c31643f88135a7dbda2534f28eeba"
+    },
+    {
+      "metadata": "v13-en-presenting.json",
+      "image": "v13-en-presenting-0.jpg",
+      "sha256": "492880a55971e2933c36112e93c8461d4f2aeff9fd916c3a8f50f91d97a4b61f"
+    },
+    {
+      "metadata": "v13-en-restarted-before-close.json",
+      "image": "v13-en-restarted-before-close-0.jpg",
+      "sha256": "afcd3d0fce11d4245c75fa967b1b14d38520952146468d7f3364e525d6c4e9c7"
+    },
+    {
+      "metadata": "v13-light-320x640-displays-bottom.json",
+      "image": "v13-light-320x640-displays-bottom-0.jpg",
+      "sha256": "cc89e73292a5b98599c0c8b74e2757091a62cad2dca3b76d39fbf84c2b617534"
+    },
+    {
+      "metadata": "v13-light-320x640-displays-top.json",
+      "image": "v13-light-320x640-displays-top-0.jpg",
+      "sha256": "5bf8229062121b06af08caddbad856b16ac4b1c664f872baedd64e903462a5b5"
+    },
+    {
+      "metadata": "v13-light-320x640-ready.json",
+      "image": "v13-light-320x640-ready-0.jpg",
+      "sha256": "9319f75a3f6297bbc63b8a68a03462fa8a05563a1e4e541a688d411eb1c34c1e"
+    },
+    {
+      "metadata": "v13-light-390x844-displays-bottom.json",
+      "image": "v13-light-390x844-displays-bottom-0.jpg",
+      "sha256": "a730d7a109876bf3c7008b24791c24ebd056a4298ccee9e6a43841ce5d656117"
+    },
+    {
+      "metadata": "v13-light-390x844-displays-top.json",
+      "image": "v13-light-390x844-displays-top-0.jpg",
+      "sha256": "48b284b082a1a22472e76fae3dd1e5a4ebd90e6137c80d4c0a8fd172130d4138"
+    },
+    {
+      "metadata": "v13-light-390x844-ready.json",
+      "image": "v13-light-390x844-ready-0.jpg",
+      "sha256": "b96b580d4af949c1a1374400a0328d9591f1dee1630d91fd56c120654d1ce480"
+    },
+    {
+      "metadata": "v13-light-800x600-displays-bottom.json",
+      "image": "v13-light-800x600-displays-bottom-0.jpg",
+      "sha256": "babec88d8d2985329a8431131d03d527c1aafe46fc932932102274dd9e909184"
+    },
+    {
+      "metadata": "v13-light-800x600-displays-top.json",
+      "image": "v13-light-800x600-displays-top-0.jpg",
+      "sha256": "bf56c3909cbac5cd782d9bb4b9ac7062c3d811a38a38f3ed8c3d91d17cdc194f"
+    },
+    {
+      "metadata": "v13-light-800x600-ready.json",
+      "image": "v13-light-800x600-ready-0.jpg",
+      "sha256": "b11281297275093eab0b959a7ac80b5d5643d59b9bb832288893c9ef1f95fd23"
+    },
+    {
+      "metadata": "v13-main-ready.json",
+      "image": "v13-main-ready-0.jpg",
+      "sha256": "ed81f60955372b77062cde927ae946c1268b839472438bcd29f306d794db3f7a"
+    },
+    {
+      "metadata": "v13-open-cancel.json",
+      "image": "v13-open-cancel-0.jpg",
+      "sha256": "d49900531354e7cdfc6044fd5924b5ae0b0be9b6bd591a076ed151da2108cb7e"
+    },
+    {
+      "metadata": "v13-open-chooser-ready.json",
+      "image": "v13-open-chooser-ready-0.jpg",
+      "sha256": "e8d3d7b88d7feac27bb901216fce96a7c1d0a418757f609342d5e84dc5b94e56"
+    },
+    {
+      "metadata": "v13-open-idle.json",
+      "image": "v13-open-idle-0.jpg",
+      "sha256": "647f9efcfea4d8921be22439c53d0976b906cd16b819fc1067ec650801c50598"
+    },
+    {
+      "metadata": "v13-return-b-ready.json",
+      "image": "v13-return-b-ready-0.jpg",
+      "sha256": "ed81f60955372b77062cde927ae946c1268b839472438bcd29f306d794db3f7a"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{"file": ".trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md", "reason": "Latest explicit user authorization: implementation-first gates, deferred hardware/native/size/performance matrices, retained functional checks and closeout scope"}
+{"file": ".trellis/spec/frontend/index.md", "reason": "GPUI view layer rules and window boundaries"}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Window rules for presenter/audience"}
+{"file": ".trellis/spec/frontend/type-safety.md", "reason": "Newtypes and the notes boundary"}
+{"file": "docs/PROJECT_PLAN.md", "reason": "v0.3 source plan: scope, invariants, settings schema, monitor roles"}
+{"file": ".trellis/tasks/10-14-presenter-v0.3/design.md", "reason": "Cross-task shared contracts (SessionStage, MonitorId, Settings layout)"}
+{"file": ".trellis/tasks/10-14-presenter-v0.3/prd.md", "reason": "Source requirements, milestone scope and dependency map"}
+{"file": ".trellis/tasks/10-14-presenter-v0.3/traceability.md", "reason": "Requirement to owner, design step and verification coverage"}
+{"file": ".trellis/tasks/10-14-presenter-v0.3/research/repository-baseline.md", "reason": "Verified skeleton and semantic scan ledger; task 01 spec conflicts"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-08-presenter-workbench/prd.md", "reason": "Child requirements and explicit dependencies"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-08-presenter-workbench/design.md", "reason": "Reviewed design choices, ownership, errors and rollback"}
+{"file": ".trellis/tasks/archive/2026-10/10-14-08-presenter-workbench/implement.md", "reason": "Ordered steps and layered verification gates"}
+{"file": ".trellis/tasks/10-14-presenter-v0.3/research/behavior-evidence.md", "reason": "Allowed user-facing behavior evidence, independent Rust design and limitations"}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Required pure/native checks and no ignore; Rust 1.99/unsafe policy"}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "Typed errors across crate boundaries"}
+{"file": ".trellis/spec/frontend/state-management.md", "reason": "Snapshot state boundary; role/settings stale clauses resolved by parent and task 01"}
+{"file": "DESIGN.md", "reason": "R-45 native Claude-inspired tokens, component states, theme boundaries and visual acceptance"}
+{"file": ".trellis/tasks/10-14-presenter-v0.3/research/display-assignment-plan.md", "reason": "Current approved screen-selection direction: count/number, explicit app/PDF roles, 07 ownership and honest evidence"}

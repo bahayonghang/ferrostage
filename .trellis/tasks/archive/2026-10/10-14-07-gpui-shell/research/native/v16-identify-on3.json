@@ -1,0 +1,34 @@
+{
+  "utc": "2026-10-15T10:15:05.134Z",
+  "window": {
+    "app": "process:D:\\mbx-cache\\targets\\v1\\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0\\debug\\ferrostage.exe",
+    "id": 1971338,
+    "title": "pympress-notes.pdf — 准备就绪 — FerroStage"
+  },
+  "accessibility": {
+    "focused_element": "13 button 识别屏幕 ID: identify-displays",
+    "tree": "Window: \"pympress-notes.pdf — 准备就绪 — FerroStage\", App: ferrostage.exe.\n\t0 region pympress-notes.pdf — 准备就绪 — FerroStage Secondary Actions: Raise\n\t\t1 title bar (settable, string) Value: pympress-notes.pdf — 准备就绪 — FerroStage\n\t\t\t2 menu bar System ID: MenuBar\n\t\t\t\t3 menu item System\n\t\t\t4 button Minimize\n\t\t\t5 button Maximize\n\t\t\t6 button Close\n\t\t7 application FerroStage 讲者窗口\n\t\t\t13 button 识别屏幕 ID: identify-displays\n\t\t\t14 button 重新检测 ID: refresh-displays\n\t\t\t15 button 1 · Generic PnP Monitor ID: display-app-1\n\t\t\t16 button 2 · Generic PnP Monitor ID: display-app-2\n\t\t\t17 button 3 · Generic PnP Monitor（已选择） ID: display-app-3\n\t\t\t18 button 不播放 ID: display-pdf-none\n\t\t\t19 button 1 · Generic PnP Monitor（已选择） ID: display-pdf-1\n\t\t\t20 button 2 · Generic PnP Monitor ID: display-pdf-2\n\t\t\t21 button 3 · Generic PnP Monitor ID: display-pdf-3\n\t\t\t22 button 应用 ID: apply-displays\n\t\t\t23 button 取消 ID: cancel-displays\n\nThe focused UI element is 13 button 识别屏幕 ID: identify-displays."
+  },
+  "screenshots": [
+    {
+      "height": 791,
+      "id": "screenshot-0",
+      "originX": 2608,
+      "originY": -491,
+      "width": 1005,
+      "zIndex": 0,
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/native/v16-identify-on3-0.jpg",
+      "sha256": "da52113720dc32bb504113b850440be801d1534815a02569b1d87febedfdf2bd"
+    },
+    {
+      "height": 217,
+      "id": "screenshot-1",
+      "originX": 3135,
+      "originY": -1,
+      "width": 363,
+      "zIndex": 1,
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/native/v16-identify-on3-1.jpg",
+      "sha256": "3a82e114b690cd0b079d1a04dd1907c2bccdb1b79a815413e6bb09825a5ff1fb"
+    }
+  ]
+}

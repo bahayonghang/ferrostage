@@ -1,0 +1,9 @@
+{
+  "utc": "2026-10-15T14:17:35.4773002Z",
+  "pid": 74892,
+  "timeout": false,
+  "exit_code": 0,
+  "exe_sha256": "12237E2997EAEE7BB612CAFDB4AB0D5147855C20C49125C0A78B13BBE86D78FE",
+  "stdout": "audio_duration=0:00:12.000000000 bus_EOS=true video_frames=0 audio_output=fakesink\n",
+  "stderr": ""
+}

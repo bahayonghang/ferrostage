@@ -1,0 +1,87 @@
+ M .trellis/spec/backend/database-guidelines.md
+ M .trellis/spec/backend/directory-structure.md
+ M .trellis/spec/backend/logging-guidelines.md
+ M .trellis/spec/backend/quality-guidelines.md
+ M .trellis/spec/frontend/component-guidelines.md
+ M .trellis/spec/frontend/hook-guidelines.md
+ M .trellis/spec/frontend/quality-guidelines.md
+ M .trellis/spec/frontend/state-management.md
+ M .trellis/spec/frontend/type-safety.md
+ M .trellis/tasks/10-14-01-docs-sync/prd.md
+ M .trellis/tasks/10-14-01-docs-sync/task.json
+ M .trellis/tasks/10-14-02-settings-schema/design.md
+ M .trellis/tasks/10-14-02-settings-schema/implement.md
+ M .trellis/tasks/10-14-02-settings-schema/prd.md
+ M .trellis/tasks/10-14-02-settings-schema/task.json
+ M .trellis/tasks/10-14-04-session-lifecycle/design.md
+ M .trellis/tasks/10-14-04-session-lifecycle/implement.md
+ M .trellis/tasks/10-14-04-session-lifecycle/task.json
+ M .trellis/tasks/10-14-07-gpui-shell/check.jsonl
+ M .trellis/tasks/10-14-07-gpui-shell/design.md
+ M .trellis/tasks/10-14-07-gpui-shell/implement.jsonl
+ M .trellis/tasks/10-14-07-gpui-shell/implement.md
+ M .trellis/tasks/10-14-07-gpui-shell/prd.md
+ M .trellis/tasks/10-14-08-presenter-workbench/check.jsonl
+ M .trellis/tasks/10-14-08-presenter-workbench/design.md
+ M .trellis/tasks/10-14-08-presenter-workbench/implement.jsonl
+ M .trellis/tasks/10-14-08-presenter-workbench/implement.md
+ M .trellis/tasks/10-14-08-presenter-workbench/prd.md
+ M .trellis/tasks/10-14-09-settings-ui/check.jsonl
+ M .trellis/tasks/10-14-09-settings-ui/design.md
+ M .trellis/tasks/10-14-09-settings-ui/implement.jsonl
+ M .trellis/tasks/10-14-09-settings-ui/implement.md
+ M .trellis/tasks/10-14-09-settings-ui/prd.md
+ M .trellis/tasks/10-14-11-media-playback/implement.md
+ M .trellis/tasks/10-14-presenter-v0.3/check.jsonl
+ M .trellis/tasks/10-14-presenter-v0.3/design.md
+ M .trellis/tasks/10-14-presenter-v0.3/implement.jsonl
+ M .trellis/tasks/10-14-presenter-v0.3/implement.md
+ M .trellis/tasks/10-14-presenter-v0.3/prd.md
+ M .trellis/tasks/10-14-presenter-v0.3/traceability.md
+ M AGENTS.md
+ M Cargo.lock
+ M README.md
+ M README.zh-CN.md
+ M crates/ferrostage-app/src/main.rs
+ M crates/ferrostage-core/src/command.rs
+ M crates/ferrostage-core/src/error.rs
+ M crates/ferrostage-core/src/lib.rs
+ M crates/ferrostage-core/src/snapshot.rs
+ M crates/ferrostage-core/src/state.rs
+ M crates/ferrostage-document/src/lib.rs
+ M crates/ferrostage-settings/Cargo.toml
+ M crates/ferrostage-settings/src/lib.rs
+ M docs/PROJECT_PLAN.md
+ M docs/adr/ADR-002-pdf-backends.md
+ M docs/adr/ADR-003-audience-snapshot.md
+ M docs/adr/ADR-004-lock-free-reload.md
+ M docs/architecture.md
+ M docs/beamer-notes.md
+ M docs/feature-parity.md
+ M docs/packaging.md
+ M tests/hot_reload/README.md
+?? .trellis/tasks/10-14-01-docs-sync/research/
+?? .trellis/tasks/10-14-02-settings-schema/research/
+?? .trellis/tasks/10-14-04-session-lifecycle/research/
+?? .trellis/tasks/10-14-presenter-v0.3/execution-state.md
+?? .trellis/tasks/10-14-presenter-v0.3/research/design-contrast-2026-10-14.md
+?? .trellis/tasks/10-14-presenter-v0.3/research/native-research-resume.md
+?? .trellis/tasks/10-14-presenter-v0.3/research/resume-audit-2026-10-14.md
+?? DESIGN.md
+?? crates/ferrostage-app/tests/
+?? crates/ferrostage-core/src/display.rs
+?? crates/ferrostage-core/src/frame.rs
+?? crates/ferrostage-core/src/session.rs
+?? crates/ferrostage-core/src/state/
+?? crates/ferrostage-core/src/timer.rs
+?? crates/ferrostage-settings/src/error.rs
+?? crates/ferrostage-settings/src/keybindings.rs
+?? crates/ferrostage-settings/src/merge.rs
+?? crates/ferrostage-settings/src/parse.rs
+?? crates/ferrostage-settings/src/parse/
+?? crates/ferrostage-settings/src/schema.rs
+?? crates/ferrostage-settings/src/store.rs
+?? crates/ferrostage-settings/src/store/
+?? crates/ferrostage-settings/src/tests/
+?? docs/adr/ADR-006-session-lifecycle.md
+?? docs/adr/ADR-007-monitor-roles.md

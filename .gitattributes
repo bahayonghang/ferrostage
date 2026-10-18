@@ -7,3 +7,14 @@
 # picking either side (task state lives in task.json, not index.md). See
 # .trellis/spec/cli/backend/directory-structure.md for details.
 .trellis/workspace/*/journal-*.md merge=union
+
+# PDF xref offsets and native evidence hashes require the original bytes.
+*.pdf binary
+.trellis/tasks/**/research/** -text
+
+# Keep the independently reviewed maintenance sources and notices intact.
+vendor/** -text
+
+# Preserve upstream media license and build-recipe provenance byte-for-byte.
+packaging/media/notices/** -text
+packaging/media/recipes/** -text

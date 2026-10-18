@@ -1,0 +1,23 @@
+{
+  "capturedAt": "2026-10-15T02:37:07.853Z",
+  "window": {
+    "app": "process:D:\\mbx-cache\\targets\\v1\\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0\\debug\\ferrostage.exe",
+    "id": 85396752,
+    "title": "raster.pdf — 准备就绪 — FerroStage"
+  },
+  "accessibility": {
+    "focused_element": "14 button 打开 PDF ID: open",
+    "tree": "Window: \"raster.pdf — 准备就绪 — FerroStage\", App: ferrostage.exe.\n\t0 region raster.pdf — 准备就绪 — FerroStage Secondary Actions: Raise\n\t\t1 title bar (settable, string) Value: raster.pdf — 准备就绪 — FerroStage\n\t\t\t2 menu bar System ID: MenuBar\n\t\t\t\t3 menu item System\n\t\t\t4 button Minimize\n\t\t\t5 button Maximize\n\t\t\t6 button Close\n\t\t7 application FerroStage 讲者窗口\n\t\t\t14 button 打开 PDF ID: open\n\t\t\t15 button 设置 ID: settings\n\t\t\t16 button 交换屏幕 ID: swap\n\t\t\t17 button raster.pdf ID: recent-0\n\t\t\t18 button 开始演示 ID: start\n\nThe focused UI element is 14 button 打开 PDF ID: open."
+  },
+  "screenshots": [
+    {
+      "file": "v6-close-modal-tab-open-pass-0.jpg",
+      "sha256": "c622c868fee907681ca88b80ad82fbbdcd84100cdbf3108b0878fb39e3651b42",
+      "id": "screenshot-0",
+      "width": 1323,
+      "height": 929,
+      "originX": -2105,
+      "originY": 38
+    }
+  ]
+}

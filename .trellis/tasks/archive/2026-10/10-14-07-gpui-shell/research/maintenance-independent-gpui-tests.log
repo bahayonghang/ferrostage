@@ -1,0 +1,31 @@
+   Compiling gpui v0.2.2 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\vendor\gpui)
+warning: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\target\debug\incremental\gpui-03nf84wrqppdm\s-hn7vtukgc2-04ya19v-working`
+
+   Compiling gpui_windows v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling gpui_platform v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+warning: `gpui` (lib) generated 1 warning
+warning: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\target\debug\incremental\gpui-0bpr7dstss2iv\s-hn7vtzvjye-1qgwgvr-working`
+
+warning: `gpui` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 24.57s
+     Running unittests src\gpui.rs (cache/gpui-maintenance-candidate/target\debug\deps\gpui-7c340ce83c080323.exe)
+
+running 15 tests
+test svg_renderer::tests::fix_generic_font_families_monospace_resolves_to_lilex ... ok
+test svg_renderer::tests::fix_generic_font_families_sets_all_families ... ok
+test svg_renderer::maintenance_tests::collection_lookup_respects_both_face_indices ... ok
+test svg_renderer::maintenance_tests::fallback_excludes_used_and_missing_glyph_faces ... ok
+test svg_renderer::maintenance_tests::glyph_lookup_checks_real_face_coverage_and_missing_id ... ok
+test svg_renderer::tests::test_select_emoji_font_skips_family_without_glyph ... ok
+test svg_renderer::tests::preserves_aspect_ratio_for_width_constrained_size ... ok
+test svg_renderer::tests::renders_parsed_svg_at_requested_size ... ok
+test svg_renderer::tests::test_is_emoji_presentation ... ok
+test svg_renderer::maintenance_tests::shape_keeps_bgra_alpha_and_requested_size ... ok
+test svg_renderer::maintenance_tests::svgz_decodes_to_identical_shape_pixels ... ok
+test svg_renderer::tests::text_with_split_glyph_clusters_in_mixed_fonts_does_not_panic ... ok
+test svg_renderer::maintenance_cmap_tests::unicode_coverage_preserves_formats_records_and_legacy_edge_results ... ok
+test svg_renderer::maintenance_tests::text_fallback_renders_the_available_glyph ... ok
+test svg_renderer::maintenance_tests::ligature_combining_and_mixed_font_text_produces_visible_output ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 351 filtered out; finished in 0.01s
+

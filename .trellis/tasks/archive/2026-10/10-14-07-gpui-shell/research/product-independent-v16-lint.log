@@ -1,0 +1,3 @@
+[WARN ] the managed target directory is not protected from collection: could not open D:\mbx-cache\targets\v1\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0.lock: Access is denied. (os error 5)
+[WARN ] the managed target directory was not recorded: Access is denied. (os error 5) at path "D:\\mbx-cache\\targets\\v1\\.mbx-5u8TtH"
+mbx[error]: Access is denied. (os error 5)

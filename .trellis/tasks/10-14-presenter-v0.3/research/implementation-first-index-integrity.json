@@ -1,0 +1,16 @@
+{
+  "staged_paths": 257,
+  "preserved_evidence_and_vendor_bytes": 250,
+  "index_disk_mismatches": [],
+  "strict_nonlog_check": {
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "raw_log_whitespace_preserved": [
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v16-deny.log",
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v16-just-ci.log",
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v16-root-hidden-cache-access.log"
+  ],
+  "note": "Default staged check reports CRLF and original raw-log blanks. Explicit CR-at-EOL recognition does not modify files or Git settings; only three immutable original logs retain substantive whitespace. No Rust lint/advisory waiver."
+}

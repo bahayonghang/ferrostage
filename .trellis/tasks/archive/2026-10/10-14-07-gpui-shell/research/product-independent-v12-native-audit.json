@@ -1,0 +1,55 @@
+{
+  "v11-main": {
+    "pid": 181304,
+    "exit_code": 0,
+    "empty_final_windows": true,
+    "bytes_identical": false,
+    "parsed_identical": false,
+    "only_crlf_to_lf": false,
+    "errors": [],
+    "before_sha256": "fd9004c7b16f967a42e90bc1a6302d827bc24e0e674ff4fb47de78543b5f9d08",
+    "after_sha256": "23b646a92a5ec6aed608c9d732dc8a13096dc138a89e9d220d87adde1386a186"
+  },
+  "v11-relaunch": {
+    "pid": 33228,
+    "exit_code": 0,
+    "empty_final_windows": true,
+    "bytes_identical": true,
+    "parsed_identical": true,
+    "only_crlf_to_lf": true,
+    "errors": [],
+    "before_sha256": "23b646a92a5ec6aed608c9d732dc8a13096dc138a89e9d220d87adde1386a186",
+    "after_sha256": "23b646a92a5ec6aed608c9d732dc8a13096dc138a89e9d220d87adde1386a186"
+  },
+  "v11-future": {
+    "pid": 180632,
+    "exit_code": 0,
+    "empty_final_windows": true,
+    "bytes_identical": true,
+    "parsed_identical": true,
+    "only_crlf_to_lf": false,
+    "errors": [],
+    "before_sha256": "79adcde8486b985c373c99b19bf37757636fe80c791de0706ff4ee962d9f9167",
+    "after_sha256": "79adcde8486b985c373c99b19bf37757636fe80c791de0706ff4ee962d9f9167"
+  },
+  "v11-dark": {
+    "pid": 133036,
+    "exit_code": 0,
+    "empty_final_windows": true,
+    "bytes_identical": false,
+    "parsed_identical": true,
+    "only_crlf_to_lf": true,
+    "errors": [
+      "2026-10-15T05:36:19.862676Z ERROR gpui_windows::dispatcher: C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\gpui_windows\\src\\dispatcher.rs:129: Invalid window handle. (0x80070578)"
+    ],
+    "before_sha256": "f174d092ed63177d6abe76ecc38585fc47df826051a34101cc82422f61c51969",
+    "after_sha256": "b96b8708fcb7207f7673c322be62d1f2f68d1c9ff382fe3607fbf7d0d7249ab9"
+  },
+  "v9_to_v12_changed_inputs": [
+    ".trellis/spec/frontend/component-guidelines.md",
+    ".trellis/spec/frontend/state-management.md",
+    "crates/ferrostage-ui/src/policy.rs",
+    "crates/ferrostage-ui/src/shell.rs"
+  ],
+  "assessment": "V9 separate Identify1/2/3 and V11 new-panel role migration/relaunch are applicable historical functional evidence. No V12/V13 native close PASS; initial undisturbed C full-frame visual UNVERIFIED. PRD first two new-UI checks supported with their explicit version-scoped index; combined unexecuted cases stay unchecked."
+}

@@ -1,0 +1,61 @@
+   Compiling harfrust v0.12.0 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\harfrust)
+warning: function `shape` is never used
+   --> D:\Documents\Code\Rust\Exp\ferrostage\vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+   Compiling usvg v0.48.1
+warning: `harfrust` (lib) generated 1 warning
+   Compiling resvg v0.48.1
+   Compiling ferrostage-maintenance-cmap-proof v0.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-product-proof)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.53s
+     Running unittests src\main.rs (cache/gpui-maintenance-cmap-proof/target\debug\deps\ferrostage_maintenance_cmap_proof-a383674681ebc98e.exe)
+
+running 4 tests
+format13: old=true, candidate=true
+format2: old=true, candidate=true
+multiple_unicode: old=true, candidate=true
+symbol_priority: old=true, candidate=true
+symbol_only: old=false, candidate=false
+test candidate_lookup_preserves_old_unicode_coverage ... ok
+format2_single: old=true, repaired=true, expected=true
+format2_double: old=true, repaired=true, expected=true
+format2_missing: old=false, repaired=false, expected=false
+format2_non_bmp: old=false, repaired=false, expected=false
+format2_zero_before_delta: old=false, repaired=false, expected=false
+format2_zero_after_delta: old=true, repaired=true, expected=true
+format2_negative_delta: old=false, repaired=false, expected=false
+format2_wrap_delta: old=true, repaired=true, expected=true
+format13: old=true, repaired=true, expected=true
+format12_non_bmp: old=true, repaired=true, expected=true
+second_unicode_record: old=true, repaired=true, expected=true
+symbol_priority: old=true, repaired=true, expected=true
+symbol_only: old=false, repaired=false, expected=false
+windows_unicode_bmp: old=true, repaired=true, expected=true
+windows_full_wrong_format: old=false, repaired=false, expected=false
+mac_only: old=false, repaired=false, expected=false
+format0: old=true, repaired=true, expected=true
+format4: old=true, repaired=true, expected=true
+format6: old=true, repaired=true, expected=true
+format10: old=true, repaired=true, expected=true
+format0_zero: old=false, repaired=false, expected=false
+format6_zero: old=true, repaired=true, expected=true
+format10_zero: old=true, repaired=true, expected=true
+format12_zero: old=true, repaired=true, expected=true
+format13_zero: old=true, repaired=true, expected=true
+test maintenance_cmap_tests::unicode_coverage_preserves_formats_records_and_legacy_edge_results ... ok
+format2_truncated: old=false, repaired=false, expected=false
+format2_bad_offset: old=false, repaired=false, expected=false
+zero_then_later_record: old=true, repaired=true, expected=true
+test maintenance_cmap_tests::compare_all_edges_with_original_parser ... ok
+SVG fallback format13: old painted=268 calls=1; repaired painted=268 calls=1
+SVG fallback format13: exact pixels equal=true
+SVG fallback format2: old painted=268 calls=1; repaired painted=268 calls=1
+SVG fallback format2: exact pixels equal=true
+test compare_real_svg_fallback_across_text_stacks ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+

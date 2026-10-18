@@ -1,0 +1,791 @@
+{
+  "captured_utc": "2026-10-14T16:13:17.571054+00:00",
+  "head": "ab78a84d96c7cf4a0bbc8dfd4f8e45da180bafb3",
+  "toolchain": "rustc 1.99.0 (b940084d7 2026-09-28)\nbinary: rustc\ncommit-hash: b940084d7eb6a299eb4bfeb8e34901bc051e7ac4\ncommit-date: 2026-09-28\nhost: x86_64-pc-windows-msvc\nrelease: 1.99.0\nLLVM version: 23.1.1",
+  "source_scope": "Final current workspace Rust sources and relevant manifests/artifacts, including parent-owned dependencies; ownership is listed in verification.md. Not a benchmark-start whole-tree snapshot.",
+  "sources": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "8a2715f8033c9e9bac78373dd8dc55b9424150e0de225a278330b6de1a0faefb",
+      "bytes": 2216,
+      "modified_utc": "2026-10-14T16:02:22.345658+00:00"
+    },
+    {
+      "path": ".trellis/spec/backend/directory-structure.md",
+      "sha256": "80d1732ac5d795d341d1565b2435afa0bbdded47f8e2a53859a9abaa53b24f87",
+      "bytes": 3804,
+      "modified_utc": "2026-10-14T16:07:24.701607+00:00"
+    },
+    {
+      "path": ".trellis/spec/backend/quality-guidelines.md",
+      "sha256": "dc94e58a04dbfa813560ec834aa779dc3a73cd73d9d91e0f99d7c80c0f9acda2",
+      "bytes": 1961,
+      "modified_utc": "2026-10-14T16:07:25.083676+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/design.md",
+      "sha256": "463b4e7c06f83305ce707fad765e3090c84e1143533dbac91403660f0193c433",
+      "bytes": 4819,
+      "modified_utc": "2026-10-14T16:12:43.464346+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/implement.md",
+      "sha256": "0814d7e2a1c6e071b39b3511918ff2d66950da9ad22c59694ef56835e5cf60d7",
+      "bytes": 11433,
+      "modified_utc": "2026-10-14T16:12:43.795835+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/prd.md",
+      "sha256": "502a1791e34b4272687bed11b02c1b74fad5f346974665cad85a3456d42d88d5",
+      "bytes": 4998,
+      "modified_utc": "2026-10-14T16:12:43.122680+00:00"
+    },
+    {
+      "path": "Cargo.lock",
+      "sha256": "308563e04d307756a56b4b2d2783aab4054c20bc8d8c19d4a663365f6fbafb7f",
+      "bytes": 45910,
+      "modified_utc": "2026-10-14T15:32:46.692948+00:00"
+    },
+    {
+      "path": "Cargo.toml",
+      "sha256": "fb19c4b84da4ef197afc2c858280f1d82cb1765dc5b57c61216cdd24750b78ac",
+      "bytes": 2191,
+      "modified_utc": "2026-10-14T15:32:15.956192+00:00"
+    },
+    {
+      "path": "crates/ferrostage-app/Cargo.toml",
+      "sha256": "b263907e4f203e9a71527f7bf4bbd9ac040e44a118b68a9292fd597bd202f272",
+      "bytes": 589,
+      "modified_utc": "2026-10-14T15:32:16.981463+00:00"
+    },
+    {
+      "path": "crates/ferrostage-app/src/main.rs",
+      "sha256": "d1814c722a6d433d81639ee32e0b8724023cd1351bedf1a325e31bc8ad8c8d8a",
+      "bytes": 3524,
+      "modified_utc": "2026-10-14T13:47:55.400179+00:00"
+    },
+    {
+      "path": "crates/ferrostage-app/tests/check_config.rs",
+      "sha256": "f25b03cab0bebd55c95fc8c4e2fc83ce66576a7ad622376a720a22e9a0f85d94",
+      "bytes": 4055,
+      "modified_utc": "2026-10-14T13:49:48.016811+00:00"
+    },
+    {
+      "path": "crates/ferrostage-core/Cargo.toml",
+      "sha256": "1392f75352671e3b4bf8a055fe4c4b1e23f795a03b82bef0855ee4036d291caf",
+      "bytes": 385,
+      "modified_utc": "2026-10-14T09:20:16.016053+00:00"
+    },
+    {
+      "path": "crates/ferrostage-core/src/command.rs",
+      "sha256": "c1cf09c69e751de78f6b6489c262848e1bd795ad9c0390057ffab015031f8d07",
+      "bytes": 2524,
+      "modified_utc": "2026-10-14T14:41:42.781940+00:00"
+    },
+    {
+      "path": "crates/ferrostage-core/src/display.rs",
+      "sha256": "56305f8ec193c2cf7ea52c27e7a1980fbe1f8fad15282c3e75e92a592951b730",
+      "bytes": 1656,
+      "modified_utc": "2026-10-14T14:59:26.350728+00:00"
+    },
+    {
+      "path": "crates/ferrostage-core/src/error.rs",
+      "sha256": "2ade629e553d28362e8de86ccec72241442fbd8b912c97611af2ebf9e8870cc0",
+      "bytes": 1300,
+      "modified_utc": "2026-10-14T14:37:09.880697+00:00"
+    },
+    {
+      "path": "crates/ferrostage-core/src/frame.rs",
+      "sha256": "e2eb5060144637bd1f2ed530d6431f70728addd3a8e2d071e175ee65755a5784",
+      "bytes": 3934,
+      "modified_utc": "2026-10-14T16:07:23.134652+00:00"
+    },
+    {
+      "path": "crates/ferrostage-core/src/geometry.rs",
+      "sha256": "dff5dbaa5fd79911a3472f20018f46f708265949ef37c1961e6e89f84412a8a9",
+      "bytes": 1594,
+      "modified_utc": "2026-10-14T09:20:26.944250+00:00"
+    },
+    {
+      "path": "crates/ferrostage-core/src/ids.rs",
+      "sha256": "12d3e95fa85836de2d6be0b940c78813fd1ea395a8b2499d0c8e442c1cfea56b",
+      "bytes": 1106,
+      "modified_utc": "2026-10-14T09:23:31.964556+00:00"
+    },
+    {
+      "path": "crates/ferrostage-core/src/lib.rs",
+      "sha256": "b45b9e2dd9a1d645ec5e37f7bbc7e5ac4e5faa5f5fc548799642d25ebf9ce398",
+      "bytes": 847,
+      "modified_utc": "2026-10-14T14:59:26.864481+00:00"
+    },
+    {
+      "path": "crates/ferrostage-core/src/session.rs",
+      "sha256": "e1afa04ed73441520f0f46aff20e3a9c9f3b089835f94ca941adbba655f7c41a",
+      "bytes": 589,
+      "modified_utc": "2026-10-14T14:37:08.235174+00:00"
+    },
+    {
+      "path": "crates/ferrostage-core/src/snapshot.rs",
+      "sha256": "29c37b2c1f238e85b2d54193e3b2e3fe4f89e3e912b703c0a852b6176659213a",
+      "bytes": 2287,
+      "modified_utc": "2026-10-14T14:41:42.789428+00:00"
+    },
+    {
+      "path": "crates/ferrostage-core/src/state/lifecycle_tests.rs",
+      "sha256": "3d4495b6bcae54d7ed533a85bb62da64aed1d888cfd116e5d1e81acf367fdf39",
+      "bytes": 9395,
+      "modified_utc": "2026-10-14T14:41:42.800701+00:00"
+    },
+    {
+      "path": "crates/ferrostage-core/src/state/property_tests.rs",
+      "sha256": "d0ac8ce7ed613711b1222a8b93f07e4ccd5bc546476573843a32cc492a17c03b",
+      "bytes": 2783,
+      "modified_utc": "2026-10-14T14:41:35.123410+00:00"
+    },
+    {
+      "path": "crates/ferrostage-core/src/state/tests.rs",
+      "sha256": "03a3681a7562e5954f224ec0d693844a50a16fc1d9d0a479e786526a65965343",
+      "bytes": 6192,
+      "modified_utc": "2026-10-14T14:41:42.813181+00:00"
+    },
+    {
+      "path": "crates/ferrostage-core/src/state.rs",
+      "sha256": "f385f23d62459f5d1003dcdd82868c683956bb200d9c889f51ae51d6cb87d1b3",
+      "bytes": 10438,
+      "modified_utc": "2026-10-14T14:41:42.816287+00:00"
+    },
+    {
+      "path": "crates/ferrostage-core/src/timer.rs",
+      "sha256": "7afe2e4a7ded53cc110e7b257e82f414814f4488bec0facd6013983a64ed421f",
+      "bytes": 1190,
+      "modified_utc": "2026-10-14T14:37:08.802336+00:00"
+    },
+    {
+      "path": "crates/ferrostage-document/Cargo.toml",
+      "sha256": "ffcf4129ffb2ec75257949f79e4a712a555eac67faf6f479e4e83bc031d032a0",
+      "bytes": 339,
+      "modified_utc": "2026-10-14T09:21:06.328228+00:00"
+    },
+    {
+      "path": "crates/ferrostage-document/src/lib.rs",
+      "sha256": "1c5a67d5bd3ff7024742d1f1ac63fe52f78cf95c60abcde6303f157c6de15f1d",
+      "bytes": 3289,
+      "modified_utc": "2026-10-14T14:41:42.826444+00:00"
+    },
+    {
+      "path": "crates/ferrostage-media/Cargo.toml",
+      "sha256": "2c242a554cbe369758e49c67951d14177f5124054ef7be14706795a976814745",
+      "bytes": 287,
+      "modified_utc": "2026-10-14T09:21:27.843687+00:00"
+    },
+    {
+      "path": "crates/ferrostage-media/src/lib.rs",
+      "sha256": "47e387c63c53e390df4aed44f3fbc7ab4aacbf807380be8f34e6fae9602ddfaf",
+      "bytes": 1353,
+      "modified_utc": "2026-10-14T09:21:33.090118+00:00"
+    },
+    {
+      "path": "crates/ferrostage-pdf/Cargo.toml",
+      "sha256": "6ed337e37b03548d8371d480982c511e25dc150504d8f1af01a3cdc2f66c09ef",
+      "bytes": 482,
+      "modified_utc": "2026-10-14T15:32:16.295609+00:00"
+    },
+    {
+      "path": "crates/ferrostage-pdf/src/lib.rs",
+      "sha256": "3e15b89ae7a66181e40b3874fdefbd185bbf989bf5f6db871833a04bcfc96434",
+      "bytes": 1972,
+      "modified_utc": "2026-10-14T15:35:25.392232+00:00"
+    },
+    {
+      "path": "crates/ferrostage-pdf/src/metadata.rs",
+      "sha256": "812fa4b48346556b4b50e22dfb91b72ea7ad9473793e85fb3bada0e0aac6520f",
+      "bytes": 417,
+      "modified_utc": "2026-10-14T15:35:24.608978+00:00"
+    },
+    {
+      "path": "crates/ferrostage-pdf/src/native.rs",
+      "sha256": "dc3596f88594042369f545f451fe36f479e3057e4fa31c08e29f7ca824c4ff2c",
+      "bytes": 7114,
+      "modified_utc": "2026-10-14T15:57:23.884552+00:00"
+    },
+    {
+      "path": "crates/ferrostage-pdf/src/raster.rs",
+      "sha256": "f75bd418377510b812fd288d2194988f5ac6e8e9ea7d3c8916d731a6ea0136bc",
+      "bytes": 4606,
+      "modified_utc": "2026-10-14T15:52:58.214949+00:00"
+    },
+    {
+      "path": "crates/ferrostage-platform/Cargo.toml",
+      "sha256": "eb8fe4aaf18d59a6f611b4e070eb71b83c6b5fb3990c6accaba67504629c16ae",
+      "bytes": 554,
+      "modified_utc": "2026-10-14T15:12:29.970339+00:00"
+    },
+    {
+      "path": "crates/ferrostage-platform/examples/monitor_probe.rs",
+      "sha256": "dc0429a43a885da89724dc4dc027e6a8a55f2b3960413fd0cba9b6c36b58aacd",
+      "bytes": 3266,
+      "modified_utc": "2026-10-14T15:08:36.459321+00:00"
+    },
+    {
+      "path": "crates/ferrostage-platform/src/lib.rs",
+      "sha256": "911288cfb115380bcda7faca958b43b0ccab99eca09cd627366cabc29b258076",
+      "bytes": 2403,
+      "modified_utc": "2026-10-14T15:03:13.973408+00:00"
+    },
+    {
+      "path": "crates/ferrostage-platform/src/monitor.rs",
+      "sha256": "b234982dbc4997949ad2f245214ff3a00c054b541c6696a346af787e70353508",
+      "bytes": 3986,
+      "modified_utc": "2026-10-14T15:12:30.522893+00:00"
+    },
+    {
+      "path": "crates/ferrostage-platform/src/topology/tests.rs",
+      "sha256": "e49c127e63356db93527ffa42235c5e52057daeafa6af30d7b553bf821de3098",
+      "bytes": 7955,
+      "modified_utc": "2026-10-14T15:12:33.491168+00:00"
+    },
+    {
+      "path": "crates/ferrostage-platform/src/topology.rs",
+      "sha256": "e6b8283b4487337d3158fd609b643b4a1b39b5e0bc878e3d2f31673d9a4e6285",
+      "bytes": 5719,
+      "modified_utc": "2026-10-14T15:03:13.978900+00:00"
+    },
+    {
+      "path": "crates/ferrostage-platform/src/watch/tests.rs",
+      "sha256": "cf47dffc41437d0e81f2c712a00b449c516e1f2ab0c48b71ee230352feb1957e",
+      "bytes": 2940,
+      "modified_utc": "2026-10-14T15:13:33.363924+00:00"
+    },
+    {
+      "path": "crates/ferrostage-platform/src/watch.rs",
+      "sha256": "71b501ed77d9f22ff99bc4734989e616bfaa4c059a6ef5c666f93a45086f1590",
+      "bytes": 5270,
+      "modified_utc": "2026-10-14T15:03:13.981026+00:00"
+    },
+    {
+      "path": "crates/ferrostage-platform/src/windows/tests.rs",
+      "sha256": "f829a96e5dc00d7736b80aa617762d9a538645cce8d676ecc80a597551751ba5",
+      "bytes": 2934,
+      "modified_utc": "2026-10-14T15:23:01.957975+00:00"
+    },
+    {
+      "path": "crates/ferrostage-platform/src/windows.rs",
+      "sha256": "f267297572a0ca99aa99477fd1fccd4d790541a4355036dcc8108c1ea73529a5",
+      "bytes": 7767,
+      "modified_utc": "2026-10-14T15:24:09.238223+00:00"
+    },
+    {
+      "path": "crates/ferrostage-platform/tests/settings_topology.rs",
+      "sha256": "bd636f63f6a14d39a84b74eac43d073c538b1991c9e6c39d11bd53d518fd9afa",
+      "bytes": 2818,
+      "modified_utc": "2026-10-14T15:12:33.492391+00:00"
+    },
+    {
+      "path": "crates/ferrostage-render/Cargo.toml",
+      "sha256": "f24ca1908fd2f64005607c047b454b2e4dd65fcc350541958dc8841060913b5a",
+      "bytes": 515,
+      "modified_utc": "2026-10-14T15:45:46.390177+00:00"
+    },
+    {
+      "path": "crates/ferrostage-render/examples/poc2.rs",
+      "sha256": "ea7421cc134a942506231d44986dbe14864fad34585fe506cfce57ac6337784c",
+      "bytes": 4134,
+      "modified_utc": "2026-10-14T16:00:27.719720+00:00"
+    },
+    {
+      "path": "crates/ferrostage-render/src/cache.rs",
+      "sha256": "e9fcef41fd4468a6e01f8642fa1c3f075ab9cb66c1bbdf54488e64ed1ac1db64",
+      "bytes": 6371,
+      "modified_utc": "2026-10-14T16:07:26.800615+00:00"
+    },
+    {
+      "path": "crates/ferrostage-render/src/lib.rs",
+      "sha256": "2202821d6726618b402c33332e513801206d55263823001ff3e6c9c587ba4710",
+      "bytes": 448,
+      "modified_utc": "2026-10-14T15:37:42.829429+00:00"
+    },
+    {
+      "path": "crates/ferrostage-render/src/protocol.rs",
+      "sha256": "981de13bcab5688b6bd3c91db906adc2a9cfca392281659ea4696dacf7f3abd9",
+      "bytes": 5036,
+      "modified_utc": "2026-10-14T16:07:26.800615+00:00"
+    },
+    {
+      "path": "crates/ferrostage-render/src/scheduler.rs",
+      "sha256": "68fe15351de35aba79fec9795329ba0ca683c70f4000c0e1047c6c3f7eef3453",
+      "bytes": 2476,
+      "modified_utc": "2026-10-14T15:52:58.233838+00:00"
+    },
+    {
+      "path": "crates/ferrostage-render/src/worker/engine.rs",
+      "sha256": "58ad019993c9d85a430cbf02f3b6d7a63620fcf90cdfd2851f66ac82b987df00",
+      "bytes": 12941,
+      "modified_utc": "2026-10-14T15:56:13.120656+00:00"
+    },
+    {
+      "path": "crates/ferrostage-render/src/worker/tests.rs",
+      "sha256": "7d22e5e1885a59652680aad32c37ea04f9c8359b2f34fdc4c4d29ce309873385",
+      "bytes": 10802,
+      "modified_utc": "2026-10-14T15:59:55.250197+00:00"
+    },
+    {
+      "path": "crates/ferrostage-render/src/worker.rs",
+      "sha256": "d9a0e5c529046af4fe6f993a3c91632497469e47186560adc8a36db747babc51",
+      "bytes": 7252,
+      "modified_utc": "2026-10-14T15:52:58.241107+00:00"
+    },
+    {
+      "path": "crates/ferrostage-render/tests/native.rs",
+      "sha256": "7a71005ba2bab2d69b24a3e90d4485b963407af17091e3412b5137645477023b",
+      "bytes": 7764,
+      "modified_utc": "2026-10-14T16:00:27.732264+00:00"
+    },
+    {
+      "path": "crates/ferrostage-render/tests/native_missing.rs",
+      "sha256": "8dc2bb50fda883424c72b2424c661f1c172f3ca164ae25460452a4eaa3ac04e3",
+      "bytes": 1326,
+      "modified_utc": "2026-10-14T15:59:55.254746+00:00"
+    },
+    {
+      "path": "crates/ferrostage-settings/Cargo.toml",
+      "sha256": "86f452a3860d0361188cc119f32ea32ab17b1158e50d3b7824f1d40466b324d8",
+      "bytes": 433,
+      "modified_utc": "2026-10-14T13:47:45.110639+00:00"
+    },
+    {
+      "path": "crates/ferrostage-settings/src/error.rs",
+      "sha256": "ca2bc192fbd1b4b8aeb25f2abc1323f8b6e44421809c4afa9f88d977590acebc",
+      "bytes": 2515,
+      "modified_utc": "2026-10-14T13:44:36.985385+00:00"
+    },
+    {
+      "path": "crates/ferrostage-settings/src/keybindings.rs",
+      "sha256": "7c3532fc324a376f43fd3bae4cf8583c6b925aa9f243809d047360f8ee8c4a86",
+      "bytes": 4958,
+      "modified_utc": "2026-10-14T14:22:40.799145+00:00"
+    },
+    {
+      "path": "crates/ferrostage-settings/src/lib.rs",
+      "sha256": "87b54b8ef33ba1e4e3b6c6725100aa763c9208b70ae5f9a9edb4dec1bb9d74f4",
+      "bytes": 890,
+      "modified_utc": "2026-10-14T14:22:35.129410+00:00"
+    },
+    {
+      "path": "crates/ferrostage-settings/src/merge.rs",
+      "sha256": "cf0358a67afd904dfd02bf1ba459bf66111f1d88ef9d23eb3c09976529bc8beb",
+      "bytes": 10294,
+      "modified_utc": "2026-10-14T13:49:48.035923+00:00"
+    },
+    {
+      "path": "crates/ferrostage-settings/src/parse/controls.rs",
+      "sha256": "1fca7b17c43cdc044279b5ed8ee593b415e1ab9fd59e9e00b186ce09ec828905",
+      "bytes": 7820,
+      "modified_utc": "2026-10-14T14:30:06.593568+00:00"
+    },
+    {
+      "path": "crates/ferrostage-settings/src/parse/legacy.rs",
+      "sha256": "d2cd67aebd276848ef28b6cf97eb21a32f9b956950f4b57984d234c279702ac9",
+      "bytes": 5193,
+      "modified_utc": "2026-10-14T14:22:40.803170+00:00"
+    },
+    {
+      "path": "crates/ferrostage-settings/src/parse/sections.rs",
+      "sha256": "bb346c61ac6e4465e15809e1c8119f172a524e896c01642ba85b4237b6d87b8e",
+      "bytes": 10116,
+      "modified_utc": "2026-10-14T14:22:40.804175+00:00"
+    },
+    {
+      "path": "crates/ferrostage-settings/src/parse/value.rs",
+      "sha256": "8df89ad9ab11623d025095143d6f9d5aa3e496b486e4f40b392ac3da85f2bf32",
+      "bytes": 7844,
+      "modified_utc": "2026-10-14T14:22:40.804175+00:00"
+    },
+    {
+      "path": "crates/ferrostage-settings/src/parse.rs",
+      "sha256": "564bc0be1e31a500dc7e36ef754a99c388ff97e4d6ab010f413595e3a10e3a27",
+      "bytes": 8156,
+      "modified_utc": "2026-10-14T14:22:40.805687+00:00"
+    },
+    {
+      "path": "crates/ferrostage-settings/src/schema.rs",
+      "sha256": "5ac8fd7973860b4ca232659a34611ee14e13abdc0806c78830b1072277fdb4e5",
+      "bytes": 11216,
+      "modified_utc": "2026-10-14T14:22:40.806698+00:00"
+    },
+    {
+      "path": "crates/ferrostage-settings/src/store/files.rs",
+      "sha256": "f0ec28b00b57f0c5064cad491a481560ad58d464a6aced25524be626f9ded63e",
+      "bytes": 7433,
+      "modified_utc": "2026-10-14T14:22:40.808535+00:00"
+    },
+    {
+      "path": "crates/ferrostage-settings/src/store/paths.rs",
+      "sha256": "dc77c36d0ba1b3840b56044476b8a23ad714f146b64efe9036bd0baf31740762",
+      "bytes": 2297,
+      "modified_utc": "2026-10-14T14:22:40.809542+00:00"
+    },
+    {
+      "path": "crates/ferrostage-settings/src/store.rs",
+      "sha256": "737e80bd6cb485935b25313ce1403dd16b126232d76da6060e22714864939859",
+      "bytes": 12418,
+      "modified_utc": "2026-10-14T14:22:40.810651+00:00"
+    },
+    {
+      "path": "crates/ferrostage-settings/src/tests/mod.rs",
+      "sha256": "520823ec485e8f6c535f989932a983324d9d402c9ac507886d06cbbed5779fb0",
+      "bytes": 1108,
+      "modified_utc": "2026-10-14T13:49:30.777178+00:00"
+    },
+    {
+      "path": "crates/ferrostage-settings/src/tests/parse.rs",
+      "sha256": "216b94814f9a11a3d8efc92a6be4504b9742ba83bfd70763b2ce14e3ce0811df",
+      "bytes": 13293,
+      "modified_utc": "2026-10-14T14:30:06.602696+00:00"
+    },
+    {
+      "path": "crates/ferrostage-settings/src/tests/store.rs",
+      "sha256": "d2945ac77cfa5dad069cf9173bdee4235cd498e76474bde58eb14f69c906f84f",
+      "bytes": 17239,
+      "modified_utc": "2026-10-14T14:22:40.816250+00:00"
+    },
+    {
+      "path": "crates/ferrostage-settings/src/tests/windows.rs",
+      "sha256": "04c1a5565e6456b00d0c36c40b010e5918f75201f9a024ce16eaf2550cf25247",
+      "bytes": 5668,
+      "modified_utc": "2026-10-14T14:20:21.013896+00:00"
+    },
+    {
+      "path": "crates/ferrostage-ui/Cargo.toml",
+      "sha256": "3a059a71d4a44b371a670f5ffa9a5741fdde8b02a8f7899f820e847871b13752",
+      "bytes": 343,
+      "modified_utc": "2026-10-14T09:21:57.855237+00:00"
+    },
+    {
+      "path": "crates/ferrostage-ui/src/lib.rs",
+      "sha256": "296a0c88a66afc5c26f6c71f511743a547dc53492204f46262d58dbcc06d2a01",
+      "bytes": 1119,
+      "modified_utc": "2026-10-14T09:22:02.616758+00:00"
+    },
+    {
+      "path": "deny.toml",
+      "sha256": "1cf48641ae1451010587ad06ab197867e8f9ba5b012b585c9880f860443f85e4",
+      "bytes": 642,
+      "modified_utc": "2026-10-14T09:29:43.902074+00:00"
+    },
+    {
+      "path": "docs/adr/ADR-002-pdf-backends.md",
+      "sha256": "65d4097ccb7343613f757e15b4fb0428c7274dada27b18919d336154b672cc66",
+      "bytes": 2365,
+      "modified_utc": "2026-10-14T15:59:31.024765+00:00"
+    },
+    {
+      "path": "docs/packaging.md",
+      "sha256": "bd7948dff35b8f83dbdeb2cb506ab46516a554b43426ec04e80fbdf1e6cb24fc",
+      "bytes": 4425,
+      "modified_utc": "2026-10-14T15:52:54.077926+00:00"
+    },
+    {
+      "path": "docs/pdfium-runtime.json",
+      "sha256": "3626e68588c907416a190369b5853f53ced5853113dd96e52ef0d7d2be3e31a9",
+      "bytes": 2992,
+      "modified_utc": "2026-10-14T15:50:19.252273+00:00"
+    },
+    {
+      "path": "fixtures/pdf/generate.py",
+      "sha256": "e5475d1dde4e48a368fb37c1d937b3b6f9aca403b0500c11c83225b51a6e2a58",
+      "bytes": 4276,
+      "modified_utc": "2026-10-14T15:46:15.671534+00:00"
+    },
+    {
+      "path": "fixtures/pdf/manifest.json",
+      "sha256": "09ab2e0de7c776c237d190dc9c2de828fcea3bb2fe35449cf8a8997070520096",
+      "bytes": 276,
+      "modified_utc": "2026-10-14T16:11:51.302711+00:00"
+    },
+    {
+      "path": "fixtures/pdf/raster.pdf",
+      "sha256": "25a7932f46ee8fcd4866011921c574b4f5b343af05b793bc397b7e93ed0df013",
+      "bytes": 8853,
+      "modified_utc": "2026-10-14T16:11:51.297985+00:00"
+    },
+    {
+      "path": "fixtures/pdf/README.md",
+      "sha256": "2ade579fd17b13b4fc1568e82e6006040732cf2136373542f2569220cb919cb4",
+      "bytes": 1746,
+      "modified_utc": "2026-10-14T15:59:31.329687+00:00"
+    },
+    {
+      "path": "justfile",
+      "sha256": "237438d823e6f9d92d4389e3cb81b129f5728d9fbf67a91c66b19915a18087c9",
+      "bytes": 1256,
+      "modified_utc": "2026-10-14T15:52:52.265927+00:00"
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "sha256": "72f7dd8c9fdf9c1fcd8eb8bf9326d4bc66833e4ebf4bc2932636e2b85efcb7af",
+      "bytes": 86,
+      "modified_utc": "2026-10-14T09:20:09.204178+00:00"
+    },
+    {
+      "path": "scripts/fetch-pdfium.ps1",
+      "sha256": "a62ff941f972c2447f0a89de523170e089ab7f8667226ab760bc85db6544b64a",
+      "bytes": 1265,
+      "modified_utc": "2026-10-14T15:52:53.175620+00:00"
+    }
+  ],
+  "evidence": [
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/app-feature-check.log",
+      "sha256": "d5e1f0c73efa06f04c24de146912299850a289b70fcddab9a895a34704b75a0c",
+      "bytes": 896,
+      "modified_utc": "2026-10-14T16:02:42.036191+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/artifact-verification.log",
+      "sha256": "450b7f3c6816061c85377264ba3a80a7133a5a8a08f26de03fc43541c27e183d",
+      "bytes": 4304,
+      "modified_utc": "2026-10-14T16:11:51.545604+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/boundary-before-fix.log",
+      "sha256": "427656231509d40246c02b0b94c3409b24c8646837e9b933653690ff3c9f44f9",
+      "bytes": 2382,
+      "modified_utc": "2026-10-14T16:04:28.669585+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/deny-all-features.log",
+      "sha256": "8007624c562e13c8af85950c47dc29c4cf5bdf22f68618d3b4b1f5ec67fb085a",
+      "bytes": 8007,
+      "modified_utc": "2026-10-14T16:02:37.023485+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/initial-tool-results.md",
+      "sha256": "16c7febfdc5e4275c6d49d72bccecf858343428d6a3a7801221f3f87a44045d6",
+      "bytes": 1350,
+      "modified_utc": "2026-10-14T15:44:59.465418+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/just-ci-final.log",
+      "sha256": "516004dabf53de669ed387feb801a75a4f7c3889722daeb0fa6f7cab92b476b7",
+      "bytes": 19769,
+      "modified_utc": "2026-10-14T16:08:43.553949+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/just-ci.log",
+      "sha256": "3125fb19a7aa17912aeacef0e24b12608f6653ab5f4b61c763dd476296b57b68",
+      "bytes": 19714,
+      "modified_utc": "2026-10-14T16:01:18.996944+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/native-api-audit.md",
+      "sha256": "cb2ecf94f9415b7b7f51f2ec8a4981e336058c776dc391c0cca63ce6646ccb9f",
+      "bytes": 3538,
+      "modified_utc": "2026-10-14T16:11:49.476782+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/native-clippy-final.log",
+      "sha256": "f92f570902dd22248f8d8b018dc931fe0d849933bc65be897803fb493775ecbc",
+      "bytes": 608,
+      "modified_utc": "2026-10-14T16:08:09.586637+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/native-clippy-pass.log",
+      "sha256": "79e94dd738090b7d149961f16b1cc48d49868a0e58f8c8551b5756fe256d0a5e",
+      "bytes": 190,
+      "modified_utc": "2026-10-14T16:00:28.387555+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/native-clippy.log",
+      "sha256": "269d121e75456bb8331f146b7f80ce37b6ce4440b0c9898631b8b1905daeb706",
+      "bytes": 1227,
+      "modified_utc": "2026-10-14T15:52:59.565841+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/native-final-boundary.log",
+      "sha256": "51ba8150f07be416ff1dfe831bd83e4d30fada06fdfbf7388a868a5dfc7eee0c",
+      "bytes": 4677,
+      "modified_utc": "2026-10-14T16:07:54.243176+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/native-final.log",
+      "sha256": "9d054a535851d521b1089b86671051196192bd59080e5d38bb791be8f6f92b5e",
+      "bytes": 2436,
+      "modified_utc": "2026-10-14T16:00:34.313854+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/native-owned-buffer-retry.log",
+      "sha256": "40e6ed5e252111fcc476c7538c4f1b6c41f9dfdceabd5f523dd8bbaf735c380d",
+      "bytes": 429,
+      "modified_utc": "2026-10-14T15:49:25.687808+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/native-owned-buffer.log",
+      "sha256": "360f60a800e2e84af74d27041aa16819d579a2232eb569cfb7874e01815b438e",
+      "bytes": 1009,
+      "modified_utc": "2026-10-14T15:48:57.437430+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/native-scratch.log",
+      "sha256": "8f493dccd48fb2098e4b63e7b86ae741731e382f2c0aa98b2d65c7dc613f9c9a",
+      "bytes": 527,
+      "modified_utc": "2026-10-14T15:50:59.763143+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/native-suite-missing.log",
+      "sha256": "a230652320c8f76629239b6ad59fd2c1a5aef51e8f6cf813755b4e6d25e533a2",
+      "bytes": 792,
+      "modified_utc": "2026-10-14T16:00:54.806671+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/native-tests.log",
+      "sha256": "d5d2ed8e07afeb49d2d7c6efd029107591d4c005ee2354c0b9b7a88ddcaf3d07",
+      "bytes": 2373,
+      "modified_utc": "2026-10-14T15:45:54.059654+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/native-vec-frame.log",
+      "sha256": "4969ed2fc5f6fb214e0f4d5992efd67fe18c21b9e7bb5e81cc561965faaf2547",
+      "bytes": 527,
+      "modified_utc": "2026-10-14T15:58:17.210200+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/poc-2-before-optimization.json",
+      "sha256": "fba77d18c6bd5d0d619b4e5cca22431748b25e27151e37674d0f676ad6df03b3",
+      "bytes": 12490,
+      "modified_utc": "2026-10-14T15:48:00.040187+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/poc-2-environment.json",
+      "sha256": "1721657b720bce83859005d0e0955ea2d8339e33ed2672789ffdf202fa12907f",
+      "bytes": 2768,
+      "modified_utc": "2026-10-14T16:13:17.539468+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/poc-2-owned-buffer.json",
+      "sha256": "6ed6547c83ee57f58fe3ab033b47eaa70c6b5ed606e41fb9d36cf3702f1de985",
+      "bytes": 12485,
+      "modified_utc": "2026-10-14T15:50:07.889439+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/poc-2-single-scratch-retained.json",
+      "sha256": "6c76868d5706d8ecad98c9303ff78966ea4561709d26153970a2626541255f7b",
+      "bytes": 14503,
+      "modified_utc": "2026-10-14T15:54:21.658098+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/poc-2-timing.json",
+      "sha256": "e77a54a7325db0e91e7a07a9ad41feeaa6a206c15fcac86579c97170dc1bb9f2",
+      "bytes": 14846,
+      "modified_utc": "2026-10-14T15:58:47.665239+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/poc-2-warm-scratch.json",
+      "sha256": "f0e6cb61716bfcd75b0d9690794f016455f897828586e0c985c799165b02ef22",
+      "bytes": 12156,
+      "modified_utc": "2026-10-14T15:51:16.062340+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/poc2-optimized.log",
+      "sha256": "8e847c1d403f90862d3a628c537740c4f82d2a3f9015eebf9418da2af7db8922",
+      "bytes": 675,
+      "modified_utc": "2026-10-14T15:50:07.906118+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/poc2-retained.log",
+      "sha256": "9a4f01583ac543aac874b28128ca8b1ac24c8db1265e8893cf6f8202c782b868",
+      "bytes": 734,
+      "modified_utc": "2026-10-14T15:54:21.675412+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/poc2-run-retry.log",
+      "sha256": "97e34266cb6c0939fed8e2712d0fcda0832e95a0167133af88abe94d0aa620a2",
+      "bytes": 675,
+      "modified_utc": "2026-10-14T15:48:00.096829+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/poc2-run.log",
+      "sha256": "0b5408a280d975b1006ac59e9dab391c9650e4d66e0a02fd563e0a14753da2f2",
+      "bytes": 3396,
+      "modified_utc": "2026-10-14T15:46:37.376754+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/poc2-scratch.log",
+      "sha256": "1c1bca544f84420f2382c7dd4464ecfc4a8fe0631fa0e5d9fbb47fc69f9a0145",
+      "bytes": 669,
+      "modified_utc": "2026-10-14T15:51:16.085131+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/poc2-vec-frame.log",
+      "sha256": "0e94c7fcde81b1bdcc993b38cc2ba14dbf805bd8e8f7a48dfbce9835ed39810c",
+      "bytes": 840,
+      "modified_utc": "2026-10-14T15:58:47.682338+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/pure-owned-frame.log",
+      "sha256": "3f01a9d1ce13e4cb02e56c029cfbff8504bd3b2600d27509e98e6f15b6026c85",
+      "bytes": 4456,
+      "modified_utc": "2026-10-14T15:57:30.427641+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/runtime-acquisition.log",
+      "sha256": "65f1207c29708f38b576d6d4fdc7a1e0dece663577157e96af2a8c3f6d1a1f74",
+      "bytes": 93,
+      "modified_utc": "2026-10-14T15:56:14.869556+00:00"
+    },
+    {
+      "path": ".trellis/tasks/10-14-05-pdf-raster/research/verification.md",
+      "sha256": "6b2777cf65c7467e95d37864466b2c590c859876fb2706fd48c9edc994b62116",
+      "bytes": 9153,
+      "modified_utc": "2026-10-14T16:11:49.842045+00:00"
+    }
+  ],
+  "local_artifacts": [
+    {
+      "path": "target/release/examples/poc2.exe",
+      "sha256": "b50efbe7a82e04f3df47be39df4d4eca453001b507018682adb45a6f6679e464",
+      "bytes": 1639936,
+      "modified_utc": "2026-10-14T15:58:23.155118+00:00"
+    },
+    {
+      "path": "cache/pdfium-7881-win-x64/bin/pdfium.dll",
+      "sha256": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118",
+      "bytes": 7211520,
+      "modified_utc": "2026-06-08T17:05:46+00:00"
+    },
+    {
+      "path": "cache/pdfium-7881-win-x64/pdfium-win-x64.tgz",
+      "sha256": "73cc0de638ac2095e7445bf56a38200a5b7c7ca0e9f4ba144598f2457377ac08",
+      "bytes": 3733154,
+      "modified_utc": "2026-10-14T15:01:11.771192+00:00"
+    }
+  ],
+  "upstream_exact_source": [
+    {
+      "package": "pdfium-render 0.9.4",
+      "file": "src/pdfium.rs",
+      "sha256": "5b64f737c82037f00d43f998fd43a9a1a5026a9b19518e533c09b774d228cbc0"
+    },
+    {
+      "package": "pdfium-render 0.9.4",
+      "file": "src/config.rs",
+      "sha256": "d3bfd78ee0773b13b1939c3b27b97e66e7fedffec2dfc8200896574b5d6743ff"
+    },
+    {
+      "package": "pdfium-render 0.9.4",
+      "file": "src/pdf/bitmap.rs",
+      "sha256": "cd18186f44f14ca472b7459bb028b057780ba8542f07ab0e97ab0a41a3e1f76b"
+    },
+    {
+      "package": "pdfium-render 0.9.4",
+      "file": "src/pdf/document/page/render_config.rs",
+      "sha256": "ab3906e1a8654e640f07c19efc7bd009f8f0ecc0c5df2cbee1b5f58388a60d67"
+    },
+    {
+      "package": "pdfium-render 0.9.4",
+      "file": "Cargo.toml",
+      "sha256": "4a0d6088d42ab586f8e8b3026b89799adb699ca5bc6c77597c933b938a886455"
+    }
+  ],
+  "statistics_recomputed": "PASS: six cases, 1200 samples, recorded median and nearest-rank P95 match raw data; four 4K P95 <=25ms and both crop ratios <=0.8",
+  "all_commands_returned": true
+}

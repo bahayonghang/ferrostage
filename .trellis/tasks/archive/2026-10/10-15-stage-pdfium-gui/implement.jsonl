@@ -1,0 +1,8 @@
+{"file": ".trellis/tasks/10-15-stage-pdfium-gui/prd.md", "reason": "Requirements, constraints, and acceptance"}
+{"file": ".trellis/tasks/10-15-stage-pdfium-gui/design.md", "reason": "Staging script, recipe order, and GUI subsystem"}
+{"file": ".trellis/tasks/10-15-stage-pdfium-gui/implement.md", "reason": "Implementation order, probes, and rollback"}
+{"file": ".trellis/tasks/10-15-stage-pdfium-gui/research/evidence.md", "reason": "Measured exe subsystem, strings, and DLL hashes"}
+{"file": "docs/packaging.md", "reason": "PDFium is fetched by the script, never by the app"}
+{"file": "docs/pdfium-runtime.json", "reason": "Pinned DLL and notice hashes"}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "just ci stays the default-feature gate"}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "Library errors stay typed; the binary returns ExitCode"}

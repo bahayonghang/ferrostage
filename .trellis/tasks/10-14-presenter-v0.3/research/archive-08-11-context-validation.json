@@ -1,0 +1,67 @@
+[
+  {
+    "task": ".trellis/tasks/10-14-presenter-v0.3",
+    "exit_code": 0,
+    "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-presenter-v0.3\n\n  \u001b[1;33mimplement.jsonl:7: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 44209 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (20 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:5: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 44209 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (21 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n"
+  },
+  {
+    "task": ".trellis/tasks/archive/2026-10/00-bootstrap-guidelines",
+    "exit_code": 0,
+    "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\00-bootstrap-guidelines\n\n  \u001b[1;33mimplement.jsonl: not found (skipped)\u001b[0m\n  \u001b[1;33mcheck.jsonl: not found (skipped)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n"
+  },
+  {
+    "task": ".trellis/tasks/archive/2026-10/10-14-01-docs-sync",
+    "exit_code": 0,
+    "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-01-docs-sync\n\n  \u001b[1;33mimplement.jsonl:4: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 44209 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (9 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:4: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 44209 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (9 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n"
+  },
+  {
+    "task": ".trellis/tasks/archive/2026-10/10-14-02-settings-schema",
+    "exit_code": 0,
+    "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-02-settings-schema\n\n  \u001b[1;33mimplement.jsonl:9: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 44209 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (16 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:6: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 44209 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (13 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n"
+  },
+  {
+    "task": ".trellis/tasks/archive/2026-10/10-14-03-monitor-topology",
+    "exit_code": 0,
+    "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-03-monitor-topology\n\n  \u001b[1;33mimplement.jsonl:10: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 44209 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (19 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:7: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 44209 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (16 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n"
+  },
+  {
+    "task": ".trellis/tasks/archive/2026-10/10-14-04-session-lifecycle",
+    "exit_code": 0,
+    "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-04-session-lifecycle\n\n  \u001b[1;33mimplement.jsonl:11: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 44209 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (18 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:7: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 44209 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (14 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n"
+  },
+  {
+    "task": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster",
+    "exit_code": 0,
+    "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-05-pdf-raster\n\n  \u001b[1;33mimplement.jsonl:8: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 44209 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (16 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:5: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 44209 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (13 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n"
+  },
+  {
+    "task": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model",
+    "exit_code": 0,
+    "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-06-beamer-document-model\n\n  \u001b[1;33mimplement.jsonl:10: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 44209 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (20 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:6: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 44209 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (16 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n"
+  },
+  {
+    "task": ".trellis/tasks/archive/2026-10/10-14-07-gpui-shell",
+    "exit_code": 0,
+    "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-07-gpui-shell\n\n  \u001b[1;33mimplement.jsonl:12: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 44209 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[1;33mimplement.jsonl:18: Warning: .trellis/tasks/archive/2026-10/10-14-07-gpui-shell/implement.md is 72294 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (38 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:6: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 44209 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[1;33mcheck.jsonl:12: Warning: .trellis/tasks/archive/2026-10/10-14-07-gpui-shell/implement.md is 72294 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (40 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n"
+  },
+  {
+    "task": ".trellis/tasks/archive/2026-10/10-14-08-presenter-workbench",
+    "exit_code": 0,
+    "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-08-presenter-workbench\n\n  \u001b[1;33mimplement.jsonl:11: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 44209 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (22 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:6: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 44209 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (18 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n"
+  },
+  {
+    "task": ".trellis/tasks/archive/2026-10/10-14-09-settings-ui",
+    "exit_code": 0,
+    "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-09-settings-ui\n\n  \u001b[1;33mimplement.jsonl:12: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 44209 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (24 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:6: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 44209 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (19 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n"
+  },
+  {
+    "task": ".trellis/tasks/archive/2026-10/10-14-10-hot-reload",
+    "exit_code": 0,
+    "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-10-hot-reload\n\n  \u001b[1;33mimplement.jsonl:10: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 44209 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (23 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:6: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 44209 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (19 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n"
+  },
+  {
+    "task": ".trellis/tasks/archive/2026-10/10-14-11-media-playback",
+    "exit_code": 0,
+    "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-11-media-playback\n\n  \u001b[1;33mimplement.jsonl:12: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 44209 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (24 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:8: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 44209 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (20 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n"
+  }
+]

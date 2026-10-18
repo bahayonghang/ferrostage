@@ -1,0 +1,43 @@
+   Compiling ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+   Compiling ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.52s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_render-c724fc6985cb9fc1.exe)
+
+running 12 tests
+test scheduler::tests::next_dispatch_obeys_priority_and_epoch_cancels_queued_work ... ok
+test cache::tests::lru_bytes_oversize_resize_and_retirement ... ok
+test cache::tests::cpu_frames_are_released_and_oversized_frame_is_not_cached ... ok
+test cache::tests::generations_share_one_budget ... ok
+test protocol::tests::thumbnail_target_keeps_180_height_even_for_narrow_pages ... FAILED
+test cache::tests::spare_vec_capacity_is_charged_to_the_budget ... FAILED
+test worker::tests::old_generation_inflight_cannot_publish_after_load ... ok
+test worker::tests::in_flight_is_not_preempted_but_old_epoch_is_never_published ... ok
+test worker::tests::superseded_prerender_cannot_complete_a_new_batch ... ok
+test worker::tests::candidate_metadata_prerender_commit_abort_and_retire_are_separate ... ok
+test worker::tests::candidate_batch_yields_to_active_priority_and_uses_its_own_epoch ... ok
+test worker::tests::cache_hit_has_no_render_timing_and_uncached_always_renders ... ok
+
+failures:
+
+---- protocol::tests::thumbnail_target_keeps_180_height_even_for_narrow_pages stdout ----
+
+thread 'protocol::tests::thumbnail_target_keeps_180_height_even_for_narrow_pages' (152780) panicked at crates\ferrostage-render\src\protocol.rs:139:9:
+assertion `left == right` failed
+  left: 167
+ right: 180
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- cache::tests::spare_vec_capacity_is_charged_to_the_budget stdout ----
+
+thread 'cache::tests::spare_vec_capacity_is_charged_to_the_budget' (155492) panicked at crates\ferrostage-render\src\cache.rs:191:9:
+assertion failed: cache.get(key(0)).is_none()
+
+
+failures:
+    cache::tests::spare_vec_capacity_is_charged_to_the_budget
+    protocol::tests::thumbnail_target_keeps_180_height_even_for_narrow_pages
+
+test result: FAILED. 10 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p ferrostage-render --lib`
+EXPECTED_FAILURE_EXIT=101

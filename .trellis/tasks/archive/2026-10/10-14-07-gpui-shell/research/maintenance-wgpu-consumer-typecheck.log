@@ -1,0 +1,51 @@
+     Locking 453 packages to highest Rust 1.99.0 compatible versions
+   Compiling cfg_aliases v0.2.2
+   Compiling khronos_api v3.1.0
+   Compiling xml-rs v0.8.29
+    Checking allocator-api2 v0.2.21
+    Checking libloading v0.8.9
+    Checking unicode-width v0.2.2
+    Checking bit-vec v0.9.1
+    Checking raw-window-handle v0.6.2
+   Compiling ash v0.38.0+1.3.281
+    Checking half v2.7.1
+    Checking windows v0.62.2
+    Checking spirv v0.4.0+sdk-1.4.341.0
+   Compiling khronos-egl v6.0.0
+    Checking hexf-parse v0.2.1
+    Checking foldhash v0.1.5
+    Checking rustc-hash v1.1.0
+    Checking unicode-ident v1.0.27
+    Checking libc v0.2.190
+    Checking gpu-descriptor-types v0.2.0
+    Checking presser v0.3.1
+    Checking ordered-float v5.5.0
+    Checking glow v0.17.0
+    Checking range-alloc v0.1.5
+    Checking renderdoc-sys v1.1.0
+   Compiling naga v29.0.4
+   Compiling wgpu-hal v29.0.4
+    Checking bit-set v0.9.1
+    Checking codespan-reporting v0.13.1
+    Checking wgpu-types v29.0.4
+   Compiling wgpu-core v29.0.4
+    Checking hashbrown v0.16.1
+   Compiling litrs v1.0.1
+   Compiling wgpu v29.0.4
+    Checking hashbrown v0.15.5
+   Compiling gpui v0.2.2 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\vendor\gpui)
+    Checking swash v0.2.10
+    Checking tiff v0.11.3
+    Checking exr v1.74.2
+   Compiling document-features v0.2.12
+    Checking gpu-descriptor v0.3.2
+   Compiling gl_generator v0.14.0
+   Compiling glutin_wgl_sys v0.6.1
+    Checking cosmic-text v0.19.0 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\vendor\cosmic-text)
+    Checking image v0.25.10
+    Checking wgpu-naga-bridge v29.0.4
+    Checking gpu-allocator v0.28.0
+    Checking wgpu-core-deps-windows-linux-android v29.0.4
+    Checking gpui_wgpu v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+    Checking ferrostage-gpui-wgpu-api-check v0.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\validation\wgpu-consumer)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 36.41s

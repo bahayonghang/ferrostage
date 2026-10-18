@@ -1,0 +1,1 @@
+warning: keybindings.previous: binding "Space" is on both keybindings.next and keybindings.previous; it must not run both actions

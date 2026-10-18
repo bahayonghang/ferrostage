@@ -1,0 +1,20 @@
+{
+  "recorded_utc": "2026-10-15T16:42:06.479313+00:00",
+  "git_head": "8b1cb0fa00676c6e1813cc2f5a453f0eff7d4f59",
+  "binaries": [
+    {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe",
+      "bytes": 42889216,
+      "sha256": "4BEBEFA5810F93CCB2E9FDA3E8134AACB6EBC24B55E46D0A0D06308387D9CE55",
+      "modified_utc": "2026-10-15T16:41:21.360933+00:00"
+    },
+    {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage-media-helper.exe",
+      "bytes": 799232,
+      "sha256": "312752079A67C00C03F7FCF6C843D57D9E19996FC1445AD82026B56A51B96641",
+      "modified_utc": "2026-10-15T16:41:37.654037+00:00"
+    }
+  ],
+  "source_manifest_sha256": "E27ADFD92C208538F80FCE2B3D7D9752388B8E925F1F5ADA8E5D64E44D49310B",
+  "note": "Uncommitted current source. GUI rebuilt after default just ci. Desktop smoke not run by reviewer."
+}

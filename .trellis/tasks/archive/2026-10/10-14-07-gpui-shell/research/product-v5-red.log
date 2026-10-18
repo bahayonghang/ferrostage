@@ -1,0 +1,61 @@
+warning: function `shape` is never used
+   --> vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `harfrust` (lib) generated 1 warning
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.44s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-f6f69bc716fb3e17.exe)
+
+running 5 tests
+test shell::tests::v5_idle_navigation_and_blank_actions_do_not_report_core_errors ... FAILED
+test shell::tests::v5_modal_close_button_has_priority_over_global_enter_and_space ... FAILED
+test shell::tests::v5_presenting_open_refuses_chooser_after_presenter_activation ... FAILED
+test shell::tests::v5_open_rechecks_stage_when_activation_resolves ... FAILED
+test shell::tests::v5_tab_focused_open_consumes_enter_and_space_before_global_actions ... FAILED
+
+failures:
+
+---- shell::tests::v5_idle_navigation_and_blank_actions_do_not_report_core_errors stdout ----
+
+thread 'shell::tests::v5_idle_navigation_and_blank_actions_do_not_report_core_errors' (108284) panicked at crates\ferrostage-ui\src\shell.rs:1177:17:
+space: Some("command is not available in session stage Idle")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- shell::tests::v5_modal_close_button_has_priority_over_global_enter_and_space stdout ----
+
+thread 'shell::tests::v5_modal_close_button_has_priority_over_global_enter_and_space' (176004) panicked at crates\ferrostage-ui\src\shell.rs:1163:17:
+space must activate the focused Close button
+
+---- shell::tests::v5_presenting_open_refuses_chooser_after_presenter_activation stdout ----
+
+thread 'shell::tests::v5_presenting_open_refuses_chooser_after_presenter_activation' (137884) panicked at crates\ferrostage-ui\src\shell.rs:1203:9:
+Presenting must never enter a file chooser
+
+---- shell::tests::v5_open_rechecks_stage_when_activation_resolves stdout ----
+
+thread 'shell::tests::v5_open_rechecks_stage_when_activation_resolves' (105056) panicked at crates\ferrostage-ui\src\shell.rs:1222:9:
+a stage change before activation must reject the queued chooser
+
+---- shell::tests::v5_tab_focused_open_consumes_enter_and_space_before_global_actions stdout ----
+
+thread 'shell::tests::v5_tab_focused_open_consumes_enter_and_space_before_global_actions' (31116) panicked at crates\ferrostage-ui\src\shell.rs:1147:44:
+assertion `left == right` failed: space must not navigate from a focused button
+  left: PhysicalPage(1)
+ right: PhysicalPage(0)
+
+
+failures:
+    shell::tests::v5_idle_navigation_and_blank_actions_do_not_report_core_errors
+    shell::tests::v5_modal_close_button_has_priority_over_global_enter_and_space
+    shell::tests::v5_open_rechecks_stage_when_activation_resolves
+    shell::tests::v5_presenting_open_refuses_chooser_after_presenter_activation
+    shell::tests::v5_tab_focused_open_consumes_enter_and_space_before_global_actions
+
+test result: FAILED. 0 passed; 5 failed; 0 ignored; 0 measured; 26 filtered out; finished in 0.02s
+
+error: test failed, to rerun pass `-p ferrostage-ui --lib`

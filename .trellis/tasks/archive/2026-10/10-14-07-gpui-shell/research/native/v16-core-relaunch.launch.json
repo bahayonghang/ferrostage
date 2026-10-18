@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "--config",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\v16-core.toml",
+    "--pdfium-library",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\notes-functional\\pympress-notes.pdf"
+  ],
+  "dll_sha256": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118",
+  "config_sha256": "7B190057C5120649774B36300F117BC323A6255A50BA32F04497380937D26393",
+  "utc": "2026-10-15T10:19:19.4275152Z",
+  "rust_log": "info,ferrostage_ui=debug",
+  "pdf_sha256": "e939e35f931c184fd93b2e9b95e560db73ba6a6f6dfccbb0963262f0b359dfeb",
+  "pid": 58568,
+  "freeze_sha256": "0E2B1ED8EF9299676BA249E7600BD8AB6734F00C6AE17F677467405AD60402D3",
+  "config": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\v16-core.toml",
+  "rust_backtrace": "full",
+  "freeze": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-native-freeze-v16.json",
+  "exe": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe",
+  "exe_sha256": "cf228c03655ddd45d25520bd88dab025c219af9bec9195314ce541dbb1cd89d1",
+  "source_sha256": "3e208cf586dcf37ab0420228e8eb3fba8ee07c0b73a8597c318a7f6a219c35b8"
+}

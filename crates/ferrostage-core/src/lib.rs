@@ -5,15 +5,27 @@
 //! intentionally absent from [`AudienceProjectionSnapshot`].
 
 mod command;
+mod display;
 mod error;
+mod frame;
 mod geometry;
 mod ids;
+mod session;
+mod slide_map;
 mod snapshot;
 mod state;
+mod timer;
 
 pub use command::PresentationCommand;
+pub use display::{MonitorId, MonitorRole};
 pub use error::CoreError;
-pub use geometry::{NormalizedRect, NormalizedStroke};
+pub use frame::BgraFrame;
+pub use geometry::{LaserStyle, NormalizedRect, NormalizedStroke};
 pub use ids::{DocumentGeneration, LogicalSlide, PhysicalPage};
-pub use snapshot::{AudienceProjectionSnapshot, BlankMode};
+pub use session::{DocumentDescriptor, SessionStage};
+pub use slide_map::SlideMap;
+pub use snapshot::{
+    AudienceMediaFrame, AudienceProjectionSnapshot, AudienceStage, AudienceStagingFrame,
+    AudienceVisual, BlankMode,
+};
 pub use state::PresentationState;

@@ -1,0 +1,23 @@
+{
+  "captured_utc": "2026-10-15T13:03:09.341Z",
+  "window": {
+    "app": "process:D:\\mbx-cache\\targets\\v1\\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0\\debug\\ferrostage.exe",
+    "id": 29364280,
+    "title": "pympress-notes.pdf — 演示中 — FerroStage"
+  },
+  "accessibility": {
+    "focused_element": "7 application FerroStage 讲者窗口",
+    "tree": "Window: \"pympress-notes.pdf — 演示中 — FerroStage\", App: ferrostage.exe.\n\t0 region pympress-notes.pdf — 演示中 — FerroStage Secondary Actions: Raise\n\t\t1 title bar (settable, string) Value: pympress-notes.pdf — 演示中 — FerroStage\n\t\t\t2 menu bar System ID: MenuBar\n\t\t\t\t32 menu item System\n\t\t\t4 button Minimize\n\t\t\t5 button Maximize\n\t\t\t6 button Close\n\t\t7 application FerroStage 讲者窗口\n\t\t\t38 button 继续计时 ID: timer-pause\n\t\t\t39 button 重置计时 ID: timer-reset\n\t\t\t40 button 打开 PDF（不可用） ID: open\n\t\t\t41 button 设置 ID: settings\n\t\t\t42 button 显示器设置 ID: displays\n\t\t\t43 button 逻辑页 3/4 · 步进 2/2 · 物理页 4/5 ID: workbench-progress\n\t\t\t44 button 1 ID: jump-thumbnail-0\n\t\t\t45 button 2 ID: jump-thumbnail-1\n\t\t\t46 button 3 ID: jump-thumbnail-2\n\t\t\t47 button 4 ID: jump-thumbnail-3\n\t\t\t48 button 前一组（不可用） ID: grid-prev\n\t\t\t49 button 后一组 ID: grid-next\n\t\t\t50 button 上一页 ID: previous\n\t\t\t51 button 下一页 ID: next\n\t\t\t52 button 黑屏 ID: black\n\t\t\t53 button 白屏 ID: white\n\t\t\t54 button 导航 ID: navigate\n\t\t\t55 button 激光笔 ID: laser\n\t\t\t56 button 画笔 ID: pen\n\t\t\t57 button 荧光笔 ID: highlighter\n\t\t\t58 button 橡皮 ID: eraser\n\t\t\t59 button 清空笔画 ID: clear-strokes\n\t\t\t60 button 缩略图网格 ID: grid\n\t\t\t61 button 文档选项 ID: document-options\n\t\t\t62 button 结束演示 ID: stop\n\nThe focused UI element is 7 application FerroStage 讲者窗口."
+  },
+  "screenshots": [
+    {
+      "height": 791,
+      "id": "screenshot-0",
+      "originX": 592,
+      "originY": 192,
+      "width": 1102,
+      "zIndex": 0,
+      "file": "run01-pen-0.jpg"
+    }
+  ]
+}

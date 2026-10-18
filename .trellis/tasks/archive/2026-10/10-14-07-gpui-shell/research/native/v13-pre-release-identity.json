@@ -1,0 +1,7 @@
+{
+  "utc": "2026-10-15T06:31:45.484282+00:00",
+  "source_count": 609,
+  "mismatches": [],
+  "exe_match": true,
+  "reason": "V13 native F12 on_hover_status_change; all five processes exited before source release"
+}

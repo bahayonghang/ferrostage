@@ -1,0 +1,273 @@
+--- v3/crates/ferrostage-ui/src/actions.rs
++++ v4/crates/ferrostage-ui/src/actions.rs
+@@ -28,9 +28,14 @@
+ }
+ 
+ pub(crate) fn dispatch(shell: &WeakEntity<Shell>, intent: Intent, cx: &mut App) {
+-    if let Err(error) = shell.update(cx, |shell, cx| shell.dispatch(intent, cx)) {
+-        tracing::debug!(%error, "action target retired");
+-    }
++    let shell = shell.clone();
++    // Input callbacks run while GPUI has taken the current Window out of App.
++    // Release that window before coordinator actions update/activate/remove it.
++    cx.defer(move |cx| {
++        if let Err(error) = shell.update(cx, |shell, cx| shell.dispatch(intent, cx)) {
++            tracing::debug!(%error, "action target retired");
++        }
++    });
+ }
+ 
+ pub(crate) fn install(
+@@ -75,10 +80,17 @@
+             "settings" => cx.bind_keys([KeyBinding::new(&key, Settings, None)]),
+             "commit" => cx.bind_keys([KeyBinding::new(&key, Commit, None)]),
+             "jump" => cx.bind_keys([KeyBinding::new(&key, Jump, None)]),
+-            _ => warnings.push(locale.format(
+-                "unwired-shortcut",
+-                &[("action", action.into()), ("key", key)],
+-            )),
++            _ => {
++                let label = match action {
++                    "toggle_laser" => locale.text("feature-laser"),
++                    "toggle_pen" => locale.text("feature-pen"),
++                    _ => action,
++                };
++                warnings.push(locale.format(
++                    "unwired-shortcut",
++                    &[("action", label.into()), ("key", key)],
++                ));
++            }
+         }
+     }
+     cx.bind_keys([KeyBinding::new("escape", Escape, None)]);
+--- v3/crates/ferrostage-ui/src/shell.rs
++++ v4/crates/ferrostage-ui/src/shell.rs
+@@ -1080,6 +1080,106 @@
+             .unwrap();
+     }
+ 
++    fn input_presenter(cx: &mut TestAppContext) -> (Entity<Shell>, AnyWindowHandle) {
++        let (shell, _) = headless_shell(cx);
++        cx.update(|cx| {
++            let model = shell.read(cx);
++            let keys = model.settings.settings.keybindings.clone();
++            let locale = model.locale;
++            actions::install(shell.downgrade(), &keys, locale, cx);
++        });
++        let handle = shell.update(cx, |shell, cx| {
++            shell.error = None;
++            shell.presenter = Some(test_window(shell, false, cx));
++            cx.notify();
++            shell.presenter.as_ref().unwrap().handle
++        });
++        (shell, handle)
++    }
++
++    fn assert_open_waits_for_owner(
++        shell: &Entity<Shell>,
++        handle: AnyWindowHandle,
++        cx: &mut TestAppContext,
++    ) {
++        shell.read_with(cx, |shell, _| {
++            assert!(shell.error.is_none(), "input error: {:?}", shell.error);
++            assert_eq!(
++                shell.focus_intent.as_ref().map(|intent| intent.presenter),
++                Some(handle.window_id())
++            );
++        });
++        assert!(
++            !cx.did_prompt_for_paths(),
++            "input must not synchronously open a chooser"
++        );
++        cx.run_until_parked();
++        shell.update(cx, |shell, cx| shell.poll_focus(cx));
++        assert!(
++            cx.did_prompt_for_paths(),
++            "confirmed current Presenter must own the chooser"
++        );
++        assert_eq!(cx.update(|cx| cx.active_window()), Some(handle));
++        cx.simulate_path_prompt_response(|_| None);
++        cx.run_until_parked();
++    }
++
++    #[gpui::test]
++    fn input_route_ctrl_o_releases_window_before_activation(cx: &mut TestAppContext) {
++        let (shell, handle) = input_presenter(cx);
++        cx.simulate_keystrokes(handle, "ctrl-o");
++        assert_open_waits_for_owner(&shell, handle, cx);
++    }
++
++    #[gpui::test]
++    fn input_route_open_button_releases_window_before_activation(cx: &mut TestAppContext) {
++        let (shell, handle) = input_presenter(cx);
++        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
++        let bounds = visual.debug_bounds("welcome-open").unwrap();
++        visual.simulate_click(bounds.center(), gpui::Modifiers::default());
++        assert_open_waits_for_owner(&shell, handle, cx);
++    }
++
++    #[gpui::test]
++    fn input_route_audience_open_activates_presenter_and_escape_cancels(cx: &mut TestAppContext) {
++        let (shell, presenter) = input_presenter(cx);
++        let audience = shell.update(cx, |shell, cx| test_window(shell, true, cx).handle);
++        audience
++            .update(cx, |_, window, _| window.activate_window())
++            .unwrap();
++        cx.run_until_parked();
++        assert_eq!(cx.update(|cx| cx.active_window()), Some(audience));
++        cx.simulate_keystrokes(audience, "ctrl-o");
++        assert_open_waits_for_owner(&shell, presenter, cx);
++        cx.simulate_keystrokes(presenter, "ctrl-o escape");
++        shell.update(cx, |shell, cx| shell.poll_focus(cx));
++        assert!(
++            !cx.did_prompt_for_paths(),
++            "Escape must invalidate a queued popup"
++        );
++        assert!(shell.read_with(cx, |shell, _| shell.focus_intent.is_none()));
++    }
++
++    #[gpui::test]
++    fn unsupported_shortcuts_use_user_visible_feature_names(cx: &mut TestAppContext) {
++        let (shell, _) = headless_shell(cx);
++        for language in ["en-US", "zh-CN"] {
++            cx.update(|cx| {
++                let keys = shell.read(cx).settings.settings.keybindings.clone();
++                let locale = crate::locale::Locale::new(language);
++                let warnings = actions::install(shell.downgrade(), &keys, locale, cx);
++                assert!(warnings.iter().all(|warning| !warning.contains("toggle_")));
++                for key in ["feature-laser", "feature-pen"] {
++                    assert!(
++                        warnings
++                            .iter()
++                            .any(|warning| warning.contains(locale.text(key)))
++                    );
++                }
++            });
++        }
++    }
++
+     #[gpui::test]
+     fn presenter_creation_draws_while_controller_is_leased(cx: &mut TestAppContext) {
+         let (shell, _) = headless_shell(cx);
+--- v3/crates/ferrostage-ui/src/presenter.rs
++++ v4/crates/ferrostage-ui/src/presenter.rs
+@@ -74,6 +74,28 @@
+     had_modal: bool,
+ }
+ 
++struct FilenameTooltip {
++    filename: String,
++    palette: Palette,
++}
++
++impl Render for FilenameTooltip {
++    fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
++        div()
++            .max_w(px(560.))
++            .p(px(12.))
++            .rounded(px(theme::RADIUS))
++            .border_1()
++            .border_color(rgb(self.palette.border))
++            .bg(rgb(self.palette.card))
++            .text_color(rgb(self.palette.ink))
++            .font(theme::sans_font())
++            .text_size(px(14.))
++            .whitespace_normal()
++            .child(self.filename.clone())
++    }
++}
++
+ impl Presenter {
+     pub fn new(
+         shell: WeakEntity<Shell>,
+@@ -139,6 +161,7 @@
+         };
+         div()
+             .id(SharedString::from(id.clone()))
++            .debug_selector(|| id.clone())
+             .role(Role::Button)
+             .max_w_full()
+             .min_w_0()
+@@ -223,6 +246,7 @@
+             SessionStage::Presenting => l.text("stage-presenting"),
+         };
+         let filename = self.data.filename.clone();
++        let tooltip_filename = filename.clone();
+         let modal = self.data.modal.clone();
+         let error = self.data.error.clone();
+         let warnings = self.data.warnings.clone();
+@@ -254,7 +278,7 @@
+             .flex_col()
+             .bg(rgb(p.canvas))
+             .text_color(rgb(p.body))
+-            .font_family(theme::SANS)
++            .font(theme::sans_font())
+             .text_size(px(16.))
+             .on_key_down(cx.listener(|this, event: &gpui::KeyDownEvent, window, cx| {
+                 let key = event.keystroke.key.as_str();
+@@ -341,7 +365,7 @@
+             body = body
+                 .child(
+                     div()
+-                        .font_family(theme::DISPLAY)
++                        .font(theme::display_font())
+                         .text_size(px(28.))
+                         .text_color(rgb(p.ink))
+                         .child("FerroStage"),
+@@ -460,6 +484,13 @@
+                         div()
+                             .id("document-title")
+                             .aria_label(filename.clone())
++                            .tooltip(move |_, cx| {
++                                cx.new(|_| FilenameTooltip {
++                                    filename: tooltip_filename.clone(),
++                                    palette: p,
++                                })
++                                .into()
++                            })
+                             .text_size(px(20.))
+                             .text_color(rgb(p.ink))
+                             .truncate()
+--- v3/crates/ferrostage-ui/src/theme.rs
++++ v4/crates/ferrostage-ui/src/theme.rs
+@@ -10,6 +10,24 @@
+ pub const SANS: &str = "Segoe UI";
+ pub const DISPLAY: &str = "Georgia";
+ pub const MONO: &str = "Consolas";
++
++#[cfg(feature = "gpui")]
++pub fn sans_font() -> gpui::Font {
++    gpui::Font {
++        fallbacks: Some(gpui::FontFallbacks::from_fonts(vec![
++            "Microsoft YaHei UI".into(),
++        ])),
++        ..gpui::font(SANS)
++    }
++}
++
++#[cfg(feature = "gpui")]
++pub fn display_font() -> gpui::Font {
++    gpui::Font {
++        fallbacks: Some(gpui::FontFallbacks::from_fonts(vec!["SimSun".into()])),
++        ..gpui::font(DISPLAY)
++    }
++}
+ 
+ #[derive(Clone, Copy, Debug)]
+ pub struct Palette {
+--- v3/assets/locales/en-US/app.toml
++++ v4/assets/locales/en-US/app.toml
+@@ -45,3 +45,5 @@
+ conflicting-shortcut = "Disabled conflicting shortcut {key}: {actions}"
+ reserved-escape = "Escape cancels the current operation; disabled its {action} binding"
+ unwired-shortcut = "{action} ({key}) is not available in this shell; shortcut disabled"
++feature-laser = "Laser pointer"
++feature-pen = "Drawing pen"
+--- v3/assets/locales/zh-CN/app.toml
++++ v4/assets/locales/zh-CN/app.toml
+@@ -45,3 +45,5 @@
+ conflicting-shortcut = "已禁用冲突快捷键 {key}：{actions}"
+ reserved-escape = "Escape 用于取消当前操作；已禁用 {action} 绑定"
+ unwired-shortcut = "{action}（{key}）尚未连接工作台；该快捷键已禁用"
++feature-laser = "激光笔"
++feature-pen = "画笔"

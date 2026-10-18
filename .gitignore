@@ -25,6 +25,10 @@ __pycache__/
 # Generated diagnostic logs.
 *.log
 
+# Task acceptance receipts remain available after archival and fresh checkout.
+!.trellis/tasks/**/research/*.log
+!.trellis/tasks/**/research/**/*.log
+
 # Web build output and packages.
 /web/dist/
 /web/node_modules/

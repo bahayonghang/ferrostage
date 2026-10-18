@@ -1,0 +1,8 @@
+
+thread '<unnamed>' (185156) panicked at C:\Users\lyh\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\accesskit_windows-0.34.0\src\util.rs:380:52:
+called `Result::unwrap()` on an `Err` value: Error { code: HRESULT(0x80070578), message: "Invalid window handle." }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread '<unnamed>' (185156) panicked at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\panicking.rs:225:5:
+panic in a function that cannot unwind
+stack backtrace:

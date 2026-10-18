@@ -1,0 +1,17 @@
+{
+  "started_utc": "2026-10-15T05:02:12.246738+00:00",
+  "argv": [
+    "cargo",
+    "build",
+    "-p",
+    "ferrostage-app",
+    "--features",
+    "gpui,pdfium",
+    "--locked",
+    "--offline"
+  ],
+  "status": "RETURNED",
+  "log": "product-v11-build.log",
+  "exit_code": 0,
+  "ended_utc": "2026-10-15T05:02:18.550377+00:00"
+}

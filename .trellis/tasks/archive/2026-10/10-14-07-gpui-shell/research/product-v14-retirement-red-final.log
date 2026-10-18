@@ -1,0 +1,72 @@
+warning: function `shape` is never used
+   --> vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `harfrust` (lib) generated 1 warning
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.65s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-22e71ba2dde21bfc.exe)
+
+running 5 tests
+test shell::tests::retirement_v14_deferred_appearance_rechecks_owner ... FAILED
+test shell::tests::retirement_v14_live_callbacks_apply_and_leased_errors_remain_visible ... ok
+test shell::tests::retirement_v14_retained_hover_cannot_visit_removed_window ... FAILED
+test shell::tests::retirement_v14_retained_input_hit_test_and_frame_are_inert ... FAILED
+test shell::tests::retirement_v14_retained_notifications_cannot_visit_removed_window ... FAILED
+
+failures:
+
+---- shell::tests::retirement_v14_deferred_appearance_rechecks_owner stdout ----
+
+thread 'shell::tests::retirement_v14_deferred_appearance_rechecks_owner' (164076) panicked at crates\ferrostage-ui\src\shell.rs:2448:9:
+2026-10-15T06:43:57.270374Z ERROR : vendor\gpui\src\window.rs:1886: window not found
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- shell::tests::retirement_v14_retained_hover_cannot_visit_removed_window stdout ----
+
+thread 'shell::tests::retirement_v14_retained_hover_cannot_visit_removed_window' (155896) panicked at crates\ferrostage-ui\src\shell.rs:2400:9:
+2026-10-15T06:43:57.272529Z ERROR : vendor\gpui\src\window.rs:1943: window not found
+
+
+---- shell::tests::retirement_v14_retained_input_hit_test_and_frame_are_inert stdout ----
+
+thread 'shell::tests::retirement_v14_retained_input_hit_test_and_frame_are_inert' (188764) panicked at crates\ferrostage-ui\src\shell.rs:2438:9:
+2026-10-15T06:43:57.273134Z ERROR : vendor\gpui\src\window.rs:1951: window not found
+2026-10-15T06:43:57.273149Z ERROR : vendor\gpui\src\window.rs:1967: window not found
+2026-10-15T06:43:57.273155Z ERROR : vendor\gpui\src\window.rs:1742: window not found
+2026-10-15T06:43:57.273162Z ERROR : vendor\gpui\src\window.rs:1819: window not found
+2026-10-15T06:43:57.273166Z ERROR : vendor\gpui\src\window.rs:1830: window not found
+
+
+---- shell::tests::retirement_v14_retained_notifications_cannot_visit_removed_window stdout ----
+
+thread 'shell::tests::retirement_v14_retained_notifications_cannot_visit_removed_window' (171260) panicked at crates\ferrostage-ui\src\shell.rs:2419:9:
+2026-10-15T06:43:57.273924Z ERROR : vendor\gpui\src\window.rs:1932: window not found
+2026-10-15T06:43:57.273947Z ERROR : vendor\gpui\src\window.rs:1848: window not found
+2026-10-15T06:43:57.273955Z ERROR : vendor\gpui\src\window.rs:1856: window not found
+2026-10-15T06:43:57.273962Z ERROR : vendor\gpui\src\window.rs:1864: window not found
+2026-10-15T06:43:57.273969Z ERROR : vendor\gpui\src\window.rs:1872: window not found
+2026-10-15T06:43:57.273976Z ERROR : vendor\gpui\src\window.rs:1896: window not found
+2026-10-15T06:43:57.273983Z ERROR : vendor\gpui\src\window.rs:1978: window not found
+2026-10-15T06:43:57.273989Z ERROR : vendor\gpui\src\window.rs:1988: window not found
+2026-10-15T06:43:57.274001Z ERROR : vendor\gpui\src\window.rs:1998: window not found
+2026-10-15T06:43:57.274008Z ERROR : vendor\gpui\src\window.rs:2008: window not found
+2026-10-15T06:43:57.274014Z ERROR : vendor\gpui\src\window.rs:2019: window not found
+2026-10-15T06:43:57.274050Z ERROR : vendor\gpui\src\window.rs:1886: window not found
+
+
+
+failures:
+    shell::tests::retirement_v14_deferred_appearance_rechecks_owner
+    shell::tests::retirement_v14_retained_hover_cannot_visit_removed_window
+    shell::tests::retirement_v14_retained_input_hit_test_and_frame_are_inert
+    shell::tests::retirement_v14_retained_notifications_cannot_visit_removed_window
+
+test result: FAILED. 1 passed; 4 failed; 0 ignored; 0 measured; 77 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p ferrostage-ui --lib`
