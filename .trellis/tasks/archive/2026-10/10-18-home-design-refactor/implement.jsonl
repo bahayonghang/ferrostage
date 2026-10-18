@@ -1,0 +1,4 @@
+{"file":".trellis/spec/frontend/index.md","reason":"Native GPUI architecture and frontend guidance"}
+{"file":".trellis/spec/frontend/component-guidelines.md","reason":"Stable IDs, focus, borrowing and native component contracts"}
+{"file":".trellis/spec/frontend/quality-guidelines.md","reason":"Default/native checks and audience boundary"}
+{"file":".trellis/tasks/10-18-home-design-refactor/research/baseline-and-references.md","reason":"Screenshot/source diagnosis, existing DESIGN authority and web research"}

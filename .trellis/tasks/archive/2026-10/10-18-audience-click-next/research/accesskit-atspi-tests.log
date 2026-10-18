@@ -1,0 +1,55 @@
+    Updating crates.io index
+     Locking 33 packages to highest compatible versions
+      Adding accesskit v0.24.1 (available: v0.25.1)
+      Adding accesskit_consumer v0.38.0 (available: v0.39.1)
+      Adding phf v0.13.1 (available: v0.14.0)
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.27
+   Compiling quote v1.0.47
+   Compiling serde_core v1.0.229
+   Compiling serde v1.0.229
+   Compiling winnow v1.0.4
+   Compiling endi v1.1.1
+   Compiling siphasher v1.0.4
+   Compiling fastrand v2.5.0
+   Compiling uuid v1.28.0
+   Compiling foldhash v0.2.0
+   Compiling static_assertions v1.1.0
+   Compiling phf_shared v0.13.1
+   Compiling hashbrown v0.16.1
+   Compiling accesskit v0.24.1
+   Compiling phf_generator v0.13.1
+mbx[warning]: rustc cache bypassed: failed to read Cargo's build-script declarations: The system cannot find the file specified. (os error 2)
+   Compiling accesskit_consumer v0.38.0
+   Compiling syn v3.0.9
+   Compiling syn v2.0.119
+   Compiling serde_derive v1.0.229
+   Compiling enumflags2_derive v0.7.12
+   Compiling phf_macros v0.13.1
+   Compiling enumflags2 v0.7.12
+   Compiling zbus_utils v6.0.0
+   Compiling zcheapstr v1.1.0
+   Compiling phf v0.13.1
+   Compiling zbus_macros v6.0.0
+   Compiling zbus v6.0.0
+   Compiling zbus_xml v6.0.0
+   Compiling zbus-lockstep v0.5.2 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\zbus-lockstep)
+   Compiling zbus-lockstep-macros v0.5.2 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\zbus-lockstep-macros)
+   Compiling atspi-common v0.13.0 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\atspi-common)
+   Compiling accesskit_atspi_common v0.19.1 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\accesskit_atspi_common)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 17.76s
+     Running unittests src\lib.rs (vendor\accesskit_atspi_common\target\debug\deps\accesskit_atspi_common-031bcd55ab350f90.exe)
+
+running 7 tests
+test adapter::tests::no_cache_events_on_construction ... ok
+test adapter::tests::filter_transition_out_of_tree_emits_removed ... ok
+test adapter::tests::filter_transition_into_tree_emits_added ... ok
+test adapter::tests::add_node_emits_one_added ... ok
+test adapter::tests::subtree_add_emits_added_per_node ... ok
+test adapter::tests::subtree_remove_emits_removed_per_node ... ok
+test adapter::tests::remove_node_emits_removed_for_same_id ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+mbx[cache]: 12 hits, 0 misses, 30 not looked up, 3 bypassed; 0 B downloaded, 0 B uploaded, 97.5 MiB stored locally
+mbx[savings]: 385.4 GiB logical of old build output has been shown the door.

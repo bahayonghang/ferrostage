@@ -18,6 +18,20 @@ fn failure(error: impl std::fmt::Display) -> MediaError {
     eprintln!("media pipeline: {error}");
     MediaError::Unsupported
 }
+fn check_decoder(message: &gst::MessageRef) -> Result<(), MediaError> {
+    if matches!(message.view(), gst::MessageView::Error(_))
+        || (matches!(message.view(), gst::MessageView::Element(_))
+            && message.structure().is_some_and(|structure| {
+                structure.name() == "missing-plugin"
+                    && structure.get::<&str>("type").ok() == Some("decoder")
+            }))
+    {
+        // playbin can otherwise continue with audio when video decoding is
+        // unavailable, reporting progress/EOS without ever publishing a frame.
+        return Err(MediaError::Unsupported);
+    }
+    Ok(())
+}
 pub fn play(
     open: Open,
     commands: Receiver<Packet>,
@@ -111,6 +125,7 @@ pub fn play(
         None
     });
     let result = (|| {
+        let bus = pipeline.bus().ok_or(MediaError::Process)?;
         pipeline.set_state(gst::State::Paused).map_err(failure)?;
         let (result, current, _) = pipeline.state(gst::ClockTime::from_seconds(5));
         result.map_err(failure)?;
@@ -119,6 +134,9 @@ pub fn play(
         }
         if invalid.load(Ordering::Acquire) {
             return Err(MediaError::Limit);
+        }
+        for message in bus.iter_filtered(&[gst::MessageType::Error, gst::MessageType::Element]) {
+            check_decoder(&message)?;
         }
         let duration = pipeline
             .query_duration::<gst::ClockTime>()
@@ -148,7 +166,6 @@ pub fn play(
         };
         seek()?;
         pipeline.set_state(gst::State::Playing).map_err(failure)?;
-        let bus = pipeline.bus().ok_or(MediaError::Process)?;
         let mut sequence = 0;
         let mut cycle = 0u32;
         let mut paused = false;
@@ -213,23 +230,22 @@ pub fn play(
                     pixels: BgraFrame::new(w, h, row, pixels).map_err(failure)?,
                 })?;
             }
-            while let Some(message) =
-                bus.pop_filtered(&[gst::MessageType::Error, gst::MessageType::Eos])
-            {
-                match message.view() {
-                    gst::MessageView::Error(_) => return Err(MediaError::Unsupported),
-                    gst::MessageView::Eos(_) => {
-                        cycle = cycle.saturating_add(1);
-                        if open.plays != 0 && cycle >= open.plays {
-                            emit(Packet::End)?;
-                            return Ok(());
-                        }
-                        seek()?;
-                        if !paused {
-                            pipeline.set_state(gst::State::Playing).map_err(failure)?;
-                        }
+            while let Some(message) = bus.pop_filtered(&[
+                gst::MessageType::Error,
+                gst::MessageType::Eos,
+                gst::MessageType::Element,
+            ]) {
+                check_decoder(&message)?;
+                if let gst::MessageView::Eos(_) = message.view() {
+                    cycle = cycle.saturating_add(1);
+                    if open.plays != 0 && cycle >= open.plays {
+                        emit(Packet::End)?;
+                        return Ok(());
                     }
-                    _ => {}
+                    seek()?;
+                    if !paused {
+                        pipeline.set_state(gst::State::Playing).map_err(failure)?;
+                    }
                 }
             }
             if status_at.elapsed() >= Duration::from_millis(50) {

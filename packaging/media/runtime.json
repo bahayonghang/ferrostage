@@ -1060,6 +1060,46 @@
       ],
       "unresolved": [],
       "destination": "bin/ffi-7.dll"
+    },
+    {
+      "name": "gstopenh264.dll",
+      "archive": "gstreamer_plugins-1.28.8-cp313-cp313t-win_amd64.whl",
+      "entry": "gstreamer_plugins-1.28.8.data/purelib/gstreamer_plugins/lib/gstreamer-1.0/gstopenh264.dll",
+      "bytes": 40448,
+      "sha256": "aa9117b6deaa27d6048043316843e7e9666b9bd44498785d0b618c17670d9029",
+      "imports": [
+        "gstvideo-1.0-0.dll",
+        "gstreamer-1.0-0.dll",
+        "gobject-2.0-0.dll",
+        "glib-2.0-0.dll",
+        "openh264-7.dll",
+        "gstpbutils-1.0-0.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "KERNEL32.dll"
+      ],
+      "unresolved": [],
+      "destination": "lib/gstreamer-1.0/gstopenh264.dll"
+    },
+    {
+      "name": "openh264-7.dll",
+      "archive": "gstreamer_plugins_libs-1.28.8-cp313-cp313t-win_amd64.whl",
+      "entry": "gstreamer_plugins_libs-1.28.8.data/purelib/gstreamer_plugins_libs/bin/openh264-7.dll",
+      "bytes": 920064,
+      "sha256": "899c5d69bc871e575eeb04aaad10592010b0e36d3ebc30a4b2dcf116f942e120",
+      "imports": [
+        "KERNEL32.dll",
+        "VCRUNTIME140.dll",
+        "VCRUNTIME140_1.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-time-l1-1-0.dll"
+      ],
+      "unresolved": [],
+      "destination": "bin/openh264-7.dll"
     }
   ],
   "license_mapping": "native-runtime-sources.md",

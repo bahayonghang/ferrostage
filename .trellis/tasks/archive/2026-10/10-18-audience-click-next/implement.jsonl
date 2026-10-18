@@ -1,0 +1,9 @@
+{"file": ".trellis/spec/frontend/state-management.md", "reason": "Snapshot-only audience input, command and committed-page contracts"}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Existing settings controls and presenter input conventions"}
+{"file": ".trellis/spec/backend/database-guidelines.md", "reason": "Optional v1 settings leaves, unknown-key merge and save policy"}
+{"file": ".trellis/tasks/archive/2026-10/10-18-audience-click-next/research/source-analysis.md", "reason": "Verified source flow, non-placement setting hazard and GPUI click semantics"}
+{"file": ".trellis/spec/frontend/maintained-dependencies.md", "reason": "Expanded Linux maintenance approval, pinned source and audit contracts"}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Strict CI and native/media verification requirements"}
+{"file": ".trellis/tasks/archive/2026-10/10-18-audience-click-next/research/delivery-plan.md", "reason": "Authorized CI repair, migration, commit, PR, merge and manual-run scope"}
+{"file": "docs/adr/ADR-011-linux-dbus-maintenance.md", "reason": "Bounded Linux D-Bus source/API/data format migration"}
+{"file": "docs/adr/ADR-010-software-video-decoding.md", "reason": "Reviewed software video decoder and missing-decoder behavior"}

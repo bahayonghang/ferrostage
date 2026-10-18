@@ -1,0 +1,30 @@
+cargo fmt --all -- --check
+. : AuthorizationManager check failed.
+At line:1 char:3
++ . 'C:\Users\lyh\Documents\WindowsPowerShell\profile.ps1'
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : SecurityError: (:) [], PSSecurityException
+    + FullyQualifiedErrorId : UnauthorizedAccess
+. : AuthorizationManager check failed.
+At line:1 char:3
++ . 'C:\Users\lyh\Documents\WindowsPowerShell\Microsoft.PowerShell_prof ...
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : SecurityError: (:) [], PSSecurityException
+    + FullyQualifiedErrorId : UnauthorizedAccess
+cargo clippy --workspace --all-targets -- -D warnings
+. : AuthorizationManager check failed.
+At line:1 char:3
++ . 'C:\Users\lyh\Documents\WindowsPowerShell\profile.ps1'
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : SecurityError: (:) [], PSSecurityException
+    + FullyQualifiedErrorId : UnauthorizedAccess
+. : AuthorizationManager check failed.
+At line:1 char:3
++ . 'C:\Users\lyh\Documents\WindowsPowerShell\Microsoft.PowerShell_prof ...
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : SecurityError: (:) [], PSSecurityException
+    + FullyQualifiedErrorId : UnauthorizedAccess
+[WARN ] the managed target directory is not protected from collection: could not open D:\mbx-cache\targets\v1\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0.lock: Access is denied. (os error 5)
+[WARN ] the managed target directory was not recorded: Access is denied. (os error 5) at path "D:\\mbx-cache\\targets\\v1\\.mbx-P7ZzxL"
+mbx[error]: Access is denied. (os error 5) at path "C:\\Users\\lyh\\mbx-session-yMpaqL"
+error: recipe `clippy` failed on line 19 with exit code 1

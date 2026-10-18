@@ -56,6 +56,44 @@ Exercise actual GPUI mouse/key dispatch, partial versus submitted page input, mo
 
 Wrong: hide a thumbnail strip while its persisted flag still schedules raster work, or preserve invisible preview state after removing controls. Correct: gate raster requests on actual grid visibility and route explicit selection through the one committed-page command.
 
+## Audience click to advance
+
+### 1. Scope / Trigger
+
+Audience playback accepts completed left clicks, including the letterbox client area. Presenter previews and their pen/laser/media handlers retain their own behavior.
+
+### 2. Signatures
+
+`Audience` emits payload-free `AdvanceRequested`. `Shell` subscribes with the source window handle and routes accepted requests through `dispatch(Intent::Next)`, which applies `PresentationCommand::NextStep`. `display.audience_click_to_advance: bool` defaults to true.
+
+### 3. Contracts
+
+The assembled snapshot remains Audience's only incoming product data. Do not pass Shell, settings, documents or notes into Audience. Handle input after the source window update lease ends; recheck current state before dispatch. Accept only the committed audience handle while Presenting, enabled, without any modal/busy operation, with Live projection and no effective or published black/white blanking. Pending/retired windows cannot navigate. One completed click advances one existing Beamer content step; the last step does not wrap. Mouse-down alone, non-left input and release outside the surface are inert. Do not add a second navigation path, debounce timer or synthetic keyboard click binding.
+
+The effective committed settings are the only enable authority. Changes apply to the existing window, including runtime edits whose disk save failed. Exclude this non-placement leaf from the `continue_preferences` display-layout comparison, as for `presenter_start_fullscreen`; actual placement/fullscreen/monitor changes must still use the display transaction.
+
+### 4. Validation & Error Matrix
+
+| Condition | Result |
+| --- | --- |
+| Enabled, normal playback, committed audience click | Dispatch Next once through existing page/media/render handling |
+| Disabled, blank, Curtain, modal, loading/reload/preferences/window transition | No navigation |
+| Pending/replaced/stopped audience input | No navigation |
+| Toggle alone | Save/apply immediately without replacing windows or changing page/timer/roles |
+| Save failure or future-schema edit | Existing Unsaved/Retry or read-only behavior; no alternate persistence path |
+
+### 5. Good / Base / Bad Cases
+
+Good: turn the setting off and the same audience window stops advancing. Base: old settings missing the optional leaf enable clicks. Bad: dispatch directly from Audience, or rebuild projection windows for an input preference.
+
+### 6. Tests Required
+
+Drive real GPUI audience mouse down/up, including non-left/outside cancellation, guard states, retired-window rejection, Beamer/notes mapping and final-page behavior. Drive the real settings control and store readback with unchanged window handles, plus future/read-only and save failure. Native first-click activation/fullscreen delivery remain separate from headless assertions.
+
+### 7. Wrong vs Correct
+
+Wrong: add settings to the public projection or increment a page index in the view. Correct: outgoing event, coordinator policy, existing Next intent and snapshot publication.
+
 ## Shared display assignment contract
 
 ### 1. Scope / Trigger
@@ -107,6 +145,48 @@ Retain native V10 F10: request1002.67x760 at scale1.5 yielded1000x754 after the 
 ### 7. Wrong vs Correct
 
 Wrong: each settings entry builds its own numbering, Swap flag and window migration path. Correct:07 owns a shared draft surface, numbering and existing coordinator transaction;08/09 reuse it, and configured Swap remains a compatibility intent to the same owner.
+
+## Display location and allocation feedback
+
+### 1. Scope / Trigger
+
+Use this contract when drawing monitor topology, role summaries or assignment rows, or when observing native window movement. Configuration, a draft selection and actual window placement are separate facts.
+
+### 2. Signatures
+
+Presenter-only `display_settings::WindowLocation` is `NotRunning | Unknown | Monitor(MonitorId)`. `observed_location(running, display, valid, monitors, mapping)` resolves a platform display ID only through the current unique mapping and unique monitor identity. `RoleProjection::new(app, pdf, configured, draft)` owns current observations/configuration/pending state; `markers(id, draft)` supplies both diagram and row labels.
+
+### 3. Contracts
+
+`WindowRecord::monitor/display` remain requested placement, not actual location. Per-window `observed_display` cells are seeded at creation, updated by native bounds events and refreshed by existing Shell window reads. Only currently owned records contribute to the Presenter projection; transaction candidates and retired windows cannot publish actual roles. Shell consumes this data outside render and preserves the deferred input/window-lease boundary. A manual OS move never saves new role bindings.
+
+Ready/Idle has no audience window, so its PDF location is NotRunning and any destination is labeled configured/not presenting. Presenting may truthfully show both windows on one monitor in windowed-audience mode. Unknown mapping/readback remains Unknown, with no guess from requested settings. Draft selection changes pending markers only; Apply uses the existing confirmation transaction and Cancel discards allocation draft. Separately autosaved ordinary preferences are not undone by allocation Cancel.
+
+The settings host owns one content scroll; the standalone Displays dialog owns its own single body scroll/action frame. The embedded body has no fixed 650/450px wrapper or second scroll. Topology uses contain fit, preserving relative positions/aspects, and shares numbering/role markers with rows. Number-linked callouts appear only for boxes whose role labels cannot fit; unconditional duplicate legends consume the height needed for actions. At the ordinary launch view, collapsed diagnostics, all three rows/summary and Apply/Cancel fit inside the actual content viewport, including pending-allocation feedback. Diagnostic disclosure must not hide actionable missing/degraded/stale warnings or Retry. Preferences Saved does not mean a dirty allocation draft has been applied.
+
+### 4. Validation / Error Matrix
+
+| Condition | Result |
+| --- | --- |
+| Running window, unique current native mapping | Actual MonitorId marker |
+| Running window, absent/ambiguous/stale mapping or readback failure | Unknown, no requested-position fallback |
+| No audience outside Presenting | NotRunning, configured PDF destination labeled separately |
+| Draft role selection / Cancel | Actual markers/windows/config unchanged; Cancel restores draft |
+| Confirmed Apply | Committed current window records supply new actual markers |
+| Retired window or Stop/Home | Old observation no longer contributes; audience location cleared with lifecycle |
+| Physical screen not assigned/occupied | Explicit unused marker; no automatic assignment invented by the view |
+
+### 5. Good / Base / Bad Cases
+
+Good: dragging a window changes its actual marker while its configured role remains visible and unsaved allocation stays independent. Base: Ready shows application here and PDF target not running. Bad: mark a pending choice as actual, infer actual from WindowRecord.monitor, or expose Presenter state/controllers to the audience.
+
+### 6. Tests Required
+
+Retain pure projection separation/ambiguity tests and actual GPUI draft/Cancel/Apply/lifecycle/two-host tests, including existing failure rollback and stale-topology regressions. Native manual move is a separate empirical check; source API availability or headless injected observation is not proof that Windows delivered movement. Core normal-window visual/interaction checks suffice for this polish task; do not add dimensions/DPI or physical hotplug matrices without user request.
+
+### 7. Wrong vs Correct
+
+Wrong: create a second role authority from screen numbers or auto-save observed OS moves. Correct: MonitorId settings remain explicit allocation authority, current native observations describe placement, and DisplayDraft describes pending intent.
 
 ## Transactional slide textures (task08)
 

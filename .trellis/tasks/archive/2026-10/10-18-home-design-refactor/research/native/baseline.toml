@@ -1,0 +1,82 @@
+schema_version = 1
+
+[cache]
+l1_gpu_mib = 256
+l2_cpu_mib = 512
+l3_thumb_mib = 64
+
+[display]
+audience_fullscreen = true
+monitors = []
+presenter_start_fullscreen = false
+single_monitor_mode = "presenter_only"
+
+[general]
+debug_overlay = false
+language = "zh-CN"
+recent_files = [
+    'D:\Documents\Code\Rust\Exp\ferrostage\fixtures\pdf\perf-100.pdf',
+    'D:\Documents\Code\Rust\Exp\ferrostage\fixtures\pdf\raster.pdf',
+]
+recent_files_limit = 10
+reopen_last_document = false
+theme = "dark"
+
+[hot_reload]
+debounce_ms = 300
+enabled = true
+
+[keybindings]
+blank_black = ["B"]
+blank_white = ["W"]
+jump = ["G"]
+next = [
+    "PageDown",
+    "Space",
+    "Right",
+]
+previous = [
+    "PageUp",
+    "Backspace",
+    "Left",
+]
+start_presentation = ["F5"]
+stop_presentation = ["Escape"]
+swap_screens = ["S"]
+toggle_laser = ["L"]
+toggle_pen = ["P"]
+
+[media]
+max_decode_height = 1080
+
+[pointer]
+highlighter_alpha = 0.5
+laser_color_bgra = [
+    0,
+    0,
+    255,
+    255,
+]
+laser_radius_norm = 0.008
+pen_color_bgra = [
+    0,
+    0,
+    255,
+    255,
+]
+pen_width_norm = 0.004
+
+[presenter]
+grid_columns = 4
+grid_visible_pages = 16
+next_slide_ratio = 0.35
+notes_font_scale = 1.0
+notes_ratio = 0.65
+show_clock = true
+show_thumbnail_strip = false
+
+[timer]
+mode = "count_down"
+target_minutes = 45
+warn_red_remaining_min = 3
+warn_yellow_remaining_min = 10

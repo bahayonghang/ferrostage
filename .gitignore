@@ -1,5 +1,6 @@
 /data/
-target/
+# Build output directories and cache-managed target symlinks.
+target
 
 # Harness-local scaffolding. Not the project contract.
 .agents/

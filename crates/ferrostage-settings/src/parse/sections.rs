@@ -7,7 +7,7 @@ use super::{SettingsWarning, warn};
 use crate::schema::{
     DisplaySettings, GRID_COLUMNS_RANGE, GRID_VISIBLE_PAGES_RANGE, GeneralSettings, LANGUAGES,
     MonitorBinding, PresenterSettings, RECENT_FILES_LIMIT_RANGE, SingleMonitorMode, Theme,
-    role_from_name,
+    UI_FONT_SIZE_RANGE, role_from_name,
 };
 use ferrostage_core::MonitorRole;
 use std::collections::BTreeMap;
@@ -33,6 +33,16 @@ pub(super) fn parse_general(
     GeneralSettings {
         language: parse_language(section, &defaults.language, warnings),
         theme: parse_theme(section, defaults.theme, warnings),
+        ui_font_family: parse_ui_font_family(section, warnings),
+        ui_font_size: parse_u32_inclusive(
+            section,
+            "ui_font_size",
+            "general.ui_font_size",
+            defaults.ui_font_size,
+            *UI_FONT_SIZE_RANGE.start(),
+            *UI_FONT_SIZE_RANGE.end(),
+            warnings,
+        ),
         reopen_last_document: parse_bool(
             section,
             "reopen_last_document",
@@ -49,6 +59,21 @@ pub(super) fn parse_general(
             defaults.debug_overlay,
             warnings,
         ),
+    }
+}
+
+fn parse_ui_font_family(section: &toml::Table, warnings: &mut Vec<SettingsWarning>) -> String {
+    match section.get("ui_font_family") {
+        None => String::new(),
+        Some(Value::String(value)) if !value.chars().any(char::is_control) => value.trim().into(),
+        Some(_) => {
+            warn(
+                warnings,
+                "general.ui_font_family",
+                "expected a font family string without control characters; using system default",
+            );
+            String::new()
+        }
     }
 }
 
@@ -129,6 +154,13 @@ pub(super) fn parse_display(
             "audience_fullscreen",
             "display.audience_fullscreen",
             defaults.audience_fullscreen,
+            warnings,
+        ),
+        audience_click_to_advance: parse_bool(
+            section,
+            "audience_click_to_advance",
+            "display.audience_click_to_advance",
+            defaults.audience_click_to_advance,
             warnings,
         ),
         presenter_start_fullscreen: parse_bool(

@@ -1,0 +1,38 @@
+{
+  "id": "home-design-refactor",
+  "name": "home-design-refactor",
+  "title": "首页品牌、信息层级与紧凑文件入口重构",
+  "description": "结合现有 DESIGN.md、首页截图与官方设计参考，规划 FerroStage 独立字标、首页文案与时间信息精简、紧凑打开操作和最近文件列表，保留原生演示与无障碍边界",
+  "status": "completed",
+  "dev_type": "frontend",
+  "scope": "home",
+  "package": null,
+  "priority": "P2",
+  "creator": "lyh",
+  "assignee": "lyh",
+  "createdAt": "2026-10-18",
+  "completedAt": "2026-10-18",
+  "branch": "codex/home-design-refactor",
+  "base_branch": "dev",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [],
+  "parent": null,
+  "relatedFiles": [
+    "DESIGN.md",
+    "crates/ferrostage-ui/src/theme.rs",
+    "crates/ferrostage-ui/src/presenter.rs",
+    "crates/ferrostage-ui/src/presenter/home_view.rs",
+    "assets/locales/zh-CN/app.toml",
+    "assets/locales/en-US/app.toml",
+    "crates/ferrostage-ui/src/shell.rs"
+  ],
+  "notes": "Home implementation and Trellis independent check finished. Default CI 187 tests and native build/lint/126 GPUI tests PASS. Final normal-window native core import/chooser/settings/focus/Home smoke PASS, exit0. User stopped non-core size/DPI matrices and preference saved globally. All-features deny FAIL on three unchanged optional Linux unmaintained dependencies; no waivers. See research/verification.md. Local Chinese commit authorized by user; no push/archive. Existing all-features policy item remains open.",
+  "meta": {
+    "implementation_approval": "User approved the final home plan and explicitly requested Trellis implement/check sub-agents and native UI validation on 2026-10-18.",
+    "validation_scope": "User explicitly stopped size/breakpoint/minimum-window/DPI and other non-core verification on 2026-10-18; focus core behavior, normal-window visual smoke and necessary quality checks.",
+    "commit_approval": "User explicitly requested a Chinese local commit of the home optimization changes on 2026-10-18, without pushing."
+  }
+}

@@ -1,3 +1,4 @@
+mod home_view;
 mod settings_view;
 mod workbench_view;
 use crate::{
@@ -15,6 +16,7 @@ use gpui::{
 /// frame. Rendering never leases the controller that may be opening this view.
 pub(crate) struct PresenterData {
     theme: ferrostage_settings::Theme,
+    typography: theme::Typography,
     stage: SessionStage,
     filename: String,
     modal: Option<Modal>,
@@ -38,6 +40,10 @@ impl PresenterData {
     pub(crate) fn from_shell(shell: &Shell) -> Self {
         Self {
             theme: shell.settings.settings.general.theme,
+            typography: theme::Typography::resolve(
+                &shell.settings.settings.general,
+                &shell.ui_fonts,
+            ),
             staging: shell.presenter_staging(),
             stage: shell.state.stage(),
             filename: shell
@@ -82,6 +88,12 @@ pub(crate) struct Presenter {
     locale: crate::locale::Locale,
     focus: FocusHandle,
     modal_focus: FocusHandle,
+    progress_focus: FocusHandle,
+    font_picker_focus: FocusHandle,
+    had_font_picker: bool,
+    home_focus: [FocusHandle; 7],
+    home_scroll: gpui::ScrollHandle,
+    home_anchors: [gpui::ScrollAnchor; 7],
     return_focus: Option<FocusHandle>,
     had_modal: bool,
     textures: std::rc::Rc<
@@ -96,11 +108,14 @@ pub(crate) struct Presenter {
 struct FilenameTooltip {
     filename: String,
     palette: Palette,
+    typography: theme::Typography,
 }
 
 impl Render for FilenameTooltip {
     fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
         div()
+            .id("presenter-text-tooltip")
+            .debug_selector(|| "presenter-text-tooltip".into())
             .max_w(px(560.))
             .p(px(12.))
             .rounded(px(theme::RADIUS))
@@ -108,14 +123,29 @@ impl Render for FilenameTooltip {
             .border_color(rgb(self.palette.border))
             .bg(rgb(self.palette.card))
             .text_color(rgb(self.palette.ink))
-            .font(theme::sans_font())
-            .text_size(px(14.))
+            .font(self.typography.font())
+            .text_size(px(self.typography.size(14.)))
             .whitespace_normal()
             .child(self.filename.clone())
     }
 }
 
 impl Presenter {
+    #[cfg(all(test, feature = "test-support"))]
+    pub(crate) fn font_picker_focused(&self, window: &Window) -> bool {
+        self.font_picker_focus.is_focused(window)
+    }
+    #[cfg(all(test, feature = "test-support"))]
+    pub(crate) fn typography_probe(&self) -> (String, f32, bool) {
+        (
+            self.data.typography.family.clone(),
+            self.data.typography.size(14.),
+            self.data.typography.missing,
+        )
+    }
+    pub(crate) fn ui_text_size(&self, role: f32) -> f32 {
+        self.data.typography.size(role)
+    }
     pub(crate) fn staged(&self, attempt: u64) -> bool {
         self.textures.borrow().staged(attempt)
     }
@@ -179,12 +209,36 @@ impl Presenter {
             .detach();
         let focus = cx.focus_handle();
         window.focus(&focus, cx);
+        let home_scroll = gpui::ScrollHandle::new();
+        let home_anchors =
+            std::array::from_fn(|_| gpui::ScrollAnchor::for_handle(home_scroll.clone()));
+        let home_focus = std::array::from_fn(|_| cx.focus_handle());
+        for (index, handle) in home_focus.iter().enumerate() {
+            cx.on_focus(handle, window, move |this, window, cx| {
+                this.home_anchors[index].scroll_to(window, cx);
+                cx.notify();
+            })
+            .detach();
+            cx.on_focus_out(handle, window, |_, _, _, cx| cx.notify())
+                .detach();
+        }
+        let progress_focus = cx.focus_handle();
+        cx.on_focus(&progress_focus, window, |_, _, cx| cx.notify())
+            .detach();
+        cx.on_focus_out(&progress_focus, window, |_, _, _, cx| cx.notify())
+            .detach();
         Self {
             shell,
             data,
             locale,
             focus,
             modal_focus: cx.focus_handle(),
+            progress_focus,
+            font_picker_focus: cx.focus_handle(),
+            had_font_picker: false,
+            home_focus,
+            home_scroll,
+            home_anchors,
             return_focus: None,
             had_modal: false,
             textures: Default::default(),
@@ -213,12 +267,28 @@ impl Presenter {
         intent: Intent,
         palette: Palette,
     ) -> Stateful<Div> {
-        let target = self.shell.clone();
-        let keyboard = target.clone();
-        let a11y = target.clone();
-        let click = intent.clone();
-        let accessible = intent.clone();
+        let session = matches!(&intent, Intent::Start | Intent::Stop);
+        let stop = matches!(&intent, Intent::Stop);
+        let blank = match &intent {
+            Intent::Black => Some(0x000000),
+            Intent::White => Some(0xFFFFFF),
+            _ => None,
+        };
+        let quiet_header = self.data.stage != SessionStage::Idle
+            && matches!(
+                &intent,
+                Intent::Home | Intent::Open | Intent::Settings | Intent::Displays
+            );
+        let preference_control = matches!(
+            &intent,
+            Intent::SettingsCategory(_)
+                | Intent::EditSetting(_, _)
+                | Intent::BeginSettingEdit(_)
+                | Intent::ToggleFontPicker
+        );
+        let category_control = matches!(&intent, Intent::SettingsCategory(_));
         let kind = match &intent {
+            _ if preference_control => theme::ButtonKind::Utility,
             Intent::Start => theme::ButtonKind::Primary,
             Intent::Stop | Intent::Core(ferrostage_core::PresentationCommand::ClearStrokes) => {
                 theme::ButtonKind::Destructive
@@ -226,7 +296,7 @@ impl Presenter {
             Intent::Next | Intent::Previous => theme::ButtonKind::Navigation,
             Intent::Black => theme::ButtonKind::Black,
             Intent::White => theme::ButtonKind::White,
-            Intent::Tool(_) => theme::ButtonKind::Tool,
+            Intent::Tool(_) | Intent::Grid => theme::ButtonKind::Tool,
             _ if primary => theme::ButtonKind::Primary,
             _ => theme::ButtonKind::Utility,
         };
@@ -237,7 +307,8 @@ impl Presenter {
             Intent::White => {
                 self.data.workbench.overlay.blank_mode == Some(ferrostage_core::BlankMode::White)
             }
-            Intent::Tool(_) => primary,
+            Intent::Tool(_) | Intent::Grid => primary,
+            _ if preference_control => primary,
             _ => false,
         };
         let label = if selected {
@@ -245,7 +316,113 @@ impl Presenter {
         } else {
             label
         };
-        let style = palette.button(kind, enabled, selected);
+        let mut style = palette.button(kind, enabled, selected);
+        if preference_control {
+            style.fill = if selected {
+                palette.card
+            } else if category_control {
+                palette.canvas
+            } else {
+                palette.soft
+            };
+            style.border = style.fill;
+            style.ink = if enabled { palette.body } else { palette.muted };
+        }
+        if quiet_header {
+            style.fill = palette.canvas;
+            style.border = palette.canvas;
+        }
+        self.activation_target(id.clone(), label.clone(), enabled, intent, palette)
+            .rounded(px(style.radius + theme::FOCUS_GAP))
+            .child(
+                div()
+                    .id(SharedString::from(format!("{id}-face")))
+                    .min_h(px(if session {
+                        theme::SESSION_CONTROL
+                    } else {
+                        theme::CONTROL
+                    }))
+                    .px(px(if quiet_header {
+                        8.
+                    } else if session
+                        || matches!(
+                            kind,
+                            theme::ButtonKind::Navigation
+                                | theme::ButtonKind::Black
+                                | theme::ButtonKind::White
+                                | theme::ButtonKind::Tool
+                        )
+                    {
+                        12.
+                    } else {
+                        theme::SPACING
+                    }))
+                    .flex()
+                    .items_center()
+                    .justify_center()
+                    .gap(px(8.))
+                    .relative()
+                    .rounded(px(style.radius))
+                    .bg(rgb(style.fill))
+                    .text_color(rgb(style.ink))
+                    .border_1()
+                    .border_color(rgb(style.border))
+                    .min_w_0()
+                    .when(session, |view| {
+                        view.min_w(px(self.data.typography.size(theme::SESSION_WIDTH)))
+                    })
+                    .text_size(px(self.data.typography.size(14.)))
+                    .when(session, |view| {
+                        view.child(Self::session_icon(stop, style.ink))
+                    })
+                    .when_some(blank, |view, color| {
+                        view.child(
+                            div()
+                                .size(px(14.))
+                                .flex_shrink_0()
+                                .rounded(px(3.))
+                                .border_1()
+                                .border_color(rgb(palette.border))
+                                .bg(rgb(color)),
+                        )
+                    })
+                    .child(div().when(!session, |view| view.truncate()).child(label))
+                    .when(enabled, |view| {
+                        view.hover(move |state| state.bg(rgb(style.hover)))
+                            .active(move |state| state.bg(rgb(style.pressed)).top(px(1.)))
+                    }),
+            )
+    }
+
+    /// Shared event/focus boundary; each caller retains its own visual face.
+    fn activation_target(
+        &self,
+        id: String,
+        label: String,
+        enabled: bool,
+        intent: Intent,
+        palette: Palette,
+    ) -> Stateful<Div> {
+        let target = self.shell.clone();
+        let keyboard = target.clone();
+        let a11y = target.clone();
+        let click = intent.clone();
+        let accessible = intent.clone();
+        let home_index = (self.data.stage == SessionStage::Idle)
+            .then(|| {
+                [
+                    "settings",
+                    "displays",
+                    "welcome-open",
+                    "recent-0",
+                    "recent-1",
+                    "recent-2",
+                    "retry-save",
+                ]
+                .iter()
+                .position(|candidate| *candidate == id)
+            })
+            .flatten();
         div()
             .id(SharedString::from(id.clone()))
             .debug_selector(|| id.clone())
@@ -264,31 +441,13 @@ impl Presenter {
             .tab_stop(enabled)
             .border(px(theme::FOCUS_WIDTH))
             .border_color(rgb(palette.canvas))
-            .rounded(px(style.radius + theme::FOCUS_GAP))
+            .rounded(px(theme::RADIUS + theme::FOCUS_GAP))
             .p(px(theme::FOCUS_GAP))
             .focus(|style| style.border_color(rgb(palette.focus)))
-            .child(
-                div()
-                    .id(SharedString::from(format!("{id}-face")))
-                    .min_h(px(theme::CONTROL))
-                    .px(px(theme::SPACING))
-                    .flex()
-                    .items_center()
-                    .justify_center()
-                    .relative()
-                    .rounded(px(style.radius))
-                    .bg(rgb(style.fill))
-                    .text_color(rgb(style.ink))
-                    .border_1()
-                    .border_color(rgb(style.border))
-                    .min_w_0()
-                    .text_size(px(14.))
-                    .child(div().truncate().child(label))
-                    .when(enabled, |view| {
-                        view.hover(move |state| state.bg(rgb(style.hover)))
-                            .active(move |state| state.bg(rgb(style.pressed)).top(px(1.)))
-                    }),
-            )
+            .when_some(home_index, |view, index| {
+                view.track_focus(&self.home_focus[index].clone().tab_stop(enabled))
+                    .anchor_scroll(Some(self.home_anchors[index].clone()))
+            })
             .on_click(move |_, _, cx| {
                 if enabled {
                     actions::dispatch(&target, click.clone(), cx);
@@ -318,11 +477,10 @@ impl Presenter {
         };
         let filename = self.data.filename.clone();
         let narrow = window.viewport_size().width < px(800.);
-        let hide_stage =
-            stage == SessionStage::Presenting && window.viewport_size().width < px(1200.);
         let control = px(theme::CONTROL + (theme::FOCUS_WIDTH + theme::FOCUS_GAP) * 2.);
         let tooltip_filename = filename.clone();
-        let mut identity = div()
+        let typography = self.data.typography.clone();
+        let identity = div()
             .flex()
             .items_center()
             .gap(px(12.))
@@ -337,43 +495,33 @@ impl Presenter {
                         cx.new(|_| FilenameTooltip {
                             filename: tooltip_filename.clone(),
                             palette: p,
+                            typography: typography.clone(),
                         })
                         .into()
                     })
                     .min_h(control)
-                    .flex_1()
                     .min_w_0()
                     .flex()
                     .items_center()
-                    .text_size(px(16.))
+                    .font_weight(gpui::FontWeight::MEDIUM)
+                    .text_size(px(self.data.typography.size(16.)))
                     .text_color(rgb(p.ink))
                     .truncate()
                     .child(filename.clone()),
-            );
-        if !hide_stage {
-            identity = identity.child(
+            )
+            .child(
                 div()
                     .id("stage-label")
                     .debug_selector(|| "stage-label".into())
                     .flex_shrink_0()
-                    .min_h(control)
-                    .flex()
-                    .items_center()
-                    .text_size(px(14.))
+                    .px(px(8.))
+                    .py(px(4.))
+                    .rounded(px(4.))
+                    .bg(rgb(p.soft))
+                    .text_size(px(self.data.typography.size(12.)))
                     .text_color(rgb(p.muted))
                     .child(stage_label),
             );
-        }
-        if !self.data.workbench.steps.is_empty() {
-            identity = identity.child(div().flex_shrink_0().child(self.button(
-                "workbench-progress".into(),
-                self.data.workbench.progress.clone(),
-                true,
-                false,
-                Intent::Jump,
-                p,
-            )));
-        }
         let timer = div()
             .flex_shrink_0()
             .min_h(control)
@@ -453,6 +601,11 @@ impl Presenter {
 
 impl Render for Presenter {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        let picker_open = self.data.preferences.panel.font_picker.is_some();
+        if self.had_font_picker && !picker_open && self.data.modal == Some(Modal::Settings) {
+            window.focus(&self.font_picker_focus, cx);
+        }
+        self.had_font_picker = picker_open;
         let mut prioritized = self
             .data
             .workbench
@@ -523,14 +676,14 @@ impl Render for Presenter {
             .map(|error| l.error("wb-upload-error", error))
             .or_else(|| self.data.error.clone());
         let warnings = self.data.warnings.clone();
-        let reason = self.data.start_reason.clone();
-        let loading = self.data.loading;
-        let busy = self.data.busy;
         let dirty = self.data.dirty;
         let save_error = self.data.save_error.clone();
         let pages = self.data.pages;
-        let recent = self.data.recent.clone();
-        window.set_window_title(&format!("{filename} — {stage_label} — FerroStage"));
+        if stage == SessionStage::Idle {
+            window.set_window_title("FerroStage");
+        } else {
+            window.set_window_title(&format!("{filename} — {stage_label} — FerroStage"));
+        }
         if modal.is_some() && !self.had_modal {
             self.return_focus = window.focused(cx);
             window.focus(&self.modal_focus, cx);
@@ -587,8 +740,8 @@ impl Render for Presenter {
             .flex_col()
             .bg(rgb(p.canvas))
             .text_color(rgb(p.body))
-            .font(theme::sans_font())
-            .text_size(px(16.))
+            .font(self.data.typography.font())
+            .text_size(px(self.data.typography.size(16.)))
             .child(
                 gpui::canvas(
                     |_, _, _| (),
@@ -615,19 +768,21 @@ impl Render for Presenter {
             .capture_key_down(cx.listener(|this, event: &gpui::KeyDownEvent, _, cx| {
                 if this.data.modal == Some(Modal::Settings)
                     && (this.data.preferences.panel.recording.is_some()
-                        || this.data.preferences.panel.edit.is_some())
+                        || this.data.preferences.panel.edit.is_some()
+                        || this.data.preferences.panel.font_picker.is_some())
                 {
-                    actions::dispatch(
-                        &this.shell,
-                        Intent::SettingsKey {
-                            key: event.keystroke.unparse(),
-                            text: event.keystroke.key_char.clone().or_else(|| {
-                                (event.keystroke.key.len() == 1)
-                                    .then(|| event.keystroke.key.clone())
-                            }),
-                        },
-                        cx,
-                    );
+                    let key = event.keystroke.unparse();
+                    let text = if this.data.preferences.panel.font_picker.is_some()
+                        && matches!(key.as_str(), "ctrl-v" | "cmd-v" | "shift-insert")
+                    {
+                        // Paste providers may restore the clipboard before deferred dispatch.
+                        cx.read_from_clipboard().and_then(|item| item.text())
+                    } else {
+                        event.keystroke.key_char.clone().or_else(|| {
+                            (event.keystroke.key.len() == 1).then(|| event.keystroke.key.clone())
+                        })
+                    };
+                    actions::dispatch(&this.shell, Intent::SettingsKey { key, text }, cx);
                     cx.stop_propagation();
                 }
             }))
@@ -668,7 +823,12 @@ impl Render for Presenter {
                     .track_focus(&self.modal_focus)
                     .key_context("FerroStageModal")
                     .child(crate::display_settings::view::panel(
-                        self, panel, l, p, false,
+                        self,
+                        panel,
+                        l,
+                        p,
+                        false,
+                        f32::from(window.viewport_size().width) - 32.,
                     ))
                     .into_any_element();
             }
@@ -693,7 +853,12 @@ impl Render for Presenter {
                 })
                 .p(px(24.))
                 .gap(px(16.))
-                .child(div().text_size(px(20.)).text_color(rgb(p.ink)).child(title))
+                .child(
+                    div()
+                        .text_size(px(self.data.typography.size(20.)))
+                        .text_color(rgb(p.ink))
+                        .child(title),
+                )
                 .child(div().child(description))
                 .when_some(error, |view, error| {
                     view.child(div().text_color(rgb(p.error)).child(error))
@@ -726,51 +891,27 @@ impl Render for Presenter {
         }
         let drop_target = self.shell.clone();
         let document_open = stage != SessionStage::Idle;
-        let mut body = div()
-            .id("presenter-content")
-            .flex_1()
-            .min_h_0()
-            .p(px(if document_open { 12. } else { 24. }))
-            .gap(px(if document_open { 8. } else { 16. }))
-            .flex()
-            .flex_col()
-            .when(document_open, |view| view.overflow_hidden())
-            .when(!document_open, |view| view.overflow_y_scroll());
-        if stage == SessionStage::Idle {
-            body = body
+        let mut body = if document_open {
+            div()
+                .id("presenter-content")
+                .flex_1()
+                .min_h_0()
+                .p(px(12.))
+                .gap(px(8.))
+                .flex()
+                .flex_col()
+                .overflow_hidden()
                 .child(
                     div()
-                        .font(theme::display_font())
-                        .text_size(px(28.))
-                        .text_color(rgb(p.ink))
-                        .child("FerroStage"),
+                        .flex_1()
+                        .min_h_0()
+                        .flex()
+                        .flex_col()
+                        .child(self.workbench_panel(p, window, cx)),
                 )
-                .child(div().child(l.text("welcome")))
-                .child(
-                    self.button(
-                        "welcome-open".into(),
-                        if loading {
-                            l.text("loading")
-                        } else {
-                            l.text("open")
-                        }
-                        .into(),
-                        self.data.can_open,
-                        true,
-                        Intent::Open,
-                        p,
-                    ),
-                );
         } else {
-            body = body.child(
-                div()
-                    .flex_1()
-                    .min_h_0()
-                    .flex()
-                    .flex_col()
-                    .child(self.workbench_panel(p, window, cx)),
-            );
-        }
+            self.home_content(p, window)
+        };
 
         if let Some(error) = error {
             body = body.child(
@@ -809,80 +950,46 @@ impl Render for Presenter {
                     p,
                 )));
         }
-        if stage == SessionStage::Idle && !recent.is_empty() {
-            body = body.child(
-                div()
-                    .flex_shrink_0()
-                    .text_color(rgb(p.muted))
-                    .child(l.text("recent")),
-            );
-            for (index, path) in recent.into_iter().enumerate() {
-                let label = std::path::Path::new(&path)
-                    .file_name()
-                    .map(|name| name.to_string_lossy().into_owned())
-                    .unwrap_or_else(|| path.clone());
-                body = body.child(div().flex_shrink_0().child(self.button(
-                    format!("recent-{index}"),
-                    label,
-                    !busy,
-                    false,
-                    Intent::Import(path.into()),
-                    p,
-                )));
-            }
-        }
+        let body = if document_open {
+            body.into_any_element()
+        } else {
+            div()
+                .id("presenter-content")
+                .flex_1()
+                .min_h_0()
+                .min_w_0()
+                .overflow_y_scroll()
+                .track_scroll(&self.home_scroll)
+                .flex()
+                .flex_col()
+                .items_center()
+                .px(px(if window.viewport_size().width < px(800.) {
+                    16.
+                } else {
+                    32.
+                }))
+                .pt(px(if window.viewport_size().height < px(600.) {
+                    24.
+                } else {
+                    48.
+                }))
+                .pb(px(24.))
+                .child(body.flex_shrink_0())
+                .into_any_element()
+        };
         root.track_focus(&self.focus)
             .on_drop::<ExternalPaths>(move |paths, _, cx| {
                 if let Some(path) = paths.paths().first() {
                     actions::dispatch(&drop_target, Intent::Import(path.clone()), cx);
                 }
             })
-            .child(self.command_bar(p, window))
-            .child(body)
-            .when(!self.data.workbench.steps.is_empty(), |view| {
-                view.child(self.tools_panel(p))
+            .when(document_open, |view| {
+                view.child(self.command_bar(p, window))
             })
-            .child(
-                div()
-                    .p(px(16.))
-                    .border_t_1()
-                    .border_color(rgb(p.border))
-                    .flex()
-                    .flex_col()
-                    .gap(px(8.))
-                    .child(if stage == SessionStage::Presenting {
-                        self.button(
-                            "stop".into(),
-                            l.text("stop").into(),
-                            true,
-                            true,
-                            Intent::Stop,
-                            p,
-                        )
-                    } else {
-                        self.button(
-                            "start".into(),
-                            if busy {
-                                l.text("preparing")
-                            } else {
-                                l.text("start")
-                            }
-                            .into(),
-                            reason.is_none(),
-                            true,
-                            Intent::Start,
-                            p,
-                        )
-                    })
-                    .when_some(
-                        if stage != SessionStage::Presenting {
-                            reason
-                        } else {
-                            None
-                        },
-                        |view, reason| view.child(div().text_color(rgb(p.muted)).child(reason)),
-                    ),
-            )
+            .child(body)
+            .when(document_open, |view| {
+                view.child(self.tools_panel(p, window))
+            })
             .into_any_element()
     }
 }

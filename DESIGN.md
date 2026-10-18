@@ -32,8 +32,13 @@ colors:
   error-dark: "#FFA5A0"
   audience-curtain: "#000000"
 typography:
+  home-brand:
+    fontFamily: "Georgia, serif"
+    fontSize: 32px
+    lineHeight: 38px
+    fontWeight: 600
   display:
-    fontFamily: "Georgia, SimSun, serif"
+    fontFamily: "Segoe UI, Microsoft YaHei UI, system-ui"
     fontSize: 28px
     fontWeight: 400
   title:
@@ -64,21 +69,26 @@ spacing:
   lg: 24px
   xl: 32px
 sizes:
+  home-content-max: 760px
   control: 44px
   focus-width: 2px
   focus-gap: 2px
   toolbar: 64px
+  session-control: 56px
+  session-icon: 26px
+  session-width-at-default-text-size: 208px
   sidebar: 208px
 ---
 
 <!-- design-md: entry=brand:claude; source=https://github.com/VoltAgent/awesome-design-md@3b60532; license=MIT -->
 <!-- customized: FerroStage native presenter; accessible clay actions; light/dark palettes; system fonts; task-owned runtime verification. -->
+<!-- customized: home-design-refactor, dedicated FerroStage wordmark, compact file entry, Idle-only information hierarchy. -->
 
 ## Overview
 
 Warm cream surfaces, dark ink, and a restrained clay primary action keep the presenter's attention on the slides. This is a FerroStage interface inspired by Claude's design language. Product UI uses FerroStage identity and existing project assets only.
 
-The single Rust token layer belongs to task 07 at `crates/ferrostage-ui/src/theme.rs`. Tasks 08 and 09 extend that layer. Theme resolution consumes `general.theme` (`light`, `dark`, `system`); system mode responds to OS theme changes. Dark mode maps each surface/text/semantic role to its `-dark` token; the primary button family stays the same. No new settings keys or parallel palettes.
+The single Rust token layer belongs to task 07 at `crates/ferrostage-ui/src/theme.rs`. Tasks 08 and 09 extend that layer. Theme resolution consumes `general.theme` (`light`, `dark`, `system`); system mode responds to OS theme changes. Dark mode maps each surface/text/semantic role to its `-dark` token; the primary button family stays the same. Theme resolution introduces no additional theme keys or parallel palettes.
 
 ## Colors
 
@@ -88,15 +98,21 @@ PDF pixels, rasterized speaker notes, media, annotation colors, and black/white 
 
 ## Typography
 
-Use installed system fonts; never download proprietary brand fonts. Georgia is reserved for the Idle welcome title and short empty-state headings. Controls, filenames, and settings use the sans stack; elapsed time uses the monospace stack. Font fallback must cover Chinese. Text scaling must not clip labels or hide Start/Stop. Long filenames truncate in the header and expose the full name on demand.
+Use installed system fonts; never download proprietary brand fonts. Idle uses a dedicated FerroStage wordmark in Georgia, 32/38px semibold, separate from ordinary headings. All other home copy uses the sans stack: instruction 14/22px, actions and filenames 14/20px, recent section and parent paths 12/18px. Do not apply Latin tracking to Chinese. Other short empty-state headings may use the display stack. Controls, filenames, and settings use the sans stack; elapsed time uses the monospace stack. Font fallback must cover Chinese. Text scaling must not clip labels or hide Start/Stop. Long filenames truncate in the header and expose the full name on demand.
+
+Optional schema-v1 leaves `general.ui_font_family = ""` and `general.ui_font_size = 16` control interface typography. Empty family means System default; installed families are selected in a bounded searchable list. Missing families retain the requested setting and show a fallback notice. Base size accepts 12–24 logical pixels; existing text roles scale by base/16. The home wordmark keeps its fixed Georgia role, timers keep their monospace face and scale, and OS titlebar, PDF/raster notes, media and audience pixels are excluded. A mixed Chinese/Latin preview and explicit default restoration accompany these preferences.
 
 ## Layout
 
-07: compact header with filename and textual stage, a dominant Open PDF action in Idle, and Start/Stop in Ready/Presenting. Show the reason beside a disabled Start button. Keep import errors and topology warnings in the presenter.
+Idle: one app-content FerroStage wordmark, quiet Settings/Displays utilities, one short instruction, one natural-width Open PDF action, then up to three recent-file rows. Native Idle title is `FerroStage`. Omit document-status chrome, clocks/timer, duplicate Open and disabled Start footer in Idle. Preserve import/topology warnings and unsaved/save-error Retry. Ready/Presenting retain filename/stage header and Start/Stop; show the reason beside a disabled Start button there. Visibility changes never mutate timer/settings state.
 
-08: current slide on the left, current notes above the next slide on the right. Notes initially occupy 65% of the right column; the effective notes share is clamped to 55–80%, including legacy settings. The horizontal divider measures the notes share from the top. Header holds clock/timer; bottom toolbar holds navigation and tools. Keep slide aspect ratio and letterboxing. Recent files belong only to Idle. Thumbnails appear only in the on-demand grid; the legacy show_thumbnail_strip setting is read-compatible but ignored. Selecting a page jumps directly; typing in the page dialog does not navigate. Time passing never changes slides.
+Home content is a top-anchored, centered column capped at 760px. Use 32px side gutters at widths >=800px, 16px below; top inset 48px at heights >=600px, 24px below. Brand, copy, action and recent text share a left edge. Utilities wrap into a separate row below 600px width. Section spacing uses 8/16/24/32px. The home scroll container includes conditional feedback and remains usable at 320x240 logical client size. No large welcome card or fixed bottom action strip.
+
+08: current slide on the left, current notes above the next slide on the right. Notes initially occupy 65% of the right column; the effective notes share is clamped to 55–80%, including legacy settings. The horizontal divider measures the notes share from the top. Header anchors filename beside a quiet session label, with a strong monospace countdown and quieter wall clock. One bottom strip groups Start/Stop, Previous/Next and compact actionable page progress, followed by blanking, drawing tools and secondary utilities. Full logical/step/physical progress is available on hover, keyboard focus and accessibility. No separate full-width session footer or leftover divider. Disabled Start explains its reason locally; busy preparation preserves its geometry and blocks duplicate activation. Keep slide aspect ratio and letterboxing. Recent files belong only to Idle. Thumbnails appear only in the on-demand grid; the legacy show_thumbnail_strip setting is read-compatible but ignored. Selecting a page jumps directly; typing in the page dialog does not navigate. Time passing never changes slides.
 
 09: category navigation on the left and a scrollable settings panel on the right. Display topology is the primary content of the Displays category. Keep saved/unsaved/read-only state and Retry visible. Use short descriptions such as “Saved audience display is disconnected” and “Language changes after restart”.
+
+Settings use quiet category navigation and sans headings, a left-aligned content column capped at 960 logical pixels (1120 for Displays), section hairlines and content-driven rows of at least 56px. Labels and local help sit left, bounded controls right; no background card per field. General groups Appearance, Startup and Recent files. Recent files retain order and show filename plus real parent/full-path context with count/limit and a content-sized Clear. Keep all seven categories and existing edit/reset/recording behavior. Preference save status does not imply display allocation has been applied.
 
 ## Elevation & Depth
 
@@ -110,15 +126,17 @@ Controls use md radius, panels lg, status badges sm. Content images retain their
 
 **button-primary**: label plus optional progress indicator, primary/on-primary, label type, control height, xs/md padding, md radius. Hover uses primary-hover; pressed uses primary-active; focus adds the focus ring; disabled uses surface-card/muted with explanatory text and no action; loading preserves geometry and blocks duplicate invocation; error displays text and retry. Dark primary controls also use border-dark to separate the clay fill from elevated surfaces.
 
-**button-secondary / tool-button**: utility controls use quiet surface/body and md radius. Navigation uses strong neutral ink/canvas fill and a compact 4px radius. Black/white audience toggles use labeled black/white swatches with a visible border. Drawing tools use outlined pill shapes and a checkmark for the selected tool; selection never relies on color alone. Stop and Clear use semantic error text/border on the soft surface. Start retains the filled clay action. Every variant shares keyboard, accessibility, disabled and focus handling. Hover changes the surface; pointer press moves the face down 1px without animation. Text contrast is at least 4.5:1 and focus/boundary contrast at least 3:1 in both themes.
+**home-open / home-recent / home-utility**: reuse shared activation/focus/disabled/accessibility dispatch while keeping home faces distinct. Open retains the 44px face height plus existing focus reservation, with natural 120-200px face width for shipped labels at default scale. Recent rows are flat, left aligned, 48-56px outer targets with <=8px gaps, a filename and actual parent path. They have quiet hover/pressed surfaces and visible keyboard focus, without permanent command-button outlines. Reveal complete paths on hover and keyboard focus and include them in accessible labels. Same-named files retain distinguishable parent context. Rows may grow at increased text scale. Settings/Displays keep explicit text and >=44px targets. Do not shrink global CONTROL to fix home width. Keep 0/1/3 recent states and existing busy/import guards; never invent dates, metadata or shortcuts.
 
-**field / select / slider / keybinding-row**: label above or beside the control, description below, surface-soft/body and border. Hover uses surface-card; focus uses focus; invalid uses error plus a specific message. Read-only future-version controls cannot mutate settings; save failure leaves effective session values visible with Retry. Keyboard conflicts are named, not color-only. Native accessibility names and values are mandatory where GPUI supports them; unsupported behavior remains an explicit gap.
+**button-secondary / tool-button**: loaded-document header utilities are quiet text controls. Navigation uses a bounded neutral surface and regular 8px radius. Black/white audience toggles use small bordered black/white swatches beside explicit labels and a selected check. Drawing tools share a soft segmented group with regular 8px faces; selection uses a stronger surface and check, never color alone. Stop and Clear use semantic error text/border on the soft surface, with Clear separated from tool selection. Start retains the filled clay action. Start/Stop has a 56px face with a 26px geometric play/stop icon plus explicit label, in the same group as Previous/Next. Every variant shares keyboard, accessibility, disabled and focus handling. Hover changes the surface; pointer press moves the face down 1px without animation. Text contrast is at least 4.5:1 and focus/necessary boundary contrast at least 3:1 in both themes.
 
-**status / timer**: stage text always accompanies color. Timer warnings use semantic text with a label/icon, retain legibility in both themes, and read core elapsed time. No flashing or time-dependent motion as the sole signal.
+**field / select / slider / keybinding-row**: label/help beside the control in ordinary rows, with content-driven multi-line variants. Choices share one soft segmented group and numeric minus/value/plus share one field group. Hover uses surface-card; focus uses focus; invalid uses error plus a specific message. Read-only future-version controls cannot mutate settings; save failure leaves effective session values visible with Retry. Keyboard conflicts are named, not color-only. Native accessibility names and values are mandatory where GPUI supports them; unsupported behavior remains an explicit gap.
 
-**modal / category-nav**: presenter-owned; Escape closes the topmost modal and consumes the event. Tab/Shift+Tab follow visible order, Enter/Space activate; restore focus to the invoker. Settings navigation marks selection with text weight and a border as well as a surface change.
+**status / timer**: on document screens stage text always accompanies color. Timer warnings use semantic text with a label/icon, retain legibility in both themes, and read core elapsed time. Idle omits this presentation without changing data or preferences. No flashing or time-dependent motion as the sole signal.
 
-**display-assignment**: the toolbar uses “显示器设置” / “Displays”, opening a presenter-owned panel. First show detected display count and numbered entries; Identify uses those same numbers. Provide explicit “应用窗口所在屏幕” and “PDF播放屏幕” selectors with Apply/Cancel and current assignments; other screens are unused. Do not use a primary Swap button as the allocation workflow. Numbers are human-facing labels, while settings bind MonitorId. Task07 owns the minimal shared panel/Identify,08 reuses the entry,09 embeds it in full settings and adds the topology view. Existing Swap keybindings remain secondary compatibility actions.
+**modal / category-nav**: presenter-owned; Escape closes the topmost modal and consumes the event. Tab/Shift+Tab follow visible order, Enter/Space activate; restore focus to the invoker. Settings navigation marks selection with a check, text weight and a soft surface, preserving the shared keyboard focus ring.
+
+**display-assignment**: Settings and standalone Displays share one compact allocation body. Each host owns one scroll, without a fixed-height embedded scroller. Show count and Identify/Refresh first, then a contained 420×240px spatial overview beside numbered assignment rows in an ordinary window. Stack naturally when space is insufficient. Use one uniform contain scale, preserve desktop positions and portrait aspect, and keep number-linked callouts for small rectangles. The same projection supplies diagram, summary and rows: checked text means observed current application/PDF window; configured PDF is explicitly not running before Start; outlined text prefixed Pending means unapplied draft. Unknown native location stays unknown, never inferred from the requested target. Manual OS moves update observation only. No audience means no running PDF; Stop/Home retires its marker. Diagnostics collapse per display; missing/degraded/stale warnings and recovery remain visible. Apply retains native confirmation/rollback; allocation Cancel discards only its draft and never reverses autosaved fullscreen preferences. Ordinary preference Saved feedback does not imply allocation committed. Numbers match Identify, while settings bind MonitorId. Existing Swap keys remain secondary compatibility actions.
 
 ## Do's and Don'ts
 
@@ -137,7 +155,7 @@ Controls use md radius, panels lg, status badges sm. Content images retain their
 | 390–799 | Stack previews; notes remain scrollable; categories collapse to a keyboard-accessible selector; Start/Stop remain visible |
 | 320–389 | Same compact layout; only internal content scrolls; controls retain target size |
 
-Desktop is the target platform; narrow checks are resizable native-window checks, not a mobile product. Verify 1440x900, 800x600, 390x844, and 320x640 logical sizes plus mixed DPI. If the native framework enforces a larger minimum window, document the actual minimum and mark smaller probes NOT_RUN with that reason; do not claim narrow acceptance or add a mobile product to this task. Supported desktop sizes and all visible controls must still pass.
+Desktop is the target platform. The workbench/settings refinement validates ordinary native-window core interactions and visuals, including relevant themes/locales and keyboard focus. Additional dimension, DPI and performance matrices are outside this task's user-approved acceptance scope; source/build checks do not establish native visual acceptance.
 
 ## Iteration Guide
 
@@ -158,5 +176,5 @@ Desktop is the target platform; narrow checks are resizable native-window checks
 - [ ] Single Rust theme layer and component states conform to this document.
 - [ ] Contrast passes for all used pairs in light and dark modes.
 - [ ] Native keyboard navigation, focus restoration, and state feedback pass.
-- [ ] Native screenshots cover the listed sizes, both themes, and mixed DPI.
+- [ ] Native screenshots and core interactions cover the ordinary-window scope and relevant themes/locales.
 - [ ] No brand assets/proprietary fonts or tinted PDF/audience content.

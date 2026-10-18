@@ -38,6 +38,7 @@ impl Category {
 #[derive(Clone, Copy)]
 pub enum Kind {
     Toggle,
+    FontFamily,
     Choice(&'static [&'static str]),
     Number {
         min: f64,
@@ -81,6 +82,17 @@ pub const FIELDS: &[Field] = &[
         General,
         Choice(&["dark", "light", "system"])
     ),
+    field!("general.ui_font_family", General, FontFamily),
+    field!(
+        "general.ui_font_size",
+        General,
+        Number {
+            min: *ferrostage_settings::UI_FONT_SIZE_RANGE.start() as f64,
+            max: *ferrostage_settings::UI_FONT_SIZE_RANGE.end() as f64,
+            step: 1.,
+            integer: true,
+        }
+    ),
     field!("general.reopen_last_document", General, Toggle),
     field!(
         "general.recent_files_limit",
@@ -93,6 +105,7 @@ pub const FIELDS: &[Field] = &[
         }
     ),
     field!("display.audience_fullscreen", Displays, Toggle),
+    field!("display.audience_click_to_advance", Displays, Toggle),
     field!("display.presenter_start_fullscreen", Displays, Toggle),
     field!(
         "presenter.next_slide_ratio",
@@ -258,7 +271,28 @@ pub struct PanelState {
     pub display: Option<DisplayDraft>,
     pub error: Option<String>,
     pub confirm_reset: bool,
+    pub font_picker: Option<FontPicker>,
 }
+#[derive(Clone, Debug, Default)]
+pub struct FontPicker {
+    pub filter: String,
+    pub selected: usize,
+}
+impl FontPicker {
+    // None represents the system-default sentinel, always available in the list.
+    pub fn matches<'a>(&self, families: &'a [String]) -> Vec<Option<&'a str>> {
+        let filter = self.filter.to_lowercase();
+        std::iter::once(None)
+            .chain(
+                families
+                    .iter()
+                    .filter(|family| family.to_lowercase().contains(&filter))
+                    .map(|family| Some(family.as_str())),
+            )
+            .collect()
+    }
+}
+
 fn table(settings: &Settings) -> Result<toml::Table, String> {
     toml::Table::try_from(settings).map_err(|error| error.to_string())
 }
@@ -296,10 +330,13 @@ pub fn edit(settings: &Settings, id: &str, input: &str) -> Result<Settings, Stri
         .find(|field| field.id == id)
         .ok_or("Unknown setting")?;
     let mut table = table(settings)?;
+    if matches!(field.kind, FontFamily) && input.chars().any(char::is_control) {
+        return Err("Font family cannot contain control characters".into());
+    }
     let input = input.trim();
     let value = match field.kind {
         Toggle => toml::Value::Boolean(input.parse().map_err(|_| "Expected true or false")?),
-        Choice(_) => toml::Value::String(input.into()),
+        Choice(_) | FontFamily => toml::Value::String(input.into()),
         Number { integer: true, .. } => {
             toml::Value::Integer(input.parse().map_err(|_| "Expected an integer")?)
         }
@@ -344,6 +381,20 @@ pub fn edit(settings: &Settings, id: &str, input: &str) -> Result<Settings, Stri
     next.display.monitors = settings.display.monitors.clone();
     Ok(next)
 }
+/// Display real history context without inventing metadata or changing order.
+pub fn recent_copy(path: &str) -> (String, String) {
+    let file = std::path::Path::new(path);
+    let name = file
+        .file_name()
+        .map(|name| name.to_string_lossy().into_owned())
+        .unwrap_or_else(|| path.into());
+    let parent = file
+        .parent()
+        .map(|parent| parent.to_string_lossy().into_owned())
+        .unwrap_or_default();
+    (name, parent)
+}
+
 pub fn bindings_mut<'a>(keys: &'a mut Keybindings, action: &str) -> Option<&'a mut Vec<String>> {
     Some(match action {
         "next" => &mut keys.next,
@@ -374,18 +425,44 @@ mod tests {
             ("pointer.laser_color_bgra", "bad"),
             ("cache.l1_gpu_mib", "0"),
             ("general.theme", "rainbow"),
+            ("general.ui_font_size", "25"),
+            ("general.ui_font_size", "16.5"),
+            ("general.ui_font_family", "bad\nfamily"),
+            ("display.audience_click_to_advance", "invalid"),
         ] {
             assert!(edit(&settings, id, value).is_err(), "{id}");
         }
         let next = edit(&settings, "pointer.laser_color_bgra", "112233AA").unwrap();
         assert_eq!(next.pointer.laser_color_bgra, [0x33, 0x22, 0x11, 0xAA]);
         assert_eq!(next.keybindings, settings.keybindings);
+        let next = edit(&next, "display.audience_click_to_advance", "false").unwrap();
+        assert!(!next.display.audience_click_to_advance);
         let next = edit(&next, "presenter.grid_visible_pages", "13").unwrap();
         assert_eq!(next.presenter.grid_visible_pages, 13);
         assert_eq!(next.presenter.grid_columns, settings.presenter.grid_columns);
         for field in FIELDS {
-            assert!(!value(&next, *field).is_empty(), "{}", field.id);
+            assert!(
+                matches!(field.kind, FontFamily) || !value(&next, *field).is_empty(),
+                "{}",
+                field.id
+            );
         }
+    }
+    #[test]
+    fn font_filter_and_history_keep_real_values() {
+        let picker = FontPicker {
+            filter: "yahei".into(),
+            selected: 0,
+        };
+        let families = vec!["Arial".into(), "Microsoft YaHei UI".into()];
+        assert_eq!(
+            picker.matches(&families),
+            vec![None, Some("Microsoft YaHei UI")]
+        );
+        let (a, parent_a) = recent_copy("alpha/same.pdf");
+        let (b, parent_b) = recent_copy("beta/same.pdf");
+        assert_eq!(a, b);
+        assert_ne!(parent_a, parent_b);
     }
     #[test]
     fn recent_limit_trims_and_coupled_timer_validation_is_atomic() {

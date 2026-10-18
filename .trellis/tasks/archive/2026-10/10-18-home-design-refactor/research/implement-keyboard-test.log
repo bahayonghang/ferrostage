@@ -1,0 +1,11 @@
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.45s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-c0c859c36d428c4a.exe)
+
+running 1 test
+test shell::tests::home_keyboard_reaches_recents_and_restores_modal_focus_at_minimum_size ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 124 filtered out; finished in 0.05s
+
+mbx[cache]: 0 hits, 0 misses, 1 not looked up, 1 incremental; 0 B downloaded, 0 B uploaded, 0 B stored locally
+mbx[savings]: 290.4 GiB logical of outputs had survived their checkouts. an unnatural state, now corrected.

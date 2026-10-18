@@ -1,0 +1,45 @@
+# Integrated acceptance
+
+User-approved scope: sequential Trellis implementation of settings/fonts, workbench, then displays; independent review and native core/visual verification. No extra size, DPI, performance or physical-hotplug matrix. All changes remain uncommitted on `codex/workbench-settings-design`, base `7c25e46d1868f5520b8c2225c2ab89acfe9cfbed`.
+
+## Implementation and review
+
+All three children were implemented in order by separate Trellis implement agents. Their `evidence.md` files record focused tests and boundaries. The independent Trellis check agent reviewed the integrated diff, corrected real focus handling and obsolete test traversal, and then repaired issues found by actual native observation: duplicated progress detail, clipped helper text, font-paste modifier/lifetime handling and allocation actions below the ordinary content fold. Red-before/green-after receipts and build logs are in `integration-review.md` and `integration-native-repairs.md`.
+
+## Native evidence
+
+These are actual Windows application captures through Computer Use, not browser mockups or the supplied screenshots. The runner uses task-owned config files and the read-only `fixtures/pdf/perf-100.pdf`; source/executable/config/PDFium/PDF hashes and normal exits are recorded in `native/*-launch.json` and `native/*-exit.json`. No personal settings were changed.
+
+| Requirement | Actual observation / evidence |
+| --- | --- |
+| AC1, AC2 | `final-workbench-ready.jpg`: filename and quiet stage at left, countdown stronger than clock, a single large play action beside Previous/Next and actionable concise progress. Earlier native Next and Jump advanced/restored logical page and synchronized notes/next preview. `final-progress-single-detail.jpg`: focus plus hover has only one detail bubble. |
+| AC2, AC3, AC12 | `final-workbench-presenting.jpg`: the same primary face becomes Stop and countdown runs. `final-audience-screen3.jpg`: audience contains the PDF only, without notes or controls. `final-audience-black.jpg`: black action changes the actual audience to black. `final-workbench-stopped.jpg`: Ready restored; native window inventory confirms the audience handle is gone. `final-home-return.jpg`: home identity and recent rows remain usable. |
+| AC4, AC5 | `final-general.jpg`: compact shared rail/header/rows and full local language/startup helper lines. Native font picker was reached by Tab and activated by Enter; typed filtering selected installed Consolas, size increased to18 and immediately changed UI text. Family and size defaults restored through their own controls. Task config was read back and a restart copy retained. Final restart, paste and fallback results are recorded below after the final rebuild. |
+| AC6, AC7 | Font changes visibly affected UI text while the PDF and rasterized notes remained unchanged. Home wordmark retains its role; timer retains its monospace role. Compatible parsing/merge, unknown data, read-only/save failure/Retry and history Clear/order/limit/empty behavior are covered by real settings/GPUI regressions. Native history rows are visually checked; native Clear was deliberately not invoked. |
+| AC8, AC10, AC11 | `final-displays-ready.jpg`: three assignment rows, topology, actual/configured summary and Apply/Cancel fit simultaneously. `final-displays-pending.jpg`: PDF3 draft is pending while configured PDF2 is retained and not running. `final-displays-cancel.jpg`: Cancel restores PDF2 and leaves settings open. `final-displays-applied.jpg`: Apply recreates the owned presenter and confirms PDF3 as configured, with no premature running marker. |
+| AC9 | `final-displays-presenting.jpg`: actual app1/PDF3 agrees with the audience window created on screen3. Earlier `after-native-window-move-screen3.jpg` records a real titlebar drag updating actual app location to3 while configured app destination1 and saved monitors[] stay unchanged. This capture is evidence for movement tracking, not a DPI claim. |
+| AC10, AC11 | Stale/missing/ambiguous mappings, disabled PDF, single-screen windowed audience and save/draft failure paths are covered by focused model and actual GPUI input fixtures, not physical unplug/replug. Native Saved/pending language is scoped correctly. |
+
+The core screenshots above were captured on repaired executable `d89825682523478701e620dc4fb5c809f93fcacb924411652af838f9519a1c64`. Its process exited0. Native paste on that executable produced an empty filter; it is explicitly a failed checkpoint, preserved in `native-font-paste-empty-before-final-repair.jpg`, and triggered the final event-time clipboard repair. The first native font selection/movement checkpoint used executable `5ce61a3f...` and also exited0. Each checkpoint has its own hashes; earlier screenshots are not mislabeled as final-source runs.
+
+## Final source and short resmoke
+
+Final implementation and requested core/visual acceptance are complete. A native paste limitation is explicitly retained below rather than counted as a pass.
+
+- Final executable SHA-256: `0ecb9c1cd6bab70f0a5a9273e037edc269a5b77ef72ddb129884b063216c7df5`, 43,303,424 bytes. Source manifest `integration-recent-final-source-manifest.json`, SHA-256 `e9cfdb9cd245b793c7389385e0a39de1bf929f219a96da505eb3fdbe875ae174`. All20 listed product files were rehashed after native acceptance with zero drift. Product sources stayed frozen throughout the final runs.
+- `just ci`: PASS,194 default tests, fmt, strict clippy and cargo deny. `just check-shell`: PASS, native `gpui,pdfium` app build, strict native clippy and136 GPUI library tests. Logs: `integration-recent-final-{ci,shell,diff-check}.log`. Final `git diff --check`: PASS. No Cargo/lock/vendor/core/document changes.
+- `native/accepted-dark-font-restart.jpg`: final build starts with the native-selected persisted Consolas18 config. `accepted-dark-recent-paths.jpg`: all three filename/parent pairs now render fully after scrolling. This closes the F7 visual defect; the existing headless containment regression also proves the earlier9px overflow and repair.
+- `native/accepted-light-missing-font.jpg`: English/light18 shows fallback notice while retaining `FerroStage Missing Font Acceptance` in both the UI and saved config. It was read back before any explicit reset. `accepted-light-general-defaults.jpg`: family and size reset independently to System default/16, warning disappears, and config readback confirms both defaults persisted.
+- `native/accepted-light-displays.jpg`: final source retains the compact three-screen diagram/rows/actions in light mode with app1 actual, PDF2 configured/not presenting and screen3 unused. `accepted-light-workbench-defaults.jpg` and `accepted-light-pen-selected.jpg` establish final light workbench hierarchy and explicit selected drawing mode.
+- `native/accepted-light-presenting.jpg` and `accepted-light-stopped.jpg`: Start/Stop swap in the same strip, countdown runs and stage changes. Native window inventory observed new audience handle23205060 only during Presenting and confirmed it absent after Stop. This repeats the lifecycle on the exact final executable.
+- Final runs `final-accepted-dark` PID31984 and `final-missing-light` PID3088 both exited0 with empty stderr. Their launch manifests include all source/config/DLL/PDF identities. Final fixture SHA-256 `395d8bb26ad5f8f7ca5245901abdcb8de1fccd2be5ff7e30482e54f776526cb6` matches the baseline. PDFium remains the pinned `79d4676b...` runtime.
+
+### Native paste limit
+
+Normal keyboard filter/selection, keyboard focus, live size/defaults and restart have native evidence. Automated `sky.type_text` still left the custom font filter empty on final source. The same command also left a focused Windows system filename edit empty (`native/accepted-os-edit-type-text-empty.jpg`), while ordinary `press_key('c')` entered a visible c there. An attempted Ctrl+A/Ctrl+C from that edit followed by picker Ctrl+V still left the picker empty (`accepted-stable-clipboard-inconclusive.jpg`). Because the clipboard's actual contents could not be independently confirmed through the allowed UI surface, this is **not** a certified stable-clipboard paste pass or a proven remaining product defect.
+
+The real-keyboard GPUI regressions prove normal paste, modifier rejection, bounded/control-character handling and event-time clipboard capture before deferred consumption. They do not replace native clipboard verification. No timing retry, new abstraction, platform/vendor patch or extra test matrix was added to force the automation path to pass. This specific native paste result remains unverified; it does not block the user-requested font selection/size/core visual outcomes above.
+
+## Limits
+
+UI Automation did not expose a useful text tree for this application, so this work does not claim screen-reader qualification. No dimensions/DPI/performance matrix, exhaustive physical hotplug, all-optional-dependency gate, PDF/notes-font editing, dependency/vendor migration, commit, push or archive was performed. Existing default product checks and native checks are reported separately from actual pixels and interactions.

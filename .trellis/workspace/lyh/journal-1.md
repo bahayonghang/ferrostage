@@ -212,3 +212,72 @@ just dev 与 just build 放置已校验的 pdfium.dll；发布版改为 GUI 子�
 ### Status
 
 [OK] **Completed**
+
+
+## Session 7: 拆分提交工作台与设置设计改动并归档任务
+<!-- trellis-session: v=2 fp=d4810d9dd337a316 -->
+
+**Date**: 2026-10-18
+**Task**: 拆分提交工作台与设置设计改动并归档任务
+**Branch**: `codex/workbench-settings-design`
+
+### Summary
+
+将工作台/设置/显示器设计改动按 settings、字体选择器、工作台会话条、显示器实际位置、文案、文档、任务记录拆成 7 个中文 emoji 提交；随后归档 10-18 父子任务及 10-14、10-17、10-18 三个遗留任务，当前无活跃任务。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `ed040ae` | feat(settings): ✨ 增加界面字体与字号偏好 |
+| `15d37af` | feat(ui): ✨ 增加可筛选的界面字体选择器与紧凑设置行 |
+| `8c9ad60` | feat(ui): ✨ 让界面字体作用到工作台并合并会话控制条 |
+| `002036e` | feat(displays): ✨ 显示窗口实际所在屏幕并标记待应用分配 |
+| `31ac2fa` | feat(i18n): ✨ 补齐界面字体、工作台与显示器状态文案 |
+| `b3776b5` | docs: 📝 记录界面字体、会话控制条与显示器反馈契约 |
+| `2c6768d` | docs(task): 📝 记录工作台与设置设计任务及其验收证据 |
+
+### Status
+
+[OK] **Completed**
+
+
+## Session 8: Audience click navigation and PR-only CI repair
+<!-- trellis-session: v=2 fp=ab7f1b50552544a0 -->
+
+**Date**: 2026-10-18
+**Task**: Audience click navigation and PR-only CI repair
+**Branch**: `dev`
+
+### Summary
+
+Implemented default-on audience click navigation, repaired current CI root causes with maintained Linux dependencies, completed review and archived before authorized push.
+
+### Main Changes
+
+- Added persistent playback click toggle and guarded Next routing.
+- Restricted automatic CI to PRs, retained dispatch; repaired platform cfg and software H264 runtime.
+- Migrated11 Linux D-Bus downstream packages with original-source hashes and no waiver.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `a24e4c3` | feat(ui): ✨ 支持播放窗口单击翻页及持久化开关 |
+| `d199bab` | ci: 👷 仅在 PR 自动运行并保留手动入口 |
+| `d0f3e6b` | fix(platform): 🐛 限制显示器名称辅助代码的编译目标 |
+| `bb8cd0a` | fix(media): 🐛 补齐软件 H.264 解码并拒绝缺失解码器 |
+| `e6e1a44` | fix(deps): 🐛 迁移 Linux D-Bus 依赖至维护中的 API |
+
+### Testing
+
+- [OK] PASS just ci:196 tests; check-shell:143 tests; all-feature deny; actionlint.
+- [OK] PASS scoped native audience/media smoke and portable AT-SPI/wire checks; native Linux desktop service qualification remains separate.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- Push dev, create PR to main, fix actual four-job CI, merge when green, then dispatch one main run and confirm issue state.

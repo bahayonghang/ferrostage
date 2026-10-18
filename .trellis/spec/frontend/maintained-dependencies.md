@@ -8,6 +8,8 @@ Task07 adopts a reviewed local maintenance set because the two original GPUI rou
 
 The workspace selects `gpui = { path = "vendor/gpui", default-features = false }` and `gpui_platform` from Zed tag `v1.23.3`, resolved to `96a1b1b5389efff473fc2306f7f8c690f2e1a417`. The Git patch replaces its GPUI package with the same local source. Crates.io patches select local pulp0.22.3, metal0.33.0, cosmic-text0.19.0 and harfrust0.12.0. The separately approved F14 adoption adds accesskit_windows0.34.0 as the sixth maintained package. Do not introduce a second GPUI family.
 
+On 2026-10-18 the user separately approved expanding maintenance to migrate the Linux D-Bus downstream chain rather than adding advisory exceptions. ADR-011 owns that bounded extension: keep the pinned GPUI and shared AccessKit versions, migrate consumers to maintained zbus 6 wire/name/derive APIs, and preserve persisted GVariant data through zgvariant. Root all-feature audit must exclude no platform and contain no retired zvariant/zbus_names/derive package or advisory waiver. Cross-target Rust type checks, actual Linux consumer compilation and data-format golden tests are separate proof obligations; Windows compilation alone proves none of those Linux runtime behaviors.
+
 Product gates:
 
 ```text

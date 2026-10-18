@@ -50,6 +50,11 @@ fn merge_general(doc: &mut toml::Table, general: &GeneralSettings) -> Result<(),
     with_section(doc, "general", |table| {
         table.insert("language".to_owned(), language);
         table.insert("theme".to_owned(), theme);
+        table.insert(
+            "ui_font_family".into(),
+            string_value(&general.ui_font_family),
+        );
+        table.insert("ui_font_size".into(), u32_value(general.ui_font_size));
         table.insert("reopen_last_document".to_owned(), reopen);
         table.insert("recent_files_limit".to_owned(), limit);
         table.insert("recent_files".to_owned(), recent);
@@ -65,10 +70,12 @@ fn merge_display(doc: &mut toml::Table, display: &DisplaySettings) -> Result<(),
     };
     let mode = string_value(display.single_monitor_mode.as_str());
     let audience = bool_value(display.audience_fullscreen);
+    let click_to_advance = bool_value(display.audience_click_to_advance);
     let presenter = bool_value(display.presenter_start_fullscreen);
     with_section(doc, "display", |table| {
         table.insert("single_monitor_mode".to_owned(), mode);
         table.insert("audience_fullscreen".to_owned(), audience);
+        table.insert("audience_click_to_advance".to_owned(), click_to_advance);
         table.insert("presenter_start_fullscreen".to_owned(), presenter);
         table.insert("monitors".to_owned(), monitors);
     });

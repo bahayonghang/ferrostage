@@ -20,6 +20,7 @@ pub(super) struct WorkbenchData {
     options: DocumentOverrides,
     diagnostics: String,
     pub progress: String,
+    progress_compact: String,
     timer: String,
     clock: Option<String>,
     warning: u8,
@@ -41,7 +42,7 @@ impl WorkbenchData {
         };
         let session = shell.workbench.document.as_ref();
         let page = shell.state.current_page();
-        let progress = session
+        let (progress, progress_compact) = session
             .map(|s| {
                 let map = &s.document.slide_map;
                 let logical = map.logical_for(page).map_or(0, |l| l.0);
@@ -49,7 +50,7 @@ impl WorkbenchData {
                 let step = group
                     .and_then(|g| g.iter().position(|p| *p == page))
                     .unwrap_or(0);
-                shell.locale.format(
+                let full = shell.locale.format(
                     "wb-progress",
                     &[
                         ("slide", (logical + 1).to_string()),
@@ -59,7 +60,24 @@ impl WorkbenchData {
                         ("page", (page.0 + 1).to_string()),
                         ("pages", s.document.page_count.to_string()),
                     ],
-                )
+                );
+                let mut compact = shell.locale.format(
+                    "wb-page-compact",
+                    &[
+                        ("slide", (logical + 1).to_string()),
+                        ("slides", map.groups().len().to_string()),
+                    ],
+                );
+                if group.is_some_and(|group| group.len() > 1) {
+                    compact.push_str(&shell.locale.format(
+                        "wb-step-compact",
+                        &[
+                            ("step", (step + 1).to_string()),
+                            ("steps", group.map_or(1, Vec::len).to_string()),
+                        ],
+                    ));
+                }
+                (full, compact)
             })
             .unwrap_or_default();
         let overlay = shell.state.audience_snapshot();
@@ -94,6 +112,7 @@ impl WorkbenchData {
                 })
                 .unwrap_or_default(),
             progress,
+            progress_compact,
             timer: format!(
                 "{}{:02}:{:02}",
                 if elapsed > target && timer.mode == ferrostage_settings::TimerMode::CountDown {
@@ -348,7 +367,7 @@ impl Presenter {
             .child(
                 div()
                     .font(gpui::font(theme::MONO))
-                    .text_size(px(24.))
+                    .text_size(px(self.data.typography.size(24.)))
                     .text_color(rgb(match data.warning {
                         2 => p.error,
                         1 => p.warning,
@@ -363,7 +382,15 @@ impl Presenter {
                     "wb-timer-yellow"
                 }))
             })
-            .when_some(data.clock.clone(), |v, clock| v.child(clock))
+            .when_some(data.clock.clone(), |v, clock| {
+                v.child(
+                    div()
+                        .font(gpui::font(theme::MONO))
+                        .text_size(px(self.data.typography.size(14.)))
+                        .text_color(rgb(p.muted))
+                        .child(clock),
+                )
+            })
             .when(self.data.stage == SessionStage::Presenting, |v| {
                 v.child(
                     self.button(
@@ -392,64 +419,260 @@ impl Presenter {
             })
             .into_any_element()
     }
-    pub(super) fn tools_panel(&self, p: Palette) -> gpui::AnyElement {
-        let mut view = div().px(px(16.)).flex().flex_wrap().gap(px(4.));
-        for (id, label, intent) in [
-            ("previous", "wb-previous", Intent::Previous),
-            ("next", "wb-next", Intent::Next),
-            ("black", "wb-black", Intent::Black),
-            ("white", "wb-white", Intent::White),
-        ] {
-            view = view.child(self.button(
-                id.into(),
-                self.locale.text(label).into(),
-                true,
-                false,
-                intent,
-                p,
-            ));
-        }
-        for (id, label, tool) in [
-            ("navigate", "wb-navigate", Tool::Navigate),
-            ("laser", "wb-laser", Tool::Laser),
-            ("pen", "wb-pen", Tool::Pen),
-            ("highlighter", "wb-highlighter", Tool::Highlighter),
-            ("eraser", "wb-eraser", Tool::Eraser),
-        ] {
-            view = view.child(self.button(
-                id.into(),
-                self.locale.text(label).into(),
-                true,
-                self.data.workbench.tool == tool,
-                Intent::Tool(tool),
-                p,
-            ));
-        }
-        view.child(self.button(
-            "clear-strokes".into(),
-            self.locale.text("wb-clear").into(),
-            true,
-            false,
-            Intent::Core(Command::ClearStrokes),
-            p,
-        ))
-        .child(self.button(
-            "grid".into(),
-            self.locale.text("wb-grid").into(),
-            true,
-            self.data.workbench.grid,
-            Intent::Grid,
-            p,
-        ))
-        .child(self.button(
-            "document-options".into(),
-            self.locale.text("wb-document").into(),
-            true,
-            false,
-            Intent::Document,
-            p,
-        ))
+    pub(super) fn session_icon(stop: bool, ink: u32) -> gpui::AnyElement {
+        canvas(
+            |_, _, _| (),
+            move |bounds, _, window, _| {
+                let mut path = gpui::PathBuilder::fill();
+                let points: &[(f32, f32)] = if stop {
+                    &[(0.2, 0.2), (0.8, 0.2), (0.8, 0.8), (0.2, 0.8)]
+                } else {
+                    &[(0.24, 0.08), (0.90, 0.50), (0.24, 0.92)]
+                };
+                for (index, (x, y)) in points.iter().enumerate() {
+                    let point = gpui::point(
+                        bounds.origin.x + bounds.size.width * *x,
+                        bounds.origin.y + bounds.size.height * *y,
+                    );
+                    if index == 0 {
+                        path.move_to(point);
+                    } else {
+                        path.line_to(point);
+                    }
+                }
+                path.close();
+                if let Ok(path) = path.build() {
+                    window.paint_path(path, rgb(ink));
+                }
+            },
+        )
+        .size(px(theme::SESSION_ICON))
+        .flex_shrink_0()
         .into_any_element()
+    }
+
+    pub(super) fn tools_panel(&self, p: Palette, window: &Window) -> gpui::AnyElement {
+        let presenting = self.data.stage == SessionStage::Presenting;
+        let has_steps = !self.data.workbench.steps.is_empty();
+        let mut navigation = div()
+            .id("session-navigation")
+            .debug_selector(|| "session-navigation".into())
+            .flex()
+            .items_center()
+            .flex_shrink_0()
+            .gap(px(4.))
+            .child(
+                self.button(
+                    if presenting { "stop" } else { "start" }.into(),
+                    self.locale
+                        .text(if presenting {
+                            "stop"
+                        } else if self.data.busy {
+                            "preparing"
+                        } else {
+                            "start"
+                        })
+                        .into(),
+                    presenting || (self.data.start_reason.is_none() && !self.data.busy),
+                    true,
+                    if presenting {
+                        Intent::Stop
+                    } else {
+                        Intent::Start
+                    },
+                    p,
+                ),
+            );
+        if has_steps {
+            for (id, label, intent) in [
+                ("previous", "wb-previous", Intent::Previous),
+                ("next", "wb-next", Intent::Next),
+            ] {
+                navigation = navigation.child(self.button(
+                    id.into(),
+                    self.locale.text(label).into(),
+                    true,
+                    false,
+                    intent,
+                    p,
+                ));
+            }
+            let detail = self.data.workbench.progress.clone();
+            let typography = self.data.typography.clone();
+            navigation = navigation.child(
+                self.activation_target(
+                    "workbench-progress".into(),
+                    self.locale
+                        .format("wb-jump-detail", &[("progress", detail.clone())]),
+                    true,
+                    Intent::Jump,
+                    p,
+                )
+                .track_focus(&self.progress_focus.clone().tab_stop(true))
+                .when(!self.progress_focus.is_focused(window), |view| {
+                    view.tooltip(move |_, cx| {
+                        cx.new(|_| FilenameTooltip {
+                            filename: detail.clone(),
+                            palette: p,
+                            typography: typography.clone(),
+                        })
+                        .into()
+                    })
+                })
+                .child(
+                    div()
+                        .id("workbench-progress-face")
+                        .min_h(px(theme::CONTROL))
+                        .px(px(12.))
+                        .flex()
+                        .items_center()
+                        .gap(px(8.))
+                        .relative()
+                        .rounded(px(theme::RADIUS))
+                        .bg(rgb(p.soft))
+                        .text_size(px(self.data.typography.size(14.)))
+                        .text_color(rgb(p.body))
+                        .hover(move |style| style.bg(rgb(p.card)))
+                        .active(move |style| style.bg(rgb(p.card)).top(px(1.)))
+                        .child(self.data.workbench.progress_compact.clone())
+                        .child(
+                            div()
+                                .text_color(rgb(p.muted))
+                                .child(self.locale.text("wb-jump-action")),
+                        ),
+                ),
+            );
+        }
+        let mut strip = div()
+            .id("workbench-controls")
+            .debug_selector(|| "workbench-controls".into())
+            .flex()
+            .items_center()
+            .flex_wrap()
+            .gap(px(12.))
+            .child(navigation);
+        if has_steps {
+            let mut blanking = div()
+                .flex()
+                .items_center()
+                .rounded(px(theme::PANEL_RADIUS))
+                .bg(rgb(p.soft));
+            for (id, label, intent) in [
+                ("black", "wb-black", Intent::Black),
+                ("white", "wb-white", Intent::White),
+            ] {
+                blanking = blanking.child(self.button(
+                    id.into(),
+                    self.locale.text(label).into(),
+                    true,
+                    false,
+                    intent,
+                    p,
+                ));
+            }
+            let mut tools = div()
+                .flex()
+                .items_center()
+                .flex_wrap()
+                .rounded(px(theme::PANEL_RADIUS))
+                .bg(rgb(p.soft));
+            for (id, label, tool) in [
+                ("navigate", "wb-navigate", Tool::Navigate),
+                ("laser", "wb-laser", Tool::Laser),
+                ("pen", "wb-pen", Tool::Pen),
+                ("highlighter", "wb-highlighter", Tool::Highlighter),
+                ("eraser", "wb-eraser", Tool::Eraser),
+            ] {
+                tools = tools.child(self.button(
+                    id.into(),
+                    self.locale.text(label).into(),
+                    true,
+                    self.data.workbench.tool == tool,
+                    Intent::Tool(tool),
+                    p,
+                ));
+            }
+            let secondary = div()
+                .flex()
+                .items_center()
+                .flex_wrap()
+                .gap(px(4.))
+                .child(self.button(
+                    "clear-strokes".into(),
+                    self.locale.text("wb-clear").into(),
+                    true,
+                    false,
+                    Intent::Core(Command::ClearStrokes),
+                    p,
+                ))
+                .child(self.button(
+                    "grid".into(),
+                    self.locale.text("wb-grid").into(),
+                    true,
+                    self.data.workbench.grid,
+                    Intent::Grid,
+                    p,
+                ))
+                .child(self.button(
+                    "document-options".into(),
+                    self.locale.text("wb-document").into(),
+                    true,
+                    false,
+                    Intent::Document,
+                    p,
+                ));
+            strip = strip.child(blanking).child(tools).child(secondary);
+        }
+        div()
+            .relative()
+            .px(px(12.))
+            .pb(px(8.))
+            .flex_shrink_0()
+            .flex()
+            .flex_col()
+            .gap(px(4.))
+            .child(strip)
+            .when_some(
+                if presenting {
+                    None
+                } else {
+                    self.data.start_reason.clone()
+                },
+                |view, reason| {
+                    view.child(
+                        div()
+                            .id("start-reason")
+                            .debug_selector(|| "start-reason".into())
+                            .pl(px(4.))
+                            .text_size(px(self.data.typography.size(12.)))
+                            .text_color(rgb(p.muted))
+                            .child(reason),
+                    )
+                },
+            )
+            .when(
+                self.progress_focus.is_focused(window) && has_steps,
+                |view| {
+                    view.child(
+                        div()
+                            .id("progress-detail")
+                            .debug_selector(|| "progress-detail".into())
+                            .absolute()
+                            .bottom(gpui::relative(1.))
+                            .left(px(16.))
+                            .max_w_full()
+                            .p(px(12.))
+                            .rounded(px(theme::RADIUS))
+                            .bg(rgb(p.card))
+                            .border_1()
+                            .border_color(rgb(p.border))
+                            .text_size(px(self.data.typography.size(12.)))
+                            .text_color(rgb(p.muted))
+                            .child(self.data.workbench.progress.clone()),
+                    )
+                },
+            )
+            .into_any_element()
     }
     pub(super) fn workbench_panel(
         &mut self,
@@ -498,7 +721,7 @@ impl Presenter {
             .child(
                 div()
                     .flex_shrink_0()
-                    .text_size(px(12.))
+                    .text_size(px(self.data.typography.size(12.)))
                     .text_color(rgb(p.muted))
                     .child(self.locale.text("wb-notes")),
             );
@@ -664,7 +887,7 @@ impl Presenter {
                             .child(
                                 div()
                                     .flex_shrink_0()
-                                    .text_size(px(12.))
+                                    .text_size(px(self.data.typography.size(12.)))
                                     .text_color(rgb(p.muted))
                                     .child(self.locale.text("wb-next-slide")),
                             )

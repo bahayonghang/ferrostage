@@ -1,0 +1,6 @@
+{"file":".trellis/spec/frontend/index.md","reason":"Implement within existing native UI, state and persistence contracts"}
+{"file":".trellis/spec/frontend/component-guidelines.md","reason":"Implement within existing native UI, state and persistence contracts"}
+{"file":".trellis/spec/frontend/state-management.md","reason":"Implement within existing native UI, state and persistence contracts"}
+{"file":".trellis/spec/frontend/quality-guidelines.md","reason":"Implement within existing native UI, state and persistence contracts"}
+{"file":".trellis/spec/backend/database-guidelines.md","reason":"Implement within existing native UI, state and persistence contracts"}
+{"file":".trellis/tasks/10-18-workbench-settings-design/research/visual-and-source-audit.md","reason":"Screenshot diagnosis, verified source anchors, approved font scope and acceptance limits"}

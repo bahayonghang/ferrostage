@@ -1,0 +1,30 @@
+{
+  "id": "workbench-settings-design",
+  "name": "workbench-settings-design",
+  "title": "演示工作台与设置界面设计优化",
+  "description": "延续首屏设计，规划演示工具栏、界面字体、紧凑设置及显示器实际位置与分配反馈优化",
+  "status": "completed",
+  "dev_type": null,
+  "scope": null,
+  "package": null,
+  "priority": "P2",
+  "creator": "lyh",
+  "assignee": "lyh",
+  "createdAt": "2026-10-18",
+  "completedAt": "2026-10-18",
+  "branch": "codex/workbench-settings-design",
+  "base_branch": "codex/home-design-refactor",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [
+    "10-18-settings-design-font",
+    "10-18-workbench-design",
+    "10-18-displays-design"
+  ],
+  "parent": null,
+  "relatedFiles": [],
+  "notes": "2026-10-18: sequential implementation, independent review and requested native core/visual acceptance complete. Final receipt: parent research/verification.md. Native paste inconclusive. Changes uncommitted; no push/archive authorized.",
+  "meta": {}
+}

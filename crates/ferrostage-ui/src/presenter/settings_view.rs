@@ -9,6 +9,7 @@ pub(super) struct SettingsData {
     pub panel: PanelState,
     writable: bool,
     path: String,
+    fonts: std::sync::Arc<Vec<String>>,
 }
 impl SettingsData {
     pub fn from_shell(shell: &Shell) -> Self {
@@ -17,6 +18,7 @@ impl SettingsData {
             panel: shell.preferences.clone(),
             writable: shell.settings.write_policy.is_writable(),
             path: shell.config_path().display().to_string(),
+            fonts: shell.ui_fonts.clone(),
         }
     }
 }
@@ -30,7 +32,7 @@ impl Presenter {
             .flex()
             .gap(px(4.))
             .when(narrow, |v| v.flex_wrap())
-            .when(!narrow, |v| v.flex_col().w(px(190.)).flex_shrink_0());
+            .when(!narrow, |v| v.flex_col().w(px(176.)).flex_shrink_0());
         for category in Category::ALL {
             rail = rail.child(
                 self.button(
@@ -47,16 +49,24 @@ impl Presenter {
         let category = data.panel.category;
         let mut content = div()
             .id("settings-content")
+            .debug_selector(|| "settings-content".into())
             .flex_1()
             .min_h_0()
             .min_w_0()
+            .max_w(px(if data.panel.category == Category::Displays {
+                theme::SETTINGS_DISPLAY_WIDTH
+            } else {
+                theme::SETTINGS_WIDTH
+            }))
             .overflow_y_scroll()
             .flex()
             .flex_col()
-            .gap(px(12.));
+            .gap(px(0.));
         content = content.child(
             div()
-                .text_size(px(20.))
+                .pb(px(12.))
+                .font_weight(gpui::FontWeight::SEMIBOLD)
+                .text_size(px(self.data.typography.size(20.)))
                 .text_color(rgb(p.ink))
                 .child(l.text(&format!("settings-category-{}", category.id()))),
         );
@@ -64,39 +74,146 @@ impl Presenter {
             .iter()
             .filter(|field| field.category == category)
         {
+            if category == Category::General {
+                let section = match field.id {
+                    "general.language" => Some("settings-section-appearance"),
+                    "general.reopen_last_document" => Some("settings-section-startup"),
+                    "general.recent_files_limit" => Some("recent"),
+                    _ => None,
+                };
+                if let Some(section) = section {
+                    content = content.child(self.settings_section(l.text(section), p));
+                }
+            }
+            if category == Category::Displays {
+                continue;
+            }
             content = content.child(self.setting_row(*field, enabled, p));
+            if field.id == "general.ui_font_family" && data.panel.font_picker.is_some() {
+                content = content.child(self.font_picker(enabled, p));
+            }
+            if field.id == "general.ui_font_size" {
+                content = content.child(
+                    div()
+                        .px(px(12.))
+                        .py(px(12.))
+                        .mb(px(8.))
+                        .bg(rgb(p.soft))
+                        .rounded(px(theme::RADIUS))
+                        .child(l.text("settings-font-preview"))
+                        .child(
+                            div()
+                                .mt(px(4.))
+                                .text_size(px(self.ui_text_size(12.)))
+                                .text_color(rgb(p.muted))
+                                .child(l.text("settings-font-scope")),
+                        ),
+                );
+            }
         }
         match category {
             Category::General => {
-                content = content
-                    .child(
-                        div()
-                            .text_size(px(14.))
-                            .text_color(rgb(p.muted))
-                            .child(l.text("settings-language-restart")),
-                    )
-                    .child(self.button(
-                        "settings-clear-recent".into(),
-                        l.text("settings-clear-recent").into(),
-                        enabled,
-                        false,
-                        Intent::ClearRecent,
-                        p,
-                    ));
-                for file in &data.settings.general.recent_files {
+                let files = &data.settings.general.recent_files;
+                content = content.child(
+                    div()
+                        .flex()
+                        .items_center()
+                        .justify_between()
+                        .gap(px(12.))
+                        .py(px(4.))
+                        .child(
+                            div()
+                                .text_size(px(self.ui_text_size(12.)))
+                                .text_color(rgb(p.muted))
+                                .child(l.format(
+                                    "settings-recent-count",
+                                    &[
+                                        ("count", files.len().to_string()),
+                                        (
+                                            "limit",
+                                            data.settings.general.recent_files_limit.to_string(),
+                                        ),
+                                    ],
+                                )),
+                        )
+                        .child(self.button(
+                            "settings-clear-recent".into(),
+                            l.text("settings-clear-recent").into(),
+                            enabled && !files.is_empty(),
+                            false,
+                            Intent::ClearRecent,
+                            p,
+                        )),
+                );
+                if files.is_empty() {
                     content = content.child(
                         div()
-                            .text_size(px(14.))
-                            .whitespace_normal()
-                            .child(file.clone()),
+                            .py(px(16.))
+                            .text_color(rgb(p.muted))
+                            .child(l.text("recent-empty")),
+                    );
+                }
+                for (index, path) in files.iter().enumerate() {
+                    let (name, parent) = settings_panel::recent_copy(path);
+                    let tooltip_path = path.clone();
+                    let typography = self.data.typography.clone();
+                    content = content.child(
+                        div()
+                            .id(SharedString::from(format!("settings-recent-{index}")))
+                            .debug_selector(move || format!("settings-recent-{index}"))
+                            .role(Role::ListItem)
+                            .aria_label(path.clone())
+                            .tab_index(0)
+                            .tab_stop(true)
+                            .border(px(theme::FOCUS_WIDTH))
+                            .border_color(rgb(p.canvas))
+                            .focus(|style| style.border_color(rgb(p.focus)))
+                            .tooltip(move |_, cx| {
+                                cx.new(|_| FilenameTooltip {
+                                    filename: tooltip_path.clone(),
+                                    palette: p,
+                                    typography: typography.clone(),
+                                })
+                                .into()
+                            })
+                            .min_h(px(theme::SETTINGS_ROW))
+                            .flex_shrink_0()
+                            .py(px(8.))
+                            .px(px(8.))
+                            .flex()
+                            .flex_col()
+                            .gap(px(4.))
+                            .child(div().text_color(rgb(p.ink)).child(name))
+                            .child(
+                                div()
+                                    .id(SharedString::from(format!(
+                                        "settings-recent-parent-{index}"
+                                    )))
+                                    .debug_selector(move || {
+                                        format!("settings-recent-parent-{index}")
+                                    })
+                                    .text_size(px(self.ui_text_size(12.)))
+                                    .text_color(rgb(p.muted))
+                                    .whitespace_normal()
+                                    .child(parent),
+                            ),
                     );
                 }
             }
             Category::Displays => {
                 if let Some(panel) = &self.data.displays {
-                    content = content.child(div().h(px(650.)).min_h(px(450.)).child(
-                        crate::display_settings::view::panel(self, panel, l, p, true),
+                    let width = (f32::from(window.viewport_size().width)
+                        - if narrow { 32. } else { 220. })
+                    .min(theme::SETTINGS_DISPLAY_WIDTH);
+                    content = content.child(crate::display_settings::view::panel(
+                        self, panel, l, p, true, width,
                     ));
+                }
+                for field in settings_panel::FIELDS
+                    .iter()
+                    .filter(|field| field.category == Category::Displays)
+                {
+                    content = content.child(self.setting_row(*field, enabled, p));
                 }
             }
             Category::Pointer => {
@@ -141,11 +258,13 @@ impl Presenter {
                 for (action, keys) in data.settings.keybindings.actions() {
                     let mut row = div()
                         .flex()
-                        .flex_col()
+                        .flex_wrap()
+                        .justify_between()
+                        .items_center()
                         .gap(px(4.))
                         .p(px(12.))
-                        .bg(rgb(p.soft))
-                        .rounded(px(theme::RADIUS));
+                        .border_b_1()
+                        .border_color(rgb(p.card));
                     row = row.child(
                         div()
                             .text_color(rgb(p.ink))
@@ -171,7 +290,7 @@ impl Presenter {
                                         "binding-warning-{action}-{index}"
                                     )))
                                     .role(Role::Alert)
-                                    .text_size(px(14.))
+                                    .text_size(px(self.data.typography.size(14.)))
                                     .text_color(rgb(p.warning))
                                     .child(
                                         l.format("settings-key-conflict", &[("key", key.clone())]),
@@ -199,7 +318,7 @@ impl Presenter {
                 content = content
                     .child(
                         div()
-                            .text_size(px(14.))
+                            .text_size(px(self.data.typography.size(14.)))
                             .text_color(rgb(p.muted))
                             .child(l.text("settings-key-help")),
                     )
@@ -216,7 +335,7 @@ impl Presenter {
                 content = content
                     .child(
                         div()
-                            .text_size(px(14.))
+                            .text_size(px(self.data.typography.size(14.)))
                             .text_color(rgb(p.muted))
                             .child(l.text("settings-cache-help")),
                     )
@@ -228,7 +347,7 @@ impl Presenter {
                     )
                     .child(
                         div()
-                            .text_size(px(14.))
+                            .text_size(px(self.data.typography.size(14.)))
                             .whitespace_normal()
                             .child(data.path.clone()),
                     )
@@ -300,14 +419,23 @@ impl Presenter {
                 .gap(px(8.))
                 .child(
                     div()
-                        .text_size(px(14.))
+                        .text_size(px(self.data.typography.size(14.)))
                         .text_color(rgb(p.muted))
                         .child(l.text(if self.data.busy {
                             "settings-applying"
                         } else if self.data.dirty {
                             "settings-unsaved"
                         } else {
-                            "settings-saved"
+                            if self
+                                .data
+                                .displays
+                                .as_ref()
+                                .is_some_and(|panel| panel.roles.pending)
+                            {
+                                "settings-saved-display-pending"
+                            } else {
+                                "settings-saved"
+                            }
                         })),
                 )
                 .when(self.data.dirty, |v| {
@@ -319,15 +447,7 @@ impl Presenter {
                         Intent::RetrySave,
                         p,
                     ))
-                })
-                .child(self.button(
-                    "close-settings".into(),
-                    l.text("close").into(),
-                    true,
-                    false,
-                    Intent::Escape,
-                    p,
-                )),
+                }),
         );
         div()
             .size_full()
@@ -337,10 +457,21 @@ impl Presenter {
             .gap(px(12.))
             .child(
                 div()
-                    .text_size(px(24.))
-                    .font(theme::display_font())
+                    .text_size(px(self.data.typography.size(24.)))
+                    .font_weight(gpui::FontWeight::SEMIBOLD)
                     .text_color(rgb(p.ink))
-                    .child(l.text("settings")),
+                    .flex()
+                    .items_center()
+                    .justify_between()
+                    .child(l.text("settings"))
+                    .child(self.button(
+                        "close-settings".into(),
+                        l.text("close").into(),
+                        true,
+                        false,
+                        Intent::Escape,
+                        p,
+                    )),
             )
             .child(
                 div()
@@ -352,15 +483,54 @@ impl Presenter {
                     .child(rail)
                     .child(content),
             )
-            .child(footer)
+            .child(
+                div()
+                    .when(!narrow, |v| v.ml(px(192.)))
+                    .max_w(px(theme::SETTINGS_WIDTH))
+                    .child(footer),
+            )
     }
     fn setting_row(&self, field: Field, enabled: bool, p: Palette) -> impl IntoElement {
         let data = &self.data.preferences;
         let l = self.locale;
         let value = settings_panel::value(&data.settings, field);
         let label = l.text(&format!("settings-field-{}", field.id.replace('.', "-")));
-        let mut controls = div().flex().flex_wrap().items_center().gap(px(4.));
+        let mut controls = div()
+            .flex()
+            .flex_wrap()
+            .items_center()
+            .gap(px(0.))
+            .bg(rgb(p.soft))
+            .rounded(px(theme::RADIUS))
+            .flex_shrink_0()
+            .max_w_full();
         match field.kind {
+            Kind::FontFamily => {
+                controls = controls
+                    .child(
+                        self.button(
+                            "setting-font-family".into(),
+                            if value.is_empty() {
+                                l.text("settings-font-default").into()
+                            } else {
+                                value.clone()
+                            },
+                            enabled,
+                            data.panel.font_picker.is_some(),
+                            Intent::ToggleFontPicker,
+                            p,
+                        )
+                        .track_focus(&self.font_picker_focus.clone().tab_stop(enabled)),
+                    )
+                    .child(self.button(
+                        "setting-font-default".into(),
+                        l.text("settings-restore-default").into(),
+                        enabled && !value.is_empty(),
+                        false,
+                        Intent::EditSetting(field.id, String::new()),
+                        p,
+                    ));
+            }
             Kind::Toggle => {
                 controls = controls.child(
                     self.button(
@@ -414,6 +584,16 @@ impl Presenter {
                     Intent::EditSetting(field.id, number_text((number + step).min(max), integer)),
                     p,
                 ));
+                if field.id == "general.ui_font_size" {
+                    controls = controls.child(self.button(
+                        "setting-font-size-default".into(),
+                        l.text("settings-restore-default").into(),
+                        enabled && number != 16.,
+                        false,
+                        Intent::EditSetting(field.id, "16".into()),
+                        p,
+                    ));
+                }
                 if matches!(
                     field.id,
                     "presenter.next_slide_ratio"
@@ -438,14 +618,57 @@ impl Presenter {
                     .child(self.value_editor(field, &value, enabled, p));
             }
         }
+        let mut caption = div()
+            .flex_1()
+            .min_w(px(180.))
+            .py(px(8.))
+            .child(div().text_color(rgb(p.ink)).child(label));
+        let help = match field.id {
+            "general.language" | "display.presenter_start_fullscreen" => {
+                Some("settings-restart-help")
+            }
+            "general.reopen_last_document" => Some("settings-startup-help"),
+            "display.audience_fullscreen" => Some("settings-fullscreen-help"),
+            "display.audience_click_to_advance" => Some("settings-click-to-advance-help"),
+            _ => None,
+        };
+        if let Some(help) = help {
+            let help_id = format!("setting-help-{}", field.id);
+            caption = caption.child(
+                div()
+                    .id(SharedString::from(help_id.clone()))
+                    .debug_selector(move || help_id.clone())
+                    .mt(px(4.))
+                    .text_size(px(self.ui_text_size(12.)))
+                    .text_color(rgb(p.muted))
+                    .child(l.text(help)),
+            );
+        }
+        if field.id == "general.ui_font_family" && self.data.typography.missing {
+            caption = caption.child(
+                div()
+                    .id("settings-font-fallback")
+                    .role(Role::Alert)
+                    .text_size(px(self.ui_text_size(12.)))
+                    .text_color(rgb(p.warning))
+                    .child(l.format("settings-font-missing", &[("family", value.clone())])),
+            );
+        }
+        let row_id = format!("setting-row-{}", field.id);
         div()
-            .p(px(12.))
-            .bg(rgb(p.soft))
-            .rounded(px(theme::RADIUS))
+            .id(SharedString::from(row_id.clone()))
+            .debug_selector(move || row_id.clone())
+            .min_h(px(theme::SETTINGS_ROW))
+            .flex_shrink_0()
+            .py(px(4.))
+            .border_b_1()
+            .border_color(rgb(p.card))
             .flex()
-            .flex_col()
-            .gap(px(4.))
-            .child(div().text_color(rgb(p.ink)).child(label))
+            .flex_wrap()
+            .items_center()
+            .justify_between()
+            .gap(px(12.))
+            .child(caption)
             .child(controls)
             .when(
                 data.panel
@@ -455,12 +678,103 @@ impl Presenter {
                 |v| {
                     v.child(
                         div()
-                            .text_size(px(14.))
+                            .w_full()
+                            .text_size(px(self.ui_text_size(12.)))
                             .text_color(rgb(p.muted))
                             .child(l.text("settings-edit-help")),
                     )
                 },
             )
+    }
+    fn settings_section(&self, label: &str, p: Palette) -> impl IntoElement {
+        div()
+            .pt(px(20.))
+            .pb(px(8.))
+            .text_size(px(self.ui_text_size(14.)))
+            .font_weight(gpui::FontWeight::SEMIBOLD)
+            .text_color(rgb(p.muted))
+            .child(label.to_string())
+    }
+    fn font_picker(&self, enabled: bool, p: Palette) -> impl IntoElement {
+        let data = &self.data.preferences;
+        let picker = data.panel.font_picker.as_ref().expect("open font picker");
+        let matches = picker.matches(&data.fonts);
+        let selected = picker.selected.min(matches.len() - 1);
+        let start = selected / 6 * 6;
+        let mut list = div()
+            .id("settings-font-picker")
+            .p(px(8.))
+            .bg(rgb(p.soft))
+            .rounded(px(theme::RADIUS))
+            .border_1()
+            .border_color(rgb(p.border))
+            .flex()
+            .flex_col()
+            .items_start()
+            .gap(px(0.))
+            .child(
+                div().px(px(12.)).py(px(8.)).child(
+                    self.locale
+                        .format("settings-font-filter", &[("filter", picker.filter.clone())]),
+                ),
+            );
+        for (index, family) in matches.iter().enumerate().skip(start).take(6) {
+            let family = family.unwrap_or("");
+            let label = if family.is_empty() {
+                self.locale.text("settings-font-default").to_string()
+            } else {
+                family.to_string()
+            };
+            list = list.child(self.button(
+                format!("font-choice-{index}"),
+                label,
+                enabled,
+                selected == index,
+                Intent::EditSetting("general.ui_font_family", family.into()),
+                p,
+            ));
+        }
+        list.child(
+            div()
+                .flex()
+                .items_center()
+                .gap(px(8.))
+                .child(self.button(
+                    "font-previous".into(),
+                    "↑".into(),
+                    enabled && start > 0,
+                    false,
+                    Intent::FontPickerMove(-6),
+                    p,
+                ))
+                .child(
+                    div()
+                        .text_size(px(self.ui_text_size(12.)))
+                        .text_color(rgb(p.muted))
+                        .child(format!(
+                            "{}–{} / {}",
+                            start + 1,
+                            (start + 6).min(matches.len()),
+                            matches.len()
+                        )),
+                )
+                .child(self.button(
+                    "font-next".into(),
+                    "↓".into(),
+                    enabled && start + 6 < matches.len(),
+                    false,
+                    Intent::FontPickerMove(6),
+                    p,
+                )),
+        )
+        .child(
+            div()
+                .px(px(12.))
+                .py(px(8.))
+                .text_size(px(self.ui_text_size(12.)))
+                .text_color(rgb(p.muted))
+                .child(self.locale.text("settings-font-key-help")),
+        )
     }
     fn value_editor(
         &self,

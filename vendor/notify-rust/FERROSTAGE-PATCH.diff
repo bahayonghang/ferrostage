@@ -1,0 +1,149 @@
+--- upstream/Cargo.toml
++++ maintained/Cargo.toml
+@@ -50,7 +50,7 @@
+ short_description = "notify-rust example"
+ 
+ [features]
+-async = ["zbus/async-io"]
++async = ["zbus/default-rt"]
+ d = ["dbus"]
+ d_vendored = ["dbus/vendored"]
+ debug_namespace = []
+@@ -138,7 +138,8 @@
+ optional = true
+ 
+ [target.'cfg(all(unix, not(target_os = "macos")))'.dependencies.zbus]
+-version = "5"
++version = "6.0.0"
++features = ["proxy", "service"]
+ optional = true
+ default-features = false
+ 
+--- upstream/src/hints.rs
++++ maintained/src/hints.rs
+@@ -1,7 +1,7 @@
+ #![cfg_attr(rustfmt, rustfmt_skip)]
+ 
+ #[cfg(all(feature = "zbus", unix, not(target_os = "macos")))]
+-use zbus::zvariant;
++use zbus::wire;
+ 
+ #[cfg(all(unix, not(target_os = "macos")))]
+ pub(crate) mod message;
+@@ -160,13 +160,13 @@
+         .finalize();
+ 
+      assert_eq!(hints_to_map(&n1), maplit::hashmap!{
+-         "foo" => zvariant::Value::Str("bar2".into()),
+-         "f00" => zvariant::Value::Str("bar3".into())
++         "foo" => wire::Variant::Str("bar2".into()),
++         "f00" => wire::Variant::Str("bar3".into())
+      });
+ }
+ 
+ #[cfg(all(feature = "zbus", unix, not(target_os = "macos")))]
+-pub(crate) fn hints_to_map(notification: &Notification) -> HashMap::<&str, zvariant::Value<'_>> {
++pub(crate) fn hints_to_map(notification: &Notification) -> HashMap::<&str, wire::Variant<'_>> {
+     notification
+         .get_hints()
+         .map(Into::into)
+@@ -174,36 +174,36 @@
+ }
+ 
+ #[cfg(all(feature = "zbus", unix, not(target_os = "macos")))]
+-impl<'a> From<&'a Hint> for (&'a str, zvariant::Value<'a>) {
++impl<'a> From<&'a Hint> for (&'a str, wire::Variant<'a>) {
+     fn from(val: &'a Hint) -> Self {
+         use self::constants::*;
+         match val {
+-            Hint::ActionIcons(value)       => (ACTION_ICONS   , zvariant::Value::Bool(*value)), // bool
+-            Hint::Category(value)          => (CATEGORY       , zvariant::Value::Str(value.as_str().into())),
+-            Hint::DesktopEntry(value)      => (DESKTOP_ENTRY  , zvariant::Value::Str(value.as_str().into())),
++            Hint::ActionIcons(value)       => (ACTION_ICONS   , wire::Variant::Bool(*value)), // bool
++            Hint::Category(value)          => (CATEGORY       , wire::Variant::Str(value.as_str().into())),
++            Hint::DesktopEntry(value)      => (DESKTOP_ENTRY  , wire::Variant::Str(value.as_str().into())),
+ 
+             #[cfg(all(feature = "zbus", feature = "images_no_default_features", unix, not(target_os = "macos")))]
+             //Hint::ImageData(image)         => (image_spec(*crate::SPEC_VERSION).as_str(), ImagePayload::from(*image).into()),
+             Hint::ImageData(image)         => (
+                 image_spec_str(*crate::SPEC_VERSION),
+-                zvariant::Value::Structure(
++                wire::Variant::Structure(
+                     image.to_tuple().into()
+                 )
+             ),
+ 
+ 
+-            Hint::ImagePath(value)         => (IMAGE_PATH     , zvariant::Value::Str(value.as_str().into())),
+-            Hint::Resident(value)          => (RESIDENT       , zvariant::Value::Bool(*value)), // bool
+-            Hint::SoundFile(value)         => (SOUND_FILE     , zvariant::Value::Str(value.as_str().into())),
+-            Hint::SoundName(value)         => (SOUND_NAME     , zvariant::Value::Str(value.as_str().into())),
+-            Hint::SuppressSound(value)     => (SUPPRESS_SOUND , zvariant::Value::Bool(*value)),
+-            Hint::Transient(value)         => (TRANSIENT      , zvariant::Value::Bool(*value)),
+-            Hint::X(value)                 => (X              , zvariant::Value::I32(*value)),
+-            Hint::Y(value)                 => (Y              , zvariant::Value::I32(*value)),
+-            Hint::Urgency(value)           => (URGENCY        , zvariant::Value::U8(*value as u8)),
+-            Hint::Custom(key, val)         => (key.as_str()   , zvariant::Value::Str(val.as_str().into())),
+-            Hint::CustomInt(key, val)      => (key.as_str()   , zvariant::Value::I32(*val)),
+-            Hint::Invalid                  => (INVALID        , zvariant::Value::Str(INVALID.into()))
++            Hint::ImagePath(value)         => (IMAGE_PATH     , wire::Variant::Str(value.as_str().into())),
++            Hint::Resident(value)          => (RESIDENT       , wire::Variant::Bool(*value)), // bool
++            Hint::SoundFile(value)         => (SOUND_FILE     , wire::Variant::Str(value.as_str().into())),
++            Hint::SoundName(value)         => (SOUND_NAME     , wire::Variant::Str(value.as_str().into())),
++            Hint::SuppressSound(value)     => (SUPPRESS_SOUND , wire::Variant::Bool(*value)),
++            Hint::Transient(value)         => (TRANSIENT      , wire::Variant::Bool(*value)),
++            Hint::X(value)                 => (X              , wire::Variant::I32(*value)),
++            Hint::Y(value)                 => (Y              , wire::Variant::I32(*value)),
++            Hint::Urgency(value)           => (URGENCY        , wire::Variant::U8(*value as u8)),
++            Hint::Custom(key, val)         => (key.as_str()   , wire::Variant::Str(val.as_str().into())),
++            Hint::CustomInt(key, val)      => (key.as_str()   , wire::Variant::I32(*val)),
++            Hint::Invalid                  => (INVALID        , wire::Variant::Str(INVALID.into()))
+         }
+     }
+ }
+--- upstream/src/xdg/mod.rs
++++ maintained/src/xdg/mod.rs
+@@ -5,7 +5,7 @@
+ #[cfg(feature = "dbus")]
+ use dbus::ffidisp::Connection as DbusConnection;
+ #[cfg(feature = "zbus")]
+-use zbus::{block_on, zvariant};
++use zbus::{block_on, wire};
+ 
+ use crate::{error::*, notification::Notification};
+ 
+@@ -549,7 +549,7 @@
+ /// Return value of [`get_server_information()`].
+ #[derive(Debug)]
+ #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+-#[cfg_attr(feature = "zbus", derive(zvariant::Type))]
++#[cfg_attr(feature = "zbus", derive(wire::Type))]
+ pub struct ServerInformation {
+     /// The product name of the server.
+     pub name: String,
+--- upstream/src/xdg/zbus_rs.rs
++++ maintained/src/xdg/zbus_rs.rs
+@@ -127,10 +127,8 @@
+     let action_signal_rule = MatchRule::builder()
+         .msg_type(zbus::message::Type::Signal)
+         .interface(xdg::NOTIFICATION_INTERFACE)
+-        .unwrap()
+         .member("ActionInvoked")
+-        .unwrap()
+-        .build();
++        .build().unwrap();
+ 
+     let proxy = zbus::fdo::DBusProxy::new(connection).await.unwrap();
+     proxy.add_match_rule(action_signal_rule).await.unwrap();
+@@ -138,10 +136,8 @@
+     let close_signal_rule = MatchRule::builder()
+         .msg_type(zbus::message::Type::Signal)
+         .interface(xdg::NOTIFICATION_INTERFACE)
+-        .unwrap()
+         .member("NotificationClosed")
+-        .unwrap()
+-        .build();
++        .build().unwrap();
+     proxy.add_match_rule(close_signal_rule).await.unwrap();
+ 
+     while let Ok(Some(msg)) = zbus::MessageStream::from(connection).try_next().await {

@@ -18,7 +18,7 @@ pub use parse::{LoadOutcome, SettingsWarning, WritePolicy, from_toml};
 pub use schema::{
     BindingIssue, CacheSettings, DisplaySettings, GeneralSettings, HotReloadSettings, Keybindings,
     MediaSettings, MonitorBinding, PointerSettings, PresenterSettings, SCHEMA_VERSION, Settings,
-    SingleMonitorMode, Theme, TimerMode, TimerSettings,
+    SingleMonitorMode, Theme, TimerMode, TimerSettings, UI_FONT_SIZE_RANGE,
 };
 pub use store::{SettingsSession, SettingsStore};
 

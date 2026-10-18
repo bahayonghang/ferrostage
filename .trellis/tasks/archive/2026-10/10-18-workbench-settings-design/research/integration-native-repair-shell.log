@@ -1,0 +1,159 @@
+cargo build -p ferrostage-app --features gpui,pdfium --locked
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+   Compiling ferrostage-app v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 8.98s
+mbx[cache]: 0 hits, 0 misses, 1 not looked up, 1 incremental, 1 bypassed; 0 B downloaded, 0 B uploaded, 0 B stored locally
+mbx[savings]: 290.4 GiB logical of target/ belonged to checkouts that no longer exist. neither does it.
+cargo clippy -p ferrostage-app -p ferrostage-ui --features gpui,pdfium --all-targets --locked -- -D warnings
+    Checking ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Checking ferrostage-app v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.06s
+mbx[cache]: 0 hits, 0 misses, 5 not looked up, 5 incremental; 0 B downloaded, 0 B uploaded, 0 B stored locally
+mbx[savings]: 4849 cache hits and counting. rustc thinks it has been busy.
+cargo test -p ferrostage-ui --features test-support --lib --locked
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 9.16s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-c0c859c36d428c4a.exe)
+
+running 136 tests
+test display_settings::tests::single_screen_windowed_pdf_can_share_actual_app_without_inventing_an_audience ... ok
+test display_settings::tests::topology_diagram_preserves_negative_coordinates_and_physical_aspect ... ok
+test display_settings::tests::native_observation_requires_current_unique_mapping_and_running_owner ... ok
+test display_settings::tests::projection_keeps_actual_configured_and_pending_roles_separate ... ok
+test display_settings::tests::stale_missing_ambiguous_and_conflicting_destinations_are_rejected ... ok
+test policy::tests::fullscreen_request_without_native_bounds_evidence_is_not_confirmation ... ok
+test policy::tests::placement_v10_portrait_native_overflow_is_not_confirmation ... ok
+test policy::tests::placement_v10_work_area_and_narrow_clients_leave_native_frame_space ... ok
+test policy::tests::single_monitor_requires_explicit_windowed_mode ... ok
+test policy::tests::swap_prepares_authority_without_mutating_old_settings ... ok
+test display_settings::tests::numbering_is_shared_stable_and_not_serialized ... ok
+test policy::tests::uuid_includes_terminator_and_full_utf16_buffer ... ok
+test settings_panel::tests::font_filter_and_history_keep_real_values ... ok
+test policy::tests::mapping_rejects_partial_duplicate_and_unknown_sets ... ok
+test display_settings::tests::single_screen_choices_roundtrip_without_duplicate_role_or_inherited_mode ... ok
+test policy::tests::configured_bindings_cannot_collide_with_shell_shortcuts ... ok
+test settings_panel::tests::recent_limit_trims_and_coupled_timer_validation_is_atomic ... ok
+test policy::tests::conflicts_are_disabled_after_normalization ... ok
+test display_settings::tests::identical_driver_names_become_distinct_cards ... ok
+test locale::tests::catalogs_have_identical_keys_and_interpolation_fields ... ok
+test settings_panel::tests::field_edits_reject_fallbacks_and_keep_unrelated_values ... ok
+test media_playback::tests::original_beamer_movie_uses_actual_generated_video_and_parameters ... ok
+test shell::tests::idle_presenter_has_no_home_button ... ok
+test shell::tests::close_hook_topology_cancels_pending_under_controller_lease ... ok
+test shell::tests::input_route_ctrl_o_releases_window_before_activation ... ok
+test shell::tests::close_hook_timeout_preserves_ready_and_current_presenter ... ok
+test shell::tests::input_route_audience_open_activates_presenter_and_escape_cancels ... ok
+test shell::tests::placement_v10_scaled_client_size_cannot_commit ... ok
+test shell::tests::close_hook_replacement_keeps_live_session_and_user_close_stops ... ok
+test media_playback::tests::successful_same_generation_notes_reconfigure_invalidates_old_public_pixels ... ok
+test shell::tests::displays_v8_identify_is_label_only_expires_and_is_refused_presenting ... ok
+test shell::tests::displays_v8_failed_no_play_placement_and_creation_roll_back_running_session ... ok
+test shell::tests::displays_v8_topology_revision_invalidates_draft_and_distinguishes_failure ... ok
+test shell::tests::retirement_v12_app_shutdown_cancels_pending_poll_wake ... ok
+test media_playback::tests::real_public_crop_ready_blank_notes_page_generation_and_close_isolate_media ... ok
+test shell::tests::displays_design_observation_uses_native_move_callback_and_current_owner ... ok
+test shell::tests::input_route_open_button_releases_window_before_activation ... ok
+test shell::tests::placement_v11_windows_frame_delta_is_corrected_from_actual_readback ... ok
+test shell::tests::home_focused_long_path_wraps_inside_minimum_width ... ok
+test shell::tests::presenter_creation_draws_while_controller_is_leased ... ok
+test shell::tests::displays_v8_no_play_waits_for_success_then_stops_freezes_and_closes ... ok
+test shell::tests::retirement_v13_presenter_close_cancels_pending_import_read ... ok
+test shell::tests::retirement_v12_presenter_close_cancels_pending_poll_wake ... ok
+test shell::tests::retirement_v13_shutdown_cancels_pending_import_read ... ok
+test shell::tests::retirement_v14_live_callbacks_apply_and_leased_errors_remain_visible ... ok
+test shell::tests::retirement_v14_deferred_appearance_rechecks_owner ... ok
+test shell::tests::retirement_v14_retained_hover_cannot_visit_removed_window ... ok
+test shell::tests::retirement_v14_retained_input_hit_test_and_frame_are_inert ... ok
+test shell::tests::retirement_v14_retained_notifications_cannot_visit_removed_window ... ok
+test shell::tests::retirement_v13_shutdown_cancels_pending_path_prompt ... ok
+test shell::tests::retirement_v8_user_close_is_deferred_and_stops_projection ... ok
+test shell::tests::displays_v8_valid_migration_preserves_page_blank_timer_and_save_retry ... ok
+test shell::tests::audience_budget_failure_is_localized_visible_and_recovers_without_losing_shell_errors ... ok
+test shell::tests::retirement_v13_nonowner_close_preserves_read_and_prompt_completion ... ok
+test shell::tests::home_from_presentation_closes_the_audience ... ok
+test shell::tests::placement_v10_uncorrected_client_times_out_and_keeps_running_owner ... ok
+test shell::tests::repeated_shell_ticks_never_start_or_advance_a_presentation ... ok
+test shell::tests::retirement_v8_queued_activation_does_not_visit_removed_window ... ok
+test shell::tests::home_keyboard_reaches_recents_and_restores_modal_focus_at_minimum_size ... ok
+test shell::tests::retirement_v8_pending_and_retired_close_requests_cannot_quit_replacement ... ok
+test shell::tests::home_returns_to_welcome_and_keeps_recent_files ... ok
+test shell::tests::displays_v8_future_settings_disable_mouse_keyboard_and_apply ... ok
+test shell::tests::v5_escape_from_jump_discards_input_without_stopping ... ok
+test shell::tests::presenter_bar_shares_one_row_and_notes_fill_the_column ... ok
+test shell::tests::v5_idle_navigation_and_blank_actions_do_not_report_core_errors ... ok
+test shell::tests::settings_general_help_is_contained_by_its_content_driven_row ... ok
+test shell::tests::settings_v09_dual_gpu_preflight_never_applies_half_a_transaction ... ok
+test shell::tests::retirement_v12_nonowner_close_keeps_live_polling ... ok
+test shell::tests::v5_jump_numeric_text_precedes_configured_navigation ... ok
+test shell::tests::v5_audience_loss_recovers_fullscreen_presenter_windowed ... ok
+test shell::tests::settings_v09_shared_display_apply_cancel_timeout_and_topology ... ok
+test shell::tests::v5_recovery_replaces_stale_display_but_preserves_initial_fullscreen ... ok
+test shell::tests::v5_presenting_open_refuses_chooser_after_presenter_activation ... ok
+test shell::tests::displays_v8_mouse_draft_cancel_keeps_windows_core_and_disk ... ok
+test shell::tests::v5_open_rechecks_stage_when_activation_resolves ... ok
+test shell::tests::v5_jump_editing_precedes_global_backspace_and_numeric_bindings ... ok
+test shell::tests::placement_v11_large_or_nonconvergent_frame_response_stops_and_rolls_back ... ok
+test shell::tests::v5_stop_discards_jump_input_before_following_navigation ... ok
+test shell::tests::v6_focus_chosen_after_draw_wins_over_deferred_recovery ... ok
+test shell::tests::v5_swap_failure_discards_abandoned_jump_input ... ok
+test shell::tests::v5_topology_unavailable_recovers_windowed_without_restart ... ok
+test shell::tests::v6_notify_preserves_valid_control_and_audience_activation ... ok
+test shell::tests::v5_nonbutton_navigation_and_disabled_controls_keep_their_scope ... ok
+test shell::tests::settings_v09_worker_ack_serializes_changes_and_failed_display_rolls_budget_back ... ok
+test shell::tests::v5_tab_focused_open_consumes_enter_and_space_before_global_actions ... ok
+test shell::tests::v6_removed_jump_commit_restores_keyboard_traversal ... ok
+test shell::tests::workbench_shortcuts_are_wired_without_stale_feature_warnings ... ok
+test shell::tests::v5_modal_close_button_has_priority_over_global_enter_and_space ... ok
+test shell::tests::workbench_session_strip_survives_empty_steps_and_busy_start ... ok
+test slide_surface::staging_tests::real_composite_paints_pdf_then_media_then_laser_and_blocks_wrong_page_fallback ... ok
+test slide_surface::staging_tests::real_paint_uploads_with_empty_mask_culls_scene_and_reports_atlas_failure ... ok
+test slide_surface::tests::letterbox_inverse_ignores_bars_and_roundtrips_at_4k ... ok
+test tests::gpui_pin_is_the_zed_tag_not_crates_io ... ok
+test texture_cache::tests::budget_shrink_rejects_without_losing_fallback_and_priority_accounts_for_swap ... ok
+test shell::tests::v6_save_failure_has_one_owner_and_keeps_unrelated_error ... ok
+test texture_cache::tests::media_instance_change_retires_prior_pixels_before_failed_new_upload ... ok
+test shell::tests::v6_import_and_swap_keep_runtime_results_when_saving_fails ... ok
+test texture_cache::tests::repaint_recovers_and_capacity_refusal_retries_only_after_space_is_available ... ok
+test texture_cache::tests::staged_upload_keeps_old_pixels_counts_both_and_promotes_the_same_arc ... ok
+test shell::tests::workbench_pointer_exit_ends_gesture_until_new_press ... ok
+test theme::tests::semantic_button_states_keep_text_and_boundaries_readable ... ok
+test theme::tests::typography_retains_request_and_scales_roles_with_missing_fallback ... ok
+test theme::tests::used_text_and_focus_pairs_meet_design_contrast ... ok
+test texture_cache::tests::upload_failure_repaints_complete_identity_retires_candidate_and_safety_wins ... ok
+test transactions::tests::failed_second_replacement_returns_only_new_resources_for_cleanup ... ok
+test shell::tests::v5_tab_focused_stop_consumes_enter_and_space ... ok
+test transactions::tests::focus_waits_for_both_observations_and_rejects_retired_owners ... ok
+test transactions::tests::invalid_import_preserves_document_state_and_presenter_path ... ok
+test transactions::tests::invalid_jump_text_cannot_resolve_to_a_content_page ... ok
+test transactions::tests::retiring_old_windows_cannot_stop_replacements ... ok
+test transactions::tests::settings_escape_closes_modal_before_stop ... ok
+test transactions::tests::shutdown_never_publishes_live_between_curtain_and_close ... ok
+test workbench::tests::audience_target_respects_its_half_of_the_gpu_budget ... ok
+test workbench::tests::awaiting_frame_keeps_complete_old_identity_and_immediate_covers ... ok
+test workbench::tests::direct_jumps_hold_previous_complete_projection_until_matching_frame ... ok
+test workbench::tests::projection_rejects_every_mismatched_key_and_presenter_notes_priority ... ok
+test transactions::tests::startup_import_survives_presenter_confirmation_only ... ok
+test workbench::tests::closed_grid_schedules_no_thumbnails_and_repeated_schedule_submits_nothing ... ok
+test shell::tests::v6_removed_stop_restores_keyboard_traversal ... ok
+test shell::tests::settings_v09_values_reach_workbench_timer_layout_pointer_clock_and_diagnostics ... ok
+test shell::tests::settings_v09_edit_save_retry_readonly_and_runtime_consumers ... ok
+test shell::tests::v6_retry_success_clears_save_feedback_and_restores_keyboard ... ok
+test shell::tests::workbench_split_release_outside_saves_and_future_schema_stays_readonly ... ok
+test shell::tests::settings_v09_numeric_editor_and_slider_use_real_keyboard_events ... ok
+test shell::tests::settings_v09_record_replaces_keymap_and_capture_precedes_actions ... ok
+test shell::tests::settings_v09_closed_panel_split_waits_for_apply_and_rollback_ack ... ok
+test shell::tests::workbench_narrow_stacks_and_grid_wheel_never_navigates ... ok
+test shell::tests::v6_removed_modal_button_restores_keyboard_traversal ... ok
+test shell::tests::displays_v9_conflict_and_offline_draft_refuse_apply_from_real_controls ... ok
+test shell::tests::thumbnail_hover_and_cancelled_press_are_inert_both_click_targets_jump ... ok
+test shell::tests::workbench_controls_jump_directly_and_keep_note_pages_private ... ok
+test shell::tests::settings_v09_all_categories_render_and_footer_stays_reachable ... ok
+test shell::tests::home_layout_keeps_natural_action_and_compact_rows_across_window_range ... ok
+test shell::tests::narrow_v10_display_panel_keeps_apply_cancel_inside_client ... ok
+test shell::tests::settings_fonts_filter_apply_size_restore_and_history_through_real_input ... ok
+test shell::tests::displays_design_both_hosts_fit_three_rows_and_cancel_only_allocation ... ok
+
+test result: ok. 136 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.41s
+
+mbx[cache]: 0 hits, 0 misses, 1 not looked up, 1 incremental; 0 B downloaded, 0 B uploaded, 0 B stored locally
+mbx[savings]: 290.4 GiB logical of outputs had survived their checkouts. an unnatural state, now corrected.

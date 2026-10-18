@@ -1,0 +1,25 @@
+{
+  "window": {
+    "app": "OpenAI.Codex_2p2nqsd0c76g0!App",
+    "id": 14620200,
+    "title": "perf-100.pdf — 准备就绪 — FerroStage"
+  },
+  "screenshots": [
+    {
+      "height": 791,
+      "id": "screenshot-0",
+      "originX": 592,
+      "originY": 192,
+      "width": 1102,
+      "zIndex": 0
+    },
+    {
+      "height": 570,
+      "id": "screenshot-1",
+      "originX": 601,
+      "originY": 230,
+      "width": 1011,
+      "zIndex": 1
+    }
+  ]
+}

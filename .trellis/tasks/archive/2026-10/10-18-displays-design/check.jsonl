@@ -1,0 +1,5 @@
+{"file":".trellis/spec/frontend/component-guidelines.md","reason":"Review native UI, state, persistence and quality boundaries"}
+{"file":".trellis/spec/frontend/state-management.md","reason":"Review native UI, state, persistence and quality boundaries"}
+{"file":".trellis/spec/frontend/quality-guidelines.md","reason":"Review native UI, state, persistence and quality boundaries"}
+{"file":".trellis/spec/backend/database-guidelines.md","reason":"Review native UI, state, persistence and quality boundaries"}
+{"file":".trellis/tasks/10-18-workbench-settings-design/research/visual-and-source-audit.md","reason":"Screenshot diagnosis, verified source anchors, approved font scope and acceptance limits"}

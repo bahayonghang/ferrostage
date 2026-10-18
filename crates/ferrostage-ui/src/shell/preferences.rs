@@ -24,12 +24,15 @@ impl Shell {
                 .presenter
                 .as_ref()
                 .is_some_and(|record| record.handle.window_id() == window)
-            && (self.preferences.edit.is_some() || self.preferences.recording.is_some())
+            && (self.preferences.edit.is_some()
+                || self.preferences.recording.is_some()
+                || self.preferences.font_picker.is_some())
     }
 
     pub(super) fn dismiss_preferences(&mut self) {
         self.preferences.edit = None;
         self.preferences.recording = None;
+        self.preferences.font_picker = None;
         if let Some(pending) = &mut self.preference_change {
             pending.return_settings = false;
         }
@@ -45,6 +48,7 @@ impl Shell {
                 }
                 self.preferences.confirm_reset = false;
                 self.preferences.category = *category;
+                self.preferences.font_picker = None;
                 self.preferences.edit = None;
                 self.preferences.recording = None;
                 if *category == Category::Displays {
@@ -56,12 +60,38 @@ impl Shell {
                     ));
                 }
             }
+            Intent::ToggleFontPicker => {
+                if self.preferences_editable() {
+                    if !self.ui_fonts_loaded {
+                        self.ui_fonts = std::sync::Arc::new(cx.text_system().all_font_names());
+                        self.ui_fonts_loaded = true;
+                    }
+                    self.preferences.font_picker = if self.preferences.font_picker.is_some() {
+                        None
+                    } else {
+                        Some(Default::default())
+                    };
+                    self.preferences.edit = None;
+                    self.preferences.recording = None;
+                }
+            }
+            Intent::FontPickerMove(delta) => {
+                if let Some(picker) = &mut self.preferences.font_picker {
+                    let count = picker.matches(&self.ui_fonts).len();
+                    picker.selected = picker.selected.saturating_add_signed(*delta).min(count - 1);
+                }
+            }
             Intent::EditSetting(id, input) => {
                 if !self.preferences_editable() {
                     return true;
                 }
                 match settings_panel::edit(&self.settings.settings, id, input) {
-                    Ok(next) => self.apply_preferences(next, cx),
+                    Ok(next) => {
+                        if *id == "general.ui_font_family" {
+                            self.preferences.font_picker = None;
+                        }
+                        self.apply_preferences(next, cx)
+                    }
                     Err(error) => self.preferences.error = Some(error),
                 }
             }
@@ -72,6 +102,7 @@ impl Shell {
                     self.preferences.edit =
                         Some((id, settings_panel::value(&self.settings.settings, *field)));
                     self.preferences.recording = None;
+                    self.preferences.font_picker = None;
                 }
             }
             Intent::SettingsKey { key, text } => self.preference_key(key, text.as_deref(), cx),
@@ -139,6 +170,64 @@ impl Shell {
         if key == "escape" {
             self.preferences.recording = None;
             self.preferences.edit = None;
+            self.preferences.font_picker = None;
+            return;
+        }
+        if let Some(picker) = &mut self.preferences.font_picker {
+            let matches = picker.matches(&self.ui_fonts);
+            match key {
+                "enter" => {
+                    let family = matches[picker.selected.min(matches.len() - 1)]
+                        .unwrap_or("")
+                        .to_string();
+                    self.dispatch_preference(
+                        &Intent::EditSetting("general.ui_font_family", family),
+                        cx,
+                    );
+                }
+                "up" | "down" | "pageup" | "pagedown" => {
+                    let delta = match key {
+                        "up" => -1,
+                        "down" => 1,
+                        "pageup" => -6,
+                        _ => 6,
+                    };
+                    picker.selected = picker
+                        .selected
+                        .saturating_add_signed(delta)
+                        .min(matches.len() - 1);
+                }
+                "tab" | "shift-tab" => self.preferences.font_picker = None,
+                "backspace" => {
+                    picker.filter.pop();
+                    picker.selected = 0;
+                }
+                "ctrl-a" | "cmd-a" => {
+                    picker.filter.clear();
+                    picker.selected = 0;
+                }
+                "ctrl-v" | "cmd-v" | "shift-insert" => {
+                    if let Some(text) = text
+                        && !text.chars().any(char::is_control)
+                        && picker.filter.len().saturating_add(text.len()) <= 128
+                    {
+                        picker.filter.push_str(text);
+                        picker.selected = 0;
+                    }
+                }
+                _ if key.split('-').any(|part| {
+                    matches!(part, "ctrl" | "cmd" | "alt" | "super" | "win" | "fn")
+                }) => {}
+                _ => {
+                    if let Some(text) = text
+                        && !text.chars().any(char::is_control)
+                        && picker.filter.len().saturating_add(text.len()) <= 128
+                    {
+                        picker.filter.push_str(text);
+                        picker.selected = 0;
+                    }
+                }
+            }
             return;
         }
         if let Some(action) = self.preferences.recording {
@@ -341,6 +430,7 @@ impl Shell {
         let next = pending.next.clone();
         let mut old_display = self.settings.settings.display.clone();
         old_display.presenter_start_fullscreen = next.display.presenter_start_fullscreen;
+        old_display.audience_click_to_advance = next.display.audience_click_to_advance;
         if next.display != old_display {
             self.assign_displays(next.display.clone(), cx);
             if self.pending.is_none() {

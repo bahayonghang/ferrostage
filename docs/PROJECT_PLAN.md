@@ -133,6 +133,8 @@ schema_version = 1
 language = "zh-CN"            # zh-CN | en-US（assets/locales 已有）
 theme = "dark"                # dark | light | system
 reopen_last_document = false
+ui_font_family = "" # System default; installed interface family override
+ui_font_size = 16 # Logical pixels, integer 12..=24; PDF/notes pixels unaffected
 recent_files_limit = 10
 recent_files = []              # 02定义，07维护，09清空/限制
 debug_overlay = false          # 02定义，08实现，09控件

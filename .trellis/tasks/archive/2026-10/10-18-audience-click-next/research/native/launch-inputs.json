@@ -1,0 +1,22 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "0881EFAF1F00F9F54B8AC13EDBC265A2A451D2BC564DEA04270EF338A97E3060",
+    "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "79D4676B656CFB1ABCEA88F9ADE3B4B0826C5200382DB5F4EC72A636C598C118",
+    "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\pdfium.dll"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "2547BCDBFD7BE179DD4A9CF570F7078AE8A4562CFDE07364A04EC070FF57C687",
+    "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\beamer\\overlays.pdf"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "79AF92D48FC3A3DEB9E20C0938BC48A173F9C935E16CF63F986AB60E1C3823A4",
+    "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-18-audience-click-next\\research\\native\\settings.toml"
+  }
+]

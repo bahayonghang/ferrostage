@@ -1,0 +1,29 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.19s
+     Running unittests src\lib.rs (vendor\zbus-lockstep\target\debug\deps\zbus_lockstep-f483f66173edec34.exe)
+
+running 23 tests
+test test::test_get_signature_of_cache_add_accessible ... ok
+test macros::test::test_method_args_signature_macro ... ok
+test macros::test::test_method_args_signature_macro_with_argument_and_interface ... ok
+test macros::test::test_method_args_signature_macro_with_argument_and_identifiers_and_interface ... ok
+test macros::test::test_method_args_signature_macro_with_interface_and_identifiers ... ok
+test macros::test::test_method_args_signature_macro_with_identifier ... ok
+test macros::test::test_method_args_signature_macro_with_interface ... ok
+test macros::test::test_method_return_signature_macro ... ok
+test macros::test::test_method_return_signature_macro_with_argument_and_interface ... ok
+test macros::test::test_signal_body_signature_macro_with_argument_and_identifiers_and_interface ... ok
+test macros::test::test_signal_body_signature_macro_with_identifier ... ok
+test macros::test::test_signal_body_signature_macro_with_argument_and_interface ... ok
+test macros::test::test_signal_body_signature_macro_with_interface ... ok
+test macros::test::test_method_return_signature_macro_with_argument_and_identifiers_and_interface ... ok
+test macros::test::test_signal_body_signature_macro_with_interface_and_identifiers ... ok
+test macros::test::test_property_type_signature_macro_with_interface ... ok
+test macros::test::test_property_type_signature_macro_with_identifier ... ok
+test macros::test::test_signal_body_signature_macro ... ok
+test macros::test::test_property_type_signature_macro ... ok
+test macros::test::test_method_return_signature_macro_with_interface_and_identifiers ... ok
+test macros::test::test_property_type_signature_macro_with_interface_and_identifiers ... ok
+test macros::test::test_method_return_signature_macro_with_interface ... ok
+test macros::test::test_method_return_signature_macro_with_identifier ... ok
+
+test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s

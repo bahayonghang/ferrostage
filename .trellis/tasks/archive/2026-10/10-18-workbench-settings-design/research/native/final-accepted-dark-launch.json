@@ -1,0 +1,723 @@
+{
+  "source_head": "7c25e46d1868f5520b8c2225c2ab89acfe9cfbed",
+  "branch": "codex/workbench-settings-design",
+  "started_utc": "2026-10-18T10:28:22.2640717Z",
+  "inputs": [
+    {
+      "Algorithm": "SHA256",
+      "Hash": "0ECB9C1CD6BAB70F0A5A9273E037EDC269A5B77EF72DDB129884B063216C7DF5",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "3E072EA6B2F5E88768F6ED05E514ADF4AE5FD571DAA3DDB8D3DB82C196153671",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-18-workbench-settings-design\\research\\native\\final-accepted-dark.toml"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "79D4676B656CFB1ABCEA88F9ADE3B4B0826C5200382DB5F4EC72A636C598C118",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\pdfium.dll"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "4A20989CE147CE59A7DDEC494FAC70E7C008FD233F9B2043CA7F257175BA17E7",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\DESIGN.md"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "453F2211495F9859F605C42328CDFE8E35EA3A988477C6BAFB5739C0424F9A57",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\Cargo.toml"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "CC1D5A58EB38E3F6191718A31C1ACB77D27350C3499BABA575A057E3242442AF",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\Cargo.lock"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "3B2FC6C122CB90C3CCA8597B45CAB3BD289A704B17E749149272564F3ED065AD",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\assets\\locales\\zh-CN\\app.toml"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "5B393CC7C65D084754C007BE2F06984B3951114AE139116A5A781A77E31B98CB",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\src\\workbench.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "A4A1BD8A1266050BFE47F41BA62A565AA63EE4F3B332096D7952CC9C95F87894",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\assets\\locales\\en-US\\app.toml"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "90841F7CB50F822DC00D4BC2C39CCB1C5126EF4152A465C8FD84D315B756A779",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\src\\workbench\\tests.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "25A998D263FECAE16FF99CA555E4A5D14A71CDA991B3F33B92A7E99326542DBC",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\src\\transactions.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "6EDD36046BE6F0A1C4DDCD737834D9A880BE46C710E8499E62AB5635965EC798",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\src\\theme.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "3264BDAD671788A6A0DE2F1CA5A2AAEC8058C5EE38358DB1DB5C03D5385217F7",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\src\\texture_cache.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "E4978E8612FCDDC0EFA006572FF674B71FD323EBBD86921A9C391B19CD092A33",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\src\\slide_surface.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "663947876DBD2231FBE37AC9620DA00A29016C192AF0451F499F5A465FCA38FC",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\src\\shell.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "071CD47B156C4CB46E97D995F0689AC7AC95FD8B917443753CCF6FF105453231",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-document\\Cargo.toml"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "1392F75352671E3B4BF8A055FE4C4B1E23F795A03B82BEF0855EE4036D291CAF",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-core\\Cargo.toml"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "F24CA1908FD2F64005607C047B454B2E4DD65FCC350541958DC8841060913B5A",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-render\\Cargo.toml"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "613166A2D5F6B9D28192C7994116E77D10B9E93AAD559A09EB275B95C46B17BA",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-document\\tests\\notes_native.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "B273B3A2F0425F0B5936D0AE51260CF787363F659001254B66F24C1FC9E671EE",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-document\\tests\\native.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "B228EFA4FDC1D76D94DA4596FC620754C65EB48DC510F532728C7F63ADA108B7",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\src\\shell\\reload.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "CDFF467FC1E8EADED0401F4973F93CFB0FA68050CE01B9EE9C922F37FCD20D8E",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-media-helper\\Cargo.toml"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "2C4A77940E58514CE46E3FDE9D2DB732030B1797C855EADEC9C3183F0AA5433D",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\src\\lib.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "59F0E91E82CBA17C72735D9078932E918424D4BA14F3089128DB8C4786517C47",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\src\\identify.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "1FAF9F3557CC6569A70495838173E952407D6E39C46C77F6FCB827A2124DD7DE",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\src\\document_load.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "E3D894DBB6387AE5CF75403822BACB2F5471B7993DD99E8F6B7463877A64240A",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\src\\display_settings.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "4605A77FDECF9D1E24E30E8199F2892F0AF3F4435370449E9F05A6DCACC61B3C",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\src\\audience.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "A64BCEA624EB34E720861F9F0BE017C9CB4EBD428828E64DF020329A28CEDF34",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\src\\actions.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "F26B121EAFC0EC2DE6A2A0D781BE77F29F3FEC030AB5F6FE4E1A4313110867C4",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\Cargo.toml"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "C5B50311F62D6264D39C0CB7FF4192D187FA8F0C0F0674912FDBE9108AA190BE",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-media-helper\\src\\native.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "39FBBDE647F138EDDB588572909FE0DA054DAB54B8C23972E9810AA8D1A26B94",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-media-helper\\src\\main.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "13E204205896FB0080305845DA1750ED25CE837BB52BFFF2A442C4C5FFBF1A6D",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-media-helper\\src\\lib.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "8DC2BB50FDA883424C72B2424C661F1C172F3CA164AE25460452A4EAA3AC04E3",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-render\\tests\\native_missing.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "D768F5A2C3C8B6A1C99B857B508AC4E9FDC2D7C880ABCDFAB8E3D7D95570052A",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-render\\tests\\native.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "93B2323AA57F082AAD0F57E2CFC7F3AA7EBA91FA2876D80706D04EF611131FB7",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-document\\src\\reload.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "7343577B894AC8E3C53FE256A79D0A3757953E2503E7FC2D9AA81191BE0D470F",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-document\\src\\notes.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "2817BBE1608915949CEB1ACA51CFE4B490A60E0C2C552855AD14C0ADB96776F9",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-document\\src\\media_slots.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "7BDECC7E890275781ED8E6500CCE40C43EEAF9F1C61578754494D062326F4A69",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-document\\src\\lib.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "A39BC9E36C410ABA993A6CF4374FFC7994AB333D457D7FAB21F6F93D56D81828",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-document\\src\\layout.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "48B65ED8D7FDA411493FBB5512A00B3D8A5469717AE002B8F5B94078D72E32AC",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-document\\src\\builder.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "E592477F6470A884881B66C79E0ADC48E9747AF7616C1CDA5929A9107CF93D7D",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-media\\Cargo.toml"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "0A0FD97C17FD84EB1510743AAB6FBF1742C8343F6D31A466E25B3466BEF0104D",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\src\\media_playback.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "60E7B0DABF79702CE7E0198E8CC457ECEE1E18F1A2B2403DDF0ADCD957B73A0E",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\src\\locale.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "EFCC1AFB5ECA803210B80F1B351F6FBD296ECB6E65ADF82E9294F22683B6F8A9",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\src\\policy.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "A56196046FB050D89967E89307473C86012C01F77765CBE7E32EBBBE382917EB",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\src\\settings_panel.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "3056F227F8CA602E53DAF1B014CEE2D6511348A33EC702F74D504CB7218C5CAD",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\src\\presenter.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "39C2A5AA082A30C85BBA6455EA3FF1C485FBB479BD7B823CDD85A2741B8A5B4A",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\src\\shell\\preferences.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "30901BA0CBDB73BC2A984574B05AC96262CFA3DA7C490B9E4143CE75FD6EA61B",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\src\\shell\\preferences_tests.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "E2EB5060144637BD1F2ED530D6431F70728ADDD3A8E2D071E175EE65755A5784",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-core\\src\\frame.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "6F4DC2B0CE2D44903FB22106B02A8225895B6B962EFAC6F7398F043C7457F2F8",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-core\\src\\error.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "56305F8EC193C2CF7EA52C27E7A1980FBE1F8FAD15282C3E75E92A592951B730",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-core\\src\\display.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "8737D2F178A198DC14229E36FB9BB97B1FAD8F7E840F3B5F4E1F79D1576406A3",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-core\\src\\command.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "3D70A76BD0E39EB3761B3C979DD330EEF2EE0AF6A641A8DC4BF2FF85F4C4634B",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-core\\src\\ids.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "BCD747DA8F22445E02DAEC813FF96C0F3BFDECC5DE5B75FA996B5248548DCD36",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-core\\src\\geometry.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "E6EF05235C9A5D9C1B6805E0B07231DB6D53CB983CC19C44C53F243F7F2E4379",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-core\\src\\lib.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "96E7D6492B35F93F0358638C9FFFCBB39D7B853003D0833F1590A6788C50129A",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-core\\src\\session.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "7AFE2E4A7DED53CC110E7B257E82F414814F4488BEC0FACD6013983A64ED421F",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-core\\src\\timer.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "D1BD9BFC5F2D738FF9DDD22166AFE88D8CA23FAF2AEC969EA9FEA1CA9F485ABC",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-core\\src\\state.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "C41F81ECE232AA7D461526B048BCBC4B7CCEA7844E4BCC3898EE8227F2728A1E",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\src\\shell\\reload\\tests.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "C6B56ECECE383653876AE3E57D6DDA25763F8FC7A8740FF6F5A6999CBD86B590",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-core\\src\\slide_map.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "EA7421CC134A942506231D44986DBE14864FAD34585FE506CFCE57AC6337784C",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-render\\examples\\poc2.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "364DF53A1DF2F7CB7DB24247B03BC02F0B0386AE369D5BEB8C52AC15FA962B63",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-core\\src\\snapshot.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "1170474447704F18745F60C214F7EBF8F50C6FF3996F3C2E3061E3FE1744625C",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-render\\src\\worker.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "D6BB871F0EA7CB8A95F2869971C15241951EF5C718C80D894B9FF82968E3C14B",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\src\\presenter\\workbench_view.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "C5FC9A9E7D8FDA3900AB9DC20494EBEFD8902A8EF96E722A3302B0F842AA9931",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\src\\presenter\\settings_view.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "FB06E33AA730D44D798FD972B807F3887CB4CF79ABC12C7046C15639063A4638",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-ui\\src\\presenter\\home_view.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "BDDA9C08C1168049FA9D7F3405ECFF1A3DB7D9463405A20CEA87CA6B46404C6D",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-render\\src\\lib.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "0C9DA6DDB552609C6477681C70347656ED3402CD640BB72F37CCFD123426079C",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-render\\src\\cache.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "EFCB0A4C8424D79F2E57BC3141B0CE652C4DF9CC27C879361CB7C3066A56314F",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-render\\src\\protocol.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "68FE15351DE35ABA79FEC9795329BA0CA683C70F4000C0E1047C6C3F7EEF3453",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-render\\src\\scheduler.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "E4DB725B2DE0FF09BDB8A257769FF1689C3A5899AC382B0838356033AC919BDA",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-document\\src\\builder\\tests.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "132CFCDC379AC744153434A2712DDD7149B9A39212B44D4043D9A85BAFB44344",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-core\\src\\state\\tests.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "49CDB657E6DAF6740C9429FDB766F0EAC8F4315C72D7121807B2DD05E5A16381",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-core\\src\\state\\property_tests.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "158197F9D1C9C92BC1C6F02AB2BED578516E1C4A2E82EF27B3B6E30508D50822",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-core\\src\\state\\mapping_tests.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "B0634730DFCF911B3972A6DDB92270801A4BEC8D9F0DE658B96E19AA59ADA2B7",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-core\\src\\state\\lifecycle_tests.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "5D6BBBF89913E2D6CA001C95D906B40E813BD6EC1657B931FB0EB56D51157E52",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-core\\src\\state\\annotation_tests.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "0D927923D5EADBD5233B30383AB69B8A65C41759A0F7C0D8A59A1DA3D1B49AE7",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-app\\Cargo.toml"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "A61D981818CC98412352B94A1FF05230D1ABBD6C48F7453F2E9982555167272C",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-app\\build.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "5BEBD0E79CCF16FFC8039D38DB710D6CBAFF332B5953EDDBDE532F3C030DE914",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-core\\src\\slide_map\\tests.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "01FCD03EE1183BFDF7E1FEF4CE0552F0FA588B93D7CAA180AF357151809BB592",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-media\\tests\\playback.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "6ED337E37B03548D8371D480982C511E25DC150504D8F1AF01A3CDC2F66C09EF",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-pdf\\Cargo.toml"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "6083B547CFB068FA6BE284A1FF3E606D6479023C0FCE7E5E0D65D2DB3C1839EA",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-media\\examples\\ipc_stall.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "86F452A3860D0361188CC119F32EA32AB17B1158E50D3B7824F1D40466B324D8",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-settings\\Cargo.toml"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "A9073D54B1D18B69798645BB4F4301EB288EF235D8BA1513D0872AF45D5ECC13",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-media\\src\\supervisor.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "DA2BB81FF0A53F0958189C50056DC368BED0F77051AE998729F11FFDC541E148",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-render\\src\\worker\\tests.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "EB8FE4AAF18D59A6F611B4E070EB71B83C6B5FB3990C6ACCABA67504629C16AE",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-platform\\Cargo.toml"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "7B3FF5C310C32306EF274495F4894DC69EDE77FA14183D4AE1664EDDFA5832EC",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-media\\src\\lib.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "59A9E0DF94D27EC23AD56BC95A6B0317E0168A43883C7728EC957E99B459C4A8",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-media\\src\\animation.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "383A6F45EB6C600ED8E235F983CAB6D62C5CAED68F21E014AB4685F912BF3B2A",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-media\\src\\protocol.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "1C4AE4792F1D1FE382A830896684736B76D72298ACD1AA70F63B0015BFC140BB",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-media\\src\\runtime-files.txt"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "1D06B56C70869BF5B2991872A229E73277A4F04A764D1707ABCC232F2EAA6F7C",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-render\\src\\worker\\engine.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "812FA4B48346556B4B50E22DFB91B72EA7AD9473793E85FB3BADA0E0AAC6520F",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-pdf\\src\\metadata.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "5526C3FF683886C3524D82C707D3B45DE5723FE632104BAC8DB0CA22F8587307",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-pdf\\src\\lib.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "DC3596F88594042369F545F451FE36F479E3057E4FA31C08E29F7CA824C4FF2C",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-pdf\\src\\native.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "F75BD418377510B812FD288D2194988F5AC6E8E9EA7D3C8916D731A6EA0136BC",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-pdf\\src\\raster.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "073B199019AD3C3018231ED0FDB63F2A62A830DF1F0DD69201B00B145DFB0AA1",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-pdf\\src\\structure.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "9D84246D8A558C8E855944BCA12583D050F582F3B1BA312FCA6E5B369F9A04D8",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-app\\tests\\check_config.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "53BD6AFD5A4A4DD03433C739C871038FAF1D9A12E919F3212BBD76D8412DD873",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-platform\\tests\\settings_topology.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "2E5D7A4FC9CC45EFF4B32810A448E571D34A92E5D59B071ADD3928909863DB60",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-app\\src\\main.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "DC0429A43A885DA89724DC4DC027E6A8A55F2B3960413FD0CBA9B6C36B58AACD",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-platform\\examples\\monitor_probe.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "4DB7686ACD8BDBF70FD86836275D84155536D81F6327F5E1842DE0AD332D5B3B",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-media\\src\\supervisor\\child.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "057E002D25CA136D34BFA69BA6DDD993AD3A74A1FE30DF82C9E5623C9E734371",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-platform\\src\\friendly.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "CA2BC192FBD1B4B8AEB25F2ABC1323F8B6E44421809C4AFA9F88D977590ACEBC",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-settings\\src\\error.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "3927E2297B88A46E9004296B03D743551AFEBF13EEA4CDEE3E8DB1B7BB8AE9CB",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-pdf\\src\\structure\\geometry.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "DFD8945A856FCFD17A16472CD381B6A2160C63085512A56639EE2E2C1B138CBA",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-pdf\\src\\structure\\tests.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "030ADB00DC68F78506E301A14BB09883B2A24FCF9E59231916B4D4DF9ADE69DF",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-pdf\\src\\structure\\source.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "EE7858F0914F0EE92DA95866205B4E7E1267196CD05D822A0CF2074C089A7B67",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-pdf\\src\\structure\\media.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "2CC5A8A2FA09FE3559EF77B7E4CF556F18F4AFEB5DD0DC097D10A193DB786AAE",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-render\\src\\worker\\tests\\contracts.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "0638470BBBBEC4E34D09E0DA3F93024E73F5BEB9D1E204722BE873F18CBEBD93",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-platform\\src\\windows.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "58E0045EE91A96737F37078DEFD34AB83730EE4A4CCDFF15F257D976989255B9",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-app\\resources\\windows\\ferrostage.rc"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "71B501ED77D9F22FF99BC4734989E616BFAA4C059A6EF5C666F93A45086F1590",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-platform\\src\\watch.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "C8E92403004D2B715BF9021626D01720246E8031D4C4F1B9B09C8C0588F39B6D",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-pdf\\src\\structure\\media\\screen.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "79E524BC4D572746AB6D985690D317F38C0CFF2961732C098085E17736550CE3",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-pdf\\src\\structure\\media\\rich.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "E6B8283B4487337D3158FD609B643B4A1B39B5E0BC878E3D2F31673D9A4E6285",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-platform\\src\\topology.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "04876FAD4CDC3866AF6C9636235056F0B523CE6214BDF2C794DB7504904FCE9B",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-settings\\src\\lib.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "7C3532FC324A376F43FD3BAE4CF8583C6B925AA9F243809D047360F8EE8C4A86",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-settings\\src\\keybindings.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "85905AB162C7BD4270BD6723798E22C1AF985F2B64D651214BED0A5ACDCC483D",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-settings\\src\\merge.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "35166E9B4E3A20E511CAA8B92FDEC36ED753155259C294EAA6AD2C65C2442D46",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-settings\\src\\schema.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "B2D3CFD58D28829B7BDD23CEAC16D8EDC3EA2798E27E61A708EFC4E8B50801EE",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-settings\\src\\parse.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "03F2026C19F4C29BAC26526C770494514473D3AE837B153D480D5B602F454046",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-platform\\src\\topology\\tests.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "A57CE11364F3F265DF7841B69B6C245980B585A945A83CFDE569E7A4F9A643FF",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-platform\\src\\reload.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "93AD16410D200025DFE5C67B18F5578F59EBC61480706A985E8C91A3E856D5EE",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-platform\\src\\monitor.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "78ECFE0F6F529EBB6C0B509796368D4565A30DFFBA5CE0729232D4E0A5EDC516",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-platform\\src\\lib.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "737E80BD6CB485935B25313CE1403DD16B126232D76DA6060E22714864939859",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-settings\\src\\store.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "5B59261247030837B1040A46BE0D549B83AD07402538899C0C72AC44C62F8A87",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-platform\\src\\windows\\tests.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "520823EC485E8F6C535F989932A983324D9D402C9AC507886D06CBBED5779FB0",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-settings\\src\\tests\\mod.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "04C1A5565E6456B00D0C36C40B010E5918F75201F9A024CE16EAF2550CF25247",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-settings\\src\\tests\\windows.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "E36A348302862502A8C86572D2D6A408E315C0A5073814BC5C1D0838A2B5DBBD",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-settings\\src\\tests\\store.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "B30547936005718FDBC2FF6A45945651AF2AB9027FA92AA7DD94A3BF99E62695",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-settings\\src\\tests\\parse.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "CF47DFFC41437D0E81F2C712A00B449C516E1F2AB0C48B71EE230352FEB1957E",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-platform\\src\\watch\\tests.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "8DF89AD9AB11623D025095143D6F9D5AA3E496B486E4F40B392AC3DA85F2BF32",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-settings\\src\\parse\\value.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "AB0C3C55AE7105CE3B154820E2BFC093BBCE80D5997E4749F6B7D98C033EAA04",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-settings\\src\\parse\\sections.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "D2CD67AEBD276848EF28B6CF97EB21A32F9B956950F4B57984D234C279702AC9",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-settings\\src\\parse\\legacy.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "1FCA7B17C43CDC044279B5ED8EE593B415E1AB9FD59E9E00B186CE09EC828905",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-settings\\src\\parse\\controls.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "DC77C36D0BA1B3840B56044476B8A23AD714F146B64EFE9036BD0BAF31740762",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-settings\\src\\store\\paths.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "F0EC28B00B57F0C5064CAD491A481560AD58D464A6ACED25524BE626F9DED63E",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\crates\\ferrostage-settings\\src\\store\\files.rs"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "395D8BB26AD5F8F7CA5245901ABDCB8DE1FCCD2BE5FF7E30482E54F776526CB6",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\pdf\\perf-100.pdf"
+    }
+  ],
+  "working_tree": [
+    " M .trellis/spec/backend/database-guidelines.md",
+    " M .trellis/spec/frontend/component-guidelines.md",
+    " M .trellis/spec/frontend/state-management.md",
+    " M DESIGN.md",
+    " M assets/locales/en-US/app.toml",
+    " M assets/locales/zh-CN/app.toml",
+    " M crates/ferrostage-settings/src/lib.rs",
+    " M crates/ferrostage-settings/src/merge.rs",
+    " M crates/ferrostage-settings/src/parse/sections.rs",
+    " M crates/ferrostage-settings/src/schema.rs",
+    " M crates/ferrostage-settings/src/tests/parse.rs",
+    " M crates/ferrostage-settings/src/tests/store.rs",
+    " M crates/ferrostage-ui/src/actions.rs",
+    " M crates/ferrostage-ui/src/display_settings.rs",
+    " M crates/ferrostage-ui/src/presenter.rs",
+    " M crates/ferrostage-ui/src/presenter/home_view.rs",
+    " M crates/ferrostage-ui/src/presenter/settings_view.rs",
+    " M crates/ferrostage-ui/src/presenter/workbench_view.rs",
+    " M crates/ferrostage-ui/src/settings_panel.rs",
+    " M crates/ferrostage-ui/src/shell.rs",
+    " M crates/ferrostage-ui/src/shell/preferences.rs",
+    " M crates/ferrostage-ui/src/shell/preferences_tests.rs",
+    " M crates/ferrostage-ui/src/theme.rs",
+    " M docs/PROJECT_PLAN.md",
+    "?? .trellis/tasks/10-18-displays-design/",
+    "?? .trellis/tasks/10-18-settings-design-font/",
+    "?? .trellis/tasks/10-18-workbench-design/",
+    "?? .trellis/tasks/10-18-workbench-settings-design/"
+  ],
+  "pid": 31984
+}

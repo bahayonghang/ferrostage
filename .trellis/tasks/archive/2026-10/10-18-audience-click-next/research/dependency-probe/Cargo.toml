@@ -1,0 +1,9 @@
+[workspace]
+[package]
+name = "ferrostage-dependency-probe"
+version = "0.0.0"
+edition = "2024"
+[lib]
+path = "lib.rs"
+[dependencies]
+oo7 = { version = "=0.6.0", default-features = false, features = ["async-std", "native_crypto"] }
