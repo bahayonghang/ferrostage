@@ -45,3 +45,5 @@ bin/gstwinrt-1.0-0.dll
 bin/orc-0.4-0.dll
 bin/pcre2-8-0.dll
 bin/ffi-7.dll
+lib/gstreamer-1.0/gstopenh264.dll
+bin/openh264-7.dll

@@ -1,0 +1,39 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
+from cerbero.tools.libtool import LibtoolLibrary
+
+class Recipe(recipe.Recipe):
+    name = 'openh264'
+    version = '2.6.0'
+    url = 'https://github.com/cisco/%(name)s/archive/v%(version)s.tar.gz'
+    tarball_name = 'openh264-%(version)s.tar.gz'
+    tarball_checksum = '558544ad358283a7ab2930d69a9ceddf913f4a51ee9bf1bfb9e377322af81a69'
+    tarball_dirname = 'openh264-%(version)s'
+    stype = SourceType.TARBALL
+    btype = BuildType.MESON
+    meson_options = {'tests': 'disabled'}
+    licenses = [{License.BSD_2_Clause: ['LICENSE']}]
+    files_libs = ['libopenh264']
+    files_devel = ['include/wels', '%(libdir)s/pkgconfig/openh264.pc']
+    patches = [
+        # https://github.com/cisco/openh264/pull/3804
+        f'{name}/0001-build-Add-missing-flags-for-x86-asm-support.patch',
+    ]
+
+    def post_install(self):
+        # XXX: Don't forget to keep this in sync with the library version!
+        dependency_libs=[]
+        if Platform.is_apple(self.config.target_platform):
+            dependency_libs += ['-lc++']
+        elif self.config.target_platform == Platform.ANDROID:
+            dependency_libs += ['-lm']
+        elif self.config.target_platform in [Platform.WINDOWS, Platform.LINUX]:
+            dependency_libs += ['-lstdc++', '-lm']
+        else:
+            raise NotImplementedError
+
+        libtool_la = LibtoolLibrary('openh264', 0, None, None, self.config.libdir,
+                                    self.config.target_platform,
+                                    deps=dependency_libs)
+        libtool_la.save()
+        super().post_install()

@@ -29,6 +29,7 @@ fn request(name: &str) -> Start {
         plays: Some(0),
     }
 }
+#[track_caller]
 fn wait(
     controller: &Controller,
     predicate: impl Fn(&ferrostage_media::Update) -> bool,
@@ -41,7 +42,18 @@ fn wait(
             }
             assert!(update.error.is_none(), "{update:?}");
         }
-        assert!(Instant::now() < deadline, "media timeout");
+        assert!(
+            Instant::now() < deadline,
+            "media timeout: {:?}",
+            controller.latest().map(|u| (
+                u.position_ms,
+                u.duration_ms,
+                u.paused,
+                u.ended,
+                u.error,
+                u.frame.map(|f| f.sequence)
+            ))
+        );
         thread::sleep(Duration::from_millis(10));
     }
 }
@@ -171,6 +183,80 @@ fn actual_helper_video_seek_repeat_pause_audio_and_reap() {
             thread::sleep(Duration::from_millis(5));
         }
     }
+}
+
+#[cfg(feature = "native-tests")]
+fn software_only_subprocess(test: &str, disable_software: bool) {
+    let _native = NATIVE.lock().unwrap();
+    // The selected runtime's hardware H.264 factories are D3D11 adapters.
+    // Disable every adapter slot, including machines with multiple GPUs.
+    let mut ranks = vec!["d3d11h264dec:0".to_owned()];
+    ranks.extend((0..64).map(|n| format!("d3d11h264device{n}dec:0")));
+    if disable_software {
+        ranks.push("openh264dec:0".to_owned());
+    }
+    let registry = std::env::temp_dir().join(format!(
+        "ferrostage-software-registry-{}-{test}.bin",
+        std::process::id()
+    ));
+    let output = std::process::Command::new(std::env::current_exe().unwrap())
+        .args(["--exact", test, "--nocapture"])
+        .env("FERROSTAGE_TEST_SOFTWARE_ONLY_CHILD", "1")
+        .env("GST_REGISTRY_1_0", &registry)
+        .env("GST_PLUGIN_FEATURE_RANK", ranks.join(","))
+        .output()
+        .unwrap();
+    if registry.exists() {
+        std::fs::remove_file(registry).unwrap();
+    }
+    assert!(
+        output.status.success(),
+        "software-only subprocess failed:\n{}\n{}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+}
+
+#[cfg(feature = "native-tests")]
+#[test]
+fn software_h264_video_seek_repeat_pause_audio_and_reap_without_hardware() {
+    if std::env::var_os("FERROSTAGE_TEST_SOFTWARE_ONLY_CHILD").is_some() {
+        actual_helper_video_seek_repeat_pause_audio_and_reap();
+    } else {
+        software_only_subprocess(
+            "software_h264_video_seek_repeat_pause_audio_and_reap_without_hardware",
+            false,
+        );
+    }
+}
+
+#[cfg(feature = "native-tests")]
+#[test]
+fn missing_h264_decoder_reports_unsupported_instead_of_audio_only_success() {
+    if std::env::var_os("FERROSTAGE_TEST_SOFTWARE_ONLY_CHILD").is_none() {
+        software_only_subprocess(
+            "missing_h264_decoder_reports_unsupported_instead_of_audio_only_success",
+            true,
+        );
+        return;
+    }
+    let mut controller = Controller::new(Runtime {
+        helper: std::env::var_os("FERROSTAGE_TEST_MEDIA_HELPER")
+            .unwrap()
+            .into(),
+        directory: std::env::var_os("FERROSTAGE_TEST_MEDIA_RUNTIME")
+            .unwrap()
+            .into(),
+        silent: true,
+    })
+    .unwrap();
+    controller
+        .start(request("synthetic-ball-tone-12s.mp4"))
+        .unwrap();
+    let update = wait(&controller, |u| u.error.is_some());
+    assert_eq!(update.error, Some(MediaError::Unsupported));
+    assert!(update.frame.is_none());
+    controller.shutdown();
 }
 
 #[test]

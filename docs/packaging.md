@@ -108,7 +108,7 @@ reported separately from hosted-CI correctness and do not imply GPU acceptance.
 
 ## Media runtime and helper
 
-See ADR-009 and `packaging/media/runtime.json`. Only its47 executable/DLL entries (18 plugins) are distributed, with all15 original notices, source recipes and source URLs. Full upstream wheels include unselected components and must never be copied into the product.
+See ADR-009, ADR-010 and `packaging/media/runtime.json`. Only its49 executable/DLL entries (19 plugins) are distributed, with all17 original notices, source recipes and source URLs. Full upstream wheels include unselected components and must never be copied into the product.
 
 Prepare reproducibly on Windows with MSVC x64 tools and Python available:
 
@@ -128,5 +128,7 @@ The prepare script downloads only the three pinned archives, verifies complete S
 Place `ferrostage-media-helper.exe` beside `ferrostage.exe`; stage the runtime there as `media-runtime/{bin,lib/gstreamer-1.0,libexec,notices,recipes}` using `python scripts/stage-media-runtime.py --archives <verified archive directory> --output <executable-directory>/media-runtime`. The scanner is `libexec/gst-plugin-scanner.exe`, matching the helper environment. Staging rejects unselected DLL/EXE files already in the destination instead of silently including an earlier larger runtime. Include the manifest and source/license mapping. This development preparation is not installer publication or distribution authorization. Preserve dynamically replaceable LGPL libraries: runtime availability checks filenames, not exact installed hashes. Build/package verification still requires pinned originals. VC/Windows system runtimes remain system prerequisites.
 
 The media-enabled GUI does not import GStreamer or GLib. Missing complete/partial media runtime is a localized media-slot failure, leaving PDFs and pure GIF/WebP available. The isolated native helper may fail without DLLs without preventing GUI startup. `scripts/check-media-imports.ps1` verifies the GUI PE import boundary. Runtime missing-library GUI smoke is separate from dependency inspection and background supervisor tests.
+
+OpenH2642.6.0 supplies a software H.264 fallback on machines without a D3D11 video decoder. Its exact two-file closure, BSD notices and source recipe are retained under `packaging/media`; no full wheel or GPL decoder is distributed. Missing required decoders return a media-slot Unsupported error, including when playbin could otherwise continue with audio alone.
 
 Background native tests always use fakesink audio and no OS window; the adversarial ipc_stall helper checks bounded off-UI stop/kill/reap and stderr draining. Product tests use stable `fixtures/media` originals, not active Trellis paths. Hardware audio latency,1080p60 pacing/VRAM/soak and the complete desktop matrix remain deferred by the user's task acceptance policy.
