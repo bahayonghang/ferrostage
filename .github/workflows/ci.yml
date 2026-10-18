@@ -1,8 +1,15 @@
 name: ci
 
 on:
-  push:
   pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   ci:
@@ -17,11 +24,11 @@ jobs:
       - name: fmt
         run: cargo fmt --all -- --check
       - name: clippy
-        run: cargo clippy --workspace --all-targets -- -D warnings
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings
       - name: test
-        run: cargo test --workspace --all-targets
+        run: cargo test --workspace --all-targets --locked
       - name: cargo-deny
-        run: cargo deny check
+        run: cargo deny --locked check
 
   pdfium-native:
     name: PDFium 7881 Windows fixtures
@@ -46,7 +53,7 @@ jobs:
       - name: Feature-on fixture suite must run
         run: cargo test -p ferrostage-pdf -p ferrostage-render -p ferrostage-document --features pdfium --all-targets --locked
       - name: Native feature dependency license gate
-        run: cargo deny --all-features check
+        run: cargo deny --all-features --locked check
       - name: Native GPUI shell compile gate (does not launch windows)
         run: cargo build -p ferrostage-app --features gpui,pdfium,media --locked
       - name: Native GPUI shell lint
