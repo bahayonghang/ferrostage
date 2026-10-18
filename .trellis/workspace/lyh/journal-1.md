@@ -313,3 +313,40 @@ Implemented default-on audience click navigation, repaired current CI root cause
 ### Status
 
 [OK] **Completed**
+
+
+## Session 10: 时间显示与双模式跳页优化实施收尾
+<!-- trellis-session: v=2 fp=fae96e8d1ec32544 -->
+
+**Date**: 2026-10-18
+**Task**: 时间显示与双模式跳页优化实施收尾
+**Branch**: `dev`
+
+### Summary
+
+完成时间层级、导航与备注入口精简、双模式跳页及备注隔离，已提交功能并归档任务。
+
+### Main Changes
+
+- 当前时间移到左上角，演讲计时适度突出并补齐语义标签。
+- 删除独立导航和备注方位选项，默认不拆分并识别独立备注页。
+- 提供内容页和 PDF 原页码模式，备注输入不投影、不重定向，修复旧缩略图缓存与焦点揭示。
+- 同步设计规范、回归测试和原生验收记录；功能提交 6ed4ae6，任务归档提交 e7489e2。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `6ed4ae67952467e23120bb2976ec688a593474e2` | feat(演示): ✨ 优化时间显示与双模式跳页 |
+
+### Testing
+
+- [OK] just ci：通过，包含格式、严格 Clippy、工作区测试和依赖策略。
+- [OK] just check-shell：通过，实际 GPUI/PDFium 构建及 166 项 GPUI 测试。
+- [OK] 固定 PDFium 原生文档/渲染套件、隔离缩略图保留和初始加载测试通过。
+- [OK] 中文深色和英文浅色普通窗口通过原生检查，备注拒绝、模式换算、暂停/恢复/重置与文件只读已验证。
+- [OK] 并发 PDFium 附加测试曾遇进程级绑定冲突，按既有约束隔离复测通过；不将原失败记录标为通过。
+
+### Status
+
+[OK] **Completed**
