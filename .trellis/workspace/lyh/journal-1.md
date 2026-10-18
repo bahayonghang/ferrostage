@@ -212,3 +212,31 @@ just dev 与 just build 放置已校验的 pdfium.dll；发布版改为 GUI 子�
 ### Status
 
 [OK] **Completed**
+
+
+## Session 7: 拆分提交工作台与设置设计改动并归档任务
+<!-- trellis-session: v=2 fp=d4810d9dd337a316 -->
+
+**Date**: 2026-10-18
+**Task**: 拆分提交工作台与设置设计改动并归档任务
+**Branch**: `codex/workbench-settings-design`
+
+### Summary
+
+将工作台/设置/显示器设计改动按 settings、字体选择器、工作台会话条、显示器实际位置、文案、文档、任务记录拆成 7 个中文 emoji 提交；随后归档 10-18 父子任务及 10-14、10-17、10-18 三个遗留任务，当前无活跃任务。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `ed040ae` | feat(settings): ✨ 增加界面字体与字号偏好 |
+| `15d37af` | feat(ui): ✨ 增加可筛选的界面字体选择器与紧凑设置行 |
+| `8c9ad60` | feat(ui): ✨ 让界面字体作用到工作台并合并会话控制条 |
+| `002036e` | feat(displays): ✨ 显示窗口实际所在屏幕并标记待应用分配 |
+| `31ac2fa` | feat(i18n): ✨ 补齐界面字体、工作台与显示器状态文案 |
+| `b3776b5` | docs: 📝 记录界面字体、会话控制条与显示器反馈契约 |
+| `2c6768d` | docs(task): 📝 记录工作台与设置设计任务及其验收证据 |
+
+### Status
+
+[OK] **Completed**
