@@ -8,12 +8,12 @@ Use `tracing`. Do not use `println!` in libraries. The binary may print the reso
 tracing_subscriber::fmt()
     .with_env_filter(
         tracing_subscriber::EnvFilter::try_from_default_env()
-            .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new("info")),
+            .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new("warn")),
     )
     .init();
 ```
 
-Override with `RUST_LOG`. Default level is `info`.
+Override with `RUST_LOG`. Default level is `warn`, including dependency diagnostics. Ordinary startup, GPU selection and successful window placement must not flood the terminal. Preserve actionable warnings/errors and startup-error reporting. Compiler/build-tool output is independent of the application's subscriber. Verify default filtering and explicit overrides with isolated subscriber/subprocess tests rather than racing global environment mutations.
 
 ## What to log
 

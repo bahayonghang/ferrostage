@@ -47,14 +47,19 @@ enum Command {
     },
 }
 
+fn runtime_log_filter(directives: Option<&str>) -> tracing_subscriber::EnvFilter {
+    directives
+        .and_then(|value| tracing_subscriber::EnvFilter::try_new(value).ok())
+        .unwrap_or_else(|| tracing_subscriber::EnvFilter::new("warn"))
+}
+
 fn main() -> ExitCode {
     tracing_subscriber::fmt()
         .with_file(true)
         .with_line_number(true)
-        .with_env_filter(
-            tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new("info")),
-        )
+        .with_env_filter(runtime_log_filter(
+            std::env::var("RUST_LOG").ok().as_deref(),
+        ))
         .init();
 
     let cli = Cli::parse();
@@ -224,5 +229,53 @@ fn read_config(path: &Path) -> Result<LoadOutcome, String> {
 fn print_warnings(warnings: &[SettingsWarning]) {
     for warning in warnings {
         eprintln!("warning: {}: {}", warning.key, warning.reason);
+    }
+}
+
+#[cfg(test)]
+mod logging_tests {
+    use super::runtime_log_filter;
+    use std::{
+        io::Write,
+        sync::{Arc, Mutex},
+    };
+
+    #[derive(Clone)]
+    struct Buffer(Arc<Mutex<Vec<u8>>>);
+    impl Write for Buffer {
+        fn write(&mut self, bytes: &[u8]) -> std::io::Result<usize> {
+            self.0.lock().expect("log lock").extend_from_slice(bytes);
+            Ok(bytes.len())
+        }
+        fn flush(&mut self) -> std::io::Result<()> {
+            Ok(())
+        }
+    }
+
+    fn capture(filter: Option<&str>) -> String {
+        let bytes = Arc::new(Mutex::new(Vec::new()));
+        let writer = Buffer(bytes.clone());
+        let subscriber = tracing_subscriber::fmt()
+            .without_time()
+            .with_ansi(false)
+            .with_env_filter(runtime_log_filter(filter))
+            .with_writer(move || writer.clone())
+            .finish();
+        tracing::subscriber::with_default(subscriber, || {
+            tracing::debug!(target: "dependency", "diagnostic-detail");
+            tracing::info!("routine-startup");
+            tracing::warn!("visible-warning");
+            tracing::error!("visible-error");
+        });
+        String::from_utf8(bytes.lock().expect("log lock").clone()).expect("UTF-8 log")
+    }
+
+    #[test]
+    fn runtime_is_quiet_by_default_and_keeps_diagnostic_override() {
+        let quiet = capture(None);
+        assert!(!quiet.contains("routine-startup") && !quiet.contains("diagnostic-detail"));
+        assert!(quiet.contains("visible-warning") && quiet.contains("visible-error"));
+        let verbose = capture(Some("debug"));
+        assert!(verbose.contains("routine-startup") && verbose.contains("diagnostic-detail"));
     }
 }
