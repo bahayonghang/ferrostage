@@ -1,0 +1,28 @@
+cargo fmt --all -- --check
+cargo clippy --workspace --all-targets -- -D warnings
+warning: patch `atspi-connection v0.13.0 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\atspi-connection)` was not used in the crate graph
+help: Check that the patched package version and available features are compatible
+      with the dependency requirements. If the patch has a different version from
+      what is locked in the Cargo.lock file, run `cargo update` to use the new
+      version. This may also occur with an optional dependency that is not enabled.
+    Checking ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Checking ferrostage-app v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.45s
+mbx[cache]: 0 hits, 0 misses, 5 not looked up, 5 incremental; 0 B downloaded, 0 B uploaded, 0 B stored locally
+mbx[savings]: 5034 compilations, and the box has forgotten none of them.
+cargo test --workspace --all-targets
+warning: patch `atspi-connection v0.13.0 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\atspi-connection)` was not used in the crate graph
+help: Check that the patched package version and available features are compatible
+      with the dependency requirements. If the patch has a different version from
+      what is locked in the Cargo.lock file, run `cargo update` to use the new
+      version. This may also occur with an optional dependency that is not enabled.
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+   Compiling ferrostage-app v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app)
+error: failed to remove file `D:\Documents\Code\Rust\Exp\ferrostage\target\debug\ferrostage.exe`
+
+Caused by:
+  Access is denied. (os error 5)
+warning: build failed, waiting for other jobs to finish...
+mbx[cache]: 0 hits, 0 misses, 3 not looked up, 3 incremental, 2 bypassed; 0 B downloaded, 0 B uploaded, 0 B stored locally
+mbx[savings]: 1h 22m refunded over 978 builds. no receipt necessary.
+error: recipe `test` failed on line 23 with exit code 1

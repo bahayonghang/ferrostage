@@ -1,0 +1,28 @@
+warning: patch `atspi-connection v0.13.0 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\atspi-connection)` was not used in the crate graph
+help: Check that the patched package version and available features are compatible
+      with the dependency requirements. If the patch has a different version from
+      what is locked in the Cargo.lock file, run `cargo update` to use the new
+      version. This may also occur with an optional dependency that is not enabled.
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.88s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-ae51d0a262341ecb.exe)
+
+running 1 test
+
+thread 'shell::tests::page_browser_jump_refocuses_editor_after_modal_and_reopen' (104364) panicked at crates\ferrostage-ui\src\shell.rs:3546:17:
+assertion `left == right` failed
+  left: "1"
+ right: "3"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test shell::tests::page_browser_jump_refocuses_editor_after_modal_and_reopen ... FAILED
+
+failures:
+
+failures:
+    shell::tests::page_browser_jump_refocuses_editor_after_modal_and_reopen
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 158 filtered out; finished in 0.11s
+
+error: test failed, to rerun pass `-p ferrostage-ui --lib`
+mbx[cache]: 0 hits, 0 misses, 1 not looked up, 1 incremental; 0 B downloaded, 0 B uploaded, 0 B stored locally
+mbx[savings]: 1h 22m of rustc's calendar cleared across 1015 builds.

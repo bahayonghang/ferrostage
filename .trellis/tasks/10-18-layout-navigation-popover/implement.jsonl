@@ -1,0 +1,8 @@
+{"file": ".trellis/spec/frontend/index.md", "reason": "Native GPUI ownership and framework boundary"}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Input routing, captured render data, focus, direct jumps and notes"}
+{"file": ".trellis/spec/frontend/type-safety.md", "reason": "Typed page IDs and audience notes boundary; ownership source findings are in research"}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Required checks and native evidence boundaries"}
+{"file": ".trellis/spec/backend/database-guidelines.md", "reason": "Grid preference compatibility and save failure"}
+{"file": ".trellis/tasks/10-18-presenter-navigation-options/research/source-evidence.md", "reason": "Verified source anchors and existing regressions"}
+{"file": ".trellis/spec/backend/index.md", "reason": "Core state boundary for minimal read-only annotation query"}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Core getter regression and default-feature quality rules"}

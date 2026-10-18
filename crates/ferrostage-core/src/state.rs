@@ -145,6 +145,17 @@ impl PresentationState {
         self.slide_crop
     }
 
+    /// Whether document reconfiguration would discard any session ink or laser.
+    #[must_use]
+    pub fn has_annotations(&self) -> bool {
+        self.laser_pos_norm.is_some()
+            || self
+                .strokes
+                .values()
+                .flatten()
+                .any(|stroke| !stroke.points.is_empty())
+    }
+
     /// Set the audience crop. Beamer notes pages use [`NormalizedRect::LEFT_HALF`].
     ///
     /// # Errors

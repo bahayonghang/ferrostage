@@ -1,0 +1,29 @@
+warning: patch `atspi-connection v0.13.0 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\atspi-connection)` was not used in the crate graph
+help: Check that the patched package version and available features are compatible
+      with the dependency requirements. If the patch has a different version from
+      what is locked in the Cargo.lock file, run `cargo update` to use the new
+      version. This may also occur with an optional dependency that is not enabled.
+   Compiling chrono v0.4.45
+   Compiling ferrostage-media v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-media)
+   Compiling ferrostage-platform v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-platform)
+   Compiling lopdf v0.45.0
+   Compiling pdfium-render v0.9.4
+   Compiling ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+   Compiling ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+   Compiling ferrostage-document v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-document)
+   Compiling ferrostage-settings v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-settings)
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 9.13s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-11ffa9ca7a07d31f.exe)
+
+running 1 test
+old-strip-request-model: requested=12 submitted=12 thumbnails=4 retained_bytes=17510400
+closed: requested=8 submitted=0 thumbnails=0 retained_bytes=16588800
+open: requested=24 submitted=16 thumbnails=16 retained_bytes=20275200
+closed-again: requested=8 submitted=0 thumbnails=0 retained_bytes=16588800
+test workbench::tests::native_perf100_grid_retention ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 38 filtered out; finished in 0.18s
+
+mbx[cache]: 0 hits, 2 misses, 7 not looked up, 7 incremental, 1 bypassed; 0 B downloaded, 0 B uploaded, 76.0 MiB stored locally
+mbx[savings]: 1h 22m saved across 966 builds. put it toward something with a progress bar.

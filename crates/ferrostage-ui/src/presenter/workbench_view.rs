@@ -1,7 +1,6 @@
 use super::*;
 use crate::workbench::{ReadyFrame, Surface, Tool};
 use ferrostage_core::{AudienceProjectionSnapshot, PresentationCommand as Command};
-use ferrostage_document::{DocumentOverrides, NotesLayout};
 use gpui::{MouseButton, canvas};
 use std::{cell::Cell, rc::Rc, time::Instant};
 
@@ -11,14 +10,12 @@ pub(super) struct WorkbenchData {
     pub overlay: AudienceProjectionSnapshot,
     pub media: Vec<ferrostage_core::AudienceMediaFrame>,
     slots: Vec<crate::media_playback::SlotView>,
-    settings: ferrostage_settings::PresenterSettings,
+    pub(super) settings: ferrostage_settings::PresenterSettings,
     pointer: ferrostage_settings::PointerSettings,
     tool: Tool,
     grid: bool,
-    grid_start: usize,
+    pub(super) grid_start: usize,
     pub steps: Vec<ferrostage_core::PhysicalPage>,
-    options: DocumentOverrides,
-    diagnostics: String,
     pub progress: String,
     progress_compact: String,
     timer: String,
@@ -27,7 +24,7 @@ pub(super) struct WorkbenchData {
     paused: bool,
     pub budget: usize,
     debug: Option<String>,
-    writable: bool,
+    pub(super) writable: bool,
 }
 impl WorkbenchData {
     pub fn from_shell(shell: &Shell) -> Self {
@@ -82,8 +79,37 @@ impl WorkbenchData {
             .unwrap_or_default();
         let overlay = shell.state.audience_snapshot();
         Self {
-            frames: shell.workbench.frames.clone(),
-            surfaces: shell.workbench.requested_surfaces(),
+            frames: shell
+                .workbench
+                .frames
+                .iter()
+                .filter(|(surface, _)| match surface {
+                    Surface::Thumbnail(index) => {
+                        shell.workbench.grid
+                            && *index >= shell.workbench.grid_start
+                            && *index
+                                < shell.workbench.grid_start
+                                    + shell.settings.settings.presenter.grid_visible_pages as usize
+                    }
+                    _ => true,
+                })
+                .cloned()
+                .collect(),
+            surfaces: shell
+                .workbench
+                .requested_surfaces()
+                .into_iter()
+                .filter(|surface| match surface {
+                    Surface::Thumbnail(index) => {
+                        shell.workbench.grid
+                            && *index >= shell.workbench.grid_start
+                            && *index
+                                < shell.workbench.grid_start
+                                    + shell.settings.settings.presenter.grid_visible_pages as usize
+                    }
+                    _ => true,
+                })
+                .collect(),
             overlay,
             media: shell
                 .media
@@ -98,18 +124,6 @@ impl WorkbenchData {
             grid_start: shell.workbench.grid_start,
             steps: session
                 .map(|s| s.document.slide_map.steps().to_vec())
-                .unwrap_or_default(),
-            options: session.map(|s| s.document.overrides).unwrap_or_default(),
-            diagnostics: session
-                .map(|s| {
-                    format!(
-                        "Layout {:?} ({:?}) · {:?} · {:?}",
-                        s.document.layout,
-                        s.document.layout_source,
-                        s.document.warnings,
-                        s.document.structure_diagnostics
-                    )
-                })
                 .unwrap_or_default(),
             progress,
             progress_compact,
@@ -159,7 +173,7 @@ impl Presenter {
             .find(|(s, _)| *s == surface)
             .map(|(_, f)| f)
     }
-    fn picture(&self, surface: Surface, interactive: bool) -> gpui::AnyElement {
+    pub(super) fn picture(&self, surface: Surface, interactive: bool) -> gpui::AnyElement {
         let frame = self
             .frame(surface)
             .map(|frame| frame.frame.clone())
@@ -214,7 +228,9 @@ impl Presenter {
             .id(SharedString::from(format!("surface-{surface:?}")))
             .debug_selector(|| format!("surface-{surface:?}"))
             .size_full()
-            .min_h(px(70.))
+            .when(!matches!(surface, Surface::Thumbnail(_)), |view| {
+                view.min_h(px(70.))
+            })
             .bg(rgb(0x000000))
             .relative()
             .overflow_hidden()
@@ -508,7 +524,12 @@ impl Presenter {
                     Intent::Jump,
                     p,
                 )
-                .track_focus(&self.progress_focus.clone().tab_stop(true))
+                .track_focus(
+                    &self
+                        .progress_focus
+                        .clone()
+                        .tab_stop(self.data.browser.is_none()),
+                )
                 .when(!self.progress_focus.is_focused(window), |view| {
                     view.tooltip(move |_, cx| {
                         cx.new(|_| FilenameTooltip {
@@ -615,8 +636,16 @@ impl Presenter {
                 ))
                 .child(self.button(
                     "document-options".into(),
-                    self.locale.text("wb-document").into(),
-                    true,
+                    format!(
+                        "{} {}",
+                        self.locale.text("wb-document"),
+                        if self.data.layout_menu.is_some() {
+                            "⌃"
+                        } else {
+                            "⌄"
+                        }
+                    ),
+                    !self.data.busy,
                     false,
                     Intent::Document,
                     p,
@@ -683,7 +712,6 @@ impl Presenter {
         let ratio = self.data.workbench.settings.next_slide_ratio as f32;
         let notes = self.data.workbench.settings.effective_notes_ratio() as f32;
         let stacked = window.viewport_size().width < px(800.);
-        let grid_open = self.data.workbench.grid;
         let mut notes_frames = self
             .data
             .workbench
@@ -753,9 +781,6 @@ impl Presenter {
             .relative()
             .flex_1()
             .min_h_0()
-            .when(grid_open, |view| {
-                view.min_h(gpui::relative(0.5)).flex_shrink_0()
-            })
             .flex()
             .when(stacked, |view| view.flex_col())
             .gap(px(6.))
@@ -942,17 +967,6 @@ impl Presenter {
             }
             view = view.child(row);
         }
-        if grid_open {
-            view = view.child(
-                div()
-                    .id("thumbnail-slot")
-                    .when(grid_open, |slot| {
-                        slot.flex_1().min_h_0().overflow_y_scroll()
-                    })
-                    .when(!grid_open, |slot| slot.flex_shrink_0())
-                    .child(self.grid_panel(p)),
-            );
-        }
         if let Some(debug) = &self.data.workbench.debug {
             view = view.child(format!(
                 "{debug} · GPU managed {} bytes · UI paint {:.2} ms",
@@ -974,154 +988,6 @@ impl Presenter {
                 cx,
             );
         }
-    }
-    fn grid_panel(&self, p: Palette) -> gpui::AnyElement {
-        let data = &self.data.workbench;
-        let columns = data.settings.grid_columns as usize;
-        let visible = data.settings.grid_visible_pages as usize;
-        let mut grid = div().id("thumbnail-grid").flex().flex_col().gap(px(6.));
-        let target = self.shell.clone();
-        grid = grid.on_scroll_wheel(move |event, _, cx| {
-            let delta = event.delta.pixel_delta(px(20.)).y;
-            if delta != px(0.) {
-                actions::dispatch(
-                    &target,
-                    Intent::GridMove(if delta < px(0.) {
-                        columns as isize
-                    } else {
-                        -(columns as isize)
-                    }),
-                    cx,
-                );
-                cx.stop_propagation();
-            }
-        });
-        for row in (data.grid_start..(data.grid_start + visible).min(data.steps.len()))
-            .collect::<Vec<_>>()
-            .chunks(columns)
-        {
-            let mut line = div().flex().gap(px(6.));
-            for index in row {
-                let page = data.steps[*index];
-                let target = self.shell.clone();
-                let tile = div()
-                    .id(SharedString::from(format!("thumbnail-{index}")))
-                    .debug_selector(|| format!("thumbnail-{index}"))
-                    .relative()
-                    .w(gpui::relative(1. / columns as f32))
-                    .h(px(135.))
-                    .flex()
-                    .flex_col()
-                    .child(
-                        div()
-                            .id(SharedString::from(format!("thumbnail-image-{index}")))
-                            .debug_selector(|| format!("thumbnail-image-{index}"))
-                            .flex_1()
-                            .min_h_0()
-                            .child(self.picture(Surface::Thumbnail(*index), false))
-                            .on_click(move |_, _, cx| {
-                                actions::dispatch(&target, Intent::JumpTo(page), cx);
-                            }),
-                    );
-                let tile = tile.child(self.button(
-                    format!("jump-thumbnail-{index}"),
-                    format!("{}", page.0 + 1),
-                    true,
-                    false,
-                    Intent::JumpTo(page),
-                    p,
-                ));
-                line = line.child(tile);
-            }
-            grid = grid.child(line);
-        }
-        {
-            grid = grid.child(
-                div()
-                    .flex()
-                    .child(self.button(
-                        "grid-prev".into(),
-                        self.locale.text("wb-earlier").into(),
-                        data.grid_start > 0,
-                        false,
-                        Intent::GridMove(-(visible as isize)),
-                        p,
-                    ))
-                    .child(self.button(
-                        "grid-next".into(),
-                        self.locale.text("wb-later").into(),
-                        data.grid_start + visible < data.steps.len(),
-                        false,
-                        Intent::GridMove(visible as isize),
-                        p,
-                    )),
-            );
-        }
-        grid.into_any_element()
-    }
-    pub(super) fn document_panel(&self, p: Palette) -> gpui::AnyElement {
-        let options = self.data.workbench.options;
-        let mut view = div()
-            .p(px(24.))
-            .flex()
-            .flex_col()
-            .gap(px(12.))
-            .child(self.locale.text("wb-document-title"));
-        for (label, layout) in [
-            ("wb-auto", None),
-            ("wb-unsplit", Some(NotesLayout::None)),
-            ("wb-left", Some(NotesLayout::Left)),
-            ("wb-right", Some(NotesLayout::Right)),
-            ("wb-top", Some(NotesLayout::Top)),
-            ("wb-bottom", Some(NotesLayout::Bottom)),
-        ] {
-            view = view.child(self.button(
-                format!("layout-{layout:?}"),
-                self.locale.text(label).into(),
-                true,
-                options.layout == layout,
-                Intent::Reconfigure(DocumentOverrides { layout, ..options }),
-                p,
-            ));
-        }
-        view.child(self.button(
-            "independent-notes".into(),
-            self.locale.format(
-                "wb-independent",
-                &[("value", options.identify_independent_notes.to_string())],
-            ),
-            true,
-            false,
-            Intent::Reconfigure(DocumentOverrides {
-                identify_independent_notes: !options.identify_independent_notes,
-                ..options
-            }),
-            p,
-        ))
-        .child(self.button(
-            "physical-pages".into(),
-            self.locale.format(
-                "wb-physical",
-                &[("value", options.physical_pages.to_string())],
-            ),
-            true,
-            false,
-            Intent::Reconfigure(DocumentOverrides {
-                physical_pages: !options.physical_pages,
-                ..options
-            }),
-            p,
-        ))
-        .child(self.data.workbench.diagnostics.clone())
-        .child(self.button(
-            "close-document-options".into(),
-            self.locale.text("close").into(),
-            true,
-            false,
-            Intent::Escape,
-            p,
-        ))
-        .into_any_element()
     }
 }
 

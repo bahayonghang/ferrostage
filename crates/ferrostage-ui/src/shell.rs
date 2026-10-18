@@ -1,3 +1,5 @@
+mod layout_navigation;
+mod page_browser;
 mod preferences;
 pub(crate) mod reload;
 use crate::{
@@ -53,9 +55,7 @@ impl Global for ShellRoot {}
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(crate) enum Modal {
     Settings,
-    Document,
     Displays(DisplayDraft),
-    Jump(String),
 }
 
 struct WindowRecord {
@@ -147,6 +147,9 @@ pub(crate) struct Shell {
     pub graphics_error: Option<String>,
     pub warnings: Vec<String>,
     pub modal: Option<Modal>,
+    pub contextual: Option<crate::page_browser::ContextualSurface>,
+    contextual_serial: u64,
+    pub number_input_focus: gpui::FocusHandle,
     pub snapshot: Entity<AudienceProjectionSnapshot>,
     escape_stops: bool,
     poll_task: Option<gpui::Task<()>>,
@@ -313,6 +316,9 @@ impl Shell {
             graphics_error: None,
             warnings,
             modal: None,
+            contextual: None,
+            contextual_serial: 0,
+            number_input_focus: cx.focus_handle(),
             snapshot,
             escape_stops,
             poll_task: None,
@@ -455,7 +461,9 @@ impl Shell {
                     return;
                 }
             }
-            Intent::Core(command) if self.pending.is_none() && self.modal.is_none() => {
+            Intent::Core(command)
+                if self.pending.is_none() && self.modal.is_none() && self.contextual.is_none() =>
+            {
                 self.apply(command, cx)
             }
             Intent::Tool(tool) => {
@@ -467,46 +475,42 @@ impl Shell {
                 self.apply(Command::EndStroke, cx);
                 self.apply(Command::UpdateLaserPointer(None), cx);
             }
-            Intent::Grid => {
-                self.workbench.grid = !self.workbench.grid;
+            Intent::Grid if !self.busy() => {
+                if self.browser().is_some() {
+                    self.close_contextual();
+                } else {
+                    self.open_browser();
+                }
             }
-            Intent::GridMove(delta) => {
-                let count = self
-                    .workbench
-                    .document
-                    .as_ref()
-                    .map_or(0, |s| s.document.slide_map.steps().len());
+            Intent::CloseContextual => self.close_contextual(),
+            Intent::BrowserEdit { id, edit } => self.edit_browser(id, edit),
+            Intent::BrowserJump { id, page } => self.submit_browser(id, Some(page), cx),
+            Intent::GridDensity { column, value } => self.grid_density(column, value, cx),
+            Intent::GridMove(delta) if self.browser().is_some() && !self.busy() => {
+                let count = self.state.slide_map().map_or(0, |map| map.steps().len());
+                let capacity = self.settings.settings.presenter.grid_visible_pages as usize;
+                let last = count.saturating_sub(1) / capacity * capacity;
                 self.workbench.grid_start = self
                     .workbench
                     .grid_start
                     .saturating_add_signed(delta)
-                    .min(count.saturating_sub(1));
+                    .min(last);
             }
-            Intent::JumpTo(page) if self.modal.is_none() && self.pending.is_none() => {
-                self.apply(Command::JumpTo(page), cx);
-                self.workbench.grid = false;
-            }
-            Intent::Document if !self.busy() => self.modal = Some(Modal::Document),
-            Intent::Reconfigure(options) => {
-                if let Some(session) = &mut self.workbench.document {
-                    match session.reconfigure(options).and_then(|document| {
-                        let descriptor = document
-                            .descriptor(self.state.generation())
-                            .map_err(|e| e.to_string())?;
-                        self.state
-                            .apply_at(Command::ReconfigureDocument(descriptor), Instant::now())
-                            .map_err(|e| e.to_string())?;
-                        session.document = document;
-                        Ok(())
-                    }) {
-                        Ok(()) => {
-                            self.workbench.clear_frames();
-                            self.error = None;
-                        }
-                        Err(error) => self.error = Some(error),
-                    }
+            Intent::Document if !self.busy() => {
+                if self.layout_menu_open() {
+                    self.close_contextual();
+                } else if self.workbench.document.is_some() {
+                    self.abandon_modal();
+                    self.contextual_serial += 1;
+                    self.contextual =
+                        Some(crate::page_browser::ContextualSurface::LayoutNavigation {
+                            id: self.contextual_serial,
+                            generation: self.state.generation(),
+                            error: None,
+                        });
                 }
             }
+            Intent::Reconfigure { id, options } => self.reconfigure_layout(id, options, cx),
             Intent::Split { next, notes, save }
                 if !self.busy() && self.settings.write_policy == WritePolicy::Writable =>
             {
@@ -517,6 +521,7 @@ impl Shell {
                     self.save(cx);
                 }
             }
+            Intent::Escape if self.contextual.is_some() => self.close_contextual(),
             Intent::Escape => {
                 self.dismiss_preferences();
                 self.cancel_focus();
@@ -584,24 +589,13 @@ impl Shell {
                 }
             }
             Intent::Commit => {
-                if let Some(Modal::Jump(text)) = &self.modal {
-                    if let Some(page) = transactions::jump_page(text, self.state.page_count())
-                        .filter(|page| {
-                            self.state
-                                .slide_map()
-                                .and_then(|map| map.logical_for(PhysicalPage(*page)))
-                                .is_some()
-                        })
-                    {
-                        self.apply(Command::JumpTo(PhysicalPage(page)), cx);
-                        self.modal = None;
-                    } else {
-                        self.error = Some(self.locale.text("invalid-page").into());
-                    }
+                if let Some(id) = self.browser().map(|browser| browser.id) {
+                    self.submit_browser(id, None, cx);
                 }
             }
             action
                 if self.modal.is_none()
+                    && self.contextual.is_none()
                     && self.pending.is_none()
                     && self.state.stage() != SessionStage::Idle =>
             {
@@ -630,20 +624,6 @@ impl Shell {
         cx.notify();
     }
 
-    pub fn jump_key(&mut self, key: &str, cx: &mut Context<Self>) {
-        if let Some(Modal::Jump(text)) = &mut self.modal {
-            if key == "backspace" {
-                text.pop();
-            } else if key.len() == 1 && key.as_bytes()[0].is_ascii_digit() && text.len() < 10 {
-                text.push_str(key);
-            } else {
-                return;
-            }
-            self.error = None;
-            cx.notify();
-        }
-    }
-
     pub(crate) fn import_allowed(&self) -> bool {
         !self.loading
             && self.preference_change.is_none()
@@ -656,6 +636,7 @@ impl Shell {
     }
 
     fn begin_import(&mut self, path: PathBuf, cx: &mut Context<Self>) {
+        self.close_contextual();
         if !self.import_allowed() {
             self.error = Some(self.locale.text("stop-before-import").into());
             return;
@@ -784,6 +765,7 @@ impl Shell {
                 {
                     self.warnings.push(error);
                 }
+                self.close_contextual();
                 self.workbench.clear_frames();
                 self.workbench.document = Some(session);
                 if old.0 != 0
@@ -907,16 +889,16 @@ impl Shell {
                 }));
             }
             Intent::Settings => {
+                self.close_contextual();
                 self.preferences = Default::default();
                 self.modal = Some(Modal::Settings);
             }
             Intent::Displays => {
+                self.close_contextual();
                 self.detect_displays(cx);
                 self.new_display_draft();
             }
-            Intent::Jump if self.state.page_count() > 0 => {
-                self.modal = Some(Modal::Jump(String::new()));
-            }
+            Intent::Jump if self.state.page_count() > 0 => self.open_browser(),
             _ => {}
         }
         cx.notify();
@@ -1023,6 +1005,7 @@ impl Shell {
                                 && shell.state.stage() == SessionStage::Presenting
                                 && shell.settings.settings.display.audience_click_to_advance
                                 && shell.modal.is_none()
+                                && shell.contextual.is_none()
                                 && !shell.busy()
                                 && projection.stage == AudienceStage::Live
                                 && projection.blank_mode.is_none()
@@ -1265,6 +1248,7 @@ impl Shell {
     }
 
     fn abandon_modal(&mut self) {
+        self.close_contextual();
         self.modal = None;
     }
 
@@ -1331,6 +1315,7 @@ impl Shell {
     }
 
     fn swap(&mut self, cx: &mut Context<Self>) {
+        self.close_contextual();
         if self.pending.is_some() || self.loading || self.preference_change.is_some() {
             return;
         }
@@ -3367,6 +3352,384 @@ mod tests {
             .unwrap()
     }
 
+    #[gpui::test]
+    fn page_browser_real_input_caret_selection_paste_and_binding_conflicts(
+        cx: &mut TestAppContext,
+    ) {
+        let (shell, handle) = input_presenter(cx);
+        shell.update(cx, |shell, cx| {
+            shell
+                .state
+                .apply_at(
+                    Command::LoadDocument {
+                        generation: ferrostage_core::DocumentGeneration(1),
+                        page_count: 100,
+                    },
+                    Instant::now(),
+                )
+                .unwrap();
+            shell
+                .settings
+                .settings
+                .keybindings
+                .next
+                .extend(["6".into(), "backspace".into()]);
+            actions::replace_bindings(&shell.settings.settings.keybindings, shell.locale, cx);
+            shell.open_browser();
+            cx.notify();
+        });
+        redraw(handle, cx);
+        shell.read_with(cx, |shell, _| {
+            assert_eq!(shell.browser().unwrap().edit.selection(), 0..1)
+        });
+        cx.simulate_keystrokes(handle, "6 9 left delete right 8");
+        shell.read_with(cx, |shell, _| {
+            assert_eq!(shell.browser().unwrap().edit.text, "68");
+            assert_eq!(shell.state.current_page(), PhysicalPage(0));
+        });
+        cx.simulate_keystrokes(handle, "home shift-end 6 9 space b backspace 9");
+        shell.read_with(cx, |shell, _| {
+            assert_eq!(shell.browser().unwrap().edit.text, "69");
+            assert_eq!(shell.browser().unwrap().target, Some(PhysicalPage(68)));
+            assert_eq!(shell.state.current_page(), PhysicalPage(0));
+            assert_eq!(shell.state.audience_snapshot().blank_mode, None);
+            assert_eq!(shell.workbench.grid_start, 64);
+        });
+        cx.write_to_clipboard(gpui::ClipboardItem::new_string(" 42\n".into()));
+        cx.simulate_keystrokes(handle, "ctrl-a ctrl-v");
+        cx.write_to_clipboard(gpui::ClipboardItem::new_string(
+            "unrelated restored clipboard".into(),
+        ));
+        shell.read_with(cx, |shell, _| {
+            assert_eq!(shell.browser().unwrap().edit.text, "42")
+        });
+        cx.simulate_keystrokes(handle, "enter");
+        shell.read_with(cx, |shell, _| {
+            assert_eq!(shell.state.current_page(), PhysicalPage(41));
+            assert!(shell.contextual.is_none());
+            assert!(!shell.workbench.grid);
+        });
+    }
+
+    #[gpui::test]
+    fn page_browser_configured_rows_fit_normal_window(cx: &mut TestAppContext) {
+        let (shell, handle) = workbench_fixture(cx);
+        cx.test_window(handle)
+            .simulate_resize(size(px(1100.), px(760.)));
+        shell.update(cx, |shell, cx| {
+            let session = shell.workbench.document.as_mut().unwrap();
+            session.metadata.pages = (0..100)
+                .map(|index| {
+                    let mut page = session.metadata.pages[0].clone();
+                    page.page = PhysicalPage(index);
+                    page.label = None;
+                    page
+                })
+                .collect();
+            session.structure.pages = (0..100)
+                .map(|index| {
+                    let mut page = session.structure.pages[0].clone();
+                    page.page = PhysicalPage(index);
+                    page
+                })
+                .collect();
+            session.document =
+                ferrostage_document::LoadedDocument::load(&session.metadata, &session.structure)
+                    .unwrap();
+            shell
+                .state
+                .apply_at(
+                    Command::LoadMappedDocument(
+                        session
+                            .document
+                            .descriptor(ferrostage_core::DocumentGeneration(3))
+                            .unwrap(),
+                    ),
+                    Instant::now(),
+                )
+                .unwrap();
+            shell.open_browser();
+            cx.notify();
+        });
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let images = visual.debug_bounds("page-browser-images").unwrap();
+        let grid = visual.debug_bounds("thumbnail-grid").unwrap();
+        let final_tile = visual
+            .debug_bounds("thumbnail-15")
+            .unwrap_or_else(|| panic!("last tile is clipped: viewport {images:?}, grid {grid:?}"));
+        assert!(
+            final_tile.bottom() <= images.bottom(),
+            "last tile {final_tile:?}, viewport {images:?}, grid {grid:?}"
+        );
+        let image = visual.debug_bounds("thumbnail-image-15").unwrap();
+        let panel = visual.debug_bounds("page-browser").unwrap();
+        let trigger = visual.debug_bounds("workbench-progress").unwrap();
+        assert!(image.size.height >= px(30.));
+        assert!(final_tile.right() <= images.right());
+        assert!(panel.top() >= px(12.));
+        assert!(
+            panel.bottom() <= trigger.top() - px(8.),
+            "panel {panel:?}, trigger {trigger:?}"
+        );
+        println!(
+            "normal browser: panel={panel:?}, images={images:?}, grid={grid:?}, final image={image:?}"
+        );
+    }
+
+    #[gpui::test]
+    fn page_browser_raster_stays_inside_its_image_slot(cx: &mut TestAppContext) {
+        let (shell, handle) = workbench_fixture(cx);
+        cx.test_window(handle)
+            .simulate_resize(size(px(1100.), px(760.)));
+        shell.update(cx, |shell, cx| {
+            shell.open_browser();
+            shell.workbench.frames.push((
+                crate::workbench::Surface::Thumbnail(0),
+                crate::workbench::ReadyFrame {
+                    request: crate::workbench::request_for(
+                        shell.state.generation(),
+                        PhysicalPage(0),
+                        shell.state.slide_crop(),
+                    ),
+                    frame: ferrostage_core::BgraFrame::new(4, 3, 16, vec![255; 48]).unwrap(),
+                },
+            ));
+            cx.notify();
+        });
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let slot = visual.debug_bounds("thumbnail-image-0").unwrap();
+        let raster = visual.debug_bounds("surface-Thumbnail(0)").unwrap();
+        let caption = visual.debug_bounds("thumbnail-caption-0").unwrap();
+        assert!(
+            raster.size.height <= slot.size.height,
+            "{raster:?} exceeds {slot:?}"
+        );
+        assert!(
+            raster.bottom() <= caption.top(),
+            "raster overlaps its caption"
+        );
+        handle
+            .downcast::<Presenter>()
+            .unwrap()
+            .update(cx, |presenter, _, cx| {
+                presenter.seed_browser_failure(0, cx);
+            })
+            .unwrap();
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let error = visual.debug_bounds("thumbnail-error-0").unwrap();
+        assert_eq!(error.size, slot.size);
+        assert!(visual.debug_bounds("surface-Thumbnail(0)").is_none());
+    }
+
+    #[gpui::test]
+    fn page_browser_jump_refocuses_editor_after_modal_and_reopen(cx: &mut TestAppContext) {
+        let fixture = SaveFixture::new();
+        fixture.unblock();
+        let (shell, handle) = workbench_fixture(cx);
+        shell.update(cx, |shell, cx| {
+            shell.store = fixture.store();
+            shell.modal = Some(Modal::Settings);
+            cx.notify();
+        });
+        redraw(handle, cx);
+        for repeated in [false, true] {
+            if repeated {
+                click_control(handle, "page-columns-2", cx);
+                redraw(handle, cx);
+            }
+            shell.update(cx, |shell, cx| shell.dispatch(Intent::Jump, cx));
+            cx.run_until_parked();
+            shell.update(cx, |shell, cx| shell.poll_focus(cx));
+            redraw(handle, cx);
+            cx.simulate_keystrokes(handle, "3");
+            shell.read_with(cx, |shell, _| {
+                assert_eq!(shell.browser().unwrap().edit.text, "3");
+                assert_eq!(shell.state.current_page(), PhysicalPage(0));
+            });
+        }
+        cx.simulate_keystrokes(handle, "enter");
+        shell.read_with(cx, |shell, _| {
+            assert!(shell.contextual.is_none());
+            assert_eq!(shell.state.current_page(), PhysicalPage(2));
+        });
+    }
+
+    #[gpui::test]
+    fn page_browser_outside_press_dismisses_without_drawing_or_click_through(
+        cx: &mut TestAppContext,
+    ) {
+        let (shell, handle) = workbench_fixture(cx);
+        shell.update(cx, |shell, cx| {
+            shell.workbench.tool = crate::workbench::Tool::Pen;
+            shell.open_browser();
+            cx.notify();
+        });
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        assert!(visual.debug_bounds("page-browser").is_some());
+        assert!(visual.debug_bounds("current-pane").is_some());
+        let surface = visual.debug_bounds("current-pane").unwrap();
+        let outside = gpui::point(surface.left() + px(5.), surface.top() + px(5.));
+        visual.simulate_click(outside, gpui::Modifiers::default());
+        shell.read_with(cx, |shell, _| {
+            assert!(shell.contextual.is_none());
+            assert_eq!(shell.state.current_page(), PhysicalPage(0));
+            assert!(shell.state.audience_snapshot().strokes.is_empty());
+        });
+        redraw(handle, cx);
+        cx.simulate_keystrokes(handle, "pagedown");
+        shell.read_with(cx, |shell, _| {
+            assert_eq!(shell.state.current_page(), PhysicalPage(2))
+        });
+    }
+
+    #[gpui::test]
+    fn page_browser_density_legacy_atomic_readback_failure_retry_and_readonly(
+        cx: &mut TestAppContext,
+    ) {
+        let fixture = SaveFixture::new();
+        let (shell, handle) = workbench_fixture(cx);
+        shell.update(cx, |shell, cx| {
+            shell.store = fixture.store();
+            shell.settings = SettingsSession::from_outcome(ferrostage_settings::from_toml("schema_version = 1\n[presenter]\ngrid_columns = 4\ngrid_visible_pages = 13\nvendor_leaf = 'keep'\n").unwrap());
+            shell.open_browser();
+            assert_eq!(shell.settings.settings.presenter.grid_visible_pages, 13);
+            assert!(!shell.settings.dirty);
+            cx.notify();
+        });
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let columns = visual.debug_bounds("page-columns-2").unwrap();
+        visual.simulate_click(columns.center(), gpui::Modifiers::default());
+        shell.read_with(cx, |shell, _| {
+            assert_eq!(
+                (
+                    shell.settings.settings.presenter.grid_columns,
+                    shell.settings.settings.presenter.grid_visible_pages
+                ),
+                (2, 8)
+            );
+            assert!(shell.settings.dirty && shell.settings.save_error.is_some());
+            assert!(shell.browser().is_some());
+            assert_eq!(shell.state.current_page(), PhysicalPage(0));
+        });
+        fixture.unblock();
+        shell.update(cx, |shell, cx| {
+            shell.dispatch(Intent::RetrySave, cx);
+            assert!(!shell.settings.dirty);
+            shell.dispatch(Intent::GridDensity { column: false, value: 3 }, cx);
+            let readback = shell.store.load().unwrap();
+            assert_eq!((readback.settings.presenter.grid_columns, readback.settings.presenter.grid_visible_pages), (2, 6));
+            assert_eq!(readback.raw_table["presenter"]["vendor_leaf"].as_str(), Some("keep"));
+            let bytes = std::fs::read(shell.store.path()).unwrap();
+            shell.settings = SettingsSession::from_outcome(ferrostage_settings::from_toml("schema_version = 999\n[presenter]\ngrid_columns = 1\ngrid_visible_pages = 16\n").unwrap());
+            shell.close_contextual();
+            shell.open_browser();
+            shell.dispatch(Intent::GridDensity { column: false, value: 2 }, cx);
+            assert_eq!((shell.settings.settings.presenter.grid_columns, shell.settings.settings.presenter.grid_visible_pages), (1, 16));
+            assert_eq!(std::fs::read(shell.store.path()).unwrap(), bytes);
+        });
+    }
+
+    #[gpui::test]
+    fn page_browser_tile_keyboard_activation_uses_enter_and_space_once(cx: &mut TestAppContext) {
+        let (shell, handle) = workbench_fixture(cx);
+        for key in ["enter", "space"] {
+            shell.update(cx, |shell, cx| {
+                shell.apply(Command::JumpTo(PhysicalPage(0)), cx);
+                shell.open_browser();
+                cx.notify();
+            });
+            redraw(handle, cx);
+            // Field -> Go -> four column choices -> four row choices -> tile 0 -> tile 1.
+            for _ in 0..24 {
+                if handle
+                    .downcast::<Presenter>()
+                    .unwrap()
+                    .update(cx, |presenter, window, _| {
+                        presenter.browser_focused_tile(window)
+                    })
+                    .unwrap()
+                    == Some(1)
+                {
+                    break;
+                }
+                cx.simulate_keystrokes(handle, "tab");
+                redraw(handle, cx);
+            }
+            assert_eq!(
+                handle
+                    .downcast::<Presenter>()
+                    .unwrap()
+                    .update(cx, |presenter, window, _| presenter
+                        .browser_focused_tile(window))
+                    .unwrap(),
+                Some(1)
+            );
+            cx.simulate_keystrokes(handle, key);
+            shell.read_with(cx, |shell, _| {
+                assert_eq!(shell.state.current_page(), PhysicalPage(2), "{key}");
+                assert!(shell.contextual.is_none());
+            });
+            redraw(handle, cx);
+        }
+    }
+
+    #[gpui::test]
+    fn page_browser_rejects_private_notes_and_stale_session_targets(cx: &mut TestAppContext) {
+        let (shell, handle) = workbench_fixture(cx);
+        shell.update(cx, |shell, cx| {
+            set_jump(shell, "2");
+            assert_eq!(shell.browser().unwrap().error, Some("pb-notes-page"));
+            shell.dispatch(Intent::Commit, cx);
+            assert_eq!(shell.state.current_page(), PhysicalPage(0));
+            let id = shell.browser().unwrap().id;
+            shell.close_contextual();
+            shell.open_browser();
+            shell.dispatch(
+                Intent::BrowserJump {
+                    id,
+                    page: PhysicalPage(2),
+                },
+                cx,
+            );
+            shell.dispatch(
+                Intent::BrowserEdit {
+                    id,
+                    edit: crate::page_browser::NumberEdit::new("3".into()),
+                },
+                cx,
+            );
+            assert_eq!(shell.browser().unwrap().edit.text, "1");
+            assert_eq!(shell.state.current_page(), PhysicalPage(0));
+            let current = shell.browser().unwrap().id;
+            shell.loading = true;
+            shell.dispatch(
+                Intent::BrowserJump {
+                    id: current,
+                    page: PhysicalPage(2),
+                },
+                cx,
+            );
+            assert!(shell.browser().is_some());
+            assert_eq!(shell.state.current_page(), PhysicalPage(0));
+            shell.loading = false;
+            cx.notify();
+        });
+        redraw(handle, cx);
+        cx.simulate_keystrokes(handle, "escape");
+        assert!(shell.read_with(cx, |shell, _| shell.contextual.is_none()));
+    }
+
+    fn set_jump(shell: &mut Shell, text: &str) {
+        shell.open_browser();
+        let id = shell.browser().expect("open page browser").id;
+        shell.edit_browser(id, crate::page_browser::NumberEdit::new(text.into()));
+    }
+
     fn load_ready(shell: &mut Shell) {
         shell
             .state
@@ -3568,7 +3931,7 @@ mod tests {
             shell.update(cx, |s, cx| match guard {
                 0 => s.settings.settings.display.audience_click_to_advance = false,
                 1 => s.modal = Some(Modal::Settings),
-                2 => s.modal = Some(Modal::Jump(String::new())),
+                2 => s.open_browser(),
                 3 => s.loading = true,
                 4 => s
                     .snapshot
@@ -3603,6 +3966,7 @@ mod tests {
                 assert_eq!(s.state.current_page(), PhysicalPage(0), "guard {guard}");
                 s.settings.settings.display.audience_click_to_advance = true;
                 s.modal = None;
+                s.close_contextual();
                 s.loading = false;
                 s.pending = None;
                 if let Some(blank) = s.state.audience_snapshot().blank_mode {
@@ -4375,8 +4739,8 @@ mod tests {
             cx.simulate_keystrokes(handle, "2 3 backspace");
             shell.read_with(cx, |shell, _| {
                 assert_eq!(
-                    shell.modal,
-                    Some(Modal::Jump("2".into())),
+                    shell.browser().map(|browser| browser.edit.text.as_str()),
+                    Some("2"),
                     "numeric binding: {numeric_binding}"
                 );
                 assert_eq!(shell.state.current_page(), PhysicalPage(0));
@@ -4412,8 +4776,10 @@ mod tests {
         redraw(handle, cx);
         cx.simulate_keystrokes(handle, "2");
         assert_eq!(
-            shell.read_with(cx, |shell, _| shell.modal.clone()),
-            Some(Modal::Jump("2".into()))
+            shell.read_with(cx, |shell, _| shell
+                .browser()
+                .map(|browser| browser.edit.text.clone())),
+            Some("2".into())
         );
     }
 
@@ -4547,7 +4913,7 @@ mod tests {
                 },
             ];
             shell.monitors = vec![first, second];
-            shell.modal = Some(Modal::Jump("2".into()));
+            set_jump(shell, "2");
             cx.notify();
         });
         cx.dispatch_action(handle, actions::Swap);
@@ -4581,7 +4947,7 @@ mod tests {
                     Instant::now(),
                 )
                 .unwrap();
-            shell.modal = Some(Modal::Jump("2".into()));
+            set_jump(shell, "2");
             cx.notify();
         });
         redraw(handle, cx);
@@ -4637,7 +5003,7 @@ mod tests {
             let handle = presenter.handle;
             shell.presenter = Some(presenter);
             shell.audience = Some(test_window(shell, true, cx));
-            shell.modal = Some(Modal::Jump("2".into()));
+            set_jump(shell, "2");
             handle
         });
         sender.send(event).unwrap();
@@ -4923,7 +5289,7 @@ mod tests {
             assert_eq!(shell.import_token, 0);
         });
         shell.update(cx, |shell, _| {
-            shell.modal = Some(Modal::Jump("3".into()));
+            set_jump(shell, "3");
         });
         audience
             .update(cx, |_, window, _| window.remove_window())
@@ -5010,7 +5376,7 @@ mod tests {
     fn workbench_narrow_stacks_and_grid_wheel_never_navigates(cx: &mut TestAppContext) {
         let (shell, handle) = workbench_fixture(cx);
         shell.update(cx, |shell, cx| {
-            shell.workbench.grid = true;
+            shell.open_browser();
             shell.settings.settings.presenter.grid_columns = 1;
             shell.settings.settings.presenter.grid_visible_pages = 2;
             cx.notify();
@@ -5227,6 +5593,399 @@ mod tests {
         (shell, handle)
     }
 
+    fn layout_focus(handle: AnyWindowHandle, cx: &mut TestAppContext) -> (Option<usize>, bool) {
+        handle
+            .downcast::<Presenter>()
+            .unwrap()
+            .update(cx, |view, window, _| view.layout_focus_probe(window))
+            .unwrap()
+    }
+
+    const LAYOUT_ROWS: [&str; 8] = [
+        "layout-row-0",
+        "layout-row-1",
+        "layout-row-2",
+        "layout-row-3",
+        "layout-row-4",
+        "layout-row-5",
+        "layout-row-6",
+        "layout-row-7",
+    ];
+    const LAYOUT_CHECKS: [&str; 8] = [
+        "layout-check-0",
+        "layout-check-1",
+        "layout-check-2",
+        "layout-check-3",
+        "layout-check-4",
+        "layout-check-5",
+        "layout-check-6",
+        "layout-check-7",
+    ];
+
+    #[gpui::test]
+    fn layout_menu_applies_each_layout_and_retains_upward_workbench_geometry(
+        cx: &mut TestAppContext,
+    ) {
+        use ferrostage_document::NotesLayout;
+        let (shell, handle) = workbench_fixture(cx);
+        cx.test_window(handle)
+            .simulate_resize(size(px(1100.), px(760.)));
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let before = visual.debug_bounds("current-pane").unwrap();
+        for (index, layout) in [
+            None,
+            Some(NotesLayout::None),
+            Some(NotesLayout::Left),
+            Some(NotesLayout::Right),
+            Some(NotesLayout::Top),
+            Some(NotesLayout::Bottom),
+        ]
+        .into_iter()
+        .enumerate()
+        {
+            click_control(handle, "document-options", cx);
+            redraw(handle, cx);
+            let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+            let panel = visual.debug_bounds("layout-navigation-menu").unwrap();
+            let trigger = visual.debug_bounds("document-options").unwrap();
+            assert_eq!(visual.debug_bounds("current-pane"), Some(before));
+            assert_eq!(panel.size.width, px(320.));
+            assert!(
+                (f32::from(trigger.right().clamp(px(332.), px(1088.))) - f32::from(panel.right()))
+                    .abs()
+                    <= 1.,
+                "panel={panel:?}, trigger={trigger:?}"
+            );
+            assert!(
+                (f32::from(trigger.top() - panel.bottom()) - 8.).abs() <= 1.,
+                "{panel:?}, {trigger:?}"
+            );
+            assert!(panel.top() >= px(12.));
+            for row in LAYOUT_ROWS {
+                let bounds = visual.debug_bounds(row).unwrap();
+                assert!(bounds.size.height >= px(44.));
+                assert!(bounds.bottom() <= panel.bottom());
+            }
+            click_control(
+                handle,
+                [
+                    "layout-row-0",
+                    "layout-row-1",
+                    "layout-row-2",
+                    "layout-row-3",
+                    "layout-row-4",
+                    "layout-row-5",
+                ][index],
+                cx,
+            );
+            shell.read_with(cx, |shell, cx| {
+                assert!(shell.contextual.is_none());
+                let doc = &shell.workbench.document.as_ref().unwrap().document;
+                assert_eq!(doc.overrides.layout, layout);
+                assert_eq!(
+                    shell.state.slide_crop(),
+                    ferrostage_document::slide_crop(layout.unwrap_or(NotesLayout::None))
+                );
+                assert_eq!(shell.snapshot.read(cx).slide_crop, shell.state.slide_crop());
+                assert!(!doc.slide_map.steps().contains(&PhysicalPage(1)));
+            });
+            redraw(handle, cx);
+            assert!(layout_focus(handle, cx).1, "menu trigger regains focus");
+            cx.simulate_keystrokes(handle, "enter");
+            redraw(handle, cx);
+            assert_eq!(layout_focus(handle, cx).0, Some(index));
+            let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+            for (candidate, selector) in LAYOUT_CHECKS.iter().enumerate().take(6) {
+                assert_eq!(visual.debug_bounds(selector).is_some(), candidate == index);
+            }
+            cx.simulate_keystrokes(handle, "escape");
+            redraw(handle, cx);
+        }
+    }
+
+    #[gpui::test]
+    fn layout_menu_keyboard_toggles_and_dismissal_do_not_leak_navigation(cx: &mut TestAppContext) {
+        let (shell, handle) = workbench_fixture(cx);
+        shell.update(cx, |shell, cx| {
+            shell.workbench.tool = crate::workbench::Tool::Pen;
+            shell
+                .state
+                .apply_at(
+                    Command::StartPresentation {
+                        audience_available: true,
+                    },
+                    Instant::now(),
+                )
+                .unwrap();
+            cx.notify();
+        });
+        redraw(handle, cx);
+        for (row, field) in [(6, "independent"), (7, "physical")] {
+            for expected in if row == 6 {
+                [false, true]
+            } else {
+                [true, false]
+            } {
+                click_control(handle, "document-options", cx);
+                redraw(handle, cx);
+                cx.simulate_keystrokes(
+                    handle,
+                    "end left right pageup pagedown home down up tab shift-tab",
+                );
+                assert_eq!(layout_focus(handle, cx).0, Some(0));
+                shell.read_with(cx, |shell, _| {
+                    assert_eq!(shell.state.current_page(), PhysicalPage(0))
+                });
+                cx.simulate_keystrokes(
+                    handle,
+                    if row == 6 {
+                        "end up space"
+                    } else {
+                        "end enter"
+                    },
+                );
+                redraw(handle, cx);
+                shell.read_with(cx, |shell, _| {
+                    assert!(shell.contextual.is_none());
+                    let doc = &shell.workbench.document.as_ref().unwrap().document;
+                    assert_eq!(
+                        if field == "independent" {
+                            doc.overrides.identify_independent_notes
+                        } else {
+                            doc.overrides.physical_pages
+                        },
+                        expected
+                    );
+                    if doc.overrides.identify_independent_notes {
+                        assert!(!doc.slide_map.steps().contains(&PhysicalPage(1)));
+                    }
+                    assert_eq!(shell.state.stage(), SessionStage::Presenting);
+                });
+                cx.simulate_keystrokes(handle, "enter");
+                redraw(handle, cx);
+                let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+                assert_eq!(visual.debug_bounds(LAYOUT_CHECKS[row]).is_some(), expected);
+                cx.simulate_keystrokes(handle, "escape");
+                redraw(handle, cx);
+                shell.read_with(cx, |shell, _| {
+                    assert_eq!(shell.state.stage(), SessionStage::Presenting)
+                });
+            }
+        }
+        click_control(handle, "document-options", cx);
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let current = visual.debug_bounds("current-pane").unwrap();
+        visual.simulate_click(
+            gpui::point(current.left() + px(5.), current.top() + px(5.)),
+            gpui::Modifiers::default(),
+        );
+        redraw(handle, cx);
+        assert!(layout_focus(handle, cx).1);
+        shell.read_with(cx, |shell, _| {
+            assert!(shell.contextual.is_none());
+            assert_eq!(shell.state.current_page(), PhysicalPage(0));
+            assert!(!shell.state.has_annotations());
+            assert_eq!(shell.state.stage(), SessionStage::Presenting);
+        });
+    }
+
+    #[gpui::test]
+    fn layout_menu_noop_preserves_off_page_annotations_frames_and_failure_retains_checks(
+        cx: &mut TestAppContext,
+    ) {
+        let (shell, handle) = workbench_fixture(cx);
+        shell.update(cx, |shell, cx| {
+            shell
+                .state
+                .apply_at(Command::AppendStrokePoint((0.2, 0.3)), Instant::now())
+                .unwrap();
+            shell
+                .state
+                .apply_at(Command::EndStroke, Instant::now())
+                .unwrap();
+            shell
+                .state
+                .apply_at(Command::NextStep, Instant::now())
+                .unwrap();
+            shell.workbench.frames.push((
+                crate::workbench::Surface::Current,
+                crate::workbench::ReadyFrame {
+                    request: crate::workbench::request_for(
+                        shell.state.generation(),
+                        shell.state.current_page(),
+                        shell.state.slide_crop(),
+                    ),
+                    frame: ferrostage_core::BgraFrame::new(4, 3, 16, vec![255; 48]).unwrap(),
+                },
+            ));
+            cx.notify();
+        });
+        redraw(handle, cx);
+        let original = shell.read_with(cx, |shell, _| shell.state.clone());
+        click_control(handle, "document-options", cx);
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        assert!(visual.debug_bounds("layout-annotation-notice").is_some());
+        click_control(handle, "layout-row-0", cx);
+        shell.read_with(cx, |shell, _| {
+            assert!(shell.contextual.is_none());
+            assert_eq!(shell.state, original);
+            assert_eq!(shell.workbench.frames.len(), 1);
+        });
+        redraw(handle, cx);
+        click_control(handle, "document-options", cx);
+        let removed_page = shell.update(cx, |shell, _| {
+            shell
+                .workbench
+                .document
+                .as_mut()
+                .unwrap()
+                .structure
+                .pages
+                .pop()
+                .unwrap()
+        });
+        redraw(handle, cx);
+        click_control(handle, "layout-row-3", cx);
+        redraw(handle, cx);
+        shell.read_with(cx, |shell, _| {
+            assert!(shell.layout_menu_open());
+            assert_eq!(shell.state, original);
+            assert_eq!(
+                shell
+                    .workbench
+                    .document
+                    .as_ref()
+                    .unwrap()
+                    .document
+                    .overrides
+                    .layout,
+                None
+            );
+            assert_eq!(shell.workbench.frames.len(), 1);
+        });
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        assert!(visual.debug_bounds("layout-menu-error").is_some());
+        assert!(visual.debug_bounds("layout-check-0").is_some());
+        assert!(visual.debug_bounds("layout-check-3").is_none());
+        cx.simulate_keystrokes(handle, "escape enter");
+        redraw(handle, cx);
+        assert!(
+            visual.debug_bounds("layout-menu-error").is_none(),
+            "reopen discards stale local error"
+        );
+        shell.update(cx, |shell, _| {
+            shell
+                .workbench
+                .document
+                .as_mut()
+                .unwrap()
+                .structure
+                .pages
+                .push(removed_page)
+        });
+        click_control(handle, "layout-row-3", cx);
+        redraw(handle, cx);
+        shell.read_with(cx, |shell, cx| {
+            assert!(shell.contextual.is_none());
+            assert!(
+                !shell.state.has_annotations(),
+                "actual reconfiguration retains existing clear policy"
+            );
+            assert!(shell.workbench.frames.is_empty());
+            assert_eq!(
+                shell.state.slide_crop(),
+                ferrostage_core::NormalizedRect::LEFT_HALF
+            );
+            assert_eq!(shell.snapshot.read(cx).slide_crop, shell.state.slide_crop());
+        });
+    }
+
+    #[gpui::test]
+    fn layout_menu_and_browser_are_exclusive_and_lifecycle_actions_discard_menu(
+        cx: &mut TestAppContext,
+    ) {
+        let (shell, handle) = workbench_fixture(cx);
+        shell.update(cx, |shell, cx| {
+            shell.open_browser();
+            cx.notify();
+        });
+        redraw(handle, cx);
+        shell.update(cx, |shell, cx| shell.dispatch(Intent::Document, cx));
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        assert!(visual.debug_bounds("layout-navigation-menu").is_some());
+        assert!(visual.debug_bounds("page-browser").is_none());
+        shell.read_with(cx, |shell, _| assert!(!shell.workbench.grid));
+        assert_eq!(layout_focus(handle, cx).0, Some(0));
+        shell.update(cx, |shell, cx| {
+            shell.open_browser();
+            cx.notify();
+        });
+        redraw(handle, cx);
+        assert!(visual.debug_bounds("layout-navigation-menu").is_none());
+        assert!(visual.debug_bounds("page-browser").is_some());
+        for action in [Intent::Stop, Intent::Swap, Intent::Home] {
+            shell.update(cx, |shell, cx| shell.dispatch(Intent::Document, cx));
+            redraw(handle, cx);
+            shell.read_with(cx, |shell, _| assert!(shell.layout_menu_open()));
+            shell.update(cx, |shell, cx| shell.dispatch(action.clone(), cx));
+            redraw(handle, cx);
+            shell.read_with(cx, |shell, _| assert!(shell.contextual.is_none()));
+        }
+    }
+
+    #[gpui::test]
+    fn layout_menu_rejects_busy_and_retired_selection_without_persistence(cx: &mut TestAppContext) {
+        let (shell, handle) = workbench_fixture(cx);
+        click_control(handle, "document-options", cx);
+        redraw(handle, cx);
+        let (retired, settings, state) = shell.read_with(cx, |shell, _| {
+            (
+                shell.contextual_serial,
+                shell.settings.settings.clone(),
+                shell.state.clone(),
+            )
+        });
+        shell.update(cx, |shell, cx| {
+            shell.close_contextual();
+            shell.dispatch(Intent::Document, cx);
+            let options = ferrostage_document::DocumentOverrides {
+                layout: Some(ferrostage_document::NotesLayout::Left),
+                ..Default::default()
+            };
+            shell.dispatch(
+                Intent::Reconfigure {
+                    id: retired,
+                    options,
+                },
+                cx,
+            );
+            assert_eq!(shell.state, state);
+            shell.loading = true;
+            shell.dispatch(
+                Intent::Reconfigure {
+                    id: shell.contextual_serial,
+                    options,
+                },
+                cx,
+            );
+            assert_eq!(shell.state, state);
+            shell.loading = false;
+            shell.dispatch(
+                Intent::Reconfigure {
+                    id: shell.contextual_serial,
+                    options,
+                },
+                cx,
+            );
+            assert_eq!(shell.settings.settings, settings);
+            assert!(!shell.settings.dirty);
+        });
+    }
+
     #[gpui::test]
     fn workbench_controls_jump_directly_and_keep_note_pages_private(cx: &mut TestAppContext) {
         let (shell, handle) = workbench_fixture(cx);
@@ -5268,14 +6027,12 @@ mod tests {
         assert_eq!(visual.debug_bounds("workbench-progress"), Some(progress));
         visual.simulate_click(progress.center(), gpui::Modifiers::default());
         shell.update(cx, |shell, cx| shell.poll_focus(cx));
-        shell.read_with(cx, |shell, _| {
-            assert!(matches!(shell.modal, Some(Modal::Jump(_))))
-        });
+        shell.read_with(cx, |shell, _| assert!(shell.browser().is_some()));
         redraw(handle, cx);
         cx.simulate_keystrokes(handle, "3");
         shell.read_with(cx, |shell, _| {
             assert_eq!(shell.state.current_page(), PhysicalPage(0));
-            assert!(matches!(shell.modal, Some(Modal::Jump(_))));
+            assert!(shell.browser().is_some());
         });
         cx.simulate_keystrokes(handle, "enter");
         assert_eq!(
@@ -5291,14 +6048,14 @@ mod tests {
             crate::workbench::Tool::Pen
         );
         shell.update(cx, |shell, cx| {
-            shell.dispatch(Intent::JumpTo(PhysicalPage(2)), cx);
+            shell.dispatch(Intent::Core(Command::JumpTo(PhysicalPage(2))), cx);
             assert_eq!(shell.state.current_page(), PhysicalPage(2));
-            shell.modal = Some(Modal::Jump("2".into())); // physical 2 is a private notes page
+            set_jump(shell, "2"); // physical 2 is a private notes page
             shell.dispatch(Intent::Commit, cx);
-            assert!(shell.modal.is_some());
+            assert!(shell.browser().is_some());
             assert_eq!(shell.state.current_page(), PhysicalPage(2));
             shell.dispatch(Intent::Escape, cx);
-            shell.dispatch(Intent::JumpTo(PhysicalPage(2)), cx);
+            shell.dispatch(Intent::Core(Command::JumpTo(PhysicalPage(2))), cx);
             shell.dispatch(Intent::Commit, cx);
             assert_eq!(shell.state.current_page(), PhysicalPage(2));
             shell.dispatch(Intent::Document, cx);
@@ -5311,7 +6068,13 @@ mod tests {
                 .overrides;
             options.layout = Some(ferrostage_document::NotesLayout::Right);
             let generation = shell.state.generation();
-            shell.dispatch(Intent::Reconfigure(options), cx);
+            shell.dispatch(
+                Intent::Reconfigure {
+                    id: shell.contextual_serial,
+                    options,
+                },
+                cx,
+            );
             assert_eq!(shell.state.generation(), generation);
             assert_eq!(
                 shell.state.slide_crop(),
@@ -5330,14 +6093,12 @@ mod tests {
     }
 
     #[gpui::test]
-    fn thumbnail_hover_and_cancelled_press_are_inert_both_click_targets_jump(
-        cx: &mut TestAppContext,
-    ) {
+    fn thumbnail_whole_tile_activates_once_and_cancelled_press_is_inert(cx: &mut TestAppContext) {
         let (shell, handle) = workbench_fixture(cx);
-        for target in ["thumbnail-image-1", "jump-thumbnail-1"] {
+        for target in ["thumbnail-image-1", "thumbnail-caption-1", "thumbnail-1"] {
             shell.update(cx, |shell, cx| {
                 shell.apply(Command::JumpTo(PhysicalPage(0)), cx);
-                shell.workbench.grid = true;
+                shell.open_browser();
                 cx.notify();
             });
             redraw(handle, cx);
@@ -5441,7 +6202,7 @@ mod tests {
             assert!(current.size.height > px(200.));
         }
         shell.update(cx, |shell, cx| {
-            shell.workbench.grid = true;
+            shell.open_browser();
             cx.notify();
         });
         redraw(handle, cx);

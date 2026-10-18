@@ -30,6 +30,9 @@ __pycache__/
 !.trellis/tasks/**/research/*.log
 !.trellis/tasks/**/research/**/*.log
 
+# Keep the screenshot-embedded planning preview local, including after archive.
+/.trellis/tasks/**/10-18-presenter-navigation-options/research/interaction-preview.html
+
 # Web build output and packages.
 /web/dist/
 /web/node_modules/

@@ -1,0 +1,23 @@
+warning: patch `atspi-connection v0.13.0 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\atspi-connection)` was not used in the crate graph
+help: Check that the patched package version and available features are compatible
+      with the dependency requirements. If the patch has a different version from
+      what is locked in the Cargo.lock file, run `cargo update` to use the new
+      version. This may also occur with an optional dependency that is not enabled.
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.70s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-ae51d0a262341ecb.exe)
+
+running 7 tests
+normal browser: panel=Bounds { origin: Point { x: 208px, y: 12px }, size: Size { 880px × 586.5px } }, images=Bounds { origin: Point { x: 225px, y: 237px }, size: Size { 846px × 284.5px } }, grid=Bounds { origin: Point { x: 225px, y: 237px }, size: Size { 846px × 278px } }, final image=Bounds { origin: Point { x: 870.5px, y: 456.5px }, size: Size { 195.5px × 30px } }
+test shell::tests::page_browser_configured_rows_fit_normal_window ... ok
+test shell::tests::page_browser_rejects_private_notes_and_stale_session_targets ... ok
+test shell::tests::page_browser_outside_press_dismisses_without_drawing_or_click_through ... ok
+test shell::tests::page_browser_raster_stays_inside_its_image_slot ... ok
+test shell::tests::page_browser_density_legacy_atomic_readback_failure_retry_and_readonly ... ok
+test shell::tests::page_browser_real_input_caret_selection_paste_and_binding_conflicts ... ok
+test shell::tests::page_browser_tile_keyboard_activation_uses_enter_and_space_once ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 146 filtered out; finished in 0.59s
+
+mbx[cache]: 0 hits, 0 misses, 1 not looked up, 1 incremental; 0 B downloaded, 0 B uploaded, 0 B stored locally
+mbx[savings]: 1h 22m unspent across 991 builds. compounding, in a sense.

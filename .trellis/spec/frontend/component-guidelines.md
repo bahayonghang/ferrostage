@@ -99,10 +99,93 @@ An enabled focused presenter button consumes unmodified Enter/Space before globa
 
 The same import eligibility contract controls Open buttons, global Open actions, chooser creation and direct imports. Presenting or an incompatible window transaction must not open a chooser that can only reject its result later. An audience-origin intent that needs to show a refusal first confirms the current presenter is active, then shows the localized reason there. It must never place that message on the audience or weaken begin_import validation.
 
-Jump input digits/Backspace must reach modal editing before configurable global navigation bindings. The page dialog edits a number without navigating; valid Enter/Go submits one direct jump. Stop, Swap and Escape dismissal discard the input without changing the committed page. Thumbnail hover must never navigate; an explicit click chooses the page directly. There is no staged preview/commit state. Preserve core StopPresentation semantics and cover actual Shell/input dispatch, including navigation after dismissal.
+Page-browser input editing must run before configurable global navigation bindings. The focused PDF-number editor supports selection/caret, replacement, Delete/Backspace, Home/End and plain-text paste; editing only locates a target. Valid Enter/Go submits one direct jump. Stop, Swap and Escape dismissal discard input without changing the committed page. Whole-thumbnail activation jumps once; hover and cancelled presses are inert. There is no staged preview/commit state. Preserve core StopPresentation semantics and cover actual Shell/input dispatch, including navigation after dismissal.
+
+## Contextual page browser
+
+### 1. Scope / Trigger
+
+Progress, Jump and Page browser open one presenter-owned contextual surface above the toolbar. Preserve workbench rendering, Settings/Displays modal handling and snapshot-only audience ownership.
+
+### 2. Signatures
+
+`ContextualSurface::PageBrowser(PageBrowser)` is Shell-owned; browser identity includes a per-open id and document generation. `NumberEdit` owns ASCII text, selection anchor and cursor. `Intent::BrowserEdit { id, edit }` edits a target; `BrowserJump { id, page }` submits a tile. `GridDensity { column, value }` updates one dimension through an atomic paired preference apply. `CloseContextual` dismisses without navigation. Presenter captures `BrowserData` and uses its contextual host rather than reading Shell during synchronous first draw.
+
+### 3. Contracts
+
+PDF input is one-based physical numbering, validated against range and current content-map membership before `JumpTo(PhysicalPage)`. Excluded independent notes pages get specific local feedback. Valid edits may reveal a target group but never change projection. Input, current page and focused tile remain distinct states. Single whole-tile activation preserves deferred Shell dispatch.
+
+Column/row choices are 1..=4, default 4x4 and at most 16 visible thumbnail requests. `grid_columns` and `grid_visible_pages = columns * rows` commit together through existing preference persistence. Nonrectangular/tall legacy settings are labeled custom and remain unchanged on opening or unrelated save. First row choice retains columns; first column choice uses min(4, ceil(old_visible/old_columns)) rows. No schema or budget increase.
+
+Outside dismissal consumes the click instead of reaching slides/tools; Escape closes once without Stop. Track browser per-open identity, not only an any-surface-open flag: repeated Jump and Settings/Displays-to-browser transitions focus/select the numeric editor; browser-to-modal transitions focus the modal. Preserve focus during ordinary edits/density/tile traversal within the same browser id. Restore a valid invoker focus after closure. Stop/Home/Swap/replacement discard stale edit/target state. Closed browser has no requested or retained UI thumbnail surfaces; stale generation/map/crop work must be retired.
+
+### 4. Validation / Error Matrix
+
+| Input/state | Required result |
+| --- | --- |
+| Empty, zero, overflow or beyond PDF count | Local range feedback, no jump |
+| Physical page excluded as notes | Specific notes feedback, no projection |
+| Valid edit, hover or cancelled press | Committed page unchanged |
+| Valid Enter/Go or tile activation | One direct jump, close and focus restoration |
+| Stale id/generation or busy transaction | No navigation or preference mutation |
+| Read-only settings / failed save | No read-only mutation / effective values with Unsaved and Retry |
+
+### 5. Good / Base / Bad Cases
+
+Good: 2 columns x 3 rows persists as columns=2/count=6 and updates only browser layout until explicit jump. Base: old columns=4/count=13 opens as custom without writeback. Bad: normalize old count on open, navigate on typing/hover, or let Escape stop presentation.
+
+### 6. Tests Required
+
+Exercise actual GPUI input dispatch for caret/selection/paste and conflicting navigation bindings, successful submit, notes rejection, tile cancellation and outside/Escape focus recovery. Retain `page_browser_jump_refocuses_editor_after_modal_and_reopen` so switching/reopening surfaces cannot leave the numeric editor unfocused. Check paired preference readback with unknown TOML leaves, save failure/read-only behavior, legacy counts and real-deck request/frame retirement. Normal-window native observations remain separate from headless tests; no size/DPI matrix is implied.
+
+### 7. Wrong vs Correct
+
+Wrong: reuse the old global digit accumulator with a decorative border, keep duplicate full-page grid/Jump flows, or attach independent image/caption callbacks. Correct: a focused native editor, one contextual host and one explicit activation path, with captured render data and guarded typed intents.
 
 
 ### Native focus and save-feedback recovery
 When a focused presenter control disappears (modal Close/Commit, Start/Stop, Retry after success), restore a valid focus target in the same presenter so Tab and presentation shortcuts remain usable without a mouse click. Preserve existing valid button focus; do not steal audience focus as a side effect of unrelated model updates. Cover actual GPUI focus/key dispatch across removal, not only stored focus handles.
 
 A failed settings save is one unsaved-state message with Retry. A successful Retry clears the corresponding stale persistence error while retaining unrelated current errors. Runtime role changes survive persistence failure; durable role changes require successful read-back. Native FileShareRead-lock evidence is distinct from mocked save errors.
+
+## Layout and navigation contextual menu
+
+### 1. Scope / Trigger
+
+The loaded-workbench Layout & navigation trigger opens an upward menu without replacing the workbench. It shares the contextual state, backdrop and dismissal lifecycle with the page browser. Settings/Displays retain their existing flows.
+
+### 2. Signatures
+
+`ContextualSurface::LayoutNavigation { id: u64, generation: DocumentGeneration, error: Option<String> }` stores open identity and local error. `Shell::layout_menu_open()` and `reconfigure_layout(id, DocumentOverrides, cx)` own guarded eligibility and changes; `presenter::layout_navigation::LayoutMenuData` captures requested/detected layout, annotation presence and local errors. `Presenter::contextual_host` accepts trigger bounds and anchor alignment. `PresentationState::has_annotations() -> bool` is a read-only query for any stroke with at least one point on any page or a live laser, not only current-page snapshot strokes.
+
+### 3. Contracts
+
+Six layout rows are mutually exclusive; Auto means `layout=None` and separately describes the effective detected layout. Independent notes recognition and physical-page navigation are separate checked items. Physical navigation does not expose excluded notes while recognition remains enabled. Use localized labels/helpers and retain real document/structure warnings without a Debug dump.
+
+Identical overrides close immediately without document building, core reconfiguration or clearing frames/annotations. Deferred selection carries the per-open menu id and requires its captured generation to match current state. Actual change builds a candidate document/descriptor, gets core acceptance, assigns the session document, invalidates frames, publishes the updated projection and closes. Failure preserves effective state/checks and keeps a local error in the open menu. Overrides remain session-only. When any annotations exist, explain the unchanged core clear-on-reconfiguration effect before activation; the getter must not report empty strokes or retained empty per-page containers as visible ink.
+
+Anchor the menu right-aligned 8px above its measured trigger with a 12px viewport margin. Use a preferred 320px width, existing palette, >=44px row targets, one reserved check column and visible focus. Internal scrolling handles unavailable vertical space without reflowing the workbench. Arrow/Home/End and Tab navigate visible menu controls, Enter/Space activates once, Escape/outside dismiss without Stop/click-through, and focus returns to the trigger. Opening another contextual surface, Stop/Home/Swap/replacement dismisses old menu state.
+
+### 4. Validation / Error Matrix
+
+| State/action | Expected behavior |
+| --- | --- |
+| Choose current layout | Close only, strokes/frames unchanged |
+| Choose another layout or flip a toggle | Apply immediately, close, correct checks on reopen |
+| Candidate/core rejection | Old state retained, menu stays open with local error |
+| Annotation on another page | Clear-on-change notice still visible |
+| Empty erased-stroke list | No false ink notice |
+| Pending native transaction | No mutation or underlying shortcut leakage |
+| Escape/outside/ordinary menu navigation | No Stop, slide advance or drawing |
+
+### 5. Good / Base / Bad Cases
+
+Good: Auto is checked with detected Right shown separately; turning physical navigation on closes and reopening shows its check. Base: selecting Auto again does not erase off-page annotations. Bad: always reconfigure on selection, show raw true/false/Debug values, or infer all-document annotations from the current audience snapshot.
+
+### 6. Tests Required
+
+Use real GPUI input for checked groups, arrows/Tab/Home/End, Enter/Space, apply/reopen, toggles, outside/Escape and focus recovery. Exercise same-layout no-op, induced transaction failure and off-page annotation notice. Retain browser mutual exclusion, independent-notes privacy, core reconfiguration semantics and first-render borrow regressions. Default core tests cover the read-only getter; normal-window native screenshots establish actual menu placement/live visual result separately.
+
+### 7. Wrong vs Correct
+
+Wrong: add a second modal system, save document overrides as global settings, change core clear policy or expose note state to audience. Correct: captured menu data in the existing contextual host, checked session overrides and a minimal core annotation-presence query, with deferred Shell commands and no new UI/IO core dependencies.

@@ -31,7 +31,10 @@ pub(crate) enum Intent {
     BeginSettingEdit(&'static str),
     ToggleFontPicker,
     FontPickerMove(isize),
-    SettingsKey { key: String, text: Option<String> },
+    SettingsKey {
+        key: String,
+        text: Option<String>,
+    },
     RecordBinding(&'static str),
     RemoveBinding(&'static str, usize),
     ResetBindings,
@@ -43,10 +46,29 @@ pub(crate) enum Intent {
     Tool(crate::workbench::Tool),
     Grid,
     GridMove(isize),
-    JumpTo(ferrostage_core::PhysicalPage),
+    BrowserEdit {
+        id: u64,
+        edit: crate::page_browser::NumberEdit,
+    },
+    BrowserJump {
+        id: u64,
+        page: ferrostage_core::PhysicalPage,
+    },
+    GridDensity {
+        column: bool,
+        value: u32,
+    },
+    CloseContextual,
     Document,
-    Reconfigure(ferrostage_document::DocumentOverrides),
-    Split { next: f64, notes: f64, save: bool },
+    Reconfigure {
+        id: u64,
+        options: ferrostage_document::DocumentOverrides,
+    },
+    Split {
+        next: f64,
+        notes: f64,
+        save: bool,
+    },
     Next,
     Previous,
     Start,
@@ -90,10 +112,28 @@ pub(crate) fn install(
     cx: &mut App,
 ) -> Vec<String> {
     let editing = shell.clone();
-    cx.intercept_keystrokes(move |_, window, cx| {
+    cx.intercept_keystrokes(move |event, window, cx| {
         if let Some(shell) = editing.upgrade() {
             let shell = shell.read(cx);
-            if shell.captures_preferences(window.window_handle().window_id()) {
+            if shell.captures_preferences(window.window_handle().window_id())
+                || shell.browser().is_some() && shell.number_input_focus.is_focused(window)
+                || shell.layout_menu_open()
+                    && matches!(
+                        event.keystroke.unparse().as_str(),
+                        "up" | "down"
+                            | "left"
+                            | "right"
+                            | "home"
+                            | "end"
+                            | "pageup"
+                            | "pagedown"
+                            | "enter"
+                            | "space"
+                            | "tab"
+                            | "shift-tab"
+                            | "escape"
+                    )
+            {
                 // Preserve the raw event for Presenter capture; skip keymap actions.
                 cx.stop_propagation();
             }
@@ -173,8 +213,7 @@ pub(crate) fn replace_bindings(
         KeyBinding::new("enter", ActivateButton, Some("FerroStageButton")),
         KeyBinding::new("space", ActivateButton, Some("FerroStageButton")),
     ]);
-    // Leave these events to the existing Jump editor instead of presentation
-    // bindings. GPUI NoAction suppresses matching global bindings in context.
+    // The focused number editor consumes editing keys before configurable actions.
     for key in [
         "0",
         "1",
@@ -187,8 +226,33 @@ pub(crate) fn replace_bindings(
         "8",
         "9",
         "backspace",
+        "delete",
+        "left",
+        "right",
+        "home",
+        "end",
+        "shift-left",
+        "shift-right",
+        "shift-home",
+        "shift-end",
+        "ctrl-a",
+        "cmd-a",
+        "ctrl-v",
+        "cmd-v",
+        "shift-insert",
+        "ctrl-c",
+        "cmd-c",
+        "ctrl-x",
+        "cmd-x",
+        "space",
+        "enter",
+        "escape",
     ] {
-        cx.bind_keys([KeyBinding::new(key, gpui::NoAction, Some("FerroStageJump"))]);
+        cx.bind_keys([KeyBinding::new(
+            key,
+            gpui::NoAction,
+            Some("FerroStagePageInput"),
+        )]);
     }
     for key in ["left", "right", "up", "down", "home", "end"] {
         cx.bind_keys([KeyBinding::new(

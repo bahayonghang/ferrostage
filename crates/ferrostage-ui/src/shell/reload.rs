@@ -672,6 +672,7 @@ impl Shell {
                     // Everything fallible has completed. These window updates and
                     // the state publication run in one main-thread dispatch turn.
                     self.promote_reload_images(pending.attempt, cx);
+                    self.close_contextual();
                     self.state = state;
                     self.workbench.clear_frames();
                     self.workbench.frames = pending.frames.clone();

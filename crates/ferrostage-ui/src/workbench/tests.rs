@@ -47,6 +47,29 @@ impl ferrostage_pdf::raster::RasterBackend for CountingRaster {
 }
 
 #[test]
+fn thumbnail_failures_follow_exact_current_request_pixels() {
+    let mut failed = request_for(DocumentGeneration(1), PhysicalPage(2), NormalizedRect::FULL);
+    failed.priority = RenderPriority::Thumbnail;
+    let mut workbench = Workbench {
+        requested: vec![(Surface::Thumbnail(2), failed)],
+        failed: vec![failed],
+        ..Default::default()
+    };
+    assert_eq!(workbench.failed_thumbnails(), vec![2]);
+    // Epoch changes can reuse the same pixel failure, but a different crop,
+    // generation or visible group must never inherit that failure indicator.
+    workbench.requested[0].1.epoch += 1;
+    assert_eq!(workbench.failed_thumbnails(), vec![2]);
+    workbench.requested[0].1.crop = NormalizedRect::LEFT_HALF;
+    assert!(workbench.failed_thumbnails().is_empty());
+    workbench.requested[0].1 = failed;
+    workbench.requested[0].1.generation = DocumentGeneration(2);
+    assert!(workbench.failed_thumbnails().is_empty());
+    workbench.requested.clear();
+    assert!(workbench.failed_thumbnails().is_empty());
+}
+
+#[test]
 fn closed_grid_schedules_no_thumbnails_and_repeated_schedule_submits_nothing() {
     use std::sync::{
         Arc,
@@ -91,7 +114,7 @@ fn closed_grid_schedules_no_thumbnails_and_repeated_schedule_submits_nothing() {
         ..Default::default()
     };
     let state = PresentationState::new(100).unwrap();
-    let settings = ferrostage_settings::PresenterSettings {
+    let mut settings = ferrostage_settings::PresenterSettings {
         show_thumbnail_strip: true,
         ..Default::default()
     };
@@ -131,6 +154,30 @@ fn closed_grid_schedules_no_thumbnails_and_repeated_schedule_submits_nothing() {
     settle(&mut workbench, &worker);
     assert!(workbench.bytes() > closed_bytes);
     let open_bytes = workbench.bytes();
+    settings.grid_columns = 2;
+    settings.grid_visible_pages = 6;
+    for anchor in [0, 6, 96] {
+        workbench.grid_start = anchor;
+        workbench.schedule(&worker, &state, &settings).unwrap();
+        settle(&mut workbench, &worker);
+        let pages = workbench
+            .requested
+            .iter()
+            .filter_map(|(surface, request)| {
+                matches!(surface, Surface::Thumbnail(_)).then_some(request.page)
+            })
+            .collect::<Vec<_>>();
+        assert_eq!(pages.len(), 6.min(100 - anchor));
+        assert_eq!(
+            pages.iter().collect::<std::collections::HashSet<_>>().len(),
+            pages.len()
+        );
+        assert!(
+            pages
+                .iter()
+                .all(|page| page.0 >= anchor && page.0 < anchor + 6)
+        );
+    }
     workbench.grid = false;
     workbench.schedule(&worker, &state, &settings).unwrap();
     settle(&mut workbench, &worker);

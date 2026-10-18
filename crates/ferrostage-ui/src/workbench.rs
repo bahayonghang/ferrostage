@@ -73,6 +73,24 @@ impl Workbench {
         self.requested.iter().map(|(surface, _)| *surface).collect()
     }
 
+    #[cfg(any(feature = "gpui", test))]
+    pub(crate) fn failed_thumbnails(&self) -> Vec<usize> {
+        self.requested
+            .iter()
+            .filter_map(|(surface, request)| match surface {
+                Surface::Thumbnail(index)
+                    if self
+                        .failed
+                        .iter()
+                        .any(|failed| same_pixels(*request, *failed)) =>
+                {
+                    Some(*index)
+                }
+                _ => None,
+            })
+            .collect()
+    }
+
     pub fn clear_frames(&mut self) {
         self.frames.clear();
         self.pending.clear();

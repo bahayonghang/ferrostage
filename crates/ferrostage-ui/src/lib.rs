@@ -18,6 +18,8 @@ mod document_load;
 #[cfg(feature = "gpui")]
 mod identify;
 pub mod locale;
+#[cfg(feature = "gpui")]
+mod page_browser;
 pub mod policy;
 #[cfg(feature = "gpui")]
 mod presenter;

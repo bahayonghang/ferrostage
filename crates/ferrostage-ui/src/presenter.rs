@@ -1,4 +1,7 @@
 mod home_view;
+mod layout_navigation;
+mod number_input;
+mod page_browser;
 mod settings_view;
 mod workbench_view;
 use crate::{
@@ -20,6 +23,9 @@ pub(crate) struct PresenterData {
     stage: SessionStage,
     filename: String,
     modal: Option<Modal>,
+    browser: Option<page_browser::BrowserData>,
+    layout_menu: Option<layout_navigation::LayoutMenuData>,
+    number_focus: FocusHandle,
     displays: Option<crate::display_settings::DisplayPanel>,
     error: Option<String>,
     warnings: Vec<String>,
@@ -53,13 +59,21 @@ impl PresenterData {
                 .map(|name| name.to_string_lossy().into_owned())
                 .unwrap_or_else(|| "FerroStage".into()),
             modal: shell.modal.clone(),
+            browser: page_browser::BrowserData::from_shell(shell),
+            layout_menu: layout_navigation::LayoutMenuData::from_shell(shell),
+            number_focus: shell.number_input_focus.clone(),
             displays: shell.display_panel(),
             error: shell
                 .graphics_error
                 .as_ref()
                 .map(|error| shell.locale.error("wb-upload-error", error))
                 .or_else(|| shell.error.clone()),
-            warnings: shell.warnings.clone(),
+            warnings: shell
+                .warnings
+                .iter()
+                .cloned()
+                .chain(layout_navigation::document_warnings(shell))
+                .collect(),
             start_reason: shell.start_reason(),
             loading: shell.loading,
             busy: shell.busy(),
@@ -88,6 +102,21 @@ pub(crate) struct Presenter {
     locale: crate::locale::Locale,
     focus: FocusHandle,
     modal_focus: FocusHandle,
+    contextual_focus: FocusHandle,
+    number_focus: FocusHandle,
+    number_layout: number_input::NumberLayout,
+    number_selecting: std::rc::Rc<std::cell::Cell<bool>>,
+    contextual_anchor: std::rc::Rc<std::cell::Cell<gpui::Bounds<gpui::Pixels>>>,
+    layout_anchor: std::rc::Rc<std::cell::Cell<gpui::Bounds<gpui::Pixels>>>,
+    layout_trigger_focus: FocusHandle,
+    layout_row_focus: [FocusHandle; 8],
+    layout_scroll: gpui::ScrollHandle,
+    layout_row_anchors: [gpui::ScrollAnchor; 8],
+    had_layout_menu: bool,
+    had_browser: Option<u64>,
+    browser_scroll: gpui::ScrollHandle,
+    browser_tile_focus: [FocusHandle; 16],
+    browser_tile_anchors: [gpui::ScrollAnchor; 16],
     progress_focus: FocusHandle,
     font_picker_focus: FocusHandle,
     had_font_picker: bool,
@@ -131,6 +160,17 @@ impl Render for FilenameTooltip {
 }
 
 impl Presenter {
+    #[cfg(all(test, feature = "test-support"))]
+    pub(crate) fn seed_browser_failure(&mut self, index: usize, cx: &mut Context<Self>) {
+        self.data.browser.as_mut().unwrap().failed_thumbnails = vec![index];
+        cx.notify();
+    }
+    #[cfg(all(test, feature = "test-support"))]
+    pub(crate) fn browser_focused_tile(&self, window: &Window) -> Option<usize> {
+        self.browser_tile_focus
+            .iter()
+            .position(|focus| focus.is_focused(window))
+    }
     #[cfg(all(test, feature = "test-support"))]
     pub(crate) fn font_picker_focused(&self, window: &Window) -> bool {
         self.font_picker_focus.is_focused(window)
@@ -213,6 +253,28 @@ impl Presenter {
         let home_anchors =
             std::array::from_fn(|_| gpui::ScrollAnchor::for_handle(home_scroll.clone()));
         let home_focus = std::array::from_fn(|_| cx.focus_handle());
+        let browser_scroll = gpui::ScrollHandle::new();
+        let browser_tile_anchors =
+            std::array::from_fn(|_| gpui::ScrollAnchor::for_handle(browser_scroll.clone()));
+        let browser_tile_focus = std::array::from_fn(|_| cx.focus_handle());
+        let layout_scroll = gpui::ScrollHandle::new();
+        let layout_row_anchors =
+            std::array::from_fn(|_| gpui::ScrollAnchor::for_handle(layout_scroll.clone()));
+        let layout_row_focus = std::array::from_fn(|_| cx.focus_handle());
+        for (index, handle) in layout_row_focus.iter().enumerate() {
+            cx.on_focus(handle, window, move |this, window, cx| {
+                this.layout_row_anchors[index].scroll_to(window, cx);
+                cx.notify();
+            })
+            .detach();
+        }
+        for (index, handle) in browser_tile_focus.iter().enumerate() {
+            cx.on_focus(handle, window, move |this, window, cx| {
+                this.browser_tile_anchors[index].scroll_to(window, cx);
+                cx.notify();
+            })
+            .detach();
+        }
         for (index, handle) in home_focus.iter().enumerate() {
             cx.on_focus(handle, window, move |this, window, cx| {
                 this.home_anchors[index].scroll_to(window, cx);
@@ -227,12 +289,28 @@ impl Presenter {
             .detach();
         cx.on_focus_out(&progress_focus, window, |_, _, _, cx| cx.notify())
             .detach();
+        let number_focus = data.number_focus.clone();
         Self {
             shell,
             data,
             locale,
             focus,
             modal_focus: cx.focus_handle(),
+            contextual_focus: cx.focus_handle(),
+            number_focus,
+            number_layout: Default::default(),
+            number_selecting: Default::default(),
+            contextual_anchor: Default::default(),
+            layout_anchor: Default::default(),
+            layout_trigger_focus: cx.focus_handle(),
+            layout_row_focus,
+            layout_scroll,
+            layout_row_anchors,
+            had_layout_menu: false,
+            had_browser: None,
+            browser_scroll,
+            browser_tile_focus,
+            browser_tile_anchors,
             progress_focus,
             font_picker_focus: cx.focus_handle(),
             had_font_picker: false,
@@ -285,6 +363,7 @@ impl Presenter {
                 | Intent::EditSetting(_, _)
                 | Intent::BeginSettingEdit(_)
                 | Intent::ToggleFontPicker
+                | Intent::GridDensity { .. }
         );
         let category_control = matches!(&intent, Intent::SettingsCategory(_));
         let kind = match &intent {
@@ -408,6 +487,18 @@ impl Presenter {
         let a11y = target.clone();
         let click = intent.clone();
         let accessible = intent.clone();
+        let page_control = id.starts_with("page-")
+            || id.starts_with("thumbnail-")
+            || matches!(
+                id.as_str(),
+                "grid-prev" | "grid-next" | "commit-jump" | "close-browser"
+            );
+        let anchor = if id == "document-options" {
+            self.layout_anchor.clone()
+        } else {
+            self.contextual_anchor.clone()
+        };
+        let measure_anchor = matches!(id.as_str(), "workbench-progress" | "document-options");
         let home_index = (self.data.stage == SessionStage::Idle)
             .then(|| {
                 [
@@ -438,15 +529,37 @@ impl Presenter {
                     .format("disabled-label", &[("label", label.clone())])
             })
             .tab_index(0)
-            .tab_stop(enabled)
+            .tab_stop(
+                enabled
+                    && (self.data.browser.is_none() || page_control)
+                    && (self.data.layout_menu.is_none() || id.starts_with("layout-row-")),
+            )
             .border(px(theme::FOCUS_WIDTH))
             .border_color(rgb(palette.canvas))
             .rounded(px(theme::RADIUS + theme::FOCUS_GAP))
             .p(px(theme::FOCUS_GAP))
             .focus(|style| style.border_color(rgb(palette.focus)))
+            .when(id == "document-options", |view| {
+                view.aria_expanded(self.data.layout_menu.is_some())
+                    .track_focus(&self.layout_trigger_focus.clone().tab_stop(
+                        enabled && self.data.browser.is_none() && self.data.layout_menu.is_none(),
+                    ))
+            })
             .when_some(home_index, |view, index| {
                 view.track_focus(&self.home_focus[index].clone().tab_stop(enabled))
                     .anchor_scroll(Some(self.home_anchors[index].clone()))
+            })
+            .when(measure_anchor, |view| {
+                view.child(
+                    gpui::canvas(
+                        |_, _, _| (),
+                        move |bounds, _, _, _| {
+                            anchor.set(bounds.dilate(px(theme::FOCUS_WIDTH + theme::FOCUS_GAP)))
+                        },
+                    )
+                    .absolute()
+                    .size_full(),
+                )
             })
             .on_click(move |_, _, cx| {
                 if enabled {
@@ -678,19 +791,51 @@ impl Render for Presenter {
         let warnings = self.data.warnings.clone();
         let dirty = self.data.dirty;
         let save_error = self.data.save_error.clone();
-        let pages = self.data.pages;
         if stage == SessionStage::Idle {
             window.set_window_title("FerroStage");
         } else {
             window.set_window_title(&format!("{filename} — {stage_label} — FerroStage"));
         }
-        if modal.is_some() && !self.had_modal {
-            self.return_focus = window.focused(cx);
-            window.focus(&self.modal_focus, cx);
+        let layout_open = self.data.layout_menu.is_some();
+        let browser_id = self.data.browser.as_ref().map(|data| data.browser.id);
+        let surface_open = modal.is_some() || self.data.browser.is_some() || layout_open;
+        if surface_open && !self.had_modal {
+            self.return_focus = if layout_open {
+                Some(self.layout_trigger_focus.clone())
+            } else {
+                window.focused(cx)
+            };
+            window.focus(
+                if layout_open {
+                    &self.layout_row_focus
+                        [self.data.layout_menu.as_ref().unwrap().selected_layout()]
+                } else if self.data.browser.is_some() {
+                    &self.number_focus
+                } else {
+                    &self.modal_focus
+                },
+                cx,
+            );
         }
+        if surface_open
+            && self.had_modal
+            && (layout_open != self.had_layout_menu || browser_id != self.had_browser)
+        {
+            if let Some(menu) = &self.data.layout_menu {
+                self.return_focus = Some(self.layout_trigger_focus.clone());
+                window.focus(&self.layout_row_focus[menu.selected_layout()], cx);
+            } else if self.data.browser.is_some() {
+                self.return_focus = Some(self.progress_focus.clone());
+                window.focus(&self.number_focus, cx);
+            } else {
+                window.focus(&self.modal_focus, cx);
+            }
+        }
+        self.had_layout_menu = layout_open;
+        self.had_browser = browser_id;
         // Keep the return handle alive until the deferred tree check owns it.
         // A handle alone does not mean its former button is still rendered.
-        let return_focus = if modal.is_none() && self.had_modal {
+        let return_focus = if !surface_open && self.had_modal {
             Some(
                 self.return_focus
                     .take()
@@ -702,7 +847,7 @@ impl Render for Presenter {
         if let Some(return_focus) = &return_focus {
             window.focus(return_focus, cx);
         }
-        self.had_modal = modal.is_some();
+        self.had_modal = surface_open;
         if let Some(focused) = window.focused(cx) {
             let presenter = cx.weak_entity();
             // Auto-created button handles can outlive their removed element
@@ -714,7 +859,11 @@ impl Render for Presenter {
                 }
                 if let Some(presenter) = presenter.upgrade() {
                     let presenter = presenter.read(cx);
-                    let fallback = if presenter.had_modal {
+                    let fallback = if presenter.data.browser.is_some()
+                        || presenter.data.layout_menu.is_some()
+                    {
+                        presenter.contextual_focus.clone()
+                    } else if presenter.had_modal {
                         presenter.modal_focus.clone()
                     } else {
                         presenter.focus.clone()
@@ -736,6 +885,7 @@ impl Render for Presenter {
             .role(Role::Application)
             .aria_label(l.text("presenter-label"))
             .size_full()
+            .relative()
             .flex()
             .flex_col()
             .bg(rgb(p.canvas))
@@ -765,7 +915,15 @@ impl Render for Presenter {
                 .absolute()
                 .size_full(),
             )
-            .capture_key_down(cx.listener(|this, event: &gpui::KeyDownEvent, _, cx| {
+            .capture_key_down(cx.listener(|this, event: &gpui::KeyDownEvent, window, cx| {
+                if this.layout_menu_key(event, window, cx) {
+                    cx.stop_propagation();
+                    return;
+                }
+                if this.number_key(event, window, cx) {
+                    cx.stop_propagation();
+                    return;
+                }
                 if this.data.modal == Some(Modal::Settings)
                     && (this.data.preferences.panel.recording.is_some()
                         || this.data.preferences.panel.edit.is_some()
@@ -786,20 +944,13 @@ impl Render for Presenter {
                     cx.stop_propagation();
                 }
             }))
-            .on_key_down(cx.listener(|this, event: &gpui::KeyDownEvent, window, cx| {
+            .on_key_down(cx.listener(|_, event: &gpui::KeyDownEvent, window, cx| {
                 let key = event.keystroke.key.as_str();
                 if key == "tab" {
                     if event.keystroke.modifiers.shift {
                         window.focus_prev(cx);
                     } else {
                         window.focus_next(cx);
-                    }
-                    cx.stop_propagation();
-                } else if this.had_modal
-                    && (key == "backspace" || key.len() == 1 && key.as_bytes()[0].is_ascii_digit())
-                {
-                    if let Err(error) = this.shell.update(cx, |shell, cx| shell.jump_key(key, cx)) {
-                        tracing::debug!(%error,"jump target closed");
                     }
                     cx.stop_propagation();
                 }
@@ -810,12 +961,6 @@ impl Render for Presenter {
                     .track_focus(&self.modal_focus)
                     .key_context("FerroStageModal")
                     .child(self.settings_panel(p, window))
-                    .into_any_element();
-            }
-            if modal == Modal::Document {
-                return root
-                    .track_focus(&self.modal_focus)
-                    .child(self.document_panel(p))
                     .into_any_element();
             }
             if let Some(panel) = &self.data.displays {
@@ -832,62 +977,7 @@ impl Render for Presenter {
                     ))
                     .into_any_element();
             }
-            let (title, description) = match modal {
-                Modal::Settings => unreachable!("settings handled above"),
-                Modal::Jump(ref text) => (
-                    l.text("jump"),
-                    l.format(
-                        "jump-description",
-                        &[("pages", pages.to_string()), ("text", text.clone())],
-                    ),
-                ),
-                Modal::Document => unreachable!("document modal handled above"),
-                Modal::Displays(_) => unreachable!("display modal has prepared drawing data"),
-            };
-            return root
-                .track_focus(&self.modal_focus)
-                .key_context(if matches!(modal, Modal::Jump(_)) {
-                    "FerroStageJump"
-                } else {
-                    "FerroStageModal"
-                })
-                .p(px(24.))
-                .gap(px(16.))
-                .child(
-                    div()
-                        .text_size(px(self.data.typography.size(20.)))
-                        .text_color(rgb(p.ink))
-                        .child(title),
-                )
-                .child(div().child(description))
-                .when_some(error, |view, error| {
-                    view.child(div().text_color(rgb(p.error)).child(error))
-                })
-                .child(
-                    div()
-                        .flex()
-                        .flex_wrap()
-                        .gap(px(8.))
-                        .when(matches!(modal, Modal::Jump(_)), |view| {
-                            view.child(self.button(
-                                "commit-jump".into(),
-                                l.text("confirm-jump").into(),
-                                true,
-                                true,
-                                Intent::Commit,
-                                p,
-                            ))
-                        })
-                        .child(self.button(
-                            "close-modal".into(),
-                            l.text("close").into(),
-                            true,
-                            false,
-                            Intent::Escape,
-                            p,
-                        )),
-                )
-                .into_any_element();
+            unreachable!("all modal drawing branches handled above");
         }
         let drop_target = self.shell.clone();
         let document_open = stage != SessionStage::Idle;
@@ -989,6 +1079,20 @@ impl Render for Presenter {
             .child(body)
             .when(document_open, |view| {
                 view.child(self.tools_panel(p, window))
+            })
+            .when(self.data.browser.is_some(), |view| {
+                view.child(self.contextual_host(
+                    self.page_browser_panel(p, window, cx),
+                    self.contextual_anchor.get(),
+                    gpui::Anchor::BottomLeft,
+                ))
+            })
+            .when(layout_open, |view| {
+                view.child(self.contextual_host(
+                    self.layout_menu_panel(p, window),
+                    self.layout_anchor.get(),
+                    gpui::Anchor::BottomRight,
+                ))
             })
             .into_any_element()
     }

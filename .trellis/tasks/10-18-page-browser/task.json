@@ -1,0 +1,28 @@
+{
+  "id": "page-browser",
+  "name": "page-browser",
+  "title": "可视跳页与可调行列缩略图",
+  "description": "合并页码输入和按需缩略图，支持独立选择 1–4 列与 1–4 行并保持直接跳页及备注隔离",
+  "status": "in_progress",
+  "dev_type": null,
+  "scope": null,
+  "package": null,
+  "priority": "P2",
+  "creator": "lyh",
+  "assignee": "lyh",
+  "createdAt": "2026-10-18",
+  "completedAt": null,
+  "branch": "dev",
+  "base_branch": "main",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [],
+  "parent": "10-18-presenter-navigation-options",
+  "relatedFiles": [],
+  "notes": "User-approved sequential Trellis implementation and independent checks complete, including final integration/native acceptance. CI198, GPUI159, strict lint, real PDFium retention, full-feature dependency policy PASS. Uncommitted; no archive/commit/push requested. See parent research/verification.md.",
+  "meta": {
+    "implementation_status": "verified"
+  }
+}

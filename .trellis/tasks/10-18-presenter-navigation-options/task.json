@@ -1,0 +1,52 @@
+{
+  "id": "presenter-navigation-options",
+  "name": "presenter-navigation-options",
+  "title": "跳页浏览器与布局导航菜单优化",
+  "description": "设计明显页码输入、可调行列缩略图浏览，以及向上展开并选后关闭的演示选项菜单",
+  "status": "in_progress",
+  "dev_type": null,
+  "scope": null,
+  "package": null,
+  "priority": "P2",
+  "creator": "lyh",
+  "assignee": "lyh",
+  "createdAt": "2026-10-18",
+  "completedAt": null,
+  "branch": "dev",
+  "base_branch": "main",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [
+    "10-18-page-browser",
+    "10-18-layout-navigation-popover"
+  ],
+  "parent": null,
+  "relatedFiles": [
+    ".trellis/spec/frontend/component-guidelines.md",
+    "DESIGN.md",
+    "assets/locales/en-US/app.toml",
+    "assets/locales/zh-CN/app.toml",
+    "crates/ferrostage-core/src/state.rs",
+    "crates/ferrostage-core/src/state/annotation_tests.rs",
+    "crates/ferrostage-ui/src/actions.rs",
+    "crates/ferrostage-ui/src/lib.rs",
+    "crates/ferrostage-ui/src/page_browser.rs",
+    "crates/ferrostage-ui/src/presenter.rs",
+    "crates/ferrostage-ui/src/presenter/layout_navigation.rs",
+    "crates/ferrostage-ui/src/presenter/number_input.rs",
+    "crates/ferrostage-ui/src/presenter/page_browser.rs",
+    "crates/ferrostage-ui/src/presenter/workbench_view.rs",
+    "crates/ferrostage-ui/src/shell.rs",
+    "crates/ferrostage-ui/src/shell/layout_navigation.rs",
+    "crates/ferrostage-ui/src/shell/page_browser.rs",
+    "crates/ferrostage-ui/src/shell/reload.rs",
+    "crates/ferrostage-ui/src/workbench.rs",
+    "crates/ferrostage-ui/src/workbench/tests.rs"
+  ],
+  "notes": "User-approved sequential Trellis implementation and independent checks complete, including final integration/native acceptance. CI198, GPUI159, strict lint, real PDFium retention, full-feature dependency policy PASS. Uncommitted; no archive/commit/push requested. See parent research/verification.md.",
+  "meta": {
+    "implementation_status": "verified"
+  }
+}

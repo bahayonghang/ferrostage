@@ -1,6 +1,46 @@
 use super::*;
 use crate::{LaserStyle, PresentationCommand as C};
 #[test]
+fn annotation_presence_includes_off_page_ink_but_not_empty_strokes() {
+    let now = Instant::now();
+    let mut state = PresentationState::new(2).unwrap();
+    assert!(!state.has_annotations());
+    state
+        .apply_at(
+            C::BeginStroke {
+                color: [0, 0, 255, 255],
+                width: 0.01,
+                is_highlighter: false,
+            },
+            now,
+        )
+        .unwrap();
+    assert!(!state.has_annotations());
+    state
+        .apply_at(C::AppendStrokePoint((0.2, 0.3)), now)
+        .unwrap();
+    state.apply_at(C::EndStroke, now).unwrap();
+    assert!(state.has_annotations());
+    state.apply_at(C::NextStep, now).unwrap();
+    assert!(state.audience_snapshot().strokes.is_empty());
+    assert!(state.has_annotations());
+    let before = state.clone();
+    assert!(state.has_annotations());
+    assert_eq!(state, before, "presence query must be read-only");
+    state.apply_at(C::PreviousStep, now).unwrap();
+    state.apply_at(C::EraseStrokeAt((0.2, 0.3)), now).unwrap();
+    assert!(
+        !state.has_annotations(),
+        "an empty retained page entry is not ink"
+    );
+    state
+        .apply_at(C::UpdateLaserPointer(Some((0.4, 0.5))), now)
+        .unwrap();
+    assert!(state.has_annotations());
+    state.apply_at(C::UpdateLaserPointer(None), now).unwrap();
+    assert!(!state.has_annotations());
+}
+#[test]
 fn reload_applies_to_latest_timer_blank_and_ink_without_reset() {
     let mut idle = PresentationState::idle();
     let before_idle = idle.clone();
