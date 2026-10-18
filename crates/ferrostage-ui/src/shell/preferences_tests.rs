@@ -608,3 +608,196 @@ fn settings_v09_values_reach_workbench_timer_layout_pointer_clock_and_diagnostic
         })
         .unwrap();
 }
+
+#[gpui::test]
+fn settings_general_help_is_contained_by_its_content_driven_row(cx: &mut TestAppContext) {
+    let (shell, handle) = input_presenter(cx);
+    shell.update(cx, |shell, cx| {
+        load_ready(shell);
+        shell.ui_fonts = std::sync::Arc::new(vec!["Consolas".into()]);
+        shell.settings.settings.general.ui_font_family = "Consolas".into();
+        shell.settings.settings.general.ui_font_size = 18;
+        shell.settings.settings.general.recent_files = vec![
+            "fixtures/pdf/perf-100.pdf".into(),
+            "fixtures/pdf/raster.pdf".into(),
+            "fixtures/media/media-smoke.pdf".into(),
+        ];
+        shell.modal = Some(Modal::Settings);
+        cx.notify();
+    });
+    redraw(handle, cx);
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    for (row_id, help_id) in [
+        ("setting-row-general.language", "setting-help-general.language"),
+        (
+            "setting-row-general.reopen_last_document",
+            "setting-help-general.reopen_last_document",
+        ),
+    ] {
+        let row = visual.debug_bounds(row_id).unwrap();
+        let help = visual.debug_bounds(help_id).unwrap();
+        assert!(
+            help.top() >= row.top() && help.bottom() <= row.bottom(),
+            "{help_id} must fit inside its row: help={help:?}, row={row:?}"
+        );
+    }
+    let content = visual.debug_bounds("settings-content").unwrap();
+    visual.simulate_event(gpui::ScrollWheelEvent {
+        position: content.center(),
+        delta: gpui::ScrollDelta::Lines(gpui::point(0., -100.)),
+        modifiers: gpui::Modifiers::default(),
+        touch_phase: gpui::TouchPhase::Moved,
+    });
+    redraw(handle, cx);
+    for (row_id, parent_id) in [
+        ("settings-recent-0", "settings-recent-parent-0"),
+        ("settings-recent-1", "settings-recent-parent-1"),
+        ("settings-recent-2", "settings-recent-parent-2"),
+    ] {
+        let row = visual.debug_bounds(row_id).unwrap();
+        let parent = visual.debug_bounds(parent_id).unwrap();
+        assert!(
+            parent.size.height >= px(13.5),
+            "{parent_id} must have at least its 13.5px font height at base18: {parent:?}"
+        );
+        assert!(
+            parent.top() >= row.top() && parent.bottom() <= row.bottom(),
+            "{parent_id} exceeds its row: parent={parent:?}, row={row:?}"
+        );
+        assert!(parent.top() >= content.top() && parent.bottom() <= content.bottom());
+    }
+}
+
+#[gpui::test]
+fn settings_fonts_filter_apply_size_restore_and_history_through_real_input(
+    cx: &mut TestAppContext,
+) {
+    let fixture = SaveFixture::new();
+    fixture.unblock();
+    let (shell, handle) = input_presenter(cx);
+    shell.update(cx, |shell, cx| {
+        shell.store = fixture.store();
+        load_ready(shell);
+        shell.ui_fonts = std::sync::Arc::new(vec!["Arial".into(), "Microsoft YaHei UI".into()]);
+        shell.settings.settings.general.recent_files =
+            vec!["alpha/same.pdf".into(), "beta/same.pdf".into()];
+        shell.ui_fonts_loaded = true;
+        shell.modal = Some(Modal::Settings);
+        cx.notify();
+    });
+    redraw(handle, cx);
+    // Reach the family selector through the actual tab order, not a mouse click.
+    let mut reached_family = false;
+    for _ in 0..24 {
+        cx.simulate_keystrokes(handle, "tab");
+        cx.run_until_parked();
+        redraw(handle, cx);
+        if handle
+            .downcast::<Presenter>()
+            .unwrap()
+            .update(cx, |view, window, _| view.font_picker_focused(window))
+            .unwrap()
+        {
+            reached_family = true;
+            break;
+        }
+    }
+    assert!(reached_family, "font family must be reachable by Tab");
+    cx.simulate_keystrokes(handle, "enter");
+    cx.run_until_parked();
+    redraw(handle, cx);
+    handle.update(cx, |_, window, cx| {
+        cx.write_to_clipboard(gpui::ClipboardItem::new_string("Arial".into()));
+        window.dispatch_keystroke(gpui::Keystroke::parse("ctrl-v").unwrap(), cx);
+        // A paste provider can restore its clipboard before deferred Shell dispatch.
+        cx.write_to_clipboard(gpui::ClipboardItem::new_string("restored clipboard".into()));
+    }).unwrap();
+    cx.run_until_parked();
+    assert_eq!(
+        shell.read_with(cx, |shell, _| shell.preferences.font_picker.as_ref().unwrap().filter.clone()),
+        "Arial",
+        "paste must capture event-time clipboard text before deferred dispatch"
+    );
+    cx.write_to_clipboard(gpui::ClipboardItem::new_string("bad\nfilter".into()));
+    cx.simulate_keystrokes(handle, "ctrl-v");
+    cx.run_until_parked();
+    assert_eq!(
+        shell.read_with(cx, |shell, _| shell.preferences.font_picker.as_ref().unwrap().filter.clone()),
+        "Arial",
+        "a single-line font filter must reject pasted control characters"
+    );
+    cx.simulate_keystrokes(handle, "ctrl-a ctrl-c alt-x ctrl-z");
+    cx.run_until_parked();
+    assert!(shell.read_with(cx, |shell, _| shell.preferences.font_picker.as_ref().unwrap().filter.is_empty()));
+    cx.simulate_keystrokes(handle, "y a h e i down enter");
+    cx.run_until_parked();
+    shell.read_with(cx, |shell, _| {
+        assert_eq!(
+            shell.settings.settings.general.ui_font_family,
+            "Microsoft YaHei UI"
+        );
+        assert!(shell.preferences.font_picker.is_none());
+        assert_eq!(
+            shell.store.load().unwrap().settings.general.ui_font_family,
+            "Microsoft YaHei UI"
+        );
+        assert_eq!(shell.state.stage(), SessionStage::Ready);
+        assert_eq!(shell.state.current_page(), PhysicalPage(0));
+    });
+    redraw(handle, cx);
+    click_control(handle, "setting-general.ui_font_size-value", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+    cx.simulate_keystrokes(handle, "ctrl-a 2 0 enter");
+    cx.run_until_parked();
+    shell.read_with(cx, |shell, _| {
+        assert_eq!(shell.settings.settings.general.ui_font_size, 20);
+        assert_eq!(shell.settings.settings.presenter.notes_font_scale, 1.);
+        assert!(shell.audience.is_none());
+        assert!(shell.state.audience_snapshot().visual.is_none());
+    });
+    redraw(handle, cx);
+    handle.downcast::<Presenter>().unwrap().read_with(cx, |view, _| {
+        assert_eq!(view.typography_probe(), ("Microsoft YaHei UI".into(), 17.5, false));
+    }).unwrap();
+    click_control(handle, "setting-font-size-default", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+    click_control(handle, "setting-font-default", cx);
+    cx.run_until_parked();
+    shell.read_with(cx, |shell, _| {
+        assert_eq!(shell.settings.settings.general.ui_font_size, 16);
+        assert!(shell.settings.settings.general.ui_font_family.is_empty());
+    });
+    redraw(handle, cx);
+    click_control(handle, "setting-font-family", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+    cx.simulate_keystrokes(handle, "a escape");
+    cx.run_until_parked();
+    redraw(handle, cx);
+    shell.read_with(cx, |shell, _| {
+        assert!(shell.preferences.font_picker.is_none());
+        assert_eq!(shell.modal, Some(Modal::Settings));
+        assert_eq!(
+            shell.settings.settings.general.recent_files,
+            ["alpha/same.pdf", "beta/same.pdf"]
+        );
+    });
+    // The existing history action still clears the source seen by both settings and home.
+    shell.update(cx, |shell, cx| {
+        shell.dispatch(Intent::ClearRecent, cx);
+        assert!(shell.settings.settings.general.recent_files.is_empty());
+        assert!(shell.settings.settings.general.recent_files.is_empty());
+        assert!(
+            shell
+                .store
+                .load()
+                .unwrap()
+                .settings
+                .general
+                .recent_files
+                .is_empty()
+        );
+    });
+}

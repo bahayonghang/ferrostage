@@ -29,6 +29,8 @@ pub(crate) enum Intent {
     SettingsCategory(crate::settings_panel::Category),
     EditSetting(&'static str, String),
     BeginSettingEdit(&'static str),
+    ToggleFontPicker,
+    FontPickerMove(isize),
     SettingsKey { key: String, text: Option<String> },
     RecordBinding(&'static str),
     RemoveBinding(&'static str, usize),
@@ -65,6 +67,8 @@ pub(crate) enum Intent {
     SelectPresenter(ferrostage_core::MonitorId),
     SelectPdf(crate::display_settings::PdfTarget),
     ApplyDisplays,
+    CancelDisplayDraft,
+    ToggleDisplayDetails(ferrostage_core::MonitorId),
     Import(PathBuf),
 }
 
