@@ -40,7 +40,7 @@
 - [x] Update English/Chinese READMEs, `docs/packaging.md`, and `AGENTS.md` commands; remove stale Cargo-bin/no-installer claims.
 - [x] Inspect Windows/VC prerequisites and document signing/clean-machine limits accurately.
 - [x] Dispatch Trellis checker on the full scoped diff and fix verified findings; update applicable distribution specs.
-- [ ] Follow finish/commit workflow, retain receipts and report exact validation status. No public release or push without authorization.
+- [x] Create the approved work commit and hand off to the authorized archive/journal commands; retain receipts and exact validation limits. No public release or push is authorized.
 
 ## Rollback checkpoints
 
@@ -48,4 +48,4 @@ Fail on runtime/notice mismatch before packaging. Clean only validated owned gen
 
 ## Final status
 
-See `research/validation.md` and `research/final-installation.json`. Native desktop/PDF acceptance passed; actual Search UI remains NOT_RUN due to helper targeting limits. Final silent installation is complete. Code is reviewed. The user approved the exact Phase 3.4 commit list and task archive/session recording; execution is underway. No push is authorized. Native Search UI remains a recorded qualification limit rather than a claimed PASS.
+See `research/validation.md` and `research/final-installation.json`. Native desktop/PDF acceptance passed; actual Search UI remains NOT_RUN due to helper targeting limits. Final silent installation is complete. Code is reviewed and work commit `544df2046a5e56a6aa813b11b2cf2e66eeb07336` was created locally. The user authorized task archive/session recording; task status and developer journal record the bookkeeping result. No push is authorized. Native Search UI remains a recorded qualification limit rather than a claimed PASS.
