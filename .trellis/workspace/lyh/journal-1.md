@@ -281,3 +281,35 @@ Implemented default-on audience click navigation, repaired current CI root cause
 ### Next Steps
 
 - Push dev, create PR to main, fix actual four-job CI, merge when green, then dispatch one main run and confirm issue state.
+
+
+## Session 9: 完成跳页浏览与布局导航菜单优化
+<!-- trellis-session: v=2 fp=1547c3d704d97d8e -->
+
+**Date**: 2026-10-18
+**Task**: 完成跳页浏览与布局导航菜单优化
+**Branch**: `dev`
+
+### Summary
+
+按批准设计依次通过 Trellis 子代理实施和独立检查，完成可视跳页与向上布局菜单；最终全量复核通过，中文提交并归档父子三个任务。
+
+### Main Changes
+
+- 页码输入与真实缩略图统一浏览，支持独立 1–4 行列；菜单勾选后立即应用关闭。
+- 同步设计与规范，保留原生验收截图；大型规划预览按用户要求加入 gitignore。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `b3fca4c9b6893a5330a8e78a8e4bdac1988b9b67` | feat(演示): ✨ 优化跳页浏览与布局导航 |
+
+### Testing
+
+- [OK] 默认198项、GPUI159项、真实PDFium回归及严格lint/依赖策略通过，最终22项身份记录匹配。
+- [OK] 原生深色中文和浅色英文核心交互通过；三个归档任务上下文清单验证通过。
+
+### Status
+
+[OK] **Completed**
