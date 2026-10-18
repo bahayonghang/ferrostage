@@ -64,7 +64,7 @@ displays-center = "Center"
 displays-role-app = "App window"
 displays-role-pdf = "PDF"
 displays-role-windowed = "In a window"
-displays-role-picked = "{label} · selected"
+displays-role-picked = "{label} · chosen"
 displays-app = "Application window display"
 displays-pdf = "PDF playback display"
 displays-unused = "Unused"
@@ -75,7 +75,7 @@ displays-identify = "Identify displays"
 displays-refresh = "Detect again"
 displays-identify-help = "Identify shows these numbers for 3 seconds. Available before presenting."
 displays-selected = "{label} (selected)"
-displays-draft-help = "Selections are a draft until Apply. Cancel keeps your current windows and settings."
+displays-draft-help = "Choose destinations, then Apply. Allocation Cancel keeps current windows and saved preferences."
 displays-apply = "Apply"
 displays-cancel = "Cancel"
 displays-conflict = "Application and PDF need different displays. Choose another destination or do not play."
@@ -148,7 +148,7 @@ settings-readonly = "This configuration is from a newer version. Editing, reset 
 settings-invalid = "Change not applied: {error}"
 settings-applying = "Applying…"
 settings-unsaved = "Unsaved session changes"
-settings-saved = "Saved · changes apply automatically"
+settings-saved = "Preferences saved"
 settings-on = "On"
 settings-off = "Off"
 settings-edit-help = "Type a value; Ctrl+A clears, Enter applies, Esc cancels. Colors use RRGGBBAA."
@@ -223,3 +223,61 @@ media-slot-unavailable = "Media unavailable"
 
 wb-next-slide = "Next slide"
 wb-notes = "Current notes"
+
+# Interface typography and compact settings
+settings-section-appearance = "Appearance"
+settings-section-startup = "Startup"
+settings-field-general-ui_font_family = "Interface font"
+settings-field-general-ui_font_size = "Interface size"
+settings-font-default = "System default"
+settings-restore-default = "Use default"
+settings-font-preview = "演示准备就绪 · FerroStage 123 Aa"
+settings-font-scope = "Applies to the interface. PDF, notes images and audience content keep their original appearance."
+settings-font-missing = "“{family}” is unavailable. Using the system default; the saved choice is retained."
+settings-font-filter = "Type to filter: {filter}"
+settings-font-key-help = "↑↓ select, Enter applies, Esc cancels. Ctrl+A clears; Ctrl+V pastes."
+settings-restart-help = "Applies after restarting."
+settings-startup-help = "Open the most recent document on the next launch."
+settings-fullscreen-help = "Saves automatically; the active presentation window updates immediately."
+settings-recent-count = "{count} files · limit {limit}"
+
+wb-page-compact = "Slide {slide}/{slides}"
+wb-step-compact = " · Step {step}/{steps}"
+wb-jump-action = "Jump"
+wb-jump-detail = "Jump to page. {progress}"
+
+displays-actual-app = "✓ App here"
+
+displays-actual-pdf = "✓ PDF here"
+
+displays-configured-app = "App target"
+
+displays-configured-pdf = "PDF target"
+
+displays-configured-pdf-idle = "PDF target, not running"
+
+displays-pending-app = "Pending: app"
+
+displays-pending-pdf = "Pending: PDF"
+
+displays-pending-help = "Display allocation pending. Apply confirms windows; Cancel discards allocation only. Preferences remain saved."
+
+displays-not-running = "Not presenting"
+
+displays-location-unknown = "Unknown location"
+
+displays-screen-number = "Display {number}"
+
+displays-details = "Details"
+
+displays-details-hide = "Hide details"
+
+settings-saved-display-pending = "Preferences saved · display allocation pending Apply"
+
+displays-diagram-app = "✓ App"
+displays-diagram-pdf = "✓ PDF"
+displays-diagram-app-target = "App target"
+displays-diagram-pdf-target = "PDF target"
+displays-diagram-app-pending = "Pending app"
+displays-diagram-pdf-pending = "Pending PDF"
+displays-disabled = "Disabled"
