@@ -350,3 +350,42 @@ Implemented default-on audience click navigation, repaired current CI root cause
 ### Status
 
 [OK] **Completed**
+
+
+## Session 11: Windows 桌面 Setup、静默安装与发布流程
+<!-- trellis-session: v=2 fp=616fd9e2363c19c7 -->
+
+**Date**: 2026-10-18
+**Task**: Windows 桌面 Setup、静默安装与发布流程
+**Branch**: `dev`
+
+### Summary
+
+统一桌面构建与发布产物，生成 NSIS Setup 并通过 just install 无人值守安装到本机；完成独立检查、生命周期验证与任务归档。
+
+### Main Changes
+
+- 替代 Cargo-bin 安装：当前用户安装目录、桌面与开始菜单图标、系统卸载登记和原生卸载程序。
+- 统一 build/release/install 的固定文件清单，生成 Setup、便携 ZIP 和 SHA256；补齐许可文本、Windows 分发 CI、双语文档及执行规范。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `544df2046a5e56a6aa813b11b2cf2e66eeb07336` | feat(安装): ✨ 添加 Windows 桌面安装与发布流程 |
+
+### Testing
+
+- [OK] PASS: just ci；just check-shell（166 GPUI 测试）；独立分发回归及安装文件、登记、快捷方式核对。
+- [OK] PASS: 首装、重装、升级、拒绝降级、锁定文件及快捷方式失败处理、两种中途失败回滚、卸载保留设置/PDF/未知文件。
+- [OK] PASS: 最终 just install 静默安装 exit 0、无手动点击；桌面快捷方式启动和真实 perf-100.pdf 渲染；PDF 哈希保持不变。
+- [OK] NOT_RUN: Windows Search 界面（原生工具不能单独定位该界面）、托管 CI、干净机器与代码签名；系统 AppsFolder 和开始菜单入口已验证。
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- 可另行完成 Windows Search 界面、托管 CI、干净机器及签名资格验证；本轮未推送或公开发布。
+- 保留审批拒绝删除的单个测试标记；路径及 blocked by policy 结果见归档任务 research/validation.md，未绕过限制。
