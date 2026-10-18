@@ -1,0 +1,15 @@
+    Checking syn v3.0.9
+    Checking syn v2.0.119
+    Checking serde v1.0.229
+    Checking atspi-connection v0.13.0 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\atspi-connection)
+    Checking atspi v0.29.0 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\atspi)
+    Checking zcheapstr v1.1.0
+    Checking accesskit_unix v0.22.1 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\accesskit_unix)
+    Checking zbus_utils v6.0.0
+    Checking zbus v6.0.0
+    Checking zbus_xml v6.0.0
+    Checking zbus-lockstep v0.5.2 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\zbus-lockstep)
+    Checking zbus-lockstep-macros v0.5.2 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\zbus-lockstep-macros)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 6.10s
+mbx[cache]: 0 hits, 1 misses, 11 not looked up; 0 B downloaded, 0 B uploaded, 11.1 MiB stored locally
+mbx[savings]: swept up 385.4 GiB logical so far. the broom is content-addressed.

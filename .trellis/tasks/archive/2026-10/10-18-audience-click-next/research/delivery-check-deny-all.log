@@ -1,0 +1,6 @@
+Command: cargo deny --all-features --locked check
+Exit code: 0
+Compact receipt; repeated upstream warning dependency trees omitted.
+warning[source-not-allowed]: 24 occurrences
+warning[duplicate]: 47 occurrences
+advisories ok, bans ok, licenses ok, sources ok

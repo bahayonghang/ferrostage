@@ -1,0 +1,563 @@
+[
+  {
+    "name": "zbus",
+    "version": "6.0.0",
+    "rust_version": "1.89",
+    "created_at": "2026-10-16T13:20:17.335153Z",
+    "source": "https://crates.io/api/v1/crates/zbus/6.0.0/dependencies",
+    "dependencies": [
+      {
+        "id": 39941846,
+        "version_id": 3514406,
+        "crate_id": "zbus_macros",
+        "req": "^6.0.0",
+        "optional": false,
+        "default_features": false,
+        "features": [],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      },
+      {
+        "id": 39941849,
+        "version_id": 3514406,
+        "crate_id": "zruntime",
+        "req": "^0.2.0",
+        "optional": true,
+        "default_features": false,
+        "features": [],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      }
+    ]
+  },
+  {
+    "name": "zvariant",
+    "version": "5.15.1",
+    "rust_version": "1.87",
+    "created_at": "2026-10-16T14:49:21.755597Z",
+    "source": "https://crates.io/api/v1/crates/zvariant/5.15.1/dependencies",
+    "dependencies": [
+      {
+        "id": 39953110,
+        "version_id": 3515355,
+        "crate_id": "zvariant_derive",
+        "req": "^5.15.0",
+        "optional": false,
+        "default_features": true,
+        "features": [],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      }
+    ]
+  },
+  {
+    "name": "zbus_names",
+    "version": "4.3.5",
+    "rust_version": "1.87",
+    "created_at": "2026-10-16T14:49:32.038590Z",
+    "source": "https://crates.io/api/v1/crates/zbus_names/4.3.5/dependencies",
+    "dependencies": [
+      {
+        "id": 39953119,
+        "version_id": 3515356,
+        "crate_id": "zvariant",
+        "req": "^5.15.0",
+        "optional": false,
+        "default_features": true,
+        "features": [
+          "enumflags2"
+        ],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      }
+    ]
+  },
+  {
+    "name": "zvariant_derive",
+    "version": "5.15.1",
+    "rust_version": "1.87",
+    "created_at": "2026-10-16T14:49:09.378713Z",
+    "source": "https://crates.io/api/v1/crates/zvariant_derive/5.15.1/dependencies",
+    "dependencies": []
+  },
+  {
+    "name": "ashpd",
+    "version": "0.13.13",
+    "rust_version": "1.87",
+    "created_at": "2026-07-17T21:48:40.382558Z",
+    "source": "https://crates.io/api/v1/crates/ashpd/0.13.13/dependencies",
+    "dependencies": [
+      {
+        "id": 31127874,
+        "version_id": 2810369,
+        "crate_id": "zbus",
+        "req": "^5.13",
+        "optional": false,
+        "default_features": false,
+        "features": [],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      }
+    ]
+  },
+  {
+    "name": "oo7",
+    "version": "0.6.0",
+    "rust_version": "1.92",
+    "created_at": "2026-02-21T16:28:18.570782Z",
+    "source": "https://crates.io/api/v1/crates/oo7/0.6.0/dependencies",
+    "dependencies": [
+      {
+        "id": 21726635,
+        "version_id": 2049942,
+        "crate_id": "ashpd",
+        "req": "^0.13",
+        "optional": false,
+        "default_features": false,
+        "features": [
+          "secret"
+        ],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      },
+      {
+        "id": 21726661,
+        "version_id": 2049942,
+        "crate_id": "zbus",
+        "req": "^5.12.0",
+        "optional": false,
+        "default_features": false,
+        "features": [],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      },
+      {
+        "id": 21726662,
+        "version_id": 2049942,
+        "crate_id": "zbus_macros",
+        "req": "^5.11",
+        "optional": false,
+        "default_features": true,
+        "features": [
+          "gvariant"
+        ],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      },
+      {
+        "id": 21726664,
+        "version_id": 2049942,
+        "crate_id": "zvariant",
+        "req": "^5.8",
+        "optional": false,
+        "default_features": false,
+        "features": [
+          "gvariant",
+          "serde_bytes"
+        ],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      }
+    ]
+  },
+  {
+    "name": "oo7",
+    "version": "0.7.0-beta",
+    "rust_version": "1.95",
+    "created_at": "2026-09-21T19:30:32.289199Z",
+    "source": "https://crates.io/api/v1/crates/oo7/0.7.0-beta/dependencies",
+    "dependencies": [
+      {
+        "id": 37060725,
+        "version_id": 3289771,
+        "crate_id": "ashpd",
+        "req": "^0.13",
+        "optional": false,
+        "default_features": false,
+        "features": [
+          "secret"
+        ],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      },
+      {
+        "id": 37060748,
+        "version_id": 3289771,
+        "crate_id": "zbus",
+        "req": "^5.19",
+        "optional": false,
+        "default_features": false,
+        "features": [],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      },
+      {
+        "id": 37060750,
+        "version_id": 3289771,
+        "crate_id": "zgvariant",
+        "req": "^1.0",
+        "optional": false,
+        "default_features": true,
+        "features": [
+          "serde_bytes"
+        ],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      }
+    ]
+  },
+  {
+    "name": "notify-rust",
+    "version": "4.18.2",
+    "rust_version": "1.89.0",
+    "created_at": "2026-10-07T17:06:00.363920Z",
+    "source": "https://crates.io/api/v1/crates/notify-rust/4.18.2/dependencies",
+    "dependencies": [
+      {
+        "id": 38823207,
+        "version_id": 3428504,
+        "crate_id": "zbus",
+        "req": "^5",
+        "optional": true,
+        "default_features": false,
+        "features": [],
+        "target": "cfg(all(unix, not(target_os = \"macos\")))",
+        "kind": "normal",
+        "downloads": 0
+      }
+    ]
+  },
+  {
+    "name": "accesskit_unix",
+    "version": "0.24.0",
+    "rust_version": "1.87",
+    "created_at": "2026-09-25T19:41:04.918104Z",
+    "source": "https://crates.io/api/v1/crates/accesskit_unix/0.24.0/dependencies",
+    "dependencies": [
+      {
+        "id": 37510761,
+        "version_id": 3326387,
+        "crate_id": "accesskit",
+        "req": "^0.25.1",
+        "optional": false,
+        "default_features": true,
+        "features": [],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      },
+      {
+        "id": 37510762,
+        "version_id": 3326387,
+        "crate_id": "accesskit_atspi_common",
+        "req": "^0.21.0",
+        "optional": false,
+        "default_features": true,
+        "features": [],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      },
+      {
+        "id": 37510766,
+        "version_id": 3326387,
+        "crate_id": "atspi",
+        "req": "^0.29",
+        "optional": false,
+        "default_features": false,
+        "features": [
+          "proxies"
+        ],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      },
+      {
+        "id": 37510772,
+        "version_id": 3326387,
+        "crate_id": "zbus",
+        "req": "^5.19",
+        "optional": false,
+        "default_features": false,
+        "features": [
+          "async-io"
+        ],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      }
+    ]
+  },
+  {
+    "name": "accesskit_atspi_common",
+    "version": "0.21.0",
+    "rust_version": "1.87",
+    "created_at": "2026-09-25T19:40:59.333447Z",
+    "source": "https://crates.io/api/v1/crates/accesskit_atspi_common/0.21.0/dependencies",
+    "dependencies": [
+      {
+        "id": 37510700,
+        "version_id": 3326382,
+        "crate_id": "accesskit",
+        "req": "^0.25.1",
+        "optional": false,
+        "default_features": true,
+        "features": [],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      },
+      {
+        "id": 37510701,
+        "version_id": 3326382,
+        "crate_id": "accesskit_consumer",
+        "req": "^0.39.1",
+        "optional": false,
+        "default_features": true,
+        "features": [],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      },
+      {
+        "id": 37510702,
+        "version_id": 3326382,
+        "crate_id": "atspi-common",
+        "req": "^0.13",
+        "optional": false,
+        "default_features": false,
+        "features": [],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      },
+      {
+        "id": 37510705,
+        "version_id": 3326382,
+        "crate_id": "zvariant",
+        "req": "^5.15",
+        "optional": false,
+        "default_features": false,
+        "features": [],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      }
+    ]
+  },
+  {
+    "name": "atspi",
+    "version": "0.30.0",
+    "rust_version": "1.77.2",
+    "created_at": "2026-05-06T17:59:02.287683Z",
+    "source": "https://crates.io/api/v1/crates/atspi/0.30.0/dependencies",
+    "dependencies": [
+      {
+        "id": 25751908,
+        "version_id": 2358252,
+        "crate_id": "atspi-common",
+        "req": "^0.14.0",
+        "optional": false,
+        "default_features": false,
+        "features": [],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      },
+      {
+        "id": 25751910,
+        "version_id": 2358252,
+        "crate_id": "atspi-proxies",
+        "req": "^0.14.0",
+        "optional": true,
+        "default_features": true,
+        "features": [],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      },
+      {
+        "id": 25751911,
+        "version_id": 2358252,
+        "crate_id": "zbus",
+        "req": "^5.5",
+        "optional": true,
+        "default_features": false,
+        "features": [
+          "async-io"
+        ],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      }
+    ]
+  },
+  {
+    "name": "atspi-common",
+    "version": "0.14.0",
+    "rust_version": "1.77.2",
+    "created_at": "2026-05-06T17:58:55.132606Z",
+    "source": "https://crates.io/api/v1/crates/atspi-common/0.14.0/dependencies",
+    "dependencies": [
+      {
+        "id": 25751875,
+        "version_id": 2358249,
+        "crate_id": "zbus-lockstep",
+        "req": "^0.5.2",
+        "optional": false,
+        "default_features": true,
+        "features": [],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      },
+      {
+        "id": 25751877,
+        "version_id": 2358249,
+        "crate_id": "zbus_names",
+        "req": "^4.1.1",
+        "optional": false,
+        "default_features": true,
+        "features": [],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      },
+      {
+        "id": 25751878,
+        "version_id": 2358249,
+        "crate_id": "zvariant",
+        "req": "^5.2",
+        "optional": false,
+        "default_features": false,
+        "features": [],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      },
+      {
+        "id": 25751874,
+        "version_id": 2358249,
+        "crate_id": "zbus",
+        "req": "^5.5",
+        "optional": true,
+        "default_features": false,
+        "features": [
+          "async-io"
+        ],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      }
+    ]
+  },
+  {
+    "name": "atspi-proxies",
+    "version": "0.14.0",
+    "rust_version": "1.77.2",
+    "created_at": "2026-05-06T17:58:57.499043Z",
+    "source": "https://crates.io/api/v1/crates/atspi-proxies/0.14.0/dependencies",
+    "dependencies": [
+      {
+        "id": 25751888,
+        "version_id": 2358250,
+        "crate_id": "atspi-common",
+        "req": "^0.14.0",
+        "optional": false,
+        "default_features": true,
+        "features": [],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      },
+      {
+        "id": 25751890,
+        "version_id": 2358250,
+        "crate_id": "zbus",
+        "req": "^5.5",
+        "optional": false,
+        "default_features": false,
+        "features": [
+          "async-io"
+        ],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      }
+    ]
+  },
+  {
+    "name": "zbus-lockstep",
+    "version": "0.7.0",
+    "rust_version": "1.87.0",
+    "created_at": "2026-07-27T14:15:52.190170Z",
+    "source": "https://crates.io/api/v1/crates/zbus-lockstep/0.7.0/dependencies",
+    "dependencies": [
+      {
+        "id": 31925197,
+        "version_id": 2874737,
+        "crate_id": "zbus_xml",
+        "req": "^5.2.0",
+        "optional": false,
+        "default_features": true,
+        "features": [],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      },
+      {
+        "id": 31925198,
+        "version_id": 2874737,
+        "crate_id": "zvariant",
+        "req": "^5.13.0",
+        "optional": false,
+        "default_features": false,
+        "features": [],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      }
+    ]
+  },
+  {
+    "name": "zbus_xml",
+    "version": "6.0.0",
+    "rust_version": "1.89",
+    "created_at": "2026-10-16T13:20:31.526129Z",
+    "source": "https://crates.io/api/v1/crates/zbus_xml/6.0.0/dependencies",
+    "dependencies": [
+      {
+        "id": 39941884,
+        "version_id": 3514408,
+        "crate_id": "zbus",
+        "req": "^6.0.0",
+        "optional": false,
+        "default_features": false,
+        "features": [],
+        "target": null,
+        "kind": "normal",
+        "downloads": 0
+      }
+    ]
+  },
+  {
+    "name": "zgvariant",
+    "version": "2.0.0",
+    "rust_version": "1.89",
+    "created_at": "2026-10-17T12:38:49.568186Z",
+    "source": "https://crates.io/api/v1/crates/zgvariant/2.0.0/dependencies",
+    "dependencies": []
+  }
+]
