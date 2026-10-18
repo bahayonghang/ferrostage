@@ -104,4 +104,3 @@ zbus-lockstep-macros = { path = "vendor/zbus-lockstep-macros" }
 ashpd = { path = "vendor/ashpd" }
 oo7 = { path = "vendor/oo7" }
 notify-rust = { path = "vendor/notify-rust" }
-atspi-connection = { path = "vendor/atspi-connection" }

@@ -73,6 +73,7 @@ default-features = false
 
 [dependencies.atspi-connection]
 version = "0.13.0"
+path = "../atspi-connection"
 optional = true
 
 [dependencies.atspi-proxies]

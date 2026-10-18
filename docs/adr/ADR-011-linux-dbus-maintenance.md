@@ -12,7 +12,7 @@ RustSec RUSTSEC-2026-0370/0371/0372 report the standalone zvariant, zbus_names a
 
 Keep existing compatible public package versions and vendor the downstream consumers needed by the current pinned GPUI graph: accesskit_unix, accesskit_atspi_common, atspi, atspi-common, atspi-proxies, atspi-connection, zbus-lockstep, zbus-lockstep-macros, ashpd, oo7 and notify-rust. Preserve optional connection/portal feature compatibility as well as the active GPUI feature union; any additional maintained downstream package must be listed in the final source receipt and justified by a concrete dependency/API edge.
 
-Use the original registry release archives, retain their copyright/license and VCS metadata, and record archive SHA256 plus a final source delta inventory. Root `[patch.crates-io]` entries select those maintained paths. Do not modify or rename retired packages merely to evade advisory matching, suppress features, narrow the audit target/platform set, or ship a second GPUI/AccessKit family.
+Use the original registry release archives, retain their copyright/license and VCS metadata, and record archive SHA256 plus a final source delta inventory. Root `[patch.crates-io]` entries select those maintained paths, except that `atspi` selects its optional `atspi-connection` through a direct sibling path to avoid an unused global patch when only `proxies` is enabled. Do not modify or rename retired packages merely to evade advisory matching, suppress features, narrow the audit target/platform set, or ship a second GPUI/AccessKit family.
 
 ## Compatibility contracts
 
