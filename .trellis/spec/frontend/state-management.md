@@ -56,6 +56,44 @@ Exercise actual GPUI mouse/key dispatch, partial versus submitted page input, mo
 
 Wrong: hide a thumbnail strip while its persisted flag still schedules raster work, or preserve invisible preview state after removing controls. Correct: gate raster requests on actual grid visibility and route explicit selection through the one committed-page command.
 
+## Audience click to advance
+
+### 1. Scope / Trigger
+
+Audience playback accepts completed left clicks, including the letterbox client area. Presenter previews and their pen/laser/media handlers retain their own behavior.
+
+### 2. Signatures
+
+`Audience` emits payload-free `AdvanceRequested`. `Shell` subscribes with the source window handle and routes accepted requests through `dispatch(Intent::Next)`, which applies `PresentationCommand::NextStep`. `display.audience_click_to_advance: bool` defaults to true.
+
+### 3. Contracts
+
+The assembled snapshot remains Audience's only incoming product data. Do not pass Shell, settings, documents or notes into Audience. Handle input after the source window update lease ends; recheck current state before dispatch. Accept only the committed audience handle while Presenting, enabled, without any modal/busy operation, with Live projection and no effective or published black/white blanking. Pending/retired windows cannot navigate. One completed click advances one existing Beamer content step; the last step does not wrap. Mouse-down alone, non-left input and release outside the surface are inert. Do not add a second navigation path, debounce timer or synthetic keyboard click binding.
+
+The effective committed settings are the only enable authority. Changes apply to the existing window, including runtime edits whose disk save failed. Exclude this non-placement leaf from the `continue_preferences` display-layout comparison, as for `presenter_start_fullscreen`; actual placement/fullscreen/monitor changes must still use the display transaction.
+
+### 4. Validation & Error Matrix
+
+| Condition | Result |
+| --- | --- |
+| Enabled, normal playback, committed audience click | Dispatch Next once through existing page/media/render handling |
+| Disabled, blank, Curtain, modal, loading/reload/preferences/window transition | No navigation |
+| Pending/replaced/stopped audience input | No navigation |
+| Toggle alone | Save/apply immediately without replacing windows or changing page/timer/roles |
+| Save failure or future-schema edit | Existing Unsaved/Retry or read-only behavior; no alternate persistence path |
+
+### 5. Good / Base / Bad Cases
+
+Good: turn the setting off and the same audience window stops advancing. Base: old settings missing the optional leaf enable clicks. Bad: dispatch directly from Audience, or rebuild projection windows for an input preference.
+
+### 6. Tests Required
+
+Drive real GPUI audience mouse down/up, including non-left/outside cancellation, guard states, retired-window rejection, Beamer/notes mapping and final-page behavior. Drive the real settings control and store readback with unchanged window handles, plus future/read-only and save failure. Native first-click activation/fullscreen delivery remain separate from headless assertions.
+
+### 7. Wrong vs Correct
+
+Wrong: add settings to the public projection or increment a page index in the view. Correct: outgoing event, coordinator policy, existing Next intent and snapshot publication.
+
 ## Shared display assignment contract
 
 ### 1. Scope / Trigger

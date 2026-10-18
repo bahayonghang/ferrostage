@@ -130,6 +130,27 @@ marker = "b"
 }
 
 #[test]
+fn audience_click_roundtrips_with_unknown_display_and_monitor_fields() {
+    let scratch = Scratch::new("audience-click");
+    let store = SettingsStore::at(scratch.child("settings.toml"));
+    fs::write(store.path(), "schema_version = 1\n[display]\ncustom = 7\n[[display.monitors]]\nid = 'A'\nrole = 'audience'\nmarker = 'keep'\n").unwrap();
+    for enabled in [false, true] {
+        let mut session = crate::SettingsSession::from_outcome(store.load().unwrap());
+        session.settings.display.audience_click_to_advance = enabled;
+        session.note_edit();
+        store.save_session(&mut session).unwrap();
+        let loaded = store.load().unwrap();
+        assert_eq!(loaded.settings.display.audience_click_to_advance, enabled);
+        assert_eq!(loaded.raw_table["display"]["custom"].as_integer(), Some(7));
+        assert_eq!(
+            loaded.raw_table["display"]["monitors"][0]["marker"].as_str(),
+            Some("keep")
+        );
+        assert_eq!(loaded.settings.schema_version, 1);
+    }
+}
+
+#[test]
 fn duplicate_monitor_metadata_survives_repeated_session_saves() {
     let scratch = Scratch::new("duplicate-session");
     let store = SettingsStore::at(scratch.child("settings.toml"));
@@ -173,6 +194,7 @@ fn failed_session_save_keeps_edits_and_retry_clears_dirty_state() {
     session.settings.timer.target_minutes = 20;
     session.settings.general.ui_font_family = "Example Family".into();
     session.settings.general.ui_font_size = 22;
+    session.settings.display.audience_click_to_advance = false;
     session.note_edit();
     let original_tree = session.raw_table.clone();
     assert!(matches!(
@@ -182,6 +204,7 @@ fn failed_session_save_keeps_edits_and_retry_clears_dirty_state() {
     assert_eq!(session.settings.timer.target_minutes, 20);
     assert_eq!(session.settings.general.ui_font_family, "Example Family");
     assert_eq!(session.settings.general.ui_font_size, 22);
+    assert!(!session.settings.display.audience_click_to_advance);
     assert_eq!(session.raw_table, original_tree);
     assert!(session.dirty);
     assert!(session.save_error.is_some());
@@ -190,6 +213,14 @@ fn failed_session_save_keeps_edits_and_retry_clears_dirty_state() {
     assert!(!session.dirty);
     assert!(!session.needs_writeback);
     assert!(session.save_error.is_none());
+    assert!(
+        !store
+            .load()
+            .expect("reload")
+            .settings
+            .display
+            .audience_click_to_advance
+    );
     assert_eq!(
         store.load().expect("reload").settings.timer.target_minutes,
         20
@@ -233,6 +264,7 @@ fn future_version_refuses_save_and_keeps_the_bytes() {
     let mut outcome = store.load().expect("load");
     assert!(!outcome.write_policy.is_writable());
     outcome.settings.general.language = "zh-CN".to_owned();
+    outcome.settings.display.audience_click_to_advance = false;
     let error = store.save(&outcome).expect_err("readonly");
     assert!(matches!(error, crate::SaveError::ReadOnly { .. }));
     let after = fs::read(&path).expect("after");

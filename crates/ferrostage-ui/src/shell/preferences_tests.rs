@@ -1,4 +1,92 @@
 #[gpui::test]
+fn audience_click_toggle_is_live_durable_and_does_not_replace_windows(cx: &mut TestAppContext) {
+    let fixture = SaveFixture::new();
+    let (shell, presenter, audience) = audience_input_fixture(cx);
+    let before = shell.update(cx, |s, cx| {
+        s.store = fixture.store();
+        s.modal = Some(Modal::Settings);
+        s.preferences.category = crate::settings_panel::Category::Displays;
+        cx.notify();
+        (s.state.clone(), s.settings.settings.display.clone())
+    });
+    redraw(presenter, cx);
+    click_control(presenter, "setting-display.audience_click_to_advance", cx);
+    cx.run_until_parked();
+    shell.read_with(cx, |s, _| {
+        assert!(!s.settings.settings.display.audience_click_to_advance);
+        assert!(s.settings.dirty && s.settings.save_error.is_some());
+        assert!(s.pending.is_none() && s.preference_change.is_none());
+        assert_eq!(s.state, before.0);
+        assert_eq!(s.settings.settings.display.monitors, before.1.monitors);
+        assert_eq!(s.presenter.as_ref().unwrap().handle, presenter);
+        assert_eq!(s.audience.as_ref().unwrap().handle, audience);
+    });
+    shell.update(cx, |s, _| s.modal = None);
+    click_audience(audience, cx);
+    assert_eq!(shell.read_with(cx, |s, _| s.state.current_page()), PhysicalPage(0));
+    fixture.unblock();
+    shell.update(cx, |s, cx| {
+        s.dispatch(Intent::RetrySave, cx);
+        assert!(!s.settings.dirty);
+        assert!(!s.store.load().unwrap().settings.display.audience_click_to_advance);
+        s.modal = Some(Modal::Settings);
+        cx.notify();
+    });
+    redraw(presenter, cx);
+    // The original toggle retains focus across live preference updates.
+    cx.simulate_keystrokes(presenter, "space");
+    cx.run_until_parked();
+    shell.update(cx, |s, _| {
+        assert!(s.settings.settings.display.audience_click_to_advance);
+        let fresh = ferrostage_settings::SettingsSession::from_outcome(s.store.load().unwrap());
+        assert!(fresh.settings.display.audience_click_to_advance);
+        assert_eq!(s.presenter.as_ref().unwrap().handle, presenter);
+        assert_eq!(s.audience.as_ref().unwrap().handle, audience);
+        assert_eq!(s.state, before.0);
+        s.modal = None;
+    });
+    click_audience(audience, cx);
+    assert_eq!(shell.read_with(cx, |s, _| s.state.current_page()), PhysicalPage(1));
+
+    // A future-version session renders the same control as read-only.
+    let bytes = std::fs::read(fixture.store().path()).unwrap();
+    shell.update(cx, |s, cx| {
+        s.settings.write_policy = ferrostage_settings::from_toml("schema_version=999").unwrap().write_policy;
+        s.modal = Some(Modal::Settings);
+        cx.notify();
+    });
+    redraw(presenter, cx);
+    click_control(presenter, "setting-display.audience_click_to_advance", cx);
+    cx.simulate_keystrokes(presenter, "space");
+    cx.run_until_parked();
+    assert!(shell.read_with(cx, |s, _| s.settings.settings.display.audience_click_to_advance));
+    assert_eq!(std::fs::read(fixture.store().path()).unwrap(), bytes);
+}
+
+#[gpui::test]
+fn audience_click_combined_placement_edit_keeps_display_transaction(cx: &mut TestAppContext) {
+    let fixture = SaveFixture::new();
+    fixture.unblock();
+    let (shell, _) = display_fixture(cx);
+    shell.update(cx, |s, cx| {
+        s.store = fixture.store();
+        set_playing(s, cx, Instant::now());
+        s.modal = Some(Modal::Settings);
+        let mut next = s.settings.settings.clone();
+        next.display.audience_click_to_advance = false;
+        next.display.audience_fullscreen = !next.display.audience_fullscreen;
+        next.display.single_monitor_mode = ferrostage_settings::SingleMonitorMode::WindowedAudience;
+        s.apply_preferences(next, cx);
+        assert!(s.pending.is_some() && s.preference_change.is_some());
+        assert!(s.settings.settings.display.audience_click_to_advance);
+        s.poll_transaction(cx);
+        assert!(s.pending.is_none() && s.preference_change.is_none());
+        assert!(!s.settings.settings.display.audience_click_to_advance);
+        assert!(!s.store.load().unwrap().settings.display.audience_click_to_advance);
+    });
+}
+
+#[gpui::test]
 fn settings_v09_edit_save_retry_readonly_and_runtime_consumers(cx: &mut TestAppContext) {
     let fixture = SaveFixture::new();
     let (shell, handle) = input_presenter(cx);

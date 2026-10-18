@@ -629,6 +629,7 @@ impl Presenter {
             }
             "general.reopen_last_document" => Some("settings-startup-help"),
             "display.audience_fullscreen" => Some("settings-fullscreen-help"),
+            "display.audience_click_to_advance" => Some("settings-click-to-advance-help"),
             _ => None,
         };
         if let Some(help) = help {

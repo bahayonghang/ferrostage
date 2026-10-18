@@ -156,6 +156,13 @@ pub(super) fn parse_display(
             defaults.audience_fullscreen,
             warnings,
         ),
+        audience_click_to_advance: parse_bool(
+            section,
+            "audience_click_to_advance",
+            "display.audience_click_to_advance",
+            defaults.audience_click_to_advance,
+            warnings,
+        ),
         presenter_start_fullscreen: parse_bool(
             section,
             "presenter_start_fullscreen",

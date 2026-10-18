@@ -182,6 +182,8 @@ pub struct DisplaySettings {
     pub single_monitor_mode: SingleMonitorMode,
     /// Audience window starts fullscreen when a presentation starts.
     pub audience_fullscreen: bool,
+    /// Completed left clicks in the playback window advance one content step.
+    pub audience_click_to_advance: bool,
     /// Presenter window starts fullscreen.
     pub presenter_start_fullscreen: bool,
     /// Saved role bindings. Empty means task 03 may apply its unsaved heuristic.
@@ -193,6 +195,7 @@ impl Default for DisplaySettings {
         Self {
             single_monitor_mode: SingleMonitorMode::PresenterOnly,
             audience_fullscreen: true,
+            audience_click_to_advance: true,
             presenter_start_fullscreen: false,
             monitors: Vec::new(),
         }

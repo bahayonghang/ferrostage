@@ -70,10 +70,12 @@ fn merge_display(doc: &mut toml::Table, display: &DisplaySettings) -> Result<(),
     };
     let mode = string_value(display.single_monitor_mode.as_str());
     let audience = bool_value(display.audience_fullscreen);
+    let click_to_advance = bool_value(display.audience_click_to_advance);
     let presenter = bool_value(display.presenter_start_fullscreen);
     with_section(doc, "display", |table| {
         table.insert("single_monitor_mode".to_owned(), mode);
         table.insert("audience_fullscreen".to_owned(), audience);
+        table.insert("audience_click_to_advance".to_owned(), click_to_advance);
         table.insert("presenter_start_fullscreen".to_owned(), presenter);
         table.insert("monitors".to_owned(), monitors);
     });

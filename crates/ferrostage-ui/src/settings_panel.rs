@@ -105,6 +105,7 @@ pub const FIELDS: &[Field] = &[
         }
     ),
     field!("display.audience_fullscreen", Displays, Toggle),
+    field!("display.audience_click_to_advance", Displays, Toggle),
     field!("display.presenter_start_fullscreen", Displays, Toggle),
     field!(
         "presenter.next_slide_ratio",
@@ -427,12 +428,15 @@ mod tests {
             ("general.ui_font_size", "25"),
             ("general.ui_font_size", "16.5"),
             ("general.ui_font_family", "bad\nfamily"),
+            ("display.audience_click_to_advance", "invalid"),
         ] {
             assert!(edit(&settings, id, value).is_err(), "{id}");
         }
         let next = edit(&settings, "pointer.laser_color_bgra", "112233AA").unwrap();
         assert_eq!(next.pointer.laser_color_bgra, [0x33, 0x22, 0x11, 0xAA]);
         assert_eq!(next.keybindings, settings.keybindings);
+        let next = edit(&next, "display.audience_click_to_advance", "false").unwrap();
+        assert!(!next.display.audience_click_to_advance);
         let next = edit(&next, "presenter.grid_visible_pages", "13").unwrap();
         assert_eq!(next.presenter.grid_visible_pages, 13);
         assert_eq!(next.presenter.grid_columns, settings.presenter.grid_columns);

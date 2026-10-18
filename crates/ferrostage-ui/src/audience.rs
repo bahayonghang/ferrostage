@@ -2,12 +2,14 @@
 use crate::texture_cache::TextureCache;
 use ferrostage_core::{AudienceProjectionSnapshot, AudienceStage, BlankMode};
 use gpui::{
-    App, Context, Entity, EventEmitter, Render, WeakEntity, Window, canvas, div, prelude::*, rgb,
+    App, ClickEvent, Context, Entity, EventEmitter, MouseButton, Render, WeakEntity, Window,
+    canvas, div, prelude::*, rgb,
 };
 use std::{cell::RefCell, rc::Rc};
 
 pub(crate) struct RenderStatus(pub Option<String>);
 pub(crate) struct StagingStatus(pub u64, pub Result<(), String>);
+pub(crate) struct AdvanceRequested;
 #[derive(Clone, Copy, PartialEq)]
 enum Surface {
     Page,
@@ -20,6 +22,7 @@ pub(crate) struct Audience {
 }
 impl EventEmitter<RenderStatus> for Audience {}
 impl EventEmitter<StagingStatus> for Audience {}
+impl EventEmitter<AdvanceRequested> for Audience {}
 impl Audience {
     pub(crate) fn staged(&self, attempt: u64) -> bool {
         self.textures.borrow().staged(attempt)
@@ -147,6 +150,16 @@ impl Render for Audience {
         let stage_cache = self.textures.clone();
         let stage_view = cx.weak_entity();
         div()
+            .id("audience-playback-surface")
+            .debug_selector(|| "audience-playback-surface".into())
+            .on_click(cx.listener(|_, event, _, cx| {
+                if let ClickEvent::Mouse(event) = event
+                    && event.down.button == MouseButton::Left
+                    && event.up.button == MouseButton::Left
+                {
+                    cx.emit(AdvanceRequested);
+                }
+            }))
             .size_full()
             .bg(rgb(background))
             .child(

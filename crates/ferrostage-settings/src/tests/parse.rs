@@ -519,3 +519,30 @@ fn interface_font_leaves_default_validate_and_preserve_future_policy() {
     assert!(!future.write_policy.is_writable());
     assert_eq!(future.settings.general.ui_font_size, 12);
 }
+#[test]
+fn audience_click_leaf_defaults_validates_and_preserves_future_policy() {
+    for version in [1, 999] {
+        for (leaf, enabled, warns) in [
+            ("", true, false),
+            ("audience_click_to_advance = true", true, false),
+            ("audience_click_to_advance = false", false, false),
+            ("audience_click_to_advance = 'false'", true, true),
+            ("audience_click_to_advance = 0", true, true),
+        ] {
+            let loaded = from_toml(&format!(
+                "schema_version = {version}\n[display]\naudience_fullscreen = false\n{leaf}"
+            ))
+            .unwrap();
+            assert_eq!(loaded.settings.display.audience_click_to_advance, enabled);
+            assert!(!loaded.settings.display.audience_fullscreen);
+            assert_eq!(loaded.write_policy.is_writable(), version == 1);
+            assert_eq!(
+                loaded
+                    .warnings
+                    .iter()
+                    .any(|w| w.key == "display.audience_click_to_advance"),
+                warns
+            );
+        }
+    }
+}

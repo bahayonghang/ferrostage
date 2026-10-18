@@ -55,6 +55,42 @@ Retain `interface_font_leaves_default_validate_and_preserve_future_policy` and `
 
 Wrong: reuse `presenter.notes_font_scale` for UI size or validate fonts by enumerating the OS inside settings loading. Correct: optional general leaves plus Presenter-owned cached availability and role-aware resolution.
 
+## Audience click preference
+
+### 1. Scope / Trigger
+
+The playback-window input preference is an optional v1 display leaf; extend the typed schema, leaf loader and known-key merge together.
+
+### 2. Signatures
+
+`DisplaySettings::audience_click_to_advance: bool`, TOML `display.audience_click_to_advance`, defaults to true. Keep `SCHEMA_VERSION = 1`.
+
+### 3. Contracts
+
+Missing values use true. Invalid types warn at the full leaf path and fall back independently. Explicit false survives save and reload. Preserve unknown display keys and monitor-element metadata. A missing optional leaf need not trigger immediate startup writeback; explicit saves merge it normally. No alternate settings file or PDF write is allowed.
+
+### 4. Validation & Error Matrix
+
+| Condition | Result |
+| --- | --- |
+| Existing v1 settings omit the leaf | Effective true |
+| Non-boolean leaf | Warning and default true |
+| Explicit false, then save/reload | Effective false and unknown values retained |
+| Save fails | Effective value retained with existing dirty/error and Retry behavior |
+| Future schema | Parsed effective value; file stays read-only and bytes unchanged |
+
+### 5. Good / Base / Bad Cases
+
+Good: save false beside unknown monitor metadata and recover both on reload. Base: older configurations require no manual migration. Bad: serialize the field but omit parser/merge support.
+
+### 6. Tests Required
+
+Cover defaults, explicit true/false, invalid type, roundtrip, unknown-data retention, failed-save/retry and future-version refusal. UI separately verifies immediate behavior without a display placement transaction.
+
+### 7. Wrong vs Correct
+
+Wrong: bump the schema or rewrite user settings for a missing optional bool. Correct: compatible leaf default plus existing checked save pipeline.
+
 ## Forbidden
 
 - SQLite, Postgres, or any ORM "for later".

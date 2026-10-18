@@ -1012,6 +1012,31 @@ impl Shell {
                 .map_err(|error| error.to_string())?;
             cx.subscribe(
                 &entity,
+                move |_, _, _: &crate::audience::AdvanceRequested, cx| {
+                    // Input still owns its source window lease. Consume the request
+                    // after that lease ends, and validate its current owner then.
+                    let shell = cx.weak_entity();
+                    cx.defer(move |cx| {
+                        let _ = shell.update(cx, |shell, cx| {
+                            let projection = shell.snapshot.read(cx);
+                            if shell.audience.as_ref().is_some_and(|w| w.handle == handle)
+                                && shell.state.stage() == SessionStage::Presenting
+                                && shell.settings.settings.display.audience_click_to_advance
+                                && shell.modal.is_none()
+                                && !shell.busy()
+                                && projection.stage == AudienceStage::Live
+                                && projection.blank_mode.is_none()
+                                && shell.state.audience_snapshot().blank_mode.is_none()
+                            {
+                                shell.dispatch(Intent::Next, cx);
+                            }
+                        });
+                    });
+                },
+            )
+            .detach();
+            cx.subscribe(
+                &entity,
                 move |shell, _, status: &crate::audience::StagingStatus, cx| {
                     if shell
                         .audience
@@ -3353,6 +3378,349 @@ mod tests {
                 Instant::now(),
             )
             .unwrap();
+    }
+
+    fn audience_input_fixture(
+        cx: &mut TestAppContext,
+    ) -> (Entity<Shell>, AnyWindowHandle, AnyWindowHandle) {
+        let (shell, presenter) = input_presenter(cx);
+        let audience = shell.update(cx, |shell, cx| {
+            load_ready(shell);
+            let started = Instant::now() - Duration::from_secs(10);
+            shell
+                .state
+                .apply_at(
+                    Command::StartPresentation {
+                        audience_available: true,
+                    },
+                    started,
+                )
+                .unwrap();
+            shell
+                .state
+                .apply_at(Command::PauseTimer, started + Duration::from_secs(4))
+                .unwrap();
+            shell.audience = Some(test_window(shell, true, cx));
+            shell.publish(false, cx);
+            shell.audience.as_ref().unwrap().handle
+        });
+        redraw(audience, cx);
+        (shell, presenter, audience)
+    }
+
+    fn click_audience(handle: AnyWindowHandle, cx: &mut TestAppContext) {
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        // The client corner is also a valid click target when the PDF is letterboxed.
+        let bounds = visual.debug_bounds("audience-playback-surface").unwrap();
+        assert!(bounds.contains(&point(px(2.), px(2.))), "{bounds:?}");
+        visual.simulate_click(point(px(2.), px(2.)), gpui::Modifiers::default());
+        cx.run_until_parked();
+    }
+
+    #[gpui::test]
+    fn audience_click_requires_completed_left_input_and_uses_next_once(cx: &mut TestAppContext) {
+        let (shell, presenter, audience) = audience_input_fixture(cx);
+        shell.update(cx, |shell, cx| {
+            shell.snapshot.update(cx, |snapshot, cx| {
+                snapshot.visual = Some(ferrostage_core::AudienceVisual {
+                    page: ferrostage_core::BgraFrame::new(2, 1, 8, vec![255; 8]).unwrap(),
+                    media: vec![],
+                    texture_budget_bytes: 32,
+                });
+                cx.notify();
+            });
+        });
+        redraw(audience, cx);
+        let position = point(px(2.), px(2.));
+        let mut visual = gpui::VisualTestContext::from_window(audience, cx);
+        visual.simulate_mouse_down(
+            position,
+            gpui::MouseButton::Left,
+            gpui::Modifiers::default(),
+        );
+        cx.run_until_parked();
+        assert_eq!(
+            shell.read_with(cx, |s, _| s.state.current_page()),
+            PhysicalPage(0)
+        );
+        let mut visual = gpui::VisualTestContext::from_window(audience, cx);
+        visual.simulate_mouse_up(
+            point(px(-10.), px(-10.)),
+            gpui::MouseButton::Left,
+            gpui::Modifiers::default(),
+        );
+        for button in [gpui::MouseButton::Right, gpui::MouseButton::Middle] {
+            visual.simulate_mouse_down(position, button, gpui::Modifiers::default());
+            visual.simulate_mouse_up(position, button, gpui::Modifiers::default());
+        }
+        cx.run_until_parked();
+        assert_eq!(
+            shell.read_with(cx, |s, _| s.state.current_page()),
+            PhysicalPage(0)
+        );
+        redraw(presenter, cx);
+        let mut visual = gpui::VisualTestContext::from_window(presenter, cx);
+        visual.simulate_click(point(px(2.), px(2.)), gpui::Modifiers::default());
+        cx.run_until_parked();
+        assert_eq!(
+            shell.read_with(cx, |s, _| s.state.current_page()),
+            PhysicalPage(0)
+        );
+        for (tool, expected) in [
+            (crate::workbench::Tool::Pen, 1),
+            (crate::workbench::Tool::Laser, 2),
+        ] {
+            shell.update(cx, |s, _| s.workbench.tool = tool);
+            click_audience(audience, cx);
+            shell.read_with(cx, |s, _| {
+                assert_eq!(s.state.current_page(), PhysicalPage(expected));
+                assert_eq!(s.state.stage(), SessionStage::Presenting);
+                assert_eq!(s.state.elapsed_at(Instant::now()), Duration::from_secs(4));
+                assert_eq!(s.workbench.tool, tool);
+            });
+        }
+        click_audience(audience, cx);
+        assert_eq!(
+            shell.read_with(cx, |s, _| s.state.current_page()),
+            PhysicalPage(2)
+        );
+        shell.update(cx, |s, cx| {
+            // Navigation retains the previous complete pixels until matching
+            // raster completion, just like keyboard/button Next.
+            assert_eq!(s.snapshot.read(cx).current_page, PhysicalPage(0));
+            let target = ferrostage_pdf::PixelSize {
+                width: 2,
+                height: 1,
+            };
+            s.workbench.audience_target = Some(target);
+            s.workbench.frames.push((
+                crate::workbench::Surface::Audience,
+                crate::workbench::ReadyFrame {
+                    request: ferrostage_render::RenderRequest {
+                        generation: s.state.generation(),
+                        page: s.state.current_page(),
+                        crop: s.state.slide_crop(),
+                        target_px: target,
+                        priority: ferrostage_render::RenderPriority::Audience,
+                        epoch: 0,
+                    },
+                    frame: ferrostage_core::BgraFrame::new(2, 1, 8, vec![255; 8]).unwrap(),
+                },
+            ));
+            s.publish(false, cx);
+            assert_eq!(s.snapshot.read(cx).current_page, PhysicalPage(2));
+        });
+    }
+
+    #[gpui::test]
+    fn audience_click_does_not_bind_the_presenter_slide_preview(cx: &mut TestAppContext) {
+        let (shell, presenter) = workbench_fixture(cx);
+        let audience = shell.update(cx, |shell, cx| {
+            shell
+                .state
+                .apply_at(
+                    Command::StartPresentation {
+                        audience_available: true,
+                    },
+                    Instant::now(),
+                )
+                .unwrap();
+            shell.workbench.frames.push((
+                crate::workbench::Surface::Current,
+                crate::workbench::ReadyFrame {
+                    request: crate::workbench::request_for(
+                        shell.state.generation(),
+                        shell.state.current_page(),
+                        shell.state.slide_crop(),
+                    ),
+                    frame: ferrostage_core::BgraFrame::new(4, 3, 16, vec![255; 48]).unwrap(),
+                },
+            ));
+            shell.audience = Some(test_window(shell, true, cx));
+            shell.publish(false, cx);
+            cx.notify();
+            shell.audience.as_ref().unwrap().handle
+        });
+        redraw(presenter, cx);
+        let mut visual = gpui::VisualTestContext::from_window(presenter, cx);
+        let preview = visual.debug_bounds("surface-Current").unwrap();
+        visual.simulate_click(preview.center(), gpui::Modifiers::default());
+        cx.run_until_parked();
+        assert_eq!(
+            shell.read_with(cx, |s, _| s.state.current_page()),
+            PhysicalPage(0)
+        );
+        click_audience(audience, cx);
+        assert_eq!(
+            shell.read_with(cx, |s, _| s.state.current_page()),
+            PhysicalPage(2)
+        );
+    }
+
+    #[gpui::test]
+    fn audience_click_honors_live_policy_modal_blanking_and_busy_guards(cx: &mut TestAppContext) {
+        let fixture = SaveFixture::new();
+        fixture.unblock();
+        let (shell, _, audience) = audience_input_fixture(cx);
+        shell.update(cx, |s, _| s.store = fixture.store());
+        for guard in 0..9 {
+            shell.update(cx, |s, cx| match guard {
+                0 => s.settings.settings.display.audience_click_to_advance = false,
+                1 => s.modal = Some(Modal::Settings),
+                2 => s.modal = Some(Modal::Jump(String::new())),
+                3 => s.loading = true,
+                4 => s
+                    .snapshot
+                    .update(cx, |p, _| p.stage = AudienceStage::Curtain),
+                5 => s
+                    .snapshot
+                    .update(cx, |p, _| p.blank_mode = Some(BlankMode::Black)),
+                6 | 7 => {
+                    s.state
+                        .apply_at(
+                            Command::ToggleBlank(if guard == 6 {
+                                BlankMode::Black
+                            } else {
+                                BlankMode::White
+                            }),
+                            Instant::now(),
+                        )
+                        .unwrap();
+                }
+                8 => {
+                    s.pending = Some(Transaction {
+                        kind: TransactionKind::RecoverPresenter,
+                        presenter: None,
+                        audience: None,
+                        deadline: Instant::now() + CONFIRM_TIMEOUT,
+                    })
+                }
+                _ => unreachable!(),
+            });
+            click_audience(audience, cx);
+            shell.update(cx, |s, cx| {
+                assert_eq!(s.state.current_page(), PhysicalPage(0), "guard {guard}");
+                s.settings.settings.display.audience_click_to_advance = true;
+                s.modal = None;
+                s.loading = false;
+                s.pending = None;
+                if let Some(blank) = s.state.audience_snapshot().blank_mode {
+                    s.state
+                        .apply_at(Command::ToggleBlank(blank), Instant::now())
+                        .unwrap();
+                }
+                s.publish(false, cx);
+            });
+        }
+        // An asynchronous settings edit remains busy even after its modal closes.
+        shell.update(cx, |s, cx| {
+            s.renderer = Ok(ferrostage_render::RenderHandle::with_backend(
+                || Box::new(SettingsBackend),
+                ferrostage_render::CacheBudgets::default(),
+            )
+            .unwrap());
+            s.dispatch(Intent::EditSetting("cache.l2_cpu_mib", "17".into()), cx);
+            assert!(s.preference_change.is_some());
+        });
+        click_audience(audience, cx);
+        assert_eq!(
+            shell.read_with(cx, |s, _| s.state.current_page()),
+            PhysicalPage(0)
+        );
+        // Settlement is controlled by polling, not completion of the worker itself.
+        settle_preferences(&shell, cx);
+        click_audience(audience, cx);
+        assert_eq!(
+            shell.read_with(cx, |s, _| s.state.current_page()),
+            PhysicalPage(1)
+        );
+    }
+
+    #[gpui::test]
+    fn audience_click_rejects_pending_retired_and_nonpresenting_windows(cx: &mut TestAppContext) {
+        let (shell, _, audience) = audience_input_fixture(cx);
+        let pending = shell.update(cx, |s, cx| {
+            let candidate = test_window(s, true, cx);
+            let handle = candidate.handle;
+            s.pending = Some(Transaction {
+                kind: TransactionKind::Start,
+                presenter: None,
+                audience: Some(candidate),
+                deadline: Instant::now() + CONFIRM_TIMEOUT,
+            });
+            handle
+        });
+        click_audience(pending, cx);
+        assert_eq!(
+            shell.read_with(cx, |s, _| s.state.current_page()),
+            PhysicalPage(0)
+        );
+        shell.update(cx, |s, _| {
+            let replacement = s.pending.take().unwrap().audience.unwrap();
+            s.audience = Some(replacement); // Keep retired native window open to deliver its late input.
+        });
+        click_audience(audience, cx);
+        assert_eq!(
+            shell.read_with(cx, |s, _| s.state.current_page()),
+            PhysicalPage(0)
+        );
+        click_audience(pending, cx);
+        assert_eq!(
+            shell.read_with(cx, |s, _| s.state.current_page()),
+            PhysicalPage(1)
+        );
+        for command in [Command::StopPresentation, Command::CloseDocument] {
+            shell.update(cx, |s, _| {
+                s.state.apply_at(command, Instant::now()).unwrap();
+            });
+            let before = shell.read_with(cx, |s, _| s.state.clone());
+            click_audience(pending, cx);
+            assert_eq!(shell.read_with(cx, |s, _| s.state.clone()), before);
+        }
+    }
+
+    #[gpui::test]
+    fn audience_click_preserves_overlay_steps_and_excludes_notes(cx: &mut TestAppContext) {
+        let (shell, _, audience) = audience_input_fixture(cx);
+        shell.update(cx, |s, cx| {
+            s.state
+                .apply_at(Command::StopPresentation, Instant::now())
+                .unwrap();
+            let map = ferrostage_core::SlideMap::new(
+                5,
+                vec![
+                    vec![PhysicalPage(0), PhysicalPage(2)],
+                    vec![PhysicalPage(4)],
+                ],
+            )
+            .unwrap();
+            let document = ferrostage_core::DocumentDescriptor::mapped(
+                ferrostage_core::DocumentGeneration(2),
+                map,
+                ferrostage_core::NormalizedRect::FULL,
+            )
+            .unwrap();
+            s.state
+                .apply_at(Command::LoadMappedDocument(document), Instant::now())
+                .unwrap();
+            s.state
+                .apply_at(
+                    Command::StartPresentation {
+                        audience_available: true,
+                    },
+                    Instant::now(),
+                )
+                .unwrap();
+            s.publish(false, cx);
+        });
+        for physical in [2, 4, 4] {
+            click_audience(audience, cx);
+            shell.read_with(cx, |s, cx| {
+                assert_eq!(s.state.current_page(), PhysicalPage(physical));
+                assert_eq!(s.snapshot.read(cx).current_page, PhysicalPage(physical));
+            });
+        }
     }
 
     pub(super) fn input_presenter(cx: &mut TestAppContext) -> (Entity<Shell>, AnyWindowHandle) {

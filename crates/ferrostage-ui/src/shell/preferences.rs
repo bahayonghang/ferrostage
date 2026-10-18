@@ -430,6 +430,7 @@ impl Shell {
         let next = pending.next.clone();
         let mut old_display = self.settings.settings.display.clone();
         old_display.presenter_start_fullscreen = next.display.presenter_start_fullscreen;
+        old_display.audience_click_to_advance = next.display.audience_click_to_advance;
         if next.display != old_display {
             self.assign_displays(next.display.clone(), cx);
             if self.pending.is_none() {
