@@ -240,3 +240,44 @@ just dev 与 just build 放置已校验的 pdfium.dll；发布版改为 GUI 子�
 ### Status
 
 [OK] **Completed**
+
+
+## Session 8: Audience click navigation and PR-only CI repair
+<!-- trellis-session: v=2 fp=ab7f1b50552544a0 -->
+
+**Date**: 2026-10-18
+**Task**: Audience click navigation and PR-only CI repair
+**Branch**: `dev`
+
+### Summary
+
+Implemented default-on audience click navigation, repaired current CI root causes with maintained Linux dependencies, completed review and archived before authorized push.
+
+### Main Changes
+
+- Added persistent playback click toggle and guarded Next routing.
+- Restricted automatic CI to PRs, retained dispatch; repaired platform cfg and software H264 runtime.
+- Migrated11 Linux D-Bus downstream packages with original-source hashes and no waiver.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `a24e4c3` | feat(ui): ✨ 支持播放窗口单击翻页及持久化开关 |
+| `d199bab` | ci: 👷 仅在 PR 自动运行并保留手动入口 |
+| `d0f3e6b` | fix(platform): 🐛 限制显示器名称辅助代码的编译目标 |
+| `bb8cd0a` | fix(media): 🐛 补齐软件 H.264 解码并拒绝缺失解码器 |
+| `e6e1a44` | fix(deps): 🐛 迁移 Linux D-Bus 依赖至维护中的 API |
+
+### Testing
+
+- [OK] PASS just ci:196 tests; check-shell:143 tests; all-feature deny; actionlint.
+- [OK] PASS scoped native audience/media smoke and portable AT-SPI/wire checks; native Linux desktop service qualification remains separate.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- Push dev, create PR to main, fix actual four-job CI, merge when green, then dispatch one main run and confirm issue state.
