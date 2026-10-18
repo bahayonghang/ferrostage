@@ -58,8 +58,8 @@ impl Presenter {
                     .text_color(rgb(style.ink))
                     .border_1()
                     .border_color(rgb(style.border))
-                    .text_size(px(14.))
-                    .line_height(px(20.))
+                    .text_size(px(self.data.typography.size(14.)))
+                    .line_height(px(self.data.typography.size(20.)))
                     .font_weight(gpui::FontWeight::MEDIUM)
                     .child(label)
                     .when(self.data.can_open, |view| {
@@ -71,8 +71,8 @@ impl Presenter {
             div()
                 .pl(px(4.))
                 .mb(px(4.))
-                .text_size(px(12.))
-                .line_height(px(18.))
+                .text_size(px(self.data.typography.size(12.)))
+                .line_height(px(self.data.typography.size(18.)))
                 .text_color(rgb(p.muted))
                 .child(l.text("recent")),
         );
@@ -82,8 +82,8 @@ impl Presenter {
                     .id("home-empty")
                     .debug_selector(|| "home-empty".into())
                     .pl(px(4.))
-                    .text_size(px(14.))
-                    .line_height(px(22.))
+                    .text_size(px(self.data.typography.size(14.)))
+                    .line_height(px(self.data.typography.size(22.)))
                     .text_color(rgb(p.muted))
                     .child(l.text("recent-empty")),
             );
@@ -99,6 +99,7 @@ impl Presenter {
                 .map(|value| value.to_string_lossy().into_owned())
                 .filter(|value| !value.is_empty());
             let tooltip_path = path.clone();
+            let typography = self.data.typography.clone();
             let row = self
                 .activation_target(
                     format!("recent-{index}"),
@@ -111,6 +112,7 @@ impl Presenter {
                     cx.new(|_| FilenameTooltip {
                         filename: tooltip_path.clone(),
                         palette: p,
+                        typography: typography.clone(),
                     })
                     .into()
                 })
@@ -125,8 +127,8 @@ impl Presenter {
                         .min_w_0()
                         .relative()
                         .rounded(px(4.))
-                        .text_size(px(14.))
-                        .line_height(px(20.))
+                        .text_size(px(self.data.typography.size(14.)))
+                        .line_height(px(self.data.typography.size(20.)))
                         .text_color(rgb(if self.data.can_open { p.ink } else { p.muted }))
                         .child(
                             div()
@@ -138,8 +140,8 @@ impl Presenter {
                             view.child(
                                 div()
                                     .truncate()
-                                    .text_size(px(12.))
-                                    .line_height(px(18.))
+                                    .text_size(px(self.data.typography.size(12.)))
+                                    .line_height(px(self.data.typography.size(18.)))
                                     .text_color(rgb(p.muted))
                                     .child(parent),
                             )
@@ -168,8 +170,8 @@ impl Presenter {
                     .id("recent-full-path")
                     .debug_selector(|| "recent-full-path".into())
                     .pl(px(4.))
-                    .text_size(px(12.))
-                    .line_height(px(18.))
+                    .text_size(px(self.data.typography.size(12.)))
+                    .line_height(px(self.data.typography.size(18.)))
                     .text_color(rgb(p.muted))
                     .whitespace_normal()
                     .child(path.clone()),
@@ -184,8 +186,8 @@ impl Presenter {
             .flex()
             .flex_col()
             .gap(px(16.))
-            .text_size(px(14.))
-            .line_height(px(22.))
+            .text_size(px(self.data.typography.size(14.)))
+            .line_height(px(self.data.typography.size(22.)))
             .child(header)
             .child(
                 div()
@@ -210,8 +212,8 @@ impl Presenter {
                     .justify_center()
                     .relative()
                     .rounded(px(theme::RADIUS))
-                    .text_size(px(14.))
-                    .line_height(px(20.))
+                    .text_size(px(self.data.typography.size(14.)))
+                    .line_height(px(self.data.typography.size(20.)))
                     .text_color(rgb(if self.data.busy { p.muted } else { p.body }))
                     .child(label.to_string())
                     .when(!self.data.busy, |view| {
