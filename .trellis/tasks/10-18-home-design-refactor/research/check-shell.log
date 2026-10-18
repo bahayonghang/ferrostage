@@ -1,0 +1,426 @@
+cargo build -p ferrostage-app --features gpui,pdfium --locked
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+   Compiling ferrostage-app v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 10.93s
+mbx[cache]: 0 hits, 0 misses, 1 incremental, 1 bypassed; 0 B downloaded, 0 B uploaded, 0 B stored locally
+mbx[savings]: 4849 compilations served. ask rustc how many it remembers doing.
+cargo clippy -p ferrostage-app -p ferrostage-ui --features gpui,pdfium --all-targets --locked -- -D warnings
+   Compiling serde_core v1.0.229
+   Compiling typeid v1.0.3
+   Compiling erased-serde v0.4.10
+    Checking memchr v2.8.3
+   Compiling libm v0.2.16
+    Checking smallvec v1.16.3
+    Checking simd-adler32 v0.3.10
+   Compiling crc32fast v1.5.2
+   Compiling serde v1.0.229
+    Checking stable_deref_trait v1.2.1
+   Compiling num-traits v0.2.19
+   Compiling anyhow v1.0.104
+   Compiling version_check v0.9.5
+    Checking either v1.19.0
+    Checking arrayvec v0.7.8
+   Compiling syn v3.0.9
+   Compiling syn v2.0.119
+   Compiling zerocopy v0.8.63
+    Checking futures-core v0.3.34
+   Compiling zmij v1.0.23
+    Checking byteorder v1.5.0
+    Checking futures-io v0.3.34
+    Checking litemap v0.8.3
+    Checking writeable v0.6.4
+   Compiling serde_json v1.0.154
+    Checking miniz_oxide v0.9.1
+    Checking futures-sink v0.3.34
+    Checking bytes v1.12.1
+    Checking rayon v1.12.0
+    Checking lock_api v0.4.14
+    Checking windows-result v0.4.1
+    Checking windows-strings v0.5.1
+   Compiling icu_properties_data v2.3.0
+    Checking utf8_iter v1.0.4
+   Compiling icu_normalizer_data v2.3.0
+    Checking foldhash v0.2.0
+    Checking futures-channel v0.3.34
+   Compiling slotmap v1.1.1
+    Checking aho-corasick v1.1.5
+    Checking miniz_oxide v0.8.9
+    Checking futures-task v0.3.34
+   Compiling getrandom v0.3.4
+   Compiling parking_lot_core v0.9.12
+    Checking slab v0.4.12
+   Compiling pulp v0.22.3 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\pulp)
+    Checking fdeflate v0.3.7
+    Checking parking v2.2.1
+    Checking regex-automata v0.4.18
+    Checking zune-core v0.5.3
+    Checking which v8.0.6
+    Checking float-cmp v0.9.0
+   Compiling hashbrown v0.17.1
+   Compiling equivalent v1.0.3
+    Checking polycool v0.4.0
+    Checking raw-cpuid v11.6.0
+mbx[warning]: rustc cache bypassed: failed to read Cargo's build-script declarations: The system cannot find the file specified. (os error 2)
+    Checking flate2 v1.1.10
+    Checking reborrow v0.5.5
+   Compiling synstructure v0.14.0
+    Checking strict-num v0.1.1
+    Checking zune-jpeg v0.5.15
+    Checking pulp-wasm-simd-flag v0.1.1
+    Checking libbz2-rs-sys v0.2.5
+   Compiling unicode-segmentation v1.13.3
+    Checking fastrand v2.5.0
+    Checking rustc-hash v2.1.3
+    Checking arrayref v0.3.9
+    Checking png v0.18.1
+    Checking percent-encoding v2.3.2
+   Compiling ref-cast v1.0.27
+   Compiling pastey v0.2.3
+    Checking matchers v0.2.0
+    Checking kurbo v0.13.1
+   Compiling serde_derive_internals v0.30.0
+    Checking rand_core v0.9.5
+    Checking zune-inflate v0.2.54
+    Checking parking_lot v0.12.5
+    Checking bzip2 v0.6.1
+    Checking windows-threading v0.2.1
+    Checking fax v0.2.7
+   Compiling tracing-attributes v0.1.31
+   Compiling zerocopy-derive v0.8.63
+   Compiling windows-interface v0.59.3
+   Compiling windows-implement v0.60.2
+   Compiling bytemuck_derive v1.12.1
+   Compiling serde_derive v1.0.229
+   Compiling zerofrom-derive v0.1.8
+   Compiling yoke-derive v0.8.4
+    Checking serde_fmt v1.1.0
+    Checking indexmap v2.14.2
+   Compiling zerovec-derive v0.11.6
+   Compiling displaydoc v0.2.7
+   Compiling thiserror-impl v2.0.21
+   Compiling futures-macro v0.3.34
+    Checking euclid v0.22.14
+    Checking uuid v1.28.0
+   Compiling ref-cast-impl v1.0.27
+   Compiling toml_datetime v1.1.2+spec-1.1.0
+   Compiling serde_spanned v1.1.2
+    Checking form_urlencoded v1.2.2
+    Checking value-bag-serde1 v1.14.1
+   Compiling convert_case v0.10.0
+   Compiling enumn v0.1.14
+    Checking tracing v0.1.44
+    Checking windows-core v0.62.2
+   Compiling toml v1.1.8+spec-1.1.0
+   Compiling pin-project-internal v1.1.13
+    Checking lyon_geom v1.0.19
+    Checking compression-core v0.4.33
+    Checking lebe v0.5.3
+    Checking value-bag v1.14.1
+   Compiling itoa v1.0.18
+    Checking piston-float v1.0.1
+   Compiling unicode-xid v0.2.6
+   Compiling pdfium-render v0.9.4
+    Checking memmap2 v0.9.11
+    Checking siphasher v1.0.4
+   Compiling thiserror v1.0.69
+    Checking bit_field v0.10.3
+    Checking lyon_path v1.0.19
+   Compiling ztracing v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+    Checking log v0.4.34
+   Compiling heapless v0.9.3
+    Checking zerofrom v0.1.8
+   Compiling embed-resource v3.0.12
+   Compiling derive_more-impl v2.1.1
+    Checking vecmath v1.0.0
+    Checking svgtypes v0.16.1
+    Checking moxcms v0.8.1
+    Checking windows-numerics v0.3.1
+    Checking yoke v0.8.3
+    Checking gpui_util v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+    Checking tracing-log v0.2.0
+    Checking thiserror v2.0.21
+    Checking fontdb v0.24.0
+    Checking simplecss v0.2.2
+    Checking windows-collections v0.3.2
+    Checking windows-future v0.3.2
+mbx[progress]: 15s elapsed; 0 hits, 164 misses, 1 bypassed, 0 not looked up; ~0s compiler work saved
+    Checking futures-util v0.3.34
+    Checking bytemuck v1.25.2
+    Checking zerotrie v0.2.5
+    Checking collections v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+    Checking compression-codecs v0.4.45
+    Checking ferrostage-core v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-core)
+    Checking tracing-subscriber v0.3.23
+   Compiling schemars_derive v1.2.3
+   Compiling thiserror-impl v1.0.69
+    Checking event-listener v5.4.2
+    Checking font-types v0.12.6
+    Checking num-complex v0.4.6
+    Checking tiny-skia-path v0.12.0
+    Checking qoi v0.4.1
+    Checking http v1.5.0
+    Checking accesskit v0.24.1
+    Checking zerovec v0.11.8
+    Checking spin v0.9.9
+    Checking utf16string v0.2.0
+    Checking hash32 v0.3.1
+    Checking read-fonts v0.41.0
+    Checking itertools v0.15.0
+    Checking nom v8.0.0
+    Checking roxmltree v0.21.1
+    Checking libloading v0.9.0
+    Checking data-url v0.3.2
+   Compiling ztracing_macro v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+    Checking tinystr v0.8.4
+    Checking potential_utf v0.1.6
+    Checking xmlwriter v0.1.0
+    Checking unicode-vo v0.1.0
+    Checking imagesize v0.15.0
+    Checking ryu v1.0.23
+    Checking rustc-demangle v0.1.28
+    Checking pin-project v1.1.13
+    Checking icu_locale_core v2.3.0
+    Checking icu_collections v2.3.0
+    Checking maybe-owned v0.3.4
+    Checking unicode-script v0.5.8
+    Checking static_assertions v1.1.0
+    Checking dyn-clone v1.0.20
+    Checking base64 v0.23.1
+    Checking pico-args v0.5.0
+    Checking float_next_after v1.0.0
+    Checking backtrace v0.3.76
+    Checking futures-executor v0.3.34
+   Compiling perf v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling windows-registry v0.6.1
+    Checking http-body v1.1.0
+    Checking chrono v0.4.45
+    Checking serde_urlencoded v0.7.1
+    Checking tiny-skia v0.12.0
+    Checking flume v0.12.0
+    Checking schemars v1.2.3
+    Checking event-listener-strategy v0.5.4
+    Checking icu_provider v2.3.1
+    Checking async-compression v0.4.50
+    Checking windows v0.62.2
+    Checking rgb v0.8.53
+    Checking lyon_tessellation v1.0.22
+   Compiling gpui v0.2.2 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui)
+    Checking futures v0.3.34
+    Checking lyon_algorithms v1.0.21
+    Checking derive_more v2.1.1
+   Compiling strum_macros v0.28.0
+   Compiling profiling-procmacros v1.0.18
+   Compiling derive_refineable v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+    Checking futures-lite v2.6.1
+    Checking hashbrown v0.16.1
+    Checking concurrent-queue v2.5.0
+    Checking crossbeam-queue v0.3.14
+    Checking async-task v4.7.1
+    Checking smol_str v0.3.6
+    Checking icu_properties v2.3.0
+    Checking icu_normalizer v2.3.0
+    Checking zlog v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+    Checking lopdf v0.45.0
+    Checking svg_fmt v0.4.5
+    Checking pollster v0.2.5
+   Compiling linktime-proc-macro v0.2.3
+    Checking web-time v1.1.0
+    Checking link-section v0.19.3
+    Checking atomic v0.5.3
+    Checking half v2.7.1
+    Checking ppv-lite86 v0.2.21
+    Checking fixedbitset v0.5.7
+    Checking profiling v1.0.18
+    Checking async-channel v2.5.0
+    Checking lyon v1.0.19
+    Checking accesskit_consumer v0.38.0
+    Checking gpui_shared_string v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+    Checking etagere v0.2.15
+   Compiling util_macros v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling gpui_windows v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling gpui_macros v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+    Checking refineable v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+    Checking postage v0.5.0
+    Checking taffy v0.13.0
+    Checking regex v1.13.1
+    Checking exr v1.74.2
+    Checking tiff v0.11.3
+    Checking rand_chacha v0.9.0
+    Checking futures-concurrency v7.7.1
+    Checking spin v0.10.1
+    Checking itertools v0.14.0
+    Checking ctor v1.0.13
+    Checking inventory v0.3.25
+    Checking idna_adapter v1.2.2
+    Checking waker-fn v1.2.0
+    Checking sum_tree v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+    Checking strum v0.28.0
+    Checking seahash v4.1.0
+    Checking pollster v0.4.0
+    Checking num_cpus v1.17.0
+    Checking raw-window-handle v0.6.2
+    Checking skrifa v0.44.0
+    Checking idna v1.1.0
+    Checking harfrust v0.12.0 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\harfrust)
+    Checking rand v0.9.5
+    Checking dunce v1.0.5
+    Checking notify v8.2.0
+   Compiling ferrostage-app v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app)
+mbx[progress]: 30s elapsed; 0 hits, 305 misses, 3 bypassed, 1 not looked up; ~0s compiler work saved
+    Checking url v2.5.8
+   Compiling clap_derive v4.6.7
+    Checking ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+    Checking image v0.25.10
+    Checking ferrostage-platform v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-platform)
+    Checking scheduler v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+    Checking ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+    Checking ferrostage-document v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-document)
+    Checking http_client v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+    Checking ferrostage-settings v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-settings)
+    Checking usvg v0.48.1
+    Checking clap v4.6.7
+    Checking ferrostage-media v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-media)
+    Checking resvg v0.48.1
+mbx[progress]: 45s elapsed; 0 hits, 337 misses, 3 bypassed, 8 not looked up; ~0s compiler work saved
+mbx[progress]: 1m elapsed; 0 hits, 337 misses, 3 bypassed, 8 not looked up; ~0s compiler work saved
+    Checking accesskit_windows v0.34.0 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\accesskit_windows)
+mbx[progress]: 1m 15s elapsed; 0 hits, 339 misses, 3 bypassed, 8 not looked up; ~0s compiler work saved
+    Checking gpui_platform v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+    Checking ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1m 18s
+mbx[cache]: 0 hits, 342 misses, 13 not looked up, 12 incremental, 3 bypassed; 0 B downloaded, 0 B uploaded, 361.3 MiB stored locally
+mbx[savings]: 4849 compilations dispensed from stock. inventory immaculate.
+cargo test -p ferrostage-ui --features test-support --lib --locked
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.00s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-c0c859c36d428c4a.exe)
+
+running 126 tests
+test display_settings::tests::topology_diagram_preserves_negative_coordinates_and_physical_aspect ... ok
+test policy::tests::fullscreen_request_without_native_bounds_evidence_is_not_confirmation ... ok
+test policy::tests::placement_v10_work_area_and_narrow_clients_leave_native_frame_space ... ok
+test display_settings::tests::stale_missing_ambiguous_and_conflicting_destinations_are_rejected ... ok
+test policy::tests::placement_v10_portrait_native_overflow_is_not_confirmation ... ok
+test policy::tests::single_monitor_requires_explicit_windowed_mode ... ok
+test display_settings::tests::numbering_is_shared_stable_and_not_serialized ... ok
+test policy::tests::swap_prepares_authority_without_mutating_old_settings ... ok
+test policy::tests::mapping_rejects_partial_duplicate_and_unknown_sets ... ok
+test policy::tests::uuid_includes_terminator_and_full_utf16_buffer ... ok
+test display_settings::tests::single_screen_choices_roundtrip_without_duplicate_role_or_inherited_mode ... ok
+test policy::tests::configured_bindings_cannot_collide_with_shell_shortcuts ... ok
+test policy::tests::conflicts_are_disabled_after_normalization ... ok
+test settings_panel::tests::recent_limit_trims_and_coupled_timer_validation_is_atomic ... ok
+test locale::tests::catalogs_have_identical_keys_and_interpolation_fields ... ok
+test display_settings::tests::identical_driver_names_become_distinct_cards ... ok
+test settings_panel::tests::field_edits_reject_fallbacks_and_keep_unrelated_values ... ok
+test media_playback::tests::original_beamer_movie_uses_actual_generated_video_and_parameters ... ok
+test shell::tests::close_hook_topology_cancels_pending_under_controller_lease ... ok
+test shell::tests::idle_presenter_has_no_home_button ... ok
+test shell::tests::displays_v8_topology_revision_invalidates_draft_and_distinguishes_failure ... ok
+test shell::tests::close_hook_timeout_preserves_ready_and_current_presenter ... ok
+test shell::tests::displays_v8_identify_is_label_only_expires_and_is_refused_presenting ... ok
+test shell::tests::close_hook_replacement_keeps_live_session_and_user_close_stops ... ok
+test shell::tests::input_route_open_button_releases_window_before_activation ... ok
+test shell::tests::displays_v8_failed_no_play_placement_and_creation_roll_back_running_session ... ok
+test shell::tests::placement_v10_scaled_client_size_cannot_commit ... ok
+test shell::tests::input_route_ctrl_o_releases_window_before_activation ... ok
+test shell::tests::placement_v11_windows_frame_delta_is_corrected_from_actual_readback ... ok
+test shell::tests::home_focused_long_path_wraps_inside_minimum_width ... ok
+test shell::tests::displays_v8_valid_migration_preserves_page_blank_timer_and_save_retry ... ok
+test shell::tests::retirement_v12_app_shutdown_cancels_pending_poll_wake ... ok
+test shell::tests::presenter_creation_draws_while_controller_is_leased ... ok
+test shell::tests::retirement_v12_presenter_close_cancels_pending_poll_wake ... ok
+test media_playback::tests::successful_same_generation_notes_reconfigure_invalidates_old_public_pixels ... ok
+test media_playback::tests::real_public_crop_ready_blank_notes_page_generation_and_close_isolate_media ... ok
+test shell::tests::audience_budget_failure_is_localized_visible_and_recovers_without_losing_shell_errors ... ok
+test shell::tests::displays_v8_no_play_waits_for_success_then_stops_freezes_and_closes ... ok
+test shell::tests::retirement_v13_presenter_close_cancels_pending_import_read ... ok
+test shell::tests::retirement_v13_shutdown_cancels_pending_import_read ... ok
+test shell::tests::input_route_audience_open_activates_presenter_and_escape_cancels ... ok
+test shell::tests::retirement_v14_retained_hover_cannot_visit_removed_window ... ok
+test shell::tests::retirement_v14_retained_input_hit_test_and_frame_are_inert ... ok
+test shell::tests::retirement_v14_live_callbacks_apply_and_leased_errors_remain_visible ... ok
+test shell::tests::retirement_v14_retained_notifications_cannot_visit_removed_window ... ok
+test shell::tests::retirement_v14_deferred_appearance_rechecks_owner ... ok
+test shell::tests::home_from_presentation_closes_the_audience ... ok
+test shell::tests::retirement_v8_user_close_is_deferred_and_stops_projection ... ok
+test shell::tests::retirement_v13_shutdown_cancels_pending_path_prompt ... ok
+test shell::tests::placement_v10_uncorrected_client_times_out_and_keeps_running_owner ... ok
+test shell::tests::retirement_v13_nonowner_close_preserves_read_and_prompt_completion ... ok
+test shell::tests::displays_v8_future_settings_disable_mouse_keyboard_and_apply ... ok
+test shell::tests::retirement_v8_queued_activation_does_not_visit_removed_window ... ok
+test shell::tests::retirement_v8_pending_and_retired_close_requests_cannot_quit_replacement ... ok
+test shell::tests::v5_audience_loss_recovers_fullscreen_presenter_windowed ... ok
+test shell::tests::home_keyboard_reaches_recents_and_restores_modal_focus_at_minimum_size ... ok
+test shell::tests::repeated_shell_ticks_never_start_or_advance_a_presentation ... ok
+test shell::tests::retirement_v12_nonowner_close_keeps_live_polling ... ok
+test shell::tests::settings_v09_dual_gpu_preflight_never_applies_half_a_transaction ... ok
+test shell::tests::displays_v8_mouse_draft_cancel_keeps_windows_core_and_disk ... ok
+test shell::tests::v5_escape_from_jump_discards_input_without_stopping ... ok
+test shell::tests::home_returns_to_welcome_and_keeps_recent_files ... ok
+test shell::tests::v5_idle_navigation_and_blank_actions_do_not_report_core_errors ... ok
+test shell::tests::placement_v11_large_or_nonconvergent_frame_response_stops_and_rolls_back ... ok
+test shell::tests::presenter_bar_shares_one_row_and_notes_fill_the_column ... ok
+test shell::tests::v5_swap_failure_discards_abandoned_jump_input ... ok
+test shell::tests::v5_jump_numeric_text_precedes_configured_navigation ... ok
+test shell::tests::v5_recovery_replaces_stale_display_but_preserves_initial_fullscreen ... ok
+test shell::tests::displays_v9_conflict_and_offline_draft_refuse_apply_from_real_controls ... ok
+test shell::tests::v6_notify_preserves_valid_control_and_audience_activation ... ok
+test shell::tests::v5_topology_unavailable_recovers_windowed_without_restart ... ok
+test shell::tests::v5_tab_focused_open_consumes_enter_and_space_before_global_actions ... ok
+test shell::tests::v6_focus_chosen_after_draw_wins_over_deferred_recovery ... ok
+test shell::tests::v5_open_rechecks_stage_when_activation_resolves ... ok
+test shell::tests::v5_presenting_open_refuses_chooser_after_presenter_activation ... ok
+test shell::tests::workbench_controls_jump_directly_and_keep_note_pages_private ... ok
+test shell::tests::v5_stop_discards_jump_input_before_following_navigation ... ok
+test shell::tests::v5_tab_focused_stop_consumes_enter_and_space ... ok
+test shell::tests::workbench_shortcuts_are_wired_without_stale_feature_warnings ... ok
+test shell::tests::settings_v09_shared_display_apply_cancel_timeout_and_topology ... ok
+test slide_surface::staging_tests::real_composite_paints_pdf_then_media_then_laser_and_blocks_wrong_page_fallback ... ok
+test shell::tests::settings_v09_closed_panel_split_waits_for_apply_and_rollback_ack ... ok
+test shell::tests::v6_removed_jump_commit_restores_keyboard_traversal ... ok
+test slide_surface::tests::letterbox_inverse_ignores_bars_and_roundtrips_at_4k ... ok
+test tests::gpui_pin_is_the_zed_tag_not_crates_io ... ok
+test slide_surface::staging_tests::real_paint_uploads_with_empty_mask_culls_scene_and_reports_atlas_failure ... ok
+test texture_cache::tests::media_instance_change_retires_prior_pixels_before_failed_new_upload ... ok
+test texture_cache::tests::budget_shrink_rejects_without_losing_fallback_and_priority_accounts_for_swap ... ok
+test shell::tests::v5_jump_editing_precedes_global_backspace_and_numeric_bindings ... ok
+test texture_cache::tests::repaint_recovers_and_capacity_refusal_retries_only_after_space_is_available ... ok
+test texture_cache::tests::staged_upload_keeps_old_pixels_counts_both_and_promotes_the_same_arc ... ok
+test shell::tests::settings_v09_worker_ack_serializes_changes_and_failed_display_rolls_budget_back ... ok
+test shell::tests::v6_save_failure_has_one_owner_and_keeps_unrelated_error ... ok
+test texture_cache::tests::upload_failure_repaints_complete_identity_retires_candidate_and_safety_wins ... ok
+test theme::tests::semantic_button_states_keep_text_and_boundaries_readable ... ok
+test theme::tests::used_text_and_focus_pairs_meet_design_contrast ... ok
+test transactions::tests::failed_second_replacement_returns_only_new_resources_for_cleanup ... ok
+test transactions::tests::invalid_import_preserves_document_state_and_presenter_path ... ok
+test transactions::tests::shutdown_never_publishes_live_between_curtain_and_close ... ok
+test shell::tests::v6_removed_stop_restores_keyboard_traversal ... ok
+test transactions::tests::startup_import_survives_presenter_confirmation_only ... ok
+test transactions::tests::focus_waits_for_both_observations_and_rejects_retired_owners ... ok
+test transactions::tests::invalid_jump_text_cannot_resolve_to_a_content_page ... ok
+test transactions::tests::retiring_old_windows_cannot_stop_replacements ... ok
+test workbench::tests::audience_target_respects_its_half_of_the_gpu_budget ... ok
+test transactions::tests::settings_escape_closes_modal_before_stop ... ok
+test workbench::tests::awaiting_frame_keeps_complete_old_identity_and_immediate_covers ... ok
+test workbench::tests::direct_jumps_hold_previous_complete_projection_until_matching_frame ... ok
+test workbench::tests::projection_rejects_every_mismatched_key_and_presenter_notes_priority ... ok
+test workbench::tests::closed_grid_schedules_no_thumbnails_and_repeated_schedule_submits_nothing ... ok
+test shell::tests::workbench_narrow_stacks_and_grid_wheel_never_navigates ... ok
+test shell::tests::v6_import_and_swap_keep_runtime_results_when_saving_fails ... ok
+test shell::tests::v5_nonbutton_navigation_and_disabled_controls_keep_their_scope ... ok
+test shell::tests::settings_v09_edit_save_retry_readonly_and_runtime_consumers ... ok
+test shell::tests::v6_removed_modal_button_restores_keyboard_traversal ... ok
+test shell::tests::v6_retry_success_clears_save_feedback_and_restores_keyboard ... ok
+test shell::tests::workbench_pointer_exit_ends_gesture_until_new_press ... ok
+test shell::tests::v5_modal_close_button_has_priority_over_global_enter_and_space ... ok
+test shell::tests::workbench_split_release_outside_saves_and_future_schema_stays_readonly ... ok
+test shell::tests::settings_v09_values_reach_workbench_timer_layout_pointer_clock_and_diagnostics ... ok
+test shell::tests::thumbnail_hover_and_cancelled_press_are_inert_both_click_targets_jump ... ok
+test shell::tests::narrow_v10_display_panel_keeps_apply_cancel_inside_client ... ok
+test shell::tests::settings_v09_numeric_editor_and_slider_use_real_keyboard_events ... ok
+test shell::tests::settings_v09_all_categories_render_and_footer_stays_reachable ... ok
+test shell::tests::settings_v09_record_replaces_keymap_and_capture_precedes_actions ... ok
+test shell::tests::home_layout_keeps_natural_action_and_compact_rows_across_window_range ... ok
+
+test result: ok. 126 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.12s
+

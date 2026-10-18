@@ -32,6 +32,11 @@ colors:
   error-dark: "#FFA5A0"
   audience-curtain: "#000000"
 typography:
+  home-brand:
+    fontFamily: "Georgia, serif"
+    fontSize: 32px
+    lineHeight: 38px
+    fontWeight: 600
   display:
     fontFamily: "Georgia, SimSun, serif"
     fontSize: 28px
@@ -64,6 +69,7 @@ spacing:
   lg: 24px
   xl: 32px
 sizes:
+  home-content-max: 760px
   control: 44px
   focus-width: 2px
   focus-gap: 2px
@@ -73,6 +79,7 @@ sizes:
 
 <!-- design-md: entry=brand:claude; source=https://github.com/VoltAgent/awesome-design-md@3b60532; license=MIT -->
 <!-- customized: FerroStage native presenter; accessible clay actions; light/dark palettes; system fonts; task-owned runtime verification. -->
+<!-- customized: home-design-refactor, dedicated FerroStage wordmark, compact file entry, Idle-only information hierarchy. -->
 
 ## Overview
 
@@ -88,11 +95,13 @@ PDF pixels, rasterized speaker notes, media, annotation colors, and black/white 
 
 ## Typography
 
-Use installed system fonts; never download proprietary brand fonts. Georgia is reserved for the Idle welcome title and short empty-state headings. Controls, filenames, and settings use the sans stack; elapsed time uses the monospace stack. Font fallback must cover Chinese. Text scaling must not clip labels or hide Start/Stop. Long filenames truncate in the header and expose the full name on demand.
+Use installed system fonts; never download proprietary brand fonts. Idle uses a dedicated FerroStage wordmark in Georgia, 32/38px semibold, separate from ordinary headings. All other home copy uses the sans stack: instruction 14/22px, actions and filenames 14/20px, recent section and parent paths 12/18px. Do not apply Latin tracking to Chinese. Other short empty-state headings may use the display stack. Controls, filenames, and settings use the sans stack; elapsed time uses the monospace stack. Font fallback must cover Chinese. Text scaling must not clip labels or hide Start/Stop. Long filenames truncate in the header and expose the full name on demand.
 
 ## Layout
 
-07: compact header with filename and textual stage, a dominant Open PDF action in Idle, and Start/Stop in Ready/Presenting. Show the reason beside a disabled Start button. Keep import errors and topology warnings in the presenter.
+Idle: one app-content FerroStage wordmark, quiet Settings/Displays utilities, one short instruction, one natural-width Open PDF action, then up to three recent-file rows. Native Idle title is `FerroStage`. Omit document-status chrome, clocks/timer, duplicate Open and disabled Start footer in Idle. Preserve import/topology warnings and unsaved/save-error Retry. Ready/Presenting retain filename/stage header and Start/Stop; show the reason beside a disabled Start button there. Visibility changes never mutate timer/settings state.
+
+Home content is a top-anchored, centered column capped at 760px. Use 32px side gutters at widths >=800px, 16px below; top inset 48px at heights >=600px, 24px below. Brand, copy, action and recent text share a left edge. Utilities wrap into a separate row below 600px width. Section spacing uses 8/16/24/32px. The home scroll container includes conditional feedback and remains usable at 320x240 logical client size. No large welcome card or fixed bottom action strip.
 
 08: current slide on the left, current notes above the next slide on the right. Notes initially occupy 65% of the right column; the effective notes share is clamped to 55–80%, including legacy settings. The horizontal divider measures the notes share from the top. Header holds clock/timer; bottom toolbar holds navigation and tools. Keep slide aspect ratio and letterboxing. Recent files belong only to Idle. Thumbnails appear only in the on-demand grid; the legacy show_thumbnail_strip setting is read-compatible but ignored. Selecting a page jumps directly; typing in the page dialog does not navigate. Time passing never changes slides.
 
@@ -110,11 +119,13 @@ Controls use md radius, panels lg, status badges sm. Content images retain their
 
 **button-primary**: label plus optional progress indicator, primary/on-primary, label type, control height, xs/md padding, md radius. Hover uses primary-hover; pressed uses primary-active; focus adds the focus ring; disabled uses surface-card/muted with explanatory text and no action; loading preserves geometry and blocks duplicate invocation; error displays text and retry. Dark primary controls also use border-dark to separate the clay fill from elevated surfaces.
 
+**home-open / home-recent / home-utility**: reuse shared activation/focus/disabled/accessibility dispatch while keeping home faces distinct. Open retains the 44px face height plus existing focus reservation, with natural 120-200px face width for shipped labels at default scale. Recent rows are flat, left aligned, 48-56px outer targets with <=8px gaps, a filename and actual parent path. They have quiet hover/pressed surfaces and visible keyboard focus, without permanent command-button outlines. Reveal complete paths on hover and keyboard focus and include them in accessible labels. Same-named files retain distinguishable parent context. Rows may grow at increased text scale. Settings/Displays keep explicit text and >=44px targets. Do not shrink global CONTROL to fix home width. Keep 0/1/3 recent states and existing busy/import guards; never invent dates, metadata or shortcuts.
+
 **button-secondary / tool-button**: utility controls use quiet surface/body and md radius. Navigation uses strong neutral ink/canvas fill and a compact 4px radius. Black/white audience toggles use labeled black/white swatches with a visible border. Drawing tools use outlined pill shapes and a checkmark for the selected tool; selection never relies on color alone. Stop and Clear use semantic error text/border on the soft surface. Start retains the filled clay action. Every variant shares keyboard, accessibility, disabled and focus handling. Hover changes the surface; pointer press moves the face down 1px without animation. Text contrast is at least 4.5:1 and focus/boundary contrast at least 3:1 in both themes.
 
 **field / select / slider / keybinding-row**: label above or beside the control, description below, surface-soft/body and border. Hover uses surface-card; focus uses focus; invalid uses error plus a specific message. Read-only future-version controls cannot mutate settings; save failure leaves effective session values visible with Retry. Keyboard conflicts are named, not color-only. Native accessibility names and values are mandatory where GPUI supports them; unsupported behavior remains an explicit gap.
 
-**status / timer**: stage text always accompanies color. Timer warnings use semantic text with a label/icon, retain legibility in both themes, and read core elapsed time. No flashing or time-dependent motion as the sole signal.
+**status / timer**: on document screens stage text always accompanies color. Timer warnings use semantic text with a label/icon, retain legibility in both themes, and read core elapsed time. Idle omits this presentation without changing data or preferences. No flashing or time-dependent motion as the sole signal.
 
 **modal / category-nav**: presenter-owned; Escape closes the topmost modal and consumes the event. Tab/Shift+Tab follow visible order, Enter/Space activate; restore focus to the invoker. Settings navigation marks selection with text weight and a border as well as a surface change.
 

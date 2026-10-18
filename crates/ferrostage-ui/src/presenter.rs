@@ -1,3 +1,4 @@
+mod home_view;
 mod settings_view;
 mod workbench_view;
 use crate::{
@@ -82,6 +83,9 @@ pub(crate) struct Presenter {
     locale: crate::locale::Locale,
     focus: FocusHandle,
     modal_focus: FocusHandle,
+    home_focus: [FocusHandle; 7],
+    home_scroll: gpui::ScrollHandle,
+    home_anchors: [gpui::ScrollAnchor; 7],
     return_focus: Option<FocusHandle>,
     had_modal: bool,
     textures: std::rc::Rc<
@@ -179,12 +183,28 @@ impl Presenter {
             .detach();
         let focus = cx.focus_handle();
         window.focus(&focus, cx);
+        let home_scroll = gpui::ScrollHandle::new();
+        let home_anchors =
+            std::array::from_fn(|_| gpui::ScrollAnchor::for_handle(home_scroll.clone()));
+        let home_focus = std::array::from_fn(|_| cx.focus_handle());
+        for (index, handle) in home_focus.iter().enumerate() {
+            cx.on_focus(handle, window, move |this, window, cx| {
+                this.home_anchors[index].scroll_to(window, cx);
+                cx.notify();
+            })
+            .detach();
+            cx.on_focus_out(handle, window, |_, _, _, cx| cx.notify())
+                .detach();
+        }
         Self {
             shell,
             data,
             locale,
             focus,
             modal_focus: cx.focus_handle(),
+            home_focus,
+            home_scroll,
+            home_anchors,
             return_focus: None,
             had_modal: false,
             textures: Default::default(),
@@ -213,11 +233,6 @@ impl Presenter {
         intent: Intent,
         palette: Palette,
     ) -> Stateful<Div> {
-        let target = self.shell.clone();
-        let keyboard = target.clone();
-        let a11y = target.clone();
-        let click = intent.clone();
-        let accessible = intent.clone();
         let kind = match &intent {
             Intent::Start => theme::ButtonKind::Primary,
             Intent::Stop | Intent::Core(ferrostage_core::PresentationCommand::ClearStrokes) => {
@@ -246,27 +261,8 @@ impl Presenter {
             label
         };
         let style = palette.button(kind, enabled, selected);
-        div()
-            .id(SharedString::from(id.clone()))
-            .debug_selector(|| id.clone())
-            .role(Role::Button)
-            .key_context("FerroStageButton")
-            .max_w_full()
-            .min_w_0()
-            .accessibility_id(SharedString::from(id.clone()))
-            .aria_label(if enabled {
-                label.clone()
-            } else {
-                self.locale
-                    .format("disabled-label", &[("label", label.clone())])
-            })
-            .tab_index(0)
-            .tab_stop(enabled)
-            .border(px(theme::FOCUS_WIDTH))
-            .border_color(rgb(palette.canvas))
+        self.activation_target(id.clone(), label.clone(), enabled, intent, palette)
             .rounded(px(style.radius + theme::FOCUS_GAP))
-            .p(px(theme::FOCUS_GAP))
-            .focus(|style| style.border_color(rgb(palette.focus)))
             .child(
                 div()
                     .id(SharedString::from(format!("{id}-face")))
@@ -289,6 +285,62 @@ impl Presenter {
                             .active(move |state| state.bg(rgb(style.pressed)).top(px(1.)))
                     }),
             )
+    }
+
+    /// Shared event/focus boundary; each caller retains its own visual face.
+    fn activation_target(
+        &self,
+        id: String,
+        label: String,
+        enabled: bool,
+        intent: Intent,
+        palette: Palette,
+    ) -> Stateful<Div> {
+        let target = self.shell.clone();
+        let keyboard = target.clone();
+        let a11y = target.clone();
+        let click = intent.clone();
+        let accessible = intent.clone();
+        let home_index = (self.data.stage == SessionStage::Idle)
+            .then(|| {
+                [
+                    "settings",
+                    "displays",
+                    "welcome-open",
+                    "recent-0",
+                    "recent-1",
+                    "recent-2",
+                    "retry-save",
+                ]
+                .iter()
+                .position(|candidate| *candidate == id)
+            })
+            .flatten();
+        div()
+            .id(SharedString::from(id.clone()))
+            .debug_selector(|| id.clone())
+            .role(Role::Button)
+            .key_context("FerroStageButton")
+            .max_w_full()
+            .min_w_0()
+            .accessibility_id(SharedString::from(id.clone()))
+            .aria_label(if enabled {
+                label.clone()
+            } else {
+                self.locale
+                    .format("disabled-label", &[("label", label.clone())])
+            })
+            .tab_index(0)
+            .tab_stop(enabled)
+            .border(px(theme::FOCUS_WIDTH))
+            .border_color(rgb(palette.canvas))
+            .rounded(px(theme::RADIUS + theme::FOCUS_GAP))
+            .p(px(theme::FOCUS_GAP))
+            .focus(|style| style.border_color(rgb(palette.focus)))
+            .when_some(home_index, |view, index| {
+                view.track_focus(&self.home_focus[index].clone().tab_stop(enabled))
+                    .anchor_scroll(Some(self.home_anchors[index].clone()))
+            })
             .on_click(move |_, _, cx| {
                 if enabled {
                     actions::dispatch(&target, click.clone(), cx);
@@ -524,13 +576,15 @@ impl Render for Presenter {
             .or_else(|| self.data.error.clone());
         let warnings = self.data.warnings.clone();
         let reason = self.data.start_reason.clone();
-        let loading = self.data.loading;
         let busy = self.data.busy;
         let dirty = self.data.dirty;
         let save_error = self.data.save_error.clone();
         let pages = self.data.pages;
-        let recent = self.data.recent.clone();
-        window.set_window_title(&format!("{filename} — {stage_label} — FerroStage"));
+        if stage == SessionStage::Idle {
+            window.set_window_title("FerroStage");
+        } else {
+            window.set_window_title(&format!("{filename} — {stage_label} — FerroStage"));
+        }
         if modal.is_some() && !self.had_modal {
             self.return_focus = window.focused(cx);
             window.focus(&self.modal_focus, cx);
@@ -726,51 +780,27 @@ impl Render for Presenter {
         }
         let drop_target = self.shell.clone();
         let document_open = stage != SessionStage::Idle;
-        let mut body = div()
-            .id("presenter-content")
-            .flex_1()
-            .min_h_0()
-            .p(px(if document_open { 12. } else { 24. }))
-            .gap(px(if document_open { 8. } else { 16. }))
-            .flex()
-            .flex_col()
-            .when(document_open, |view| view.overflow_hidden())
-            .when(!document_open, |view| view.overflow_y_scroll());
-        if stage == SessionStage::Idle {
-            body = body
+        let mut body = if document_open {
+            div()
+                .id("presenter-content")
+                .flex_1()
+                .min_h_0()
+                .p(px(12.))
+                .gap(px(8.))
+                .flex()
+                .flex_col()
+                .overflow_hidden()
                 .child(
                     div()
-                        .font(theme::display_font())
-                        .text_size(px(28.))
-                        .text_color(rgb(p.ink))
-                        .child("FerroStage"),
+                        .flex_1()
+                        .min_h_0()
+                        .flex()
+                        .flex_col()
+                        .child(self.workbench_panel(p, window, cx)),
                 )
-                .child(div().child(l.text("welcome")))
-                .child(
-                    self.button(
-                        "welcome-open".into(),
-                        if loading {
-                            l.text("loading")
-                        } else {
-                            l.text("open")
-                        }
-                        .into(),
-                        self.data.can_open,
-                        true,
-                        Intent::Open,
-                        p,
-                    ),
-                );
         } else {
-            body = body.child(
-                div()
-                    .flex_1()
-                    .min_h_0()
-                    .flex()
-                    .flex_col()
-                    .child(self.workbench_panel(p, window, cx)),
-            );
-        }
+            self.home_content(p, window)
+        };
 
         if let Some(error) = error {
             body = body.child(
@@ -809,80 +839,89 @@ impl Render for Presenter {
                     p,
                 )));
         }
-        if stage == SessionStage::Idle && !recent.is_empty() {
-            body = body.child(
-                div()
-                    .flex_shrink_0()
-                    .text_color(rgb(p.muted))
-                    .child(l.text("recent")),
-            );
-            for (index, path) in recent.into_iter().enumerate() {
-                let label = std::path::Path::new(&path)
-                    .file_name()
-                    .map(|name| name.to_string_lossy().into_owned())
-                    .unwrap_or_else(|| path.clone());
-                body = body.child(div().flex_shrink_0().child(self.button(
-                    format!("recent-{index}"),
-                    label,
-                    !busy,
-                    false,
-                    Intent::Import(path.into()),
-                    p,
-                )));
-            }
-        }
+        let body = if document_open {
+            body.into_any_element()
+        } else {
+            div()
+                .id("presenter-content")
+                .flex_1()
+                .min_h_0()
+                .min_w_0()
+                .overflow_y_scroll()
+                .track_scroll(&self.home_scroll)
+                .flex()
+                .flex_col()
+                .items_center()
+                .px(px(if window.viewport_size().width < px(800.) {
+                    16.
+                } else {
+                    32.
+                }))
+                .pt(px(if window.viewport_size().height < px(600.) {
+                    24.
+                } else {
+                    48.
+                }))
+                .pb(px(24.))
+                .child(body.flex_shrink_0())
+                .into_any_element()
+        };
         root.track_focus(&self.focus)
             .on_drop::<ExternalPaths>(move |paths, _, cx| {
                 if let Some(path) = paths.paths().first() {
                     actions::dispatch(&drop_target, Intent::Import(path.clone()), cx);
                 }
             })
-            .child(self.command_bar(p, window))
+            .when(document_open, |view| {
+                view.child(self.command_bar(p, window))
+            })
             .child(body)
             .when(!self.data.workbench.steps.is_empty(), |view| {
                 view.child(self.tools_panel(p))
             })
-            .child(
-                div()
-                    .p(px(16.))
-                    .border_t_1()
-                    .border_color(rgb(p.border))
-                    .flex()
-                    .flex_col()
-                    .gap(px(8.))
-                    .child(if stage == SessionStage::Presenting {
-                        self.button(
-                            "stop".into(),
-                            l.text("stop").into(),
-                            true,
-                            true,
-                            Intent::Stop,
-                            p,
-                        )
-                    } else {
-                        self.button(
-                            "start".into(),
-                            if busy {
-                                l.text("preparing")
-                            } else {
-                                l.text("start")
-                            }
-                            .into(),
-                            reason.is_none(),
-                            true,
-                            Intent::Start,
-                            p,
-                        )
-                    })
-                    .when_some(
-                        if stage != SessionStage::Presenting {
-                            reason
+            .when(document_open, |view| {
+                view.child(
+                    div()
+                        .p(px(16.))
+                        .border_t_1()
+                        .border_color(rgb(p.border))
+                        .flex()
+                        .flex_col()
+                        .gap(px(8.))
+                        .child(if stage == SessionStage::Presenting {
+                            self.button(
+                                "stop".into(),
+                                l.text("stop").into(),
+                                true,
+                                true,
+                                Intent::Stop,
+                                p,
+                            )
                         } else {
-                            None
-                        },
-                        |view, reason| view.child(div().text_color(rgb(p.muted)).child(reason)),
-                    ),
-            )
+                            self.button(
+                                "start".into(),
+                                if busy {
+                                    l.text("preparing")
+                                } else {
+                                    l.text("start")
+                                }
+                                .into(),
+                                reason.is_none(),
+                                true,
+                                Intent::Start,
+                                p,
+                            )
+                        })
+                        .when_some(
+                            if stage != SessionStage::Presenting {
+                                reason
+                            } else {
+                                None
+                            },
+                            |view, reason| view.child(div().text_color(rgb(p.muted)).child(reason)),
+                        ),
+                )
+            })
             .into_any_element()
     }
 }

@@ -24,6 +24,14 @@ Task07 links the approved maintained tagged GPUI source through an optional feat
 
 Root `DESIGN.md` defines the Claude-inspired FerroStage presenter theme. Task 07 creates the single `ui/src/theme.rs` token layer; 08 and 09 consume it. Use system fonts, explicit control states and visible keyboard focus. Never theme PDF/media pixels or pass settings/theme controllers to the audience snapshot. Source token contrast evidence does not establish native UI verification.
 
+### Idle home composition
+
+`Presenter::home_content` consumes captured `PresenterData`, derives recent basenames/parents without filesystem reads, and retains the three-entry recent limit and original `Intent::Import` paths. Idle has one `welcome-open`, one dedicated wordmark, quiet Settings/Displays and flat recent rows. It omits document header/timer/Start footer; Ready/Presenting retain those controls and their existing state. Keep common import/topology/save feedback and Retry inside the scrollable home column.
+
+Shared activation owns stable identity, focus, disabled guards and deferred mouse/Enter/Space/accessibility dispatch; home-specific faces must not change shared button geometry. Full recent paths must be available to both pointer and keyboard users, with full-path accessible labels. Test actual input, modal focus return, bounded natural-width Open/rows, 320x240 scrolling, and preserved document-stage header/notes geometry. Do not infer native visual quality from headless geometry tests.
+
+Home retains its own control focus handles and uses GPUI scroll anchors inside the home scroll container so keyboard traversal can reach controls outside the current viewport. A focus-handle assertion alone is insufficient: at 320x240 the focused control's rendered bounds must also lie in the visible client area. Keep document-stage Tab routing unchanged.
+
 ## Synchronous window creation
 
 The pinned GPUI App::open_window draws the first frame synchronously. During a Shell entity update, creating a presenter whose render calls Shell::read panics because the controller is already leased. Prepare the minimal rendered data from the current controller borrow, pass it into the presenter, and refresh it from model notifications after the update ends. Keep commands on WeakEntity<Shell>; do not clone the entire controller or document into the view. Audience remains snapshot-only.

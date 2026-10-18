@@ -1,0 +1,12 @@
+{
+  "window": {
+    "app": "OpenAI.Codex_2p2nqsd0c76g0!App",
+    "id": 2036064,
+    "title": "FerroStage — 未打开文档 — FerroStage"
+  },
+  "screenshot": {
+    "width": 1102,
+    "height": 791
+  },
+  "notes": "Visible native baseline, foreground capture. Client geometry should be compared separately via GPUI tests."
+}

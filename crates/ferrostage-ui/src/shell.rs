@@ -4739,6 +4739,182 @@ mod tests {
         let mut visual = gpui::VisualTestContext::from_window(handle, cx);
         assert!(visual.debug_bounds("home").is_none());
         assert!(visual.debug_bounds("welcome-open").is_some());
+        assert!(visual.debug_bounds("home-brand").is_some());
+        assert!(visual.debug_bounds("home-empty").is_some());
+        for hidden in [
+            "open",
+            "document-title",
+            "stage-label",
+            "presenter-timer",
+            "start",
+            "stop",
+            "presenter-bar",
+        ] {
+            assert!(
+                visual.debug_bounds(hidden).is_none(),
+                "Idle rendered {hidden}"
+            );
+        }
+    }
+
+    #[gpui::test]
+    fn home_layout_keeps_natural_action_and_compact_rows_across_window_range(
+        cx: &mut TestAppContext,
+    ) {
+        for language in ["en-US", "zh-CN"] {
+            for theme in [
+                ferrostage_settings::Theme::Light,
+                ferrostage_settings::Theme::Dark,
+            ] {
+                let (shell, _) = headless_shell(cx);
+                let handle = shell.update(cx, |shell, cx| {
+                    shell.locale = crate::locale::Locale::new(language);
+                    shell.settings.settings.general.theme = theme;
+                    shell.presenter = Some(test_window(shell, false, cx));
+                    shell.presenter.as_ref().unwrap().handle
+                });
+                for count in [0, 1, 3, 4] {
+                    shell.update(cx, |shell, cx| {
+                        shell.settings.settings.general.recent_files = [
+                            r"C:\演示资料\项目评审\同名文件.pdf",
+                            r"D:\Archive\Long directory with spaces\同名文件.pdf",
+                            r"D:\AnotherVeryLongDirectoryWithoutSpacesForNarrowWindowVerification\presentation-with-a-long-filename.pdf",
+                            r"D:\hidden-fourth.pdf",
+                        ].into_iter().take(count).map(String::from).collect();
+                        cx.notify();
+                    });
+                    for (width, height) in [
+                        (1440., 900.),
+                        (1100., 760.),
+                        (799., 600.),
+                        (800., 600.),
+                        (599., 600.),
+                        (600., 600.),
+                        (320., 760.),
+                        (1100., 240.),
+                        (320., 240.),
+                        (390., 844.),
+                        (320., 640.),
+                    ] {
+                        cx.simulate_window_resize(handle, size(px(width), px(height)));
+                        redraw(handle, cx);
+                        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+                        let column = visual.debug_bounds("home-content").unwrap();
+                        let brand = visual.debug_bounds("home-brand").unwrap();
+                        let utilities = visual.debug_bounds("home-utilities").unwrap();
+                        let open = visual.debug_bounds("welcome-open").unwrap();
+                        let face = visual.debug_bounds("welcome-open-face").unwrap();
+                        assert!(column.size.width <= px(760.));
+                        assert!(column.origin.x >= px(16.) && column.right() <= px(width - 16.));
+                        assert!(face.size.width >= px(120.) && face.size.width <= px(200.));
+                        assert!(face.size.height >= px(44.));
+                        assert!((open.origin.x - column.origin.x).abs() <= px(2.));
+                        assert!((brand.origin.x - column.origin.x).abs() <= px(2.));
+                        if width < 600. {
+                            assert!(utilities.origin.y >= brand.bottom());
+                        }
+                        let mut previous_bottom = None;
+                        for index in 0..count.min(3) {
+                            let row = visual
+                                .debug_bounds(["recent-0", "recent-1", "recent-2"][index])
+                                .unwrap();
+                            assert!(
+                                (48. ..=56.).contains(&f32::from(row.size.height)),
+                                "{row:?}"
+                            );
+                            assert!((row.origin.x - column.origin.x).abs() <= px(2.));
+                            assert!(row.right() <= column.right());
+                            if let Some(bottom) = previous_bottom {
+                                assert!(row.origin.y - bottom <= px(8.));
+                            }
+                            previous_bottom = Some(row.bottom());
+                        }
+                        assert!(visual.debug_bounds("recent-3").is_none());
+                        assert_eq!(visual.debug_bounds("home-empty").is_some(), count == 0);
+                        println!(
+                            "HOME_GEOMETRY locale={language} theme={theme:?} recents={count} client={width}x{height} column={column:?} brand={brand:?} utilities={utilities:?} open_target={open:?} open_face={face:?}"
+                        );
+                    }
+                }
+                handle
+                    .update(cx, |_, window, _| window.remove_window())
+                    .unwrap();
+            }
+        }
+    }
+
+    #[gpui::test]
+    fn home_keyboard_reaches_recents_and_restores_modal_focus_at_minimum_size(
+        cx: &mut TestAppContext,
+    ) {
+        let (shell, handle) = input_presenter(cx);
+        shell.update(cx, |shell, cx| {
+            shell.settings.settings.general.recent_files =
+                vec![r"C:\missing\目录\presentation.pdf".into()];
+            cx.notify();
+        });
+        cx.simulate_window_resize(handle, size(px(320.), px(240.)));
+        redraw(handle, cx);
+        cx.simulate_keystrokes(handle, "tab enter");
+        shell.update(cx, |shell, cx| shell.poll_focus(cx));
+        redraw(handle, cx);
+        assert_eq!(
+            shell.read_with(cx, |shell, _| shell.modal.clone()),
+            Some(Modal::Settings)
+        );
+        cx.simulate_keystrokes(handle, "escape");
+        redraw(handle, cx);
+        cx.simulate_keystrokes(handle, "tab tab tab"); // Displays, Open, recent.
+        cx.run_until_parked();
+        cx.test_window(handle).simulate_scheduled_frame();
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        assert!(visual.debug_bounds("recent-full-path").is_some());
+        let row = visual.debug_bounds("recent-0").unwrap();
+        assert!(
+            row.origin.y >= px(0.) && row.bottom() <= px(240.),
+            "focused row must scroll into view: {row:?}"
+        );
+        cx.simulate_keystrokes(handle, "shift-tab");
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        assert!(visual.debug_bounds("recent-full-path").is_none());
+        cx.simulate_keystrokes(handle, "space");
+        assert_open_waits_for_owner(&shell, handle, cx);
+        redraw(handle, cx);
+        shell.read_with(cx, |shell, _| {
+            assert_eq!(shell.state.stage(), SessionStage::Idle);
+            assert!(!shell.loading);
+        });
+    }
+
+    #[gpui::test]
+    fn home_focused_long_path_wraps_inside_minimum_width(cx: &mut TestAppContext) {
+        let (shell, handle) = input_presenter(cx);
+        shell.update(cx, |shell, cx| {
+            shell.settings.settings.general.recent_files = vec![
+                format!(
+                    r"C:\{}\演示文稿.pdf",
+                    "LongDirectoryWithoutSpaces目录".repeat(8)
+                ),
+                r"D:\Archive\演示文稿.pdf".into(),
+                r"D:\Other\third.pdf".into(),
+            ];
+            cx.notify();
+        });
+        cx.simulate_window_resize(handle, size(px(320.), px(240.)));
+        redraw(handle, cx);
+        cx.simulate_keystrokes(handle, "tab tab tab tab");
+        cx.run_until_parked();
+        cx.test_window(handle).simulate_scheduled_frame();
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let path = visual.debug_bounds("recent-full-path").unwrap();
+        assert!(
+            path.origin.x >= px(0.) && path.right() <= px(320.),
+            "{path:?}"
+        );
+        assert!(path.size.height > px(18.), "long path must wrap: {path:?}");
     }
 
     #[gpui::test]

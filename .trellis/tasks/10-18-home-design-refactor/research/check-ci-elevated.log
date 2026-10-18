@@ -1,0 +1,33 @@
+cargo fmt --all -- --check
+cargo clippy --workspace --all-targets -- -D warnings
+    Checking ferrostage-core v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-core)
+    Checking ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+    Checking ferrostage-media v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-media)
+    Checking ferrostage-platform v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-platform)
+    Checking ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+    Checking ferrostage-document v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-document)
+    Checking ferrostage-media-helper v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-media-helper)
+    Checking ferrostage-settings v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-settings)
+    Checking ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Checking ferrostage-app v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.71s
+mbx[cache]: 0 hits, 2 misses, 26 not looked up, 28 incremental; 0 B downloaded, 0 B uploaded, 0 B stored locally
+mbx[savings]: 381.3 GiB logical of build debris binned so far. cargo clean remains unemployed.
+cargo test --workspace --all-targets
+   Compiling ferrostage-core v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-core)
+   Compiling ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+   Compiling ferrostage-platform v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-platform)
+   Compiling ferrostage-media v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-media)
+   Compiling ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+   Compiling ferrostage-document v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-document)
+   Compiling ferrostage-settings v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-settings)
+   Compiling ferrostage-media-helper v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-media-helper)
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+   Compiling ferrostage-app v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app)
+error: failed to remove file `D:\Documents\Code\Rust\Exp\ferrostage\target\debug\ferrostage.exe`
+
+Caused by:
+  Access is denied. (os error 5)
+mbx[cache]: 0 hits, 2 misses, 23 not looked up, 25 incremental, 2 bypassed; 0 B downloaded, 0 B uploaded, 0 B stored locally
+mbx[savings]: 4849 compilations retrieved with a straight face.
+error: recipe `test` failed on line 23 with exit code 1

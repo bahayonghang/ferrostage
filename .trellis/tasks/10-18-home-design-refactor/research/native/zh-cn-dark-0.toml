@@ -1,0 +1,9 @@
+schema_version = 1
+[general]
+language = "zh-CN"
+theme = "dark"
+reopen_last_document = false
+recent_files = []
+[display]
+presenter_start_fullscreen = false
+single_monitor_mode = "presenter_only"

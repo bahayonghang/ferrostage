@@ -1,0 +1,81 @@
+   Compiling collections v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling byteorder v1.5.0
+   Compiling tempfile v3.27.0
+   Compiling convert_case v0.11.0
+   Compiling bit-vec v0.8.0
+   Compiling gpui v0.2.2 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui)
+   Compiling rand_xorshift v0.4.0
+   Compiling http_client v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+   Compiling zlog v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling perf v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling hash32 v0.3.1
+   Compiling rusty-fork v0.3.1
+   Compiling bit-set v0.8.0
+   Compiling proptest-macro v0.5.0 (https://github.com/proptest-rs/proptest?rev=3dca198a8fef1b32e3a66f1e1897c955b4dc5b5b#3dca198a)
+   Compiling heapless v0.9.3
+   Compiling ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+   Compiling ferrostage-document v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-document)
+   Compiling ztracing v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling util_macros v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling ferrostage-settings v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-settings)
+   Compiling sum_tree v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling proptest v1.10.0 (https://github.com/proptest-rs/proptest?rev=3dca198a8fef1b32e3a66f1e1897c955b4dc5b5b#3dca198a)
+mbx[progress]: 15s elapsed; 0 hits, 23 misses, 0 bypassed, 2 not looked up; ~0s compiler work saved
+   Compiling gpui_windows v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling gpui_platform v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+error[E0308]: `if` and `else` have incompatible types
+   --> crates\ferrostage-ui\src\presenter.rs:772:13
+    |
+753 |            let mut body = if document_open {
+    |  _________________________-
+754 | |/             div()
+755 | ||                 .id("presenter-content")
+756 | ||                 .flex_1()
+757 | ||                 .min_h_0()
+...   ||
+769 | ||                         .child(self.workbench_panel(p, window, cx)),
+770 | ||                 )
+    | ||_________________- expected because of this
+771 | |          } else {
+772 | |              self.home_content(p, window)
+    | |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Stateful<Div>`, found `Div`
+773 | |          };
+    | |__________- `if` and `else` have incompatible types
+    |
+    = note: expected struct `gpui::Stateful<Div>`
+               found struct `Div`
+
+error[E0308]: mismatched types
+   --> crates\ferrostage-ui\src\presenter\home_view.rs:174:9
+    |
+  4 |       pub(super) fn home_content(&self, p: Palette, window: &Window) -> Div {
+    |                                                                         --- expected `gpui::Div` because of return type
+...
+174 | /         div()
+175 | |             .id("home-content")
+176 | |             .debug_selector(|| "home-content".into())
+177 | |             .w_full()
+...   |
+193 | |             .child(div().flex().items_start().child(open))
+194 | |             .child(div().mt(px(16.)).child(recents))
+    | |____________________________________________________^ expected `Div`, found `Stateful<Div>`
+    |
+    = note: expected struct `Div`
+               found struct `gpui::Stateful<Div>`
+
+error[E0599]: no method named `active` found for struct `gpui::Div` in the current scope
+   --> crates\ferrostage-ui\src\presenter\home_view.rs:214:30
+    |
+213 | /                         view.hover(move |state| state.bg(rgb(p.soft)))
+214 | |                             .active(move |state| state.bg(rgb(p.card)).top(px(1.)))
+    | |                             -^^^^^^ method not found in `gpui::Div`
+    | |_____________________________|
+    |
+
+Some errors have detailed explanations: E0308, E0599.
+For more information about an error, try `rustc --explain E0308`.
+error: could not compile `ferrostage-ui` (lib test) due to 3 previous errors
+mbx[cache]: 0 hits, 26 misses, 3 not looked up, 3 incremental; 0 B downloaded, 0 B uploaded, 523.5 MiB stored locally
+mbx[savings]: 4849 compilations. rustc did each once; mbx did the rest of the showing up.

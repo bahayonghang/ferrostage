@@ -7,6 +7,7 @@ pub const FOCUS_GAP: f32 = 2.0;
 pub const RADIUS: f32 = 8.0;
 pub const PANEL_RADIUS: f32 = 12.0;
 pub const SPACING: f32 = 16.0;
+pub const HOME_WIDTH: f32 = 760.0;
 pub const SANS: &str = "Segoe UI";
 pub const DISPLAY: &str = "Georgia";
 pub const MONO: &str = "Consolas";
@@ -25,6 +26,14 @@ pub fn sans_font() -> gpui::Font {
 pub fn display_font() -> gpui::Font {
     gpui::Font {
         fallbacks: Some(gpui::FontFallbacks::from_fonts(vec!["SimSun".into()])),
+        ..gpui::font(DISPLAY)
+    }
+}
+
+#[cfg(feature = "gpui")]
+pub fn home_brand_font() -> gpui::Font {
+    gpui::Font {
+        weight: gpui::FontWeight::SEMIBOLD,
         ..gpui::font(DISPLAY)
     }
 }

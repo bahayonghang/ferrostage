@@ -1,0 +1,3 @@
+{"file":".trellis/spec/frontend/component-guidelines.md","reason":"Review shared activation, lifecycle and stable IDs"}
+{"file":".trellis/spec/frontend/quality-guidelines.md","reason":"Review required gates, native evidence and audience contracts"}
+{"file":".trellis/tasks/10-18-home-design-refactor/research/baseline-and-references.md","reason":"Review source claims and distinguish proposed geometry from runtime evidence"}
