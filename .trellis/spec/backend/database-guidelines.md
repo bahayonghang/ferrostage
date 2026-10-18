@@ -19,6 +19,42 @@ A keybinding action is one `Vec<String>` leaf: any non-string element falls back
 
 `from_toml` and `check-config` never write. `SettingsStore` owns the configured path, backup, and explicit save. Save recursively merges known leaves while preserving unknown top-level, section, and monitor-element fields. Current writable versions can fill missing sections at startup. Future versions stay read-only; malformed files must be backed up successfully before defaults can replace them. Failed saves retain the effective session value and an unsaved status. These source contracts do not substitute for task 02's persistence verification.
 
+## Interface font preferences
+
+### 1. Scope / Trigger
+
+Changes to presenter UI typography must extend the existing v1 general section, loader and known-key merge together. These preferences do not edit PDF/notes fonts or audience content.
+
+### 2. Signatures
+
+`GeneralSettings::ui_font_family: String` defaults to `""` (system default). `GeneralSettings::ui_font_size: u32` defaults to 16; `UI_FONT_SIZE_RANGE` is 12..=24 logical pixels. Loading remains `from_toml`; runtime edits remain checked through `settings_panel::edit` and the existing preference application/save flow.
+
+### 3. Contracts
+
+Font family is a trimmed string without control characters. Installation/availability is resolved by the UI, never by the IO parser. A missing installed family retains the requested saved string while the interface uses a fallback. The base size scales interface roles, not document point sizes. These optional leaves do not increment schema_version. Known-key merge must write both leaves while preserving unknown values and monitor-element metadata.
+
+### 4. Validation / Error Matrix
+
+| Condition | Loading / Editing result |
+| --- | --- |
+| Missing leaves in old v1 file | Default family and 16px |
+| Wrong family type/control characters or non-integer/out-of-range size | Loader diagnoses the individual leaf and falls back; checked runtime edit rejects it |
+| Valid but unavailable family | Preserve string; UI fallback/notice, no parser warning about installation |
+| Future schema | Existing read-only policy, no normalization/writeback |
+| Save fails | Effective session typography remains with Unsaved/Retry; durable value requires successful save/readback |
+
+### 5. Good / Base / Bad Cases
+
+Good: select an installed family, save through SettingsStore, and read back both leaves with unknown vendor keys intact. Base: absent keys preserve the shipped look. Bad: derive Serialize fields but omit leaf loading or merge, or overwrite an unavailable requested family with the fallback name.
+
+### 6. Tests Required
+
+Retain `interface_font_leaves_default_validate_and_preserve_future_policy` and `interface_fonts_roundtrip_with_unknown_leaves`, plus effective-value retention on failed save. UI tests separately prove live actual Presenter typography and selection input; storage tests do not prove native font rendering.
+
+### 7. Wrong vs Correct
+
+Wrong: reuse `presenter.notes_font_scale` for UI size or validate fonts by enumerating the OS inside settings loading. Correct: optional general leaves plus Presenter-owned cached availability and role-aware resolution.
+
 ## Forbidden
 
 - SQLite, Postgres, or any ORM "for later".

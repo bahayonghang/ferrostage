@@ -32,6 +32,49 @@ Shared activation owns stable identity, focus, disabled guards and deferred mous
 
 Home retains its own control focus handles and uses GPUI scroll anchors inside the home scroll container so keyboard traversal can reach controls outside the current viewport. A focus-handle assertion alone is insufficient: at 320x240 the focused control's rendered bounds must also lie in the visible client area. Keep document-stage Tab routing unchanged.
 
+## Interface typography and session-control composition
+
+### 1. Scope / Trigger
+
+Changes to interface fonts, settings composition, loaded-document header/progress or Start/Stop controls must preserve root DESIGN and the shared native activation boundary.
+
+### 2. Signatures
+
+`theme::Typography::resolve(&GeneralSettings, &[String])` resolves family/missing-state/size scale; `font()` and `size(role)` are Presenter UI consumers. `Shell::ui_fonts` caches installed names; enumeration occurs when the picker first opens, or before first draw when a persisted override requires resolution. `Presenter::tools_panel` composes the single session/navigation/tool strip.
+
+### 3. Contracts
+
+Capture resolved typography in Presenter data, including tooltip consumers. Scale interface roles by base size / 16. Home wordmark keeps its Georgia role; timer keeps its mono face. Never apply these preferences to PDF/raster notes/audience pixels or OS-owned titlebar text. The bounded font selector uses installed names, filter changes do not save, and selection/default actions use checked existing preference edits. Restore focus when the picker closes. Its filter accepts ordinary text and clipboard paste; other modified commands must not append fallback letters. Snapshot paste text at the Presenter input boundary and carry it through the deferred event payload; reading the clipboard later can consume restored or unrelated contents. Keep this capture scoped to an open font picker and paste chord so shortcut recording and numeric editors are unchanged.
+
+Recent-file rows also retain their natural content height in the settings flex column. Do not shrink a filename/path pair to its minimum control height: at a saved larger UI font, the path can overflow and be clipped even after scrolling it into view. The owning settings scroll handles excess height; verify the path's rendered bounds against its row and viewport.
+
+Settings use quiet category navigation, sans headings, bounded grouped label/control rows and real recent basename/parent paths. Preserve all category controls and history semantics. Local restart notes and save/Retry feedback remain truthful. Setting rows must not flex-shrink below their label/help content; use the existing host scroll for overflow rather than clipping helper text at the hairline. Recent settings rows do not acquire the home row's import action or top-three cap.
+
+For every document-open state, one Start/Stop action shares a navigation group with Previous/Next when steps exist. Retain the no-step route and busy guards. Session face uses a geometric play/stop icon plus explicit text. Progress remains `Intent::Jump`; full logical/step/physical detail is accessible and available on pointer/focus, without reflowing the activation target. Focus detail and hover tooltip are mutually exclusive when both pointer and keyboard focus occupy the control. Explicit progress focus handles opt into Tab eligibility. Blanking/tool selection is derived from actual state and includes text/indicator, not color alone.
+
+### 4. Validation / Error Matrix
+
+| Condition | Result |
+| --- | --- |
+| Requested font unavailable | System/CJK fallback plus local notice; saved request is retained |
+| Future/read-only settings or busy state | Existing disabled/edit guards, no unchecked mutation |
+| Ready/busy/no steps | Correct session control remains; busy Start cannot create transaction/run timer |
+| Progress focused or hovered | Full detail discoverable without moving the control |
+| Jump text edited but not confirmed | Committed page stays unchanged |
+| Modal or conditional control closes/disappears | Restore valid focus, retain exactly-once deferred activation |
+
+### 5. Good / Base / Bad Cases
+
+Good: real settings input changes actual captured Presenter typography and survives store readback; a page-progress click opens the original jump flow. Base: defaults preserve document content and the home brand. Bad: grow a detail row on focus, accidentally remove a tracked control from Tab order, or leave a second full-width Start footer.
+
+### 6. Tests Required
+
+Retain real input tests `settings_fonts_filter_apply_size_restore_and_history_through_real_input`, `workbench_controls_jump_directly_and_keep_note_pages_private`, and `workbench_session_strip_survives_empty_steps_and_busy_start`, plus existing home/focus/notes/privacy regressions. Run normal-window native core/visual smoke separately from headless checks. Do not add size/DPI/performance matrices to this polish work without user request.
+
+### 7. Wrong vs Correct
+
+Wrong: style independent copies of Start/progress and global text without respecting state or role boundaries. Correct: one session strip, captured role-aware typography, common stable activation IDs and original Intents. Do not infer native visual quality or installed-font behavior from passing headless tests.
+
 ## Synchronous window creation
 
 The pinned GPUI App::open_window draws the first frame synchronously. During a Shell entity update, creating a presenter whose render calls Shell::read panics because the controller is already leased. Prepare the minimal rendered data from the current controller borrow, pass it into the presenter, and refresh it from model notifications after the update ends. Keep commands on WeakEntity<Shell>; do not clone the entire controller or document into the view. Audience remains snapshot-only.
