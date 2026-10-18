@@ -1,0 +1,135 @@
+   Compiling ferrostage-settings v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-settings)
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+   Compiling ferrostage-app v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.66s
+     Running unittests src\main.rs (target\debug\deps\ferrostage-2d6306dfba4689b0.exe)
+
+running 1 test
+test logging_tests::runtime_is_quiet_by_default_and_keeps_diagnostic_override ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_core-77a2ff84e1b09622.exe)
+
+running 31 tests
+test display::tests::core_manifest_does_not_link_io_crates ... ok
+test slide_map::tests::boundaries_and_physical_clamp_skip_notes ... ok
+test slide_map::tests::rejects_empty_reordered_duplicate_and_out_of_range_maps ... ok
+test display::tests::roles_are_distinct ... ok
+test state::annotation_tests::navigation_ends_gesture_and_reload_cannot_reuse_old_annotations ... ok
+test state::annotation_tests::strokes_are_separate_page_local_and_eraser_hits_segments ... ok
+test frame::tests::invalid_geometry_stride_and_length_are_rejected ... ok
+test state::annotation_tests::reload_applies_to_latest_timer_blank_and_ink_without_reset ... ok
+test state::annotation_tests::invalid_pointer_values_are_atomic_and_settings_bounds_match ... ok
+test state::lifecycle_tests::illegal_lifecycle_edges_leave_every_field_unchanged ... ok
+test frame::tests::packed_frame_shares_bgra_without_conversion ... ok
+test state::lifecycle_tests::legal_lifecycle_edges_control_projection_and_document_resets ... ok
+test state::mapping_tests::checked_descriptor_rejects_empty_and_invalid_crop ... ok
+test state::lifecycle_tests::navigation_and_tools_require_a_document_but_not_a_live_session ... ok
+test state::lifecycle_tests::timer_pause_resume_stop_and_restart_use_only_injected_time ... ok
+test state::mapping_tests::legacy_crop_setter_rejects_invalid_geometry_without_mutation ... ok
+test state::mapping_tests::mapped_navigation_direct_jump_shadow_and_reconfiguration_preserve_lifecycle ... ok
+test state::mapping_tests::reconfigure_clears_direct_jump_and_preserves_paused_or_ready_timer ... ok
+test state::tests::blank_toggle_is_shown_on_the_snapshot_and_clears_on_repeat ... ok
+test state::tests::audience_snapshot_tracks_generation_and_has_no_notes_field ... ok
+test state::lifecycle_tests::descriptor_commit_is_atomic_clamps_position_and_preserves_session_timer ... ok
+test state::tests::step_clamps_at_both_ends ... ok
+test state::tests::swap_screens_does_not_change_the_audience_page ... ok
+test state::tests::direct_jump_preserves_stage_timer_and_updates_audience ... ok
+test state::tests::elapsed_time_never_navigates_before_or_after_start ... ok
+test state::tests::empty_document_is_rejected ... ok
+test state::tests::jump_out_of_range_is_an_error_and_stale_generation_is_rejected ... ok
+test state::tests::halves_cover_the_unit_square_without_overlap ... ok
+test ids::order_tests::generation_order_matches_the_inner_integer ... ok
+test slide_map::tests::neighbor_inverses_preserve_content_and_logical_groups ... ok
+test state::property_tests::arbitrary_commands_preserve_stage_privacy_and_error_atomicity ... ok
+
+test result: ok. 31 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_settings-c0a20008235a4cf2.exe)
+
+running 40 tests
+test tests::parse::future_version_is_read_only ... ok
+test tests::parse::invalid_syntax_is_an_error_for_pure_parse ... ok
+test tests::parse::color_and_ratio_ranges_fall_back_one_leaf ... ok
+test tests::parse::explicitly_empty_keybinding_list_stays_unbound ... ok
+test tests::parse::illegal_target_type_falls_back_only_that_leaf ... ok
+test tests::parse::keybinding_conflicts_are_recorded_and_not_resolved ... ok
+test tests::parse::illegal_role_becomes_none_not_audience ... ok
+test tests::parse::invalid_keybinding_elements_fall_back_only_that_action ... ok
+test tests::parse::legacy_notes_ratio_and_strip_are_readable_without_restoring_small_notes ... ok
+test tests::parse::empty_document_is_the_default ... ok
+test tests::parse::manifest_does_not_link_platform_or_gpui ... ok
+test tests::parse::wrong_section_type_falls_back_only_that_section ... ok
+test tests::parse::recent_files_are_deduped_and_truncated ... ok
+test tests::store::config_dirs_follow_each_platform ... ok
+test tests::store::default_path_ends_at_ferrostage_settings ... ok
+test tests::parse::default_toml_roundtrip_matches_default ... ok
+test tests::parse::legacy_flat_keys_map_and_indexes_stay_unknown ... ok
+test tests::parse::yellow_must_exceed_red ... ok
+test tests::parse::zero_target_minutes_falls_back_and_names_the_key ... ok
+test tests::parse::defaults_use_render_cache_budgets ... ok
+test tests::parse::media_v1_defaults_bounds_unknown_and_future_readonly ... ok
+test tests::parse::scratch_dirs_are_not_the_user_config ... ok
+test tests::parse::deleting_any_section_keeps_the_other_values ... ok
+test tests::store::failed_backup_keeps_the_original_and_forbids_writes ... ok
+test tests::store::parent_file_blocks_directory_creation ... ok
+test tests::store::future_version_refuses_save_and_keeps_the_bytes ... ok
+test tests::store::startup_does_not_rewrite_a_future_file ... ok
+test tests::store::temp_create_failure_does_not_touch_the_old_file ... ok
+test tests::store::legacy_save_drops_mapped_keys_and_keeps_indexes ... ok
+test tests::store::injected_crash_after_temp_write_does_not_damage_settings ... ok
+test tests::store::missing_file_is_not_an_error_and_startup_can_create_it ... ok
+test tests::store::save_failure_leaves_the_old_file ... ok
+test tests::store::failed_session_save_keeps_edits_and_retry_clears_dirty_state ... ok
+test tests::store::duplicate_monitor_metadata_survives_repeated_session_saves ... ok
+test tests::store::unknown_values_survive_a_known_edit ... ok
+test tests::store::save_creates_a_missing_directory ... ok
+test tests::store::startup_fills_missing_sections_and_check_style_load_does_not ... ok
+test tests::store::explicit_save_after_backup_may_replace_the_original ... ok
+test tests::store::syntax_error_backs_up_and_returns_defaults ... ok
+test tests::windows::ntfs_replace_keeps_a_complete_file ... ok
+
+test result: ok. 40 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.48s
+
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-522e74de5b5c0b92.exe)
+
+running 33 tests
+test display_settings::tests::topology_diagram_preserves_negative_coordinates_and_physical_aspect ... ok
+test policy::tests::fullscreen_request_without_native_bounds_evidence_is_not_confirmation ... ok
+test policy::tests::placement_v10_work_area_and_narrow_clients_leave_native_frame_space ... ok
+test policy::tests::single_monitor_requires_explicit_windowed_mode ... ok
+test display_settings::tests::stale_missing_ambiguous_and_conflicting_destinations_are_rejected ... ok
+test policy::tests::swap_prepares_authority_without_mutating_old_settings ... ok
+test display_settings::tests::numbering_is_shared_stable_and_not_serialized ... ok
+test policy::tests::uuid_includes_terminator_and_full_utf16_buffer ... ok
+test tests::gpui_pin_is_the_zed_tag_not_crates_io ... ok
+test policy::tests::mapping_rejects_partial_duplicate_and_unknown_sets ... ok
+test theme::tests::semantic_button_states_keep_text_and_boundaries_readable ... ok
+test transactions::tests::focus_waits_for_both_observations_and_rejects_retired_owners ... ok
+test transactions::tests::failed_second_replacement_returns_only_new_resources_for_cleanup ... ok
+test theme::tests::used_text_and_focus_pairs_meet_design_contrast ... ok
+test transactions::tests::invalid_jump_text_cannot_commit_a_previous_valid_preview ... ok
+test policy::tests::placement_v10_portrait_native_overflow_is_not_confirmation ... ok
+test transactions::tests::invalid_import_preserves_document_state_and_presenter_path ... ok
+test transactions::tests::settings_escape_does_not_send_cancel_jump_into_idle_core ... ok
+test transactions::tests::retiring_old_windows_cannot_stop_replacements ... ok
+test display_settings::tests::single_screen_choices_roundtrip_without_duplicate_role_or_inherited_mode ... ok
+test transactions::tests::shutdown_never_publishes_live_between_curtain_and_close ... ok
+test transactions::tests::startup_import_survives_presenter_confirmation_only ... ok
+test workbench::tests::awaiting_frame_keeps_complete_old_identity_and_immediate_covers ... ok
+test workbench::tests::audience_target_respects_its_half_of_the_gpu_budget ... ok
+test workbench::tests::direct_jumps_hold_previous_complete_projection_until_matching_frame ... ok
+test policy::tests::configured_bindings_cannot_collide_with_shell_shortcuts ... ok
+test policy::tests::conflicts_are_disabled_after_normalization ... ok
+test display_settings::tests::identical_driver_names_become_distinct_cards ... ok
+test workbench::tests::projection_rejects_every_mismatched_key_and_presenter_notes_priority ... ok
+test locale::tests::catalogs_have_identical_keys_and_interpolation_fields ... ok
+test settings_panel::tests::recent_limit_trims_and_coupled_timer_validation_is_atomic ... ok
+test settings_panel::tests::field_edits_reject_fallbacks_and_keep_unrelated_values ... ok
+test workbench::tests::closed_grid_schedules_no_thumbnails_and_repeated_schedule_submits_nothing ... ok
+
+test result: ok. 33 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+mbx[cache]: 0 hits, 0 misses, 3 not looked up, 3 incremental, 1 bypassed; 0 B downloaded, 0 B uploaded, 0 B stored locally
+mbx[savings]: 2512 compilations dispensed from stock. inventory immaculate.

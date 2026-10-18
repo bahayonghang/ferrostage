@@ -1,0 +1,32 @@
+   Compiling chrono v0.4.45
+   Compiling regex-syntax v0.8.11
+   Compiling serde_derive v1.0.229
+   Compiling ferrostage-core v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-core)
+   Compiling serde v1.0.229
+   Compiling ferrostage-media v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-media)
+   Compiling ferrostage-platform v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-platform)
+   Compiling lopdf v0.45.0
+   Compiling regex-automata v0.4.18
+   Compiling pdfium-render v0.9.4
+   Compiling matchers v0.2.0
+   Compiling tracing-subscriber v0.3.23
+   Compiling ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+   Compiling ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+   Compiling ferrostage-document v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-document)
+   Compiling ferrostage-settings v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-settings)
+mbx[progress]: 15s elapsed; 1 hits, 1 misses, 1 bypassed, 13 not looked up; ~2.14s compiler work saved
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 20.71s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-11ffa9ca7a07d31f.exe)
+
+running 1 test
+old-strip-request-model: requested=12 submitted=12 thumbnails=4 retained_bytes=17510400
+closed: requested=8 submitted=0 thumbnails=0 retained_bytes=16588800
+open: requested=24 submitted=16 thumbnails=16 retained_bytes=20275200
+closed-again: requested=8 submitted=0 thumbnails=0 retained_bytes=16588800
+test workbench::tests::native_perf100_grid_retention ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 33 filtered out; finished in 0.32s
+
+mbx[cache]: 1 hits, 1 misses, 14 not looked up, 8 incremental, 1 bypassed; 0 B downloaded, 0 B uploaded, 133.1 MiB stored locally
+mbx[savings]: 2596 compilations old. not one compiled twice.

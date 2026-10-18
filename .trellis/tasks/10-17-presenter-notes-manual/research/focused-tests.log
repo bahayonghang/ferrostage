@@ -1,0 +1,169 @@
+   Compiling ferrostage-core v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-core)
+   Compiling ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+   Compiling ferrostage-platform v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-platform)
+   Compiling ferrostage-media v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-media)
+   Compiling ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+   Compiling ferrostage-document v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-document)
+   Compiling ferrostage-settings v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-settings)
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+   Compiling ferrostage-app v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 9.25s
+     Running unittests src\main.rs (target\debug\deps\ferrostage-2d6306dfba4689b0.exe)
+
+running 1 test
+test logging_tests::runtime_is_quiet_by_default_and_keeps_diagnostic_override ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_core-77a2ff84e1b09622.exe)
+
+running 31 tests
+test slide_map::tests::boundaries_and_physical_clamp_skip_notes ... ok
+test slide_map::tests::rejects_empty_reordered_duplicate_and_out_of_range_maps ... ok
+test state::annotation_tests::navigation_ends_gesture_and_reload_cannot_reuse_old_annotations ... ok
+test state::annotation_tests::reload_applies_to_latest_timer_blank_and_ink_without_reset ... ok
+test state::annotation_tests::strokes_are_separate_page_local_and_eraser_hits_segments ... ok
+test state::lifecycle_tests::descriptor_commit_is_atomic_clamps_position_and_preserves_session_timer ... ok
+test state::lifecycle_tests::illegal_lifecycle_edges_leave_every_field_unchanged ... ok
+test state::lifecycle_tests::legal_lifecycle_edges_control_projection_and_document_resets ... ok
+test state::annotation_tests::invalid_pointer_values_are_atomic_and_settings_bounds_match ... ok
+test state::lifecycle_tests::navigation_and_tools_require_a_document_but_not_a_live_session ... ok
+test state::lifecycle_tests::timer_pause_resume_stop_and_restart_use_only_injected_time ... ok
+test state::mapping_tests::checked_descriptor_rejects_empty_and_invalid_crop ... ok
+test state::mapping_tests::legacy_crop_setter_rejects_invalid_geometry_without_mutation ... ok
+test state::mapping_tests::mapped_navigation_direct_jump_shadow_and_reconfiguration_preserve_lifecycle ... ok
+test state::mapping_tests::reconfigure_clears_direct_jump_and_preserves_paused_or_ready_timer ... ok
+test display::tests::core_manifest_does_not_link_io_crates ... ok
+test display::tests::roles_are_distinct ... ok
+test frame::tests::invalid_geometry_stride_and_length_are_rejected ... ok
+test frame::tests::packed_frame_shares_bgra_without_conversion ... ok
+test state::tests::blank_toggle_is_shown_on_the_snapshot_and_clears_on_repeat ... ok
+test state::tests::audience_snapshot_tracks_generation_and_has_no_notes_field ... ok
+test state::tests::direct_jump_preserves_stage_timer_and_updates_audience ... ok
+test state::tests::elapsed_time_never_navigates_before_or_after_start ... ok
+test ids::order_tests::generation_order_matches_the_inner_integer ... ok
+test state::tests::empty_document_is_rejected ... ok
+test state::tests::halves_cover_the_unit_square_without_overlap ... ok
+test state::tests::jump_out_of_range_is_an_error_and_stale_generation_is_rejected ... ok
+test state::tests::step_clamps_at_both_ends ... ok
+test state::tests::swap_screens_does_not_change_the_audience_page ... ok
+test slide_map::tests::neighbor_inverses_preserve_content_and_logical_groups ... ok
+test state::property_tests::arbitrary_commands_preserve_stage_privacy_and_error_atomicity ... ok
+
+test result: ok. 31 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_settings-c0a20008235a4cf2.exe)
+
+running 39 tests
+test tests::parse::defaults_use_render_cache_budgets ... ok
+test tests::parse::empty_document_is_the_default ... ok
+test tests::parse::invalid_syntax_is_an_error_for_pure_parse ... ok
+test tests::parse::color_and_ratio_ranges_fall_back_one_leaf ... ok
+test tests::store::default_path_ends_at_ferrostage_settings ... ok
+test tests::parse::explicitly_empty_keybinding_list_stays_unbound ... ok
+test tests::parse::invalid_keybinding_elements_fall_back_only_that_action ... ok
+test tests::parse::keybinding_conflicts_are_recorded_and_not_resolved ... ok
+test tests::parse::illegal_role_becomes_none_not_audience ... ok
+test tests::parse::wrong_section_type_falls_back_only_that_section ... ok
+test tests::parse::future_version_is_read_only ... ok
+test tests::parse::yellow_must_exceed_red ... ok
+test tests::parse::default_toml_roundtrip_matches_default ... ok
+test tests::parse::illegal_target_type_falls_back_only_that_leaf ... ok
+test tests::store::config_dirs_follow_each_platform ... ok
+test tests::parse::zero_target_minutes_falls_back_and_names_the_key ... ok
+test tests::parse::legacy_flat_keys_map_and_indexes_stay_unknown ... ok
+test tests::parse::manifest_does_not_link_platform_or_gpui ... ok
+test tests::parse::recent_files_are_deduped_and_truncated ... ok
+test tests::parse::media_v1_defaults_bounds_unknown_and_future_readonly ... ok
+test tests::parse::deleting_any_section_keeps_the_other_values ... ok
+test tests::store::parent_file_blocks_directory_creation ... ok
+test tests::store::failed_backup_keeps_the_original_and_forbids_writes ... ok
+test tests::parse::scratch_dirs_are_not_the_user_config ... ok
+test tests::store::startup_does_not_rewrite_a_future_file ... ok
+test tests::store::future_version_refuses_save_and_keeps_the_bytes ... ok
+test tests::store::temp_create_failure_does_not_touch_the_old_file ... ok
+test tests::store::save_failure_leaves_the_old_file ... ok
+test tests::store::missing_file_is_not_an_error_and_startup_can_create_it ... ok
+test tests::store::legacy_save_drops_mapped_keys_and_keeps_indexes ... ok
+test tests::store::injected_crash_after_temp_write_does_not_damage_settings ... ok
+test tests::store::failed_session_save_keeps_edits_and_retry_clears_dirty_state ... ok
+test tests::store::save_creates_a_missing_directory ... ok
+test tests::store::unknown_values_survive_a_known_edit ... ok
+test tests::store::startup_fills_missing_sections_and_check_style_load_does_not ... ok
+test tests::store::duplicate_monitor_metadata_survives_repeated_session_saves ... ok
+test tests::store::explicit_save_after_backup_may_replace_the_original ... ok
+test tests::store::syntax_error_backs_up_and_returns_defaults ... ok
+test tests::windows::ntfs_replace_keeps_a_complete_file ... ok
+
+test result: ok. 39 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.63s
+
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-522e74de5b5c0b92.exe)
+
+running 31 tests
+test display_settings::tests::stale_missing_ambiguous_and_conflicting_destinations_are_rejected ... ok
+test policy::tests::placement_v10_portrait_native_overflow_is_not_confirmation ... ok
+test display_settings::tests::topology_diagram_preserves_negative_coordinates_and_physical_aspect ... ok
+test policy::tests::single_monitor_requires_explicit_windowed_mode ... ok
+test policy::tests::placement_v10_work_area_and_narrow_clients_leave_native_frame_space ... ok
+test display_settings::tests::numbering_is_shared_stable_and_not_serialized ... ok
+test policy::tests::swap_prepares_authority_without_mutating_old_settings ... ok
+test policy::tests::uuid_includes_terminator_and_full_utf16_buffer ... ok
+test policy::tests::mapping_rejects_partial_duplicate_and_unknown_sets ... ok
+test display_settings::tests::single_screen_choices_roundtrip_without_duplicate_role_or_inherited_mode ... ok
+test policy::tests::fullscreen_request_without_native_bounds_evidence_is_not_confirmation ... ok
+test tests::gpui_pin_is_the_zed_tag_not_crates_io ... ok
+test theme::tests::used_text_and_focus_pairs_meet_design_contrast ... ok
+test transactions::tests::failed_second_replacement_returns_only_new_resources_for_cleanup ... ok
+test transactions::tests::focus_waits_for_both_observations_and_rejects_retired_owners ... ok
+test workbench::tests::projection_rejects_every_mismatched_key_and_presenter_notes_priority ... ok
+test workbench::tests::direct_jumps_hold_previous_complete_projection_until_matching_frame ... ok
+test settings_panel::tests::recent_limit_trims_and_coupled_timer_validation_is_atomic ... ok
+test locale::tests::catalogs_have_identical_keys_and_interpolation_fields ... FAILED
+test transactions::tests::invalid_import_preserves_document_state_and_presenter_path ... ok
+test policy::tests::conflicts_are_disabled_after_normalization ... FAILED
+test transactions::tests::invalid_jump_text_cannot_commit_a_previous_valid_preview ... ok
+test policy::tests::configured_bindings_cannot_collide_with_shell_shortcuts ... FAILED
+test transactions::tests::startup_import_survives_presenter_confirmation_only ... ok
+test transactions::tests::shutdown_never_publishes_live_between_curtain_and_close ... ok
+test display_settings::tests::identical_driver_names_become_distinct_cards ... FAILED
+test workbench::tests::audience_target_respects_its_half_of_the_gpu_budget ... ok
+test workbench::tests::awaiting_frame_keeps_complete_old_identity_and_immediate_covers ... ok
+test transactions::tests::retiring_old_windows_cannot_stop_replacements ... ok
+test transactions::tests::settings_escape_does_not_send_cancel_jump_into_idle_core ... ok
+test settings_panel::tests::field_edits_reject_fallbacks_and_keep_unrelated_values ... ok
+
+failures:
+
+---- locale::tests::catalogs_have_identical_keys_and_interpolation_fields stdout ----
+
+thread 'locale::tests::catalogs_have_identical_keys_and_interpolation_fields' (104244) panicked at crates\ferrostage-ui\src\locale.rs:11:28:
+valid embedded application locale: Error { message: "duplicate key", input: Some("app-title = \"FerroStage\"\r\nskeleton-banner = \"Presenter UI is not linked yet\"\r\n\r\n# Task07 native shell\r\nstage-idle = \"No document\"\r\nstage-ready = \"Ready\"\r\nstage-presenting = \"Presenting\"\r\nopen = \"Open PDF\"\r\nhome = \"Home\"\r\nsettings = \"Settings\"\r\nswap = \"Swap displays\"\r\nstart = \"Start presentation\"\r\nstop = \"Stop presentation\"\r\nloading = \"Opening…\"\r\npreparing = \"Preparing…\"\r\nwelcome = \"Open a PDF, then start when you are ready.\"\r\npage-placeholder = \"Page placeholder\"\r\npage-count = \"Page {current} / {pages}\"\r\npresenter-label = \"FerroStage presenter window\"\r\ndisabled-label = \"{label} (unavailable)\"\r\njump = \"Go to page\"\r\njump-description = \"Type a physical page number (1–{pages}): {text}. Press Enter to go.\"\r\nconfirm-jump = \"Go to page\"\r\nclose = \"Close\"\r\nunsaved = \"Settings not saved\"\r\nsave-error = \"Settings not saved: {error}\"\r\nretry-save = \"Retry save\"\r\nrecent = \"Recent files\"\r\nneed-document = \"Open a PDF first\"\r\nconfirming = \"Confirming windows, please wait\"\r\nwatcher-unavailable = \"Display monitoring is unavailable; starting would be unsafe\"\r\ninvalid-page = \"Enter a valid page number\"\r\nstop-before-import = \"End the presentation before opening another PDF\"\r\nimport-unavailable = \"PDF import unavailable: {error}\"\r\nread-error = \"Cannot read PDF: {error}\"\r\nworker-closed = \"The PDF worker has closed\"\r\nimport-error = \"PDF import failed; the existing document is unchanged: {error}\"\r\nreadonly-swap = \"Settings are read-only; display roles cannot be swapped\"\r\nambiguous-displays = \"Display identities are incomplete or ambiguous; waiting for enumeration\"\r\nno-audience = \"No audience display. A single display requires explicit windowed audience mode\"\r\ncannot-swap = \"Swapping requires two distinct available displays\"\r\nplacement-timeout = \"The window position or mode could not be confirmed in time\"\r\nactivation-timeout = \"Presenter activation was not confirmed; the popup was cancelled\"\r\ninvalid-shortcut = \"Disabled invalid shortcut {key} ({action})\"\r\nconflicting-shortcut = \"Disabled conflicting shortcut {key}: {actions}\"\r\nreserved-escape = \"Escape cancels the current operation; disabled its {action} binding\"\r\nunwired-shortcut = \"{action} ({key}) is not available in this shell; shortcut disabled\"\r\nfeature-laser = \"Laser pointer\"\r\nfeature-pen = \"Drawing pen\"\r\n\r\ndisplays = \"Displays\"\r\ndisplays-count = \"Detected {count} displays\"\r\ndisplays-number-help = \"FerroStage numbers match Identify; they are not Windows display numbers.\"\r\ndisplays-primary = \"Primary\"\r\ndisplays-builtin = \"Built-in\"\r\ndisplays-portrait = \"Portrait\"\r\ndisplays-left = \"Left\"\r\ndisplays-right = \"Right\"\r\ndisplays-above = \"Above\"\r\ndisplays-below = \"Below\"\r\ndisplays-center = \"Center\"\r\ndisplays-role-app = \"App window\"\r\ndisplays-role-pdf = \"PDF\"\r\ndisplays-role-windowed = \"In a window\"\r\ndisplays-role-picked = \"{label} · selected\"\r\ndisplays-app = \"Application window display\"\r\ndisplays-pdf = \"PDF playback display\"\r\ndisplays-unused = \"Unused\"\r\ndisplays-use-windowed = \"Application + windowed PDF\"\r\ndisplays-no-play = \"Do not play\"\r\ndisplays-windowed = \"Play in a window on this display\"\r\ndisplays-identify = \"Identify displays\"\r\ndisplays-refresh = \"Detect again\"\r\ndisplays-identify-help = \"Identify shows these numbers for 3 seconds. Available before presenting.\"\r\ndisplays-selected = \"{label} (selected)\"\r\ndisplays-draft-help = \"Selections are a draft until Apply. Cancel keeps your current windows and settings.\"\r\ndisplays-apply = \"Apply\"\r\ndisplays-cancel = \"Cancel\"\r\ndisplays-conflict = \"Application and PDF need different displays. Choose another destination or do not play.\"\r\ndisplays-target-missing = \"A selected display is missing or ambiguous. Detect again and select available displays.\"\r\ndisplays-windowed-single = \"Windowed playback on the application display requires a single display.\"\r\ndisplays-stale = \"Displays changed. Detect again to discard this draft and choose from the current displays.\"\r\ndisplays-unavailable = \"Display detection failed. Last known displays cannot be applied.\"\r\ndisplays-empty = \"No displays detected. Waiting for display recovery.\"\r\ndisplays-readonly = \"This settings version is read-only. Display assignments cannot be changed.\"\r\ndisplays-id-degraded = \"Identity from name and resolution; rebinding may be needed\"\r\ndisplays-id-connection = \"Connection-scoped identity\"\r\ndisplays-scale-source = \"GDI ratio {ratio}; not a measured desktop scale\"\r\n\r\nwb-current = \"Current\"\r\nwb-next = \"Next\"\r\nwb-previous = \"Previous\"\r\nwb-notes = \"Notes\"\r\nwb-no-notes = \"No notes\"\r\nwb-rendering = \"Rendering…\"\r\nwb-resume = \"Resume\"\r\nwb-pause = \"Pause\"\r\nwb-reset = \"Reset timer\"\r\nwb-navigate = \"Navigate\"\r\nwb-laser = \"Laser\"\r\nwb-pen = \"Pen\"\r\nwb-highlighter = \"Highlighter\"\r\nwb-eraser = \"Eraser\"\r\nwb-clear = \"Clear\"\r\nwb-grid = \"Grid\"\r\nwb-document = \"Document\"\r\nwb-black = \"Black\"\r\nwb-white = \"White\"\r\nwb-earlier = \"Earlier\"\r\nwb-later = \"Later\"\r\nwb-document-title = \"Document layout and navigation\"\r\nwb-auto = \"Automatic\"\r\nwb-unsplit = \"No split\"\r\nwb-left = \"Notes left\"\r\nwb-right = \"Notes right\"\r\nwb-top = \"Notes top\"\r\nwb-bottom = \"Notes bottom\"\r\nwb-independent = \"Recognize notes: pages: {value}\"\r\nwb-physical = \"Physical page navigation: {value}\"\r\nwb-progress = \"Slide {slide}/{slides} · Step {step}/{steps} · PDF {page}/{pages}\"\r\nwb-budget = \"Image exceeds texture budget\"\r\nwb-timer-yellow = \"Time is running low\"\r\nwb-timer-red = \"Time limit approaching or reached\"\r\n\r\nwb-upload-error = \"Graphics update failed; the previous complete image is retained. Change page or reopen the document to retry. {error}\"\r\n\r\n# Complete presenter preferences\r\nsettings-category-general = \"General\"\r\nsettings-category-displays = \"Displays\"\r\nsettings-category-presenter = \"Presenter layout\"\r\nsettings-category-timer = \"Timer\"\r\nsettings-category-pointer = \"Pointer and ink\"\r\nsettings-category-keys = \"Shortcuts\"\r\nsettings-category-advanced = \"Advanced\"\r\nsettings-language-restart = \"Language and startup fullscreen apply after restarting. Other changes apply immediately and save automatically.\"\r\nsettings-clear-recent = \"Clear recent files\"\r\nsettings-recording = \"Press a key · Esc cancels\"\r\nsettings-record = \"Record\"\r\nsettings-key-conflict = \"{key}: invalid, reserved or conflicting binding; disabled.\"\r\nsettings-key-help = \"Click a binding to remove it. Conflicting actions are both disabled. Escape always cancels editing first.\"\r\nsettings-reset-keys = \"Restore default shortcuts\"\r\nsettings-cache-help = \"Budgets in MiB. GPU reserves half per window and half within each window for safe image replacement. A shrink that cannot retain the current image is rejected. CPU changes wait for the render worker.\"\r\nsettings-open-directory = \"Show configuration file\"\r\nsettings-reset-all = \"Reset all settings…\"\r\nsettings-confirm-reset = \"Confirm reset to defaults\"\r\nsettings-readonly = \"This configuration is from a newer version. Editing, reset and saving are disabled.\"\r\nsettings-invalid = \"Change not applied: {error}\"\r\nsettings-applying = \"Applying…\"\r\nsettings-unsaved = \"Unsaved session changes\"\r\nsettings-saved = \"Saved · changes apply automatically\"\r\nsettings-on = \"On\"\r\nsettings-off = \"Off\"\r\nsettings-edit-help = \"Type a value; Ctrl+A clears, Enter applies, Esc cancels. Colors use RRGGBBAA.\"\r\nsettings-invalid-key = \"Unsupported key syntax.\"\r\nsettings-gpu-budget = \"GPU budget cannot retain the current complete frame. Increase it or reopen the document before shrinking.\"\r\nsettings-choice-zh-CN = \"简体中文\"\r\nsettings-choice-en-US = \"English\"\r\nsettings-choice-dark = \"Dark\"\r\nsettings-choice-light = \"Light\"\r\nsettings-choice-system = \"System\"\r\nsettings-choice-count_up = \"Count up\"\r\nsettings-choice-count_down = \"Count down\"\r\ndisplays-id-interface = \"Identity: OS device interface path\"\r\ndisplays-id-name = \"Identity: name and resolution fallback\"\r\ndisplays-source-saved = \"Role resolution: saved MonitorId bindings\"\r\ndisplays-source-heuristic = \"Role resolution: automatic suggestion\"\r\ndisplays-source-single = \"Role resolution: single display policy\"\r\ndisplays-source-none = \"Role resolution: no displays\"\r\ndisplays-warning-audience-missing = \"The saved PDF display is disconnected.\"\r\ndisplays-warning-presenter-missing = \"The saved presenter display is missing; primary display fallback.\"\r\ndisplays-warning-duplicate = \"Ambiguous or duplicate roles/identities require explicit reassignment.\"\r\nsettings-field-general-language = \"Language\"\r\nsettings-field-general-theme = \"Theme\"\r\nsettings-field-general-reopen_last_document = \"Reopen last document on startup\"\r\nsettings-field-general-recent_files_limit = \"Recent file limit\"\r\nsettings-field-display-audience_fullscreen = \"PDF window fullscreen\"\r\nsettings-field-display-presenter_start_fullscreen = \"Presenter fullscreen on next startup\"\r\nsettings-field-presenter-next_slide_ratio = \"Next slide width ratio\"\r\nsettings-field-presenter-notes_ratio = \"Notes height ratio\"\r\nsettings-field-presenter-notes_font_scale = \"Notes font scale\"\r\nsettings-field-presenter-show_clock = \"Show clock\"\r\nsettings-field-presenter-show_thumbnail_strip = \"Show thumbnail strip\"\r\nsettings-field-presenter-grid_columns = \"Grid columns (1–4)\"\r\nsettings-field-presenter-grid_visible_pages = \"Visible grid pages (1–16)\"\r\nsettings-field-timer-mode = \"Timer mode\"\r\nsettings-field-timer-target_minutes = \"Target duration (minutes)\"\r\nsettings-field-timer-warn_yellow_remaining_min = \"Yellow warning: remaining minutes\"\r\nsettings-field-timer-warn_red_remaining_min = \"Red warning: remaining minutes\"\r\nsettings-field-pointer-laser_color_bgra = \"Laser color (RRGGBBAA)\"\r\nsettings-field-pointer-laser_radius_norm = \"Laser radius / slide width\"\r\nsettings-field-pointer-pen_color_bgra = \"Pen color (RRGGBBAA)\"\r\nsettings-field-pointer-pen_width_norm = \"Pen width / slide width\"\r\nsettings-field-pointer-highlighter_alpha = \"Highlighter opacity\"\r\nsettings-field-cache-l1_gpu_mib = \"GPU image budget (MiB)\"\r\nsettings-field-cache-l2_cpu_mib = \"CPU page cache (MiB)\"\r\nsettings-field-cache-l3_thumb_mib = \"Thumbnail cache (MiB)\"\r\nsettings-field-general-debug_overlay = \"Show diagnostics\"\r\nsettings-action-next = \"Next slide\"\r\nsettings-action-previous = \"Previous slide\"\r\nsettings-action-start_presentation = \"Start presentation\"\r\nsettings-action-stop_presentation = \"Stop presentation\"\r\nsettings-action-blank_black = \"Black screen\"\r\nsettings-action-blank_white = \"White screen\"\r\nsettings-action-swap_screens = \"Swap displays\"\r\nsettings-action-toggle_laser = \"Toggle laser\"\r\nsettings-action-toggle_pen = \"Toggle pen\"\r\nsettings-action-jump = \"Jump to page\"\r\nsettings-hot-reload-help = \"Hot reload watches only the open PDF. External replacements become visible after stable reading and both windows are ready.\"\r\nsettings-field-hot_reload-enabled = \"Watch external PDF changes\"\r\nsettings-field-hot_reload-debounce_ms = \"Quiet period (ms)\"\r\nreload-dropped-ink = \"Reload removed annotations from {count} missing pages.\"\r\nreload-recovery = \"Replacement rollback failed. Reopen the document to recover.\"\r\n\r\nsettings-field-media-max_decode_height = \"Maximum media height (next playback)\"\r\nmedia-play = \"Play media\"\r\nmedia-pause = \"Pause media\"\r\nmedia-runtime-missing = \"Video runtime unavailable. Install the media runtime; PDF remains available.\"\r\nmedia-source-missing = \"Media file is missing or unreadable.\"\r\nmedia-limit = \"Media exceeds the size or memory limit.\"\r\nmedia-failed = \"Media playback failed. Select Play to retry.\"\r\n\r\nmedia-slot-unavailable = \"Media unavailable\"\r\n\r\nwb-notes = \"Current notes\"\r\nwb-next-slide = \"Next slide\"\r\n"), keys: [], span: Some(11399..11407) }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- policy::tests::conflicts_are_disabled_after_normalization stdout ----
+
+thread 'policy::tests::conflicts_are_disabled_after_normalization' (98964) panicked at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\sync\lazy_lock.rs:415:5:
+LazyLock instance has previously been poisoned
+
+---- policy::tests::configured_bindings_cannot_collide_with_shell_shortcuts stdout ----
+
+thread 'policy::tests::configured_bindings_cannot_collide_with_shell_shortcuts' (89200) panicked at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\sync\lazy_lock.rs:415:5:
+LazyLock instance has previously been poisoned
+
+---- display_settings::tests::identical_driver_names_become_distinct_cards stdout ----
+
+thread 'display_settings::tests::identical_driver_names_become_distinct_cards' (57060) panicked at crates\ferrostage-ui\src\locale.rs:11:28:
+valid embedded application locale: Error { message: "duplicate key", input: Some("app-title = \"FerroStage\"\r\nskeleton-banner = \"演示窗口尚未接入\"\r\n\r\n# Task07 native shell\r\nstage-idle = \"未打开文档\"\r\nstage-ready = \"准备就绪\"\r\nstage-presenting = \"演示中\"\r\nopen = \"打开 PDF\"\r\nhome = \"返回首页\"\r\nsettings = \"设置\"\r\nswap = \"交换屏幕\"\r\nstart = \"开始演示\"\r\nstop = \"结束演示\"\r\nloading = \"正在打开…\"\r\npreparing = \"正在准备…\"\r\nwelcome = \"打开 PDF，准备好后再开始演示。\"\r\npage-placeholder = \"页面占位\"\r\npage-count = \"第 {current} / {pages} 页\"\r\npresenter-label = \"FerroStage 讲者窗口\"\r\ndisabled-label = \"{label}（不可用）\"\r\njump = \"跳转到页\"\r\njump-description = \"输入物理页码（1–{pages}）：{text}。按回车跳转。\"\r\nconfirm-jump = \"确认跳转\"\r\nclose = \"关闭\"\r\nunsaved = \"设置未保存\"\r\nsave-error = \"设置未保存：{error}\"\r\nretry-save = \"重试保存\"\r\nrecent = \"最近文件\"\r\nneed-document = \"请先打开 PDF\"\r\nconfirming = \"正在确认，请稍候\"\r\nwatcher-unavailable = \"显示器监测不可用；无法安全开始\"\r\ninvalid-page = \"请输入有效页码\"\r\nstop-before-import = \"请先结束演示，再打开 PDF\"\r\nimport-unavailable = \"PDF 导入不可用：{error}\"\r\nread-error = \"无法读取 PDF：{error}\"\r\nworker-closed = \"PDF 工作线程已关闭\"\r\nimport-error = \"PDF 导入失败，原文档保持不变：{error}\"\r\nreadonly-swap = \"此版本设置只读，不能交换角色\"\r\nambiguous-displays = \"显示器身份不完整或有歧义；请等待重新枚举\"\r\nno-audience = \"未找到观众显示器；单屏须显式启用窗口化观众模式\"\r\ncannot-swap = \"交换需要两个不同且可用的显示器\"\r\nplacement-timeout = \"窗口位置或模式未能在限定时间内确认\"\r\nactivation-timeout = \"讲者窗口尚未激活，已取消弹出操作\"\r\ninvalid-shortcut = \"已禁用无效快捷键 {key}（{action}）\"\r\nconflicting-shortcut = \"已禁用冲突快捷键 {key}：{actions}\"\r\nreserved-escape = \"Escape 用于取消当前操作；已禁用 {action} 绑定\"\r\nunwired-shortcut = \"{action}（{key}）尚未连接工作台；该快捷键已禁用\"\r\nfeature-laser = \"激光笔\"\r\nfeature-pen = \"画笔\"\r\n\r\ndisplays = \"显示器设置\"\r\ndisplays-count = \"检测到 {count} 个屏幕\"\r\ndisplays-number-help = \"FerroStage 编号与“识别屏幕”一致，不代表 Windows 显示器编号。\"\r\ndisplays-primary = \"主屏\"\r\ndisplays-builtin = \"内置屏\"\r\ndisplays-portrait = \"竖屏\"\r\ndisplays-left = \"左侧\"\r\ndisplays-right = \"右侧\"\r\ndisplays-above = \"上方\"\r\ndisplays-below = \"下方\"\r\ndisplays-center = \"中间\"\r\ndisplays-role-app = \"应用窗口\"\r\ndisplays-role-pdf = \"PDF\"\r\ndisplays-role-windowed = \"窗口播放\"\r\ndisplays-role-picked = \"{label} · 已选\"\r\ndisplays-app = \"应用窗口所在屏幕\"\r\ndisplays-pdf = \"PDF 播放屏幕\"\r\ndisplays-unused = \"不使用\"\r\ndisplays-use-windowed = \"应用窗口和窗口化 PDF\"\r\ndisplays-no-play = \"不播放\"\r\ndisplays-windowed = \"在本屏窗口播放\"\r\ndisplays-identify = \"识别屏幕\"\r\ndisplays-refresh = \"重新检测\"\r\ndisplays-identify-help = \"识别标记显示 3 秒；仅可在开始演示之前使用。\"\r\ndisplays-selected = \"{label}（已选择）\"\r\ndisplays-draft-help = \"选择仅进入草稿，点击“应用”才生效。“取消”保留当前窗口和配置。\"\r\ndisplays-apply = \"应用\"\r\ndisplays-cancel = \"取消\"\r\ndisplays-conflict = \"应用窗口和 PDF 不能使用同一屏幕，请选择其他屏幕或“不播放”。\"\r\ndisplays-target-missing = \"所选屏幕已离线或身份不明确，请重新检测并选择可用屏幕。\"\r\ndisplays-windowed-single = \"在应用屏幕窗口播放仅适用于单屏。\"\r\ndisplays-stale = \"屏幕拓扑已变化。请重新检测，丢弃旧草稿并按当前屏幕重新选择。\"\r\ndisplays-unavailable = \"屏幕检测失败，不能应用上次检测的屏幕。\"\r\ndisplays-empty = \"未检测到屏幕，正在等待显示器恢复。\"\r\ndisplays-readonly = \"此版本设置只读，不能更改显示器分配。\"\r\ndisplays-id-degraded = \"身份基于名称和分辨率，可能需要重新绑定\"\r\ndisplays-id-connection = \"身份绑定当前连接\"\r\ndisplays-scale-source = \"GDI 比值 {ratio}，不等同实测桌面缩放\"\r\n\r\nwb-current = \"当前页\"\r\nwb-next = \"下一页\"\r\nwb-previous = \"上一页\"\r\nwb-notes = \"备注\"\r\nwb-no-notes = \"暂无备注\"\r\nwb-rendering = \"正在渲染…\"\r\nwb-resume = \"继续计时\"\r\nwb-pause = \"暂停计时\"\r\nwb-reset = \"重置计时\"\r\nwb-navigate = \"导航\"\r\nwb-laser = \"激光笔\"\r\nwb-pen = \"画笔\"\r\nwb-highlighter = \"荧光笔\"\r\nwb-eraser = \"橡皮\"\r\nwb-clear = \"清空笔画\"\r\nwb-grid = \"缩略图网格\"\r\nwb-document = \"文档选项\"\r\nwb-black = \"黑屏\"\r\nwb-white = \"白屏\"\r\nwb-earlier = \"前一组\"\r\nwb-later = \"后一组\"\r\nwb-document-title = \"文档布局与导航\"\r\nwb-auto = \"自动识别\"\r\nwb-unsplit = \"不拆分\"\r\nwb-left = \"备注在左侧\"\r\nwb-right = \"备注在右侧\"\r\nwb-top = \"备注在上方\"\r\nwb-bottom = \"备注在下方\"\r\nwb-independent = \"识别独立 notes: 备注页：{value}\"\r\nwb-physical = \"按物理页导航：{value}\"\r\nwb-progress = \"逻辑页 {slide}/{slides} · 步进 {step}/{steps} · 物理页 {page}/{pages}\"\r\nwb-budget = \"图像超出纹理缓存预算\"\r\nwb-timer-yellow = \"剩余时间不足\"\r\nwb-timer-red = \"即将或已经到达时间限制\"\r\n\r\nwb-upload-error = \"图像更新失败，保留上一张完整画面。切换页面或重新打开文档可重试。{error}\"\r\n\r\n# Complete presenter preferences\r\nsettings-category-general = \"通用\"\r\nsettings-category-displays = \"显示器\"\r\nsettings-category-presenter = \"讲者布局\"\r\nsettings-category-timer = \"计时器\"\r\nsettings-category-pointer = \"指针与画笔\"\r\nsettings-category-keys = \"快捷键\"\r\nsettings-category-advanced = \"高级\"\r\nsettings-language-restart = \"语言及启动全屏在重启后生效。其他设置即时应用并自动保存。\"\r\nsettings-clear-recent = \"清空最近文件\"\r\nsettings-recording = \"请按键 · Esc 取消\"\r\nsettings-record = \"录制\"\r\nsettings-key-conflict = \"{key}：无效、保留或冲突按键，已禁用。\"\r\nsettings-key-help = \"点击按键可删除。同键冲突的动作均禁用。Escape 总是先取消编辑。\"\r\nsettings-reset-keys = \"恢复默认快捷键\"\r\nsettings-cache-help = \"预算单位 MiB。GPU 为每窗分配一半，每窗再保留一半用于安全替换。无法保留当前图像的缩减会被拒绝。CPU 修改等待渲染线程确认。\"\r\nsettings-open-directory = \"打开配置目录\"\r\nsettings-reset-all = \"重置全部设置…\"\r\nsettings-confirm-reset = \"确认恢复默认值\"\r\nsettings-readonly = \"配置来自更新版本。编辑、重置与保存均已禁用。\"\r\nsettings-invalid = \"修改未应用：{error}\"\r\nsettings-applying = \"正在应用…\"\r\nsettings-unsaved = \"会话修改尚未保存\"\r\nsettings-saved = \"已保存 · 修改自动生效\"\r\nsettings-on = \"开启\"\r\nsettings-off = \"关闭\"\r\nsettings-edit-help = \"输入数值；Ctrl+A 清空，Enter 应用，Esc 取消。颜色使用 RRGGBBAA。\"\r\nsettings-invalid-key = \"不支持的按键语法。\"\r\nsettings-gpu-budget = \"GPU 预算无法保留当前完整画面。请增加预算，或重新打开文档后再缩减。\"\r\nsettings-choice-zh-CN = \"简体中文\"\r\nsettings-choice-en-US = \"English\"\r\nsettings-choice-dark = \"深色\"\r\nsettings-choice-light = \"浅色\"\r\nsettings-choice-system = \"跟随系统\"\r\nsettings-choice-count_up = \"正计时\"\r\nsettings-choice-count_down = \"倒计时\"\r\ndisplays-id-interface = \"身份来源：系统设备接口路径\"\r\ndisplays-id-name = \"身份来源：名称与分辨率回退\"\r\ndisplays-source-saved = \"角色解析：已保存的 MonitorId 绑定\"\r\ndisplays-source-heuristic = \"角色解析：自动建议\"\r\ndisplays-source-single = \"角色解析：单屏策略\"\r\ndisplays-source-none = \"角色解析：无屏幕\"\r\ndisplays-warning-audience-missing = \"已保存的 PDF 屏幕当前不在场。\"\r\ndisplays-warning-presenter-missing = \"已保存的讲者屏幕不在场，回退到主屏。\"\r\ndisplays-warning-duplicate = \"角色或身份存在歧义或重复，请重新明确分配。\"\r\nsettings-field-general-language = \"语言\"\r\nsettings-field-general-theme = \"主题\"\r\nsettings-field-general-reopen_last_document = \"启动时重新打开上次文档\"\r\nsettings-field-general-recent_files_limit = \"最近文件数量\"\r\nsettings-field-display-audience_fullscreen = \"PDF 播放窗口全屏\"\r\nsettings-field-display-presenter_start_fullscreen = \"下次启动讲者窗口全屏\"\r\nsettings-field-presenter-next_slide_ratio = \"下一页宽度比例\"\r\nsettings-field-presenter-notes_ratio = \"备注高度比例\"\r\nsettings-field-presenter-notes_font_scale = \"备注字号倍率\"\r\nsettings-field-presenter-show_clock = \"显示时钟\"\r\nsettings-field-presenter-show_thumbnail_strip = \"显示缩略图条\"\r\nsettings-field-presenter-grid_columns = \"网格列数（1–4）\"\r\nsettings-field-presenter-grid_visible_pages = \"网格可见页数（1–16）\"\r\nsettings-field-timer-mode = \"计时模式\"\r\nsettings-field-timer-target_minutes = \"目标时长（分钟）\"\r\nsettings-field-timer-warn_yellow_remaining_min = \"黄色预警：剩余分钟\"\r\nsettings-field-timer-warn_red_remaining_min = \"红色预警：剩余分钟\"\r\nsettings-field-pointer-laser_color_bgra = \"激光笔颜色（RRGGBBAA）\"\r\nsettings-field-pointer-laser_radius_norm = \"激光笔半径 / 幻灯片宽度\"\r\nsettings-field-pointer-pen_color_bgra = \"画笔颜色（RRGGBBAA）\"\r\nsettings-field-pointer-pen_width_norm = \"画笔宽度 / 幻灯片宽度\"\r\nsettings-field-pointer-highlighter_alpha = \"荧光笔透明度\"\r\nsettings-field-cache-l1_gpu_mib = \"GPU 图像预算（MiB）\"\r\nsettings-field-cache-l2_cpu_mib = \"CPU 页面缓存（MiB）\"\r\nsettings-field-cache-l3_thumb_mib = \"缩略图缓存（MiB）\"\r\nsettings-field-general-debug_overlay = \"显示调试信息\"\r\nsettings-action-next = \"下一页\"\r\nsettings-action-previous = \"上一页\"\r\nsettings-action-start_presentation = \"开始演示\"\r\nsettings-action-stop_presentation = \"停止演示\"\r\nsettings-action-blank_black = \"黑屏\"\r\nsettings-action-blank_white = \"白屏\"\r\nsettings-action-swap_screens = \"交换屏幕\"\r\nsettings-action-toggle_laser = \"切换激光笔\"\r\nsettings-action-toggle_pen = \"切换画笔\"\r\nsettings-action-jump = \"跳转页面\"\r\nsettings-hot-reload-help = \"热重载仅监视当前 PDF。外部替换经稳定读取且两窗图像就绪后才显示。\"\r\nsettings-field-hot_reload-enabled = \"监视外部 PDF 变更\"\r\nsettings-field-hot_reload-debounce_ms = \"静默等待（毫秒）\"\r\nreload-dropped-ink = \"热重载移除了 {count} 个已删除页面的标注。\"\r\nreload-recovery = \"热重载回滚失败，请重新打开文档恢复。\"\r\n\r\nsettings-field-media-max_decode_height = \"媒体最大高度（下次播放生效）\"\r\nmedia-play = \"播放媒体\"\r\nmedia-pause = \"暂停媒体\"\r\nmedia-runtime-missing = \"视频运行库不可用。请安装媒体运行库，PDF 仍可使用。\"\r\nmedia-source-missing = \"媒体文件缺失或无法读取。\"\r\nmedia-limit = \"媒体超出尺寸或内存限制。\"\r\nmedia-failed = \"媒体播放失败，可点击播放重试。\"\r\n\r\nmedia-slot-unavailable = \"媒体不可用\"\r\n\r\nwb-notes = \"当前讲稿\"\r\nwb-next-slide = \"下一页\"\r\n"), keys: [], span: Some(11168..11176) }
+
+
+failures:
+    display_settings::tests::identical_driver_names_become_distinct_cards
+    locale::tests::catalogs_have_identical_keys_and_interpolation_fields
+    policy::tests::configured_bindings_cannot_collide_with_shell_shortcuts
+    policy::tests::conflicts_are_disabled_after_normalization
+
+test result: FAILED. 27 passed; 4 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p ferrostage-ui --lib`
+mbx[cache]: 0 hits, 2 misses, 9 not looked up, 11 incremental, 1 bypassed; 0 B downloaded, 0 B uploaded, 0 B stored locally
+mbx[savings]: your deleted worktrees left 255.1 GiB logical behind. left. past tense.

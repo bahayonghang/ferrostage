@@ -1,0 +1,6 @@
+{
+  "visual_automation": "blocked: helper already has an active request after reset",
+  "ended": "2026-10-17T17:47:26.8277746Z",
+  "reason": "Task-owned visible test process stopped for final relink",
+  "user_confirmed_visible": true
+}

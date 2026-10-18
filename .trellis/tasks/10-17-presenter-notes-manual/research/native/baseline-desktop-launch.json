@@ -1,0 +1,26 @@
+{
+  "started": "2026-10-17T17:33:07.7934481Z",
+  "inputs": [
+    {
+      "Algorithm": "SHA256",
+      "Hash": "013FB4DE31189116C36C4766E02C051AFB601CEE8E1A76DCDA84B945305C9064",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "395D8BB26AD5F8F7CA5245901ABDCB8DE1FCCD2BE5FF7E30482E54F776526CB6",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\pdf\\perf-100.pdf"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "79D4676B656CFB1ABCEA88F9ADE3B4B0826C5200382DB5F4EC72A636C598C118",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\pdfium.dll"
+    },
+    {
+      "Algorithm": "SHA256",
+      "Hash": "0EBBDA66335E4B9A48E34AF74198818024044CC7576C182C02A8DF1B42E22727",
+      "Path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-17-presenter-notes-manual\\research\\native\\baseline-desktop.toml"
+    }
+  ],
+  "pid": 93108
+}

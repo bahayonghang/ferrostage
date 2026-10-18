@@ -1,0 +1,7 @@
+{"file":".trellis/spec/frontend/component-guidelines.md","reason":"GPUI ownership, input, focus and native lifecycle boundaries"}
+{"file":".trellis/spec/frontend/quality-guidelines.md","reason":"Native and default checks, audience privacy, rendering constraints"}
+{"file":".trellis/spec/frontend/state-management.md","reason":"State/snapshot, media and reload contracts"}
+{"file":".trellis/spec/backend/quality-guidelines.md","reason":"Required CI and real PDFium performance methodology"}
+{"file":".trellis/spec/backend/logging-guidelines.md","reason":"Existing logging contract to update under explicit user request"}
+{"file":"DESIGN.md","reason":"Existing palette, native token layer, accessibility and visual checks"}
+{"file":".trellis/tasks/10-17-presenter-notes-manual/design.md","reason":"Reviewed technical design and evidence, pending final user review"}
