@@ -7,6 +7,7 @@
 
 use std::time::Duration;
 
+#[cfg(any(target_os = "windows", test))]
 mod friendly;
 mod monitor;
 mod reload;
