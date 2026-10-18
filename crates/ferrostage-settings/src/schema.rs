@@ -15,6 +15,9 @@ pub const SCHEMA_VERSION: i64 = 1;
 /// `general.language` values that have a locale file under `assets/locales`.
 pub const LANGUAGES: [&str; 2] = ["zh-CN", "en-US"];
 
+/// Inclusive logical-pixel range for interface base size.
+pub const UI_FONT_SIZE_RANGE: std::ops::RangeInclusive<u32> = 12..=24;
+
 /// Inclusive range for `general.recent_files_limit`.
 pub const RECENT_FILES_LIMIT_RANGE: std::ops::RangeInclusive<u32> = 1..=100;
 
@@ -143,6 +146,10 @@ pub struct GeneralSettings {
     pub language: String,
     /// Palette selection.
     pub theme: Theme,
+    /// Installed interface family; empty selects the system default.
+    pub ui_font_family: String,
+    /// Interface base size in logical pixels; content fonts are unaffected.
+    pub ui_font_size: u32,
     /// Open the previous document on the next launch.
     pub reopen_last_document: bool,
     /// Maximum length of [`Self::recent_files`] after dedup.
@@ -158,6 +165,8 @@ impl Default for GeneralSettings {
         Self {
             language: "zh-CN".to_owned(),
             theme: Theme::Dark,
+            ui_font_family: String::new(),
+            ui_font_size: 16,
             reopen_last_document: false,
             recent_files_limit: 10,
             recent_files: Vec::new(),

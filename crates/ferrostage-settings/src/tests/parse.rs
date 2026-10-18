@@ -479,3 +479,43 @@ fn legacy_notes_ratio_and_strip_are_readable_without_restoring_small_notes() {
         0.65
     );
 }
+
+#[test]
+fn interface_font_leaves_default_validate_and_preserve_future_policy() {
+    let old = from_toml("schema_version = 1\n[general]\nlanguage = 'en-US'").unwrap();
+    assert_eq!(old.settings.general.ui_font_family, "");
+    assert_eq!(old.settings.general.ui_font_size, 16);
+    for invalid in ["11", "25", "16.5", "'large'", "-1"] {
+        let result = from_toml(&format!(
+            "[general]\nui_font_size = {invalid}\nui_font_family = ' Missing Family '"
+        ))
+        .unwrap();
+        assert_eq!(result.settings.general.ui_font_size, 16);
+        assert_eq!(result.settings.general.ui_font_family, "Missing Family");
+        assert!(
+            result
+                .warnings
+                .iter()
+                .any(|warning| warning.key == "general.ui_font_size")
+        );
+    }
+    for invalid in ["42", "true", "\"bad\\nfamily\""] {
+        let result = from_toml(&format!(
+            "[general]\nui_font_family = {invalid}\nui_font_size = 24"
+        ))
+        .unwrap();
+        assert_eq!(result.settings.general.ui_font_family, "");
+        assert_eq!(result.settings.general.ui_font_size, 24);
+        assert!(
+            result
+                .warnings
+                .iter()
+                .any(|warning| warning.key == "general.ui_font_family")
+        );
+    }
+    let future =
+        from_toml("schema_version = 99\n[general]\nui_font_size = 12\nui_font_family = 'Example'")
+            .unwrap();
+    assert!(!future.write_policy.is_writable());
+    assert_eq!(future.settings.general.ui_font_size, 12);
+}

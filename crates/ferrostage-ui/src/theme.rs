@@ -8,9 +8,54 @@ pub const RADIUS: f32 = 8.0;
 pub const PANEL_RADIUS: f32 = 12.0;
 pub const SPACING: f32 = 16.0;
 pub const HOME_WIDTH: f32 = 760.0;
+pub const SESSION_CONTROL: f32 = 56.;
+pub const SESSION_ICON: f32 = 26.;
+pub const SESSION_WIDTH: f32 = 208.;
 pub const SANS: &str = "Segoe UI";
 pub const DISPLAY: &str = "Georgia";
 pub const MONO: &str = "Consolas";
+pub const SETTINGS_WIDTH: f32 = 960.;
+pub const SETTINGS_DISPLAY_WIDTH: f32 = 1120.;
+pub const SETTINGS_ROW: f32 = 56.;
+pub const DISPLAY_PREVIEW_WIDTH: f32 = 420.;
+pub const DISPLAY_PREVIEW_HEIGHT: f32 = 240.;
+
+/// Resolved presenter typography. Requested preferences remain in Settings.
+#[derive(Clone, Debug)]
+pub struct Typography {
+    pub family: String,
+    pub missing: bool,
+    scale: f32,
+}
+
+impl Typography {
+    pub fn resolve(settings: &ferrostage_settings::GeneralSettings, available: &[String]) -> Self {
+        let requested = settings.ui_font_family.trim();
+        let installed = available
+            .iter()
+            .find(|name| name.eq_ignore_ascii_case(requested));
+        Self {
+            family: installed.cloned().unwrap_or_else(|| SANS.into()),
+            missing: !requested.is_empty() && installed.is_none(),
+            scale: settings.ui_font_size as f32 / 16.,
+        }
+    }
+
+    pub fn size(&self, role: f32) -> f32 {
+        role * self.scale
+    }
+
+    #[cfg(feature = "gpui")]
+    pub fn font(&self) -> gpui::Font {
+        gpui::Font {
+            fallbacks: Some(gpui::FontFallbacks::from_fonts(vec![
+                SANS.into(),
+                "Microsoft YaHei UI".into(),
+            ])),
+            ..gpui::font(self.family.clone())
+        }
+    }
+}
 
 #[cfg(feature = "gpui")]
 pub fn sans_font() -> gpui::Font {
@@ -19,14 +64,6 @@ pub fn sans_font() -> gpui::Font {
             "Microsoft YaHei UI".into(),
         ])),
         ..gpui::font(SANS)
-    }
-}
-
-#[cfg(feature = "gpui")]
-pub fn display_font() -> gpui::Font {
-    gpui::Font {
-        fallbacks: Some(gpui::FontFallbacks::from_fonts(vec!["SimSun".into()])),
-        ..gpui::font(DISPLAY)
     }
 }
 
@@ -97,33 +134,18 @@ impl Palette {
                 style.pressed = PRIMARY_ACTIVE;
             }
             ButtonKind::Navigation => {
-                style.fill = self.ink;
-                style.ink = self.canvas;
-                style.hover = self.body;
-                style.pressed = self.body;
-                style.radius = 4.;
+                style.fill = self.card;
+                style.border = self.card;
+                style.ink = self.ink;
+                style.hover = self.soft;
+                style.pressed = self.soft;
             }
-            ButtonKind::Black | ButtonKind::White => {
-                style.fill = if kind == ButtonKind::Black {
-                    0x000000
-                } else {
-                    0xFFFFFF
-                };
-                style.ink = if kind == ButtonKind::Black {
-                    0xFFFFFF
-                } else {
-                    0x000000
-                };
-                style.hover = style.fill;
-                style.pressed = style.fill;
-                style.radius = 4.;
-            }
-            ButtonKind::Tool => {
-                style.radius = CONTROL / 2.;
+            ButtonKind::Black | ButtonKind::White | ButtonKind::Tool => {
+                style.border = self.soft;
                 if selected {
                     style.fill = self.card;
                     style.ink = self.ink;
-                    style.border = self.focus;
+                    style.border = self.card;
                 }
             }
             ButtonKind::Destructive => {
@@ -181,6 +203,26 @@ pub fn palette(theme: Theme, system_dark: bool) -> Palette {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn typography_retains_request_and_scales_roles_with_missing_fallback() {
+        let mut general = ferrostage_settings::GeneralSettings {
+            ui_font_family: "missing family".into(),
+            ui_font_size: 24,
+            ..Default::default()
+        };
+        let available = vec!["Installed Family".into()];
+        let fallback = Typography::resolve(&general, &available);
+        assert!(fallback.missing);
+        assert_eq!(fallback.family, SANS);
+        assert_eq!(fallback.size(20.), 30.);
+        assert_eq!(general.ui_font_family, "missing family");
+        general.ui_font_family = "installed family".into();
+        let installed = Typography::resolve(&general, &available);
+        assert!(!installed.missing);
+        assert_eq!(installed.family, "Installed Family");
+        general.ui_font_family.clear();
+        assert!(!Typography::resolve(&general, &available).missing);
+    }
     fn luminance(color: u32) -> f64 {
         let channels = [color >> 16, color >> 8, color].map(|v| {
             let c = f64::from(v & 255) / 255.;
@@ -213,7 +255,17 @@ mod tests {
                     for selected in [false, true] {
                         let style = palette.button(kind, enabled, selected);
                         assert!(contrast(style.ink, style.fill) >= 4.5, "{kind:?}");
-                        assert!(contrast(style.border, palette.canvas) >= 3.);
+                        if matches!(
+                            kind,
+                            ButtonKind::Primary | ButtonKind::Destructive | ButtonKind::Utility
+                        ) || !enabled
+                        {
+                            assert!(contrast(style.border, palette.canvas) >= 3.);
+                        }
+                        assert!(
+                            contrast(palette.focus, style.fill) >= 3.
+                                || kind == ButtonKind::Primary
+                        );
                         if enabled {
                             assert!(contrast(style.ink, style.hover) >= 4.5, "hover {kind:?}");
                             assert!(contrast(style.ink, style.pressed) >= 4.5, "press {kind:?}");

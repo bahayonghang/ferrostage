@@ -50,6 +50,11 @@ fn merge_general(doc: &mut toml::Table, general: &GeneralSettings) -> Result<(),
     with_section(doc, "general", |table| {
         table.insert("language".to_owned(), language);
         table.insert("theme".to_owned(), theme);
+        table.insert(
+            "ui_font_family".into(),
+            string_value(&general.ui_font_family),
+        );
+        table.insert("ui_font_size".into(), u32_value(general.ui_font_size));
         table.insert("reopen_last_document".to_owned(), reopen);
         table.insert("recent_files_limit".to_owned(), limit);
         table.insert("recent_files".to_owned(), recent);

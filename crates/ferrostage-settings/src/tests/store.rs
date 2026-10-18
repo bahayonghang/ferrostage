@@ -171,6 +171,8 @@ fn failed_session_save_keeps_edits_and_retry_clears_dirty_state() {
     let store = SettingsStore::at(parent.join("custom.toml"));
     let mut session = crate::SettingsSession::from_outcome(from_toml("").expect("defaults"));
     session.settings.timer.target_minutes = 20;
+    session.settings.general.ui_font_family = "Example Family".into();
+    session.settings.general.ui_font_size = 22;
     session.note_edit();
     let original_tree = session.raw_table.clone();
     assert!(matches!(
@@ -178,6 +180,8 @@ fn failed_session_save_keeps_edits_and_retry_clears_dirty_state() {
         Err(crate::SaveError::CreateDir { .. })
     ));
     assert_eq!(session.settings.timer.target_minutes, 20);
+    assert_eq!(session.settings.general.ui_font_family, "Example Family");
+    assert_eq!(session.settings.general.ui_font_size, 22);
     assert_eq!(session.raw_table, original_tree);
     assert!(session.dirty);
     assert!(session.save_error.is_some());
@@ -481,4 +485,29 @@ fn temp_files(dir: &Path) -> Vec<std::path::PathBuf> {
                 .is_some_and(|name| name.contains(".tmp-"))
         })
         .collect()
+}
+
+#[test]
+fn interface_fonts_roundtrip_with_unknown_leaves() {
+    let scratch = Scratch::new("interface-fonts");
+    let path = scratch.child("settings.toml");
+    fs::write(
+        &path,
+        "schema_version = 1\n[general]\nfuture_font_option = 'keep'",
+    )
+    .unwrap();
+    let store = SettingsStore::at(&path);
+    let mut session = crate::SettingsSession::from_outcome(store.load().unwrap());
+    session.settings.general.ui_font_family = "Missing Family".into();
+    session.settings.general.ui_font_size = 21;
+    session.note_edit();
+    store.save_session(&mut session).unwrap();
+    let restored = store.load().unwrap();
+    assert_eq!(restored.settings.general.ui_font_family, "Missing Family");
+    assert_eq!(restored.settings.general.ui_font_size, 21);
+    let saved: toml::Table = fs::read_to_string(&path).unwrap().parse().unwrap();
+    assert_eq!(
+        saved["general"]["future_font_option"].as_str(),
+        Some("keep")
+    );
 }
