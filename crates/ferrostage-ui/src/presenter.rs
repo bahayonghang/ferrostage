@@ -28,8 +28,6 @@ pub(crate) struct PresenterData {
     dirty: bool,
     save_error: Option<String>,
     pages: usize,
-    current: usize,
-    preview: Option<usize>,
     recent: Vec<String>,
     workbench: workbench_view::WorkbenchData,
     preferences: settings_view::SettingsData,
@@ -63,8 +61,6 @@ impl PresenterData {
             dirty: shell.settings.dirty,
             save_error: shell.settings.save_error.as_ref().map(ToString::to_string),
             pages: shell.state.page_count(),
-            current: shell.state.current_page().0 + 1,
-            preview: shell.state.jump_preview().map(|page| page.0 + 1),
             workbench: workbench_view::WorkbenchData::from_shell(shell),
             preferences: settings_view::SettingsData::from_shell(shell),
             recent: shell
@@ -201,7 +197,11 @@ impl Presenter {
 
     #[cfg(all(test, feature = "test-support"))]
     pub(crate) fn rendered_document(&self) -> (&str, usize, usize) {
-        (&self.data.filename, self.data.current, self.data.pages)
+        (
+            &self.data.filename,
+            self.data.workbench.overlay.current_page.0 + 1,
+            self.data.pages,
+        )
     }
 
     pub(crate) fn button(
@@ -218,20 +218,34 @@ impl Presenter {
         let a11y = target.clone();
         let click = intent.clone();
         let accessible = intent.clone();
-        let fill = if !enabled {
-            palette.card
-        } else if primary {
-            theme::PRIMARY
-        } else {
-            palette.soft
+        let kind = match &intent {
+            Intent::Start => theme::ButtonKind::Primary,
+            Intent::Stop | Intent::Core(ferrostage_core::PresentationCommand::ClearStrokes) => {
+                theme::ButtonKind::Destructive
+            }
+            Intent::Next | Intent::Previous => theme::ButtonKind::Navigation,
+            Intent::Black => theme::ButtonKind::Black,
+            Intent::White => theme::ButtonKind::White,
+            Intent::Tool(_) => theme::ButtonKind::Tool,
+            _ if primary => theme::ButtonKind::Primary,
+            _ => theme::ButtonKind::Utility,
         };
-        let ink = if !enabled {
-            palette.muted
-        } else if primary {
-            theme::ON_PRIMARY
-        } else {
-            palette.body
+        let selected = match &intent {
+            Intent::Black => {
+                self.data.workbench.overlay.blank_mode == Some(ferrostage_core::BlankMode::Black)
+            }
+            Intent::White => {
+                self.data.workbench.overlay.blank_mode == Some(ferrostage_core::BlankMode::White)
+            }
+            Intent::Tool(_) => primary,
+            _ => false,
         };
+        let label = if selected {
+            format!("✓ {label}")
+        } else {
+            label
+        };
+        let style = palette.button(kind, enabled, selected);
         div()
             .id(SharedString::from(id.clone()))
             .debug_selector(|| id.clone())
@@ -250,7 +264,7 @@ impl Presenter {
             .tab_stop(enabled)
             .border(px(theme::FOCUS_WIDTH))
             .border_color(rgb(palette.canvas))
-            .rounded(px(theme::RADIUS + theme::FOCUS_GAP))
+            .rounded(px(style.radius + theme::FOCUS_GAP))
             .p(px(theme::FOCUS_GAP))
             .focus(|style| style.border_color(rgb(palette.focus)))
             .child(
@@ -261,29 +275,18 @@ impl Presenter {
                     .flex()
                     .items_center()
                     .justify_center()
-                    .rounded(px(theme::RADIUS))
-                    .bg(rgb(fill))
-                    .text_color(rgb(ink))
+                    .relative()
+                    .rounded(px(style.radius))
+                    .bg(rgb(style.fill))
+                    .text_color(rgb(style.ink))
                     .border_1()
-                    .border_color(rgb(palette.border))
+                    .border_color(rgb(style.border))
                     .min_w_0()
                     .text_size(px(14.))
                     .child(div().truncate().child(label))
                     .when(enabled, |view| {
-                        view.hover(move |style| {
-                            style.bg(rgb(if primary {
-                                theme::PRIMARY_HOVER
-                            } else {
-                                palette.card
-                            }))
-                        })
-                        .active(move |style| {
-                            style.bg(rgb(if primary {
-                                theme::PRIMARY_ACTIVE
-                            } else {
-                                palette.card
-                            }))
-                        })
+                        view.hover(move |state| state.bg(rgb(style.hover)))
+                            .active(move |state| state.bg(rgb(style.pressed)).top(px(1.)))
                     }),
             )
             .on_click(move |_, _, cx| {
@@ -526,8 +529,6 @@ impl Render for Presenter {
         let dirty = self.data.dirty;
         let save_error = self.data.save_error.clone();
         let pages = self.data.pages;
-        let current = self.data.current;
-        let preview = self.data.preview;
         let recent = self.data.recent.clone();
         window.set_window_title(&format!("{filename} — {stage_label} — FerroStage"));
         if modal.is_some() && !self.had_modal {
@@ -677,11 +678,7 @@ impl Render for Presenter {
                     l.text("jump"),
                     l.format(
                         "jump-description",
-                        &[
-                            ("pages", pages.to_string()),
-                            ("text", text.clone()),
-                            ("preview", preview.unwrap_or(current).to_string()),
-                        ],
+                        &[("pages", pages.to_string()), ("text", text.clone())],
                     ),
                 ),
                 Modal::Document => unreachable!("document modal handled above"),
@@ -698,9 +695,6 @@ impl Render for Presenter {
                 .gap(px(16.))
                 .child(div().text_size(px(20.)).text_color(rgb(p.ink)).child(title))
                 .child(div().child(description))
-                .when(matches!(modal, Modal::Jump(_)), |view| {
-                    view.child(self.jump_preview_panel())
-                })
                 .when_some(error, |view, error| {
                     view.child(div().text_color(rgb(p.error)).child(error))
                 })
@@ -815,7 +809,7 @@ impl Render for Presenter {
                     p,
                 )));
         }
-        if stage != SessionStage::Presenting && !recent.is_empty() {
+        if stage == SessionStage::Idle && !recent.is_empty() {
             body = body.child(
                 div()
                     .flex_shrink_0()

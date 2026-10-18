@@ -22,7 +22,6 @@ pub(super) struct Watch {
 struct Identity {
     generation: DocumentGeneration,
     page: PhysicalPage,
-    preview: Option<PhysicalPage>,
     stage: SessionStage,
     options: ferrostage_document::DocumentOverrides,
     presenter: Option<WindowId>,
@@ -118,7 +117,6 @@ impl Shell {
         Some(Identity {
             generation: self.state.generation(),
             page: self.state.current_page(),
-            preview: self.state.jump_preview(),
             stage: self.state.stage(),
             options: session.document.overrides,
             presenter: self.presenter.as_ref().map(|w| w.handle.window_id()),
@@ -410,7 +408,6 @@ impl Shell {
             || self.loading
             || self.pending.is_some()
             || self.preference_change.is_some()
-            || self.state.jump_preview().is_some()
         {
             return;
         }

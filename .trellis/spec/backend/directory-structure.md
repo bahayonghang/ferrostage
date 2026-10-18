@@ -55,7 +55,7 @@ Candidate readiness is scoped to the worker instance that issued it, as well as 
 
 ## Document mapping boundary
 
-`core::SlideMap` owns validated content steps and logical groups only; labels, ordered PDF notes pages, Markdown, diagnostics and media sources belong to document. Descriptors require a valid map and crop; use explicit `identity` only for metadata-only shell work, `LoadedDocument::descriptor` for real PDF imports. ReconfigureDocument retains generation/page count and stage/timer; CommitDocument requires a newer generation. Both clear preview and clamp to content. Failed construction/commands leave the old model/state intact.
+`core::SlideMap` owns validated content steps and logical groups only; labels, ordered PDF notes pages, Markdown, diagnostics and media sources belong to document. Descriptors require a valid map and crop; use explicit `identity` only for metadata-only shell work, `LoadedDocument::descriptor` for real PDF imports. ReconfigureDocument retains generation/page count and stage/timer; CommitDocument requires a newer generation. Both clamp to content. JumpTo validates and commits a content page directly; no staged preview state exists. Failed construction/commands leave the old model/state intact.
 
 The compatibility `PresentationState::set_slide_crop` also returns `Result<(), CoreError>` and uses the descriptor's existing rectangle predicate; invalid geometry returns `InvalidDocumentCrop` before mutation. Document viewing options should use `ReconfigureDocument` to keep map and crop changes atomic.
 

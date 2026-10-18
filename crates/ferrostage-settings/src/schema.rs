@@ -195,13 +195,13 @@ impl Default for DisplaySettings {
 pub struct PresenterSettings {
     /// Fraction of the presenter width used by the next-slide preview.
     pub next_slide_ratio: f64,
-    /// Fraction of the presenter width used by notes.
+    /// Fraction of the right column height used by notes.
     pub notes_ratio: f64,
     /// Notes font scale relative to the default size.
     pub notes_font_scale: f64,
     /// Show the clock.
     pub show_clock: bool,
-    /// Show the thumbnail strip.
+    /// Legacy read-compatible value; the removed thumbnail strip ignores it.
     pub show_thumbnail_strip: bool,
     /// Overview columns, from 1 to 4.
     pub grid_columns: u32,
@@ -209,14 +209,21 @@ pub struct PresenterSettings {
     pub grid_visible_pages: u32,
 }
 
+impl PresenterSettings {
+    /// Normalize old small-note layouts without rewriting user settings.
+    pub fn effective_notes_ratio(&self) -> f64 {
+        self.notes_ratio.clamp(0.55, 0.8)
+    }
+}
+
 impl Default for PresenterSettings {
     fn default() -> Self {
         Self {
             next_slide_ratio: 0.35,
-            notes_ratio: 0.40,
+            notes_ratio: 0.65,
             notes_font_scale: 1.0,
             show_clock: true,
-            show_thumbnail_strip: true,
+            show_thumbnail_strip: false,
             grid_columns: 4,
             grid_visible_pages: 16,
         }

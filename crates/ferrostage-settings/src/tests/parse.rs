@@ -467,3 +467,15 @@ fn media_v1_defaults_bounds_unknown_and_future_readonly() {
     assert!(!future.write_policy.is_writable());
     assert_eq!(future.settings.media.max_decode_height, 720);
 }
+#[test]
+fn legacy_notes_ratio_and_strip_are_readable_without_restoring_small_notes() {
+    let parsed =
+        crate::from_toml("[presenter]\nnotes_ratio=0.4\nshow_thumbnail_strip=true").unwrap();
+    assert_eq!(parsed.settings.presenter.notes_ratio, 0.4);
+    assert!(parsed.settings.presenter.show_thumbnail_strip);
+    assert_eq!(parsed.settings.presenter.effective_notes_ratio(), 0.55);
+    assert_eq!(
+        crate::PresenterSettings::default().effective_notes_ratio(),
+        0.65
+    );
+}

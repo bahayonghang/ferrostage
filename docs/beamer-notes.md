@@ -39,9 +39,9 @@ Several notes pages for one content step are a `Vec` of physical page numbers st
 
 `PageLabel` is `Option<String>`. A missing or empty label stays independent on that page. Consecutive identical non-empty content labels are a heuristic overlay group. The same label later in the file does not merge into that group. A `physical_pages` override can turn grouping off.
 
-Overlay steps (`\pause` and similar) are steps inside one logical slide. `NextLogicalSlide` skips the rest of the current overlay group. `NextStep` moves to the next content physical step; `NextLogicalSlide` moves to the first step of the next logical group. Both clamp at their boundaries. `JumpPreview` rejects independent notes pages.
+Overlay steps (`\pause` and similar) are steps inside one logical slide. `NextLogicalSlide` skips the rest of the current overlay group. `NextStep` moves to the next content physical step; `NextLogicalSlide` moves to the first step of the next logical group. Both clamp at their boundaries. `JumpTo` rejects independent notes pages.
 
-Jump preview belongs to the presenter. While it is active, next and previous move only the preview. Commit (Enter) updates the audience page. Cancel (Esc) drops the preview. The audience page does not change during the preview.
+Selecting a thumbnail jumps directly to its content page; hovering never navigates. The presenter page dialog edits a number locally. Enter or Go submits one direct jump; Escape discards the input without navigating. Page selection preserves stage and timer, and elapsed time never advances slides.
 
 Audience navigation never lands on a notes page. After an external PDF replacement, the preferred restore key is a unique previous logical label plus the overlay ordinal. If that key is ambiguous or missing, clamp the old physical page into the new physical range, then take the greatest content page at or before that number, or the first content page if none exists. Do not use the content `Vec` index as a page number. Strokes survive only on pages that still map; dropped pages are discarded and the presenter is warned. The session stage and the timer are not reset. A generation change invalidates media playback; until a player exists, that event has no effect.
 
@@ -50,7 +50,7 @@ Audience navigation never lands on a notes page. After an external PDF replaceme
 
 `SlideMap::new(page_count, groups)` validates nonempty groups of strictly increasing, in-range physical content pages. `DocumentDescriptor::mapped(generation, map, crop)` validates the crop. `identity` is an explicit metadata-only shell path; real imports use `LoadedDocument::descriptor`. Core keeps the map privately and never publishes it to the audience.
 
-`LoadMappedDocument` resets the lifecycle to Ready; `ReconfigureDocument` requires the same generation and physical page count, preserves stage/timer, clears preview and clamps to content; `CommitDocument` requires a strictly newer generation. The temporary `StageShadowDocument` adapter retains the current map and crop. File identity and the full candidate transaction remain app/task10 responsibilities.
+`LoadMappedDocument` resets the lifecycle to Ready; `ReconfigureDocument` requires the same generation and physical page count, preserves stage/timer and clamps to content; `CommitDocument` requires a strictly newer generation. The temporary `StageShadowDocument` adapter retains the current map and crop. File identity and the full candidate transaction remain app/task10 responsibilities.
 
 The compatibility `set_slide_crop` returns `Result<(), CoreError>` and rejects invalid geometry without changing state. Document viewing options use `ReconfigureDocument` so the map and crop update together.
 

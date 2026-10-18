@@ -17,7 +17,7 @@ fn mapped(generation: u64) -> DocumentDescriptor {
     .unwrap()
 }
 #[test]
-fn mapped_navigation_preview_shadow_and_reconfiguration_preserve_lifecycle() {
+fn mapped_navigation_direct_jump_shadow_and_reconfiguration_preserve_lifecycle() {
     let now = Instant::now();
     let mut state = PresentationState::idle();
     state.apply_at(LoadMappedDocument(mapped(1)), now).unwrap();
@@ -30,14 +30,13 @@ fn mapped_navigation_preview_shadow_and_reconfiguration_preserve_lifecycle() {
             now,
         )
         .unwrap();
-    state.apply_at(JumpPreview(PhysicalPage(3)), now).unwrap();
+    state.apply_at(JumpTo(PhysicalPage(3)), now).unwrap();
     state.apply_at(NextLogicalSlide, now).unwrap();
-    assert_eq!(state.jump_preview(), Some(PhysicalPage(5)));
-    assert_eq!(state.audience_snapshot().current_page, PhysicalPage(1));
-    state.apply_at(CommitJump, now).unwrap();
+    assert_eq!(state.current_page(), PhysicalPage(5));
+    assert_eq!(state.audience_snapshot().current_page, PhysicalPage(5));
     let before = state.clone();
     assert_eq!(
-        state.apply_at(JumpPreview(PhysicalPage(4)), now),
+        state.apply_at(JumpTo(PhysicalPage(4)), now),
         Err(CoreError::NotContentPage { page: 4 })
     );
     assert_eq!(state, before);
@@ -104,7 +103,7 @@ fn checked_descriptor_rejects_empty_and_invalid_crop() {
 }
 
 #[test]
-fn reconfigure_clears_preview_and_preserves_paused_or_ready_timer() {
+fn reconfigure_clears_direct_jump_and_preserves_paused_or_ready_timer() {
     let now = Instant::now();
     let mut state = PresentationState::idle();
     state.apply_at(LoadMappedDocument(mapped(1)), now).unwrap();
@@ -126,7 +125,7 @@ fn reconfigure_clears_preview_and_preserves_paused_or_ready_timer() {
                 .apply_at(StopPresentation, now + Duration::from_secs(8))
                 .unwrap();
         }
-        state.apply_at(JumpPreview(PhysicalPage(5)), now).unwrap();
+        state.apply_at(JumpTo(PhysicalPage(5)), now).unwrap();
         let before = state.clone();
         assert_eq!(
             state.apply_at(ReconfigureDocument(mapped(2)), now),
@@ -134,8 +133,7 @@ fn reconfigure_clears_preview_and_preserves_paused_or_ready_timer() {
         );
         assert_eq!(state, before);
         state.apply_at(ReconfigureDocument(mapped(1)), now).unwrap();
-        assert_eq!(state.current_page(), PhysicalPage(3));
-        assert_eq!(state.jump_preview(), None);
+        assert_eq!(state.current_page(), PhysicalPage(5));
         assert_eq!(state.stage(), before.stage());
         assert_eq!(state.is_timer_paused(), before.is_timer_paused());
         assert_eq!(

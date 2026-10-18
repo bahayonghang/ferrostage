@@ -49,6 +49,90 @@ pub const PRIMARY_HOVER: u32 = 0x93452F;
 pub const PRIMARY_ACTIVE: u32 = 0x823C29;
 pub const ON_PRIMARY: u32 = 0xFFFFFF;
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ButtonKind {
+    Primary,
+    Navigation,
+    Black,
+    White,
+    Tool,
+    Destructive,
+    Utility,
+}
+
+#[derive(Clone, Copy)]
+pub struct ButtonStyle {
+    pub fill: u32,
+    pub ink: u32,
+    pub border: u32,
+    pub hover: u32,
+    pub pressed: u32,
+    pub radius: f32,
+}
+
+impl Palette {
+    pub fn button(self, kind: ButtonKind, enabled: bool, selected: bool) -> ButtonStyle {
+        let mut style = ButtonStyle {
+            fill: self.soft,
+            ink: self.body,
+            border: self.border,
+            hover: self.card,
+            pressed: self.card,
+            radius: RADIUS,
+        };
+        match kind {
+            ButtonKind::Primary => {
+                style.fill = PRIMARY;
+                style.ink = ON_PRIMARY;
+                style.hover = PRIMARY_HOVER;
+                style.pressed = PRIMARY_ACTIVE;
+            }
+            ButtonKind::Navigation => {
+                style.fill = self.ink;
+                style.ink = self.canvas;
+                style.hover = self.body;
+                style.pressed = self.body;
+                style.radius = 4.;
+            }
+            ButtonKind::Black | ButtonKind::White => {
+                style.fill = if kind == ButtonKind::Black {
+                    0x000000
+                } else {
+                    0xFFFFFF
+                };
+                style.ink = if kind == ButtonKind::Black {
+                    0xFFFFFF
+                } else {
+                    0x000000
+                };
+                style.hover = style.fill;
+                style.pressed = style.fill;
+                style.radius = 4.;
+            }
+            ButtonKind::Tool => {
+                style.radius = CONTROL / 2.;
+                if selected {
+                    style.fill = self.card;
+                    style.ink = self.ink;
+                    style.border = self.focus;
+                }
+            }
+            ButtonKind::Destructive => {
+                style.ink = self.error;
+                style.border = self.error;
+                style.radius = 4.;
+            }
+            ButtonKind::Utility => {}
+        }
+        if !enabled {
+            style.fill = self.card;
+            style.ink = self.muted;
+            style.border = self.border;
+        }
+        style
+    }
+}
+
 pub const LIGHT: Palette = Palette {
     canvas: 0xFAF9F5,
     soft: 0xF5F0E8,
@@ -104,6 +188,33 @@ mod tests {
         let b = luminance(b);
         (a.max(b) + 0.05) / (a.min(b) + 0.05)
     }
+    #[test]
+    fn semantic_button_states_keep_text_and_boundaries_readable() {
+        for palette in [LIGHT, DARK] {
+            for kind in [
+                ButtonKind::Primary,
+                ButtonKind::Navigation,
+                ButtonKind::Black,
+                ButtonKind::White,
+                ButtonKind::Tool,
+                ButtonKind::Destructive,
+                ButtonKind::Utility,
+            ] {
+                for enabled in [false, true] {
+                    for selected in [false, true] {
+                        let style = palette.button(kind, enabled, selected);
+                        assert!(contrast(style.ink, style.fill) >= 4.5, "{kind:?}");
+                        assert!(contrast(style.border, palette.canvas) >= 3.);
+                        if enabled {
+                            assert!(contrast(style.ink, style.hover) >= 4.5, "hover {kind:?}");
+                            assert!(contrast(style.ink, style.pressed) >= 4.5, "press {kind:?}");
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     #[test]
     fn used_text_and_focus_pairs_meet_design_contrast() {
         for p in [LIGHT, DARK] {

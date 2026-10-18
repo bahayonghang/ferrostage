@@ -38,14 +38,11 @@ pub fn import_allowed(stage: SessionStage, operation: Option<Operation>) -> bool
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Escape {
     CloseModal,
-    CancelPreview,
     Stop,
     Nothing,
 }
-pub fn escape(modal: bool, preview: bool, stop: bool) -> Escape {
-    if preview {
-        Escape::CancelPreview
-    } else if modal {
+pub fn escape(modal: bool, stop: bool) -> Escape {
+    if modal {
         Escape::CloseModal
     } else if stop {
         Escape::Stop
@@ -199,10 +196,9 @@ mod tests {
         assert!(!import_allowed(SessionStage::Presenting, None));
     }
     #[test]
-    fn settings_escape_does_not_send_cancel_jump_into_idle_core() {
-        assert_eq!(escape(true, false, true), Escape::CloseModal);
-        assert_eq!(escape(true, true, true), Escape::CancelPreview);
-        assert_eq!(escape(false, false, true), Escape::Stop);
+    fn settings_escape_closes_modal_before_stop() {
+        assert_eq!(escape(true, true), Escape::CloseModal);
+        assert_eq!(escape(false, true), Escape::Stop);
     }
     #[test]
     fn shutdown_never_publishes_live_between_curtain_and_close() {
@@ -282,7 +278,7 @@ mod tests {
         assert_eq!(focus(1, Some(1), true, Some(1), false), Focus::Confirmed);
     }
     #[test]
-    fn invalid_jump_text_cannot_commit_a_previous_valid_preview() {
+    fn invalid_jump_text_cannot_resolve_to_a_content_page() {
         for text in ["", "0", "4", "999999999999999999999999", "x"] {
             assert_eq!(jump_page(text, 3), None);
         }

@@ -32,7 +32,6 @@ pub struct PresentationState {
     laser_pos_norm: Option<(f32, f32)>,
     strokes: BTreeMap<usize, Vec<NormalizedStroke>>,
     active_stroke: bool,
-    jump_preview: Option<PhysicalPage>,
 }
 
 impl PresentationState {
@@ -107,7 +106,6 @@ impl PresentationState {
             laser_pos_norm: None,
             strokes: BTreeMap::new(),
             active_stroke: false,
-            jump_preview: None,
         }
     }
 
@@ -140,11 +138,6 @@ impl PresentationState {
     #[must_use]
     pub fn current_page(&self) -> PhysicalPage {
         self.current_page
-    }
-
-    #[must_use]
-    pub fn jump_preview(&self) -> Option<PhysicalPage> {
-        self.jump_preview
     }
 
     #[must_use]
@@ -249,9 +242,7 @@ impl PresentationState {
             }
             PresentationCommand::NextLogicalSlide => self.step(1, true),
             PresentationCommand::PreviousLogicalSlide => self.step(-1, true),
-            PresentationCommand::JumpPreview(page) => self.preview(page)?,
-            PresentationCommand::CommitJump => self.commit_jump(),
-            PresentationCommand::CancelJump => self.jump_preview = None,
+            PresentationCommand::JumpTo(page) => self.jump_to(page)?,
             PresentationCommand::ToggleBlank(mode) => self.toggle_blank(mode),
             PresentationCommand::SetLaserStyle(style) => {
                 if !style.radius_norm.is_finite()
@@ -321,7 +312,7 @@ impl PresentationState {
     }
 
     fn step(&mut self, delta: isize, logical: bool) {
-        let page = self.jump_preview.unwrap_or(self.current_page);
+        let page = self.current_page;
         let Some(map) = &self.slide_map else {
             return;
         };
@@ -332,16 +323,12 @@ impl PresentationState {
             (true, false) => map.previous_logical(page),
         };
         if let Some(next) = next {
-            if self.jump_preview.is_some() {
-                self.jump_preview = Some(next);
-            } else {
-                self.current_page = next;
-                self.logical_slide = map.logical_for(next).unwrap_or(LogicalSlide(0));
-            }
+            self.current_page = next;
+            self.logical_slide = map.logical_for(next).unwrap_or(LogicalSlide(0));
         }
     }
 
-    fn preview(&mut self, page: PhysicalPage) -> Result<(), CoreError> {
+    fn jump_to(&mut self, page: PhysicalPage) -> Result<(), CoreError> {
         if page.0 >= self.page_count {
             return Err(CoreError::PageOutOfRange {
                 page: page.0,
@@ -356,19 +343,13 @@ impl PresentationState {
         {
             return Err(CoreError::NotContentPage { page: page.0 });
         }
-        self.jump_preview = Some(page);
+        self.current_page = page;
+        self.logical_slide = self
+            .slide_map
+            .as_ref()
+            .and_then(|map| map.logical_for(page))
+            .unwrap_or(LogicalSlide(0));
         Ok(())
-    }
-
-    fn commit_jump(&mut self) {
-        if let Some(page) = self.jump_preview.take() {
-            self.current_page = page;
-            self.logical_slide = self
-                .slide_map
-                .as_ref()
-                .and_then(|m| m.logical_for(page))
-                .unwrap_or(LogicalSlide(0));
-        }
     }
 
     fn toggle_blank(&mut self, mode: BlankMode) {
@@ -451,7 +432,6 @@ impl PresentationState {
             .unwrap_or(LogicalSlide(0));
         self.slide_crop = descriptor.slide_crop();
         self.slide_map = Some(descriptor.slide_map().clone());
-        self.jump_preview = None;
     }
 
     fn reconfigure(&mut self, descriptor: DocumentDescriptor) -> Result<(), CoreError> {

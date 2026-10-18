@@ -420,7 +420,7 @@ impl Shell {
         }
         match intent {
             Intent::Media(id) => {
-                if self.modal.is_none() && self.state.jump_preview().is_none() {
+                if self.modal.is_none() {
                     self.media.select(
                         id,
                         &self.state,
@@ -466,8 +466,9 @@ impl Shell {
                     .saturating_add_signed(delta)
                     .min(count.saturating_sub(1));
             }
-            Intent::Preview(page) => {
-                self.apply(Command::JumpPreview(page), cx);
+            Intent::JumpTo(page) if self.modal.is_none() && self.pending.is_none() => {
+                self.apply(Command::JumpTo(page), cx);
+                self.workbench.grid = false;
             }
             Intent::Document if !self.busy() => self.modal = Some(Modal::Document),
             Intent::Reconfigure(options) => {
@@ -494,7 +495,7 @@ impl Shell {
                 if !self.busy() && self.settings.write_policy == WritePolicy::Writable =>
             {
                 self.settings.settings.presenter.next_slide_ratio = next.clamp(0.1, 0.8);
-                self.settings.settings.presenter.notes_ratio = notes.clamp(0.1, 0.8);
+                self.settings.settings.presenter.notes_ratio = notes.clamp(0.55, 0.8);
                 self.settings.note_edit();
                 if save {
                     self.save(cx);
@@ -506,10 +507,8 @@ impl Shell {
                 self.close_identify(cx);
                 match transactions::escape(
                     self.modal.take().is_some(),
-                    self.state.jump_preview().is_some(),
                     self.pending.is_some() || self.escape_stops,
                 ) {
-                    transactions::Escape::CancelPreview => self.apply(Command::CancelJump, cx),
                     transactions::Escape::Stop => self.stop(cx),
                     transactions::Escape::CloseModal | transactions::Escape::Nothing => {}
                 }
@@ -555,9 +554,6 @@ impl Shell {
                 }
             }
             Intent::Commit => {
-                if self.modal.is_none() && self.state.jump_preview().is_some() {
-                    self.apply(Command::CommitJump, cx);
-                }
                 if let Some(Modal::Jump(text)) = &self.modal {
                     if let Some(page) = transactions::jump_page(text, self.state.page_count())
                         .filter(|page| {
@@ -567,9 +563,8 @@ impl Shell {
                                 .is_some()
                         })
                     {
-                        self.apply(Command::JumpPreview(PhysicalPage(page)), cx);
+                        self.apply(Command::JumpTo(PhysicalPage(page)), cx);
                         self.modal = None;
-                        self.apply(Command::CommitJump, cx);
                     } else {
                         self.error = Some(self.locale.text("invalid-page").into());
                     }
@@ -614,12 +609,7 @@ impl Shell {
             } else {
                 return;
             }
-            if let Some(page) = transactions::jump_page(text, self.state.page_count()) {
-                self.error = None;
-                self.apply(Command::JumpPreview(PhysicalPage(page)), cx);
-            } else {
-                self.error = Some(self.locale.text("invalid-page").into());
-            }
+            self.error = None;
             cx.notify();
         }
     }
@@ -896,7 +886,6 @@ impl Shell {
             }
             Intent::Jump if self.state.page_count() > 0 => {
                 self.modal = Some(Modal::Jump(String::new()));
-                self.apply(Command::JumpPreview(self.state.current_page()), cx);
             }
             _ => {}
         }
@@ -1212,13 +1201,6 @@ impl Shell {
 
     fn abandon_modal(&mut self) {
         self.modal = None;
-        if self.state.jump_preview().is_some()
-            && let Err(error) = self.state.apply_at(Command::CancelJump, Instant::now())
-        {
-            self.error = Some(error.to_string());
-        }
-        // The caller publishes its Curtain/transaction result. Do not publish
-        // a Live snapshot while Stop or Swap is abandoning the Jump UI.
     }
 
     fn stop(&mut self, cx: &mut Context<Self>) {
@@ -3085,6 +3067,58 @@ mod tests {
         (shell, handle)
     }
 
+    #[gpui::test]
+    fn repeated_shell_ticks_never_start_or_advance_a_presentation(cx: &mut TestAppContext) {
+        let (shell, handle) = input_presenter(cx);
+        shell.update(cx, |shell, cx| {
+            load_ready(shell);
+            for _ in 0..8 {
+                shell.tick(cx);
+                assert_eq!(shell.state.stage(), SessionStage::Ready);
+                assert_eq!(shell.state.current_page(), PhysicalPage(0));
+                assert_eq!(shell.state.elapsed_at(Instant::now()), Duration::ZERO);
+                assert!(shell.audience.is_none());
+                assert_eq!(shell.snapshot.read(cx).stage, AudienceStage::Curtain);
+            }
+        });
+        for overtime in [false, true] {
+            shell.update(cx, |shell, cx| {
+                let target = u64::from(shell.settings.settings.timer.target_minutes) * 60;
+                let elapsed = if overtime { target + 1 } else { target - 1 };
+                let started = Instant::now() - Duration::from_secs(elapsed);
+                shell
+                    .state
+                    .apply_at(
+                        Command::StartPresentation {
+                            audience_available: true,
+                        },
+                        started,
+                    )
+                    .unwrap();
+                for _ in 0..8 {
+                    shell.tick(cx);
+                    assert_eq!(shell.state.stage(), SessionStage::Presenting);
+                    assert_eq!(shell.state.current_page(), PhysicalPage(0));
+                    assert!(shell.state.elapsed_at(Instant::now()) >= Duration::from_secs(elapsed));
+                }
+            });
+            redraw(handle, cx);
+            cx.simulate_keystrokes(handle, "pagedown");
+            assert_eq!(
+                shell.read_with(cx, |shell, _| shell.state.current_page()),
+                PhysicalPage(1)
+            );
+            cx.simulate_keystrokes(handle, "pageup");
+            shell.update(cx, |shell, _| {
+                assert_eq!(shell.state.current_page(), PhysicalPage(0));
+                shell
+                    .state
+                    .apply_at(Command::StopPresentation, Instant::now())
+                    .unwrap();
+            });
+        }
+    }
+
     fn assert_open_waits_for_owner(
         shell: &Entity<Shell>,
         handle: AnyWindowHandle,
@@ -3673,7 +3707,6 @@ mod tests {
                     "numeric binding: {numeric_binding}"
                 );
                 assert_eq!(shell.state.current_page(), PhysicalPage(0));
-                assert_eq!(shell.state.jump_preview(), Some(PhysicalPage(1)));
             });
             cx.simulate_keystrokes(handle, "escape");
             redraw(handle, cx);
@@ -3784,7 +3817,7 @@ mod tests {
     }
 
     #[gpui::test]
-    fn v5_stop_discards_jump_preview_before_following_navigation(cx: &mut TestAppContext) {
+    fn v5_stop_discards_jump_input_before_following_navigation(cx: &mut TestAppContext) {
         let (shell, handle) = input_presenter(cx);
         shell.update(cx, |shell, cx| {
             load_ready(shell);
@@ -3806,7 +3839,6 @@ mod tests {
         cx.dispatch_action(handle, actions::Stop);
         shell.read_with(cx, |shell, _| {
             assert!(shell.modal.is_none());
-            assert!(shell.state.jump_preview().is_none());
             assert_eq!(shell.state.stage(), SessionStage::Ready);
         });
         redraw(handle, cx);
@@ -3818,7 +3850,7 @@ mod tests {
     }
 
     #[gpui::test]
-    fn v5_swap_failure_discards_abandoned_jump_preview(cx: &mut TestAppContext) {
+    fn v5_swap_failure_discards_abandoned_jump_input(cx: &mut TestAppContext) {
         let (shell, handle) = input_presenter(cx);
         shell.update(cx, |shell, cx| {
             load_ready(shell);
@@ -3843,10 +3875,6 @@ mod tests {
             ];
             shell.monitors = vec![first, second];
             shell.modal = Some(Modal::Jump("2".into()));
-            shell
-                .state
-                .apply_at(Command::JumpPreview(PhysicalPage(1)), Instant::now())
-                .unwrap();
             cx.notify();
         });
         cx.dispatch_action(handle, actions::Swap);
@@ -3856,7 +3884,6 @@ mod tests {
                 "unmapped test display makes replacement fail"
             );
             assert!(shell.modal.is_none());
-            assert!(shell.state.jump_preview().is_none());
             assert!(shell.pending.is_none());
         });
         redraw(handle, cx);
@@ -3868,7 +3895,7 @@ mod tests {
     }
 
     #[gpui::test]
-    fn v5_escape_from_jump_cancels_preview_without_stopping(cx: &mut TestAppContext) {
+    fn v5_escape_from_jump_discards_input_without_stopping(cx: &mut TestAppContext) {
         let (shell, handle) = input_presenter(cx);
         shell.update(cx, |shell, cx| {
             load_ready(shell);
@@ -3881,10 +3908,6 @@ mod tests {
                     Instant::now(),
                 )
                 .unwrap();
-            shell
-                .state
-                .apply_at(Command::JumpPreview(PhysicalPage(1)), Instant::now())
-                .unwrap();
             shell.modal = Some(Modal::Jump("2".into()));
             cx.notify();
         });
@@ -3892,7 +3915,6 @@ mod tests {
         cx.simulate_keystrokes(handle, "escape");
         shell.read_with(cx, |shell, _| {
             assert!(shell.modal.is_none());
-            assert!(shell.state.jump_preview().is_none());
             assert_eq!(shell.state.stage(), SessionStage::Presenting);
         });
     }
@@ -3942,10 +3964,6 @@ mod tests {
             let handle = presenter.handle;
             shell.presenter = Some(presenter);
             shell.audience = Some(test_window(shell, true, cx));
-            shell
-                .state
-                .apply_at(Command::JumpPreview(PhysicalPage(1)), Instant::now())
-                .unwrap();
             shell.modal = Some(Modal::Jump("2".into()));
             handle
         });
@@ -3954,7 +3972,6 @@ mod tests {
         shell.read_with(cx, |shell, cx| {
             assert_eq!(shell.state.stage(), SessionStage::Ready);
             assert!(shell.audience.is_none());
-            assert!(shell.state.jump_preview().is_none());
             assert!(
                 shell.pending.is_none(),
                 "unmapped TestDisplay must not authorize placement"
@@ -4233,10 +4250,6 @@ mod tests {
             assert_eq!(shell.import_token, 0);
         });
         shell.update(cx, |shell, _| {
-            shell
-                .state
-                .apply_at(Command::JumpPreview(PhysicalPage(2)), Instant::now())
-                .unwrap();
             shell.modal = Some(Modal::Jump("3".into()));
         });
         audience
@@ -4245,7 +4258,6 @@ mod tests {
         shell.read_with(cx, |shell, cx| {
             assert_eq!(shell.state.stage(), SessionStage::Ready);
             assert!(shell.audience.is_none());
-            assert!(shell.state.jump_preview().is_none());
             assert_eq!(shell.snapshot.read(cx).stage, AudienceStage::Curtain);
             assert_eq!(shell.presenter.as_ref().unwrap().handle, presenter);
         });
@@ -4322,7 +4334,7 @@ mod tests {
     }
 
     #[gpui::test]
-    fn workbench_narrow_stacks_and_grid_wheel_moves_only_private_preview(cx: &mut TestAppContext) {
+    fn workbench_narrow_stacks_and_grid_wheel_never_navigates(cx: &mut TestAppContext) {
         let (shell, handle) = workbench_fixture(cx);
         shell.update(cx, |shell, cx| {
             shell.workbench.grid = true;
@@ -4543,7 +4555,7 @@ mod tests {
     }
 
     #[gpui::test]
-    fn workbench_controls_reconfigure_preview_and_keep_note_pages_private(cx: &mut TestAppContext) {
+    fn workbench_controls_jump_directly_and_keep_note_pages_private(cx: &mut TestAppContext) {
         let (shell, handle) = workbench_fixture(cx);
         let mut visual = gpui::VisualTestContext::from_window(handle, cx);
         let pen = visual.debug_bounds("pen").unwrap();
@@ -4553,15 +4565,14 @@ mod tests {
             crate::workbench::Tool::Pen
         );
         shell.update(cx, |shell, cx| {
-            shell.dispatch(Intent::Preview(PhysicalPage(2)), cx);
-            assert_eq!(shell.state.current_page(), PhysicalPage(0));
+            shell.dispatch(Intent::JumpTo(PhysicalPage(2)), cx);
+            assert_eq!(shell.state.current_page(), PhysicalPage(2));
             shell.modal = Some(Modal::Jump("2".into())); // physical 2 is a private notes page
             shell.dispatch(Intent::Commit, cx);
             assert!(shell.modal.is_some());
-            assert_eq!(shell.state.current_page(), PhysicalPage(0));
+            assert_eq!(shell.state.current_page(), PhysicalPage(2));
             shell.dispatch(Intent::Escape, cx);
-            assert!(shell.state.jump_preview().is_none());
-            shell.dispatch(Intent::Preview(PhysicalPage(2)), cx);
+            shell.dispatch(Intent::JumpTo(PhysicalPage(2)), cx);
             shell.dispatch(Intent::Commit, cx);
             assert_eq!(shell.state.current_page(), PhysicalPage(2));
             shell.dispatch(Intent::Document, cx);
@@ -4593,11 +4604,78 @@ mod tests {
     }
 
     #[gpui::test]
+    fn thumbnail_hover_and_cancelled_press_are_inert_both_click_targets_jump(
+        cx: &mut TestAppContext,
+    ) {
+        let (shell, handle) = workbench_fixture(cx);
+        for target in ["thumbnail-image-1", "jump-thumbnail-1"] {
+            shell.update(cx, |shell, cx| {
+                shell.apply(Command::JumpTo(PhysicalPage(0)), cx);
+                shell.workbench.grid = true;
+                cx.notify();
+            });
+            redraw(handle, cx);
+            {
+                let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+                let tile = visual.debug_bounds(target).unwrap();
+                visual.simulate_mouse_move(tile.center(), None, gpui::Modifiers::default());
+                visual.simulate_mouse_down(
+                    tile.center(),
+                    gpui::MouseButton::Left,
+                    gpui::Modifiers::default(),
+                );
+            }
+            shell.read_with(cx, |shell, _| {
+                assert_eq!(shell.state.current_page(), PhysicalPage(0));
+                assert!(shell.workbench.grid, "press must not commit before release");
+            });
+            {
+                let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+                let outside = gpui::point(px(1.), px(1.));
+                visual.simulate_mouse_move(
+                    outside,
+                    Some(gpui::MouseButton::Left),
+                    gpui::Modifiers::default(),
+                );
+                visual.simulate_mouse_up(
+                    outside,
+                    gpui::MouseButton::Left,
+                    gpui::Modifiers::default(),
+                );
+            }
+            shell.read_with(cx, |shell, _| {
+                assert_eq!(shell.state.current_page(), PhysicalPage(0));
+                assert!(
+                    shell.workbench.grid,
+                    "cancelled click must keep the grid open"
+                );
+            });
+            {
+                let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+                let tile = visual.debug_bounds(target).unwrap();
+                visual.simulate_click(tile.center(), gpui::Modifiers::default());
+            }
+            shell.read_with(cx, |shell, _| {
+                assert_eq!(shell.state.current_page(), PhysicalPage(2));
+                assert!(!shell.workbench.grid);
+                assert!(shell.modal.is_none());
+            });
+            redraw(handle, cx);
+            cx.simulate_keystrokes(handle, "pagedown");
+            assert_eq!(
+                shell.read_with(cx, |shell, _| shell.state.current_page()),
+                PhysicalPage(3)
+            );
+        }
+    }
+
+    #[gpui::test]
     fn presenter_bar_shares_one_row_and_notes_fill_the_column(cx: &mut TestAppContext) {
         let (shell, handle) = workbench_fixture(cx);
         shell.update(cx, |shell, cx| {
             shell.settings.settings.presenter.notes_ratio = 0.4;
             shell.settings.settings.presenter.show_thumbnail_strip = true;
+            shell.settings.settings.general.recent_files = vec!["kept.pdf".into()];
             cx.notify();
         });
         cx.test_window(handle)
@@ -4617,7 +4695,12 @@ mod tests {
             );
             let notes = visual.debug_bounds("notes-panel").unwrap();
             let right = visual.debug_bounds("next-notes-pane").unwrap();
-            assert!(notes.size.height >= right.size.height * 0.35);
+            assert!(notes.size.height >= right.size.height * 0.50);
+            let next = visual.debug_bounds("next-pane").unwrap();
+            assert!(notes.bottom() < next.origin.y);
+            assert!(notes.size.height > next.size.height);
+            assert!(visual.debug_bounds("thumbnail-0").is_none());
+            assert!(visual.debug_bounds("recent-0").is_none());
             let tools = visual.debug_bounds("previous").unwrap();
             assert!(notes.bottom() <= tools.origin.y);
             let current = visual.debug_bounds("current-pane").unwrap();

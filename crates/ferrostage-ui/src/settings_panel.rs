@@ -108,8 +108,8 @@ pub const FIELDS: &[Field] = &[
         "presenter.notes_ratio",
         Presenter,
         Number {
-            min: 0.05,
-            max: 1.,
+            min: 0.55,
+            max: 0.8,
             step: 0.01,
             integer: false
         }
@@ -125,7 +125,6 @@ pub const FIELDS: &[Field] = &[
         }
     ),
     field!("presenter.show_clock", Presenter, Toggle),
-    field!("presenter.show_thumbnail_strip", Presenter, Toggle),
     field!(
         "presenter.grid_columns",
         Presenter,

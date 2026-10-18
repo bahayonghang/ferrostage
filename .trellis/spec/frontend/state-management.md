@@ -18,6 +18,44 @@ The audience view receives only the assembled snapshot, never the document, note
 
 Blank mode is `Option<BlankMode>` on the snapshot so the audience window does not invent a second blank flag.
 
+## Manual navigation and notes-first workbench
+
+### 1. Scope / Trigger
+
+Direct page selection, presentation timers, pane composition and thumbnail scheduling share one committed core page. The notes-first task removes staged selection preview, including hover-triggered preview changes.
+
+### 2. Signatures
+
+Use `PresentationCommand::JumpTo(PhysicalPage)` through `PresentationState::apply_at`. `PresenterSettings::effective_notes_ratio()` normalizes legacy small notes shares. `show_thumbnail_strip` remains a read-compatible schema field with no rendering effect.
+
+### 3. Contracts
+
+Import enters Ready with no audience or running presentation timer. Start is explicit. Timer reads and expiry never navigate. Grid clicks commit a direct jump; hover is inert. Page-number editing is local to its modal and submits only on Enter/Go. Committed-page changes use the existing media/annotation invalidation and exact-key raster path. No second authoritative preview page exists.
+
+Current slide stays left; current notes appear above next slide in the right column. Default notes share is 0.65, with effective range 0.55 to 0.8 for old settings and divider interactions. Recent files appear only in Idle. Only an explicitly open grid schedules thumbnails; closing it retires obsolete requested/retained thumbnail frames. Keep the existing configured grid page bound.
+
+### 4. Validation & Error Matrix
+
+| Input | Result |
+| --- | --- |
+| Valid content page | Set physical/logical page together, preserve session stage and timer |
+| Out-of-range or notes-only physical page | Typed error, no partial navigation |
+| Hover, elapsed time, partial input, invalid dialog submit, Escape | No page change |
+| Legacy thumbnail strip enabled, grid closed | Zero thumbnail requests |
+| Legacy small notes ratio | Readable effective share without rewriting the settings file on load |
+
+### 5. Good / Base / Bad Cases
+
+Good: clicking a grid page immediately navigates and its current notes follow. Base: opening a PDF shows Ready while the clock updates. Bad: moving the pointer over a thumbnail changes content, or a timer tick dispatches Next.
+
+### 6. Tests Required
+
+Exercise actual GPUI mouse/key dispatch, partial versus submitted page input, modal cancellation and focus restoration. Assert Ready/Presenting page stability across ticks and overtime. Check real notes crop identity/privacy and pane ordering, closed/open/closed grid work, stale-frame retirement and duplicate-submission prevention. Native screenshot evidence remains separate from source or headless checks.
+
+### 7. Wrong vs Correct
+
+Wrong: hide a thumbnail strip while its persisted flag still schedules raster work, or preserve invisible preview state after removing controls. Correct: gate raster requests on actual grid visibility and route explicit selection through the one committed-page command.
+
 ## Shared display assignment contract
 
 ### 1. Scope / Trigger
@@ -198,7 +236,7 @@ Presenter-owned `media_playback::Playback::sync`, `select`, `frames` and `slots`
 
 ### 3. Contracts
 
-One supervisor owns one active decoder/audio source. Choose the first public autostart slot in document order on entering a Presenting page. Ready and notes-only slots never play. Stop the previous owner before starting another; synchronously invalidate accepted identities on page, blank, Stop, Close, committed-generation or successful document geometry reconfiguration. Leaving blank does not revive the prior decoder. Failed document reconfiguration preserves the prior valid state. Preview hides committed media in the Presenter preview pane without changing the Audience's committed playback.
+One supervisor owns one active decoder/audio source. Choose the first public autostart slot in document order on entering a Presenting page. Ready and notes-only slots never play. Stop the previous owner before starting another; synchronously invalidate accepted identities on page, blank, Stop, Close, committed-generation or successful document geometry reconfiguration. Leaving blank does not revive the prior decoder. Failed document reconfiguration preserves the prior valid state. Direct page selection follows the same media invalidation contract as Next/Previous; page-number editing alone does not change playback.
 
 Use a checked process-wide playback-instance counter so controller/helper recreation cannot reuse a cached surface ID. Filter generation/page/epoch/sequence before publication. Keep source paths, embedded bytes, progress, errors and controls private. Pipe read/write, stderr drainage, bounded process shutdown/reap and decode/crop/scale run off UI. Keep commands and latest frames bounded; no UI blocking join. Missing native runtime must leave PDF and independent GIF/WebP usable.
 

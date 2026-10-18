@@ -152,7 +152,7 @@ impl Workbench {
             return Ok(Vec::new());
         };
         let document = &session.document;
-        let page = state.jump_preview().unwrap_or(state.current_page());
+        let page = state.current_page();
         let generation = state.generation();
         let crop = state.slide_crop();
         let target = self
@@ -181,16 +181,7 @@ impl Workbench {
         }
         wanted.push((
             Surface::Current,
-            make(
-                page,
-                crop,
-                target,
-                if state.jump_preview().is_some() {
-                    RenderPriority::Preview
-                } else {
-                    RenderPriority::Presenter
-                },
-            ),
+            make(page, crop, target, RenderPriority::Presenter),
         ));
         if let Some(next) = document.slide_map.next_step(page) {
             wanted.push((
@@ -248,17 +239,13 @@ impl Workbench {
                 make(*neighbour, crop, target, RenderPriority::Prefetch),
             ));
         }
-        if self.grid || settings.show_thumbnail_strip {
+        if self.grid {
             self.grid_start = self.grid_start.min(steps.len().saturating_sub(1));
             for (index, p) in steps
                 .iter()
                 .enumerate()
                 .skip(self.grid_start)
-                .take(if self.grid {
-                    settings.grid_visible_pages as usize
-                } else {
-                    settings.grid_columns as usize
-                })
+                .take(settings.grid_visible_pages as usize)
             {
                 wanted.push((
                     Surface::Thumbnail(index),

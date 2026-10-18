@@ -22,68 +22,77 @@ fn empty_document_is_rejected() {
 }
 
 #[test]
-fn preview_does_not_change_the_audience_page() {
-    let mut presentation = presenting_state();
-    presentation
-        .apply_at(
-            PresentationCommand::JumpPreview(PhysicalPage(2)),
-            Instant::now(),
-        )
-        .unwrap();
-    assert_eq!(
-        presentation.audience_snapshot().current_page,
-        PhysicalPage(0)
-    );
-    presentation
-        .apply_at(PresentationCommand::CancelJump, Instant::now())
-        .unwrap();
-    assert_eq!(presentation.current_page(), PhysicalPage(0));
-}
-
-#[test]
-fn preview_navigation_requires_explicit_commit() {
-    let mut presentation = presenting_state();
-    presentation
-        .apply_at(
-            PresentationCommand::JumpPreview(PhysicalPage(1)),
-            Instant::now(),
-        )
-        .unwrap();
-    presentation
-        .apply_at(PresentationCommand::NextStep, Instant::now())
-        .unwrap();
-    assert_eq!(presentation.current_page(), PhysicalPage(0));
-    presentation
-        .apply_at(PresentationCommand::CommitJump, Instant::now())
-        .unwrap();
-    assert_eq!(presentation.current_page(), PhysicalPage(2));
-}
-
-#[test]
-fn preview_steps_clamp_in_both_directions_and_cancel_keeps_committed_page() {
+fn direct_jump_preserves_stage_timer_and_updates_audience() {
     let now = Instant::now();
-    let mut state = presenting_state();
-    state
-        .apply_at(PresentationCommand::JumpPreview(PhysicalPage(1)), now)
-        .unwrap();
-    for _ in 0..6 {
+    for presenting in [false, true] {
+        let mut state = PresentationState::new(4).unwrap();
+        if presenting {
+            state
+                .apply_at(
+                    PresentationCommand::StartPresentation {
+                        audience_available: true,
+                    },
+                    now,
+                )
+                .unwrap();
+        }
+        let stage = state.stage();
         state
-            .apply_at(PresentationCommand::NextLogicalSlide, now)
+            .apply_at(
+                PresentationCommand::JumpTo(PhysicalPage(2)),
+                now + Duration::from_secs(10),
+            )
             .unwrap();
+        assert_eq!(state.current_page(), PhysicalPage(2));
+        assert_eq!(state.audience_snapshot().current_page, PhysicalPage(2));
+        assert_eq!(state.stage(), stage);
+        assert_eq!(
+            state.elapsed_at(now + Duration::from_secs(20)),
+            if presenting {
+                Duration::from_secs(20)
+            } else {
+                Duration::ZERO
+            }
+        );
+        state.apply_at(PresentationCommand::NextStep, now).unwrap();
+        assert_eq!(state.current_page(), PhysicalPage(3));
+        state.apply_at(PresentationCommand::NextStep, now).unwrap();
+        assert_eq!(state.current_page(), PhysicalPage(3));
+        for _ in 0..6 {
+            state
+                .apply_at(PresentationCommand::PreviousLogicalSlide, now)
+                .unwrap();
+        }
+        assert_eq!(state.current_page(), PhysicalPage(0));
     }
-    assert_eq!(state.jump_preview(), Some(PhysicalPage(3)));
-    for _ in 0..6 {
-        state
-            .apply_at(PresentationCommand::PreviousLogicalSlide, now)
-            .unwrap();
+}
+
+#[test]
+fn elapsed_time_never_navigates_before_or_after_start() {
+    let now = Instant::now();
+    let mut state = PresentationState::new(4).unwrap();
+    for seconds in [0, 1, 2700, 5400] {
+        assert_eq!(
+            state.elapsed_at(now + Duration::from_secs(seconds)),
+            Duration::ZERO
+        );
+        assert_eq!(state.current_page(), PhysicalPage(0));
     }
-    assert_eq!(state.jump_preview(), Some(PhysicalPage(0)));
-    state.apply_at(PresentationCommand::NextStep, now).unwrap();
     state
-        .apply_at(PresentationCommand::CancelJump, now)
+        .apply_at(
+            PresentationCommand::StartPresentation {
+                audience_available: true,
+            },
+            now,
+        )
         .unwrap();
-    assert_eq!(state.current_page(), PhysicalPage(0));
-    assert_eq!(state.jump_preview(), None);
+    for seconds in [0, 1, 2699, 2700, 2701, 5400] {
+        assert_eq!(
+            state.elapsed_at(now + Duration::from_secs(seconds)),
+            Duration::from_secs(seconds)
+        );
+        assert_eq!(state.current_page(), PhysicalPage(0));
+    }
 }
 
 #[test]
@@ -150,13 +159,10 @@ fn swap_screens_does_not_change_the_audience_page() {
 }
 
 #[test]
-fn preview_out_of_range_is_an_error_and_stale_generation_is_rejected() {
+fn jump_out_of_range_is_an_error_and_stale_generation_is_rejected() {
     let mut presentation = presenting_state();
     let error = presentation
-        .apply_at(
-            PresentationCommand::JumpPreview(PhysicalPage(9)),
-            Instant::now(),
-        )
+        .apply_at(PresentationCommand::JumpTo(PhysicalPage(9)), Instant::now())
         .unwrap_err();
     assert_eq!(error, CoreError::PageOutOfRange { page: 9, len: 4 });
     let stale = presentation

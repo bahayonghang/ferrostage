@@ -40,10 +40,7 @@ impl WorkbenchData {
             target.abs_diff(elapsed)
         };
         let session = shell.workbench.document.as_ref();
-        let page = shell
-            .state
-            .jump_preview()
-            .unwrap_or(shell.state.current_page());
+        let page = shell.state.current_page();
         let progress = session
             .map(|s| {
                 let map = &s.document.slide_map;
@@ -65,29 +62,17 @@ impl WorkbenchData {
                 )
             })
             .unwrap_or_default();
-        let mut overlay = shell.state.audience_snapshot();
-        if shell.state.jump_preview().is_some() {
-            overlay.strokes = Default::default();
-            overlay.laser_pos_norm = None;
-        }
+        let overlay = shell.state.audience_snapshot();
         Self {
             frames: shell.workbench.frames.clone(),
             surfaces: shell.workbench.requested_surfaces(),
             overlay,
-            media: if shell.state.jump_preview().is_none() {
-                shell
-                    .media
-                    .frames(&shell.state, session.map(|s| &s.document))
-            } else {
-                vec![]
-            },
-            slots: if shell.state.jump_preview().is_none() {
-                shell
-                    .media
-                    .slots(&shell.state, session.map(|s| &s.document))
-            } else {
-                vec![]
-            },
+            media: shell
+                .media
+                .frames(&shell.state, session.map(|s| &s.document)),
+            slots: shell
+                .media
+                .slots(&shell.state, session.map(|s| &s.document)),
             settings: shell.settings.settings.presenter.clone(),
             pointer: shell.settings.settings.pointer.clone(),
             tool: shell.workbench.tool,
@@ -352,12 +337,6 @@ impl Presenter {
             })
             .into_any_element()
     }
-    pub(super) fn jump_preview_panel(&self) -> gpui::AnyElement {
-        div()
-            .h(px(280.))
-            .child(self.picture(Surface::Current, false))
-            .into_any_element()
-    }
     pub(super) fn timer_panel(&self, p: Palette) -> gpui::AnyElement {
         let data = &self.data.workbench;
         div()
@@ -440,31 +419,13 @@ impl Presenter {
             view = view.child(self.button(
                 id.into(),
                 self.locale.text(label).into(),
-                self.data.preview.is_none(),
+                true,
                 self.data.workbench.tool == tool,
                 Intent::Tool(tool),
                 p,
             ));
         }
-        view.when(self.data.preview.is_some(), |view| {
-            view.child(self.button(
-                "commit-preview".into(),
-                self.locale.text("wb-show-preview").into(),
-                true,
-                true,
-                Intent::Commit,
-                p,
-            ))
-            .child(self.button(
-                "cancel-preview".into(),
-                self.locale.text("wb-cancel-preview").into(),
-                true,
-                false,
-                Intent::Escape,
-                p,
-            ))
-        })
-        .child(self.button(
+        view.child(self.button(
             "clear-strokes".into(),
             self.locale.text("wb-clear").into(),
             true,
@@ -497,7 +458,7 @@ impl Presenter {
         cx: &mut Context<Self>,
     ) -> gpui::AnyElement {
         let ratio = self.data.workbench.settings.next_slide_ratio as f32;
-        let notes = self.data.workbench.settings.notes_ratio as f32;
+        let notes = self.data.workbench.settings.effective_notes_ratio() as f32;
         let stacked = window.viewport_size().width < px(800.);
         let grid_open = self.data.workbench.grid;
         let mut notes_frames = self
@@ -533,7 +494,14 @@ impl Presenter {
             .gap(px(4.))
             .p(px(12.))
             .rounded(px(theme::RADIUS))
-            .bg(rgb(p.card));
+            .bg(rgb(p.card))
+            .child(
+                div()
+                    .flex_shrink_0()
+                    .text_size(px(12.))
+                    .text_color(rgb(p.muted))
+                    .child(self.locale.text("wb-notes")),
+            );
         if notes_frames.is_empty() {
             note_panel = note_panel.child(
                 div()
@@ -583,8 +551,8 @@ impl Presenter {
                             this.data.workbench.settings.next_slide_ratio
                         };
                         let notes = if vertical {
-                            (1. - (event.position.y - right.origin.y) / right.size.height)
-                                .clamp(0.15, 0.8) as f64
+                            ((event.position.y - right.origin.y) / right.size.height)
+                                .clamp(0.55, 0.8) as f64
                         } else {
                             this.data.workbench.settings.notes_ratio
                         };
@@ -623,7 +591,7 @@ impl Presenter {
                     .when(!stacked, |view| view.w(gpui::relative(1. - ratio)).h_full())
                     .when(stacked, |view| view.w_full().flex_1().min_h_0())
                     .overflow_hidden()
-                    .child(self.picture(Surface::Current, self.data.preview.is_none())),
+                    .child(self.picture(Surface::Current, true)),
             )
             .when(!stacked, |view| {
                 view.child(
@@ -664,17 +632,7 @@ impl Presenter {
                         .absolute()
                         .size_full(),
                     )
-                    .child(
-                        div()
-                            .id("next-pane")
-                            .debug_selector(|| "next-pane".into())
-                            .flex_grow((1. - notes).max(0.15))
-                            .flex_shrink(1.)
-                            .flex_basis(gpui::relative(0.))
-                            .min_h_0()
-                            .overflow_hidden()
-                            .child(self.picture(Surface::Next, false)),
-                    )
+                    .child(note_panel)
                     .child(
                         div()
                             .id("vertical-split")
@@ -692,7 +650,31 @@ impl Presenter {
                                 }),
                             ),
                     )
-                    .child(note_panel),
+                    .child(
+                        div()
+                            .id("next-pane")
+                            .debug_selector(|| "next-pane".into())
+                            .flex_grow((1. - notes).max(0.15))
+                            .flex_shrink(1.)
+                            .flex_basis(gpui::relative(0.))
+                            .min_h_0()
+                            .overflow_hidden()
+                            .flex()
+                            .flex_col()
+                            .child(
+                                div()
+                                    .flex_shrink_0()
+                                    .text_size(px(12.))
+                                    .text_color(rgb(p.muted))
+                                    .child(self.locale.text("wb-next-slide")),
+                            )
+                            .child(
+                                div()
+                                    .flex_1()
+                                    .min_h_0()
+                                    .child(self.picture(Surface::Next, false)),
+                            ),
+                    ),
             );
         let mut view = div()
             .id("workbench")
@@ -737,7 +719,7 @@ impl Presenter {
             }
             view = view.child(row);
         }
-        if grid_open || self.data.workbench.settings.show_thumbnail_strip {
+        if grid_open {
             view = view.child(
                 div()
                     .id("thumbnail-slot")
@@ -773,12 +755,7 @@ impl Presenter {
     fn grid_panel(&self, p: Palette) -> gpui::AnyElement {
         let data = &self.data.workbench;
         let columns = data.settings.grid_columns as usize;
-        let compact = !data.grid;
-        let visible = if data.grid {
-            data.settings.grid_visible_pages as usize
-        } else {
-            columns
-        };
+        let visible = data.settings.grid_visible_pages as usize;
         let mut grid = div().id("thumbnail-grid").flex().flex_col().gap(px(6.));
         let target = self.shell.clone();
         grid = grid.on_scroll_wheel(move |event, _, cx| {
@@ -804,53 +781,38 @@ impl Presenter {
             for index in row {
                 let page = data.steps[*index];
                 let target = self.shell.clone();
-                let mut tile = div()
+                let tile = div()
                     .id(SharedString::from(format!("thumbnail-{index}")))
                     .debug_selector(|| format!("thumbnail-{index}"))
                     .relative()
                     .w(gpui::relative(1. / columns as f32))
-                    .h(px(if compact { 72. } else { 135. }))
+                    .h(px(135.))
                     .flex()
                     .flex_col()
                     .child(
                         div()
+                            .id(SharedString::from(format!("thumbnail-image-{index}")))
+                            .debug_selector(|| format!("thumbnail-image-{index}"))
                             .flex_1()
                             .min_h_0()
-                            .child(self.picture(Surface::Thumbnail(*index), false)),
+                            .child(self.picture(Surface::Thumbnail(*index), false))
+                            .on_click(move |_, _, cx| {
+                                actions::dispatch(&target, Intent::JumpTo(page), cx);
+                            }),
                     );
-                if compact {
-                    tile = tile.child(
-                        div()
-                            .absolute()
-                            .bottom(px(4.))
-                            .left(px(4.))
-                            .px(px(4.))
-                            .rounded(px(4.))
-                            .bg(rgb(p.card))
-                            .text_size(px(12.))
-                            .text_color(rgb(p.ink))
-                            .child(format!("{}", page.0 + 1)),
-                    );
-                } else {
-                    tile = tile.child(self.button(
-                        format!("jump-thumbnail-{index}"),
-                        format!("{}", page.0 + 1),
-                        true,
-                        false,
-                        Intent::Preview(page),
-                        p,
-                    ));
-                }
-                tile = tile.on_hover(move |hovered, _, cx| {
-                    if *hovered {
-                        actions::dispatch(&target, Intent::Preview(page), cx);
-                    }
-                });
+                let tile = tile.child(self.button(
+                    format!("jump-thumbnail-{index}"),
+                    format!("{}", page.0 + 1),
+                    true,
+                    false,
+                    Intent::JumpTo(page),
+                    p,
+                ));
                 line = line.child(tile);
             }
             grid = grid.child(line);
         }
-        if !compact {
+        {
             grid = grid.child(
                 div()
                     .flex()

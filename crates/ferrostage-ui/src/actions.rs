@@ -41,7 +41,7 @@ pub(crate) enum Intent {
     Tool(crate::workbench::Tool),
     Grid,
     GridMove(isize),
-    Preview(ferrostage_core::PhysicalPage),
+    JumpTo(ferrostage_core::PhysicalPage),
     Document,
     Reconfigure(ferrostage_document::DocumentOverrides),
     Split { next: f64, notes: f64, save: bool },
@@ -133,7 +133,7 @@ pub(crate) fn replace_bindings(
     cx.clear_key_bindings();
     let (bindings, mut warnings) = policy::bindings(settings, locale);
     for (key, action) in bindings {
-        // Escape is routed once, with modal/preview consumption before stop.
+        // Escape is routed once, with modal consumption before stop.
         if key == "escape" {
             continue;
         }

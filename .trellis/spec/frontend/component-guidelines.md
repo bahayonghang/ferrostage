@@ -48,7 +48,7 @@ An enabled focused presenter button consumes unmodified Enter/Space before globa
 
 The same import eligibility contract controls Open buttons, global Open actions, chooser creation and direct imports. Presenting or an incompatible window transaction must not open a chooser that can only reject its result later. An audience-origin intent that needs to show a refusal first confirms the current presenter is active, then shows the localized reason there. It must never place that message on the audience or weaken begin_import validation.
 
-Jump input digits/Backspace must reach modal editing before configurable global navigation bindings. When the coordinator explicitly discards that modal on Stop, Swap or Escape dismissal, cancel its preview too; otherwise future navigation may silently affect a hidden preview. Keep core StopPresentation semantics unchanged, and cover committed-page navigation after dismissal with actual Shell/input regression.
+Jump input digits/Backspace must reach modal editing before configurable global navigation bindings. The page dialog edits a number without navigating; valid Enter/Go submits one direct jump. Stop, Swap and Escape dismissal discard the input without changing the committed page. Thumbnail hover must never navigate; an explicit click chooses the page directly. There is no staged preview/commit state. Preserve core StopPresentation semantics and cover actual Shell/input dispatch, including navigation after dismissal.
 
 
 ### Native focus and save-feedback recovery

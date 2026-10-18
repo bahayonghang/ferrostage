@@ -62,7 +62,7 @@ fn legal_lifecycle_edges_control_projection_and_document_resets() {
     assert_eq!(state.current_page(), PhysicalPage(1));
     assert_eq!(state.audience_snapshot().strokes.len(), 1);
     assert_eq!(state.audience_snapshot().stage, AudienceStage::Curtain);
-    state.apply_at(JumpPreview(PhysicalPage(2)), now).unwrap();
+    state.apply_at(JumpTo(PhysicalPage(2)), now).unwrap();
     state.apply_at(ToggleBlank(BlankMode::Black), now).unwrap();
     state
         .apply_at(UpdateLaserPointer(Some((0.2, 0.3))), now)
@@ -207,9 +207,7 @@ fn navigation_and_tools_require_a_document_but_not_a_live_session() {
         PreviousStep,
         NextLogicalSlide,
         PreviousLogicalSlide,
-        JumpPreview(PhysicalPage(1)),
-        CommitJump,
-        CancelJump,
+        JumpTo(PhysicalPage(1)),
         ToggleBlank(BlankMode::White),
         UpdateLaserPointer(Some((0.1, 0.2))),
         AppendStrokePoint((0.1, 0.2)),
@@ -234,9 +232,8 @@ fn navigation_and_tools_require_a_document_but_not_a_live_session() {
 fn descriptor_commit_is_atomic_clamps_position_and_preserves_session_timer() {
     let now = Instant::now();
     for mut state in [ready(now), live(now)] {
-        state.apply_at(JumpPreview(PhysicalPage(3)), now).unwrap();
-        state.apply_at(CommitJump, now).unwrap();
-        state.apply_at(JumpPreview(PhysicalPage(2)), now).unwrap();
+        state.apply_at(JumpTo(PhysicalPage(3)), now).unwrap();
+        state.apply_at(JumpTo(PhysicalPage(2)), now).unwrap();
         let before = state.clone();
         for descriptor in [
             DocumentDescriptor::identity(DocumentGeneration(3), 2).unwrap(),
@@ -254,7 +251,6 @@ fn descriptor_commit_is_atomic_clamps_position_and_preserves_session_timer() {
         assert_eq!(state.generation(), DocumentGeneration(4));
         assert_eq!(state.page_count(), 2);
         assert_eq!(state.current_page(), PhysicalPage(1));
-        assert_eq!(state.jump_preview(), None);
         assert_eq!(state.stage(), before.stage());
         assert_eq!(
             state.elapsed_at(now + Duration::from_secs(10)),

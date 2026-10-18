@@ -9,7 +9,6 @@ pub enum RenderPriority {
     Audience,
     Presenter,
     Prefetch,
-    Preview,
     Thumbnail,
 }
 #[derive(Clone, Copy, Debug, PartialEq)]

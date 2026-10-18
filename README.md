@@ -11,7 +11,7 @@ The optional desktop build includes the presenter workbench, single-worker PDFiu
 - Open a PDF (CLI, dialog, drag-and-drop, recent files). Import lands in Ready; the speaker starts explicitly.
 - Separate presenter and audience windows, projection by monitor role, one-key swap, black/white blank, fullscreen.
 - Beamer: same-page left/right or top/bottom notes, `notes:` pages, `\pause` overlay steps, PageLabel logical pages.
-- Presenter workbench: current page, next page, notes, timer (count up, count down, warning), clock, jump preview, 1–16 page thumbnail grid.
+- Presenter workbench: current page, large notes above the next page, timer (count up, count down, warning), clock, direct page selection, on-demand 1–16 page thumbnail grid.
 - Normalized laser pointer and ink stored in session memory. Nothing is written to the PDF.
 - Settings system and settings UI; monitor identification and role assignment.
 - Generic hot reload when the PDF file on disk is replaced (P2).

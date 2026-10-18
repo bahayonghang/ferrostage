@@ -38,7 +38,7 @@ Idle --LoadDocument(ok)--> Ready --StartPresentation--> Presenting
 | Stage | Presenter window | Audience window | Timer |
 | --- | --- | --- | --- |
 | `Idle` | Empty: open, recent files, settings | Absent | Stopped at 0 |
-| `Ready` | Current, next, notes, preview, settings, monitor choice. Start is available | Absent | Stopped. First entry shows 0 or the countdown target. After Stop, the frozen reading stays |
+| `Ready` | Current, notes above next, direct page selection, settings, monitor choice. Start is available | Absent | Stopped. First entry shows 0 or the countdown target. After Stop, the frozen reading stays |
 | `Presenting` | Full workbench and Stop | Borderless fullscreen on the Audience monitor | Running (pause and reset allowed) |
 
 The audience window exists only in `Presenting`. `AudienceProjectionSnapshot` includes `stage: AudienceStage` (`Curtain` or `Live`). Outside `Presenting` the snapshot is always `Curtain` and carries no visual. `Curtain` draws solid black. Core supplies stage and metadata with `visual=None`; the UI assembler adds only matching public PDF/media frames.
@@ -57,15 +57,14 @@ The platform implements stable `MonitorId`, enumeration and pure role resolution
 
 ## Render priority
 
-The render worker uses these priorities. The rows match [docs/PROJECT_PLAN.md](PROJECT_PLAN.md) §4.6 item for item:
+The render worker uses these priorities. Direct page selection removed the original jump-preview priority from [docs/PROJECT_PLAN.md](PROJECT_PLAN.md) §4.6:
 
 | Priority | What |
 | --- | --- |
 | P0 | Current audience page |
 | P1 | Presenter current page, next page, and notes region |
 | P2 | Audience prefetch of current ±1 |
-| P3 | Jump-preview hover page |
-| P4 | Thumbnails |
+| P3 | Thumbnails, only while the grid is open |
 
 Each page turn increments an epoch to cancel queued stale work and reject late results. Priority chooses the next queued request; it cannot interrupt a synchronous PDFium call. Requests and results carry generation, page, crop, target pixel size, priority, and epoch.
 

@@ -24,9 +24,9 @@ proptest! {
                 9 => PreviousStep,
                 10 => NextLogicalSlide,
                 11 => PreviousLogicalSlide,
-                12 => JumpPreview(PhysicalPage(page)),
-                13 => CommitJump,
-                14 => CancelJump,
+                12 => JumpTo(PhysicalPage(page)),
+                13 => NextStep,
+                14 => PreviousStep,
                 15 => ToggleBlank(BlankMode::Black),
                 16 => ToggleBlank(BlankMode::White),
                 17 => UpdateLaserPointer(Some((0.25, 0.75))),
@@ -36,9 +36,7 @@ proptest! {
                 21 => CommitDocument(descriptor),
                 _ => StageShadowDocument { new_generation: descriptor.generation, bytes: Arc::new(vec![1; page]) },
             };
-            let must_preserve_page = matches!(command, JumpPreview(_) | CancelJump)
-                || (state.jump_preview().is_some()
-                    && matches!(command, NextStep | PreviousStep | NextLogicalSlide | PreviousLogicalSlide));
+            let must_preserve_page = matches!(command, PauseTimer | ResumeTimer | ResetTimer | ToggleBlank(_) | ClearStrokes);
             let before = state.clone();
             let result = state.apply_at(command, origin + Duration::from_secs(index as u64));
             if result.is_err() {

@@ -399,7 +399,7 @@ fn settings_v09_worker_ack_serializes_changes_and_failed_display_rolls_budget_ba
         assert!(!shell.settings.dirty);
         shell.dispatch(Intent::Split { next: 0.3, notes: 0.4, save: true }, cx);
         assert_eq!(shell.settings.settings.presenter.next_slide_ratio, 0.3);
-        assert_eq!(shell.settings.settings.presenter.notes_ratio, 0.4);
+        assert_eq!(shell.settings.settings.presenter.notes_ratio, 0.55);
         assert_eq!(shell.store.load().unwrap().settings.presenter, shell.settings.settings.presenter);
         shell.modal = Some(Modal::Settings);
         let mut proposed = shell.settings.settings.clone();
@@ -552,9 +552,8 @@ fn settings_v09_values_reach_workbench_timer_layout_pointer_clock_and_diagnostic
         for (id, value) in [
             ("presenter.notes_font_scale", "2"),
             ("presenter.next_slide_ratio", "0.6"),
-            ("presenter.notes_ratio", "0.4"),
+            ("presenter.notes_ratio", "0.65"),
             ("presenter.show_clock", "false"),
-            ("presenter.show_thumbnail_strip", "false"),
             ("presenter.grid_columns", "4"),
             ("presenter.grid_visible_pages", "13"),
             ("timer.mode", "count_down"),
@@ -582,7 +581,7 @@ fn settings_v09_values_reach_workbench_timer_layout_pointer_clock_and_diagnostic
             let actual = view.preferences_probe();
             assert_eq!(actual.layout.notes_font_scale, 2.);
             assert_eq!(actual.layout.next_slide_ratio, 0.6);
-            assert_eq!(actual.layout.notes_ratio, 0.4);
+            assert_eq!(actual.layout.notes_ratio, 0.65);
             assert_eq!(
                 (actual.layout.grid_columns, actual.layout.grid_visible_pages),
                 (4, 13)
