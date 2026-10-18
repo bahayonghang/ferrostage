@@ -96,7 +96,7 @@ jobs:
           $env:FERROSTAGE_TEST_PDFIUM = "$env:RUNNER_TEMP/nonexistent-pdfium.dll"
           cargo test -p ferrostage-render --features pdfium --test native --locked 2>&1 | Tee-Object -FilePath native-missing.log
           if ($LASTEXITCODE -eq 0) { throw 'Native fixture suite incorrectly succeeded without PDFium' }
-          if (-not (Select-String native-missing.log -SimpleMatch 'LibraryUnavailable' -Quiet)) { throw 'Unexpected native failure' }
+          if (-not (Select-String -LiteralPath native-missing.log -SimpleMatch 'LibraryUnavailable' -Quiet)) { throw 'Unexpected native failure' }
           exit 0
 
   media-native:
