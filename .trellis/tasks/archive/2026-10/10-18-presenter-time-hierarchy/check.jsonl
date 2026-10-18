@@ -1,0 +1,10 @@
+{"file":"DESIGN.md","reason":"Review consistency with existing presenter visual language"}
+{"file":".trellis/spec/frontend/component-guidelines.md","reason":"Preserve typography, activation and focused native acceptance contracts"}
+{"file":".trellis/spec/frontend/quality-guidelines.md","reason":"Separate product checks from actual native observations"}
+{"file":".trellis/spec/backend/quality-guidelines.md","reason":"Review safe document defaults with meaningful detection/reload regressions"}
+{"file":".trellis/spec/guides/cross-layer-thinking-guide.md","reason":"Review mode-aware state, mapping, dispatch and scheduling as one contract"}
+{"file":".trellis/tasks/archive/2026-10/10-18-presenter-time-hierarchy/page-browser-design.md","reason":"Verify AC12-AC16, no implicit projection and coherent mode-dependent page identity"}
+{"file":".trellis/tasks/archive/2026-10/10-18-presenter-time-hierarchy/prd.md","reason":"Trace verification to AC1-AC7 without expanding scope"}
+{"file":".trellis/tasks/archive/2026-10/10-18-presenter-time-hierarchy/design.md","reason":"Review numeric hierarchy, labels, placement and preserve boundaries"}
+{"file":".trellis/tasks/archive/2026-10/10-18-presenter-time-hierarchy/implement.md","reason":"Required regression, product checks and normal-window visual evidence"}
+{"file":".trellis/tasks/archive/2026-10/10-18-presenter-time-hierarchy/research.md","reason":"Keep official product facts separate from proposed FerroStage values"}
