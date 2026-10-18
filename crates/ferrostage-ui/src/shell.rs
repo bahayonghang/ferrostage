@@ -66,6 +66,7 @@ struct WindowRecord {
     client_size: gpui::Size<Pixels>,
     resize_attempt: Cell<Option<ClientResizeAttempt>>,
     bounds_observed: Rc<Cell<bool>>,
+    observed_display: Rc<Cell<Option<u64>>>,
 }
 
 #[derive(Clone, Copy)]
@@ -117,6 +118,8 @@ pub(crate) struct Shell {
     next_generation: u64,
     pub settings: SettingsSession,
     pub preferences: crate::settings_panel::PanelState,
+    pub ui_fonts: std::sync::Arc<Vec<String>>,
+    ui_fonts_loaded: bool,
     preference_change: Option<preferences::PendingPreferences>,
     store: SettingsStore,
     renderer: Result<RenderHandle, RenderError>,
@@ -129,6 +132,7 @@ pub(crate) struct Shell {
     identify_deadline: Option<Instant>,
     recover_windowed: bool,
     mapped: Result<BTreeMap<MonitorId, u64>, ShellError>,
+    display_details: std::collections::BTreeSet<MonitorId>,
     presenter: Option<WindowRecord>,
     audience: Option<WindowRecord>,
     pending: Option<Transaction>,
@@ -264,6 +268,14 @@ impl Shell {
             .iter()
             .any(|(key, action)| key == "escape" && *action == "stop_presentation");
         let recover_windowed = !topology_valid || monitors.is_empty();
+        // A saved override needs resolution before first draw. Otherwise defer
+        // enumeration until the family selector opens, then cache for the session.
+        let ui_fonts_loaded = !inputs.settings.settings.general.ui_font_family.is_empty();
+        let ui_fonts = std::sync::Arc::new(if ui_fonts_loaded {
+            cx.text_system().all_font_names()
+        } else {
+            Vec::new()
+        });
         Self {
             locale,
             state,
@@ -273,6 +285,8 @@ impl Shell {
             settings: inputs.settings,
             store: inputs.store,
             preferences: Default::default(),
+            ui_fonts,
+            ui_fonts_loaded,
             preference_change: None,
             renderer: inputs.renderer,
             topology: inputs.topology,
@@ -284,6 +298,7 @@ impl Shell {
             identify_deadline: None,
             recover_windowed,
             mapped: Err(ShellError::AmbiguousDisplays),
+            display_details: Default::default(),
             presenter: None,
             audience: None,
             pending: None,
@@ -306,7 +321,7 @@ impl Shell {
         }
     }
 
-    fn refresh_mapping(&mut self, cx: &App) {
+    fn refresh_mapping(&mut self, cx: &mut App) {
         for warning in policy::roles(&self.monitors, &self.settings.settings.display).warnings {
             tracing::warn!(?warning, "display role resolution warning");
         }
@@ -323,6 +338,7 @@ impl Shell {
             Err(ShellError::AmbiguousDisplays)
         };
         tracing::info!(monitors=?self.monitors, mapping=?self.mapped, "GPUI/platform display identity comparison");
+        self.sample_window_locations(cx);
     }
 
     pub fn start_reason(&self) -> Option<String> {
@@ -544,6 +560,20 @@ impl Shell {
                 if self.display_editable() {
                     self.detect_displays(cx);
                     self.apply_display_draft(cx);
+                }
+            }
+            Intent::CancelDisplayDraft => {
+                if self.modal == Some(Modal::Settings) {
+                    if !self.busy() {
+                        self.new_display_draft();
+                    }
+                } else {
+                    self.dispatch(Intent::Escape, cx);
+                }
+            }
+            Intent::ToggleDisplayDetails(id) => {
+                if !self.display_details.remove(&id) {
+                    self.display_details.insert(id);
                 }
             }
             Intent::Identify => self.identify_displays(cx),
@@ -935,14 +965,18 @@ impl Shell {
         };
         let observed = Rc::new(Cell::new(false));
         let flag = observed.clone();
+        let observed_display = Rc::new(Cell::new(None));
+        let location = observed_display.clone();
         let handle: AnyWindowHandle = if audience {
             let snapshot = self.snapshot.clone();
             cx.open_window(options, move |window, cx| {
+                location.set(window.display(cx).map(|display| u64::from(display.id())));
                 Self::intercept_close(window, cx);
                 cx.new(|cx| {
                     cx.observe(&snapshot, |_, _, cx| cx.notify()).detach();
                     cx.observe_window_bounds(window, move |_, window, cx| {
                         flag.set(true);
+                        location.set(window.display(cx).map(|display| u64::from(display.id())));
                         Self::log_bounds(window, cx);
                     })
                     .detach();
@@ -955,10 +989,12 @@ impl Shell {
             let locale = self.locale;
             let data = PresenterData::from_shell(self);
             cx.open_window(options, move |window, cx| {
+                location.set(window.display(cx).map(|display| u64::from(display.id())));
                 Self::intercept_close(window, cx);
                 cx.new(|cx| {
                     cx.observe_window_bounds(window, move |_, window, cx| {
                         flag.set(true);
+                        location.set(window.display(cx).map(|display| u64::from(display.id())));
                         Self::log_bounds(window, cx);
                     })
                     .detach();
@@ -1016,6 +1052,7 @@ impl Shell {
             client_size: restore.size,
             resize_attempt: Cell::new(None),
             bounds_observed: observed,
+            observed_display,
         };
         Self::restore_client_size(&record, cx);
         Ok(record)
@@ -1084,6 +1121,9 @@ impl Shell {
             .handle
             .update(cx, |_, window, cx| {
                 let display = window.display(cx);
+                record
+                    .observed_display
+                    .set(display.as_ref().map(|display| u64::from(display.id())));
                 let Some(display) = display else {
                     return false;
                 };
@@ -1445,7 +1485,52 @@ impl Shell {
                 && self.state.stage() != SessionStage::Presenting
                 && !self.busy()
                 && !self.monitors.is_empty(),
+            roles: display_settings::RoleProjection::new(
+                self.window_location(self.presenter.as_ref(), true),
+                self.window_location(
+                    self.audience.as_ref(),
+                    self.state.stage() == SessionStage::Presenting,
+                ),
+                DisplayDraft::new(
+                    self.topology_revision,
+                    &self.monitors,
+                    &self.settings.settings.display,
+                ),
+                draft,
+            ),
+            details: self.display_details.clone(),
+            busy: self.busy(),
         })
+    }
+
+    fn window_location(
+        &self,
+        record: Option<&WindowRecord>,
+        running: bool,
+    ) -> display_settings::WindowLocation {
+        display_settings::observed_location(
+            running,
+            record.and_then(|record| record.observed_display.get()),
+            self.topology_valid,
+            &self.monitors,
+            self.mapped.as_ref().ok(),
+        )
+    }
+
+    fn sample_window_locations(&self, cx: &mut App) {
+        for record in [self.presenter.as_ref(), self.audience.as_ref()]
+            .into_iter()
+            .flatten()
+        {
+            let display = record
+                .handle
+                .update(cx, |_, window, cx| {
+                    window.display(cx).map(|display| u64::from(display.id()))
+                })
+                .ok()
+                .flatten();
+            record.observed_display.set(display);
+        }
     }
 
     fn detect_displays(&mut self, cx: &mut Context<Self>) {
@@ -1713,7 +1798,11 @@ impl Shell {
         self.poll_transaction(cx);
         self.poll_focus(cx);
         if let Some(audience) = &self.audience {
-            if let Ok(target) = audience.handle.update(cx, |_, window, _| {
+            audience.observed_display.set(None);
+            if let Ok(target) = audience.handle.update(cx, |_, window, cx| {
+                audience
+                    .observed_display
+                    .set(window.display(cx).map(|display| u64::from(display.id())));
                 let size = window.viewport_size();
                 let scale = window.scale_factor();
                 ferrostage_pdf::PixelSize {
@@ -1729,8 +1818,14 @@ impl Shell {
         } else {
             self.workbench.audience_target = None;
         }
+        if let Some(presenter) = &self.presenter {
+            presenter.observed_display.set(None);
+        }
         if let Some(presenter) = &self.presenter
-            && let Ok(target) = presenter.handle.update(cx, |_, window, _| {
+            && let Ok(target) = presenter.handle.update(cx, |_, window, cx| {
+                presenter
+                    .observed_display
+                    .set(window.display(cx).map(|display| u64::from(display.id())));
                 let size = window.viewport_size();
                 let scale = window.scale_factor();
                 ferrostage_pdf::PixelSize {
@@ -2105,6 +2200,216 @@ mod tests {
         });
         redraw(handle, cx);
         (shell, handle)
+    }
+
+    #[gpui::test]
+    fn displays_design_observation_uses_native_move_callback_and_current_owner(
+        cx: &mut TestAppContext,
+    ) {
+        use display_settings::WindowLocation;
+        let (shell, handle) = display_fixture(cx);
+        let (settings, sample) = shell.update(cx, |shell, _| {
+            let sample = shell.presenter.as_ref().unwrap().observed_display.clone();
+            assert_eq!(
+                shell.display_panel().unwrap().roles.app,
+                WindowLocation::Monitor(test_monitor().id)
+            );
+            assert_eq!(
+                shell.display_panel().unwrap().roles.pdf,
+                WindowLocation::NotRunning
+            );
+            sample.set(None);
+            assert_eq!(
+                shell.display_panel().unwrap().roles.app,
+                WindowLocation::Unknown
+            );
+            (shell.settings.settings.clone(), sample)
+        });
+        // The platform's real on_moved callback calls bounds_changed and our observer.
+        cx.test_window(handle).simulate_move();
+        shell.update(cx, |shell, cx| {
+            assert_eq!(
+                shell.display_panel().unwrap().roles.app,
+                WindowLocation::Monitor(test_monitor().id)
+            );
+            assert_eq!(shell.settings.settings, settings);
+            set_playing(shell, cx, Instant::now());
+            let pdf_sample = shell.audience.as_ref().unwrap().observed_display.clone();
+            assert_eq!(
+                shell.display_panel().unwrap().roles.pdf,
+                WindowLocation::Monitor(test_monitor().id)
+            );
+            shell.stop(cx);
+            shell.new_display_draft();
+            pdf_sample.set(sample.get()); // A retired window cannot resurrect PDF presence.
+            assert_eq!(
+                shell.display_panel().unwrap().roles.pdf,
+                WindowLocation::NotRunning
+            );
+            let replacement = test_window(shell, false, cx);
+            let old = shell.presenter.replace(replacement).unwrap();
+            sample.set(Some(u64::MAX));
+            assert_eq!(
+                shell.display_panel().unwrap().roles.app,
+                WindowLocation::Monitor(test_monitor().id)
+            );
+            Shell::close(old, cx);
+            shell.topology_valid = false;
+            assert_eq!(
+                shell.display_panel().unwrap().roles.app,
+                WindowLocation::Unknown
+            );
+            assert_eq!(shell.settings.settings, settings);
+        });
+    }
+
+    #[gpui::test]
+    fn displays_design_both_hosts_fit_three_rows_and_cancel_only_allocation(
+        cx: &mut TestAppContext,
+    ) {
+        let fixture = SaveFixture::new();
+        fixture.unblock();
+        let (shell, handle) = display_fixture(cx);
+        shell.update(cx, |shell, cx| {
+            shell.store = fixture.store();
+            let mut left = test_monitor();
+            left.id.0.push('b');
+            left.position = (-2560, 0);
+            left.native_size = (2560, 1600);
+            left.is_primary = false;
+            let mut right = test_monitor();
+            right.id.0.push('c');
+            right.position = (1920, 0);
+            right.native_size = (1600, 2560);
+            right.is_primary = false;
+            shell.monitors.extend([left, right]);
+            let display = shell
+                .presenter
+                .as_ref()
+                .unwrap()
+                .observed_display
+                .get()
+                .unwrap();
+            shell.mapped = Ok(shell
+                .monitors
+                .iter()
+                .enumerate()
+                .map(|(i, m)| (m.id.clone(), display + i as u64))
+                .collect());
+            cx.notify();
+        });
+        cx.simulate_window_resize(handle, size(px(1100.), px(760.)));
+        for embedded in [false, true] {
+            shell.update(cx, |shell, cx| {
+                shell.modal = if embedded {
+                    Some(Modal::Settings)
+                } else {
+                    None
+                };
+                shell.preferences.category = crate::settings_panel::Category::Displays;
+                shell.new_display_draft();
+                shell.display_details.clear();
+                cx.notify();
+            });
+            redraw(handle, cx);
+            let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+            let topology = visual.debug_bounds("display-topology").unwrap();
+            assert!(topology.size.width <= px(crate::theme::DISPLAY_PREVIEW_WIDTH));
+            assert_eq!(
+                topology.size.height,
+                px(crate::theme::DISPLAY_PREVIEW_HEIGHT)
+            );
+            assert_eq!(
+                visual.debug_bounds("display-panel-content").is_none(),
+                embedded,
+                "only standalone owns this scroll"
+            );
+            let content = visual
+                .debug_bounds(if embedded {
+                    "settings-content"
+                } else {
+                    "display-panel-content"
+                })
+                .unwrap();
+            for name in [
+                "display-card-1",
+                "display-card-2",
+                "display-card-3",
+                "display-role-summary",
+                "apply-displays",
+                "cancel-displays",
+            ] {
+                let bounds = visual.debug_bounds(name).unwrap();
+                let (top, bottom) =
+                    if !embedded && matches!(name, "apply-displays" | "cancel-displays") {
+                        (px(0.), px(760.)) // Standalone allocation actions live outside its body scroll.
+                    } else {
+                        (content.top(), content.bottom())
+                    };
+                assert!(
+                    bounds.top() >= top && bounds.bottom() <= bottom,
+                    "{embedded} {name}: {bounds:?}, visible y={top:?}..{bottom:?}"
+                );
+            }
+            assert!(visual.debug_bounds("display-diagnostics-1").is_none());
+            click_control(handle, "display-details-1", cx);
+            redraw(handle, cx);
+            assert!(visual.debug_bounds("display-diagnostics-1").is_some());
+            click_control(handle, "display-details-1", cx);
+            redraw(handle, cx);
+            let actual = shell.read_with(cx, |shell, _| shell.display_panel().unwrap().roles.app);
+            click_control(handle, "display-pdf-3", cx);
+            redraw(handle, cx);
+            let pending_bottom = if embedded {
+                visual.debug_bounds("settings-content").unwrap().bottom()
+            } else {
+                px(760.)
+            };
+            for action in ["apply-displays", "cancel-displays"] {
+                assert!(
+                    visual.debug_bounds(action).unwrap().bottom() <= pending_bottom,
+                    "{embedded} {action} must remain visible with pending allocation feedback"
+                );
+            }
+            shell.read_with(cx, |shell, _| {
+                let panel = shell.display_panel().unwrap();
+                assert!(panel.roles.pending);
+                assert_eq!(panel.roles.app, actual);
+                assert_eq!(
+                    panel.roles.pdf,
+                    display_settings::WindowLocation::NotRunning
+                );
+                assert!(shell.pending.is_none());
+            });
+            if embedded {
+                // This preference is already saved, independent of the allocation draft.
+                shell.update(cx, |shell, cx| {
+                    shell.settings.settings.display.audience_fullscreen = false;
+                    shell.settings.note_edit();
+                    shell.save(cx);
+                });
+            }
+            click_control(handle, "cancel-displays", cx);
+            redraw(handle, cx);
+            shell.read_with(cx, |shell, _| {
+                if embedded {
+                    assert_eq!(shell.modal, Some(Modal::Settings));
+                    assert!(!shell.display_panel().unwrap().roles.pending);
+                    assert!(!shell.settings.settings.display.audience_fullscreen);
+                    assert!(
+                        !shell
+                            .store
+                            .load()
+                            .unwrap()
+                            .settings
+                            .display
+                            .audience_fullscreen
+                    );
+                } else {
+                    assert!(shell.modal.is_none());
+                }
+            });
+        }
     }
 
     #[gpui::test]
@@ -3186,7 +3491,7 @@ mod tests {
         click_control(handle, "settings", cx);
         shell.update(cx, |shell, cx| shell.poll_focus(cx));
         redraw(handle, cx);
-        cx.simulate_keystrokes(handle, "shift-tab enter");
+        cx.simulate_keystrokes(handle, "tab enter"); // Settings Close is first in the header.
         assert!(shell.read_with(cx, |shell, _| shell.modal.is_none()));
         redraw(handle, cx);
         let before = handle
@@ -3643,7 +3948,7 @@ mod tests {
                 cx.notify();
             });
             redraw(handle, cx);
-            cx.simulate_keystrokes(handle, "shift-tab");
+            cx.simulate_keystrokes(handle, "tab"); // Settings Close is first in the header.
             redraw(handle, cx);
             cx.simulate_keystrokes(handle, key);
             shell.read_with(cx, |shell, _| {
@@ -4558,6 +4863,59 @@ mod tests {
     fn workbench_controls_jump_directly_and_keep_note_pages_private(cx: &mut TestAppContext) {
         let (shell, handle) = workbench_fixture(cx);
         let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let progress = visual.debug_bounds("workbench-progress").unwrap();
+        visual.simulate_mouse_move(progress.center(), None, gpui::Modifiers::default());
+        redraw(handle, cx);
+        cx.run_until_parked();
+        cx.executor().advance_clock(Duration::from_secs(1));
+        cx.run_until_parked();
+        redraw(handle, cx);
+        assert!(visual.debug_bounds("presenter-text-tooltip").is_some());
+        for _ in 0..16 {
+            cx.simulate_keystrokes(handle, "tab");
+            redraw(handle, cx);
+            let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+            if visual.debug_bounds("progress-detail").is_some() {
+                assert_eq!(
+                    visual.debug_bounds("workbench-progress"),
+                    Some(progress),
+                    "focus detail cannot move the control during activation"
+                );
+                break;
+            }
+        }
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        assert!(visual.debug_bounds("progress-detail").is_some());
+        visual.simulate_mouse_move(progress.center(), None, gpui::Modifiers::default());
+        redraw(handle, cx);
+        cx.run_until_parked();
+        cx.executor().advance_clock(Duration::from_secs(1));
+        cx.run_until_parked();
+        redraw(handle, cx);
+        assert!(visual.debug_bounds("progress-detail").is_some());
+        assert!(
+            visual.debug_bounds("presenter-text-tooltip").is_none(),
+            "focused progress already presents full detail; hovering must not duplicate it"
+        );
+        assert_eq!(visual.debug_bounds("workbench-progress"), Some(progress));
+        visual.simulate_click(progress.center(), gpui::Modifiers::default());
+        shell.update(cx, |shell, cx| shell.poll_focus(cx));
+        shell.read_with(cx, |shell, _| {
+            assert!(matches!(shell.modal, Some(Modal::Jump(_))))
+        });
+        redraw(handle, cx);
+        cx.simulate_keystrokes(handle, "3");
+        shell.read_with(cx, |shell, _| {
+            assert_eq!(shell.state.current_page(), PhysicalPage(0));
+            assert!(matches!(shell.modal, Some(Modal::Jump(_))));
+        });
+        cx.simulate_keystrokes(handle, "enter");
+        assert_eq!(
+            shell.read_with(cx, |shell, _| shell.state.current_page()),
+            PhysicalPage(2)
+        );
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
         let pen = visual.debug_bounds("pen").unwrap();
         visual.simulate_click(pen.center(), gpui::Modifiers::default());
         assert_eq!(
@@ -4688,11 +5046,17 @@ mod tests {
             let timer = visual.debug_bounds("presenter-timer").unwrap();
             let home = visual.debug_bounds("home").unwrap();
             assert!(
-                same_row(title.origin.y, progress.origin.y)
-                    && same_row(title.origin.y, timer.origin.y)
-                    && same_row(title.origin.y, home.origin.y),
-                "title {title:?} progress {progress:?} timer {timer:?} home {home:?}"
+                same_row(title.origin.y, timer.origin.y) && same_row(title.origin.y, home.origin.y)
             );
+            let start = visual.debug_bounds("start").unwrap();
+            let previous = visual.debug_bounds("previous").unwrap();
+            let next = visual.debug_bounds("next").unwrap();
+            assert!(same_row(start.center().y, previous.center().y));
+            assert!(same_row(start.center().y, next.center().y));
+            assert!(same_row(next.center().y, progress.center().y));
+            assert!(progress.origin.y > title.bottom());
+            assert!(start.size.height >= px(crate::theme::SESSION_CONTROL));
+            assert!(visual.debug_bounds("stop").is_none());
             let notes = visual.debug_bounds("notes-panel").unwrap();
             let right = visual.debug_bounds("next-notes-pane").unwrap();
             assert!(notes.size.height >= right.size.height * 0.50);
@@ -4730,6 +5094,54 @@ mod tests {
         let next = visual.debug_bounds("next-notes-pane").unwrap();
         assert!(next.origin.y >= current.bottom());
         assert!(current.size.height > px(40.));
+    }
+
+    #[gpui::test]
+    fn workbench_session_strip_survives_empty_steps_and_busy_start(cx: &mut TestAppContext) {
+        let (shell, handle) = input_presenter(cx);
+        shell.update(cx, |shell, cx| {
+            load_ready(shell);
+            shell.loading = true;
+            cx.notify();
+        });
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let start = visual.debug_bounds("start").unwrap();
+        assert!(visual.debug_bounds("previous").is_none());
+        assert!(visual.debug_bounds("start-reason").is_some());
+        visual.simulate_click(start.center(), gpui::Modifiers::default());
+        shell.read_with(cx, |shell, _| {
+            assert_eq!(shell.state.stage(), SessionStage::Ready);
+            assert!(shell.pending.is_none());
+            assert_eq!(shell.state.elapsed_at(Instant::now()), Duration::ZERO);
+        });
+        shell.update(cx, |shell, cx| {
+            shell.loading = false;
+            shell
+                .state
+                .apply_at(
+                    Command::StartPresentation {
+                        audience_available: true,
+                    },
+                    Instant::now(),
+                )
+                .unwrap();
+            cx.notify();
+        });
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        assert!(visual.debug_bounds("start").is_none());
+        let stop = visual.debug_bounds("stop").unwrap();
+        assert_eq!(start.origin.x, stop.origin.x);
+        assert_eq!(
+            start.size, stop.size,
+            "Start and Stop retain session geometry"
+        );
+        visual.simulate_click(stop.center(), gpui::Modifiers::default());
+        assert_eq!(
+            shell.read_with(cx, |shell, _| shell.state.stage()),
+            SessionStage::Ready
+        );
     }
 
     #[gpui::test]
