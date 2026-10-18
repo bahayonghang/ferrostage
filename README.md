@@ -44,14 +44,18 @@ Suggested topics keep `beamer` and drop `latex` when that topic is set. `beamer`
 just ci       # fmt --check, clippy -D warnings, test, cargo deny; default features
 just dev      # stage verified PDFium into target/debug, then run with gpui,pdfium
 just build    # release gpui,pdfium app; double-click target\release\ferrostage.exe
-just install  # install gpui,pdfium and stage pdfium.dll into Cargo's bin
+just release  # build Windows x64 Setup.exe, portable ZIP and SHA256 checksums
+just install  # build/package, then install silently for the current user
+just uninstall # run the registered native uninstaller; preserve settings
 ```
 
 Toolchain: Rust 1.99.0, edition 2024 (`rust-toolchain.toml`).
 
-`just ci` stays on default features. `just dev`, `just build`, and `just install` enable `gpui` and `pdfium` and stage the hash-checked `pdfium.dll` from [packaging](docs/packaging.md). `just dev` and `just build` also stage `LICENSE` and `licenses/`. `just install` stages only the DLL, leaving the notices with `target\release`. The application never downloads PDFium and never writes the user's PDF.
+For an end-user installation, double-click the versioned `FerroStage-<version>-windows-x64-Setup.exe` produced by `just release`. Setup installs for the current user under `%LOCALAPPDATA%\Programs\FerroStage`, creates desktop and Start menu shortcuts, and registers an entry in Windows Installed apps. Open FerroStage through its icon or Windows Search; no terminal or Rust toolchain is needed. Uninstall from Installed apps or use `just uninstall` in a source checkout. Settings and user PDFs are preserved.
 
-The double-click artifact is `target\release\ferrostage.exe` after `just build`. That recipe links the featured app last. Video playback requires the separate media helper and runtime, built with `cargo build -p ferrostage-app --features gpui,pdfium,media --locked`.
+`just ci` stays on default features. The desktop commands enable `gpui,pdfium` and stage the hash-checked PDFium runtime with its complete original notices. Release artifacts and checksums are written under the actual Cargo target directory's `dist`; custom `CARGO_TARGET_DIR` is respected. The portable ZIP uses the same verified payload. See [packaging](docs/packaging.md) for toolchain pins, installer behavior and prerequisites. The application never downloads PDFium and never writes the user's PDF.
+
+For a developer build, double-click `target\release\ferrostage.exe` after `just build` (or its equivalent under the configured target directory). Video playback still requires the separate media helper and runtime, built with `cargo build -p ferrostage-app --features gpui,pdfium,media --locked`.
 
 `just dev` keeps a console. The release executable uses the Windows GUI subsystem, so Explorer opens `target\release\ferrostage.exe` without a console. `just dev -- check-config <path>` prints the read-only settings report in the terminal. An interactive release `check-config` has no console. Redirected stdout from release `check-config` still prints the result.
 

@@ -20,6 +20,7 @@
 | [Error Handling](./error-handling.md) | `thiserror` in libraries, `ExitCode` in the binary | Filled |
 | [Quality Guidelines](./quality-guidelines.md) | `just ci`, forbidden patterns | Filled |
 | [Logging Guidelines](./logging-guidelines.md) | `tracing`; do not log PDF bytes | Filled |
+| [Windows Distribution](./windows-distribution.md) | Shared desktop payload, Setup, registration and native uninstall | Filled |
 
 ---
 

@@ -44,14 +44,18 @@ Windows 11 优先。应用完全离线运行：无遥测、无网络连接、无
 just ci       # 默认 features：fmt、clippy、test、cargo deny
 just dev      # 把已校验的 PDFium 放到 target/debug，再以 gpui,pdfium 运行
 just build    # 发布 gpui,pdfium；双击 target\release\ferrostage.exe
-just install  # 安装 gpui,pdfium，并只把 pdfium.dll 放到 Cargo 的 bin
+just release  # 生成 Windows x64 Setup.exe、便携 ZIP 和 SHA256 校验文件
+just install  # 构建、打包并静默安装到当前用户，无需点击
+just uninstall # 调用正式卸载程序，保留用户配置
 ```
 
 工具链：Rust 1.99.0，edition 2024。
 
-`just ci` 保持默认 features。`just dev`、`just build`、`just install` 启用 `gpui` 与 `pdfium`，并放置哈希校验过的 `pdfium.dll`。来源、通知文件和准备命令见[打包说明](docs/packaging.md)。`just dev` 与 `just build` 同时放置 `LICENSE` 和 `licenses/`。`just install` 只放置 DLL，完整通知文件留在 `target\release`。应用进程不下载 PDFium，也不写用户 PDF。
+普通用户双击 `just release` 生成的 `FerroStage-<version>-windows-x64-Setup.exe` 即可安装。安装位置为当前用户的 `%LOCALAPPDATA%\Programs\FerroStage`，无需管理员权限；安装后提供桌面图标、开始菜单入口和 Windows“已安装的应用”卸载项。可直接通过图标或 Windows 搜索打开，无需终端或 Rust 工具链。卸载可使用系统设置中的卸载项，开发者也可以运行 `just uninstall`；用户配置和 PDF 会保留。
 
-双击产物是 `just build` 之后的 `target\release\ferrostage.exe`。该配方最后才链接带 feature 的程序。视频仍要单独准备媒体助手和运行库，构建命令是 `cargo build -p ferrostage-app --features gpui,pdfium,media --locked`。
+`just ci` 保持默认 features。桌面构建启用 `gpui,pdfium`，携带哈希校验过的 PDFium 及完整原始许可文件。Setup、便携 ZIP 和校验文件位于 Cargo 实际 target 目录下的 `dist`，遵循 `CARGO_TARGET_DIR`；安装版和便携版使用同一套已校验文件。工具链固定版本、安装行为与运行前提见[打包说明](docs/packaging.md)。应用进程不下载 PDFium，也不写用户 PDF。
+
+开发构建可双击 `just build` 生成的 `target\release\ferrostage.exe`；自定义 target 时以实际输出路径为准。视频仍要单独准备媒体助手和运行库，构建命令是 `cargo build -p ferrostage-app --features gpui,pdfium,media --locked`。
 
 `just dev` 保留控制台。发布版可执行文件使用 Windows GUI 子系统，资源管理器打开 `target\release\ferrostage.exe` 时不分配控制台。`just dev -- check-config <path>` 在终端打印只读的设置解析结果。交互式的 release `check-config` 没有控制台。把 release `check-config` 的 stdout 重定向后，解析结果仍会写出。
 

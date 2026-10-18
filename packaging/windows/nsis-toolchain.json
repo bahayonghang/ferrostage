@@ -1,0 +1,11 @@
+{
+  "version": "3.13",
+  "archive_url": "https://github.com/tauri-apps/binary-releases/releases/download/nsis-3.13/nsis-3.13.zip",
+  "upstream_url": "https://downloads.sourceforge.net/project/nsis/NSIS%203/3.13/nsis-3.13.zip",
+  "hash_source": "https://nsis-dev.github.io/release-data/versions.json",
+  "archive_sha256": "ba63dffc4410ee89193e1cb5a41989991bd77c61068da17e3156d136b7b0b3d8",
+  "directory": "nsis-3.13",
+  "notices": {
+    "COPYING": "388357c1215ff403c5ebde3a5ecd273e68f8b79a579996775245d1ee65442aba"
+  }
+}

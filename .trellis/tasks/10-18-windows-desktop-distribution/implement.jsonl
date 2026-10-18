@@ -1,0 +1,5 @@
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Required CI, native gates, policy and verification rules"}
+{"file": ".trellis/spec/backend/directory-structure.md", "reason": "App versus platform boundaries and owned artifacts"}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "Reuse existing runtime staging before adding packaging helpers"}
+{"file": ".trellis/tasks/10-18-windows-desktop-distribution/research/distribution-evidence.md", "reason": "Inspected command and runtime evidence; NSIS selection and migration receipt"}
+{"file": ".trellis/spec/backend/windows-distribution.md", "reason": "Desktop distribution command, payload, registry, error and lifecycle contracts"}

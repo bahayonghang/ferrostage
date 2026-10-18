@@ -1,0 +1,39 @@
+name: Windows desktop distribution
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-distribution-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  package:
+    name: Setup, portable archive and installer lifecycle
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.99.0
+      - name: Build and package the actual desktop application
+        shell: powershell
+        run: ./scripts/windows-distribution.ps1 -Action release
+      - name: Verify payload and release checksums
+        shell: powershell
+        run: ./scripts/windows-distribution.ps1 -Action verify
+      - name: Packaging regressions and native install lifecycle on disposable runner
+        shell: powershell
+        run: ./scripts/test-windows-distribution.ps1 -Lifecycle
+      - name: Upload reviewable distribution artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: FerroStage-windows-x64
+          if-no-files-found: error
+          path: |
+            target/dist/*-Setup.exe
+            target/dist/*-portable.zip
+            target/dist/*-SHA256SUMS.txt
+            target/dist/release.json

@@ -39,12 +39,13 @@ check-shell:
 deny:
     cargo deny check
 
-# Release desktop build. The gpui,pdfium app link is the last cargo step,
-# then the verified PDFium runtime is staged beside target/release/ferrostage.exe.
+# Build the release desktop graph and assemble its verified distribution payload.
 build:
-    cargo build --workspace --release --locked --exclude ferrostage-app
-    cargo build -p ferrostage-app --release --features gpui,pdfium --locked
-    powershell -NoProfile -File scripts/stage-pdfium.ps1 -Destination target/release
+    powershell -NoProfile -ExecutionPolicy Bypass -File scripts/windows-distribution.ps1 -Action build
+
+# Produce a current-user Setup, portable ZIP and SHA256 checksums under target/dist.
+release:
+    powershell -NoProfile -ExecutionPolicy Bypass -File scripts/windows-distribution.ps1 -Action release
 
 # Build first so Cargo can restore a collected target-cache directory before staging.
 # Stage verified PDFium notices and pdfium.dll into target/debug, then run the shell.
@@ -54,10 +55,13 @@ dev *args:
     powershell -NoProfile -File scripts/stage-pdfium.ps1 -Destination target/debug
     cargo run -p ferrostage-app --features gpui,pdfium --locked -- {{args}}
 
-# Install the gpui,pdfium binary and stage only pdfium.dll beside it.
+# Install the verified desktop release automatically through native Setup.
 install:
-    cargo install --path crates/ferrostage-app --locked --features gpui,pdfium
-    powershell -NoProfile -File scripts/stage-pdfium.ps1 -DllOnly -CargoBin
+    powershell -NoProfile -ExecutionPolicy Bypass -File scripts/windows-distribution.ps1 -Action install -Silent
+
+# Run the registered current-user native uninstaller.
+uninstall:
+    powershell -NoProfile -ExecutionPolicy Bypass -File scripts/windows-distribution.ps1 -Action uninstall
 
 # Selected GStreamer runtime preparation and isolated helper (no desktop/audio).
 media-runtime:

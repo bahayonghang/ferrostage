@@ -1,14 +1,38 @@
 # Packaging
 
-Development staging is available for the Windows 11 executable and its separately loaded PDFium and media runtimes. An installer is not produced.
+Windows 11 x64 desktop distribution uses one verified payload for the NSIS Setup executable and portable ZIP. Build tools acquire runtimes; the installed application remains offline.
 
 - `just ci` stays on default features and does not require `pdfium.dll`.
 - `just dev` first builds `ferrostage-app` with `gpui,pdfium`, stages the verified `pdfium.dll`, `LICENSE`, and `licenses/` into `target/debug`, then runs `cargo run -p ferrostage-app --features gpui,pdfium --locked`. Building first lets Cargo restore a collected target-cache directory before staging into a `target` symlink.
-- `just build` builds the other workspace crates, links `ferrostage-app` with `gpui,pdfium` last, then stages those same files into `target/release`. The double-click artifact is `target\release\ferrostage.exe`.
-- `just install` runs `cargo install --path crates/ferrostage-app --locked --features gpui,pdfium`, then stages only the verified `pdfium.dll` beside that binary. The full notice tree stays with `target\release`.
-- The optional `pdfium` feature links `pdfium-render =0.9.4` with only `pdfium_7881`. The runtime is acquired separately as described below; no installer is produced by this task.
+- `just build` builds only the `ferrostage-app` dependency graph with `gpui,pdfium` in locked release mode, stages the verified runtime/notices beside the executable, and assembles the distribution payload. Cargo's actual target directory is resolved, including `CARGO_TARGET_DIR`; the default executable is `target\release\ferrostage.exe`.
+- `just release` produces `FerroStage-<version>-windows-x64-Setup.exe`, a portable ZIP, and SHA256 checksums under the actual target directory's `dist`. It does not create a Git tag or publish a GitHub release.
+- `just install` builds/packages and silently invokes the same Setup for the current user, waits for it, and verifies the result. No wizard clicks are required. It does not install into Cargo bin.
+- `just uninstall` invokes the registered native uninstaller. Settings and user PDFs remain intact.
+- The optional `pdfium` feature links `pdfium-render =0.9.4` with only `pdfium_7881`. Runtime acquisition and complete notice verification remain as described below.
 - URW Base35 fonts, if required for a fallback, belong under `assets/fonts/urw-base35/` and must carry a license that `cargo deny` accepts. The directory currently holds only a README.
 - The app does not embed a telemetry endpoint. Settings stay in a local TOML file.
+
+## Setup and portable use
+
+Double-click Setup and follow the wizard. It installs to `%LOCALAPPDATA%\Programs\FerroStage` without administrator elevation. Desktop and Start menu shortcuts use the application icon; the Start menu entry makes the app discoverable in Windows Search. The installer registers version, icon, location and a native uninstall command in the current user's Installed apps entry. Launching the installed release application does not allocate a console.
+
+Reinstalling the same version and upgrading preserve settings. Older versions are refused. Close FerroStage before an install/update or uninstall: locked-file checks request closure or fail instead of force-terminating a presentation. Uninstall through Windows Settings or `just uninstall` removes owned application files, shortcuts and registration while retaining settings, user PDFs and unrelated files in the installation directory.
+
+The portable ZIP contains the same verified application/runtime files. Extract the complete archive and open `ferrostage.exe`; do not move only the executable away from its DLL and notices. The portable variant does not register shortcuts or an uninstall entry.
+
+The application license declaration and full MIT/Apache texts are packaged separately from the original PDFium root `LICENSE` and `licenses/`. The NSIS notice is also retained. Do not overwrite runtime notices with the application license or omit notices from installed copies.
+
+## Packaging toolchain and prerequisites
+
+`packaging/windows/nsis-toolchain.json` pins NSIS 3.13 and the archive SHA256 published by the NSIS release-data project. The archive is acquired from Tauri's binary mirror and verified against that upstream hash; the isolated cache lives under `cache/nsis-3.13`. No global NSIS installation or WiX EULA acceptance is needed. Setup uses NSIS Modern UI and zlib compression. End users need none of these build tools.
+
+Developer packaging requires the project's pinned Rust/MSVC toolchain, Windows PowerShell and normal download access for an uncached compiler/runtime. Stage after Cargo initializes its output directory; a collected target-cache symlink can otherwise make directory creation misleading. Package an explicit file inventory, never an entire Cargo release directory containing stale or unrelated products. Subprocess, hash and installer failures must propagate as failures.
+
+Setup is unsigned; code-signing and Windows reputation qualification are not part of this task. The x64 application imports `VCRUNTIME140.dll` and requires Microsoft's [Visual C++ x64 Redistributable](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist). PDFium imports Windows system DLLs only. These system prerequisites are not copied from the developer machine into the package. Local native verification and clean-machine qualification are separate results. The Windows distribution CI uploads build artifacts for review and does not publish a public release.
+
+Release filenames are `FerroStage-<version>-windows-x64-Setup.exe`, `FerroStage-<version>-windows-x64-portable.zip`, and `FerroStage-<version>-windows-x64-SHA256SUMS.txt`. The staging payload is `dist/payload-<version>`; `dist/release.json` records `version`, `payload`, `setup`, `portable`, `checksums`, `setup_sha256`, and `portable_sha256`. The paths in that receipt are local absolute paths, not portable download URLs.
+
+Run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/windows-distribution.ps1 -Action verify` to verify the generated payload/artifacts. `scripts/test-windows-distribution.ps1` runs focused packaging regressions; its explicit `-Lifecycle` mode exercises the real current-user installation and should run only when that local mutation is intended or on a disposable CI runner. Script install/uninstall actions accept `-Silent`; `just install` always supplies it for unattended installation. Double-clicking Setup still opens the wizard.
 
 Settings default to `%APPDATA%\ferrostage\settings.toml` on Windows,
 `$XDG_CONFIG_HOME/ferrostage/settings.toml` (or `~/.config/ferrostage/settings.toml`)
@@ -82,7 +106,7 @@ Launch with `ferrostage --config <isolated-settings.toml> <pdf>`. The PDF argume
 is optional. The library defaults to `pdfium.dll` beside the executable.
 `--pdfium-library <pdfium.dll>` overrides that path. A missing runtime leaves the
 shell available with an import error. Video still needs the separate media
-preparation below. `just dev`, `just build`, and `just install` leave `media` off.
+preparation below. `just dev`, `just build`, `just release`, and `just install` leave `media` off.
 The media-enabled build is `cargo build -p ferrostage-app --features gpui,pdfium,media --locked`.
 The single PDFium worker supplies actual current/next/notes rasters to the presenter
 workbench. The app includes settings, transactional reload, annotations and shared
@@ -94,8 +118,8 @@ approved GPUI0.2.2 source from Zed v1.23.3 and the bounded pulp, metal, cosmic-t
 and HarfRust repairs. Original OFL fonts under `vendor/fixtures` are regression
 inputs, with their complete licenses; they are not runtime fallback assets.
 Only the three exact package/version/license exceptions in ADR-005 are applied.
-Full dependency gates and native notice requirements remain in force. This task
-does not build an installer or grant distribution approval.
+Full dependency gates and native notice requirements remain in force. Creating
+an installer does not replace dependency checks or native desktop acceptance.
 
 For local native tests set `FERROSTAGE_TEST_PDFIUM` to the verified DLL file and
 run `just test-native` and `just clippy-native`. This variable belongs only to the

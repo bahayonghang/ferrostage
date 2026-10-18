@@ -5,9 +5,11 @@ GPU-accelerated PDF and Beamer presenter. Rust edition 2024, toolchain 1.99.0 (`
 ## Commands
 
 - `just ci` — fmt, clippy `-D warnings`, test, `cargo deny`. Default features, no PDFium DLL.
-- `just build` — release workspace without the app, then `ferrostage-app` with `gpui,pdfium`, then the pinned `pdfium.dll` beside `target/release/ferrostage.exe`. Double-click that exe.
+- `just build` — build the release desktop app with `gpui,pdfium`, stage verified PDFium and complete notices, and assemble the distribution payload. Resolve Cargo's actual target directory.
+- `just release` — produce versioned Windows x64 Setup.exe, portable ZIP and SHA256 checksums under the resolved target directory's `dist`. Does not publish a release.
 - `just dev` — stage that DLL into `target/debug`, then `cargo run -p ferrostage-app --features gpui,pdfium --locked`
-- `just install` — `cargo install --path crates/ferrostage-app --locked --features gpui,pdfium`, then only `pdfium.dll` beside the installed exe
+- `just install` — build/package and silently run Setup for the current user, without clicks; Desktop/Start shortcuts and Installed apps registration. No Cargo-bin installation.
+- `just uninstall` — run the registered native uninstaller; preserve settings and user PDFs.
 
 ## Crate rules
 
