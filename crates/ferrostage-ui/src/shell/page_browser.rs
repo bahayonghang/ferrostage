@@ -25,19 +25,18 @@ impl Shell {
         self.abandon_modal();
         self.contextual_serial += 1;
         let current = self.state.current_page();
-        let steps = self
-            .state
-            .slide_map()
-            .map(|map| map.steps())
-            .unwrap_or_default();
+        let entries = self.browser_entries();
         let capacity = self.settings.settings.presenter.grid_visible_pages as usize;
-        let position = steps.iter().position(|page| *page == current).unwrap_or(0);
+        let position = entries
+            .iter()
+            .position(|entry| entry.page == current)
+            .unwrap_or(0);
         self.workbench.grid_start = position / capacity * capacity;
         self.workbench.grid = true;
         self.contextual = Some(ContextualSurface::PageBrowser(PageBrowser {
             id: self.contextual_serial,
             generation: self.state.generation(),
-            edit: NumberEdit::new((current.0 + 1).to_string()),
+            edit: NumberEdit::new((position + 1).to_string()),
             target: self
                 .state
                 .slide_map()
@@ -52,18 +51,58 @@ impl Shell {
                 browser.id == id && browser.generation == self.state.generation()
             })
     }
+    pub(crate) fn browser_entries(&self) -> Vec<crate::workbench::BrowserEntry> {
+        self.state
+            .slide_map()
+            .map(|map| {
+                self.workbench
+                    .page_number_mode
+                    .entries(map, self.state.page_count())
+            })
+            .unwrap_or_default()
+    }
+    pub(super) fn browser_mode(&mut self, id: u64, mode: crate::workbench::PageNumberMode) {
+        if !self.valid_browser(id) || mode == self.workbench.page_number_mode {
+            return;
+        }
+        let target = self
+            .browser()
+            .and_then(|browser| browser.target)
+            .unwrap_or(self.state.current_page());
+        self.workbench.page_number_mode = mode;
+        let entries = self.browser_entries();
+        let position = entries
+            .iter()
+            .position(|entry| entry.page == target)
+            .unwrap_or(0);
+        let capacity = self.settings.settings.presenter.grid_visible_pages as usize;
+        self.workbench.grid_start = position / capacity * capacity;
+        // Renew interaction identity: queued old-mode edits and tile activations are inert.
+        self.contextual_serial += 1;
+        if let Some(ContextualSurface::PageBrowser(browser)) = &mut self.contextual {
+            browser.id = self.contextual_serial;
+            browser.edit = NumberEdit::new((position + 1).to_string());
+            browser.target = Some(target);
+            browser.error = None;
+        }
+        self.workbench
+            .frames
+            .retain(|(surface, _)| !matches!(surface, crate::workbench::Surface::Thumbnail(_)));
+        self.workbench
+            .surface_targets
+            .retain(|surface, _| !matches!(surface, crate::workbench::Surface::Thumbnail(_)));
+    }
     pub(super) fn edit_browser(&mut self, id: u64, edit: NumberEdit) {
         if !self.valid_browser(id) {
             return;
         }
-        let page = transactions::jump_page(&edit.text, self.state.page_count()).map(PhysicalPage);
-        let target = page.filter(|page| {
-            self.state
-                .slide_map()
-                .and_then(|map| map.logical_for(*page))
-                .is_some()
-        });
-        let error = if page.is_none() {
+        let entries = self.browser_entries();
+        let entry =
+            transactions::jump_page(&edit.text, entries.len()).and_then(|index| entries.get(index));
+        let target = entry
+            .filter(|entry| entry.content_number.is_some())
+            .map(|entry| entry.page);
+        let error = if entry.is_none() {
             Some("pb-invalid-range")
         } else if target.is_none() {
             Some("pb-notes-page")
@@ -75,10 +114,7 @@ impl Shell {
             .is_some_and(|browser| browser.edit.text != edit.text);
         if changed
             && let Some(target) = target
-            && let Some(position) = self
-                .state
-                .slide_map()
-                .and_then(|map| map.steps().iter().position(|p| *p == target))
+            && let Some(position) = entries.iter().position(|entry| entry.page == target)
         {
             let capacity = self.settings.settings.presenter.grid_visible_pages as usize;
             if position < self.workbench.grid_start

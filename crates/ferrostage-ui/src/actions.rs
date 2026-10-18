@@ -46,6 +46,13 @@ pub(crate) enum Intent {
     Tool(crate::workbench::Tool),
     Grid,
     GridMove(isize),
+    BrowserSubmit {
+        id: u64,
+    },
+    BrowserMode {
+        id: u64,
+        mode: crate::workbench::PageNumberMode,
+    },
     BrowserEdit {
         id: u64,
         edit: crate::page_browser::NumberEdit,
@@ -81,7 +88,6 @@ pub(crate) enum Intent {
     Settings,
     Jump,
     Escape,
-    Commit,
     RetrySave,
     Displays,
     Identify,
@@ -165,7 +171,15 @@ pub(crate) fn install(
     register!(Settings, Settings);
     register!(Jump, Jump);
     register!(Escape, Escape);
-    register!(Commit, Commit);
+    let submit = shell.clone();
+    cx.on_action(move |_: &Commit, cx| {
+        let id = submit
+            .upgrade()
+            .and_then(|shell| shell.read(cx).browser().map(|browser| browser.id));
+        if let Some(id) = id {
+            dispatch(&submit, Intent::BrowserSubmit { id }, cx);
+        }
+    });
     replace_bindings(settings, locale, cx)
 }
 

@@ -43,7 +43,18 @@ fn actual_pdfium_metadata_builds_fixture_models() {
             .unwrap();
         println!("{name} metadata: {metadata:?}");
         let structure = extract_structure(&bytes).unwrap();
-        let doc = LoadedDocument::load(&metadata, &structure).unwrap();
+        let fresh = LoadedDocument::load(&metadata, &structure).unwrap();
+        assert_eq!(fresh.layout, NotesLayout::None);
+        assert_eq!(slide_crop(fresh.layout), NormalizedRect::FULL);
+        let doc = LoadedDocument::build(
+            &metadata,
+            &structure,
+            DocumentOverrides {
+                layout: None,
+                ..Default::default()
+            },
+        )
+        .unwrap();
         println!(
             "{name} model: layout={:?}, groups={:?}, warnings={:?}",
             doc.layout,

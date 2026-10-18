@@ -1,14 +1,19 @@
 use super::*;
 use ferrostage_document::{DocumentOverrides, DocumentWarning, NotesLayout};
 
-const LAYOUTS: [(&str, Option<NotesLayout>); 6] = [
-    ("wb-auto", None),
-    ("wb-unsplit", Some(NotesLayout::None)),
-    ("wb-left", Some(NotesLayout::Left)),
-    ("wb-right", Some(NotesLayout::Right)),
-    ("wb-top", Some(NotesLayout::Top)),
-    ("wb-bottom", Some(NotesLayout::Bottom)),
-];
+const LAYOUTS: [(&str, Option<NotesLayout>); 2] =
+    [("wb-auto", None), ("wb-unsplit", Some(NotesLayout::None))];
+pub(super) const ROW_COUNT: usize = LAYOUTS.len() + 1;
+
+fn layout_label(layout: NotesLayout) -> &'static str {
+    match layout {
+        NotesLayout::None => "wb-unsplit",
+        NotesLayout::Left => "wb-left",
+        NotesLayout::Right => "wb-right",
+        NotesLayout::Top => "wb-top",
+        NotesLayout::Bottom => "wb-bottom",
+    }
+}
 
 pub(super) struct LayoutMenuData {
     id: u64,
@@ -41,16 +46,12 @@ impl LayoutMenuData {
     }
     fn choice(&self, index: usize) -> DocumentOverrides {
         match index {
-            0..6 => DocumentOverrides {
+            0..2 => DocumentOverrides {
                 layout: LAYOUTS[index].1,
                 ..self.options
             },
-            6 => DocumentOverrides {
-                identify_independent_notes: !self.options.identify_independent_notes,
-                ..self.options
-            },
             _ => DocumentOverrides {
-                physical_pages: !self.options.physical_pages,
+                identify_independent_notes: !self.options.identify_independent_notes,
                 ..self.options
             },
         }
@@ -126,10 +127,10 @@ impl Presenter {
             .position(|focus| focus.is_focused(window))
             .unwrap_or(menu.selected_layout());
         let next = match key.as_str() {
-            "up" | "shift-tab" => Some((current + 7) % 8),
-            "down" | "tab" => Some((current + 1) % 8),
+            "up" | "shift-tab" => Some((current + ROW_COUNT - 1) % ROW_COUNT),
+            "down" | "tab" => Some((current + 1) % ROW_COUNT),
             "home" => Some(0),
-            "end" => Some(7),
+            "end" => Some(ROW_COUNT - 1),
             "enter" | "space" => {
                 if !self.data.busy && !event.is_held {
                     actions::dispatch(
@@ -165,11 +166,7 @@ impl Presenter {
             .min(f32::from(window.viewport_size().width) - 24.)
             .max(200.);
         let available = (f32::from(self.layout_anchor.get().top()) - 20.).max(120.);
-        let detected = LAYOUTS
-            .iter()
-            .find(|(_, layout)| *layout == Some(menu.detected))
-            .unwrap()
-            .0;
+        let detected = layout_label(menu.detected);
         let mut body = div()
             .id("layout-menu-body")
             .debug_selector(|| "layout-menu-body".into())
@@ -181,7 +178,7 @@ impl Presenter {
             .gap(px(2.))
             .child(self.layout_group_heading("ln-layout-group", p));
         for (index, focus) in self.layout_row_focus.iter().enumerate() {
-            if index == 6 {
+            if index == LAYOUTS.len() {
                 body = body
                     .child(div().my(px(6.)).h(px(1.)).bg(rgb(p.border)).flex_shrink_0())
                     .child(self.layout_group_heading("ln-page-group", p));
@@ -192,20 +189,15 @@ impl Presenter {
                     menu.options.layout.is_none(),
                     Some(l.format("ln-detected", &[("layout", l.text(detected).into())])),
                 ),
-                1..6 => (
+                1 => (
                     l.text(LAYOUTS[index].0),
                     menu.selected_layout() == index,
                     None,
                 ),
-                6 => (
+                _ => (
                     l.text("wb-independent"),
                     menu.options.identify_independent_notes,
                     Some(l.text("ln-independent-help").into()),
-                ),
-                _ => (
-                    l.text("wb-physical"),
-                    menu.options.physical_pages,
-                    Some(l.text("ln-physical-help").into()),
                 ),
             };
             let accessible_label = helper
@@ -226,7 +218,7 @@ impl Presenter {
                 .track_focus(&focus.clone().tab_stop(!self.data.busy))
                 .anchor_scroll(Some(self.layout_row_anchors[index].clone()))
                 .aria_selected(checked)
-                .role(if index < 6 {
+                .role(if index < LAYOUTS.len() {
                     Role::MenuItemRadio
                 } else {
                     Role::MenuItemCheckBox

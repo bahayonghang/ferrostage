@@ -30,7 +30,15 @@ fn compiled_beamer_notes_project_only_slide_pixels_and_preserve_overlays() {
         .recv_timeout(Duration::from_secs(20))
         .unwrap()
         .unwrap();
-    let doc = LoadedDocument::load(&metadata, &extract_structure(&bytes).unwrap()).unwrap();
+    let doc = LoadedDocument::build(
+        &metadata,
+        &extract_structure(&bytes).unwrap(),
+        DocumentOverrides {
+            layout: None,
+            ..Default::default()
+        },
+    )
+    .unwrap();
     assert_eq!(doc.layout, NotesLayout::Right);
     assert_eq!(doc.page_count, 5);
     assert_eq!(

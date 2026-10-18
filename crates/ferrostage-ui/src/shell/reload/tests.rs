@@ -66,7 +66,13 @@ fn real_pdfium_two_window_commit_obsolete_ack_rollback_and_latest_state(
         .recv()
         .unwrap()
         .unwrap();
-    let session = DocumentSession::build(metadata, structure.clone()).unwrap();
+    let mut session = DocumentSession::build(metadata, structure.clone()).unwrap();
+    session.document = session
+        .reconfigure(ferrostage_document::DocumentOverrides {
+            layout: None,
+            ..Default::default()
+        })
+        .unwrap();
     let target = PixelSize {
         width: 64,
         height: 36,
@@ -103,6 +109,8 @@ fn real_pdfium_two_window_commit_obsolete_ack_rollback_and_latest_state(
             )
             .unwrap();
         shell.workbench.document = Some(session);
+        shell.workbench.page_number_mode = crate::workbench::PageNumberMode::Pdf;
+        shell.open_browser();
         shell.workbench.audience_target = Some(target);
         shell.workbench.presenter_target = Some(target);
         shell.workbench.frames = vec![
@@ -179,6 +187,26 @@ fn real_pdfium_two_window_commit_obsolete_ack_rollback_and_latest_state(
     });
     shell.read_with(cx, |shell, cx| {
         assert!(!shell.reload.failed_worker);
+        assert_eq!(
+            shell.workbench.page_number_mode,
+            crate::workbench::PageNumberMode::Pdf
+        );
+        assert!(
+            shell.contextual.is_none(),
+            "reload retires old browser interaction"
+        );
+        assert_eq!(
+            shell
+                .workbench
+                .document
+                .as_ref()
+                .unwrap()
+                .document
+                .overrides
+                .layout,
+            None,
+            "reload preserves explicit Auto"
+        );
         assert_eq!(shell.state.stage(), SessionStage::Presenting);
         assert_eq!(shell.state.elapsed_at(Instant::now()), elapsed);
         let snapshot = shell.snapshot.read(cx);

@@ -132,7 +132,24 @@ fn layout_candidates_overrides_counterexamples_and_reload_scope() {
         (180., 320., NotesLayout::None),
     ] {
         let (m, s) = input(&[Some("A"), Some("notes:A")], w, h);
-        let d = LoadedDocument::load(&m, &s).unwrap();
+        let fresh = LoadedDocument::load(&m, &s).unwrap();
+        assert_eq!(fresh.layout, NotesLayout::None);
+        assert_eq!(
+            slide_crop(fresh.layout),
+            ferrostage_core::NormalizedRect::FULL
+        );
+        assert_eq!(fresh.slide_map.steps(), [PhysicalPage(0)]);
+        assert_eq!(fresh.notes_pages_for(PhysicalPage(0)), [PhysicalPage(1)]);
+        let d = LoadedDocument::build(
+            &m,
+            &s,
+            DocumentOverrides {
+                layout: None,
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        assert_eq!(d.reload(&m, &s).unwrap().layout, layout);
         assert_eq!(d.layout, layout);
         if layout != NotesLayout::None {
             assert!(d.warnings.contains(&DocumentWarning::AmbiguousLayout));
@@ -166,7 +183,15 @@ fn layout_candidates_overrides_counterexamples_and_reload_scope() {
     let (mut m, mut s) = input(&[None, None], 640., 180.);
     m.pages[1].width_points = 320.;
     s.pages[1].geometry.bounds[2] = 320.;
-    let d = LoadedDocument::load(&m, &s).unwrap();
+    let d = LoadedDocument::build(
+        &m,
+        &s,
+        DocumentOverrides {
+            layout: None,
+            ..Default::default()
+        },
+    )
+    .unwrap();
     assert_eq!(d.layout, NotesLayout::None);
     assert!(d.warnings.contains(&DocumentWarning::MixedGeometry));
 }
@@ -248,7 +273,15 @@ fn raw_geometry_mismatch_or_nonfinite_is_rejected_and_mixed_rotation_is_not_crop
     let (mut m, mut s) = input(&[None, None], 640., 180.);
     m.pages[1].rotation_degrees = 180;
     s.pages[1].geometry.rotation_degrees = 180;
-    let d = LoadedDocument::load(&m, &s).unwrap();
+    let d = LoadedDocument::build(
+        &m,
+        &s,
+        DocumentOverrides {
+            layout: None,
+            ..Default::default()
+        },
+    )
+    .unwrap();
     assert_eq!(d.layout, NotesLayout::None);
     assert!(d.warnings.contains(&DocumentWarning::MixedGeometry));
     m.pages[1].page = PhysicalPage(7);

@@ -47,6 +47,136 @@ impl ferrostage_pdf::raster::RasterBackend for CountingRaster {
 }
 
 #[test]
+fn numbering_uses_content_steps_and_original_positions_without_parity_or_label_math() {
+    use ferrostage_core::SlideMap;
+    let map = SlideMap::new(
+        10,
+        vec![
+            vec![PhysicalPage(1), PhysicalPage(4)],
+            vec![PhysicalPage(8)],
+        ],
+    )
+    .unwrap();
+    let content = PageNumberMode::Content.entries(&map, 10);
+    assert_eq!(
+        content.iter().map(|entry| entry.page.0).collect::<Vec<_>>(),
+        [1, 4, 8]
+    );
+    assert_eq!(
+        content
+            .iter()
+            .map(|entry| entry.content_number)
+            .collect::<Vec<_>>(),
+        [Some(1), Some(2), Some(3)]
+    );
+    let pdf = PageNumberMode::Pdf.entries(&map, 10);
+    assert_eq!(
+        pdf.iter().map(|entry| entry.page.0).collect::<Vec<_>>(),
+        (0..10).collect::<Vec<_>>()
+    );
+    assert_eq!(
+        pdf.iter()
+            .filter_map(|entry| entry.content_number)
+            .collect::<Vec<_>>(),
+        [1, 2, 3]
+    );
+    assert!(
+        pdf[0].content_number.is_none(),
+        "orphan notes are never selectable"
+    );
+    assert_eq!(
+        pdf[4].content_number,
+        Some(2),
+        "overlay steps are individual content numbers"
+    );
+    let paired = SlideMap::new(
+        190,
+        (0..95).map(|index| vec![PhysicalPage(index * 2)]).collect(),
+    )
+    .unwrap();
+    let entries = PageNumberMode::Content.entries(&paired, 190);
+    assert_eq!(entries.len(), 95);
+    assert_eq!(entries[1].page, PhysicalPage(2));
+    let plain = SlideMap::identity(7).unwrap();
+    assert_eq!(
+        PageNumberMode::Content.entries(&plain, 7),
+        PageNumberMode::Pdf.entries(&plain, 7)
+    );
+}
+
+#[test]
+fn pdf_numbering_schedules_only_content_in_the_visible_physical_slots() {
+    let mut metadata = hundred_pages();
+    for (index, page) in metadata.pages.iter_mut().enumerate() {
+        page.label = Some(
+            if [0, 2, 3, 7].contains(&index) {
+                "notes:A"
+            } else {
+                "A"
+            }
+            .into(),
+        );
+    }
+    let structure = DocumentStructure {
+        pages: metadata
+            .pages
+            .iter()
+            .map(|page| ferrostage_pdf::structure::PageStructure {
+                page: page.page,
+                geometry: ferrostage_pdf::structure::PageGeometry {
+                    bounds: [0., 0., 640., 360.],
+                    rotation_degrees: 0,
+                },
+                media: vec![],
+            })
+            .collect(),
+        diagnostics: vec![],
+    };
+    let mut workbench = Workbench {
+        document: Some(DocumentSession::build(metadata, structure).unwrap()),
+        grid: true,
+        page_number_mode: PageNumberMode::Pdf,
+        ..Default::default()
+    };
+    let document = &workbench.document.as_ref().unwrap().document;
+    let mut state = PresentationState::idle();
+    state
+        .apply_at(
+            C::LoadMappedDocument(document.descriptor(DocumentGeneration(1)).unwrap()),
+            Instant::now(),
+        )
+        .unwrap();
+    let settings = ferrostage_settings::PresenterSettings {
+        grid_visible_pages: 6,
+        ..Default::default()
+    };
+    for start in [0, 2, 7, 96] {
+        workbench.grid_start = start;
+        let requests = workbench.requests(&state, &settings).unwrap();
+        let actual = requests
+            .iter()
+            .filter_map(|(surface, request)| match surface {
+                Surface::Thumbnail(index) => Some((*index, request.page.0)),
+                _ => None,
+            })
+            .collect::<Vec<_>>();
+        let expected = (start..(start + 6).min(100))
+            .filter(|index| ![0, 2, 3, 7].contains(index))
+            .map(|index| (index, index))
+            .collect::<Vec<_>>();
+        assert_eq!(actual, expected);
+    }
+    workbench.grid = false;
+    assert!(
+        !workbench
+            .requests(&state, &settings)
+            .unwrap()
+            .iter()
+            .any(|(surface, _)| matches!(surface, Surface::Thumbnail(_)))
+    );
+}
+
+#[test]
 fn thumbnail_failures_follow_exact_current_request_pixels() {
     let mut failed = request_for(DocumentGeneration(1), PhysicalPage(2), NormalizedRect::FULL);
     failed.priority = RenderPriority::Thumbnail;
@@ -283,6 +413,79 @@ fn native_perf100_grid_retention() {
     assert!(measurements[0].1 > measurements[1].1);
     assert!(measurements[2].1 > measurements[1].1);
     assert_eq!(measurements[1].1, measurements[3].1);
+    // A real irregular independent-notes deck includes an orphan first notes page,
+    // multiple notes and repeated-label overlay steps. Both modes share pixel ownership.
+    let bytes = include_bytes!("../../../../fixtures/beamer/independent.pdf").to_vec();
+    let structure = ferrostage_pdf::extract_structure(&bytes).unwrap();
+    let metadata = worker
+        .load_active(DocumentGeneration(2), bytes)
+        .unwrap()
+        .recv_timeout(Duration::from_secs(30))
+        .unwrap()
+        .unwrap();
+    let session = DocumentSession::build(metadata, structure).unwrap();
+    state
+        .apply_at(
+            C::LoadMappedDocument(session.document.descriptor(DocumentGeneration(2)).unwrap()),
+            Instant::now(),
+        )
+        .unwrap();
+    workbench.clear_frames();
+    workbench.document = Some(session);
+    settings.grid_visible_pages = 16;
+    for mode in [
+        PageNumberMode::Content,
+        PageNumberMode::Pdf,
+        PageNumberMode::Content,
+    ] {
+        workbench.page_number_mode = mode;
+        workbench.grid_start = 0;
+        workbench.grid = true;
+        workbench.schedule(&worker, &state, &settings).unwrap();
+        let deadline = Instant::now() + Duration::from_secs(30);
+        while !workbench.pending.is_empty() {
+            assert!(workbench.poll(&worker).is_empty());
+            assert!(Instant::now() < deadline);
+            std::thread::sleep(Duration::from_millis(1));
+        }
+        let document = &workbench.document.as_ref().unwrap().document;
+        let entries = mode.entries(&document.slide_map, document.page_count);
+        let expected = entries
+            .iter()
+            .enumerate()
+            .take(16)
+            .filter(|(_, entry)| entry.content_number.is_some())
+            .map(|(index, entry)| (index, entry.page))
+            .collect::<Vec<_>>();
+        let actual = workbench
+            .frames
+            .iter()
+            .filter_map(|(surface, frame)| match surface {
+                Surface::Thumbnail(index) => Some((*index, frame.request.page)),
+                _ => None,
+            })
+            .collect::<std::collections::HashSet<_>>();
+        assert_eq!(actual, expected.iter().copied().collect());
+        assert!(actual.len() <= 16);
+        assert!(
+            actual
+                .iter()
+                .all(|(_, page)| document.slide_map.logical_for(*page).is_some())
+        );
+        println!(
+            "independent deck {mode:?}: {} slots, {} content thumbnails, no note rasters",
+            entries.len(),
+            actual.len()
+        );
+    }
+    workbench.grid = false;
+    workbench.schedule(&worker, &state, &settings).unwrap();
+    assert!(
+        !workbench
+            .frames
+            .iter()
+            .any(|(surface, _)| matches!(surface, Surface::Thumbnail(_)))
+    );
 }
 fn frame(state: &PresentationState) -> ReadyFrame {
     let mut request = request_for(state.generation(), state.current_page(), state.slide_crop());

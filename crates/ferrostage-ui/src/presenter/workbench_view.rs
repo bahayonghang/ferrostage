@@ -19,6 +19,7 @@ pub(super) struct WorkbenchData {
     pub progress: String,
     progress_compact: String,
     timer: String,
+    timer_label: &'static str,
     clock: Option<String>,
     warning: u8,
     paused: bool,
@@ -137,6 +138,13 @@ impl WorkbenchData {
                 seconds / 60,
                 seconds % 60
             ),
+            timer_label: if timer.mode == ferrostage_settings::TimerMode::CountUp {
+                "wb-elapsed"
+            } else if elapsed > target {
+                "wb-overtime"
+            } else {
+                "wb-remaining"
+            },
             clock: shell
                 .settings
                 .settings
@@ -372,6 +380,25 @@ impl Presenter {
             })
             .into_any_element()
     }
+    #[cfg(all(test, feature = "test-support"))]
+    pub(crate) fn timing_probe(&self) -> (&str, &'static str, bool) {
+        let data = &self.data.workbench;
+        (&data.timer, data.timer_label, data.paused)
+    }
+    pub(super) fn clock_readout(&self, p: Palette) -> Option<gpui::AnyElement> {
+        self.data.workbench.clock.as_ref().map(|clock| {
+            div()
+                .id("presenter-clock")
+                .debug_selector(|| "presenter-clock".into())
+                .aria_label(self.locale.format("wb-clock", &[("time", clock.clone())]))
+                .flex_shrink_0()
+                .font(gpui::font(theme::MONO))
+                .text_size(px(self.data.typography.size(14.)))
+                .text_color(rgb(p.muted))
+                .child(clock.clone())
+                .into_any_element()
+        })
+    }
     pub(super) fn timer_panel(&self, p: Palette) -> gpui::AnyElement {
         let data = &self.data.workbench;
         div()
@@ -380,17 +407,6 @@ impl Presenter {
             .flex()
             .items_center()
             .gap(px(12.))
-            .child(
-                div()
-                    .font(gpui::font(theme::MONO))
-                    .text_size(px(self.data.typography.size(24.)))
-                    .text_color(rgb(match data.warning {
-                        2 => p.error,
-                        1 => p.warning,
-                        _ => p.ink,
-                    }))
-                    .child(data.timer.clone()),
-            )
             .when(data.warning > 0, |view| {
                 view.child(self.locale.text(if data.warning == 2 {
                     "wb-timer-red"
@@ -398,15 +414,28 @@ impl Presenter {
                     "wb-timer-yellow"
                 }))
             })
-            .when_some(data.clock.clone(), |v, clock| {
-                v.child(
-                    div()
-                        .font(gpui::font(theme::MONO))
-                        .text_size(px(self.data.typography.size(14.)))
-                        .text_color(rgb(p.muted))
-                        .child(clock),
-                )
-            })
+            .child(
+                div()
+                    .text_size(px(self.ui_text_size(12.)))
+                    .text_color(rgb(p.muted))
+                    .child(self.locale.text(data.timer_label)),
+            )
+            .child(
+                div()
+                    .id("presenter-timer-digits")
+                    .debug_selector(|| "presenter-timer-digits".into())
+                    .min_w(px(self.ui_text_size(28.) * 4.2))
+                    .flex_shrink_0()
+                    .font(gpui::font(theme::MONO))
+                    .font_weight(gpui::FontWeight::MEDIUM)
+                    .text_size(px(self.data.typography.size(28.)))
+                    .text_color(rgb(match data.warning {
+                        2 => p.error,
+                        1 => p.warning,
+                        _ => p.ink,
+                    }))
+                    .child(data.timer.clone()),
+            )
             .when(self.data.stage == SessionStage::Presenting, |v| {
                 v.child(
                     self.button(
@@ -598,7 +627,6 @@ impl Presenter {
                 .rounded(px(theme::PANEL_RADIUS))
                 .bg(rgb(p.soft));
             for (id, label, tool) in [
-                ("navigate", "wb-navigate", Tool::Navigate),
                 ("laser", "wb-laser", Tool::Laser),
                 ("pen", "wb-pen", Tool::Pen),
                 ("highlighter", "wb-highlighter", Tool::Highlighter),

@@ -1,51 +1,49 @@
 use super::*;
-use crate::{page_browser::PageBrowser, workbench::Surface};
+use crate::{
+    page_browser::PageBrowser,
+    workbench::{BrowserEntry, PageNumberMode, Surface},
+};
 
 pub(super) struct BrowserData {
     pub browser: PageBrowser,
     pub captions: Vec<String>,
+    pub entries: Vec<BrowserEntry>,
+    pub mode: PageNumberMode,
     pub target_context: String,
     pub failed_thumbnails: Vec<usize>,
 }
 impl BrowserData {
     pub fn from_shell(shell: &Shell) -> Option<Self> {
         let browser = shell.browser()?.clone();
-        let map = shell.state.slide_map()?;
-        let captions = map
-            .steps()
+        let mode = shell.workbench.page_number_mode;
+        let entries = shell.browser_entries();
+        let captions = entries
             .iter()
-            .map(|page| {
-                let logical = map.logical_for(*page).map_or(0, |logical| logical.0);
-                let group = &map.groups()[logical];
-                let mut caption = shell.locale.format(
-                    "pb-caption",
+            .map(|entry| {
+                shell.locale.format(
+                    if entry.content_number.is_none() {
+                        "pb-caption-notes"
+                    } else if mode == PageNumberMode::Content {
+                        "pb-caption-content"
+                    } else {
+                        "pb-caption-pdf"
+                    },
                     &[
-                        ("page", (page.0 + 1).to_string()),
-                        ("slide", (logical + 1).to_string()),
+                        ("page", (entry.page.0 + 1).to_string()),
+                        ("content", entry.content_number.unwrap_or(0).to_string()),
                     ],
-                );
-                if group.len() > 1 {
-                    caption.push_str(&shell.locale.format(
-                        "wb-step-compact",
-                        &[
-                            (
-                                "step",
-                                (group.iter().position(|p| p == page).unwrap_or(0) + 1).to_string(),
-                            ),
-                            ("steps", group.len().to_string()),
-                        ],
-                    ));
-                }
-                caption
+                )
             })
             .collect::<Vec<_>>();
         let target_context = browser
             .target
-            .and_then(|target| map.steps().iter().position(|page| *page == target))
+            .and_then(|target| entries.iter().position(|entry| entry.page == target))
             .map(|index| captions[index].clone())
             .unwrap_or_default();
         Some(Self {
             browser,
+            entries,
+            mode,
             captions,
             target_context,
             failed_thumbnails: shell.workbench.failed_thumbnails(),
@@ -125,7 +123,7 @@ impl Presenter {
         let control_height = theme::CONTROL + (theme::FOCUS_WIDTH + theme::FOCUS_GAP) * 2.;
         let header_height = control_height.max(self.ui_text_size(32.) * 1.5);
         let mut chrome_height =
-            header_height + control_height * 3. + self.ui_text_size(20.) + 6. * 8. + 34.;
+            header_height + control_height * 4. + self.ui_text_size(20.) + 6. * 8. + 34.;
         if !wb.writable {
             chrome_height += self.ui_text_size(12.) * 1.5 + 8.;
         }
@@ -196,11 +194,13 @@ impl Presenter {
             .flex()
             .flex_col()
             .gap(px(8.));
-        let end = (wb.grid_start + capacity).min(wb.steps.len());
+        let end = (wb.grid_start + capacity).min(data.entries.len());
         for first in (wb.grid_start..end).step_by(columns) {
             let mut row = div().flex().gap(px(8.));
             for index in first..(first + columns).min(end) {
-                let page = wb.steps[index];
+                let entry = data.entries[index];
+                let page = entry.page;
+                let selectable = entry.content_number.is_some();
                 let current = page == wb.overlay.current_page;
                 let target = data.browser.target == Some(page);
                 let caption = &data.captions[index];
@@ -213,7 +213,7 @@ impl Presenter {
                     .activation_target(
                         format!("thumbnail-{index}"),
                         label,
-                        enabled,
+                        enabled && selectable,
                         Intent::BrowserJump {
                             id: data.browser.id,
                             page,
@@ -224,7 +224,7 @@ impl Presenter {
                     .track_focus(
                         &self.browser_tile_focus[index - wb.grid_start]
                             .clone()
-                            .tab_stop(enabled),
+                            .tab_stop(enabled && selectable),
                     )
                     .anchor_scroll(Some(
                         self.browser_tile_anchors[index - wb.grid_start].clone(),
@@ -249,7 +249,17 @@ impl Presenter {
                                     .debug_selector(|| format!("thumbnail-image-{index}"))
                                     .h(px(image_height))
                                     .w_full()
-                                    .child(if data.failed_thumbnails.contains(&index) {
+                                    .child(if !selectable {
+                                        div()
+                                            .size_full()
+                                            .flex()
+                                            .items_center()
+                                            .justify_center()
+                                            .text_size(px(self.ui_text_size(12.)))
+                                            .text_color(rgb(p.muted))
+                                            .child(l.text("pb-notes-page"))
+                                            .into_any_element()
+                                    } else if data.failed_thumbnails.contains(&index) {
                                         div()
                                             .id(SharedString::from(format!(
                                                 "thumbnail-error-{index}"
@@ -320,11 +330,13 @@ impl Presenter {
                 cx.stop_propagation();
             })
             .child(grid)
-            .when(wb.steps.is_empty(), |view| view.child(l.text("pb-empty")));
+            .when(data.entries.is_empty(), |view| {
+                view.child(l.text("pb-empty"))
+            });
         let helper = data
             .browser
             .error
-            .map(|key| l.format(key, &[("pages", self.data.pages.to_string())]))
+            .map(|key| l.format(key, &[("pages", data.entries.len().to_string())]))
             .unwrap_or_else(|| data.target_context.clone());
         div()
             .id("page-browser")
@@ -379,19 +391,52 @@ impl Presenter {
                     .items_center()
                     .flex_shrink_0()
                     .gap(px(8.))
-                    .child(
-                        div()
-                            .text_size(px(self.ui_text_size(14.)))
-                            .child(l.text("pb-number")),
-                    )
+                    .child(l.text("pb-number-mode"))
+                    .children(
+                        [
+                            (PageNumberMode::Content, "content", "pb-mode-content"),
+                            (PageNumberMode::Pdf, "pdf", "pb-mode-pdf"),
+                        ]
+                        .into_iter()
+                        .map(|(mode, id, label)| {
+                            self.button(
+                                format!("page-mode-{id}"),
+                                l.text(label).into(),
+                                enabled,
+                                data.mode == mode,
+                                Intent::BrowserMode {
+                                    id: data.browser.id,
+                                    mode,
+                                },
+                                p,
+                            )
+                            .aria_selected(data.mode == mode)
+                        }),
+                    ),
+            )
+            .child(
+                div()
+                    .flex()
+                    .items_center()
+                    .flex_shrink_0()
+                    .gap(px(8.))
+                    .child(div().text_size(px(self.ui_text_size(14.))).child(l.text(
+                        if data.mode == PageNumberMode::Content {
+                            "pb-content-number"
+                        } else {
+                            "pb-number"
+                        },
+                    )))
                     .child(self.number_field(p, cx))
-                    .child(format!("/ {}", self.data.pages))
+                    .child(format!("/ {}", data.entries.len()))
                     .child(self.button(
                         "commit-jump".into(),
                         l.text("pb-go").into(),
                         enabled && data.browser.target.is_some(),
                         true,
-                        Intent::Commit,
+                        Intent::BrowserSubmit {
+                            id: data.browser.id,
+                        },
                         p,
                     )),
             )
@@ -468,7 +513,11 @@ impl Presenter {
                             .flex_1()
                             .text_size(px(self.ui_text_size(12.)))
                             .child(l.format(
-                                "pb-range",
+                                if data.mode == PageNumberMode::Content {
+                                    "pb-range"
+                                } else {
+                                    "pb-range-pdf"
+                                },
                                 &[
                                     (
                                         "first",
@@ -479,14 +528,14 @@ impl Presenter {
                                         },
                                     ),
                                     ("last", end.to_string()),
-                                    ("total", wb.steps.len().to_string()),
+                                    ("total", data.entries.len().to_string()),
                                 ],
                             )),
                     )
                     .child(self.button(
                         "grid-next".into(),
                         l.text("wb-later").into(),
-                        enabled && end < wb.steps.len(),
+                        enabled && end < data.entries.len(),
                         false,
                         Intent::GridMove(capacity as isize),
                         p,

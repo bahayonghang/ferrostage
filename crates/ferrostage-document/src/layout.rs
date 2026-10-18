@@ -23,7 +23,7 @@ pub struct DocumentOverrides {
 impl Default for DocumentOverrides {
     fn default() -> Self {
         Self {
-            layout: None,
+            layout: Some(NotesLayout::None),
             identify_independent_notes: true,
             physical_pages: false,
         }

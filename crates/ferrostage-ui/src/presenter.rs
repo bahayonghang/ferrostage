@@ -35,6 +35,7 @@ pub(crate) struct PresenterData {
     can_open: bool,
     dirty: bool,
     save_error: Option<String>,
+    #[cfg(all(test, feature = "test-support"))]
     pages: usize,
     recent: Vec<String>,
     workbench: workbench_view::WorkbenchData,
@@ -51,6 +52,8 @@ impl PresenterData {
                 &shell.ui_fonts,
             ),
             staging: shell.presenter_staging(),
+            #[cfg(all(test, feature = "test-support"))]
+            pages: shell.state.page_count(),
             stage: shell.state.stage(),
             filename: shell
                 .path
@@ -80,7 +83,6 @@ impl PresenterData {
             can_open: shell.import_allowed() && !shell.busy(),
             dirty: shell.settings.dirty,
             save_error: shell.settings.save_error.as_ref().map(ToString::to_string),
-            pages: shell.state.page_count(),
             workbench: workbench_view::WorkbenchData::from_shell(shell),
             preferences: settings_view::SettingsData::from_shell(shell),
             recent: shell
@@ -109,12 +111,13 @@ pub(crate) struct Presenter {
     contextual_anchor: std::rc::Rc<std::cell::Cell<gpui::Bounds<gpui::Pixels>>>,
     layout_anchor: std::rc::Rc<std::cell::Cell<gpui::Bounds<gpui::Pixels>>>,
     layout_trigger_focus: FocusHandle,
-    layout_row_focus: [FocusHandle; 8],
+    layout_row_focus: [FocusHandle; layout_navigation::ROW_COUNT],
     layout_scroll: gpui::ScrollHandle,
-    layout_row_anchors: [gpui::ScrollAnchor; 8],
+    layout_row_anchors: [gpui::ScrollAnchor; layout_navigation::ROW_COUNT],
     had_layout_menu: bool,
     had_browser: Option<u64>,
     browser_scroll: gpui::ScrollHandle,
+    had_browser_tile: Option<usize>,
     browser_tile_focus: [FocusHandle; 16],
     browser_tile_anchors: [gpui::ScrollAnchor; 16],
     progress_focus: FocusHandle,
@@ -268,13 +271,6 @@ impl Presenter {
             })
             .detach();
         }
-        for (index, handle) in browser_tile_focus.iter().enumerate() {
-            cx.on_focus(handle, window, move |this, window, cx| {
-                this.browser_tile_anchors[index].scroll_to(window, cx);
-                cx.notify();
-            })
-            .detach();
-        }
         for (index, handle) in home_focus.iter().enumerate() {
             cx.on_focus(handle, window, move |this, window, cx| {
                 this.home_anchors[index].scroll_to(window, cx);
@@ -309,6 +305,7 @@ impl Presenter {
             had_layout_menu: false,
             had_browser: None,
             browser_scroll,
+            had_browser_tile: None,
             browser_tile_focus,
             browser_tile_anchors,
             progress_focus,
@@ -364,6 +361,7 @@ impl Presenter {
                 | Intent::BeginSettingEdit(_)
                 | Intent::ToggleFontPicker
                 | Intent::GridDensity { .. }
+                | Intent::BrowserMode { .. }
         );
         let category_control = matches!(&intent, Intent::SettingsCategory(_));
         let kind = match &intent {
@@ -599,6 +597,7 @@ impl Presenter {
             .gap(px(12.))
             .min_w_0()
             .flex_1()
+            .when_some(self.clock_readout(p), |view, clock| view.child(clock))
             .child(
                 div()
                     .id("document-title")
@@ -765,6 +764,28 @@ impl Render for Presenter {
             crate::workbench::Surface::Notes(_) => 3,
             _ => 3,
         });
+        let browser_id = self.data.browser.as_ref().map(|data| data.browser.id);
+        if browser_id != self.had_browser {
+            // Thumbnail indexes acquire a new page meaning across browser identities.
+            // Retire their rollback images before syncing any replacement frames.
+            let retained_frames = frames
+                .iter()
+                .filter(|(surface, _)| !matches!(surface, crate::workbench::Surface::Thumbnail(_)))
+                .cloned()
+                .collect::<Vec<_>>();
+            let retained_surfaces = active
+                .iter()
+                .copied()
+                .filter(|surface| !matches!(surface, crate::workbench::Surface::Thumbnail(_)))
+                .collect::<Vec<_>>();
+            self.textures.borrow_mut().sync(
+                &retained_frames,
+                &retained_surfaces,
+                self.data.workbench.budget,
+                window,
+                cx,
+            );
+        }
         self.textures
             .borrow_mut()
             .sync(&frames, &active, self.data.workbench.budget, window, cx);
@@ -797,7 +818,6 @@ impl Render for Presenter {
             window.set_window_title(&format!("{filename} — {stage_label} — FerroStage"));
         }
         let layout_open = self.data.layout_menu.is_some();
-        let browser_id = self.data.browser.as_ref().map(|data| data.browser.id);
         let surface_open = modal.is_some() || self.data.browser.is_some() || layout_open;
         if surface_open && !self.had_modal {
             self.return_focus = if layout_open {
@@ -833,6 +853,17 @@ impl Render for Presenter {
         }
         self.had_layout_menu = layout_open;
         self.had_browser = browser_id;
+        let focused_tile = browser_id.and_then(|_| {
+            self.browser_tile_focus
+                .iter()
+                .position(|focus| focus.is_focused(window))
+        });
+        if focused_tile != self.had_browser_tile {
+            self.had_browser_tile = focused_tile;
+            if let Some(index) = focused_tile {
+                self.browser_tile_anchors[index].scroll_to(window, cx);
+            }
+        }
         // Keep the return handle alive until the deferred tree check owns it.
         // A handle alone does not mean its former button is still rendered.
         let return_focus = if !surface_open && self.had_modal {

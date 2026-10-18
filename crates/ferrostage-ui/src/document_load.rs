@@ -131,13 +131,28 @@ mod native_tests {
         )
         .unwrap();
         let deadline = Instant::now() + Duration::from_secs(20);
-        let session = loop {
+        let mut session = loop {
             if let Some(result) = load.poll(&worker) {
                 break result.unwrap();
             }
             assert!(Instant::now() < deadline);
             std::thread::sleep(Duration::from_millis(5));
         };
+        assert_eq!(
+            session.document.layout,
+            ferrostage_document::NotesLayout::None
+        );
+        assert_eq!(
+            ferrostage_document::slide_crop(session.document.layout),
+            ferrostage_core::NormalizedRect::FULL
+        );
+        // Cropped notes are explicit opt-in; the actual initial load stays unsplit.
+        session.document = session
+            .reconfigure(ferrostage_document::DocumentOverrides {
+                layout: None,
+                ..Default::default()
+            })
+            .unwrap();
         let mut state = PresentationState::idle();
         state
             .apply_at(

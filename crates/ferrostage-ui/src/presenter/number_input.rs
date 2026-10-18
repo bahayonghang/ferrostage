@@ -47,7 +47,13 @@ impl Presenter {
                 }
             }
             "escape" => actions::dispatch(&self.shell, Intent::CloseContextual, cx),
-            "enter" => actions::dispatch(&self.shell, Intent::Commit, cx),
+            "enter" => actions::dispatch(
+                &self.shell,
+                Intent::BrowserSubmit {
+                    id: self.data.browser.as_ref().unwrap().browser.id,
+                },
+                cx,
+            ),
             "ctrl-a" | "cmd-a" => self.update_number(
                 |edit| {
                     edit.anchor = 0;
@@ -140,7 +146,13 @@ impl Presenter {
             .id("page-number-input")
             .debug_selector(|| "page-number-input".into())
             .role(Role::TextInput)
-            .aria_label(self.locale.text("pb-number"))
+            .aria_label(self.locale.text(
+                if data.mode == crate::workbench::PageNumberMode::Content {
+                    "pb-content-number"
+                } else {
+                    "pb-number"
+                },
+            ))
             .aria_value(edit.text.clone())
             .track_focus(&self.number_focus)
             .tab_index(0)
@@ -322,7 +334,7 @@ impl EntityInputHandler for Presenter {
         _: &mut Window,
         _: &mut Context<Self>,
     ) {
-        // A PDF physical number accepts committed ASCII digits, never IME composition.
+        // A page number accepts committed ASCII digits, never IME composition.
     }
     fn bounds_for_range(
         &mut self,

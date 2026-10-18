@@ -8,6 +8,51 @@ use ferrostage_pdf::{DocumentMetadata, DocumentStructure, PixelSize};
 use ferrostage_render::{RenderHandle, RenderPriority, RenderRequest, RequestId};
 use std::collections::HashMap;
 
+/// Numbering is local browsing state, independent of document overlay grouping.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub enum PageNumberMode {
+    #[default]
+    Content,
+    Pdf,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct BrowserEntry {
+    pub page: PhysicalPage,
+    /// One-based position in the ordered navigable content steps; None means notes.
+    pub content_number: Option<usize>,
+}
+impl PageNumberMode {
+    pub fn entries(self, map: &ferrostage_core::SlideMap, page_count: usize) -> Vec<BrowserEntry> {
+        let steps = map.steps();
+        match self {
+            Self::Content => steps
+                .iter()
+                .enumerate()
+                .map(|(index, page)| BrowserEntry {
+                    page: *page,
+                    content_number: Some(index + 1),
+                })
+                .collect(),
+            Self::Pdf => {
+                let numbers: HashMap<_, _> = steps
+                    .iter()
+                    .enumerate()
+                    .map(|(index, page)| (*page, index + 1))
+                    .collect();
+                (0..page_count)
+                    .map(|index| {
+                        let page = PhysicalPage(index);
+                        BrowserEntry {
+                            page,
+                            content_number: numbers.get(&page).copied(),
+                        }
+                    })
+                    .collect()
+            }
+        }
+    }
+}
+
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub enum Tool {
     #[default]
@@ -63,6 +108,7 @@ pub struct Workbench {
     pub tool: Tool,
     pub grid: bool,
     pub grid_start: usize,
+    pub page_number_mode: PageNumberMode,
     pub audience_target: Option<PixelSize>,
     pub presenter_target: Option<PixelSize>,
     pub surface_targets: HashMap<Surface, PixelSize>,
@@ -258,13 +304,18 @@ impl Workbench {
             ));
         }
         if self.grid {
-            self.grid_start = self.grid_start.min(steps.len().saturating_sub(1));
-            for (index, p) in steps
+            let entries = self
+                .page_number_mode
+                .entries(&document.slide_map, document.page_count);
+            self.grid_start = self.grid_start.min(entries.len().saturating_sub(1));
+            for (index, entry) in entries
                 .iter()
                 .enumerate()
                 .skip(self.grid_start)
-                .take(settings.grid_visible_pages as usize)
+                .take(settings.grid_visible_pages.min(16) as usize)
+                .filter(|(_, entry)| entry.content_number.is_some())
             {
+                let p = entry.page;
                 wanted.push((
                     Surface::Thumbnail(index),
                     RenderRequest::thumbnail(generation, &session.metadata.pages[p.0], crop, 0)
