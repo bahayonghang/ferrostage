@@ -1,0 +1,93 @@
+{
+  "base_head": "7c25e46d1868f5520b8c2225c2ab89acfe9cfbed",
+  "branch": "codex/workbench-settings-design",
+  "recorded_utc": "2026-10-18T10:20:56.4505648Z",
+  "files": [
+    {
+      "path": "assets/locales/en-US/app.toml",
+      "sha256": "a4a1bd8a1266050bfe47f41ba62a565aa63ee4f3b332096d7952cc9c95f87894"
+    },
+    {
+      "path": "assets/locales/zh-CN/app.toml",
+      "sha256": "3b2fc6c122cb90c3cca8597b45cab3bd289a704b17e749149272564f3ed065ad"
+    },
+    {
+      "path": "crates/ferrostage-settings/src/lib.rs",
+      "sha256": "04876fad4cdc3866af6c9636235056f0b523ce6214bdf2c794db7504904fce9b"
+    },
+    {
+      "path": "crates/ferrostage-settings/src/merge.rs",
+      "sha256": "85905ab162c7bd4270bd6723798e22c1af985f2b64d651214bed0a5acdcc483d"
+    },
+    {
+      "path": "crates/ferrostage-settings/src/parse/sections.rs",
+      "sha256": "ab0c3c55ae7105ce3b154820e2bfc093bbce80d5997e4749f6b7d98c033eaa04"
+    },
+    {
+      "path": "crates/ferrostage-settings/src/schema.rs",
+      "sha256": "35166e9b4e3a20e511caa8b92fdec36ed753155259c294eaa6ad2c65c2442d46"
+    },
+    {
+      "path": "crates/ferrostage-settings/src/tests/parse.rs",
+      "sha256": "b30547936005718fdbc2ff6a45945651af2ab9027fa92aa7dd94a3bf99e62695"
+    },
+    {
+      "path": "crates/ferrostage-settings/src/tests/store.rs",
+      "sha256": "e36a348302862502a8c86572d2d6a408e315c0a5073814bc5c1d0838a2b5dbbd"
+    },
+    {
+      "path": "crates/ferrostage-ui/src/actions.rs",
+      "sha256": "a64bcea624eb34e720861f9f0be017c9cb4ebd428828e64df020329a28cedf34"
+    },
+    {
+      "path": "crates/ferrostage-ui/src/display_settings.rs",
+      "sha256": "e3d894dbb6387ae5cf75403822bacb2f5471b7993dd99e8f6b7463877a64240a"
+    },
+    {
+      "path": "crates/ferrostage-ui/src/presenter.rs",
+      "sha256": "3056f227f8ca602e53daf1b014cee2d6511348a33ec702f74d504cb7218c5cad"
+    },
+    {
+      "path": "crates/ferrostage-ui/src/presenter/home_view.rs",
+      "sha256": "fb06e33aa730d44d798fd972b807f3887cb4cf79abc12c7046c15639063a4638"
+    },
+    {
+      "path": "crates/ferrostage-ui/src/presenter/settings_view.rs",
+      "sha256": "c627b32c8ea96694f187f032c0daaa504dae7b36b263067bd22fef174b785486"
+    },
+    {
+      "path": "crates/ferrostage-ui/src/presenter/workbench_view.rs",
+      "sha256": "d6bb871f0ea7cb8a95f2869971c15241951ef5c718c80d894b9ff82968e3c14b"
+    },
+    {
+      "path": "crates/ferrostage-ui/src/settings_panel.rs",
+      "sha256": "a56196046fb050d89967e89307473c86012c01f77765cbe7e32ebbbe382917eb"
+    },
+    {
+      "path": "crates/ferrostage-ui/src/shell.rs",
+      "sha256": "663947876dbd2231fbe37ac9620da00a29016c192af0451f499f5a465fca38fc"
+    },
+    {
+      "path": "crates/ferrostage-ui/src/shell/preferences_tests.rs",
+      "sha256": "b4f69f166183709895280f8169a09244fe4b840699fd39fa8d903203d9f1ae9b"
+    },
+    {
+      "path": "crates/ferrostage-ui/src/shell/preferences.rs",
+      "sha256": "39c2a5aa082a30c85bba6455ea3ff1c485fbb479bd7b823cdd85a2741b8a5b4a"
+    },
+    {
+      "path": "crates/ferrostage-ui/src/theme.rs",
+      "sha256": "6edd36046be6f0a1c4ddcd737834d9a880be46c710e8499e62ab5635965ec798"
+    },
+    {
+      "path": "DESIGN.md",
+      "sha256": "4a20989ce147ce59a7ddec494fac70e7c008fd233f9b2043ca7f257175ba17e7"
+    }
+  ],
+  "executable": {
+    "path": "target/debug/ferrostage.exe",
+    "sha256": "8e8046914806af6bea6f42e26b8c82d3b89a26a954b6264779fd8e3f3e3e9a47",
+    "bytes": 43302912
+  },
+  "pdfium_sha256": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118"
+}

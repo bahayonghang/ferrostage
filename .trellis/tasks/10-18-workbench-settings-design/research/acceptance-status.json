@@ -1,0 +1,26 @@
+{
+  "recorded_utc": "2026-10-18T10:35:40.6632530Z",
+  "branch": "codex/workbench-settings-design",
+  "base_head": "7c25e46d1868f5520b8c2225c2ab89acfe9cfbed",
+  "implementation": "complete",
+  "independent_review": "complete",
+  "core_native_visual": "complete",
+  "native_clipboard_paste": "inconclusive",
+  "default_tests": 194,
+  "gpui_tests": 136,
+  "native_build": "pass",
+  "strict_lint": "pass",
+  "dependency_policy": "pass",
+  "source_manifest": "integration-recent-final-source-manifest.json",
+  "source_files_verified": 20,
+  "source_drift": 0,
+  "exe_sha256": "0ECB9C1CD6BAB70F0A5A9273E037EDC269A5B77EF72DDB129884B063216C7DF5",
+  "fixture_pdf_sha256": "395D8BB26AD5F8F7CA5245901ABDCB8DE1FCCD2BE5FF7E30482E54F776526CB6",
+  "native_exits": [
+    "final-accepted-dark:0",
+    "final-missing-light:0"
+  ],
+  "committed": false,
+  "archived": false,
+  "non_core_matrix_added": false
+}
