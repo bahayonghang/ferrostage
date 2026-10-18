@@ -1,0 +1,44 @@
+{
+  "package": "zbus-lockstep-macros",
+  "version": "0.5.2",
+  "source_url": "https://static.crates.io/crates/zbus-lockstep-macros/zbus-lockstep-macros-0.5.2.crate",
+  "archive_sha256": "10da05367f3a7b7553c8cdf8fa91aee6b64afebe32b51c95177957efc47ca3a0",
+  "hash_encoding": "SHA256; UTF-8 text without NUL normalized CRLF to LF; other files raw bytes; archive always raw bytes",
+  "upstream_vcs": {
+    "git": {
+      "sha1": "9bda5264dfe1dc7eaa7738f839ff977315c31b84"
+    },
+    "path_in_vcs": "zbus-lockstep-macros"
+  },
+  "modified_files": [
+    "Cargo.toml",
+    "src/lib.rs"
+  ],
+  "added_files": [
+    "FERROSTAGE-PATCH.md"
+  ],
+  "removed_files": [
+    "Cargo.lock"
+  ],
+  "omitted_upstream_files": [
+    "Cargo.lock"
+  ],
+  "original_files": {
+    ".cargo_vcs_info.json": "5169408cc4963581638d33ca91e8bbd511bb8a3e5a0069c9cda4c377be8ed789",
+    "Cargo.lock": "ea57da1700131795ff2cbed95df4364ff1a44b27b5e968e2a422fe691566346e",
+    "Cargo.toml": "50cf448f06fc345dc38fb462ad9814930ef456f48fc5a4c57a54ae0abc219c17",
+    "Cargo.toml.orig": "026a1ce1caf5186c0bb0dfa179fd4b6259ccb25c8a6c7c6a12a7298400be7b5d",
+    "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "README.md": "6fc7f58a35ad0b0257d614bfb592d80f35a9951ef151420af5e316ae2b6193bf",
+    "src/lib.rs": "a0e6435008ae2879870fe867fb434165a9980024d3cfd5d3b9b638f880663e97"
+  },
+  "maintained_files": {
+    ".cargo_vcs_info.json": "5169408cc4963581638d33ca91e8bbd511bb8a3e5a0069c9cda4c377be8ed789",
+    "Cargo.toml": "e93e5b70c48777811974eaf725210c786ccdf79a895d919f73d15072771eb5e7",
+    "Cargo.toml.orig": "026a1ce1caf5186c0bb0dfa179fd4b6259ccb25c8a6c7c6a12a7298400be7b5d",
+    "FERROSTAGE-PATCH.md": "0c8128326bf0a69f177f67d0b4e4beecff792ef036e7e58a2df12bcfbcb0a03d",
+    "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "README.md": "6fc7f58a35ad0b0257d614bfb592d80f35a9951ef151420af5e316ae2b6193bf",
+    "src/lib.rs": "fe2f99cbfd84049a70fdbf0981e4f8752275484c1ef2dbbc73c4aec2c18060f3"
+  }
+}

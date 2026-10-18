@@ -1,0 +1,700 @@
+--- upstream/Cargo.toml
++++ maintained/Cargo.toml
+@@ -50,7 +50,7 @@
+ 
+ [features]
+ async-std = [
+-    "zbus/async-io",
++    "zbus/default-rt",
+     "dep:async-fs",
+     "dep:async-io",
+     "dep:async-lock",
+@@ -260,24 +260,17 @@
+ optional = true
+ 
+ [dependencies.zbus]
+-version = "5.12.0"
+-default-features = false
+-
+-[dependencies.zbus_macros]
+-version = "5.11"
+-features = ["gvariant"]
++version = "6.0.0"
++features = ["proxy", "service", "serde_bytes"]
++default-features = false
+ 
+ [dependencies.zeroize]
+ version = "1"
+ features = ["zeroize_derive"]
+ 
+-[dependencies.zvariant]
+-version = "5.8"
+-features = [
+-    "gvariant",
+-    "serde_bytes",
+-]
+-default-features = false
++[dependencies.zgvariant]
++version = "2.0.0"
++features = ["serde_bytes"]
+ 
+ [dev-dependencies.serial_test]
+ version = "3.3"
+--- upstream/src/key.rs
++++ maintained/src/key.rs
+@@ -66,33 +66,33 @@
+     }
+ }
+ 
+-impl From<Key> for zvariant::Value<'static> {
++impl From<Key> for zbus::wire::Variant<'static> {
+     fn from(key: Key) -> Self {
+         let mut key = key;
+         let inner: Vec<u8> = std::mem::take(&mut key.key);
+-        zvariant::Array::from(inner).into()
++        zbus::wire::Array::from(inner).into()
+     }
+ }
+ 
+-impl From<Key> for zvariant::OwnedValue {
++impl From<Key> for zbus::wire::OwnedVariant {
+     fn from(key: Key) -> Self {
+-        zvariant::Value::from(key).try_into_owned().unwrap()
++        zbus::wire::Variant::from(key).try_into_owned().unwrap()
+     }
+ }
+ 
+-impl TryFrom<zvariant::Value<'_>> for Key {
+-    type Error = zvariant::Error;
++impl TryFrom<zbus::wire::Variant<'_>> for Key {
++    type Error = zbus::wire::Error;
+ 
+-    fn try_from(value: zvariant::Value<'_>) -> Result<Self, Self::Error> {
++    fn try_from(value: zbus::wire::Variant<'_>) -> Result<Self, Self::Error> {
+         Ok(Key::new(value.try_into()?))
+     }
+ }
+ 
+-impl TryFrom<zvariant::OwnedValue> for Key {
+-    type Error = zvariant::Error;
++impl TryFrom<zbus::wire::OwnedVariant> for Key {
++    type Error = zbus::wire::Error;
+ 
+-    fn try_from(value: zvariant::OwnedValue) -> Result<Self, Self::Error> {
+-        Self::try_from(zvariant::Value::from(value))
++    fn try_from(value: zbus::wire::OwnedVariant) -> Result<Self, Self::Error> {
++        Self::try_from(zbus::wire::Variant::from(value))
+     }
+ }
+ 
+--- upstream/src/mac.rs
++++ maintained/src/mac.rs
+@@ -1,7 +1,7 @@
+ use serde::{Deserialize, Serialize};
+ #[cfg(feature = "native_crypto")]
+ use subtle::ConstantTimeEq;
+-use zbus::zvariant::Type;
++use zgvariant::Type;
+ 
+ // There is no constructor to avoid performing sanity checks, e.g. length.
+ /// A message authentication code. It provides constant-time comparison when
+--- upstream/src/secret.rs
++++ maintained/src/secret.rs
+@@ -3,8 +3,8 @@
+ use serde::{Deserialize, Serialize};
+ use zeroize::{Zeroize, ZeroizeOnDrop, Zeroizing};
+ 
+-#[derive(Default, PartialEq, Eq, Copy, Clone, Debug, zvariant::Type)]
+-#[zvariant(signature = "s")]
++#[derive(Default, PartialEq, Eq, Copy, Clone, Debug, zbus::wire::Type)]
++#[zbus(signature = "s")]
+ pub enum ContentType {
+     Text,
+     #[default]
+@@ -181,7 +181,7 @@
+ 
+ #[cfg(test)]
+ mod tests {
+-    use zvariant::{Endian, serialized::Context, to_bytes};
++    use zbus::wire::{Endian, serialized::Context, to_bytes};
+ 
+     use super::*;
+ 
+@@ -196,7 +196,7 @@
+ 
+     #[test]
+     fn content_type_serialization() {
+-        let ctxt = Context::new_dbus(Endian::Little, 0);
++        let ctxt = Context::new(Endian::Little, 0);
+ 
+         // Test Text serialization
+         let encoded = to_bytes(ctxt, &ContentType::Text).unwrap();
+--- upstream/src/dbus/algorithm.rs
++++ maintained/src/dbus/algorithm.rs
+@@ -1,7 +1,7 @@
+ use serde::{Deserialize, Serialize};
+ 
+-#[derive(Debug, zvariant::Type, PartialEq, Eq, Copy, Clone)]
+-#[zvariant(signature = "s")]
++#[derive(Debug, zbus::wire::Type, PartialEq, Eq, Copy, Clone)]
++#[zbus(signature = "s")]
+ /// Algorithm used to start a new session.
+ ///
+ /// The communication between the Secret Service and the application can either
+@@ -43,13 +43,13 @@
+ 
+ #[cfg(test)]
+ mod tests {
+-    use zvariant::{Endian, serialized::Context, to_bytes};
++    use zbus::wire::{Endian, serialized::Context, to_bytes};
+ 
+     use super::*;
+ 
+     #[test]
+     fn serialization() {
+-        let ctxt = Context::new_dbus(Endian::Little, 0);
++        let ctxt = Context::new(Endian::Little, 0);
+ 
+         // Test serializing Plain
+         let encoded = to_bytes(ctxt, &Algorithm::Plain).unwrap();
+--- upstream/src/dbus/collection.rs
++++ maintained/src/dbus/collection.rs
+@@ -6,7 +6,7 @@
+ use futures_util::{Stream, StreamExt};
+ #[cfg(feature = "tokio")]
+ use tokio::sync::RwLock;
+-use zbus::zvariant::{ObjectPath, OwnedObjectPath};
++use zbus::wire::{ObjectPath, OwnedObjectPath};
+ 
+ use super::{Algorithm, Error, Item, api};
+ use crate::{AsAttributes, Key, Secret};
+--- upstream/src/dbus/error.rs
++++ maintained/src/dbus/error.rs
+@@ -48,11 +48,6 @@
+     }
+ }
+ 
+-impl From<zbus::zvariant::Error> for Error {
+-    fn from(e: zbus::zvariant::Error) -> Self {
+-        Self::ZBus(zbus::Error::Variant(e))
+-    }
+-}
+ 
+ impl From<ServiceError> for Error {
+     fn from(e: ServiceError) -> Self {
+--- upstream/src/dbus/item.rs
++++ maintained/src/dbus/item.rs
+@@ -5,7 +5,7 @@
+ use async_lock::RwLock;
+ #[cfg(feature = "tokio")]
+ use tokio::sync::RwLock;
+-use zbus::zvariant::ObjectPath;
++use zbus::wire::ObjectPath;
+ 
+ use super::{Algorithm, Error, api};
+ use crate::{AsAttributes, Key, Secret};
+--- upstream/src/dbus/service.rs
++++ maintained/src/dbus/service.rs
+@@ -2,7 +2,7 @@
+ 
+ use ashpd::WindowIdentifier;
+ use futures_util::{Stream, StreamExt};
+-use zbus::zvariant::OwnedObjectPath;
++use zbus::wire::OwnedObjectPath;
+ 
+ use super::{Algorithm, Collection, Error, ServiceError, api};
+ use crate::Key;
+@@ -72,7 +72,7 @@
+ 
+     /// Create a new instance of the Service.
+     async fn with_algorithm(algorithm: Algorithm) -> Result<Self, Error> {
+-        let cnx = zbus::connection::Builder::session()?
++        let cnx = zbus::connection::Builder::session()
+             .method_timeout(std::time::Duration::from_secs(30))
+             .build()
+             .await?;
+--- upstream/src/file/error.rs
++++ maintained/src/file/error.rs
+@@ -10,7 +10,7 @@
+     /// No Parent directory.
+     NoParentDir(String),
+     /// Bytes don't have the expected GVariant format.
+-    GVariantDeserialization(zvariant::Error),
++    GVariantDeserialization(zgvariant::Error),
+     /// Mismatch between array length and length explicitly stored in keyring
+     SaltSizeMismatch(usize, u32),
+     /// Key for some reason too weak to trust it for writing
+@@ -51,8 +51,8 @@
+     Schema(crate::SchemaError),
+ }
+ 
+-impl From<zvariant::Error> for Error {
+-    fn from(value: zvariant::Error) -> Self {
++impl From<zgvariant::Error> for Error {
++    fn from(value: zgvariant::Error) -> Self {
+         Self::GVariantDeserialization(value)
+     }
+ }
+--- upstream/src/file/unlocked_item.rs
++++ maintained/src/file/unlocked_item.rs
+@@ -11,7 +11,7 @@
+ 
+ /// An item stored in the file backend.
+ #[derive(
+-    Deserialize, Serialize, zvariant::Type, Clone, Debug, Zeroize, ZeroizeOnDrop, PartialEq,
++    Deserialize, Serialize, zgvariant::Type, Clone, Debug, Zeroize, ZeroizeOnDrop, PartialEq,
+ )]
+ pub struct UnlockedItem {
+     #[zeroize(skip)]
+@@ -174,7 +174,7 @@
+     }
+ 
+     fn encrypt_inner(&self, key: &Key, iv: &[u8]) -> Result<EncryptedItem, Error> {
+-        let decrypted = Zeroizing::new(zvariant::to_bytes(*GVARIANT_ENCODING, &self)?.to_vec());
++        let decrypted = Zeroizing::new(zgvariant::to_bytes(*GVARIANT_ENCODING, &self)?.to_vec());
+ 
+         let mut blob = crypto::encrypt(&*decrypted, key, iv)?;
+ 
+@@ -199,7 +199,7 @@
+     type Error = Error;
+ 
+     fn try_from(value: &[u8]) -> Result<Self, Error> {
+-        let mut item: UnlockedItem = zvariant::serialized::Data::new(value, *GVARIANT_ENCODING)
++        let mut item: UnlockedItem = zgvariant::serialized::Data::new(value, *GVARIANT_ENCODING)
+             .deserialize()?
+             .0;
+ 
+--- upstream/src/file/api/encrypted_item.rs
++++ maintained/src/file/api/encrypted_item.rs
+@@ -1,7 +1,7 @@
+ use std::collections::HashMap;
+ 
+ use serde::{Deserialize, Serialize};
+-use zbus::zvariant::Type;
++use zgvariant::Type;
+ 
+ use super::{Error, UnlockedItem};
+ use crate::{Key, Mac, crypto};
+--- upstream/src/file/api/mod.rs
++++ maintained/src/file/api/mod.rs
+@@ -21,7 +21,7 @@
+ use serde::{Deserialize, Serialize};
+ #[cfg(feature = "tokio")]
+ use tokio::{fs, io, io::AsyncWriteExt};
+-use zbus::zvariant::{Endian, Type, serialized::Context};
++use zgvariant::{Endian, Type, serialized::Context};
+ 
+ /// Used for newly created [`Keyring`]s
+ const DEFAULT_ITERATION_COUNT: u32 = 100000;
+@@ -64,7 +64,7 @@
+ }
+ 
+ pub(crate) static GVARIANT_ENCODING: LazyLock<Context> =
+-    LazyLock::new(|| Context::new_gvariant(Endian::Little, 0));
++    LazyLock::new(|| Context::new(Endian::Little, 0));
+ 
+ /// Logical contents of a keyring file
+ #[derive(Deserialize, Serialize, Type, Debug)]
+@@ -262,7 +262,7 @@
+ 
+         blob.push(MAJOR_VERSION);
+         blob.push(MINOR_VERSION);
+-        blob.append(&mut zvariant::to_bytes(*GVARIANT_ENCODING, &self)?.to_vec());
++        blob.append(&mut zgvariant::to_bytes(*GVARIANT_ENCODING, &self)?.to_vec());
+ 
+         Ok(blob)
+     }
+@@ -347,7 +347,7 @@
+         }
+ 
+         if let Some(data) = value.get((FILE_HEADER_LEN + 2)..) {
+-            let keyring: Self = zvariant::serialized::Data::new(data, *GVARIANT_ENCODING)
++            let keyring: Self = zgvariant::serialized::Data::new(data, *GVARIANT_ENCODING)
+                 .deserialize()?
+                 .0;
+ 
+--- upstream/src/dbus/api/collection.rs
++++ maintained/src/dbus/api/collection.rs
+@@ -3,7 +3,7 @@
+ use ashpd::WindowIdentifier;
+ use futures_util::{Stream, StreamExt};
+ use serde::Serialize;
+-use zbus::zvariant::{ObjectPath, OwnedObjectPath, Type};
++use zbus::wire::{ObjectPath, OwnedObjectPath, Type};
+ 
+ use super::{DBusSecret, DESTINATION, Item, Prompt, Properties, Unlockable};
+ use crate::{
+@@ -12,7 +12,7 @@
+ };
+ 
+ #[derive(Type)]
+-#[zvariant(signature = "o")]
++#[zbus(signature = "o")]
+ #[doc(alias = "org.freedesktop.Secret.Collection")]
+ pub struct Collection(zbus::Proxy<'static>);
+ 
+@@ -37,7 +37,7 @@
+         P::Error: Into<zbus::Error>,
+     {
+         zbus::proxy::Builder::new(connection)
+-            .path(object_path)?
++            .path(object_path)
+             .uncached_properties(&["Label", "Modified", "Items", "Locked"])
+             .build()
+             .await
+@@ -94,7 +94,7 @@
+     pub async fn items(&self) -> Result<Vec<Item>, Error> {
+         let item_paths = self
+             .inner()
+-            .get_property::<Vec<ObjectPath>>("Items")
++            .get_property::<Vec<OwnedObjectPath>>("Items")
+             .await?;
+         Item::from_paths(self.inner().connection(), item_paths).await
+     }
+--- upstream/src/dbus/api/item.rs
++++ maintained/src/dbus/api/item.rs
+@@ -2,7 +2,7 @@
+ 
+ use ashpd::WindowIdentifier;
+ use serde::Serialize;
+-use zbus::zvariant::{ObjectPath, OwnedObjectPath, Type};
++use zbus::wire::{ObjectPath, OwnedObjectPath, Type};
+ 
+ use super::{DBusSecret, DESTINATION, Prompt, Session, Unlockable};
+ use crate::{
+@@ -11,7 +11,7 @@
+ };
+ 
+ #[derive(Type, Clone)]
+-#[zvariant(signature = "o")]
++#[zbus(signature = "o")]
+ #[doc(alias = "org.freedesktop.Secret.Item")]
+ pub struct Item(zbus::Proxy<'static>);
+ 
+@@ -36,7 +36,7 @@
+         P::Error: Into<zbus::Error>,
+     {
+         zbus::proxy::Builder::new(connection)
+-            .path(object_path)?
++            .path(object_path)
+             .uncached_properties(&["Label", "Attributes", "Created", "Modified", "Locked"])
+             .build()
+             .await
+--- upstream/src/dbus/api/mod.rs
++++ maintained/src/dbus/api/mod.rs
+@@ -1,17 +1,17 @@
+ pub(crate) const DESTINATION: zbus::names::BusName<'static> = zbus::names::BusName::WellKnown(
+     zbus::names::WellKnownName::from_static_str_unchecked("org.freedesktop.secrets"),
+ );
+-pub(crate) const PATH: zbus::zvariant::ObjectPath<'static> =
+-    zbus::zvariant::ObjectPath::from_static_str_unchecked("/org/freedesktop/secrets");
++pub(crate) const PATH: zbus::wire::ObjectPath<'static> =
++    zbus::wire::ObjectPath::from_static_str_unchecked("/org/freedesktop/secrets");
+ 
+ /// A common trait implemented by objects that can be
+ /// locked or unlocked. Like [`Collection`] or [`Item`].
+-pub trait Unlockable: serde::Serialize + zbus::zvariant::Type {}
++pub trait Unlockable: serde::Serialize + zbus::wire::Type {}
+ 
+-impl Unlockable for zbus::zvariant::ObjectPath<'_> {}
+-impl Unlockable for zbus::zvariant::OwnedObjectPath {}
+-impl Unlockable for &zbus::zvariant::ObjectPath<'_> {}
+-impl Unlockable for &zbus::zvariant::OwnedObjectPath {}
++impl Unlockable for zbus::wire::ObjectPath<'_> {}
++impl Unlockable for zbus::wire::OwnedObjectPath {}
++impl Unlockable for &zbus::wire::ObjectPath<'_> {}
++impl Unlockable for &zbus::wire::OwnedObjectPath {}
+ 
+ mod collection;
+ mod item;
+--- upstream/src/dbus/api/prompt.rs
++++ maintained/src/dbus/api/prompt.rs
+@@ -3,13 +3,13 @@
+ use ashpd::WindowIdentifier;
+ use futures_util::StreamExt;
+ use serde::Serialize;
+-use zbus::zvariant::{ObjectPath, OwnedValue, Type};
++use zbus::wire::{ObjectPath, OwnedVariant, Type};
+ 
+ use super::DESTINATION;
+ use crate::dbus::{Error, ServiceError};
+ 
+ #[derive(Type)]
+-#[zvariant(signature = "o")]
++#[zbus(signature = "o")]
+ #[doc(alias = "org.freedesktop.Secret.Prompt")]
+ pub struct Prompt(zbus::Proxy<'static>);
+ 
+@@ -40,7 +40,7 @@
+         if path != ObjectPath::default() {
+             Ok(Some(
+                 zbus::proxy::Builder::new(connection)
+-                    .path(path)?
++                    .path(path)
+                     .build()
+                     .await?,
+             ))
+@@ -76,12 +76,12 @@
+     pub async fn receive_completed(
+         &self,
+         window_id: Option<WindowIdentifier>,
+-    ) -> Result<OwnedValue, Error> {
++    ) -> Result<OwnedVariant, Error> {
+         let mut stream = self.inner().receive_signal("Completed").await?;
+         let (value, _) = futures_util::try_join!(
+             async {
+                 let message = stream.next().await.unwrap();
+-                let (dismissed, result) = message.body().deserialize::<(bool, OwnedValue)>()?;
++                let (dismissed, result) = message.body().deserialize::<(bool, OwnedVariant)>()?;
+                 if dismissed {
+                     Err(Error::Dismissed)
+                 } else {
+--- upstream/src/dbus/api/properties.rs
++++ maintained/src/dbus/api/properties.rs
+@@ -4,7 +4,7 @@
+     Deserialize,
+     ser::{Serialize, SerializeMap},
+ };
+-use zbus::zvariant::{Type, Value};
++use zbus::wire::{Type, Variant};
+ 
+ use crate::AsAttributes;
+ 
+@@ -14,7 +14,7 @@
+ const COLLECTION_PROPERTY_LABEL: &str = "org.freedesktop.Secret.Collection.Label";
+ 
+ #[derive(Debug, Type)]
+-#[zvariant(signature = "a{sv}")]
++#[zbus(signature = "a{sv}")]
+ pub struct Properties {
+     label: String,
+     attributes: Option<HashMap<String, String>>,
+@@ -51,20 +51,20 @@
+     {
+         if self.attributes.is_none() {
+             let mut map = serializer.serialize_map(Some(1))?;
+-            map.serialize_entry(COLLECTION_PROPERTY_LABEL, &Value::from(&self.label))?;
++            map.serialize_entry(COLLECTION_PROPERTY_LABEL, &Variant::from(&self.label))?;
+             map.end()
+         } else {
+             let mut map = serializer.serialize_map(Some(2))?;
+-            map.serialize_entry(ITEM_PROPERTY_LABEL, &Value::from(&self.label))?;
+-            let mut dict = zbus::zvariant::Dict::new(String::SIGNATURE, String::SIGNATURE);
++            map.serialize_entry(ITEM_PROPERTY_LABEL, &Variant::from(&self.label))?;
++            let mut dict = zbus::wire::Dict::new(String::SIGNATURE, String::SIGNATURE);
+ 
+             if let Some(attributes) = &self.attributes {
+                 for (key, value) in attributes {
+-                    dict.add(key, value).expect("Key/Value of correct types");
++                    dict.add(key, value).expect("Key/Variant of correct types");
+                 }
+             }
+ 
+-            map.serialize_entry(ITEM_PROPERTY_ATTRIBUTES, &Value::from(dict))?;
++            map.serialize_entry(ITEM_PROPERTY_ATTRIBUTES, &Variant::from(dict))?;
+             map.end()
+         }
+     }
+@@ -75,13 +75,13 @@
+     where
+         D: serde::Deserializer<'de>,
+     {
+-        let map: HashMap<&str, Value<'_>> = HashMap::deserialize(deserializer)?;
++        let map: HashMap<&str, Variant<'_>> = HashMap::deserialize(deserializer)?;
+         if map.contains_key(COLLECTION_PROPERTY_LABEL) {
+             let label =
+-                zvariant::Str::try_from(map.get(COLLECTION_PROPERTY_LABEL).unwrap()).unwrap();
++                zbus::wire::Str::try_from(map.get(COLLECTION_PROPERTY_LABEL).unwrap()).unwrap();
+             Ok(Self::for_collection(&label))
+         } else {
+-            let label = zvariant::Str::try_from(map.get(ITEM_PROPERTY_LABEL).unwrap()).unwrap();
++            let label = zbus::wire::Str::try_from(map.get(ITEM_PROPERTY_LABEL).unwrap()).unwrap();
+             let attributes = HashMap::<String, String>::try_from(
+                 map.get(ITEM_PROPERTY_ATTRIBUTES)
+                     .unwrap()
+@@ -96,7 +96,7 @@
+ 
+ #[cfg(test)]
+ mod tests {
+-    use zbus::zvariant::{Endian, Type, serialized::Context, to_bytes};
++    use zbus::wire::{Endian, Type, serialized::Context, to_bytes};
+ 
+     use super::*;
+ 
+@@ -107,13 +107,13 @@
+         assert!(properties.attributes().is_none());
+         assert_eq!(properties.label(), "some_label");
+ 
+-        let ctxt = Context::new_dbus(Endian::Little, 0);
++        let ctxt = Context::new(Endian::Little, 0);
+         let encoded = to_bytes(ctxt, &properties).unwrap();
+-        let decoded: HashMap<&str, Value<'_>> = encoded.deserialize().unwrap().0;
++        let decoded: HashMap<&str, Variant<'_>> = encoded.deserialize().unwrap().0;
+ 
+         assert_eq!(
+             decoded[COLLECTION_PROPERTY_LABEL],
+-            Value::from("some_label")
++            Variant::from("some_label")
+         );
+         assert!(!decoded.contains_key(ITEM_PROPERTY_ATTRIBUTES));
+         assert!(!decoded.contains_key(ITEM_PROPERTY_LABEL));
+@@ -128,16 +128,16 @@
+         assert!(properties.attributes().is_some());
+         assert_eq!(properties.label(), "some_label");
+ 
+-        let ctxt = Context::new_dbus(Endian::Little, 0);
++        let ctxt = Context::new(Endian::Little, 0);
+         let encoded = to_bytes(ctxt, &properties).unwrap();
+-        let decoded: HashMap<&str, Value<'_>> = encoded.deserialize().unwrap().0;
++        let decoded: HashMap<&str, Variant<'_>> = encoded.deserialize().unwrap().0;
+ 
+-        assert_eq!(decoded[ITEM_PROPERTY_LABEL], Value::from("some_label"));
++        assert_eq!(decoded[ITEM_PROPERTY_LABEL], Variant::from("some_label"));
+         assert!(!decoded.contains_key(COLLECTION_PROPERTY_LABEL));
+         assert!(decoded.contains_key(ITEM_PROPERTY_ATTRIBUTES));
+         assert_eq!(
+             decoded[ITEM_PROPERTY_ATTRIBUTES],
+-            zvariant::Dict::from(attributes).into()
++            zbus::wire::Dict::from(attributes).into()
+         );
+     }
+ 
+@@ -150,9 +150,9 @@
+     fn deserialize_collection_properties() {
+         // Create serialized data that represents collection properties
+         let mut map = HashMap::new();
+-        map.insert(COLLECTION_PROPERTY_LABEL, Value::from("test_collection"));
++        map.insert(COLLECTION_PROPERTY_LABEL, Variant::from("test_collection"));
+ 
+-        let ctxt = Context::new_dbus(Endian::Little, 0);
++        let ctxt = Context::new(Endian::Little, 0);
+         let encoded = to_bytes(ctxt, &map).unwrap();
+ 
+         // Deserialize through the Properties Deserialize trait
+@@ -164,7 +164,7 @@
+ 
+     #[test]
+     fn deserialize_item_properties() {
+-        use zvariant::Dict;
++        use zbus::wire::Dict;
+ 
+         // Create serialized data that represents item properties
+         let mut attrs_dict = Dict::new(String::SIGNATURE, String::SIGNATURE);
+@@ -172,10 +172,10 @@
+         attrs_dict.add("key2", "value2").unwrap();
+ 
+         let mut map = HashMap::new();
+-        map.insert(ITEM_PROPERTY_LABEL, Value::from("test_item"));
+-        map.insert(ITEM_PROPERTY_ATTRIBUTES, Value::from(attrs_dict));
++        map.insert(ITEM_PROPERTY_LABEL, Variant::from("test_item"));
++        map.insert(ITEM_PROPERTY_ATTRIBUTES, Variant::from(attrs_dict));
+ 
+-        let ctxt = Context::new_dbus(Endian::Little, 0);
++        let ctxt = Context::new(Endian::Little, 0);
+         let encoded = to_bytes(ctxt, &map).unwrap();
+ 
+         // Deserialize through the Properties Deserialize trait
+--- upstream/src/dbus/api/secret.rs
++++ maintained/src/dbus/api/secret.rs
+@@ -1,14 +1,14 @@
+ use std::sync::Arc;
+ 
+ use serde::{Deserialize, Serialize, ser::SerializeTuple};
+-use zbus::zvariant::{OwnedObjectPath, Type};
++use zbus::wire::{OwnedObjectPath, Type};
+ use zeroize::{Zeroize, ZeroizeOnDrop};
+ 
+ use super::Session;
+ use crate::{Key, Secret, crypto, dbus::Error, secret::ContentType};
+ 
+ #[derive(Debug, Serialize, Deserialize, Type)]
+-#[zvariant(signature = "(oayays)")]
++#[zbus(signature = "(oayays)")]
+ /// Same as [`DBusSecret`] without tying the session path to a [`Session`] type.
+ pub struct DBusSecretInner(
+     pub OwnedObjectPath,
+@@ -18,7 +18,7 @@
+ );
+ 
+ #[derive(Debug, Type, Zeroize, ZeroizeOnDrop)]
+-#[zvariant(signature = "(oayays)")]
++#[zbus(signature = "(oayays)")]
+ pub struct DBusSecret {
+     #[zeroize(skip)]
+     pub(crate) session: Arc<Session>,
+--- upstream/src/dbus/api/service.rs
++++ maintained/src/dbus/api/service.rs
+@@ -2,7 +2,7 @@
+ 
+ use ashpd::WindowIdentifier;
+ use futures_util::{Stream, StreamExt};
+-use zbus::zvariant::{ObjectPath, OwnedObjectPath, OwnedValue, Type, Value};
++use zbus::wire::{ObjectPath, OwnedObjectPath, OwnedVariant, Type, Variant};
+ 
+ use super::{
+     Collection, DBusSecret, DESTINATION, Item, PATH, Prompt, Properties, Session, Unlockable,
+@@ -13,7 +13,7 @@
+ };
+ 
+ #[derive(Type)]
+-#[zvariant(signature = "o")]
++#[zbus(signature = "o")]
+ #[doc(alias = "org.freedesktop.secrets")]
+ pub struct Service(zbus::Proxy<'static>);
+ 
+@@ -80,7 +80,7 @@
+     pub async fn collections(&self) -> Result<Vec<Collection>, Error> {
+         let collections_paths = self
+             .inner()
+-            .get_property::<Vec<ObjectPath>>("Collections")
++            .get_property::<Vec<OwnedObjectPath>>("Collections")
+             .await?;
+         Collection::from_paths(self.inner().connection(), collections_paths).await
+     }
+@@ -90,8 +90,8 @@
+         &self,
+         client_public_key: Option<Key>,
+     ) -> Result<(Option<Key>, Session), Error> {
+-        let (algorithm, key): (_, Value<'_>) = match client_public_key {
+-            None => (Algorithm::Plain, zvariant::Str::default().into()),
++        let (algorithm, key): (_, Variant<'_>) = match client_public_key {
++            None => (Algorithm::Plain, zbus::wire::Str::default().into()),
+             Some(key) => (Algorithm::Encrypted, key.into()),
+         };
+         let (service_key, session_path) = self
+@@ -100,7 +100,7 @@
+             .await
+             .map_err::<ServiceError, _>(From::from)?
+             .body()
+-            .deserialize::<(OwnedValue, OwnedObjectPath)>()?;
++            .deserialize::<(OwnedVariant, OwnedObjectPath)>()?;
+         let session = Session::new(self.inner().connection(), session_path).await?;
+ 
+         let key = match algorithm {
+--- upstream/src/dbus/api/session.rs
++++ maintained/src/dbus/api/session.rs
+@@ -1,13 +1,13 @@
+ use std::fmt;
+ 
+ use serde::Serialize;
+-use zbus::zvariant::{ObjectPath, Type};
++use zbus::wire::{ObjectPath, Type};
+ 
+ use super::DESTINATION;
+ use crate::dbus::{Error, ServiceError};
+ 
+ #[derive(Type)]
+-#[zvariant(signature = "o")]
++#[zbus(signature = "o")]
+ #[doc(alias = "org.freedesktop.Secret.Session")]
+ pub struct Session(zbus::Proxy<'static>);
+ 
+@@ -32,7 +32,7 @@
+         P::Error: Into<zbus::Error>,
+     {
+         zbus::proxy::Builder::new(connection)
+-            .path(object_path)?
++            .path(object_path)
+             .build()
+             .await
+             .map_err(From::from)

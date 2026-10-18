@@ -30,6 +30,36 @@ jobs:
       - name: cargo-deny
         run: cargo deny --locked check
 
+  linux-gpui:
+    name: Linux GPUI D-Bus compatibility
+    runs-on: ubuntu-latest
+    env:
+      CARGO_TARGET_DIR: target/linux-compat
+      CARGO_TERM_COLOR: never
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.99.0
+      - name: Install native GPUI build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libasound2-dev libfontconfig-dev libglib2.0-dev libssl-dev libva-dev libwayland-dev libx11-xcb-dev libxkbcommon-x11-dev
+      - name: Compile actual Linux portal, accessibility, keyring and notification consumers
+        run: cargo check -p ferrostage-ui --features gpui,pdfium,media,gpui_platform/x11 --locked
+      - name: Preserve AT-SPI wire signatures and events
+        run: |
+          cargo test --manifest-path vendor/atspi-common/Cargo.toml --lib --locked \
+            --config 'patch.crates-io.zbus-lockstep.path="vendor/zbus-lockstep"' \
+            --config 'patch.crates-io.zbus-lockstep-macros.path="vendor/zbus-lockstep-macros"' | tee atspi-wire.log
+          grep -Fq 'test result: ok. 1141 passed;' atspi-wire.log
+      - name: Preserve portal flags and optional dictionary wire representation
+        run: cargo test --manifest-path vendor/ashpd/tests/wire-compat/Cargo.toml --locked
+      - name: Preserve existing keyring GVariant bytes
+        run: |
+          cargo test --manifest-path vendor/oo7/Cargo.toml \
+            --config 'patch.crates-io.ashpd.path="vendor/ashpd"' \
+            --locked --lib file::unlocked_item::tests::serialization -- --exact | tee keyring-golden.log
+          grep -Fq 'test result: ok. 1 passed;' keyring-golden.log
+
   pdfium-native:
     name: PDFium 7881 Windows fixtures
     runs-on: windows-latest

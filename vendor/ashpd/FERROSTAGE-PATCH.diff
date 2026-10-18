@@ -1,0 +1,3831 @@
+--- upstream/Cargo.toml
++++ maintained/Cargo.toml
+@@ -11,7 +11,7 @@
+ 
+ [package]
+ edition = "2024"
+-rust-version = "1.87"
++rust-version = "1.89"
+ name = "ashpd"
+ version = "0.13.13"
+ authors = ["Bilal Elmoussaoui <bil.elmoussaoui@gmail.com>"]
+@@ -79,7 +79,7 @@
+ [features]
+ account = []
+ async-io = [
+-    "zbus/async-io",
++    "zbus/default-rt",
+     "futures-util/io",
+ ]
+ backend = ["dep:async-trait"]
+@@ -280,7 +280,8 @@
+ optional = true
+ 
+ [dependencies.zbus]
+-version = "5.13"
++version = "6.0.0"
++features = ["proxy", "service", "serde_bytes"]
+ default-features = false
+ 
+ [dev-dependencies.gst]
+--- upstream/src/app_id.rs
++++ maintained/src/app_id.rs
+@@ -1,7 +1,7 @@
+ use std::{ops::Deref, str::FromStr};
+ 
+ use serde::{Deserialize, Deserializer, Serialize};
+-use zbus::zvariant::{self, Basic, Type};
++use zbus::wire::{self, Basic, Type};
+ 
+ /// The application ID.
+ ///
+@@ -14,7 +14,7 @@
+     const SIGNATURE_STR: &'static str = String::SIGNATURE_STR;
+ }
+ 
+-impl zvariant::NoneValue for AppID {
++impl wire::NoneValue for AppID {
+     type NoneType = String;
+ 
+     fn null_value() -> String {
+@@ -93,8 +93,13 @@
+ /// this type allows the backend implementation to fallback to the inner string
+ /// without causing an error and manually handle those applications.
+ #[derive(Debug, Eq, Hash, PartialEq, Type)]
+-#[zvariant(signature = "s")]
++#[zbus(signature = "s")]
+ pub struct MaybeAppID(Result<AppID, String>);
++
++impl Basic for MaybeAppID {
++    const SIGNATURE_CHAR: char = String::SIGNATURE_CHAR;
++    const SIGNATURE_STR: &'static str = String::SIGNATURE_STR;
++}
+ 
+ impl MaybeAppID {
+     /// Returns the inner value. If the ID is valid, then `Ok` contains the
+@@ -104,7 +109,7 @@
+     }
+ }
+ 
+-impl zvariant::NoneValue for MaybeAppID {
++impl wire::NoneValue for MaybeAppID {
+     type NoneType = String;
+ 
+     fn null_value() -> String {
+--- upstream/src/error.rs
++++ maintained/src/error.rs
+@@ -137,11 +137,6 @@
+     }
+ }
+ 
+-impl From<zbus::zvariant::Error> for Error {
+-    fn from(e: zbus::zvariant::Error) -> Self {
+-        Self::Zbus(zbus::Error::Variant(e))
+-    }
+-}
+ 
+ impl From<std::io::Error> for Error {
+     fn from(e: std::io::Error) -> Self {
+--- upstream/src/file_path.rs
++++ maintained/src/file_path.rs
+@@ -5,11 +5,11 @@
+ };
+ 
+ use serde::{Deserialize, Serialize};
+-use zbus::zvariant::Type;
++use zbus::wire::Type;
+ 
+ /// A file name represented as a nul-terminated byte array.
+ #[derive(Type, Debug, Default, PartialEq)]
+-#[zvariant(signature = "ay")]
++#[zbus(signature = "ay")]
+ pub struct FilePath(CString);
+ 
+ impl AsRef<Path> for FilePath {
+@@ -51,7 +51,7 @@
+ 
+ #[cfg(test)]
+ mod tests {
+-    use zbus::zvariant::{
++    use zbus::wire::{
+         Endian,
+         serialized::{Context, Data},
+         to_bytes,
+@@ -69,7 +69,7 @@
+ 
+         assert_eq!(c_string.as_bytes_with_nul(), &bytes);
+ 
+-        let ctxt = Context::new_dbus(Endian::Little, 0);
++        let ctxt = Context::new(Endian::Little, 0);
+         let file_path = FilePath(c_string);
+ 
+         let file_path_2 = FilePath::new("abc").unwrap();
+--- upstream/src/lib.rs
++++ maintained/src/lib.rs
+@@ -55,13 +55,20 @@
+ #[cfg_attr(docsrs, doc(cfg(feature = "flatpak")))]
+ pub mod flatpak;
+ mod helpers;
++#[cfg(any(
++    feature = "input_capture",
++    feature = "remote_desktop",
++    feature = "screencast",
++    feature = "flatpak"
++))]
++mod flags;
+ use std::sync::OnceLock;
+ 
+ #[cfg(feature = "backend")]
+ #[cfg_attr(docsrs, doc(cfg(feature = "backend")))]
+ pub use async_trait;
+ pub use enumflags2;
+-pub use zbus::{self, zvariant};
++pub use zbus::{self, wire};
+ 
+ /// Check whether the application is running inside a sandbox.
+ ///
+--- upstream/src/proxy.rs
++++ maintained/src/proxy.rs
+@@ -5,7 +5,7 @@
+ use serde::{Deserialize, Serialize};
+ #[cfg(feature = "tracing")]
+ use zbus::Message;
+-use zbus::zvariant::{ObjectPath, OwnedValue, Type};
++use zbus::wire::{ObjectPath, Type};
+ 
+ use crate::{
+     Error, PortalError,
+@@ -78,9 +78,9 @@
+         P::Error: Into<zbus::Error>,
+     {
+         let inner: zbus::Proxy = zbus::proxy::Builder::new(&connection)
+-            .interface(interface)?
+-            .path(path)?
+-            .destination(destination)?
++            .interface(interface)
++            .path(path)
++            .destination(destination)
+             .build()
+             .await?;
+ 
+@@ -278,8 +278,7 @@
+ 
+     pub async fn property<T>(&self, property_name: &'static str) -> Result<T, Error>
+     where
+-        T: TryFrom<OwnedValue>,
+-        zbus::Error: From<<T as TryFrom<OwnedValue>>::Error>,
++        T: serde::de::DeserializeOwned + Type,
+     {
+         self.inner
+             .get_property::<T>(property_name)
+@@ -287,14 +286,47 @@
+             .map_err(From::from)
+     }
+ 
++    #[cfg(any(
++        feature = "dynamic_launcher",
++        feature = "flatpak",
++        feature = "input_capture",
++        feature = "remote_desktop",
++        feature = "screencast",
++        feature = "screenshot"
++    ))]
++    pub(crate) async fn property_flags<F>(
++        &self,
++        property_name: &'static str,
++    ) -> Result<enumflags2::BitFlags<F>, Error>
++    where
++        F: enumflags2::BitFlag<Numeric = u32> + std::fmt::Debug,
++    {
++        enumflags2::BitFlags::from_bits(self.property::<u32>(property_name).await?)
++            .map_err(|e| Error::Zbus(zbus::Error::Failure(e.to_string())))
++    }
++
++    #[cfg(any(feature = "flatpak", feature = "screencast", feature = "screenshot"))]
++    pub(crate) async fn property_flags_versioned<F>(
++        &self,
++        property_name: &'static str,
++        req_version: u32,
++    ) -> Result<enumflags2::BitFlags<F>, Error>
++    where
++        F: enumflags2::BitFlag<Numeric = u32> + std::fmt::Debug,
++    {
++        if self.version() < req_version {
++            return Err(Error::RequiresVersion(req_version, self.version()));
++        }
++        self.property_flags(property_name).await
++    }
++
+     pub(crate) async fn property_versioned<T>(
+         &self,
+         property_name: &'static str,
+         req_version: u32,
+     ) -> Result<T, Error>
+     where
+-        T: TryFrom<OwnedValue>,
+-        zbus::Error: From<<T as TryFrom<OwnedValue>>::Error>,
++        T: serde::de::DeserializeOwned + Type,
+     {
+         let version = self.version();
+         if version >= req_version {
+--- upstream/src/registry.rs
++++ maintained/src/registry.rs
+@@ -1,10 +1,10 @@
+ use serde::Serialize;
+-use zbus::zvariant;
++use zbus::wire;
+ 
+ use crate::{AppID, Error, proxy::Proxy};
+ 
+-#[derive(Debug, Serialize, zvariant::Type, Default)]
+-#[zvariant(signature = "dict")]
++#[derive(Debug, Serialize, wire::Type, Default)]
++#[zbus(signature = "dict")]
+ struct RegisterOptions {}
+ 
+ struct RegistryProxy(Proxy<'static>);
+--- upstream/src/uri.rs
++++ maintained/src/uri.rs
+@@ -1,7 +1,7 @@
+ use std::str::FromStr;
+ 
+ use serde::{Deserialize, Serialize};
+-use zbus::zvariant::Type;
++use zbus::wire::Type;
+ 
+ /// A simple URI wrapper that stores the URI as a string with minimal
+ /// validation.
+@@ -12,7 +12,7 @@
+ /// URIs must contain `:` to be valid (e.g., `file:`, `http:`, `https:`).
+ /// URIs can't start with `:` to be valid.
+ #[derive(Debug, Clone, PartialEq, Eq, Hash, Type)]
+-#[zvariant(signature = "s")]
++#[zbus(signature = "s")]
+ pub struct Uri(String);
+ 
+ impl Uri {
+--- upstream/src/activation_token/mod.rs
++++ maintained/src/activation_token/mod.rs
+@@ -1,7 +1,7 @@
+ use std::ops::Deref;
+ 
+ use serde::{Deserialize, Serialize};
+-use zbus::zvariant::Type;
++use zbus::wire::Type;
+ 
+ #[cfg(any(feature = "gtk4_wayland", feature = "gtk4_x11"))]
+ mod gtk4;
+--- upstream/src/backend/access.rs
++++ maintained/src/backend/access.rs
+@@ -10,14 +10,14 @@
+         request::{Request, RequestImpl},
+     },
+     desktop::{HandleToken, Icon, request::Response},
+-    zvariant::{
++    wire::{
+         self, Optional, OwnedObjectPath,
+-        as_value::{self, optional},
++        as_variant::{self, optional},
+     },
+ };
+ 
+-#[derive(Deserialize, zvariant::Type)]
+-#[zvariant(signature = "dict")]
++#[derive(Deserialize, wire::Type)]
++#[zbus(signature = "dict")]
+ pub struct AccessOptions {
+     #[serde(default, with = "optional")]
+     modal: Option<bool>,
+@@ -27,11 +27,11 @@
+     grant_label: Option<String>,
+     #[serde(default, with = "optional")]
+     icon: Option<String>,
+-    #[serde(default, with = "as_value")]
++    #[serde(default, with = "as_variant")]
+     choices: Vec<Choice>,
+ }
+ 
+-#[derive(Clone, Deserialize, zvariant::Type, Debug)]
++#[derive(Clone, Deserialize, wire::Type, Debug)]
+ pub struct Choice(String, String, Vec<(String, String)>, String);
+ 
+ impl Choice {
+@@ -81,10 +81,10 @@
+     }
+ }
+ 
+-#[derive(Serialize, Debug, zvariant::Type, Default)]
+-#[zvariant(signature = "dict")]
++#[derive(Serialize, Debug, wire::Type, Default)]
++#[zbus(signature = "dict")]
+ pub struct AccessResponse {
+-    #[serde(with = "as_value", skip_serializing_if = "Vec::is_empty")]
++    #[serde(with = "as_variant", skip_serializing_if = "Vec::is_empty")]
+     choices: Vec<(String, String)>,
+ }
+ 
+--- upstream/src/backend/account.rs
++++ maintained/src/backend/account.rs
+@@ -13,7 +13,7 @@
+         account::{UserInformation, UserInformationOptions},
+         request::Response,
+     },
+-    zvariant::{Optional, OwnedObjectPath},
++    wire::{Optional, OwnedObjectPath},
+ };
+ 
+ #[async_trait]
+--- upstream/src/backend/app_chooser.rs
++++ maintained/src/backend/app_chooser.rs
+@@ -7,14 +7,14 @@
+     ActivationToken, MaybeAppID, PortalError, Uri, WindowIdentifierType,
+     backend::request::{Request, RequestImpl},
+     desktop::{HandleToken, Response},
+-    zvariant::{
++    wire::{
+         Optional, OwnedObjectPath, Type,
+-        as_value::{self, optional},
++        as_variant::{self, optional},
+     },
+ };
+ 
+ #[derive(Debug, Deserialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct ChooserOptions {
+     #[serde(default, with = "optional")]
+     last_choice: Option<MaybeAppID>,
+@@ -57,9 +57,9 @@
+ }
+ 
+ #[derive(Debug, Serialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct Choice {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     choice: MaybeAppID,
+     #[serde(with = "optional", skip_serializing_if = "Option::is_none")]
+     activation_token: Option<ActivationToken>,
+--- upstream/src/backend/background.rs
++++ maintained/src/backend/background.rs
+@@ -10,7 +10,7 @@
+     backend::request::{Request, RequestImpl},
+     desktop::{HandleToken, Response},
+     zbus::object_server::SignalEmitter,
+-    zvariant::{OwnedObjectPath, Type, as_value},
++    wire::{OwnedObjectPath, Type, as_variant},
+ };
+ 
+ #[derive(Serialize_repr, Deserialize_repr, Copy, Clone, PartialEq, Eq, Debug, Type)]
+@@ -22,9 +22,9 @@
+ }
+ 
+ #[derive(Debug, Serialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct Background {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     result: Activity,
+ }
+ 
+@@ -160,14 +160,14 @@
+         app_id: MaybeAppID,
+         enable: bool,
+         commandline: Vec<String>,
+-        flags: BitFlags<AutoStartFlags>,
++        flags: u32,
+     ) -> Result<bool, PortalError> {
+         #[cfg(feature = "tracing")]
+         tracing::debug!("Background::EnableAutostart");
+ 
+         let response = self
+             .imp
+-            .enable_autostart(app_id, enable, commandline, flags)
++            .enable_autostart(app_id, enable, commandline, BitFlags::from_bits(flags).map_err(|e| PortalError::InvalidArgument(e.to_string()))?)
+             .await;
+ 
+         #[cfg(feature = "tracing")]
+--- upstream/src/backend/builder.rs
++++ maintained/src/backend/builder.rs
+@@ -1,6 +1,5 @@
+ use std::sync::{Arc, Mutex};
+ 
+-use enumflags2::BitFlags;
+ use futures_util::{StreamExt, task::SpawnExt};
+ use zbus::names::{OwnedWellKnownName, WellKnownName};
+ 
+@@ -8,7 +7,7 @@
+ 
+ pub struct Builder {
+     name: OwnedWellKnownName,
+-    flags: BitFlags<zbus::fdo::RequestNameFlags>,
++    flags: zbus::fdo::RequestNameFlags,
+     #[cfg(feature = "account")]
+     account_impl: Option<Arc<dyn crate::backend::account::AccountImpl>>,
+     access_impl: Option<Arc<dyn crate::backend::access::AccessImpl>>,
+@@ -51,8 +50,8 @@
+         Ok(Self {
+             name: well_known_name.into(),
+             // same flags as zbus::Connection::request_name
+-            flags: zbus::fdo::RequestNameFlags::ReplaceExisting
+-                | zbus::fdo::RequestNameFlags::DoNotQueue,
++            flags: zbus::fdo::RequestNameFlags::REPLACE_EXISTING
++                | zbus::fdo::RequestNameFlags::DO_NOT_QUEUE,
+             #[cfg(feature = "account")]
+             account_impl: None,
+             access_impl: None,
+@@ -87,7 +86,7 @@
+         })
+     }
+ 
+-    pub fn with_flags(mut self, flags: BitFlags<zbus::fdo::RequestNameFlags>) -> Self {
++    pub fn with_flags(mut self, flags: zbus::fdo::RequestNameFlags) -> Self {
+         self.flags = flags;
+         self
+     }
+--- upstream/src/backend/email.rs
++++ maintained/src/backend/email.rs
+@@ -9,7 +9,7 @@
+         request::{Request, RequestImpl},
+     },
+     desktop::{HandleToken, email::EmailOptions, request::Response},
+-    zvariant::{Optional, OwnedObjectPath},
++    wire::{Optional, OwnedObjectPath},
+ };
+ 
+ #[async_trait]
+--- upstream/src/backend/file_chooser.rs
++++ maintained/src/backend/file_chooser.rs
+@@ -13,7 +13,7 @@
+         file_chooser::{OpenFileOptions, SaveFileOptions, SaveFilesOptions, SelectedFiles},
+         request::Response,
+     },
+-    zvariant::{Optional, OwnedObjectPath},
++    wire::{Optional, OwnedObjectPath},
+ };
+ 
+ #[async_trait]
+--- upstream/src/backend/permission_store.rs
++++ maintained/src/backend/permission_store.rs
+@@ -6,7 +6,7 @@
+     MaybeAppID, PortalError,
+     documents::{DocumentID, Permission},
+     zbus::object_server::SignalEmitter,
+-    zvariant::{OwnedValue, Value},
++    wire::{OwnedVariant, Variant},
+ };
+ 
+ #[async_trait]
+@@ -16,7 +16,7 @@
+         table: &str,
+         id: DocumentID,
+         deleted: bool,
+-        data: Value<'_>,
++        data: Variant<'_>,
+         permissions: HashMap<MaybeAppID, Vec<Permission>>,
+     ) -> zbus::Result<()>;
+ }
+@@ -28,7 +28,7 @@
+         &self,
+         table: &str,
+         id: DocumentID,
+-    ) -> Result<(HashMap<MaybeAppID, Vec<Permission>>, OwnedValue), PortalError>;
++    ) -> Result<(HashMap<MaybeAppID, Vec<Permission>>, OwnedVariant), PortalError>;
+ 
+     #[doc(alias = "Set")]
+     async fn set(
+@@ -37,7 +37,7 @@
+         create: bool,
+         id: DocumentID,
+         app_permissions: HashMap<MaybeAppID, Vec<Permission>>,
+-        data: Value<'_>,
++        data: Variant<'_>,
+     ) -> Result<(), PortalError>;
+ 
+     #[doc(alias = "Delete")]
+@@ -49,7 +49,7 @@
+         table: &str,
+         create: bool,
+         id: DocumentID,
+-        data: Value<'_>,
++        data: Variant<'_>,
+     ) -> Result<(), PortalError>;
+ 
+     #[doc(alias = "List")]
+@@ -107,7 +107,7 @@
+         table: &str,
+         id: DocumentID,
+         deleted: bool,
+-        data: Value<'_>,
++        data: Variant<'_>,
+         permissions: HashMap<MaybeAppID, Vec<Permission>>,
+     ) -> zbus::Result<()> {
+         let object_server = self.cnx.object_server();
+@@ -134,7 +134,7 @@
+         table: &str,
+         id: DocumentID,
+         deleted: bool,
+-        data: Value<'_>,
++        data: Variant<'_>,
+         permissions: HashMap<MaybeAppID, Vec<Permission>>,
+     ) -> zbus::Result<()> {
+         self.document_changed(table, id, deleted, data, permissions)
+@@ -154,7 +154,7 @@
+         &self,
+         table: &str,
+         id: DocumentID,
+-    ) -> Result<(HashMap<MaybeAppID, Vec<Permission>>, OwnedValue), PortalError> {
++    ) -> Result<(HashMap<MaybeAppID, Vec<Permission>>, OwnedVariant), PortalError> {
+         #[cfg(feature = "tracing")]
+         tracing::debug!("PermissionStore::Lookup");
+ 
+@@ -171,7 +171,7 @@
+         create: bool,
+         id: DocumentID,
+         app_permissions: HashMap<MaybeAppID, Vec<Permission>>,
+-        data: Value<'_>,
++        data: Variant<'_>,
+     ) -> Result<(), PortalError> {
+         #[cfg(feature = "tracing")]
+         tracing::debug!("PermissionStore::Set");
+@@ -188,7 +188,7 @@
+         table: &str,
+         create: bool,
+         id: DocumentID,
+-        data: Value<'_>,
++        data: Variant<'_>,
+     ) -> Result<(), PortalError> {
+         #[cfg(feature = "tracing")]
+         tracing::debug!("PermissionStore::SetValue");
+@@ -283,7 +283,7 @@
+         table: &str,
+         id: DocumentID,
+         deleted: bool,
+-        data: Value<'_>,
++        data: Variant<'_>,
+         permissions: HashMap<MaybeAppID, Vec<Permission>>,
+     ) -> zbus::Result<()>;
+ }
+--- upstream/src/backend/print.rs
++++ maintained/src/backend/print.rs
+@@ -13,7 +13,7 @@
+         print::{PageSetup, PreparePrint, PreparePrintOptions, PrintOptions, Settings},
+         request::Response,
+     },
+-    zvariant::{self, Optional, OwnedObjectPath},
++    wire::{self, Optional, OwnedObjectPath},
+ };
+ 
+ #[async_trait]
+@@ -38,7 +38,7 @@
+         app_id: Option<MaybeAppID>,
+         parent_window: Option<WindowIdentifierType>,
+         title: String,
+-        fd: zvariant::OwnedFd,
++        fd: wire::OwnedFd,
+         options: PrintOptions,
+     ) -> Result<()>;
+ }
+@@ -110,7 +110,7 @@
+         app_id: Optional<MaybeAppID>,
+         window_identifier: Optional<WindowIdentifierType>,
+         title: String,
+-        fd: zvariant::OwnedFd,
++        fd: wire::OwnedFd,
+         options: PrintOptions,
+     ) -> Result<Response<()>> {
+         let imp = Arc::clone(&self.imp);
+--- upstream/src/backend/request.rs
++++ maintained/src/backend/request.rs
+@@ -6,7 +6,7 @@
+     lock::Mutex,
+     task::SpawnExt,
+ };
+-use zbus::zvariant::{ObjectPath, OwnedObjectPath};
++use zbus::wire::{ObjectPath, OwnedObjectPath};
+ 
+ use crate::{
+     PortalError,
+--- upstream/src/backend/screencast.rs
++++ maintained/src/backend/screencast.rs
+@@ -16,11 +16,11 @@
+         request::Response,
+         screencast::{CursorMode, SelectSourcesOptions, SourceType, StartCastOptions, Streams},
+     },
+-    zvariant::{Optional, OwnedObjectPath, Type},
++    wire::{Optional, OwnedObjectPath, Type},
+ };
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct SelectSourcesResponse {}
+ 
+ #[async_trait]
+--- upstream/src/backend/screenshot.rs
++++ maintained/src/backend/screenshot.rs
+@@ -16,7 +16,7 @@
+             AvailableTargets, ColorOptions, Screenshot as ScreenshotResponse, ScreenshotOptions,
+         },
+     },
+-    zvariant::{Optional, OwnedObjectPath},
++    wire::{Optional, OwnedObjectPath},
+ };
+ 
+ #[async_trait]
+--- upstream/src/backend/secret.rs
++++ maintained/src/backend/secret.rs
+@@ -1,7 +1,7 @@
+ use std::{collections::HashMap, sync::Arc};
+ 
+ use async_trait::async_trait;
+-use zbus::zvariant::{self, OwnedValue};
++use zbus::wire::{self, OwnedVariant};
+ 
+ use crate::{
+     MaybeAppID,
+@@ -20,7 +20,7 @@
+         token: HandleToken,
+         app_id: MaybeAppID,
+         fd: std::os::fd::OwnedFd,
+-    ) -> Result<HashMap<String, OwnedValue>>;
++    ) -> Result<HashMap<String, OwnedVariant>>;
+ }
+ 
+ pub(crate) struct SecretInterface {
+@@ -49,11 +49,11 @@
+     #[zbus(out_args("response", "results"))]
+     async fn retrieve_secret(
+         &self,
+-        handle: zvariant::OwnedObjectPath,
++        handle: wire::OwnedObjectPath,
+         app_id: MaybeAppID,
+-        fd: zvariant::OwnedFd,
+-        _options: HashMap<String, OwnedValue>,
+-    ) -> Result<Response<HashMap<String, OwnedValue>>> {
++        fd: wire::OwnedFd,
++        _options: HashMap<String, OwnedVariant>,
++    ) -> Result<Response<HashMap<String, OwnedVariant>>> {
+         let imp = Arc::clone(&self.imp);
+ 
+         Request::spawn(
+--- upstream/src/backend/session.rs
++++ maintained/src/backend/session.rs
+@@ -7,7 +7,7 @@
+ use serde::Serialize;
+ use zbus::{
+     object_server::SignalEmitter,
+-    zvariant::{OwnedObjectPath, Type, as_value},
++    wire::{OwnedObjectPath, Type, as_variant},
+ };
+ 
+ use crate::{PortalError, desktop::HandleToken};
+@@ -41,7 +41,10 @@
+             Arc::clone(&self.manager),
+             self.monitor.clone(),
+         );
+-        cnx.object_server().at(&self.path, interface).await
++        cnx.object_server()
++            .at(&self.path, interface)
++            .await
++            .map(|existing| existing.is_none())
+     }
+ }
+ 
+@@ -121,9 +124,9 @@
+ }
+ 
+ #[derive(Serialize, Type, Debug)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct CreateSessionResponse {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     session_id: HandleToken,
+ }
+ 
+--- upstream/src/backend/settings.rs
++++ maintained/src/backend/settings.rs
+@@ -12,13 +12,13 @@
+         },
+     },
+     zbus::object_server::SignalEmitter,
+-    zvariant::{OwnedValue, Value},
++    wire::{OwnedVariant, Variant},
+ };
+ 
+ #[async_trait]
+ pub trait SettingsSignalEmitter: Send + Sync {
+     #[doc(alias = "SettingChanged")]
+-    async fn emit_changed(&self, namespace: &str, key: &str, value: Value<'_>) -> zbus::Result<()>;
++    async fn emit_changed(&self, namespace: &str, key: &str, value: Variant<'_>) -> zbus::Result<()>;
+     async fn emit_contrast_changed(&self, contrast: Contrast) -> zbus::Result<()>;
+     async fn emit_accent_color_changed(&self, color: Color) -> zbus::Result<()>;
+     async fn emit_color_scheme_changed(&self, scheme: ColorScheme) -> zbus::Result<()>;
+@@ -33,7 +33,7 @@
+     ) -> Result<HashMap<String, Namespace>, PortalError>;
+ 
+     #[doc(alias = "Read")]
+-    async fn read(&self, namespace: &str, key: &str) -> Result<OwnedValue, PortalError>;
++    async fn read(&self, namespace: &str, key: &str) -> Result<OwnedVariant, PortalError>;
+ 
+     // Set the signal emitter, allowing to notify of changes.
+     fn set_signal_emitter(&mut self, signal_emitter: Arc<dyn SettingsSignalEmitter>);
+@@ -55,7 +55,7 @@
+         Self { imp, cnx, spawn }
+     }
+ 
+-    pub async fn changed(&self, namespace: &str, key: &str, value: Value<'_>) -> zbus::Result<()> {
++    pub async fn changed(&self, namespace: &str, key: &str, value: Variant<'_>) -> zbus::Result<()> {
+         let object_server = self.cnx.object_server();
+         let iface_ref = object_server
+             .interface::<_, Self>(crate::proxy::DESKTOP_PATH)
+@@ -67,7 +67,7 @@
+         self.changed(
+             APPEARANCE_NAMESPACE,
+             CONTRAST_KEY,
+-            OwnedValue::from(contrast).into(),
++            OwnedVariant::from(contrast).into(),
+         )
+         .await
+     }
+@@ -76,7 +76,7 @@
+         self.changed(
+             APPEARANCE_NAMESPACE,
+             ACCENT_COLOR_SCHEME_KEY,
+-            OwnedValue::try_from(color).unwrap().into(),
++            OwnedVariant::try_from(color).unwrap().into(),
+         )
+         .await
+     }
+@@ -85,7 +85,7 @@
+         self.changed(
+             APPEARANCE_NAMESPACE,
+             COLOR_SCHEME_KEY,
+-            OwnedValue::from(scheme).into(),
++            OwnedVariant::from(scheme).into(),
+         )
+         .await
+     }
+@@ -93,7 +93,7 @@
+ 
+ #[async_trait]
+ impl SettingsSignalEmitter for SettingsInterface {
+-    async fn emit_changed(&self, namespace: &str, key: &str, value: Value<'_>) -> zbus::Result<()> {
++    async fn emit_changed(&self, namespace: &str, key: &str, value: Variant<'_>) -> zbus::Result<()> {
+         self.changed(namespace, key, value).await
+     }
+ 
+@@ -133,7 +133,7 @@
+     }
+ 
+     #[zbus(out_args("value"))]
+-    async fn read(&self, namespace: &str, key: &str) -> Result<OwnedValue, PortalError> {
++    async fn read(&self, namespace: &str, key: &str) -> Result<OwnedVariant, PortalError> {
+         #[cfg(feature = "tracing")]
+         tracing::debug!("Settings::Read");
+ 
+@@ -149,6 +149,6 @@
+         signal_ctxt: &SignalEmitter<'_>,
+         namespace: &str,
+         key: &str,
+-        value: Value<'_>,
++        value: Variant<'_>,
+     ) -> zbus::Result<()>;
+ }
+--- upstream/src/backend/usb.rs
++++ maintained/src/backend/usb.rs
+@@ -10,15 +10,15 @@
+         request::{Request, RequestImpl},
+     },
+     desktop::{HandleToken, request::Response, usb::UsbDevice},
+-    zvariant::{Optional, OwnedObjectPath, Type, as_value::optional},
++    wire::{Optional, OwnedObjectPath, Type, as_variant::optional},
+ };
+ 
+ #[derive(Debug, Deserialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct AcquireDevicesOptions {}
+ 
+ #[derive(Debug, Serialize, Deserialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct AccessOptions {
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+     writable: Option<bool>,
+--- upstream/src/backend/wallpaper.rs
++++ maintained/src/backend/wallpaper.rs
+@@ -9,7 +9,7 @@
+         request::{Request, RequestImpl},
+     },
+     desktop::{HandleToken, request::ResponseType, wallpaper::WallpaperOptions},
+-    zvariant::{Optional, OwnedObjectPath},
++    wire::{Optional, OwnedObjectPath},
+ };
+ 
+ #[async_trait]
+--- upstream/src/desktop/account.rs
++++ maintained/src/desktop/account.rs
+@@ -23,9 +23,9 @@
+ //! ```
+ 
+ use serde::{Deserialize, Serialize};
+-use zbus::zvariant::{
++use zbus::wire::{
+     Optional, Type,
+-    as_value::{self, optional},
++    as_variant::{self, optional},
+ };
+ 
+ use super::HandleToken;
+@@ -33,9 +33,9 @@
+ 
+ /// Options for requesting user information.
+ #[derive(Serialize, Deserialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct UserInformationOptions {
+-    #[serde(with = "as_value", skip_deserializing)]
++    #[serde(with = "as_variant", skip_deserializing)]
+     handle_token: HandleToken,
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+     reason: Option<String>,
+@@ -58,13 +58,13 @@
+ 
+ #[derive(Debug, Serialize, Deserialize, Type)]
+ /// The response of a [`UserInformationRequest`] request.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct UserInformation {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     id: String,
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     name: String,
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     image: Uri,
+ }
+ 
+--- upstream/src/desktop/background.rs
++++ maintained/src/desktop/background.rs
+@@ -31,19 +31,19 @@
+ //! file](https://specifications.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html#introduction) will be used.
+ 
+ use serde::{Deserialize, Serialize};
+-use zbus::zvariant::{
++use zbus::wire::{
+     Optional, Type,
+-    as_value::{self, optional},
++    as_variant::{self, optional},
+ };
+ 
+ use super::{HandleToken, Request};
+ use crate::{Error, WindowIdentifier, proxy::Proxy};
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`BackgroundProxy::request_background`] request.
+ pub struct BackgroundRequestOptions {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     handle_token: HandleToken,
+     #[serde(with = "optional", skip_serializing_if = "Option::is_none")]
+     reason: Option<String>,
+@@ -56,7 +56,7 @@
+     )]
+     dbus_activatable: Option<bool>,
+     #[serde(
+-        with = "as_value",
++        with = "as_variant",
+         rename = "commandline",
+         skip_serializing_if = "Vec::is_empty"
+     )]
+@@ -100,11 +100,11 @@
+ 
+ #[derive(Deserialize, Type, Debug)]
+ /// The response of a [`BackgroundRequest`] request.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct Background {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     background: bool,
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     autostart: bool,
+ }
+ 
+@@ -129,10 +129,10 @@
+ }
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`BackgroundProxy::set_status`] request.
+ pub struct SetStatusOptions {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     message: String,
+ }
+ 
+--- upstream/src/desktop/camera.rs
++++ maintained/src/desktop/camera.rs
+@@ -36,21 +36,21 @@
+ use std::os::fd::OwnedFd;
+ 
+ use serde::Serialize;
+-use zbus::zvariant::{self, Type, as_value};
++use zbus::wire::{self, Type, as_variant};
+ 
+ use super::{HandleToken, Request};
+ use crate::{Error, proxy::Proxy};
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`Camera::request_access`] request.
+ pub struct CameraAccessOptions {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     handle_token: HandleToken,
+ }
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`Camera::open_pipe_wire_remote`] request.
+ pub struct OpenPipeWireRemoteOptions {}
+ 
+@@ -112,7 +112,7 @@
+     ) -> Result<OwnedFd, Error> {
+         let fd = self
+             .0
+-            .call::<zvariant::OwnedFd>("OpenPipeWireRemote", &options)
++            .call::<wire::OwnedFd>("OpenPipeWireRemote", &options)
+             .await?;
+         Ok(fd.into())
+     }
+--- upstream/src/desktop/clipboard.rs
++++ maintained/src/desktop/clipboard.rs
+@@ -6,7 +6,7 @@
+ 
+ use futures_util::{Stream, StreamExt};
+ use serde::{Deserialize, Serialize};
+-use zbus::zvariant::{OwnedFd, OwnedObjectPath, Type, as_value, as_value::optional};
++use zbus::wire::{OwnedFd, OwnedObjectPath, Type, as_variant, as_variant::optional};
+ 
+ use super::{Session, SessionPortal};
+ use crate::{Result, proxy::Proxy};
+@@ -15,11 +15,11 @@
+ pub trait IsClipboardSession: SessionPortal {}
+ 
+ #[derive(Debug, Type, Serialize, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`Clipboard::set_selection`] request.
+ pub struct SetSelectionOptions<'a> {
+     #[serde(borrow)]
+-    #[serde(with = "as_value", skip_serializing_if = "<[_]>::is_empty")]
++    #[serde(with = "as_variant", skip_serializing_if = "<[_]>::is_empty")]
+     mime_types: &'a [&'a str],
+ }
+ 
+@@ -32,15 +32,15 @@
+ }
+ 
+ #[derive(Debug, Type, Serialize, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`Clipboard::request`] request.
+ pub struct RequestClipboardOptions {}
+ 
+ #[derive(Debug, Type, Deserialize, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// The details of a new clipboard selection.
+ pub struct SelectionOwnerChanged {
+-    #[serde(default, with = "as_value")]
++    #[serde(default, with = "as_variant")]
+     mime_types: Vec<String>,
+     #[serde(default, with = "optional")]
+     session_is_owner: Option<bool>,
+--- upstream/src/desktop/color.rs
++++ maintained/src/desktop/color.rs
+@@ -1,16 +1,16 @@
+ use serde::{Deserialize, Serialize};
+ 
+-use crate::zvariant::{self, Type, as_value};
++use crate::wire::{self, Type, as_variant};
+ 
+ #[derive(
+-    Serialize, Deserialize, Clone, Copy, PartialEq, Type, zvariant::Value, zvariant::OwnedValue,
++    Serialize, Deserialize, Clone, Copy, PartialEq, Type, wire::Variant, wire::OwnedVariant,
+ )]
+ /// A color as a RGB tuple.
+ ///
+ /// **Note** the values are normalized in the [0.0, 1.0] range.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct Color {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     color: (f64, f64, f64),
+ }
+ 
+--- upstream/src/desktop/dynamic_launcher.rs
++++ maintained/src/desktop/dynamic_launcher.rs
+@@ -53,9 +53,9 @@
+ use enumflags2::{BitFlags, bitflags};
+ use serde::{Deserialize, Serialize};
+ use serde_repr::{Deserialize_repr, Serialize_repr};
+-use zbus::zvariant::{
+-    self, Optional, OwnedValue, Type, Value,
+-    as_value::{self, optional},
++use zbus::wire::{
++    self, Optional, OwnedVariant, Type, Variant,
++    as_variant::{self, optional},
+ };
+ 
+ use super::{HandleToken, Icon, Request};
+@@ -79,7 +79,7 @@
+ #[cfg_attr(feature = "glib", derive(glib::Enum))]
+ #[cfg_attr(feature = "glib", enum_type(name = "AshpdIconType"))]
+ #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Type)]
+-#[zvariant(signature = "s")]
++#[zbus(signature = "s")]
+ #[serde(rename_all = "lowercase")]
+ /// The icon format.
+ pub enum IconType {
+@@ -92,9 +92,9 @@
+ }
+ 
+ #[derive(Debug, Deserialize, Type)]
+-#[zvariant(signature = "(vsu)")]
++#[zbus(signature = "(vsu)")]
+ /// The icon of the launcher.
+-pub struct LauncherIcon(zvariant::OwnedValue, IconType, u32);
++pub struct LauncherIcon(wire::OwnedVariant, IconType, u32);
+ 
+ impl LauncherIcon {
+     /// The actual icon.
+@@ -114,14 +114,14 @@
+ }
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Options to pass to [`DynamicLauncherProxy::prepare_install`]
+ pub struct PrepareInstallOptions {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     handle_token: HandleToken,
+     #[serde(with = "optional", skip_serializing_if = "Option::is_none")]
+     modal: Option<bool>,
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     launcher_type: LauncherType,
+     #[serde(with = "optional", skip_serializing_if = "Option::is_none")]
+     target: Option<String>,
+@@ -165,14 +165,14 @@
+ }
+ 
+ #[derive(Deserialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// A response of [`DynamicLauncherProxy::prepare_install`]
+ pub struct PrepareInstallResponse {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     name: String,
+-    #[serde(with = "as_value")]
+-    icon: OwnedValue,
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
++    icon: OwnedVariant,
++    #[serde(with = "as_variant")]
+     token: String,
+ }
+ 
+@@ -189,7 +189,7 @@
+ 
+     /// The user selected icon or a predefined one
+     pub fn icon(&self) -> Icon {
+-        let inner = self.icon.downcast_ref::<Value>().unwrap();
++        let inner = self.icon.downcast_ref::<Variant>().unwrap();
+         Icon::try_from(inner).unwrap()
+     }
+ }
+@@ -205,7 +205,7 @@
+ }
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Options to pass to [`DynamicLauncherProxy::launch`]
+ pub struct LaunchOptions {
+     #[serde(with = "optional", skip_serializing_if = "Option::is_none")]
+@@ -226,18 +226,18 @@
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+ /// Specified options for a [`DynamicLauncherProxy::install`] request.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct InstallOptions {}
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+ /// Specified options for a [`DynamicLauncherProxy::uninstall`] request.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct UninstallOptions {}
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+ /// Specified options for a [`DynamicLauncherProxy::request_install_token`]
+ /// request.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct RequestInstallTokenOptions {}
+ 
+ #[derive(Debug)]
+@@ -304,7 +304,7 @@
+             .request(
+                 &options.handle_token,
+                 "PrepareInstall",
+-                &(identifier, name, icon.as_value(), &options),
++                &(identifier, name, icon.as_variant(), &options),
+             )
+             .await
+     }
+@@ -327,7 +327,7 @@
+         }
+ 
+         self.0
+-            .call::<String>("RequestInstallToken", &(name, icon.as_value(), options))
++            .call::<String>("RequestInstallToken", &(name, icon.as_variant(), options))
+             .await
+     }
+ 
+@@ -396,7 +396,7 @@
+     #[doc(alias = "SupportedLauncherTypes")]
+     pub async fn supported_launcher_types(&self) -> Result<BitFlags<LauncherType>, Error> {
+         self.0
+-            .property::<BitFlags<LauncherType>>("SupportedLauncherTypes")
++            .property_flags::<LauncherType>("SupportedLauncherTypes")
+             .await
+     }
+ }
+--- upstream/src/desktop/email.rs
++++ maintained/src/desktop/email.rs
+@@ -27,9 +27,9 @@
+ use std::os::fd::OwnedFd;
+ 
+ use serde::{Deserialize, Serialize};
+-use zbus::zvariant::{
++use zbus::wire::{
+     self, Optional, Type,
+-    as_value::{self, optional},
++    as_variant::{self, optional},
+ };
+ 
+ use super::{HandleToken, Request};
+@@ -37,29 +37,29 @@
+ 
+ /// Options for composing an email.
+ #[derive(Serialize, Deserialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct EmailOptions {
+-    #[serde(with = "as_value", skip_deserializing)]
++    #[serde(with = "as_variant", skip_deserializing)]
+     handle_token: HandleToken,
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+     address: Option<String>,
+-    #[serde(default, with = "as_value", skip_serializing_if = "Vec::is_empty")]
++    #[serde(default, with = "as_variant", skip_serializing_if = "Vec::is_empty")]
+     addresses: Vec<String>,
+-    #[serde(default, with = "as_value", skip_serializing_if = "Vec::is_empty")]
++    #[serde(default, with = "as_variant", skip_serializing_if = "Vec::is_empty")]
+     cc: Vec<String>,
+-    #[serde(default, with = "as_value", skip_serializing_if = "Vec::is_empty")]
++    #[serde(default, with = "as_variant", skip_serializing_if = "Vec::is_empty")]
+     bcc: Vec<String>,
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+     subject: Option<String>,
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+     body: Option<String>,
+     #[serde(
+-        with = "as_value",
++        with = "as_variant",
+         skip_serializing_if = "Vec::is_empty",
+         skip_deserializing
+     )]
+-    attachment_fds: Vec<zvariant::OwnedFd>,
+-    #[serde(default, with = "as_value", skip_serializing)]
++    attachment_fds: Vec<wire::OwnedFd>,
++    #[serde(default, with = "as_variant", skip_serializing)]
+     #[cfg_attr(not(feature = "backend"), allow(dead_code))]
+     attachments: Vec<Uri>,
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+@@ -262,7 +262,7 @@
+     ) -> Self {
+         self.options.attachment_fds = attachments
+             .into_iter()
+-            .map(|fd| zvariant::OwnedFd::from(fd.into()))
++            .map(|fd| wire::OwnedFd::from(fd.into()))
+             .collect();
+         self
+     }
+@@ -286,7 +286,7 @@
+ 
+     /// A different variant of [`Self::attach`].
+     pub fn add_attachment(&mut self, attachment: OwnedFd) {
+-        let attachment = zvariant::OwnedFd::from(attachment);
++        let attachment = wire::OwnedFd::from(attachment);
+         self.options.attachment_fds.push(attachment);
+     }
+ 
+--- upstream/src/desktop/file_chooser.rs
++++ maintained/src/desktop/file_chooser.rs
+@@ -83,9 +83,9 @@
+ 
+ use serde::{Deserialize, Serialize};
+ use serde_repr::{Deserialize_repr, Serialize_repr};
+-use zbus::zvariant::{
++use zbus::wire::{
+     Optional, Type,
+-    as_value::{self, optional},
++    as_variant::{self, optional},
+ };
+ 
+ use super::{HandleToken, Request};
+@@ -228,9 +228,9 @@
+ 
+ /// Options for opening a file.
+ #[derive(Serialize, Deserialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct OpenFileOptions {
+-    #[serde(with = "as_value", skip_deserializing)]
++    #[serde(with = "as_variant", skip_deserializing)]
+     handle_token: HandleToken,
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+     accept_label: Option<String>,
+@@ -240,11 +240,11 @@
+     multiple: Option<bool>,
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+     directory: Option<bool>,
+-    #[serde(default, with = "as_value", skip_serializing_if = "Vec::is_empty")]
++    #[serde(default, with = "as_variant", skip_serializing_if = "Vec::is_empty")]
+     filters: Vec<FileFilter>,
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+     current_filter: Option<FileFilter>,
+-    #[serde(default, with = "as_value", skip_serializing_if = "Vec::is_empty")]
++    #[serde(default, with = "as_variant", skip_serializing_if = "Vec::is_empty")]
+     choices: Vec<Choice>,
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+     current_folder: Option<FilePath>,
+@@ -358,9 +358,9 @@
+ 
+ /// Options for saving a file.
+ #[derive(Serialize, Deserialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct SaveFileOptions {
+-    #[serde(with = "as_value", skip_deserializing)]
++    #[serde(with = "as_variant", skip_deserializing)]
+     handle_token: HandleToken,
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+     accept_label: Option<String>,
+@@ -372,11 +372,11 @@
+     current_folder: Option<FilePath>,
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+     current_file: Option<FilePath>,
+-    #[serde(default, with = "as_value", skip_serializing_if = "Vec::is_empty")]
++    #[serde(default, with = "as_variant", skip_serializing_if = "Vec::is_empty")]
+     filters: Vec<FileFilter>,
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+     current_filter: Option<FileFilter>,
+-    #[serde(default, with = "as_value", skip_serializing_if = "Vec::is_empty")]
++    #[serde(default, with = "as_variant", skip_serializing_if = "Vec::is_empty")]
+     choices: Vec<Choice>,
+ }
+ 
+@@ -488,19 +488,19 @@
+ 
+ /// Options for saving multiple files.
+ #[derive(Serialize, Deserialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct SaveFilesOptions {
+-    #[serde(with = "as_value", skip_deserializing)]
++    #[serde(with = "as_variant", skip_deserializing)]
+     handle_token: HandleToken,
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+     accept_label: Option<String>,
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+     modal: Option<bool>,
+-    #[serde(default, with = "as_value", skip_serializing_if = "Vec::is_empty")]
++    #[serde(default, with = "as_variant", skip_serializing_if = "Vec::is_empty")]
+     choices: Vec<Choice>,
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+     current_folder: Option<FilePath>,
+-    #[serde(default, with = "as_value", skip_serializing_if = "Vec::is_empty")]
++    #[serde(default, with = "as_variant", skip_serializing_if = "Vec::is_empty")]
+     files: Vec<FilePath>,
+ }
+ 
+@@ -574,11 +574,11 @@
+ #[derive(Serialize, Deserialize, Type, Debug, Default)]
+ /// A response of [`OpenFileRequest`], [`SaveFileRequest`] or
+ /// [`SaveFilesRequest`].
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct SelectedFiles {
+-    #[serde(default, with = "as_value", skip_serializing_if = "Vec::is_empty")]
++    #[serde(default, with = "as_variant", skip_serializing_if = "Vec::is_empty")]
+     uris: Vec<Uri>,
+-    #[serde(default, with = "as_value", skip_serializing_if = "Vec::is_empty")]
++    #[serde(default, with = "as_variant", skip_serializing_if = "Vec::is_empty")]
+     choices: Vec<(String, String)>,
+     // Backend-only fields
+     /// Not relevant for SaveFiles
+--- upstream/src/desktop/game_mode.rs
++++ maintained/src/desktop/game_mode.rs
+@@ -18,7 +18,7 @@
+ use std::{fmt::Debug, os::fd::AsFd};
+ 
+ use serde_repr::Deserialize_repr;
+-use zbus::zvariant::{Fd, Type};
++use zbus::wire::{Fd, Type};
+ 
+ use crate::{Error, Pid, error::PortalError, proxy::Proxy};
+ 
+--- upstream/src/desktop/global_shortcuts.rs
++++ maintained/src/desktop/global_shortcuts.rs
+@@ -4,9 +4,9 @@
+ 
+ use futures_util::Stream;
+ use serde::{Deserialize, Serialize};
+-use zbus::zvariant::{
+-    ObjectPath, Optional, OwnedObjectPath, OwnedValue, Type,
+-    as_value::{self, optional},
++use zbus::wire::{
++    ObjectPath, Optional, OwnedObjectPath, OwnedVariant, Type,
++    as_variant::{self, optional},
+ };
+ 
+ use super::{HandleToken, Request, Session, session::SessionPortal};
+@@ -17,10 +17,10 @@
+ };
+ 
+ #[derive(Clone, Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ struct NewShortcutInfo {
+     /// User-readable text describing what the shortcut does.
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     description: String,
+     /// The preferred shortcut trigger, defined as described by the "shortcuts"
+     /// XDG specification. Optional.
+@@ -55,14 +55,14 @@
+ }
+ 
+ #[derive(Clone, Deserialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ struct ShortcutInfo {
+     /// User-readable text describing what the shortcut does.
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     description: String,
+     /// User-readable text describing how to trigger the shortcut for the client
+     /// to render.
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     trigger_description: String,
+ }
+ 
+@@ -92,19 +92,19 @@
+ }
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`GlobalShortcuts::bind_shortcuts`] request.
+ pub struct BindShortcutsOptions {
+     /// A string that will be used as the last element of the handle.
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     handle_token: HandleToken,
+ }
+ 
+ /// A response to a [`GlobalShortcuts::bind_shortcuts`] request.
+ #[derive(Deserialize, Type, Debug)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct BindShortcuts {
+-    #[serde(default, with = "as_value")]
++    #[serde(default, with = "as_variant")]
+     shortcuts: Vec<Shortcut>,
+ }
+ 
+@@ -116,7 +116,7 @@
+ }
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`GlobalShortcuts::configure_shortcuts`] request.
+ pub struct ConfigureShortcutsOptions {
+     #[serde(with = "optional", skip_serializing_if = "Option::is_none")]
+@@ -136,20 +136,20 @@
+ }
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`GlobalShortcuts::list_shortcuts`] request.
+ pub struct ListShortcutsOptions {
+     /// A string that will be used as the last element of the handle.
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     handle_token: HandleToken,
+ }
+ 
+ /// A response to a [`GlobalShortcuts::list_shortcuts`] request.
+ #[derive(Deserialize, Type, Debug)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct ListShortcuts {
+     /// A list of shortcuts.
+-    #[serde(default, with = "as_value")]
++    #[serde(default, with = "as_variant")]
+     shortcuts: Vec<Shortcut>,
+ }
+ 
+@@ -162,7 +162,7 @@
+ 
+ /// Notifies about a shortcut becoming active.
+ #[derive(Debug, Deserialize, Type)]
+-pub struct Activated(OwnedObjectPath, String, u64, HashMap<String, OwnedValue>);
++pub struct Activated(OwnedObjectPath, String, u64, HashMap<String, OwnedVariant>);
+ 
+ impl Activated {
+     /// Session that requested the shortcut.
+@@ -181,14 +181,14 @@
+     }
+ 
+     /// Optional information
+-    pub fn options(&self) -> &HashMap<String, OwnedValue> {
++    pub fn options(&self) -> &HashMap<String, OwnedVariant> {
+         &self.3
+     }
+ }
+ 
+ /// Notifies that a shortcut is not active anymore.
+ #[derive(Debug, Deserialize, Type)]
+-pub struct Deactivated(OwnedObjectPath, String, u64, HashMap<String, OwnedValue>);
++pub struct Deactivated(OwnedObjectPath, String, u64, HashMap<String, OwnedVariant>);
+ 
+ impl Deactivated {
+     /// Session that requested the shortcut.
+@@ -207,7 +207,7 @@
+     }
+ 
+     /// Optional information
+-    pub fn options(&self) -> &HashMap<String, OwnedValue> {
++    pub fn options(&self) -> &HashMap<String, OwnedVariant> {
+         &self.3
+     }
+ }
+--- upstream/src/desktop/handle_token.rs
++++ maintained/src/desktop/handle_token.rs
+@@ -4,7 +4,7 @@
+ };
+ 
+ use serde::{Deserialize, Serialize};
+-use zbus::zvariant::Type;
++use zbus::wire::Type;
+ 
+ /// A handle token is a DBus Object Path element.
+ ///
+@@ -99,10 +99,10 @@
+ }
+ 
+ #[cfg(feature = "backend")]
+-impl TryFrom<&zbus::zvariant::OwnedObjectPath> for HandleToken {
++impl TryFrom<&zbus::wire::OwnedObjectPath> for HandleToken {
+     type Error = HandleInvalidCharacter;
+ 
+-    fn try_from(value: &zbus::zvariant::OwnedObjectPath) -> Result<Self, Self::Error> {
++    fn try_from(value: &zbus::wire::OwnedObjectPath) -> Result<Self, Self::Error> {
+         let base_segment = value
+             .as_str()
+             .split('/')
+--- upstream/src/desktop/icon.rs
++++ maintained/src/desktop/icon.rs
+@@ -4,12 +4,12 @@
+     Deserialize, de,
+     ser::{Serialize, SerializeTuple},
+ };
+-use zbus::zvariant::{self, OwnedValue, Type, Value};
++use zbus::wire::{self, OwnedVariant, Type, Variant};
+ 
+ use crate::{Error, Uri};
+ 
+ #[derive(Debug, Type)]
+-#[zvariant(signature = "(sv)")]
++#[zbus(signature = "(sv)")]
+ /// A representation of an icon.
+ ///
+ /// Used by both the Notification & Dynamic launcher portals.
+@@ -37,36 +37,36 @@
+         matches!(self, Self::Bytes(_))
+     }
+ 
+-    pub(crate) fn inner_bytes<'a>(&'a self) -> Value<'a> {
++    pub(crate) fn inner_bytes<'a>(&'a self) -> Variant<'a> {
+         match self {
+             Self::Bytes(bytes) => {
+-                let mut array = zvariant::Array::new(u8::SIGNATURE);
++                let mut array = wire::Array::new(u8::SIGNATURE);
+                 for byte in bytes.iter() {
+                     // Safe to unwrap because we are sure it is of the correct type
+-                    array.append(Value::from(*byte)).unwrap();
+-                }
+-                Value::from(array)
++                    array.append(Variant::from(*byte)).unwrap();
++                }
++                Variant::from(array)
+             }
+             _ => panic!("Only bytes icons can be converted to a bytes variant"),
+         }
+     }
+ 
+-    pub(crate) fn as_value<'a>(&'a self) -> Value<'a> {
++    pub(crate) fn as_variant<'a>(&'a self) -> Variant<'a> {
+         let tuple = match self {
+-            Self::Uri(uri) => ("file", Value::from(uri.as_str())),
++            Self::Uri(uri) => ("file", Variant::from(uri.as_str())),
+             Self::Names(names) => {
+-                let mut array = zvariant::Array::new(String::SIGNATURE);
++                let mut array = wire::Array::new(String::SIGNATURE);
+                 for name in names.iter() {
+                     // Safe to unwrap because we are sure it is of the correct type
+-                    array.append(Value::from(name)).unwrap();
+-                }
+-
+-                ("themed", Value::from(array))
++                    array.append(Variant::from(name)).unwrap();
++                }
++
++                ("themed", Variant::from(array))
+             }
+             Self::Bytes(_) => ("bytes", self.inner_bytes()),
+-            Self::FileDescriptor(fd) => ("file-descriptor", zvariant::Fd::from(fd).into()),
++            Self::FileDescriptor(fd) => ("file-descriptor", wire::Fd::from(fd).into()),
+         };
+-        Value::new(tuple)
++        Variant::new(tuple)
+     }
+ }
+ 
+@@ -79,16 +79,16 @@
+         match self {
+             Self::Uri(uri) => {
+                 tuple.serialize_element("file")?;
+-                tuple.serialize_element(&Value::from(uri.as_str()))?;
++                tuple.serialize_element(&Variant::from(uri.as_str()))?;
+             }
+             Self::Names(names) => {
+                 tuple.serialize_element("themed")?;
+-                let mut array = zvariant::Array::new(String::SIGNATURE);
++                let mut array = wire::Array::new(String::SIGNATURE);
+                 for name in names.iter() {
+                     // Safe to unwrap because we are sure it is of the correct type
+-                    array.append(Value::from(name)).unwrap();
+-                }
+-                tuple.serialize_element(&Value::from(array))?;
++                    array.append(Variant::from(name)).unwrap();
++                }
++                tuple.serialize_element(&Variant::from(array))?;
+             }
+             Self::Bytes(_) => {
+                 tuple.serialize_element("bytes")?;
+@@ -96,7 +96,7 @@
+             }
+             Self::FileDescriptor(fd) => {
+                 tuple.serialize_element("file-descriptor")?;
+-                tuple.serialize_element(&Value::from(zvariant::Fd::from(fd)))?;
++                tuple.serialize_element(&Variant::from(wire::Fd::from(fd)))?;
+             }
+         }
+         tuple.end()
+@@ -108,16 +108,16 @@
+     where
+         D: serde::Deserializer<'de>,
+     {
+-        let (type_, data) = <(String, OwnedValue)>::deserialize(deserializer)?;
++        let (type_, data) = <(String, OwnedVariant)>::deserialize(deserializer)?;
+         match type_.as_str() {
+             "file" => {
+-                let uri_str = data.downcast_ref::<zvariant::Str>().unwrap();
++                let uri_str = data.downcast_ref::<wire::Str>().unwrap();
+                 let uri = Uri::parse(uri_str.as_str())
+                     .map_err(|e| serde::de::Error::custom(format!("Invalid URI: {}", e)))?;
+                 Ok(Self::Uri(uri))
+             }
+             "bytes" => {
+-                let array = data.downcast_ref::<zvariant::Array>().unwrap();
++                let array = data.downcast_ref::<wire::Array>().unwrap();
+                 let mut bytes = Vec::with_capacity(array.len());
+                 for byte in array.inner() {
+                     bytes.push(byte.downcast_ref::<u8>().unwrap());
+@@ -125,16 +125,16 @@
+                 Ok(Self::Bytes(bytes))
+             }
+             "themed" => {
+-                let array = data.downcast_ref::<zvariant::Array>().unwrap();
++                let array = data.downcast_ref::<wire::Array>().unwrap();
+                 let mut names = Vec::with_capacity(array.len());
+                 for value in array.inner() {
+-                    let name = value.downcast_ref::<zvariant::Str>().unwrap();
++                    let name = value.downcast_ref::<wire::Str>().unwrap();
+                     names.push(name.as_str().to_owned());
+                 }
+                 Ok(Self::Names(names))
+             }
+             "file-descriptor" => {
+-                let fd = data.downcast_ref::<zvariant::Fd>().unwrap();
++                let fd = data.downcast_ref::<wire::Fd>().unwrap();
+                 Ok(Self::FileDescriptor(
+                     fd.as_fd()
+                         .try_clone_to_owned()
+@@ -146,23 +146,23 @@
+     }
+ }
+ 
+-impl TryFrom<&OwnedValue> for Icon {
+-    type Error = crate::Error;
+-    fn try_from(value: &OwnedValue) -> Result<Self, Self::Error> {
+-        let structure = value.downcast_ref::<zvariant::Structure>().unwrap();
++impl TryFrom<&OwnedVariant> for Icon {
++    type Error = crate::Error;
++    fn try_from(value: &OwnedVariant) -> Result<Self, Self::Error> {
++        let structure = value.downcast_ref::<wire::Structure>().unwrap();
+         let fields = structure.fields();
+-        let type_ = fields[0].downcast_ref::<zvariant::Str>().unwrap();
++        let type_ = fields[0].downcast_ref::<wire::Str>().unwrap();
+         match type_.as_str() {
+             "file" => {
+                 let uri_str = fields[1]
+-                    .downcast_ref::<zvariant::Str>()
++                    .downcast_ref::<wire::Str>()
+                     .unwrap()
+                     .to_owned();
+                 let uri = Uri::parse(uri_str.as_str()).map_err(crate::Error::Uri)?;
+                 Ok(Self::Uri(uri))
+             }
+             "bytes" => {
+-                let array = fields[1].downcast_ref::<zvariant::Array>().unwrap();
++                let array = fields[1].downcast_ref::<wire::Array>().unwrap();
+                 let mut bytes = Vec::with_capacity(array.len());
+                 for byte in array.inner() {
+                     bytes.push(byte.downcast_ref::<u8>().unwrap());
+@@ -170,16 +170,16 @@
+                 Ok(Self::Bytes(bytes))
+             }
+             "themed" => {
+-                let array = fields[1].downcast_ref::<zvariant::Array>().unwrap();
++                let array = fields[1].downcast_ref::<wire::Array>().unwrap();
+                 let mut names = Vec::with_capacity(array.len());
+                 for value in array.inner() {
+-                    let name = value.downcast_ref::<zvariant::Str>().unwrap();
++                    let name = value.downcast_ref::<wire::Str>().unwrap();
+                     names.push(name.as_str().to_owned());
+                 }
+                 Ok(Self::Names(names))
+             }
+             "file-descriptor" => {
+-                let fd = fields[1].downcast_ref::<zvariant::Fd>().unwrap();
++                let fd = fields[1].downcast_ref::<wire::Fd>().unwrap();
+                 Ok(Self::FileDescriptor(
+                     fd.as_fd()
+                         .try_clone_to_owned()
+@@ -191,29 +191,29 @@
+     }
+ }
+ 
+-impl TryFrom<OwnedValue> for Icon {
+-    type Error = crate::Error;
+-    fn try_from(value: OwnedValue) -> Result<Self, Self::Error> {
++impl TryFrom<OwnedVariant> for Icon {
++    type Error = crate::Error;
++    fn try_from(value: OwnedVariant) -> Result<Self, Self::Error> {
+         Self::try_from(&value)
+     }
+ }
+ 
+-impl TryFrom<Value<'_>> for Icon {
+-    type Error = crate::Error;
+-    fn try_from(value: Value<'_>) -> Result<Self, Self::Error> {
++impl TryFrom<Variant<'_>> for Icon {
++    type Error = crate::Error;
++    fn try_from(value: Variant<'_>) -> Result<Self, Self::Error> {
+         Self::try_from(&value)
+     }
+ }
+-impl TryFrom<&Value<'_>> for Icon {
+-    type Error = crate::Error;
+-    fn try_from(value: &Value<'_>) -> Result<Self, Self::Error> {
++impl TryFrom<&Variant<'_>> for Icon {
++    type Error = crate::Error;
++    fn try_from(value: &Variant<'_>) -> Result<Self, Self::Error> {
+         Self::try_from(value.try_to_owned()?)
+     }
+ }
+ 
+ #[cfg(test)]
+ mod test {
+-    use zbus::zvariant::{Endian, serialized::Context, to_bytes};
++    use zbus::wire::{Endian, serialized::Context, to_bytes};
+ 
+     use super::*;
+ 
+@@ -224,7 +224,7 @@
+ 
+     #[test]
+     fn serialize_deserialize() {
+-        let ctxt = Context::new_dbus(Endian::Little, 0);
++        let ctxt = Context::new(Endian::Little, 0);
+ 
+         let icon = Icon::with_names(["dialog-symbolic"]);
+ 
+--- upstream/src/desktop/inhibit.rs
++++ maintained/src/desktop/inhibit.rs
+@@ -39,9 +39,9 @@
+ use futures_util::Stream;
+ use serde::{Deserialize, Serialize};
+ use serde_repr::{Deserialize_repr, Serialize_repr};
+-use zbus::zvariant::{
++use zbus::wire::{
+     ObjectPath, Optional, OwnedObjectPath, Type,
+-    as_value::{self, optional},
++    as_variant::{self, optional},
+ };
+ 
+ use super::{HandleToken, Request, Session, session::SessionPortal};
+@@ -49,19 +49,19 @@
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+ /// Specified options for a [`InhibitProxy::create_monitor`] request.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct CreateMonitorOptions {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     handle_token: HandleToken,
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     session_handle_token: HandleToken,
+ }
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`InhibitProxy::inhibit`] request.
+ pub struct InhibitOptions {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     handle_token: HandleToken,
+     #[serde(with = "optional", skip_serializing_if = "Option::is_none")]
+     reason: Option<String>,
+@@ -97,12 +97,12 @@
+ }
+ 
+ #[derive(Debug, Deserialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ #[serde(rename_all = "kebab-case")]
+ struct State {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     screensaver_active: bool,
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     session_state: SessionState,
+ }
+ 
+@@ -225,7 +225,7 @@
+             .empty_request(
+                 &options.handle_token,
+                 "Inhibit",
+-                &(identifier, flags, &options),
++                &(identifier, flags.bits(), &options),
+             )
+             .await
+     }
+--- upstream/src/desktop/input_capture.rs
++++ maintained/src/desktop/input_capture.rs
+@@ -298,9 +298,9 @@
+ use futures_util::Stream;
+ use serde::{Deserialize, Serialize, de::Visitor};
+ use serde_repr::{Deserialize_repr, Serialize_repr};
+-use zbus::zvariant::{
+-    self, ObjectPath, Optional, OwnedObjectPath, OwnedValue, Type,
+-    as_value::{self, optional},
++use zbus::wire::{
++    self, ObjectPath, Optional, OwnedObjectPath, OwnedVariant, Type,
++    as_variant::{self, optional},
+ };
+ 
+ use super::{HandleToken, PersistMode, Request, Session, session::SessionPortal};
+@@ -320,14 +320,14 @@
+ }
+ 
+ #[derive(Debug, Serialize, Type, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`InputCapture::create_session`] request.
+ pub struct CreateSessionOptions {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     handle_token: HandleToken,
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     session_handle_token: HandleToken,
+-    #[serde(with = "as_value")]
++    #[serde(with = "crate::flags")]
+     capabilities: BitFlags<Capabilities>,
+ }
+ 
+@@ -340,36 +340,36 @@
+ }
+ 
+ #[derive(Debug, Deserialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ struct CreateSessionResponse {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     session_handle: OwnedObjectPath,
+-    #[serde(with = "as_value")]
++    #[serde(with = "crate::flags")]
+     capabilities: BitFlags<Capabilities>,
+ }
+ 
+ #[derive(Debug, Serialize, Type, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`InputCapture::create_session2`] request.
+ pub struct CreateSession2Options {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     session_handle_token: HandleToken,
+ }
+ 
+ #[derive(Debug, Deserialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ struct CreateSession2Results {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     session_handle: OwnedObjectPath,
+ }
+ 
+ #[derive(Debug, Serialize, Type, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`InputCapture::start`] request.
+ pub struct StartOptions {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     handle_token: HandleToken,
+-    #[serde(with = "as_value")]
++    #[serde(with = "crate::flags")]
+     capabilities: BitFlags<Capabilities>,
+     #[serde(with = "optional", skip_serializing_if = "Option::is_none")]
+     restore_token: Option<String>,
+@@ -398,10 +398,10 @@
+ }
+ 
+ #[derive(Debug, Deserialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Response of [`InputCapture::create_session`] request.
+ pub struct StartResponse {
+-    #[serde(with = "as_value")]
++    #[serde(with = "crate::flags")]
+     capabilities: BitFlags<Capabilities>,
+     #[serde(default, with = "optional")]
+     clipboard_enabled: Option<bool>,
+@@ -427,33 +427,33 @@
+ }
+ 
+ #[derive(Default, Debug, Serialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`InputCapture::zones`] request.
+ pub struct GetZonesOptions {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     handle_token: HandleToken,
+ }
+ 
+ #[derive(Default, Debug, Serialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`InputCapture::set_pointer_barriers`] request.
+ pub struct SetPointerBarriersOptions {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     handle_token: HandleToken,
+ }
+ 
+ #[derive(Default, Debug, Serialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`InputCapture::enable`] request.
+ pub struct EnableOptions {}
+ 
+ #[derive(Default, Debug, Serialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`InputCapture::disable`] request.
+ pub struct DisableOptions {}
+ 
+ #[derive(Default, Debug, Serialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`InputCapture::release`] request.
+ pub struct ReleaseOptions {
+     #[serde(with = "optional", skip_serializing_if = "Option::is_none")]
+@@ -479,14 +479,14 @@
+ }
+ 
+ #[derive(Default, Debug, Serialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`InputCapture::connect_to_eis`] request.
+ pub struct ConnectToEISOptions {}
+ 
+ /// Indicates that an input capturing session was disabled.
+ #[derive(Debug, Deserialize, Type)]
+-#[zvariant(signature = "(oa{sv})")]
+-pub struct Disabled(OwnedObjectPath, HashMap<String, OwnedValue>);
++#[zbus(signature = "(oa{sv})")]
++pub struct Disabled(OwnedObjectPath, HashMap<String, OwnedVariant>);
+ 
+ impl Disabled {
+     /// Session that was disabled.
+@@ -495,13 +495,13 @@
+     }
+ 
+     /// Optional information
+-    pub fn options(&self) -> &HashMap<String, OwnedValue> {
++    pub fn options(&self) -> &HashMap<String, OwnedVariant> {
+         &self.1
+     }
+ }
+ 
+ #[derive(Debug, Deserialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ struct DeactivatedOptions {
+     #[serde(default, with = "optional")]
+     activation_id: Option<u32>,
+@@ -509,7 +509,7 @@
+ 
+ /// Indicates that an input capturing session was deactivated.
+ #[derive(Debug, Deserialize, Type)]
+-#[zvariant(signature = "(oa{sv})")]
++#[zbus(signature = "(oa{sv})")]
+ pub struct Deactivated(OwnedObjectPath, DeactivatedOptions);
+ 
+ impl Deactivated {
+@@ -526,7 +526,7 @@
+ }
+ 
+ #[derive(Debug, Deserialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ struct ActivatedOptions {
+     #[serde(default, with = "optional")]
+     activation_id: Option<u32>,
+@@ -538,7 +538,7 @@
+ 
+ /// Indicates that an input capturing session was activated.
+ #[derive(Debug, Deserialize, Type)]
+-#[zvariant(signature = "(oa{sv})")]
++#[zbus(signature = "(oa{sv})")]
+ pub struct Activated(OwnedObjectPath, ActivatedOptions);
+ 
+ impl Activated {
+@@ -565,7 +565,7 @@
+ }
+ 
+ #[derive(Clone, Copy, Debug, Type)]
+-#[zvariant(signature = "u")]
++#[zbus(signature = "u")]
+ /// information about an activation barrier
+ pub enum ActivatedBarrier {
+     /// [`BarrierID`] of the triggered barrier
+@@ -606,7 +606,7 @@
+ }
+ 
+ #[derive(Debug, Deserialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ struct ZonesChangedOptions {
+     #[serde(default, with = "optional")]
+     zone_set: Option<u32>,
+@@ -614,7 +614,7 @@
+ 
+ /// Indicates that zones available to this session changed.
+ #[derive(Debug, Deserialize, Type)]
+-#[zvariant(signature = "(oa{sv})")]
++#[zbus(signature = "(oa{sv})")]
+ pub struct ZonesChanged(OwnedObjectPath, ZonesChangedOptions);
+ 
+ impl ZonesChanged {
+@@ -631,7 +631,7 @@
+ 
+ /// A region of a [`Zones`].
+ #[derive(Debug, Clone, Copy, Deserialize, Type)]
+-#[zvariant(signature = "(uuii)")]
++#[zbus(signature = "(uuii)")]
+ pub struct Region(u32, u32, i32, i32);
+ 
+ impl Region {
+@@ -658,11 +658,11 @@
+ 
+ /// A response of [`InputCapture::zones`].
+ #[derive(Debug, Type, Deserialize)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct Zones {
+-    #[serde(default, with = "as_value")]
++    #[serde(default, with = "as_variant")]
+     zones: Vec<Region>,
+-    #[serde(default, with = "as_value")]
++    #[serde(default, with = "as_variant")]
+     zone_set: u32,
+ }
+ 
+@@ -685,7 +685,7 @@
+ ///
+ /// Barriers are typically placed along screen edges.
+ #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Type)]
+-#[zvariant(signature = "(iiii)")]
++#[zbus(signature = "(iiii)")]
+ pub struct BarrierPosition {
+     /// x coordinate of the first point
+     x1: i32,
+@@ -757,12 +757,12 @@
+ }
+ 
+ #[derive(Debug, Serialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Input Barrier.
+ pub struct Barrier {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     barrier_id: BarrierID,
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     position: BarrierPosition,
+ }
+ 
+@@ -788,9 +788,9 @@
+ 
+ /// A response to [`InputCapture::set_pointer_barriers`]
+ #[derive(Debug, Deserialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct SetPointerBarriersResponse {
+-    #[serde(default, with = "as_value")]
++    #[serde(default, with = "as_variant")]
+     failed_barriers: Vec<BarrierID>,
+ }
+ 
+@@ -1049,7 +1049,7 @@
+     ) -> Result<OwnedFd, Error> {
+         let fd = self
+             .0
+-            .call::<zvariant::OwnedFd>("ConnectToEIS", &(session, options))
++            .call::<wire::OwnedFd>("ConnectToEIS", &(session, options))
+             .await?;
+         Ok(fd.into())
+     }
+@@ -1104,7 +1104,7 @@
+     /// See also [`SupportedCapabilities`](https://flatpak.github.io/xdg-desktop-portal/docs/doc-org.freedesktop.portal.InputCapture.html#org-freedesktop-portal-inputcapture-supportedcapabilities).
+     #[doc(alias = "SupportedCapabilities")]
+     pub async fn supported_capabilities(&self) -> Result<BitFlags<Capabilities>, Error> {
+-        self.0.property("SupportedCapabilities").await
++        self.0.property_flags("SupportedCapabilities").await
+     }
+ }
+ 
+--- upstream/src/desktop/location.rs
++++ maintained/src/desktop/location.rs
+@@ -29,9 +29,9 @@
+ use futures_util::Stream;
+ use serde::{Deserialize, Serialize};
+ use serde_repr::Serialize_repr;
+-use zbus::zvariant::{
++use zbus::wire::{
+     ObjectPath, Optional, OwnedObjectPath, Type,
+-    as_value::{self, optional},
++    as_variant::{self, optional},
+ };
+ 
+ use super::{HandleToken, Request, Session, session::SessionPortal};
+@@ -66,9 +66,9 @@
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+ /// Specified options for a [`LocationProxy::create_session`] request.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct CreateSessionOptions {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     session_handle_token: HandleToken,
+     #[serde(
+         rename = "distance-threshold",
+@@ -108,9 +108,9 @@
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+ /// Specified options for a [`LocationProxy::start`] request.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct StartOptions {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     handle_token: HandleToken,
+ }
+ 
+@@ -198,24 +198,24 @@
+ }
+ 
+ #[derive(Debug, Serialize, Deserialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ #[serde(rename_all = "PascalCase")]
+ struct LocationInner {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     accuracy: f64,
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     altitude: f64,
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     speed: f64,
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     heading: f64,
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     description: String,
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     latitude: f64,
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     longitude: f64,
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     timestamp: (u64, u64),
+ }
+ 
+--- upstream/src/desktop/mod.rs
++++ maintained/src/desktop/mod.rs
+@@ -149,7 +149,7 @@
+     Debug,
+     Copy,
+     Clone,
+-    zbus::zvariant::Type,
++    zbus::wire::Type,
+ )]
+ #[cfg_attr(
+     docsrs,
+--- upstream/src/desktop/network_monitor.rs
++++ maintained/src/desktop/network_monitor.rs
+@@ -22,22 +22,22 @@
+ use futures_util::Stream;
+ use serde::Deserialize;
+ use serde_repr::Deserialize_repr;
+-use zbus::zvariant::{Type, as_value};
++use zbus::wire::{Type, as_variant};
+ 
+ use crate::{Error, proxy::Proxy};
+ 
+ #[derive(Deserialize, Type, Debug)]
+ /// The network status, composed of the availability, metered & connectivity
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct NetworkStatus {
+     /// Whether the network is considered available.
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     available: bool,
+     /// Whether the network is considered metered.
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     metered: bool,
+     /// More detailed information about the host's network connectivity
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     connectivity: Connectivity,
+ }
+ 
+--- upstream/src/desktop/notification.rs
++++ maintained/src/desktop/notification.rs
+@@ -8,7 +8,7 @@
+ //!     notification::{Action, Button, Notification, NotificationProxy, Priority},
+ //! };
+ //! use futures_util::StreamExt;
+-//! use zbus::zvariant::Value;
++//! use zbus::wire::Variant;
+ //!
+ //! async fn run() -> ashpd::Result<()> {
+ //!     let proxy = NotificationProxy::new().await?;
+@@ -54,16 +54,16 @@
+ 
+ use futures_util::Stream;
+ use serde::{self, Deserialize, Serialize};
+-use zbus::zvariant::{
+-    OwnedValue, Type, Value,
+-    as_value::{self, optional},
++use zbus::wire::{
++    OwnedVariant, Type, Variant,
++    as_variant::{self, optional},
+ };
+ 
+ use super::Icon;
+ use crate::{Error, proxy::Proxy};
+ 
+ #[derive(Debug, Clone, PartialEq, Eq, Type)]
+-#[zvariant(signature = "s")]
++#[zbus(signature = "s")]
+ /// The content of a notification.
+ pub enum Category {
+     /// Instant messaging apps message.
+@@ -167,7 +167,7 @@
+ #[cfg_attr(feature = "glib", derive(glib::Enum))]
+ #[cfg_attr(feature = "glib", enum_type(name = "AshpdPriority"))]
+ #[derive(Debug, Copy, Clone, Serialize, PartialEq, Eq, Type)]
+-#[zvariant(signature = "s")]
++#[zbus(signature = "s")]
+ #[serde(rename_all = "lowercase")]
+ /// The notification priority
+ pub enum Priority {
+@@ -231,7 +231,7 @@
+ #[cfg_attr(feature = "glib", derive(glib::Enum))]
+ #[cfg_attr(feature = "glib", enum_type(name = "AshpdNotificationDisplayHint"))]
+ #[derive(Debug, Copy, Clone, PartialEq, Eq, Type, Serialize)]
+-#[zvariant(signature = "s")]
++#[zbus(signature = "s")]
+ #[serde(rename_all = "kebab-case")]
+ /// Ways to display a notification.
+ pub enum DisplayHint {
+@@ -257,11 +257,11 @@
+ 
+ #[derive(Serialize, Type, Debug)]
+ /// A notification
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ #[serde(rename_all = "kebab-case")]
+ pub struct Notification {
+     /// User-visible string to display as the title.
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     title: String,
+     /// User-visible string to display as the body.
+     #[serde(with = "optional", skip_serializing_if = "Option::is_none")]
+@@ -280,16 +280,16 @@
+     default_action: Option<String>,
+     /// Target parameter to send along when activating the default action.
+     #[serde(with = "optional", skip_serializing_if = "Option::is_none")]
+-    default_action_target: Option<OwnedValue>,
++    default_action_target: Option<OwnedVariant>,
+     /// Array of buttons to add to the notification.
+-    #[serde(with = "as_value", skip_serializing_if = "Vec::is_empty")]
++    #[serde(with = "as_variant", skip_serializing_if = "Vec::is_empty")]
+     buttons: Vec<Button>,
+     #[serde(with = "optional", skip_serializing_if = "Option::is_none")]
+     category: Option<Category>,
+-    #[serde(with = "as_value", skip_serializing_if = "Vec::is_empty")]
++    #[serde(with = "as_variant", skip_serializing_if = "Vec::is_empty")]
+     display_hint: Vec<DisplayHint>,
+     #[serde(with = "optional", skip_serializing_if = "Option::is_none")]
+-    sound: Option<OwnedValue>,
++    sound: Option<OwnedVariant>,
+ }
+ 
+ impl Notification {
+@@ -342,7 +342,7 @@
+         S: AsFd,
+     {
+         self.sound = sound.into().map(|s| {
+-            zbus::zvariant::Value::from(zbus::zvariant::Fd::from(s.as_fd()))
++            zbus::wire::Variant::from(zbus::wire::Fd::from(s.as_fd()))
+                 .try_to_owned()
+                 .unwrap()
+         });
+@@ -379,7 +379,7 @@
+ 
+     /// Sets a value to be sent in the `action_invoked` signal.
+     #[must_use]
+-    pub fn default_action_target<'a, T: Into<Value<'a>>>(
++    pub fn default_action_target<'a, T: Into<Variant<'a>>>(
+         mut self,
+         default_action_target: impl Into<Option<T>>,
+     ) -> Self {
+@@ -398,7 +398,7 @@
+ }
+ 
+ #[derive(Debug, Clone, PartialEq, Eq, Type)]
+-#[zvariant(signature = "s")]
++#[zbus(signature = "s")]
+ /// The purpose of a button.
+ pub enum ButtonPurpose {
+     /// Instant messaging reply with text.
+@@ -476,18 +476,18 @@
+ 
+ #[derive(Serialize, Type, Debug)]
+ /// A notification button
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct Button {
+     /// User-visible label for the button. Mandatory.
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     label: String,
+     /// Name of an action that is exported by the application. The action will
+     /// be activated when the user clicks on the button.
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     action: String,
+     /// Target parameter to send along when activating the action.
+     #[serde(with = "optional", skip_serializing_if = "Option::is_none")]
+-    target: Option<OwnedValue>,
++    target: Option<OwnedVariant>,
+     #[serde(with = "optional", skip_serializing_if = "Option::is_none")]
+     purpose: Option<ButtonPurpose>,
+ }
+@@ -511,7 +511,7 @@
+ 
+     /// The value to send with the action name when the button is clicked.
+     #[must_use]
+-    pub fn target<'a, T: Into<Value<'a>>>(mut self, target: impl Into<Option<T>>) -> Self {
++    pub fn target<'a, T: Into<Variant<'a>>>(mut self, target: impl Into<Option<T>>) -> Self {
+         self.target = target.into().map(|t| t.into().try_to_owned().unwrap());
+         self
+     }
+@@ -526,7 +526,7 @@
+ 
+ #[derive(Debug, Deserialize, Type)]
+ /// An invoked action.
+-pub struct Action(String, String, Vec<OwnedValue>);
++pub struct Action(String, String, Vec<OwnedVariant>);
+ 
+ impl Action {
+     /// Notification ID.
+@@ -540,19 +540,19 @@
+     }
+ 
+     /// The parameters passed to the action.
+-    pub fn parameter(&self) -> &[OwnedValue] {
++    pub fn parameter(&self) -> &[OwnedVariant] {
+         &self.2
+     }
+ }
+ 
+-#[derive(Deserialize, Type, Debug, OwnedValue)]
+-#[zvariant(signature = "dict")]
++#[derive(Deserialize, Type, Debug, OwnedVariant)]
++#[zbus(signature = "dict")]
+ #[serde(rename_all = "kebab-case")]
+ // TODO: figure out why this can't use the enums
+ struct SupportedOptions {
+-    #[serde(default, with = "as_value")]
++    #[serde(default, with = "as_variant")]
+     category: Vec<String>,
+-    #[serde(default, with = "as_value")]
++    #[serde(default, with = "as_variant")]
+     button_purpose: Vec<String>,
+ }
+ 
+--- upstream/src/desktop/open_uri.rs
++++ maintained/src/desktop/open_uri.rs
+@@ -54,19 +54,19 @@
+ use std::os::fd::AsFd;
+ 
+ use serde::Serialize;
+-use zbus::zvariant::{
++use zbus::wire::{
+     Fd, Optional, Type,
+-    as_value::{self, optional},
++    as_variant::{self, optional},
+ };
+ 
+ use super::{HandleToken, Request};
+ use crate::{ActivationToken, Error, Uri, WindowIdentifier, proxy::Proxy};
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Options passed to [`OpenURIProxy::open_directory`].
+ pub struct OpenDirOptions {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     handle_token: HandleToken,
+     /// The activation token.
+     #[serde(with = "optional", skip_serializing_if = "Option::is_none")]
+@@ -74,10 +74,10 @@
+ }
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Options passed to [`OpenURIProxy::open_file`].
+ pub struct OpenFileOptions {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     handle_token: HandleToken,
+     /// Whether the file should be writable.
+     #[serde(with = "optional", skip_serializing_if = "Option::is_none")]
+@@ -91,7 +91,7 @@
+ }
+ 
+ #[derive(Debug, Serialize, Type, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Options passed to [`OpenURIProxy::scheme_supported`].
+ pub struct SchemeSupportedOptions {}
+ 
+--- upstream/src/desktop/print.rs
++++ maintained/src/desktop/print.rs
+@@ -40,9 +40,9 @@
+ use std::{fmt, os::fd::AsFd, str::FromStr};
+ 
+ use serde::{Deserialize, Serialize};
+-use zbus::zvariant::{
++use zbus::wire::{
+     Fd, Optional, Type,
+-    as_value::{self, optional},
++    as_variant::{self, optional},
+ };
+ 
+ use super::{HandleToken, Request};
+@@ -51,7 +51,7 @@
+ #[cfg_attr(feature = "glib", derive(glib::Enum))]
+ #[cfg_attr(feature = "glib", enum_type(name = "AshpdOrientation"))]
+ #[derive(Debug, Copy, Clone, Deserialize, Serialize, PartialEq, Eq, Type)]
+-#[zvariant(signature = "s")]
++#[zbus(signature = "s")]
+ #[serde(rename_all = "snake_case")]
+ /// The page orientation.
+ pub enum Orientation {
+@@ -117,7 +117,7 @@
+ #[cfg_attr(feature = "glib", derive(glib::Enum))]
+ #[cfg_attr(feature = "glib", enum_type(name = "AshpdQuality"))]
+ #[derive(Debug, Clone, Copy, Deserialize, Serialize, PartialEq, Eq, Type)]
+-#[zvariant(signature = "s")]
++#[zbus(signature = "s")]
+ #[serde(rename_all = "lowercase")]
+ /// The print quality.
+ pub enum Quality {
+@@ -181,7 +181,7 @@
+ #[cfg_attr(feature = "glib", derive(glib::Enum))]
+ #[cfg_attr(feature = "glib", enum_type(name = "AshpdDuplex"))]
+ #[derive(Debug, Clone, Copy, Deserialize, Serialize, PartialEq, Eq, Type)]
+-#[zvariant(signature = "s")]
++#[zbus(signature = "s")]
+ #[serde(rename_all = "lowercase")]
+ /// Duplex printing mode.
+ pub enum Duplex {
+@@ -196,7 +196,7 @@
+ #[cfg_attr(feature = "glib", derive(glib::Enum))]
+ #[cfg_attr(feature = "glib", enum_type(name = "AshpdPrintPages"))]
+ #[derive(Debug, Clone, Copy, Deserialize, Serialize, PartialEq, Eq, Type)]
+-#[zvariant(signature = "s")]
++#[zbus(signature = "s")]
+ #[serde(rename_all = "lowercase")]
+ /// What pages to print.
+ pub enum PrintPages {
+@@ -213,7 +213,7 @@
+ #[cfg_attr(feature = "glib", derive(glib::Enum))]
+ #[cfg_attr(feature = "glib", enum_type(name = "AshpdPageSet"))]
+ #[derive(Debug, Clone, Copy, Deserialize, Serialize, PartialEq, Eq, Type)]
+-#[zvariant(signature = "s")]
++#[zbus(signature = "s")]
+ #[serde(rename_all = "lowercase")]
+ /// What pages to print.
+ pub enum PageSet {
+@@ -228,7 +228,7 @@
+ #[cfg_attr(feature = "glib", derive(glib::Enum))]
+ #[cfg_attr(feature = "glib", enum_type(name = "AshpdNumberUpLayout"))]
+ #[derive(Debug, Clone, Copy, Deserialize, Serialize, PartialEq, Eq, Type)]
+-#[zvariant(signature = "s")]
++#[zbus(signature = "s")]
+ #[serde(rename_all = "lowercase")]
+ /// Layout for number-up printing.
+ pub enum NumberUpLayout {
+@@ -261,7 +261,7 @@
+ #[cfg_attr(feature = "glib", derive(glib::Enum))]
+ #[cfg_attr(feature = "glib", enum_type(name = "AshpdOutputFileFormat"))]
+ #[derive(Debug, Clone, Copy, Deserialize, Serialize, PartialEq, Eq, Type)]
+-#[zvariant(signature = "s")]
++#[zbus(signature = "s")]
+ #[serde(rename_all = "UPPERCASE")]
+ /// Output file format for print-to-file.
+ pub enum OutputFileFormat {
+@@ -276,7 +276,7 @@
+ #[cfg_attr(feature = "glib", derive(glib::Enum))]
+ #[cfg_attr(feature = "glib", enum_type(name = "AshpdDither"))]
+ #[derive(Debug, Clone, Copy, Deserialize, Serialize, PartialEq, Eq, Type)]
+-#[zvariant(signature = "s")]
++#[zbus(signature = "s")]
+ #[serde(rename_all = "kebab-case")]
+ /// Dithering to use for printing.
+ pub enum Dither {
+@@ -297,7 +297,7 @@
+ // Custom serialization modules for string-wrapped types
+ mod string_bool {
+     use serde::{Deserializer, Serializer, de::Error};
+-    use zbus::zvariant::as_value::optional;
++    use zbus::wire::as_variant::optional;
+ 
+     pub fn serialize<S>(value: &Option<bool>, serializer: S) -> Result<S::Ok, S::Error>
+     where
+@@ -326,7 +326,7 @@
+ 
+ mod string_u32 {
+     use serde::{Deserializer, Serializer, de::Error};
+-    use zbus::zvariant::as_value::optional;
++    use zbus::wire::as_variant::optional;
+ 
+     pub fn serialize<S>(value: &Option<u32>, serializer: S) -> Result<S::Ok, S::Error>
+     where
+@@ -348,7 +348,7 @@
+ 
+ mod string_i32 {
+     use serde::{Deserializer, Serializer, de::Error};
+-    use zbus::zvariant::as_value::optional;
++    use zbus::wire::as_variant::optional;
+ 
+     pub fn serialize<S>(value: &Option<i32>, serializer: S) -> Result<S::Ok, S::Error>
+     where
+@@ -370,7 +370,7 @@
+ 
+ #[derive(Serialize, Deserialize, Type, Debug, Default)]
+ /// Print settings to set in the print dialog.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ #[serde(rename_all = "kebab-case")]
+ pub struct Settings {
+     /// One of landscape, portrait, reverse_landscape or reverse_portrait.
+@@ -665,7 +665,7 @@
+ 
+ #[derive(Serialize, Deserialize, Type, Debug, Default)]
+ /// Setup the printed pages.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ #[serde(rename_all = "PascalCase")]
+ pub struct PageSetup {
+     /// the PPD name. It's the name to select a given driver.
+@@ -775,11 +775,11 @@
+ 
+ #[derive(Serialize, Deserialize, Type, Debug, Default)]
+ /// Specified options for a [`PrintProxy::prepare_print`] request.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ #[serde(rename_all = "kebab-case")]
+ pub struct PreparePrintOptions {
+     /// A string that will be used as the last element of the handle.
+-    #[serde(rename = "handle_token", with = "as_value", skip_deserializing)]
++    #[serde(rename = "handle_token", with = "as_variant", skip_deserializing)]
+     handle_token: HandleToken,
+     /// Whether to make the dialog modal.
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+@@ -791,7 +791,7 @@
+     /// Added in version 3.
+     #[serde(
+         default,
+-        with = "as_value",
++        with = "as_variant",
+         skip_serializing_if = "Vec::is_empty",
+         skip_deserializing
+     )]
+@@ -873,11 +873,11 @@
+ 
+ #[derive(Serialize, Deserialize, Type, Debug, Default)]
+ /// Specified options for a [`PrintProxy::print`] request.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ #[serde(rename_all = "kebab-case")]
+ pub struct PrintOptions {
+     /// A string that will be used as the last element of the handle.
+-    #[serde(rename = "handle_token", with = "as_value", skip_deserializing)]
++    #[serde(rename = "handle_token", with = "as_variant", skip_deserializing)]
+     handle_token: HandleToken,
+     /// Whether to make the dialog modal.
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+@@ -890,7 +890,7 @@
+     /// Added in version 3.
+     #[serde(
+         default,
+-        with = "as_value",
++        with = "as_variant",
+         skip_serializing_if = "Vec::is_empty",
+         skip_deserializing
+     )]
+@@ -938,16 +938,16 @@
+ 
+ #[derive(Deserialize, Serialize, Type, Debug)]
+ /// A response to a [`PrintProxy::prepare_print`] request.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct PreparePrint {
+     /// The printing settings.
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     pub settings: Settings,
+     /// The printed pages setup.
+-    #[serde(rename = "page-setup", with = "as_value")]
++    #[serde(rename = "page-setup", with = "as_variant")]
+     pub page_setup: PageSetup,
+     /// A token to pass to the print request.
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     pub token: u32,
+ }
+ 
+--- upstream/src/desktop/remote_desktop.rs
++++ maintained/src/desktop/remote_desktop.rs
+@@ -91,9 +91,9 @@
+ use enumflags2::{BitFlags, bitflags};
+ use serde::{Deserialize, Serialize};
+ use serde_repr::{Deserialize_repr, Serialize_repr};
+-use zbus::zvariant::{
++use zbus::wire::{
+     self, Optional, Type,
+-    as_value::{self, optional},
++    as_variant::{self, optional},
+ };
+ 
+ use super::{
+@@ -153,57 +153,57 @@
+ }
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`RemoteDesktop::notify_keyboard_keycode`] request.
+ pub struct NotifyKeyboardKeycodeOptions {}
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`RemoteDesktop::notify_keyboard_keysym`] request.
+ pub struct NotifyKeyboardKeysymOptions {}
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`RemoteDesktop::notify_pointer_axis_discrete`]
+ /// request.
+ pub struct NotifyPointerAxisDiscreteOptions {}
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`RemoteDesktop::notify_touch_up`] request.
+ pub struct NotifyTouchUpOptions {}
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`RemoteDesktop::notify_touch_down`] request.
+ pub struct NotifyTouchDownOptions {}
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`RemoteDesktop::notify_touch_motion`] request.
+ pub struct NotifyTouchMotionOptions {}
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`RemoteDesktop::notify_pointer_button`] request.
+ pub struct NotifyPointerButtonOptions {}
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`RemoteDesktop::notify_pointer_motion`] request.
+ pub struct NotifyPointerMotionOptions {}
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`RemoteDesktop::notify_pointer_motion_absolute`]
+ /// request.
+ pub struct NotifyPointerMotionAbsoluteOptions {}
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`RemoteDesktop::notify_pointer_axis`] request.
+ pub struct NotifyPointerAxisOptions {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     finish: bool,
+ }
+ 
+@@ -217,11 +217,11 @@
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+ /// Specified options for a [`RemoteDesktop::select_devices`] request.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct SelectDevicesOptions {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     handle_token: HandleToken,
+-    #[serde(with = "optional", skip_serializing_if = "Option::is_none")]
++    #[serde(with = "crate::flags::optional", skip_serializing_if = "Option::is_none")]
+     types: Option<BitFlags<DeviceType>>,
+     #[serde(with = "optional", skip_serializing_if = "Option::is_none")]
+     restore_token: Option<String>,
+@@ -251,19 +251,19 @@
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+ /// Specified options for a [`RemoteDesktop::start`] request.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct StartOptions {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     handle_token: HandleToken,
+ }
+ 
+ #[derive(Deserialize, Type, Debug, Default)]
+ /// A response to a [`RemoteDesktop::select_devices`] request.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct SelectedDevices {
+-    #[serde(default, with = "as_value")]
++    #[serde(default, with = "crate::flags")]
+     devices: BitFlags<DeviceType>,
+-    #[serde(default, with = "as_value")]
++    #[serde(default, with = "as_variant")]
+     streams: Vec<Stream>,
+     #[serde(default, with = "optional")]
+     restore_token: Option<String>,
+@@ -294,7 +294,7 @@
+ }
+ 
+ #[derive(Default, Debug, Serialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`RemoteDesktop::connect_to_eis`] request.
+ pub struct ConnectToEISOptions {}
+ 
+@@ -733,7 +733,7 @@
+     ) -> Result<OwnedFd, Error> {
+         let fd = self
+             .0
+-            .call_versioned::<zvariant::OwnedFd>("ConnectToEIS", &(session, options), 2)
++            .call_versioned::<wire::OwnedFd>("ConnectToEIS", &(session, options), 2)
+             .await?;
+         Ok(fd.into())
+     }
+@@ -745,7 +745,7 @@
+     /// See also [`AvailableDeviceTypes`](https://flatpak.github.io/xdg-desktop-portal/docs/doc-org.freedesktop.portal.RemoteDesktop.html#org-freedesktop-portal-remotedesktop-availabledevicetypes).
+     #[doc(alias = "AvailableDeviceTypes")]
+     pub async fn available_device_types(&self) -> Result<BitFlags<DeviceType>, Error> {
+-        self.0.property("AvailableDeviceTypes").await
++        self.0.property_flags("AvailableDeviceTypes").await
+     }
+ }
+ 
+--- upstream/src/desktop/request.rs
++++ maintained/src/desktop/request.rs
+@@ -13,7 +13,7 @@
+ };
+ use zbus::{
+     proxy::SignalStream,
+-    zvariant::{ObjectPath, Type, Value},
++    wire::{ObjectPath, Type, Variant},
+ };
+ 
+ use crate::{Error, desktop::HandleToken, proxy::Proxy};
+@@ -21,7 +21,7 @@
+ /// A typical response returned by the [`Request::response`].
+ /// of a [`Request`].
+ #[derive(Debug, Type)]
+-#[zvariant(signature = "(ua{sv})")]
++#[zbus(signature = "(ua{sv})")]
+ pub enum Response<T> {
+     /// Success, the request is carried out.
+     Ok(T),
+@@ -118,7 +118,7 @@
+         match self {
+             Self::Err(err) => {
+                 map.serialize_element(&ResponseType::from(*err))?;
+-                map.serialize_element(&HashMap::<&str, Value<'_>>::new())?;
++                map.serialize_element(&HashMap::<&str, Variant<'_>>::new())?;
+             }
+             Self::Ok(response) => {
+                 map.serialize_element(&ResponseType::Success)?;
+@@ -300,7 +300,7 @@
+ 
+ #[cfg(test)]
+ mod tests {
+-    use zbus::zvariant::Value;
++    use zbus::wire::Variant;
+ 
+     use super::*;
+ 
+@@ -309,7 +309,7 @@
+     fn response_signature() {
+         use crate::desktop::account::UserInformation;
+         assert_eq!(
+-            <(ResponseType, HashMap<&str, Value<'_>>)>::SIGNATURE,
++            <(ResponseType, HashMap<&str, Variant<'_>>)>::SIGNATURE,
+             Response::<()>::SIGNATURE,
+         );
+         assert_eq!(
+--- upstream/src/desktop/screencast.rs
++++ maintained/src/desktop/screencast.rs
+@@ -44,9 +44,9 @@
+ use enumflags2::{BitFlags, bitflags};
+ use serde::{Deserialize, Serialize};
+ use serde_repr::{Deserialize_repr, Serialize_repr};
+-use zbus::zvariant::{
+-    self, Optional, OwnedValue, Type,
+-    as_value::{self, optional},
++use zbus::wire::{
++    self, Optional, OwnedVariant, Type,
++    as_variant::{self, optional},
+ };
+ 
+ use super::{HandleToken, PersistMode, Request, Session, session::SessionPortal};
+@@ -93,16 +93,16 @@
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+ /// Specified options for a [`Screencast::open_pipe_wire_remote`] request.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct OpenPipeWireRemoteOptions {}
+ 
+ #[derive(Serialize, Deserialize, Type, Debug, Default)]
+ /// Specified options for a [`Screencast::select_sources`] request.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct SelectSourcesOptions {
+-    #[serde(with = "as_value", skip_deserializing)]
++    #[serde(with = "as_variant", skip_deserializing)]
+     handle_token: HandleToken,
+-    #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
++    #[serde(default, with = "crate::flags::optional", skip_serializing_if = "Option::is_none")]
+     types: Option<BitFlags<SourceType>>,
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+     multiple: Option<bool>,
+@@ -116,7 +116,7 @@
+     restore_token: Option<String>,
+     #[serde(default, with = "optional", skip_serializing)]
+     #[cfg_attr(not(feature = "backend"), allow(dead_code))]
+-    restore_data: Option<(String, u32, OwnedValue)>,
++    restore_data: Option<(String, u32, OwnedVariant)>,
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+     persist_mode: Option<PersistMode>,
+ }
+@@ -183,7 +183,7 @@
+ 
+     /// Gets the restore data.
+     #[cfg(feature = "backend")]
+-    pub fn restore_data<'a>(&'a self) -> Option<(&'a str, u32, &'a zbus::zvariant::Value<'a>)> {
++    pub fn restore_data<'a>(&'a self) -> Option<(&'a str, u32, &'a zbus::wire::Variant<'a>)> {
+         use std::borrow::Borrow;
+         match &self.restore_data {
+             Some((key, version, data)) => Some((key.as_str(), *version, data.borrow())),
+@@ -194,17 +194,17 @@
+ 
+ #[derive(Serialize, Deserialize, Type, Debug, Default)]
+ /// Specified options for a [`Screencast::start`] request.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct StartCastOptions {
+-    #[serde(with = "as_value", skip_deserializing)]
++    #[serde(with = "as_variant", skip_deserializing)]
+     handle_token: HandleToken,
+ }
+ 
+ #[derive(Default, Serialize, Deserialize, Type)]
+ /// A response to a [`Screencast::start`] request.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct Streams {
+-    #[serde(default, with = "as_value", skip_serializing_if = "Vec::is_empty")]
++    #[serde(default, with = "as_variant", skip_serializing_if = "Vec::is_empty")]
+     streams: Vec<Stream>,
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+     restore_token: Option<String>,
+@@ -213,7 +213,7 @@
+     persist_mode: Option<PersistMode>,
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+     #[cfg_attr(not(feature = "backend"), allow(dead_code))]
+-    restore_data: Option<(String, u32, OwnedValue)>,
++    restore_data: Option<(String, u32, OwnedVariant)>,
+ }
+ 
+ impl Streams {
+@@ -235,7 +235,7 @@
+ 
+     /// The session restore data.
+     #[cfg(feature = "backend")]
+-    pub fn restore_data(&self) -> Option<&(String, u32, OwnedValue)> {
++    pub fn restore_data(&self) -> Option<&(String, u32, OwnedVariant)> {
+         self.restore_data.as_ref()
+     }
+ }
+@@ -281,7 +281,7 @@
+     }
+ 
+     /// Set the streams' optional restore data.
+-    pub fn restore_data(mut self, data: Option<(String, u32, impl Into<OwnedValue>)>) -> Self {
++    pub fn restore_data(mut self, data: Option<(String, u32, impl Into<OwnedVariant>)>) -> Self {
+         self.streams.restore_data = data.map(|(s, u, d)| (s, u, d.into()));
+         self
+     }
+@@ -350,7 +350,7 @@
+ }
+ #[derive(Clone, Serialize, Deserialize, Type, Debug)]
+ /// The stream properties.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ struct StreamProperties {
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+     id: Option<String>,
+@@ -503,7 +503,7 @@
+     ) -> Result<OwnedFd, Error> {
+         let fd = self
+             .0
+-            .call::<zvariant::OwnedFd>("OpenPipeWireRemote", &(session, options))
++            .call::<wire::OwnedFd>("OpenPipeWireRemote", &(session, options))
+             .await?;
+         Ok(fd.into())
+     }
+@@ -582,7 +582,7 @@
+     /// See also [`AvailableCursorModes`](https://flatpak.github.io/xdg-desktop-portal/docs/doc-org.freedesktop.portal.ScreenCast.html#org-freedesktop-portal-screencast-availablecursormodes).
+     #[doc(alias = "AvailableCursorModes")]
+     pub async fn available_cursor_modes(&self) -> Result<BitFlags<CursorMode>, Error> {
+-        self.0.property_versioned("AvailableCursorModes", 2).await
++        self.0.property_flags_versioned("AvailableCursorModes", 2).await
+     }
+ 
+     /// Available source types.
+@@ -592,7 +592,7 @@
+     /// See also [`AvailableSourceTypes`](https://flatpak.github.io/xdg-desktop-portal/docs/doc-org.freedesktop.portal.ScreenCast.html#org-freedesktop-portal-screencast-availablesourcetypes).
+     #[doc(alias = "AvailableSourceTypes")]
+     pub async fn available_source_types(&self) -> Result<BitFlags<SourceType>, Error> {
+-        self.0.property("AvailableSourceTypes").await
++        self.0.property_flags("AvailableSourceTypes").await
+     }
+ }
+ 
+--- upstream/src/desktop/screenshot.rs
++++ maintained/src/desktop/screenshot.rs
+@@ -38,9 +38,9 @@
+ use enumflags2::{BitFlags, bitflags};
+ use serde::{Deserialize, Serialize};
+ use serde_repr::{Deserialize_repr, Serialize_repr};
+-use zbus::zvariant::{
++use zbus::wire::{
+     Optional, Type,
+-    as_value::{self, optional},
++    as_variant::{self, optional},
+ };
+ 
+ use super::{HandleToken, Request};
+@@ -63,9 +63,9 @@
+ 
+ /// Options for taking a screenshot.
+ #[derive(Serialize, Deserialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct ScreenshotOptions {
+-    #[serde(with = "as_value", skip_deserializing)]
++    #[serde(with = "as_variant", skip_deserializing)]
+     handle_token: HandleToken,
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+     modal: Option<bool>,
+@@ -126,10 +126,10 @@
+ }
+ 
+ #[derive(Serialize, Deserialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// The response of a [`ScreenshotRequest`] request.
+ pub struct Screenshot {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     uri: Uri,
+ }
+ 
+@@ -163,9 +163,9 @@
+ 
+ /// Options for picking a color.
+ #[derive(Serialize, Deserialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct ColorOptions {
+-    #[serde(with = "as_value", skip_deserializing)]
++    #[serde(with = "as_variant", skip_deserializing)]
+     handle_token: HandleToken,
+ }
+ 
+@@ -253,7 +253,7 @@
+     #[doc(alias = "AvailableTargets")]
+     pub async fn available_targets(&self) -> Result<BitFlags<AvailableTargets>, Error> {
+         self.0
+-            .property_versioned::<BitFlags<AvailableTargets>>("AvailableTargets", 3)
++            .property_flags_versioned::<AvailableTargets>("AvailableTargets", 3)
+             .await
+     }
+ }
+--- upstream/src/desktop/secret.rs
++++ maintained/src/desktop/secret.rs
+@@ -24,9 +24,9 @@
+ };
+ 
+ use serde::Serialize;
+-use zbus::zvariant::{
++use zbus::wire::{
+     Fd, Type,
+-    as_value::{self, optional},
++    as_variant::{self, optional},
+ };
+ 
+ use super::{HandleToken, Request};
+@@ -34,9 +34,9 @@
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+ /// Specified options for a [`Secret::retrieve`] request.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct RetrieveOptions {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     handle_token: HandleToken,
+     /// A string returned by a previous call to `retrieve`.
+     /// TODO: seems to not be used by the portal...
+--- upstream/src/desktop/session.rs
++++ maintained/src/desktop/session.rs
+@@ -2,7 +2,7 @@
+ 
+ use futures_util::Stream;
+ use serde::{Deserialize, Serialize, Serializer};
+-use zbus::zvariant::{ObjectPath, OwnedObjectPath, OwnedValue, Type, as_value};
++use zbus::wire::{ObjectPath, OwnedObjectPath, OwnedVariant, Type, as_variant};
+ 
+ use crate::{Error, desktop::HandleToken, proxy::Proxy};
+ 
+@@ -20,7 +20,7 @@
+ /// Wrapper of the DBus interface: [`org.freedesktop.portal.Session`](https://flatpak.github.io/xdg-desktop-portal/docs/doc-org.freedesktop.portal.Session.html).
+ #[derive(Type)]
+ #[doc(alias = "org.freedesktop.portal.Session")]
+-#[zvariant(signature = "o")]
++#[zbus(signature = "o")]
+ pub struct Session<T>(Proxy<'static>, PhantomData<T>)
+ where
+     T: SessionPortal;
+@@ -69,7 +69,7 @@
+     #[doc(alias = "Closed")]
+     pub async fn receive_closed(
+         &self,
+-    ) -> Result<impl Stream<Item = HashMap<String, OwnedValue>>, Error> {
++    ) -> Result<impl Stream<Item = HashMap<String, OwnedVariant>>, Error> {
+         self.0.signal("Closed").await
+     }
+ 
+@@ -117,7 +117,7 @@
+ 
+ /// A response to a `create_session` request.
+ #[derive(Type, Debug)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub(crate) struct CreateSessionResponse {
+     pub(crate) session_handle: OwnedObjectPath,
+ }
+@@ -137,7 +137,7 @@
+     where
+         D: serde::Deserializer<'de>,
+     {
+-        let map: HashMap<String, OwnedValue> = HashMap::deserialize(deserializer)?;
++        let map: HashMap<String, OwnedVariant> = HashMap::deserialize(deserializer)?;
+         let session_handle = map.get("session_handle").ok_or_else(|| {
+             serde::de::Error::custom(
+                 "CreateSessionResponse failed to deserialize. Couldn't find a session_handle",
+@@ -161,11 +161,11 @@
+ }
+ 
+ #[derive(Serialize, Deserialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for creating a session.
+ pub struct CreateSessionOptions {
+-    #[serde(default, with = "as_value", skip_deserializing)]
++    #[serde(default, with = "as_variant", skip_deserializing)]
+     pub(crate) handle_token: HandleToken,
+-    #[serde(default, with = "as_value", skip_deserializing)]
++    #[serde(default, with = "as_variant", skip_deserializing)]
+     pub(crate) session_handle_token: HandleToken,
+ }
+--- upstream/src/desktop/settings.rs
++++ maintained/src/desktop/settings.rs
+@@ -31,16 +31,16 @@
+ 
+ use futures_util::{Stream, StreamExt};
+ use serde::{Deserialize, Serialize};
+-use zbus::zvariant::{OwnedValue, Type, Value};
++use zbus::wire::{OwnedVariant, Type, Variant};
+ 
+ use crate::{Error, desktop::Color, proxy::Proxy};
+ 
+ /// A HashMap of the <key, value> settings found on a specific namespace.
+-pub type Namespace = HashMap<String, OwnedValue>;
++pub type Namespace = HashMap<String, OwnedVariant>;
+ 
+ #[derive(Deserialize, Type)]
+ /// A specific `namespace.key = value` setting.
+-pub struct Setting(String, String, OwnedValue);
++pub struct Setting(String, String, OwnedVariant);
+ 
+ impl Setting {
+     /// The setting namespace.
+@@ -54,7 +54,7 @@
+     }
+ 
+     /// The setting value.
+-    pub fn value(&self) -> &OwnedValue {
++    pub fn value(&self) -> &OwnedVariant {
+         &self.2
+     }
+ }
+@@ -83,7 +83,7 @@
+     PreferLight,
+ }
+ 
+-impl From<ColorScheme> for OwnedValue {
++impl From<ColorScheme> for OwnedVariant {
+     fn from(value: ColorScheme) -> Self {
+         match value {
+             ColorScheme::PreferDark => 1,
+@@ -94,18 +94,18 @@
+     }
+ }
+ 
+-impl TryFrom<OwnedValue> for ColorScheme {
+-    type Error = Error;
+-
+-    fn try_from(value: OwnedValue) -> Result<Self, Self::Error> {
+-        TryFrom::<Value>::try_from(value.into())
+-    }
+-}
+-
+-impl TryFrom<Value<'_>> for ColorScheme {
+-    type Error = Error;
+-
+-    fn try_from(value: Value) -> Result<Self, Self::Error> {
++impl TryFrom<OwnedVariant> for ColorScheme {
++    type Error = Error;
++
++    fn try_from(value: OwnedVariant) -> Result<Self, Self::Error> {
++        TryFrom::<Variant>::try_from(value.into())
++    }
++}
++
++impl TryFrom<Variant<'_>> for ColorScheme {
++    type Error = Error;
++
++    fn try_from(value: Variant) -> Result<Self, Self::Error> {
+         Ok(match u32::try_from(value)? {
+             1 => Self::PreferDark,
+             2 => Self::PreferLight,
+@@ -126,7 +126,7 @@
+     High,
+ }
+ 
+-impl From<Contrast> for OwnedValue {
++impl From<Contrast> for OwnedVariant {
+     fn from(value: Contrast) -> Self {
+         match value {
+             Contrast::High => 1,
+@@ -136,18 +136,18 @@
+     }
+ }
+ 
+-impl TryFrom<OwnedValue> for Contrast {
+-    type Error = Error;
+-
+-    fn try_from(value: OwnedValue) -> Result<Self, Self::Error> {
+-        TryFrom::<Value>::try_from(value.into())
+-    }
+-}
+-
+-impl TryFrom<Value<'_>> for Contrast {
+-    type Error = Error;
+-
+-    fn try_from(value: Value) -> Result<Self, Self::Error> {
++impl TryFrom<OwnedVariant> for Contrast {
++    type Error = Error;
++
++    fn try_from(value: OwnedVariant) -> Result<Self, Self::Error> {
++        TryFrom::<Variant>::try_from(value.into())
++    }
++}
++
++impl TryFrom<Variant<'_>> for Contrast {
++    type Error = Error;
++
++    fn try_from(value: Variant) -> Result<Self, Self::Error> {
+         Ok(match u32::try_from(value)? {
+             1 => Self::High,
+             _ => Self::NoPreference,
+@@ -167,7 +167,7 @@
+     ReducedMotion,
+ }
+ 
+-impl From<ReducedMotion> for OwnedValue {
++impl From<ReducedMotion> for OwnedVariant {
+     fn from(value: ReducedMotion) -> Self {
+         match value {
+             ReducedMotion::ReducedMotion => 1,
+@@ -177,18 +177,18 @@
+     }
+ }
+ 
+-impl TryFrom<OwnedValue> for ReducedMotion {
+-    type Error = Error;
+-
+-    fn try_from(value: OwnedValue) -> Result<Self, Self::Error> {
+-        TryFrom::<Value>::try_from(value.into())
+-    }
+-}
+-
+-impl TryFrom<Value<'_>> for ReducedMotion {
+-    type Error = Error;
+-
+-    fn try_from(value: Value) -> Result<Self, Self::Error> {
++impl TryFrom<OwnedVariant> for ReducedMotion {
++    type Error = Error;
++
++    fn try_from(value: OwnedVariant) -> Result<Self, Self::Error> {
++        TryFrom::<Variant>::try_from(value.into())
++    }
++}
++
++impl TryFrom<Variant<'_>> for ReducedMotion {
++    type Error = Error;
++
++    fn try_from(value: Variant) -> Result<Self, Self::Error> {
+         Ok(match u32::try_from(value)? {
+             1 => Self::ReducedMotion,
+             _ => Self::NoPreference,
+@@ -270,7 +270,7 @@
+     ///
+     /// # Returns
+     ///
+-    /// The value for `key` as a `zvariant::OwnedValue`.
++    /// The value for `key` as a `wire::OwnedVariant`.
+     ///
+     /// # Specifications
+     ///
+@@ -279,11 +279,11 @@
+     #[doc(alias = "ReadOne")]
+     pub async fn read<T>(&self, namespace: &str, key: &str) -> Result<T, Error>
+     where
+-        T: TryFrom<OwnedValue>,
+-        Error: From<<T as TryFrom<OwnedValue>>::Error>,
++        T: TryFrom<OwnedVariant>,
++        Error: From<<T as TryFrom<OwnedVariant>>::Error>,
+     {
+-        let value = self.0.call::<OwnedValue>("Read", &(namespace, key)).await?;
+-        if let Ok(v) = value.downcast_ref::<Value>() {
++        let value = self.0.call::<OwnedVariant>("Read", &(namespace, key)).await?;
++        if let Ok(v) = value.downcast_ref::<Variant>() {
+             T::try_from(v.try_to_owned()?).map_err(From::from)
+         } else {
+             T::try_from(value).map_err(From::from)
+@@ -394,8 +394,8 @@
+         key: &str,
+     ) -> Result<impl Stream<Item = Result<T, Error>> + use<T>, Error>
+     where
+-        T: TryFrom<OwnedValue>,
+-        Error: From<<T as TryFrom<OwnedValue>>::Error>,
++        T: TryFrom<OwnedVariant>,
++        Error: From<<T as TryFrom<OwnedVariant>>::Error>,
+     {
+         Ok(self
+             .0
+--- upstream/src/desktop/trash.rs
++++ maintained/src/desktop/trash.rs
+@@ -43,7 +43,7 @@
+ use std::os::fd::AsFd;
+ 
+ use serde_repr::{Deserialize_repr, Serialize_repr};
+-use zbus::zvariant::{Fd, Type};
++use zbus::wire::{Fd, Type};
+ 
+ use crate::{Error, error::PortalError, proxy::Proxy};
+ 
+--- upstream/src/desktop/usb.rs
++++ maintained/src/desktop/usb.rs
+@@ -32,9 +32,9 @@
+ 
+ use futures_util::Stream;
+ use serde::{Deserialize, Serialize};
+-use zbus::zvariant::{
+-    ObjectPath, OwnedFd, OwnedObjectPath, OwnedValue, Type,
+-    as_value::{self, optional},
++use zbus::wire::{
++    ObjectPath, OwnedFd, OwnedObjectPath, OwnedVariant, Type,
++    as_variant::{self, optional},
+ };
+ 
+ use crate::{
+@@ -44,7 +44,7 @@
+ };
+ 
+ #[derive(Debug, Clone, Hash, Serialize, Deserialize, Type, PartialEq, Eq)]
+-#[zvariant(signature = "s")]
++#[zbus(signature = "s")]
+ /// A device identifier.
+ pub struct DeviceID(String);
+ 
+@@ -82,23 +82,23 @@
+ }
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`UsbProxy::enumerate_devices`] request.
+ pub struct EnumerateDevicesOptions {}
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`UsbProxy::release_devices`] request.
+ pub struct ReleaseDevicesOptions {}
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`UsbProxy::finish_acquire_devices`] request.
+ struct FinishAcquireDevicesOptions {}
+ 
+ /// USB device description
+ #[derive(Serialize, Deserialize, Clone, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct UsbDevice {
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+     parent: Option<DeviceID>,
+@@ -117,8 +117,8 @@
+     )]
+     device_file: Option<String>,
+     /// Device properties
+-    #[serde(default, with = "as_value", skip_serializing_if = "HashMap::is_empty")]
+-    properties: HashMap<String, OwnedValue>,
++    #[serde(default, with = "as_variant", skip_serializing_if = "HashMap::is_empty")]
++    properties: HashMap<String, OwnedVariant>,
+ }
+ 
+ impl UsbDevice {
+@@ -166,7 +166,7 @@
+     }
+ 
+     /// Return the device properties.
+-    pub fn properties(&self) -> &HashMap<String, OwnedValue> {
++    pub fn properties(&self) -> &HashMap<String, OwnedVariant> {
+         &self.properties
+     }
+ }
+@@ -199,9 +199,9 @@
+ 
+ /// Device to acquire.
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ struct AcquireDevice {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     writable: bool,
+ }
+ 
+@@ -227,18 +227,18 @@
+ }
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`UsbProxy::acquire_devices`] request.
+ pub struct AcquireDevicesOptions {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     handle_token: HandleToken,
+ }
+ 
+ /// Finished device acquired.
+ #[derive(Deserialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ struct AcquiredDevice {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     success: bool,
+     #[serde(default, with = "optional")]
+     fd: Option<OwnedFd>,
+@@ -253,7 +253,7 @@
+ pub struct UsbEvent(UsbEventAction, DeviceID, UsbDevice);
+ 
+ #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Deserialize, Type)]
+-#[zvariant(signature = "s")]
++#[zbus(signature = "s")]
+ #[serde(rename_all = "lowercase")]
+ /// A USB event action.
+ pub enum UsbEventAction {
+--- upstream/src/desktop/wallpaper.rs
++++ maintained/src/desktop/wallpaper.rs
+@@ -42,9 +42,9 @@
+ use std::{fmt, os::fd::AsFd, str::FromStr};
+ 
+ use serde::{self, Deserialize, Serialize};
+-use zbus::zvariant::{
++use zbus::wire::{
+     Fd, Optional, Type,
+-    as_value::{self, optional},
++    as_variant::{self, optional},
+ };
+ 
+ use super::Request;
+@@ -53,7 +53,7 @@
+ #[cfg_attr(feature = "glib", derive(glib::Enum))]
+ #[cfg_attr(feature = "glib", enum_type(name = "AshpdSetOn"))]
+ #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, Hash, Type)]
+-#[zvariant(signature = "s")]
++#[zbus(signature = "s")]
+ #[serde(rename_all = "lowercase")]
+ /// Where to set the wallpaper on.
+ pub enum SetOn {
+@@ -110,10 +110,10 @@
+ 
+ /// Options for setting a wallpaper.
+ #[derive(Serialize, Deserialize, Type, Debug, Default)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ #[serde(rename_all = "kebab-case")]
+ pub struct WallpaperOptions {
+-    #[serde(rename = "handle_token", with = "as_value", skip_deserializing)]
++    #[serde(rename = "handle_token", with = "as_variant", skip_deserializing)]
+     handle_token: HandleToken,
+     #[serde(default, with = "optional", skip_serializing_if = "Option::is_none")]
+     show_preview: Option<bool>,
+--- upstream/src/documents/file_transfer.rs
++++ maintained/src/documents/file_transfer.rs
+@@ -34,13 +34,13 @@
+ 
+ use futures_util::Stream;
+ use serde::Serialize;
+-use zbus::zvariant::{Fd, Type, as_value::optional};
++use zbus::wire::{Fd, Type, as_variant::optional};
+ 
+ use crate::{Error, proxy::Proxy};
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+ /// Specified options for a [`FileTransfer::start_transfer`] request.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct StartTransferOptions {
+     #[serde(with = "optional", skip_serializing_if = "Option::is_none")]
+     writeable: Option<bool>,
+@@ -70,12 +70,12 @@
+ }
+ 
+ #[derive(Default, Debug, Serialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`FileTransfer::add_files`] request.
+ pub struct AddFilesOptions {}
+ 
+ #[derive(Default, Debug, Serialize, Type)]
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ /// Specified options for a [`FileTransfer::retrieve_files`] request.
+ pub struct RetrieveFilesOptions {}
+ 
+--- upstream/src/documents/mod.rs
++++ maintained/src/documents/mod.rs
+@@ -38,7 +38,7 @@
+ use enumflags2::{BitFlags, bitflags};
+ use serde::{Deserialize, Serialize};
+ use serde_repr::{Deserialize_repr, Serialize_repr};
+-use zbus::zvariant::{Fd, OwnedValue, Type};
++use zbus::wire::{Fd, OwnedVariant, Type};
+ 
+ pub use crate::app_id::DocumentID;
+ use crate::{AppID, Error, FilePath, proxy::Proxy};
+@@ -65,7 +65,7 @@
+ #[cfg_attr(feature = "glib", derive(glib::Enum))]
+ #[cfg_attr(feature = "glib", enum_type(name = "AshpdPermission"))]
+ #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, Eq, Type)]
+-#[zvariant(signature = "s")]
++#[zbus(signature = "s")]
+ #[serde(rename_all = "kebab-case")]
+ /// The possible permissions to grant to a specific application for a specific
+ /// document.
+@@ -230,11 +230,11 @@
+         flags: BitFlags<DocumentFlags>,
+         app_id: Option<&AppID>,
+         permissions: &[Permission],
+-    ) -> Result<(Vec<DocumentID>, HashMap<String, OwnedValue>), Error> {
++    ) -> Result<(Vec<DocumentID>, HashMap<String, OwnedVariant>), Error> {
+         let o_path: Vec<Fd> = o_path_fds.iter().map(Fd::from).collect();
+         let app_id = app_id.map(|id| id.as_ref()).unwrap_or("");
+         self.0
+-            .call_versioned("AddFull", &(o_path, flags, app_id, permissions), 2)
++            .call_versioned("AddFull", &(o_path, flags.bits(), app_id, permissions), 2)
+             .await
+     }
+ 
+@@ -310,13 +310,13 @@
+         flags: BitFlags<DocumentFlags>,
+         app_id: Option<&AppID>,
+         permissions: &[Permission],
+-    ) -> Result<(DocumentID, HashMap<String, OwnedValue>), Error> {
++    ) -> Result<(DocumentID, HashMap<String, OwnedVariant>), Error> {
+         let app_id = app_id.map(|id| id.as_ref()).unwrap_or("");
+         let filename = FilePath::new(filename)?;
+         self.0
+             .call_versioned(
+                 "AddNamedFull",
+-                &(Fd::from(o_path_fd), filename, flags, app_id, permissions),
++                &(Fd::from(o_path_fd), filename, flags.bits(), app_id, permissions),
+                 3,
+             )
+             .await
+@@ -529,7 +529,7 @@
+ mod tests {
+     use std::collections::HashMap;
+ 
+-    use zbus::zvariant::Type;
++    use zbus::wire::Type;
+ 
+     use crate::{FilePath, app_id::DocumentID, documents::Permission};
+ 
+--- upstream/src/flatpak/development.rs
++++ maintained/src/flatpak/development.rs
+@@ -7,7 +7,7 @@
+ use enumflags2::{BitFlags, bitflags};
+ use futures_util::Stream;
+ use serde_repr::{Deserialize_repr, Serialize_repr};
+-use zbus::zvariant::{Fd, Type};
++use zbus::wire::{Fd, Type};
+ 
+ use crate::{Error, FilePath, Pid, proxy::Proxy};
+ 
+@@ -96,7 +96,7 @@
+             .collect::<Result<Vec<FilePath>, _>>()?;
+         let fds: HashMap<u32, Fd> = fds.iter().map(|(k, val)| (*k, Fd::from(val))).collect();
+         self.0
+-            .call("HostCommand", &(cwd_path, argv, fds, envs, flags))
++            .call("HostCommand", &(cwd_path, argv, fds, envs, flags.bits()))
+             .await
+     }
+ 
+--- upstream/src/flatpak/mod.rs
++++ maintained/src/flatpak/mod.rs
+@@ -37,9 +37,9 @@
+ use futures_util::Stream;
+ use serde::Serialize;
+ use serde_repr::{Deserialize_repr, Serialize_repr};
+-use zbus::zvariant::{
++use zbus::wire::{
+     self, Fd, OwnedObjectPath, Type,
+-    as_value::{self, optional},
++    as_variant::{self, optional},
+ };
+ 
+ use crate::{Error, FilePath, Pid, flatpak::update_monitor::UpdateMonitor, proxy::Proxy};
+@@ -107,39 +107,39 @@
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+ /// Specified options for a [`Flatpak::spawn`] request.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ #[serde(rename_all = "kebab-case")]
+ pub struct SpawnOptions {
+     /// A list of filenames for files inside the sandbox that will be exposed to
+     /// the new sandbox, for reading and writing.
+-    #[serde(with = "as_value", skip_serializing_if = "Vec::is_empty")]
++    #[serde(with = "as_variant", skip_serializing_if = "Vec::is_empty")]
+     sandbox_expose: Vec<String>,
+     /// A list of filenames for files inside the sandbox that will be exposed to
+     /// the new sandbox, read-only.
+-    #[serde(with = "as_value", skip_serializing_if = "Vec::is_empty")]
++    #[serde(with = "as_variant", skip_serializing_if = "Vec::is_empty")]
+     sandbox_expose_ro: Vec<String>,
+     /// A list of file descriptor for files inside the sandbox that will be
+     /// exposed to the new sandbox, for reading and writing.
+-    #[serde(with = "as_value", skip_serializing_if = "Vec::is_empty")]
+-    sandbox_expose_fd: Vec<zvariant::OwnedFd>,
++    #[serde(with = "as_variant", skip_serializing_if = "Vec::is_empty")]
++    sandbox_expose_fd: Vec<wire::OwnedFd>,
+     /// A list of file descriptor for files inside the sandbox that will be
+     /// exposed to the new sandbox, read-only.
+-    #[serde(with = "as_value", skip_serializing_if = "Vec::is_empty")]
+-    sandbox_expose_fd_ro: Vec<zvariant::OwnedFd>,
++    #[serde(with = "as_variant", skip_serializing_if = "Vec::is_empty")]
++    sandbox_expose_fd_ro: Vec<wire::OwnedFd>,
+     /// Flags affecting the created sandbox.
+-    #[serde(with = "optional", skip_serializing_if = "Option::is_none")]
++    #[serde(with = "crate::flags::optional", skip_serializing_if = "Option::is_none")]
+     sandbox_flags: Option<BitFlags<SandboxFlags>>,
+     /// A list of environment variables to remove.
+-    #[serde(with = "as_value", skip_serializing_if = "Vec::is_empty")]
++    #[serde(with = "as_variant", skip_serializing_if = "Vec::is_empty")]
+     unset_env: Vec<String>,
+     /// A file descriptor of the directory that  will be used as `/usr` in the
+     /// new sandbox.
+     #[serde(with = "optional", skip_serializing_if = "Option::is_none")]
+-    usr_fd: Option<zvariant::OwnedFd>,
++    usr_fd: Option<wire::OwnedFd>,
+     /// A file descriptor of the directory that  will be used as `/app` in the
+     /// new sandbox.
+     #[serde(with = "optional", skip_serializing_if = "Option::is_none")]
+-    app_fd: Option<zvariant::OwnedFd>,
++    app_fd: Option<wire::OwnedFd>,
+ }
+ 
+ impl SpawnOptions {
+@@ -180,7 +180,7 @@
+     ) -> Self {
+         self.sandbox_expose_fd = sandbox_expose_fd
+             .into()
+-            .map(|a| a.into_iter().map(zvariant::OwnedFd::from).collect())
++            .map(|a| a.into_iter().map(wire::OwnedFd::from).collect())
+             .unwrap_or_default();
+         self
+     }
+@@ -194,7 +194,7 @@
+     ) -> Self {
+         self.sandbox_expose_fd_ro = sandbox_expose_fd_ro
+             .into()
+-            .map(|a| a.into_iter().map(zvariant::OwnedFd::from).collect())
++            .map(|a| a.into_iter().map(wire::OwnedFd::from).collect())
+             .unwrap_or_default();
+         self
+     }
+@@ -241,7 +241,7 @@
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+ /// Specified options for a [`Flatpak::create_update_monitor`] request.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct CreateUpdateMonitorOptions {}
+ 
+ /// The interface exposes some interactions with Flatpak on the host to the
+@@ -360,7 +360,7 @@
+             .collect::<Result<Vec<FilePath>, _>>()?;
+         let fds: HashMap<u32, Fd> = fds.iter().map(|(k, val)| (*k, Fd::from(val))).collect();
+         self.0
+-            .call("Spawn", &(cwd_path, argv, fds, envs, flags, options))
++            .call("Spawn", &(cwd_path, argv, fds, envs, flags.bits(), options))
+             .await
+     }
+ 
+@@ -397,7 +397,7 @@
+     #[doc(alias = "supports")]
+     pub async fn supported_features(&self) -> Result<BitFlags<SupportsFlags>, Error> {
+         self.0
+-            .property_versioned::<BitFlags<SupportsFlags>>("supports", 3)
++            .property_flags_versioned::<SupportsFlags>("supports", 3)
+             .await
+     }
+ }
+--- upstream/src/flatpak/update_monitor.rs
++++ maintained/src/flatpak/update_monitor.rs
+@@ -29,28 +29,28 @@
+ use futures_util::Stream;
+ use serde::{Deserialize, Serialize};
+ use serde_repr::{Deserialize_repr, Serialize_repr};
+-use zbus::zvariant::{
++use zbus::wire::{
+     ObjectPath, Optional, Type,
+-    as_value::{self, optional},
++    as_variant::{self, optional},
+ };
+ 
+ use crate::{Error, WindowIdentifier, proxy::Proxy};
+ 
+ #[derive(Serialize, Type, Debug, Default)]
+ /// Specified options for a [`UpdateMonitor::update`] request.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct UpdateOptions {}
+ 
+ #[derive(Deserialize, Type, Debug)]
+ /// A response containing the update information when an update is available.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ #[serde(rename_all = "kebab-case")]
+ pub struct UpdateInfo {
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     running_commit: String,
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     local_commit: String,
+-    #[serde(with = "as_value")]
++    #[serde(with = "as_variant")]
+     remote_commit: String,
+ }
+ 
+@@ -93,7 +93,7 @@
+ 
+ #[derive(Deserialize, Type, Debug)]
+ /// A response of the update progress signal.
+-#[zvariant(signature = "dict")]
++#[zbus(signature = "dict")]
+ pub struct UpdateProgress {
+     #[serde(default, with = "optional")]
+     n_ops: Option<u32>,
+--- upstream/src/window_identifier/mod.rs
++++ maintained/src/window_identifier/mod.rs
+@@ -12,7 +12,7 @@
+ #[cfg(feature = "raw_handle")]
+ use raw_window_handle::{RawDisplayHandle, RawWindowHandle};
+ use serde::{Deserialize, Serialize, ser::Serializer};
+-use zbus::zvariant::Type;
++use zbus::wire::Type;
+ /// Most portals interact with the user by showing dialogs.
+ ///
+ /// These dialogs should generally be placed on top of the application window
+@@ -89,7 +89,7 @@
+ /// /// Open some portals
+ /// ```
+ #[derive(Type)]
+-#[zvariant(signature = "s")]
++#[zbus(signature = "s")]
+ #[doc(alias = "XdpParent")]
+ #[non_exhaustive]
+ pub enum WindowIdentifier {
+@@ -104,7 +104,7 @@
+     Raw(WindowIdentifierType),
+ }
+ 
+-impl zbus::zvariant::NoneValue for WindowIdentifier {
++impl zbus::wire::NoneValue for WindowIdentifier {
+     type NoneType = String;
+ 
+     fn null_value() -> Self::NoneType {
+@@ -112,7 +112,7 @@
+     }
+ }
+ 
+-impl zbus::zvariant::NoneValue for &WindowIdentifier {
++impl zbus::wire::NoneValue for &WindowIdentifier {
+     type NoneType = String;
+ 
+     fn null_value() -> Self::NoneType {
+@@ -278,7 +278,7 @@
+ 
+ /// Supported WindowIdentifier kinds
+ #[derive(Debug, Clone, PartialEq, Eq, Type)]
+-#[zvariant(signature = "s")]
++#[zbus(signature = "s")]
+ pub enum WindowIdentifierType {
+     /// X11.
+     X11(std::os::raw::c_ulong),
+@@ -293,7 +293,7 @@
+     }
+ }
+ 
+-impl zbus::zvariant::NoneValue for WindowIdentifierType {
++impl zbus::wire::NoneValue for WindowIdentifierType {
+     type NoneType = String;
+ 
+     fn null_value() -> String {
