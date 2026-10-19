@@ -1,0 +1,10 @@
+# Execution plan
+
+1. Under the user approval of 2026-10-19, inspect live SlideMap, document labels/notes mapping, navigation/assembler and transition event contract. This child follows the transition compositor; coordinate ownership of shared descriptors, rather than duplicating them.
+2. Build clean-room compiled fixtures covering manual overlays, overlay-specific notes, multiple notes, missing labels, positive/zero/removed /Dur and built-in animate/animatevalue. Keep sources plus documented build command; ordinary tests should not require a local full TeX installation if fixtures are checked in.
+3. Write behavior tests against current mapping before modifying it. Add /Dur parser tests distinguishing absence, zero, positive, invalid and indirect values. Define pure monotonic scheduler state and epoch invalidation with fake-clock tests.
+4. Connect first-visible/settled audience events, latest navigation identity and next-step commands. Positive dwell begins at successful Settled plus /Dur (PDF Reference 1.4 Figure 8.1), with a full remaining dwell if paused during transition; zero yields to the next UI turn. Add the single contextual auto-play pause/resume action with localization/focus/pressed states; preserve talk timer behavior.
+5. Test modal/focus loss, blank/unblank, annotation, Stop/restart, reload, window replacement, render failure and final step. Check zero-duration scheduling yields to input and paints every step without an unbounded loop.
+6. Add bounded unsupported-active-content diagnostics and compatibility documentation. No generic JS runtime, conversion wizard or extra animation settings.
+7. Run `just ci`, `just check-shell`, applicable native PDF tests and transition-child regressions affected by shared changes. Capture native positive/zero-duration fixtures and pause/interruption on the assigned audience display.
+8. Parent acceptance compares both ordinary defense.pdf and the broader regression deck. Record actual support and NOT_RUN cases. Hand completed app behavior to version child.
