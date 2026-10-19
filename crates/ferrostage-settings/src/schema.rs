@@ -8,6 +8,7 @@ use ferrostage_core::MonitorRole;
 use ferrostage_render::{L1_GPU_BUDGET_MIB, L2_CPU_BUDGET_MIB, L3_THUMB_BUDGET_MIB};
 use serde::Serialize;
 use serde::Serializer;
+use std::collections::{BTreeMap, BTreeSet};
 
 /// Writable schema produced by this crate.
 pub const SCHEMA_VERSION: i64 = 1;
@@ -156,6 +157,9 @@ pub struct GeneralSettings {
     pub recent_files_limit: u32,
     /// Recent document paths. Task 07 maintains the list.
     pub recent_files: Vec<String>,
+    /// Last successful open time per recent path, in nonnegative Unix seconds.
+    /// Missing entries have no known open time.
+    pub recent_opened_at: BTreeMap<String, i64>,
     /// Presenter debug overlay. Task 08 draws it.
     pub debug_overlay: bool,
 }
@@ -170,8 +174,32 @@ impl Default for GeneralSettings {
             reopen_last_document: false,
             recent_files_limit: 10,
             recent_files: Vec::new(),
+            recent_opened_at: BTreeMap::new(),
             debug_overlay: false,
         }
+    }
+}
+
+impl GeneralSettings {
+    /// Record a successful open and maintain the bounded, deduplicated MRU list.
+    /// A negative timestamp leaves the opened path's time unknown.
+    pub fn record_recent_file(&mut self, path: String, opened_at: i64) {
+        self.recent_files.insert(0, path.clone());
+        let mut seen = BTreeSet::new();
+        self.recent_files.retain(|path| seen.insert(path.clone()));
+        self.recent_files
+            .truncate(usize::try_from(self.recent_files_limit).unwrap_or(0));
+        if opened_at >= 0 {
+            self.recent_opened_at.insert(path, opened_at);
+        } else {
+            self.recent_opened_at.remove(&path);
+        }
+        self.prune_recent_opened_at();
+    }
+
+    pub(crate) fn prune_recent_opened_at(&mut self) {
+        self.recent_opened_at
+            .retain(|path, _| self.recent_files.contains(path));
     }
 }
 

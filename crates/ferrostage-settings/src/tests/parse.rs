@@ -272,6 +272,96 @@ fn recent_files_are_deduped_and_truncated() {
 }
 
 #[test]
+fn recent_opened_times_are_optional_and_validate_each_leaf() {
+    let mut old: toml::Table = toml::to_string(&Settings::default())
+        .unwrap()
+        .parse()
+        .unwrap();
+    old.get_mut("general")
+        .unwrap()
+        .as_table_mut()
+        .unwrap()
+        .remove("recent_opened_at");
+    let loaded = from_toml(&old.to_string()).unwrap();
+    assert!(loaded.settings.general.recent_opened_at.is_empty());
+    assert!(loaded.warnings.is_empty());
+    assert!(!loaded.needs_writeback);
+
+    for invalid in ["false", "42", "[]", "'yesterday'"] {
+        let loaded = from_toml(&format!(
+            "[general]\nrecent_files = ['a']\nrecent_opened_at = {invalid}"
+        ))
+        .unwrap();
+        assert_eq!(loaded.settings.general.recent_files, ["a"]);
+        assert!(loaded.settings.general.recent_opened_at.is_empty());
+        assert!(
+            loaded
+                .warnings
+                .iter()
+                .any(|warning| { warning.key == "general.recent_opened_at" })
+        );
+    }
+    let loaded = from_toml(
+        "[general]\nrecent_files_limit = 5\nrecent_files = ['epoch', 'large', 'negative', 'text', 'float']\n\
+         [general.recent_opened_at]\nepoch = 0\nlarge = 9223372036854775807\nnegative = -1\ntext = 'today'\nfloat = 1.5",
+    )
+    .unwrap();
+    assert_eq!(
+        loaded.settings.general.recent_opened_at,
+        [("epoch".to_owned(), 0), ("large".to_owned(), i64::MAX)].into()
+    );
+    for key in ["negative", "text", "float"] {
+        assert!(
+            loaded
+                .warnings
+                .iter()
+                .any(|warning| { warning.key == format!("general.recent_opened_at.{key}") })
+        );
+    }
+    assert_eq!(loaded.warnings.len(), 3);
+}
+
+#[test]
+fn recent_opened_times_follow_effective_deduplicated_path_limit() {
+    let loaded = from_toml(
+        "[general]\nrecent_files_limit = 2\nrecent_files = ['a', 'b', 'a', 'c']\n\
+         [general.recent_opened_at]\na = 100\nb = 200\nc = 300\norphan = 400",
+    )
+    .unwrap();
+    assert_eq!(loaded.settings.general.recent_files, ["a", "b"]);
+    assert_eq!(
+        loaded.settings.general.recent_opened_at,
+        [("a".to_owned(), 100), ("b".to_owned(), 200)].into()
+    );
+    assert!(loaded.warnings.is_empty());
+}
+
+#[test]
+fn record_recent_file_updates_one_time_and_prunes_history() {
+    let mut general = Settings::default().general;
+    general.recent_files_limit = 3;
+    general.recent_files = vec!["a".into(), "a".into(), "b".into(), "c".into()];
+    general.recent_opened_at = [("a".into(), 10), ("b".into(), 20), ("orphan".into(), 30)].into();
+    general.record_recent_file("b".into(), 100);
+    assert_eq!(general.recent_files, ["b", "a", "c"]);
+    assert_eq!(
+        general.recent_opened_at,
+        [("a".into(), 10), ("b".into(), 100)].into()
+    );
+
+    general.recent_files_limit = 2;
+    general.record_recent_file("new".into(), 200);
+    assert_eq!(general.recent_files, ["new", "b"]);
+    assert_eq!(
+        general.recent_opened_at,
+        [("new".into(), 200), ("b".into(), 100)].into()
+    );
+    general.record_recent_file("new".into(), -1);
+    assert!(!general.recent_opened_at.contains_key("new"));
+    assert_eq!(general.recent_opened_at.get("b"), Some(&100));
+}
+
+#[test]
 fn keybinding_conflicts_are_recorded_and_not_resolved() {
     let outcome = from_toml(
         r#"

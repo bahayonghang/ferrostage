@@ -2,6 +2,39 @@
 
 FerroStage does not use a database, an ORM, or database migrations. Settings schema compatibility belongs to `ferrostage-settings`.
 
+## Recent successful-open metadata
+
+### 1. Scope / Trigger
+Apply when recording, loading, trimming or clearing recent file history. A last-opened time is an application event, not the PDF's modification/access time.
+
+### 2. Signatures
+Keep `schema_version = 1` and `GeneralSettings::recent_files: Vec<String>`. Optional `recent_opened_at: BTreeMap<String, i64>` stores nonnegative UTC Unix seconds keyed by the same exact path strings. `GeneralSettings::record_recent_file(path: String, opened_at: i64)` updates MRU order/time, truncates and removes orphan metadata.
+
+### 3. Contracts
+Missing timestamps default to an empty map. Parse effective recent paths before metadata so dedup/limit pruning applies to both. Invalid table/individual timestamp values fall back locally with warnings; unrelated valid values survive. Replace the entire known timestamp-map leaf on save, rather than recursively preserving removed path keys. Preserve unknown general siblings and other settings metadata.
+
+Record only after the imported document and core state accept the candidate, under the existing writable policy. Failed/cancelled opens and reload do not change history. Save failure retains the successful runtime event with Unsaved/Retry. Clear history clears both containers; limit edits prune both through existing settings validation. Old consumers retain the unchanged string path list and preserve the unknown map, but cannot update its event times.
+
+### 4. Validation / Error Matrix
+
+| Input/action | Result |
+| --- | --- |
+| Old v1 settings or missing per-path timestamp | Preserve paths; UI shows localized unknown |
+| Negative/noninteger timestamp or invalid map type | Diagnose and fall back locally |
+| Orphan path metadata or limit reduction | Prune metadata to effective history |
+| Clear then save/reload | Both path list and map stay empty |
+| Successful open plus failed save | Runtime time retained, dirty/Retry remains truthful |
+| Future read-only schema | No history mutation or write |
+
+### 5. Good / Base / Bad Cases
+Good: record a new successful open and retain valid timestamps for other retained paths. Base: old paths remain usable with unknown times. Bad: fill migration time/file mtime, update history before PDF acceptance, or resurrect cleared map keys through deep merge.
+
+### 6. Tests Required
+Cover omitted/mixed-invalid map, effective-path pruning, record/reopen ordering, whole-leaf round-trip with unknown siblings, clear, failed save/retry and read-only policy. Display conversion must handle nonnegative but unrepresentable i64 values without panicking.
+
+### 7. Wrong vs Correct
+Wrong: replace recent string paths with a new incompatible object array or read file metadata during rendering. Correct: keep the v1 path list, store explicit successful-open events in an optional map and capture display-ready metadata before rendering.
+
 ## What is stored
 
 | Data | Where | Format |

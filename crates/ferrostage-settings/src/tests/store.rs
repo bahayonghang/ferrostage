@@ -66,6 +66,8 @@ vendor_meta = { keep = true }
 [general]
 language = "zh-CN"
 extra = "keep-me"
+recent_files = ['C:\talks\first.pdf', 'unknown.pdf']
+recent_opened_at = { 'C:\talks\first.pdf' = 1792370000 }
 
 [display]
 audience_fullscreen = true
@@ -110,6 +112,16 @@ marker = "b"
     assert_eq!(saved["vendor_meta"]["keep"].as_bool(), Some(true));
     assert_eq!(saved["general"]["extra"].as_str(), Some("keep-me"));
     assert_eq!(saved["general"]["language"].as_str(), Some("en-US"));
+    let reloaded = store.load().expect("reload");
+    assert_eq!(
+        reloaded.settings.general.recent_opened_at,
+        [(r"C:\talks\first.pdf".into(), 1792370000)].into()
+    );
+    assert_eq!(
+        reloaded.settings.general.recent_files,
+        [r"C:\talks\first.pdf", "unknown.pdf"]
+    );
+    assert_eq!(reloaded.settings.schema_version, 1);
     assert_eq!(saved["display"]["custom_flag"].as_integer(), Some(7));
     let monitors = saved["display"]["monitors"].as_array().expect("monitors");
     assert_eq!(monitors[0]["marker"].as_str(), Some("first"));
@@ -127,6 +139,49 @@ marker = "b"
         .expect("new monitor");
     assert!(created.get("marker").is_none());
     assert!(created.as_table().expect("table").len() == 3);
+}
+
+#[test]
+fn recent_time_map_is_replaced_after_pruning_and_clearing() {
+    let scratch = Scratch::new("recent-time-replacement");
+    let store = SettingsStore::at(scratch.child("settings.toml"));
+    fs::write(
+        store.path(),
+        "schema_version = 1\nvendor = 'keep'\n[general]\nextra = 7\nrecent_files_limit = 1\n\
+         recent_files = ['first.pdf', 'trimmed.pdf']\n\
+         [general.recent_opened_at]\n'first.pdf' = 10\n 'trimmed.pdf' = 20\n'orphan.pdf' = 30",
+    )
+    .unwrap();
+    let mut session = crate::SettingsSession::from_outcome(store.load().unwrap());
+    assert_eq!(session.settings.general.recent_files, ["first.pdf"]);
+    assert_eq!(
+        session.settings.general.recent_opened_at,
+        [("first.pdf".into(), 10)].into()
+    );
+    store.save_session(&mut session).unwrap();
+    let saved = store.load().unwrap();
+    let map = saved.raw_table["general"]["recent_opened_at"]
+        .as_table()
+        .unwrap();
+    assert_eq!(map.len(), 1);
+    assert_eq!(map["first.pdf"].as_integer(), Some(10));
+    assert_eq!(saved.raw_table["vendor"].as_str(), Some("keep"));
+    assert_eq!(saved.raw_table["general"]["extra"].as_integer(), Some(7));
+
+    session.settings.general.recent_files.clear();
+    session.settings.general.recent_opened_at.clear();
+    session.note_edit();
+    store.save_session(&mut session).unwrap();
+    let saved = store.load().unwrap();
+    assert!(saved.settings.general.recent_files.is_empty());
+    assert!(saved.settings.general.recent_opened_at.is_empty());
+    assert!(
+        saved.raw_table["general"]["recent_opened_at"]
+            .as_table()
+            .unwrap()
+            .is_empty()
+    );
+    assert_eq!(saved.raw_table["general"]["extra"].as_integer(), Some(7));
 }
 
 #[test]
@@ -195,6 +250,10 @@ fn failed_session_save_keeps_edits_and_retry_clears_dirty_state() {
     session.settings.general.ui_font_family = "Example Family".into();
     session.settings.general.ui_font_size = 22;
     session.settings.display.audience_click_to_advance = false;
+    session
+        .settings
+        .general
+        .record_recent_file("recent.pdf".into(), 1792371000);
     session.note_edit();
     let original_tree = session.raw_table.clone();
     assert!(matches!(
@@ -205,6 +264,11 @@ fn failed_session_save_keeps_edits_and_retry_clears_dirty_state() {
     assert_eq!(session.settings.general.ui_font_family, "Example Family");
     assert_eq!(session.settings.general.ui_font_size, 22);
     assert!(!session.settings.display.audience_click_to_advance);
+    assert_eq!(session.settings.general.recent_files, ["recent.pdf"]);
+    assert_eq!(
+        session.settings.general.recent_opened_at.get("recent.pdf"),
+        Some(&1792371000)
+    );
     assert_eq!(session.raw_table, original_tree);
     assert!(session.dirty);
     assert!(session.save_error.is_some());
@@ -224,6 +288,12 @@ fn failed_session_save_keeps_edits_and_retry_clears_dirty_state() {
     assert_eq!(
         store.load().expect("reload").settings.timer.target_minutes,
         20
+    );
+    let reloaded = store.load().expect("reload");
+    assert_eq!(reloaded.settings.general.recent_files, ["recent.pdf"]);
+    assert_eq!(
+        reloaded.settings.general.recent_opened_at.get("recent.pdf"),
+        Some(&1792371000)
     );
 }
 
@@ -257,7 +327,7 @@ fn legacy_save_drops_mapped_keys_and_keeps_indexes() {
 fn future_version_refuses_save_and_keeps_the_bytes() {
     let scratch = Scratch::new("future");
     let path = scratch.child("settings.toml");
-    let body = "schema_version = 2\nvendor = \"keep\"\n\n[general]\nextra = true\nlanguage = \"en-US\"\n\n[[display.monitors]]\nid = \"A\"\nrole = \"presenter\"\nsecret = 9\n";
+    let body = "schema_version = 2\nvendor = \"keep\"\n\n[general]\nextra = true\nlanguage = \"en-US\"\nrecent_files = ['old.pdf']\nrecent_opened_at = { 'old.pdf' = 10 }\n\n[[display.monitors]]\nid = \"A\"\nrole = \"presenter\"\nsecret = 9\n";
     fs::write(&path, body).expect("fixture");
     let before = fs::read(&path).expect("before");
     let store = SettingsStore::at(&path);
@@ -265,6 +335,14 @@ fn future_version_refuses_save_and_keeps_the_bytes() {
     assert!(!outcome.write_policy.is_writable());
     outcome.settings.general.language = "zh-CN".to_owned();
     outcome.settings.display.audience_click_to_advance = false;
+    assert_eq!(
+        outcome.settings.general.recent_opened_at.get("old.pdf"),
+        Some(&10)
+    );
+    outcome
+        .settings
+        .general
+        .record_recent_file("new.pdf".into(), 20);
     let error = store.save(&outcome).expect_err("readonly");
     assert!(matches!(error, crate::SaveError::ReadOnly { .. }));
     let after = fs::read(&path).expect("after");

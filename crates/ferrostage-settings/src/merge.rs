@@ -58,6 +58,18 @@ fn merge_general(doc: &mut toml::Table, general: &GeneralSettings) -> Result<(),
         table.insert("reopen_last_document".to_owned(), reopen);
         table.insert("recent_files_limit".to_owned(), limit);
         table.insert("recent_files".to_owned(), recent);
+        // The path map is one known leaf, so cleared/pruned paths cannot return
+        // through the raw document's unknown-data preservation.
+        table.insert(
+            "recent_opened_at".to_owned(),
+            Value::Table(
+                general
+                    .recent_opened_at
+                    .iter()
+                    .map(|(path, seconds)| (path.clone(), Value::Integer(*seconds)))
+                    .collect(),
+            ),
+        );
         table.insert("debug_overlay".to_owned(), debug);
     });
     Ok(())

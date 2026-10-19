@@ -30,7 +30,8 @@ pub(super) fn parse_general(
         *RECENT_FILES_LIMIT_RANGE.end(),
         warnings,
     );
-    GeneralSettings {
+    let recent_files = parse_recent_files(section, recent_files_limit, warnings);
+    let mut general = GeneralSettings {
         language: parse_language(section, &defaults.language, warnings),
         theme: parse_theme(section, defaults.theme, warnings),
         ui_font_family: parse_ui_font_family(section, warnings),
@@ -51,7 +52,8 @@ pub(super) fn parse_general(
             warnings,
         ),
         recent_files_limit,
-        recent_files: parse_recent_files(section, recent_files_limit, warnings),
+        recent_files,
+        recent_opened_at: parse_recent_opened_at(section, warnings),
         debug_overlay: parse_bool(
             section,
             "debug_overlay",
@@ -59,7 +61,40 @@ pub(super) fn parse_general(
             defaults.debug_overlay,
             warnings,
         ),
-    }
+    };
+    general.prune_recent_opened_at();
+    general
+}
+
+fn parse_recent_opened_at(
+    section: &toml::Table,
+    warnings: &mut Vec<SettingsWarning>,
+) -> BTreeMap<String, i64> {
+    let Some(value) = section.get("recent_opened_at") else {
+        return BTreeMap::new();
+    };
+    let Some(times) = value.as_table() else {
+        warn(
+            warnings,
+            "general.recent_opened_at",
+            format!("expected a table, found {}", value.type_str()),
+        );
+        return BTreeMap::new();
+    };
+    times
+        .iter()
+        .filter_map(|(path, value)| match value.as_integer() {
+            Some(seconds) if seconds >= 0 => Some((path.clone(), seconds)),
+            _ => {
+                warn(
+                    warnings,
+                    &format!("general.recent_opened_at.{path}"),
+                    "expected nonnegative integer Unix seconds; open time is unknown",
+                );
+                None
+            }
+        })
+        .collect()
 }
 
 fn parse_ui_font_family(section: &toml::Table, warnings: &mut Vec<SettingsWarning>) -> String {
