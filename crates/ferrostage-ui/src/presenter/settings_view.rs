@@ -596,8 +596,7 @@ impl Presenter {
                 }
                 if matches!(
                     field.id,
-                    "presenter.next_slide_ratio"
-                        | "presenter.notes_ratio"
+                    "presenter.notes_column_ratio"
                         | "pointer.highlighter_alpha"
                         | "pointer.laser_radius_norm"
                         | "pointer.pen_width_norm"

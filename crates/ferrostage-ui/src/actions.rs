@@ -81,8 +81,7 @@ pub(crate) enum Intent {
         options: ferrostage_document::DocumentOverrides,
     },
     Split {
-        next: f64,
-        notes: f64,
+        notes_column: f64,
         save: bool,
     },
     Next,

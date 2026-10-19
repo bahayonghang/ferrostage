@@ -233,10 +233,12 @@ impl Default for DisplaySettings {
 /// `presenter` section.
 #[derive(Clone, Debug, PartialEq, Serialize)]
 pub struct PresenterSettings {
-    /// Fraction of the presenter width used by the next-slide preview.
+    /// Legacy read-compatible value; the notes-first layout ignores it.
     pub next_slide_ratio: f64,
-    /// Fraction of the right column height used by notes.
+    /// Legacy read-compatible value; the notes-first layout ignores it.
     pub notes_ratio: f64,
+    /// Fraction of the workbench width used by the notes column.
+    pub notes_column_ratio: f64,
     /// Notes font scale relative to the default size.
     pub notes_font_scale: f64,
     /// Show the clock.
@@ -250,9 +252,9 @@ pub struct PresenterSettings {
 }
 
 impl PresenterSettings {
-    /// Normalize old small-note layouts without rewriting user settings.
-    pub fn effective_notes_ratio(&self) -> f64 {
-        self.notes_ratio.clamp(0.55, 0.8)
+    /// Clamp the notes column share without rewriting user settings.
+    pub fn effective_notes_column_ratio(&self) -> f64 {
+        self.notes_column_ratio.clamp(0.40, 0.75)
     }
 }
 
@@ -261,6 +263,7 @@ impl Default for PresenterSettings {
         Self {
             next_slide_ratio: 0.40,
             notes_ratio: 0.65,
+            notes_column_ratio: 0.60,
             notes_font_scale: 1.0,
             show_clock: true,
             show_thumbnail_strip: false,

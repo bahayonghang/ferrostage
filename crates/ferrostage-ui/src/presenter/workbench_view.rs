@@ -241,7 +241,7 @@ impl Presenter {
             .when(!matches!(surface, Surface::Thumbnail(_)), |view| {
                 view.min_h(px(70.))
             })
-            .bg(rgb(0x000000))
+            .when_some(letterbox(surface), |view, fill| view.bg(rgb(fill)))
             .relative()
             .overflow_hidden()
             .child(
@@ -764,8 +764,7 @@ impl Presenter {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) -> gpui::AnyElement {
-        let ratio = self.data.workbench.settings.next_slide_ratio as f32;
-        let notes = self.data.workbench.settings.effective_notes_ratio() as f32;
+        let ratio = self.data.workbench.settings.effective_notes_column_ratio() as f32;
         let stacked = window.viewport_size().width < px(800.);
         let mut notes_frames = self
             .data
@@ -786,13 +785,76 @@ impl Presenter {
             _ => 0,
         });
         notes_frames.dedup();
-        let mut note_panel = div()
-            .w_full()
-            .flex_shrink_0()
+        let aspect_of = |surface: Surface| {
+            self.frame(surface)
+                .map(|frame| frame.frame.width() as f32 / frame.frame.height().max(1) as f32)
+                .or_else(|| {
+                    self.textures
+                        .borrow()
+                        .frame(surface)
+                        .map(|frame| frame.width() as f32 / frame.height().max(1) as f32)
+                })
+                .unwrap_or(16. / 9.)
+        };
+        // Notes viewport measured on the previous layout. Each page is
+        // contained in it: width = min(W, H x aspect).
+        let viewport = self.notes_viewport.get();
+        let notes_measure = self.notes_viewport.clone();
+        let mut notes_scroll = div()
+            .id("notes-scroll")
+            .debug_selector(|| "notes-scroll".into())
+            .relative()
+            .flex_1()
+            .min_h_0()
+            .overflow_y_scroll()
             .flex()
             .flex_col()
             .gap(px(4.))
-            .p(px(12.))
+            .child(
+                canvas(
+                    move |bounds, window, _| {
+                        let old = notes_measure.get();
+                        if (bounds.size.width - old.width).abs() > px(1.)
+                            || (bounds.size.height - old.height).abs() > px(1.)
+                        {
+                            notes_measure.set(bounds.size);
+                            window.refresh();
+                        }
+                    },
+                    |_, _, _, _| {},
+                )
+                .absolute()
+                .size_full(),
+            );
+        if notes_frames.is_empty() {
+            notes_scroll = notes_scroll.child(
+                div()
+                    .text_color(rgb(p.muted))
+                    .child(self.locale.text("wb-no-notes")),
+            );
+        }
+        for surface in notes_frames {
+            let aspect = aspect_of(surface);
+            let page = div().flex_shrink_0().aspect_ratio(aspect);
+            let page = if !stacked && viewport.width > px(0.) && viewport.height > px(0.) {
+                page.w(viewport.width.min(viewport.height * aspect))
+            } else {
+                page.w_full()
+            };
+            notes_scroll = notes_scroll.child(page.child(self.picture(surface, false)));
+        }
+        let notes_panel = div()
+            .id("notes-panel")
+            .debug_selector(|| "notes-panel".into())
+            .when(!stacked, |view| view.w(gpui::relative(ratio)).h_full())
+            .when(stacked, |view| view.w_full().flex_1())
+            .flex_shrink_0()
+            .min_h_0()
+            .overflow_hidden()
+            .flex()
+            .flex_col()
+            .gap(px(4.))
+            .p(px(8.))
             .rounded(px(theme::RADIUS))
             .bg(rgb(p.card))
             .child(
@@ -801,38 +863,13 @@ impl Presenter {
                     .text_size(px(self.data.typography.size(12.)))
                     .text_color(rgb(p.muted))
                     .child(self.locale.text("wb-notes")),
-            );
-        if notes_frames.is_empty() {
-            note_panel = note_panel.child(
-                div()
-                    .text_color(rgb(p.muted))
-                    .child(self.locale.text("wb-no-notes")),
-            );
-        }
-        for surface in notes_frames {
-            let aspect = self
-                .frame(surface)
-                .map(|frame| frame.frame.width() as f32 / frame.frame.height().max(1) as f32)
-                .or_else(|| {
-                    self.textures
-                        .borrow()
-                        .frame(surface)
-                        .map(|frame| frame.width() as f32 / frame.height().max(1) as f32)
-                })
-                .unwrap_or(16. / 9.);
-            note_panel = note_panel.child(
-                div()
-                    .w_full()
-                    .flex_shrink_0()
-                    .aspect_ratio(aspect)
-                    .child(self.picture(surface, false)),
-            );
-        }
+            )
+            .child(notes_scroll);
+        let current_aspect = aspect_of(Surface::Current);
         let can_drag = self.data.workbench.writable && !self.data.busy;
+        let dragging = self.split_drag;
         let split_bounds = Rc::new(Cell::new(gpui::Bounds::<gpui::Pixels>::default()));
-        let next_bounds = Rc::new(Cell::new(gpui::Bounds::<gpui::Pixels>::default()));
         let split_measure = split_bounds.clone();
-        let next_measure = next_bounds.clone();
         let content = div()
             .id("workbench-splits")
             .debug_selector(|| "workbench-splits".into())
@@ -840,41 +877,24 @@ impl Presenter {
             .flex_1()
             .min_h_0()
             .flex()
-            .when(stacked, |view| view.flex_col())
-            .gap(px(6.))
+            .when(stacked, |view| view.flex_col().gap(px(6.)))
             .on_mouse_move(
                 cx.listener(move |this, event: &gpui::MouseMoveEvent, _, cx| {
-                    if event.pressed_button != Some(MouseButton::Left) {
+                    if event.pressed_button != Some(MouseButton::Left) || !this.split_drag {
                         return;
                     }
-                    if let Some(vertical) = this.split_drag {
-                        let bounds = split_bounds.get();
-                        let right = next_bounds.get();
-                        let next = if !vertical {
-                            (1. - (event.position.x - bounds.origin.x) / bounds.size.width)
-                                .clamp(0.15, 0.65) as f64
-                        } else {
-                            this.data.workbench.settings.next_slide_ratio
-                        };
-                        let notes = if vertical {
-                            // The divider's center includes its 6px bar and
-                            // adjacent 4px gaps; only pane heights own the ratio.
-                            (1. - ((event.position.y - right.origin.y - px(7.))
-                                / (right.size.height - px(14.)).max(px(1.))))
-                            .clamp(0.55, 0.8) as f64
-                        } else {
-                            this.data.workbench.settings.notes_ratio
-                        };
-                        actions::dispatch(
-                            &this.shell,
-                            Intent::Split {
-                                next,
-                                notes,
-                                save: false,
-                            },
-                            cx,
-                        );
-                    }
+                    let bounds = split_bounds.get();
+                    let notes_column = (1.
+                        - (event.position.x - bounds.origin.x) / bounds.size.width.max(px(1.)))
+                    .clamp(0.40, 0.75) as f64;
+                    actions::dispatch(
+                        &this.shell,
+                        Intent::Split {
+                            notes_column,
+                            save: false,
+                        },
+                        cx,
+                    );
                 }),
             )
             .on_mouse_up(
@@ -895,59 +915,32 @@ impl Presenter {
             )
             .child(
                 div()
-                    .id("current-pane")
-                    .debug_selector(|| "current-pane".into())
-                    .when(!stacked, |view| view.w(gpui::relative(1. - ratio)).h_full())
+                    .id("slides-column")
+                    .debug_selector(|| "slides-column".into())
+                    .when(!stacked, |view| view.flex_1().min_w_0().h_full())
                     .when(stacked, |view| view.w_full().flex_1().min_h_0())
-                    .overflow_hidden()
-                    .child(self.picture(Surface::Current, true)),
-            )
-            .when(!stacked, |view| {
-                view.child(
-                    div()
-                        .id("horizontal-split")
-                        .debug_selector(|| "horizontal-split".into())
-                        .w(px(6.))
-                        .h_full()
-                        .bg(rgb(p.border))
-                        .on_mouse_down(
-                            MouseButton::Left,
-                            cx.listener(move |this, _, _, _| {
-                                if can_drag {
-                                    this.split_drag = Some(false);
-                                }
-                            }),
-                        ),
-                )
-            })
-            .child(
-                div()
-                    .id("next-notes-pane")
-                    .debug_selector(|| "next-notes-pane".into())
-                    .relative()
-                    .flex_1()
-                    .min_w_0()
-                    .when(!stacked, |view| view.h_full())
-                    .when(stacked, |view| view.w_full().flex_1().min_h_0())
-                    .overflow_hidden()
                     .flex()
                     .flex_col()
                     .gap(px(4.))
                     .child(
-                        canvas(
-                            move |bounds, _, _| next_measure.set(bounds),
-                            |_, _, _, _| {},
-                        )
-                        .absolute()
-                        .size_full(),
+                        div()
+                            .id("current-pane")
+                            .debug_selector(|| "current-pane".into())
+                            .when(!stacked, |view| {
+                                view.w_full()
+                                    .flex_shrink_0()
+                                    .aspect_ratio(current_aspect)
+                                    .max_h(gpui::relative(0.65))
+                            })
+                            .when(stacked, |view| view.w_full().flex_1().min_h_0())
+                            .overflow_hidden()
+                            .child(self.picture(Surface::Current, true)),
                     )
                     .child(
                         div()
                             .id("next-pane")
                             .debug_selector(|| "next-pane".into())
-                            .flex_grow((1. - notes).max(0.15))
-                            .flex_shrink(1.)
-                            .flex_basis(gpui::relative(0.))
+                            .flex_1()
                             .min_h_0()
                             .overflow_hidden()
                             .flex()
@@ -965,40 +958,41 @@ impl Presenter {
                                     .min_h_0()
                                     .child(self.picture(Surface::Next, false)),
                             ),
-                    )
-                    .child(
-                        div()
-                            .id("vertical-split")
-                            .debug_selector(|| "vertical-split".into())
-                            .flex_shrink_0()
-                            .h(px(6.))
-                            .w_full()
-                            .bg(rgb(p.border))
-                            .on_mouse_down(
-                                MouseButton::Left,
-                                cx.listener(move |this, _, _, _| {
-                                    if can_drag {
-                                        this.split_drag = Some(true);
-                                    }
-                                }),
-                            ),
-                    )
-                    .child(
-                        div()
-                            .id("notes-panel")
-                            .debug_selector(|| "notes-panel".into())
-                            .flex_grow(notes)
-                            .flex_shrink(1.)
-                            .flex_basis(gpui::relative(0.))
-                            .min_h_0()
-                            .overflow_y_scroll()
-                            .flex()
-                            .flex_col()
-                            .rounded(px(theme::RADIUS))
-                            .bg(rgb(p.card))
-                            .child(note_panel),
                     ),
-            );
+            )
+            .when(!stacked, |view| {
+                view.child(
+                    div()
+                        .id("column-split")
+                        .debug_selector(|| "column-split".into())
+                        .group("column-split")
+                        .flex_shrink_0()
+                        .w(px(8.))
+                        .h_full()
+                        .flex()
+                        .justify_center()
+                        .when(can_drag, |view| view.cursor_col_resize())
+                        .child(
+                            div()
+                                .w(px(1.))
+                                .h_full()
+                                .bg(rgb(if dragging { p.focus } else { p.border }))
+                                .when(can_drag, |view| {
+                                    view.group_hover("column-split", |style| style.bg(rgb(p.focus)))
+                                }),
+                        )
+                        .on_mouse_down(
+                            MouseButton::Left,
+                            cx.listener(move |this, _, _, cx| {
+                                if can_drag {
+                                    this.split_drag = true;
+                                    cx.notify();
+                                }
+                            }),
+                        ),
+                )
+            })
+            .child(notes_panel);
         let mut view = div()
             .id("workbench")
             .debug_selector(|| "workbench".into())
@@ -1052,12 +1046,11 @@ impl Presenter {
         view.into_any_element()
     }
     fn finish_split(&mut self, cx: &mut Context<Self>) {
-        if self.split_drag.take().is_some() {
+        if std::mem::take(&mut self.split_drag) {
             actions::dispatch(
                 &self.shell,
                 Intent::Split {
-                    next: self.data.workbench.settings.next_slide_ratio,
-                    notes: self.data.workbench.settings.notes_ratio,
+                    notes_column: self.data.workbench.settings.notes_column_ratio,
                     save: true,
                 },
                 cx,

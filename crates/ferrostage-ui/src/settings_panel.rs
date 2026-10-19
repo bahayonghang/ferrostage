@@ -108,21 +108,11 @@ pub const FIELDS: &[Field] = &[
     field!("display.audience_click_to_advance", Displays, Toggle),
     field!("display.presenter_start_fullscreen", Displays, Toggle),
     field!(
-        "presenter.next_slide_ratio",
+        "presenter.notes_column_ratio",
         Presenter,
         Number {
-            min: 0.05,
-            max: 1.,
-            step: 0.01,
-            integer: false
-        }
-    ),
-    field!(
-        "presenter.notes_ratio",
-        Presenter,
-        Number {
-            min: 0.55,
-            max: 0.8,
+            min: 0.40,
+            max: 0.75,
             step: 0.01,
             integer: false
         }
@@ -420,7 +410,7 @@ mod tests {
         settings.keybindings.next = vec!["F6".into()];
         for (id, value) in [
             ("presenter.grid_columns", "5"),
-            ("presenter.notes_ratio", "NaN"),
+            ("presenter.notes_column_ratio", "NaN"),
             ("timer.warn_yellow_remaining_min", "0"),
             ("pointer.laser_color_bgra", "bad"),
             ("cache.l1_gpu_mib", "0"),

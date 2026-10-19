@@ -26,13 +26,13 @@ Direct page selection, presentation timers, pane composition and thumbnail sched
 
 ### 2. Signatures
 
-Use `PresentationCommand::JumpTo(PhysicalPage)` through `PresentationState::apply_at`. `PresenterSettings::effective_notes_ratio()` normalizes legacy small notes shares. `show_thumbnail_strip` remains a read-compatible schema field with no rendering effect.
+Use `PresentationCommand::JumpTo(PhysicalPage)` through `PresentationState::apply_at`. `PresenterSettings::effective_notes_column_ratio()` clamps `notes_column_ratio` to 0.40..=0.75. `Intent::Split { notes_column, save }` is the only divider intent. `show_thumbnail_strip` remains a read-compatible schema field with no rendering effect.
 
 ### 3. Contracts
 
 Import enters Ready with no audience or running presentation timer. Start is explicit. Talk-timer reads and expiry never navigate; authored PDF dwell follows the separate PDF playback contract. Grid clicks commit a direct jump; hover is inert. Page-number editing is local to its modal and submits only on Enter/Go. Committed-page changes use the existing media/annotation invalidation and exact-key raster path. No second authoritative preview page exists.
 
-Current slide stays left; Next occupies the upper-right pane and original Notes the lower-right pane. Fresh `next_slide_ratio` is 0.40 (right-column width); stored ratios remain authoritative. Default `notes_ratio` is 0.65, with effective range 0.55 to 0.8 for old settings and divider interactions. Vertical drag measures the complement of the upper pane after subtracting the 6px divider and adjacent 4px gaps: dragging down reduces Notes height. Never invert stored ratios on load. Each ordered Notes raster fills the inner pane width at its own aspect ratio, does not flex-shrink, and shares the existing vertical scroll. No text extraction/reflow or Notes-mode/font selector is introduced. Recent files appear only in Idle. Only an explicitly open grid schedules thumbnails; closing it retires obsolete requested/retained thumbnail frames. Keep the existing configured grid page bound.
+Current sits above Next in the left slides column; original Notes fill the right column at full workbench height. `presenter.notes_column_ratio` is the Notes column share of the workbench width: fresh default 0.60, effective range 0.40 to 0.75, missing key reads as the default. Legacy `next_slide_ratio` and `notes_ratio` stay in the schema, round-trip unchanged and do not affect layout. Column drag sets `r = 1 - (x - left) / width`, clamped; release saves once. Never rewrite stored ratios on load. Each ordered Notes raster is contained in the Notes pane at its own aspect ratio, does not flex-shrink, and shares the existing vertical scroll. No text extraction/reflow or Notes-mode/font selector is introduced. Recent files appear only in Idle. Only an explicitly open grid schedules thumbnails; closing it retires obsolete requested/retained thumbnail frames. Keep the existing configured grid page bound.
 
 ### 4. Validation & Error Matrix
 
@@ -42,9 +42,9 @@ Current slide stays left; Next occupies the upper-right pane and original Notes 
 | Out-of-range or notes-only physical page | Typed error, no partial navigation |
 | Hover, talk-timer elapsed time, partial input, invalid dialog submit, Escape | No page change |
 | Legacy thumbnail strip enabled, grid closed | Zero thumbnail requests |
-| Legacy small notes ratio | Readable effective share without rewriting the settings file on load |
-| Divider dragged downward | Next grows, Notes shrinks; persisted ratio restores those sizes |
-| Multiple Notes rasters | Ordered natural-height pages in one scroll; no equal-height compression |
+| `notes_column_ratio` missing or out of range | 0.60 default or clamped 0.40..0.75 effective share, without rewriting the settings file on load |
+| Column divider dragged left | Notes column grows; persisted ratio restores that width; legacy ratio keys unchanged |
+| Multiple Notes rasters | Ordered pages of equal contained width in one scroll; no equal-height compression |
 
 ### 5. Good / Base / Bad Cases
 

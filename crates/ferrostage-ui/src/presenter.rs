@@ -165,10 +165,35 @@ pub(crate) struct Presenter {
     textures: std::rc::Rc<
         std::cell::RefCell<crate::texture_cache::TextureCache<crate::workbench::Surface>>,
     >,
-    split_drag: Option<bool>,
+    split_drag: bool,
+    notes_viewport: std::rc::Rc<std::cell::Cell<gpui::Size<gpui::Pixels>>>,
     settings_drag: std::rc::Rc<std::cell::Cell<Option<&'static str>>>,
     drawing: std::rc::Rc<std::cell::Cell<bool>>,
     paint_ms: std::rc::Rc<std::cell::Cell<f64>>,
+}
+
+/// Page-browser thumbnails keep a black letterbox; presenter panes show the
+/// workbench canvas.
+pub(crate) fn letterbox(surface: crate::workbench::Surface) -> Option<u32> {
+    matches!(surface, crate::workbench::Surface::Thumbnail(_)).then_some(0x000000)
+}
+
+/// Loaded-document header utilities use the quiet text face.
+pub(crate) fn quiet_header(stage: SessionStage, intent: &Intent) -> bool {
+    stage != SessionStage::Idle
+        && matches!(
+            intent,
+            Intent::Home
+                | Intent::Open
+                | Intent::Settings
+                | Intent::Displays
+                | Intent::PresenterMenu(false)
+                | Intent::Core(
+                    ferrostage_core::PresentationCommand::PauseTimer
+                        | ferrostage_core::PresentationCommand::ResumeTimer
+                        | ferrostage_core::PresentationCommand::ResetTimer
+                )
+        )
 }
 
 struct FilenameTooltip {
@@ -385,7 +410,8 @@ impl Presenter {
             return_focus: None,
             had_modal: false,
             textures: Default::default(),
-            split_drag: None,
+            split_drag: false,
+            notes_viewport: Default::default(),
             settings_drag: Default::default(),
             drawing: Default::default(),
             paint_ms: Default::default(),
@@ -417,15 +443,7 @@ impl Presenter {
             Intent::White => Some(0xFFFFFF),
             _ => None,
         };
-        let quiet_header = self.data.stage != SessionStage::Idle
-            && matches!(
-                &intent,
-                Intent::Home
-                    | Intent::Open
-                    | Intent::Settings
-                    | Intent::Displays
-                    | Intent::PresenterMenu(false)
-            );
+        let quiet_header = quiet_header(self.data.stage, &intent);
         let preference_control = matches!(
             &intent,
             Intent::SettingsCategory(_)

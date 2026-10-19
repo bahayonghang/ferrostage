@@ -324,6 +324,14 @@ pub(super) fn parse_presenter(
             ratio_ok,
             warnings,
         ),
+        notes_column_ratio: parse_f64(
+            section,
+            "notes_column_ratio",
+            "presenter.notes_column_ratio",
+            defaults.notes_column_ratio,
+            ratio_ok,
+            warnings,
+        ),
         notes_font_scale: parse_f64(
             section,
             "notes_font_scale",

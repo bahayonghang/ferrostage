@@ -558,16 +558,47 @@ fn media_v1_defaults_bounds_unknown_and_future_readonly() {
     assert_eq!(future.settings.media.max_decode_height, 720);
 }
 #[test]
-fn legacy_notes_ratio_and_strip_are_readable_without_restoring_small_notes() {
+fn legacy_notes_ratio_and_strip_are_readable_without_affecting_notes_column() {
     let parsed =
         crate::from_toml("[presenter]\nnotes_ratio=0.4\nshow_thumbnail_strip=true").unwrap();
     assert_eq!(parsed.settings.presenter.notes_ratio, 0.4);
     assert!(parsed.settings.presenter.show_thumbnail_strip);
-    assert_eq!(parsed.settings.presenter.effective_notes_ratio(), 0.55);
+    assert_eq!(parsed.settings.presenter.notes_column_ratio, 0.60);
     assert_eq!(
-        crate::PresenterSettings::default().effective_notes_ratio(),
-        0.65
+        parsed.settings.presenter.effective_notes_column_ratio(),
+        0.60
     );
+}
+
+#[test]
+fn notes_column_ratio_clamps_and_round_trips_with_legacy_and_unknown_leaves() {
+    let parsed = crate::from_toml(
+        "schema_version=1\n[presenter]\nnext_slide_ratio=0.35\nnotes_ratio=0.4\nnotes_column_ratio=0.3\nunknown='keep'\n",
+    )
+    .unwrap();
+    assert_eq!(parsed.settings.presenter.notes_column_ratio, 0.3);
+    assert_eq!(
+        parsed.settings.presenter.effective_notes_column_ratio(),
+        0.40
+    );
+    let wide = crate::PresenterSettings {
+        notes_column_ratio: 0.9,
+        ..crate::PresenterSettings::default()
+    };
+    assert_eq!(wide.effective_notes_column_ratio(), 0.75);
+    let mut settings = parsed.settings.clone();
+    settings.presenter.notes_column_ratio = 0.66;
+    let merged = crate::merge::merge_document(&parsed.raw_table, &settings, &[]).unwrap();
+    assert_eq!(
+        merged["presenter"]["notes_column_ratio"].as_float(),
+        Some(0.66)
+    );
+    assert_eq!(
+        merged["presenter"]["next_slide_ratio"].as_float(),
+        Some(0.35)
+    );
+    assert_eq!(merged["presenter"]["notes_ratio"].as_float(), Some(0.4));
+    assert_eq!(merged["presenter"]["unknown"].as_str(), Some("keep"));
 }
 
 #[test]
