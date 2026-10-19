@@ -446,7 +446,7 @@ impl Presenter {
             Intent::Next | Intent::Previous => theme::ButtonKind::Navigation,
             Intent::Black => theme::ButtonKind::Black,
             Intent::White => theme::ButtonKind::White,
-            Intent::Tool(_) | Intent::Grid => theme::ButtonKind::Tool,
+            Intent::Tool(_) => theme::ButtonKind::Tool,
             _ if primary => theme::ButtonKind::Primary,
             _ => theme::ButtonKind::Utility,
         };
@@ -458,7 +458,7 @@ impl Presenter {
             Intent::White => {
                 self.data.workbench.overlay.blank_mode == Some(ferrostage_core::BlankMode::White)
             }
-            Intent::Tool(_) | Intent::Grid => primary,
+            Intent::Tool(_) => primary,
             _ if preference_control => primary,
             _ => false,
         };

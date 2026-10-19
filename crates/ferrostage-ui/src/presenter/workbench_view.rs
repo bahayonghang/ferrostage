@@ -13,7 +13,6 @@ pub(super) struct WorkbenchData {
     pub(super) settings: ferrostage_settings::PresenterSettings,
     pointer: ferrostage_settings::PointerSettings,
     pub(super) tool: Tool,
-    browser_open: bool,
     pub(super) grid_start: usize,
     pub steps: Vec<ferrostage_core::PhysicalPage>,
     pub progress: String,
@@ -123,7 +122,6 @@ impl WorkbenchData {
             settings: shell.settings.settings.presenter.clone(),
             pointer: shell.settings.settings.pointer.clone(),
             tool: shell.workbench.tool,
-            browser_open: shell.browser().is_some(),
             grid_start: shell.workbench.grid_start,
             steps: session
                 .map(|s| s.document.slide_map.steps().to_vec())
@@ -691,14 +689,6 @@ impl Presenter {
                         p,
                     ))
                 })
-                .child(self.button(
-                    "grid".into(),
-                    self.locale.text("wb-grid").into(),
-                    true,
-                    self.data.workbench.browser_open,
-                    Intent::Grid,
-                    p,
-                ))
                 .child(self.button(
                     "document-options".into(),
                     format!(

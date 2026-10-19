@@ -588,13 +588,6 @@ impl Shell {
                 self.apply(Command::EndStroke, cx);
                 self.apply(Command::UpdateLaserPointer(None), cx);
             }
-            Intent::Grid if !self.busy() => {
-                if self.browser().is_some() {
-                    self.close_contextual();
-                } else {
-                    self.open_browser();
-                }
-            }
             Intent::CloseContextual => self.close_contextual(),
             Intent::BrowserSubmit { id } => self.submit_browser(id, None, cx),
             Intent::BrowserMode { id, mode } => self.browser_mode(id, mode),
@@ -6370,8 +6363,10 @@ mod tests {
             let trigger = visual.debug_bounds("document-options").unwrap();
             assert_eq!(visual.debug_bounds("current-pane"), Some(before));
             assert_eq!(panel.size.width, px(320.));
+            let anchor_right =
+                trigger.right() + px(crate::theme::FOCUS_WIDTH + crate::theme::FOCUS_GAP);
             assert!(
-                (f32::from(trigger.right().clamp(px(332.), px(1088.))) - f32::from(panel.right()))
+                (f32::from(anchor_right.clamp(px(332.), px(1088.))) - f32::from(panel.right()))
                     .abs()
                     <= 1.,
                 "panel={panel:?}, trigger={trigger:?}"

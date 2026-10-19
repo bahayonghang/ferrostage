@@ -45,7 +45,6 @@ pub(crate) enum Intent {
     SurfaceSize(crate::workbench::Surface, ferrostage_pdf::PixelSize),
     Core(ferrostage_core::PresentationCommand),
     Tool(crate::workbench::Tool),
-    Grid,
     GridMove(isize),
     BrowserSubmit {
         id: u64,

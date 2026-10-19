@@ -46,6 +46,11 @@ fn outline_fixture(cx: &mut TestAppContext) -> (Entity<Shell>, AnyWindowHandle) 
     (shell, handle)
 }
 
+fn open_page_browser(shell: &Entity<Shell>, handle: AnyWindowHandle, cx: &mut TestAppContext) {
+    click_control(handle, "workbench-progress", cx);
+    shell.update(cx, |shell, cx| shell.poll_focus(cx));
+}
+
 fn focused_outline(handle: AnyWindowHandle, cx: &mut TestAppContext) -> Option<usize> {
     handle
         .downcast::<Presenter>()
@@ -78,7 +83,7 @@ fn outline_tabs_and_rows_preserve_page_until_one_committed_keyboard_jump(cx: &mu
             });
             redraw(handle, cx);
         }
-        click_control(handle, "grid", cx);
+        open_page_browser(&shell, handle, cx);
         redraw(handle, cx);
         // Numeric intent remains separate from the current-section badge and focus.
         cx.simulate_keystrokes(handle, "3");
@@ -152,7 +157,7 @@ fn outline_tabs_and_rows_preserve_page_until_one_committed_keyboard_jump(cx: &mu
 #[gpui::test]
 fn outline_keyboard_tabs_and_numbering_do_not_commit_or_lose_the_editor(cx: &mut TestAppContext) {
     let (shell, handle) = outline_fixture(cx);
-    click_control(handle, "grid", cx);
+    open_page_browser(&shell, handle, cx);
     redraw(handle, cx);
     click_control(handle, "page-view-outline", cx);
     redraw(handle, cx);
@@ -198,7 +203,7 @@ fn outline_keyboard_tabs_and_numbering_do_not_commit_or_lose_the_editor(cx: &mut
 #[gpui::test]
 fn outline_numeric_editor_cancelled_press_and_disabled_rows_are_inert(cx: &mut TestAppContext) {
     let (shell, handle) = outline_fixture(cx);
-    click_control(handle, "grid", cx);
+    open_page_browser(&shell, handle, cx);
     redraw(handle, cx);
     click_control(handle, "page-view-outline", cx);
     redraw(handle, cx);
@@ -246,7 +251,7 @@ fn outline_numeric_editor_cancelled_press_and_disabled_rows_are_inert(cx: &mut T
     redraw(handle, cx);
     shell.read_with(cx, |shell, _| assert!(shell.contextual.is_none()));
     // Reopening retains the view but takes its numeric target from committed state.
-    click_control(handle, "grid", cx);
+    open_page_browser(&shell, handle, cx);
     redraw(handle, cx);
     shell.read_with(cx, |shell, _| {
         assert_eq!(
@@ -403,9 +408,9 @@ fn outline_reveals_current_wrapped_title_and_restores_original_invoker(cx: &mut 
     redraw(handle, cx);
     // Mouse-down focuses the real invoker; only release opens the browser.
     let mut visual = gpui::VisualTestContext::from_window(handle, cx);
-    let grid = visual.debug_bounds("grid").unwrap();
+    let progress = visual.debug_bounds("workbench-progress").unwrap();
     visual.simulate_mouse_down(
-        grid.center(),
+        progress.center(),
         gpui::MouseButton::Left,
         gpui::Modifiers::default(),
     );
@@ -413,10 +418,11 @@ fn outline_reveals_current_wrapped_title_and_restores_original_invoker(cx: &mut 
         .update(cx, |_, window, cx| window.focused(cx))
         .unwrap();
     visual.simulate_mouse_up(
-        grid.center(),
+        progress.center(),
         gpui::MouseButton::Left,
         gpui::Modifiers::default(),
     );
+    shell.update(cx, |shell, cx| shell.poll_focus(cx));
     redraw(handle, cx);
     click_control(handle, "page-view-outline", cx);
     redraw(handle, cx);
