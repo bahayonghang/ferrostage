@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 11
-- **Last Active**: 2026-10-18
+- **Total Sessions**: 13
+- **Last Active**: 2026-10-19
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~391 | Active |
+| `journal-1.md` | ~463 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,8 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 13 | 2026-10-19 | 完成首页历史时间与中文 PDF 错误提示 | `a233665`, `3cd6fc7` | `dev` |
+| 12 | 2026-10-19 | 修复显示器检测错误残留与中文恢复提示 | `4d286d1`, `3cd6fc7` | `dev` |
 | 11 | 2026-10-18 | Windows 桌面 Setup、静默安装与发布流程 | `544df2046a5e56a6aa813b11b2cf2e66eeb07336` | `dev` |
 | 10 | 2026-10-18 | 时间显示与双模式跳页优化实施收尾 | `6ed4ae67952467e23120bb2976ec688a593474e2` | `dev` |
 | 9 | 2026-10-18 | 完成跳页浏览与布局导航菜单优化 | `b3fca4c9b6893a5330a8e78a8e4bdac1988b9b67` | `dev` |

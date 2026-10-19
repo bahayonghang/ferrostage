@@ -389,3 +389,75 @@ Implemented default-on audience click navigation, repaired current CI root cause
 
 - 可另行完成 Windows Search 界面、托管 CI、干净机器及签名资格验证；本轮未推送或公开发布。
 - 保留审批拒绝删除的单个测试标记；路径及 blocked by policy 结果见归档任务 research/validation.md，未绕过限制。
+
+
+## Session 12: 修复显示器检测错误残留与中文恢复提示
+<!-- trellis-session: v=2 fp=f7f515132dda4831 -->
+
+**Date**: 2026-10-19
+**Task**: 修复显示器检测错误残留与中文恢复提示
+**Branch**: `dev`
+
+### Summary
+
+Created monitor discovery task; fixed typed error ownership/classification and Apply/shortcut/stale-draft siblings; localized recovery guidance; built verified Setup without replacing running installed app.
+
+### Main Changes
+
+- Preserved topology completeness, roles and GDI acquisition; added regression evidence and scoped specs.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `4d286d1bd036a101d126f82ad0c434815d96a1ac` | fix(platform): 🐛 区分设备快照瞬态变化与几何不一致并补齐重试回归 |
+| `3cd6fc732b3d7750d3ebd2e49ad5a4c366857d5d` | feat(ui): ✨ 优化显示器恢复提示、首页历史表格与中文 PDF 错误引导 |
+
+### Testing
+
+- [OK] just ci:203; GPUI:174; product clippy/format/all-feature policy:PASS; real3screen probe and GDI64:PASS; release packaging/native startup:PASS.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- 已拆分提交改动并归档任务。
+
+
+## Session 13: 完成首页历史时间与中文 PDF 错误提示
+<!-- trellis-session: v=2 fp=2258b1364a576f9a -->
+
+**Date**: 2026-10-19
+**Task**: 完成首页历史时间与中文 PDF 错误提示
+**Branch**: `dev`
+
+### Summary
+
+继续已获批准的首页任务，完成紧凑历史表格、成功打开时间持久化与中文分类恢复提示；保留已有显示器修复。
+
+### Main Changes
+
+- 同步 DESIGN 与设置、错误和首页规范；代码保留在 dev 工作区，未提交、安装或推送。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `a233665a6ab23d331dccf114aee9187e4d1ba845` | feat(settings): ✨ 支持记录与持久化最近文件成功打开时间 |
+| `3cd6fc732b3d7750d3ebd2e49ad5a4c366857d5d` | feat(ui): ✨ 优化显示器恢复提示、首页历史表格与中文 PDF 错误引导 |
+
+### Testing
+
+- [OK] just ci PASS 207；GPUI PASS 179；原生 PDF PASS 40；桌面构建与严格 lint、完整功能依赖策略通过。
+- [OK] 真实普通窗口使用 WenYuan Serif SC 18：已知与未知时间、中文不完整 PDF 提示、整行打开和返回首页时间持久化通过。
+- [OK] just release PASS，Setup、便携 ZIP、载荷和 SHA256 已校验；证据位于首页任务 research。
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- 已拆分提交改动并归档任务。
