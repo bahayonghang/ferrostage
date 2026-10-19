@@ -1,0 +1,5 @@
+    Checking ferrostage-ui v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Checking ferrostage-app v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.15s
+mbx[cache]: 0 hits, 0 misses, 5 not looked up, 5 incremental; 0 B downloaded, 0 B uploaded, 0 B stored locally
+mbx[savings]: 5034 compilations dispensed from stock. inventory immaculate.

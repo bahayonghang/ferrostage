@@ -1,0 +1,17 @@
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/windows-distribution.ps1 -Action release
+[START] Cargo metadata
+[PASS] Cargo metadata (0.4 s)
+[START] Desktop release build
+   Compiling ferrostage-platform v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-platform)
+   Compiling ferrostage-ui v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+   Compiling ferrostage-app v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app)
+    Finished `release` profile [optimized] target(s) in 11.79s
+mbx[cache]: 0 hits, 2 misses, 1 incremental, 1 bypassed; 0 B downloaded, 0 B uploaded, 1.7 MiB stored locally
+mbx[savings]: rustc believes it compiled everything. it is down 1h 22m across 1085 builds. let it believe.
+[PASS] Desktop release build (12.3 s)
+D:\Documents\Code\Rust\Exp\ferrostage\target\release\pdfium.dll
+[PASS] Verified desktop payload: D:\Documents\Code\Rust\Exp\ferrostage\target\dist\payload-1.0.0
+[START] NSIS Setup
+[PASS] NSIS Setup (2.5 s)
+
+[PASS] Release verified: D:\Documents\Code\Rust\Exp\ferrostage\target\dist\release.json

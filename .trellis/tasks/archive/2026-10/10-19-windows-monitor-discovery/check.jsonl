@@ -1,0 +1,4 @@
+{"file":".trellis/spec/backend/error-handling.md","reason":"Verify typed error separation"}
+{"file":".trellis/spec/backend/quality-guidelines.md","reason":"Required CI and GDI release"}
+{"file":".trellis/spec/frontend/state-management.md","reason":"Recovery ownership and stable audience binding"}
+{"file":".trellis/tasks/10-19-windows-monitor-discovery/design.md","reason":"Bounded repair and explicit unresolved initial transient"}

@@ -1,0 +1,4 @@
+{"file":".trellis/spec/backend/error-handling.md","reason":"Typed platform errors and no unsafe code"}
+{"file":".trellis/spec/backend/quality-guidelines.md","reason":"GDI resource regression and required CI"}
+{"file":".trellis/spec/frontend/state-management.md","reason":"Shared display panel and fail-closed role contracts"}
+{"file":".trellis/tasks/10-19-windows-monitor-discovery/research/monitor-clipping-root-cause.md","reason":"Confirmed stale error cause and disproven native hypotheses"}

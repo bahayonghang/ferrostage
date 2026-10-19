@@ -1,0 +1,106 @@
+   Compiling ferrostage-platform v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-platform)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.97s
+     Running `mbx-launch target\debug\examples\monitor_probe.exe`
+mbx[cache]: 0 hits, 0 misses, 1 not looked up, 2 incremental; 0 B downloaded, 0 B uploaded, 0 B stored locally
+platform=windows arch=x86_64
+DPI context is not changed or measured by this probe; scale source is process-dependent.
+sample=0 count=3 enumeration_ms=6.696
+[
+    MonitorInfo {
+        id: MonitorId(
+            "device:\\\\?\\display#bkx2700#5&16631d0&0&uid8451#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+        ),
+        name: "BKX270",
+        connection_name: "\\\\.\\DISPLAY2",
+        native_size: (
+            2560,
+            1440,
+        ),
+        position: (
+            0,
+            0,
+        ),
+        scale_factor: 1.25,
+        scale_source: GdiDeviceCapsRatio,
+        rotation_degrees: 0,
+        is_primary: true,
+        identity_source: DeviceInterfacePath,
+        identity_confidence: ConnectionScoped,
+        built_in: false,
+    },
+    MonitorInfo {
+        id: MonitorId(
+            "device:\\\\?\\display#boe0d5a#5&16631d0&0&uid8448#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+        ),
+        name: "NE160QDM-NM9",
+        connection_name: "\\\\.\\DISPLAY1",
+        native_size: (
+            2560,
+            1600,
+        ),
+        position: (
+            -2560,
+            -169,
+        ),
+        scale_factor: 1.4997071,
+        scale_source: GdiDeviceCapsRatio,
+        rotation_degrees: 0,
+        is_primary: false,
+        identity_source: DeviceInterfacePath,
+        identity_confidence: ConnectionScoped,
+        built_in: true,
+    },
+    MonitorInfo {
+        id: MonitorId(
+            "device:\\\\?\\display#rtk2560#4&2878f4bf&0&uid69#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+        ),
+        name: "Generic PnP Monitor",
+        connection_name: "\\\\.\\DISPLAY5",
+        native_size: (
+            1600,
+            2560,
+        ),
+        position: (
+            2560,
+            -1142,
+        ),
+        scale_factor: 1.4995314,
+        scale_source: GdiDeviceCapsRatio,
+        rotation_degrees: 270,
+        is_primary: false,
+        identity_source: DeviceInterfacePath,
+        identity_confidence: ConnectionScoped,
+        built_in: false,
+    },
+]
+no_saved_roles=ResolvedTopology {
+    presenter: Some(
+        MonitorId(
+            "device:\\\\?\\display#bkx2700#5&16631d0&0&uid8451#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+        ),
+    ),
+    audience: Some(
+        MonitorId(
+            "device:\\\\?\\display#boe0d5a#5&16631d0&0&uid8448#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+        ),
+    ),
+    ignored: [
+        MonitorId(
+            "device:\\\\?\\display#rtk2560#4&2878f4bf&0&uid69#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}",
+        ),
+    ],
+    source: Heuristic,
+    warnings: [],
+}
+sample=1 count=3 enumeration_ms=5.729
+sample=2 count=3 enumeration_ms=7.309
+sample=3 count=3 enumeration_ms=5.216
+sample=4 count=3 enumeration_ms=5.559
+sample=5 count=3 enumeration_ms=5.564
+sample=6 count=3 enumeration_ms=7.294
+sample=7 count=3 enumeration_ms=5.670
+sample=8 count=3 enumeration_ms=5.903
+sample=9 count=3 enumeration_ms=6.325
+watcher_initial_snapshot=PASS
+static_enumeration_and_cancellation=PASS; physical_replug_rotation_port_change=NOT_RUN
+mbx[savings]: 397.7 GiB logical of old build output has been shown the door.
