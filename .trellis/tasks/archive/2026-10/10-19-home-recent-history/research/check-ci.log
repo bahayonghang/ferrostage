@@ -1,0 +1,712 @@
+cargo fmt --all -- --check
+cargo clippy --workspace --all-targets -- -D warnings
+    Checking windows-link v0.2.1
+    Checking cfg-if v1.0.5
+    Checking once_cell v1.21.4
+    Checking typenum v1.20.1
+    Checking pin-project-lite v0.2.17
+    Checking rand_core v0.10.1
+    Checking cpufeatures v0.3.1
+    Checking bitflags v2.13.2
+    Checking log v0.4.34
+    Checking core_detect v1.0.0
+    Checking const-oid v0.10.2
+    Checking simd-adler32 v0.3.10
+    Checking adler2 v2.0.1
+    Checking crossbeam-utils v0.8.23
+    Checking tinyvec v1.13.3
+    Checking alloc-no-stdlib v2.0.4
+    Checking simdutf8 v0.1.5
+    Checking hashbrown v0.17.1
+    Checking either v1.19.0
+    Checking memchr v2.8.3
+    Checking unicode-properties v0.1.3
+    Checking num-traits v0.2.19
+    Checking thiserror v2.0.21
+    Checking cpubits v0.1.1
+    Checking crc32fast v1.5.2
+    Checking windows-sys v0.61.2
+    Checking scopeguard v1.2.0
+    Checking equivalent v1.0.3
+    Checking chacha20 v0.10.2
+    Checking tracing-core v0.1.36
+    Checking getrandom v0.4.3
+    Checking unicode-bidi v0.3.18
+    Checking rangemap v1.8.0
+    Checking weezl v0.2.1
+    Checking miniz_oxide v0.9.1
+    Checking itoa v1.0.18
+    Checking alloc-stdlib v0.2.4
+    Checking serde_core v1.0.229
+    Checking windows_x86_64_msvc v0.53.1
+    Checking weezl v0.1.12
+    Checking winnow v1.0.4
+    Checking encoding_rs v0.8.42
+    Checking quick-error v2.0.1
+    Checking byteorder-lite v0.1.0
+    Checking unicode-normalization v0.1.25
+    Checking crossbeam-epoch v0.9.21
+    Checking pxfm v0.1.30
+    Checking regex-syntax v0.8.11
+    Checking color_quant v1.1.0
+    Checking rand v0.10.3
+    Checking windows-targets v0.53.5
+    Checking brotli-decompressor v5.0.3
+    Checking indexmap v2.14.2
+    Checking hybrid-array v0.4.15
+    Checking bytemuck v1.25.2
+    Checking nom v8.0.0
+    Checking toml_writer v1.1.3+spec-1.1.0
+    Checking tracing v0.1.44
+    Checking libc v0.2.190
+    Checking notify-types v2.1.0
+    Checking winsafe v0.0.29
+    Checking chrono v0.4.45
+    Checking flate2 v1.1.10
+    Checking toml_parser v1.1.5+spec-1.1.0
+    Checking image-webp v0.2.4
+    Checking windows-sys v0.60.2
+    Checking gif v0.14.2
+    Checking crossbeam-deque v0.8.8
+    Checking stringprep v0.1.5
+    Checking getrandom v0.3.4
+    Checking ferrostage-core v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-core)
+   Compiling toml_datetime v1.1.2+spec-1.1.0
+    Checking winapi-util v0.1.11
+    Checking crypto-common v0.2.2
+    Checking block-padding v0.4.2
+    Checking block-buffer v0.12.1
+    Checking rayon-core v1.13.0
+   Compiling vswhom-sys v0.1.3
+   Compiling serde_spanned v1.1.2
+    Checking utf8parse v0.2.2
+    Checking once_cell_polyfill v1.70.2
+    Checking anstyle v1.0.14
+    Checking fastrand v2.5.0
+    Checking anstyle-query v1.1.5
+    Checking same-file v1.0.6
+    Checking anstyle-parse v1.0.0
+    Checking inout v0.2.2
+   Compiling vswhom v0.1.0
+    Checking colorchoice v1.0.5
+    Checking bit-vec v0.10.1
+   Compiling toml v1.1.8+spec-1.1.0
+    Checking is_terminal_polyfill v1.70.2
+    Checking fnv v1.0.7
+    Checking tempfile v3.27.0
+    Checking rayon v1.12.0
+    Checking quick-error v1.2.3
+    Checking anstyle-wincon v3.0.11
+    Checking walkdir v2.5.0
+    Checking sha1_smol v1.0.1
+    Checking wait-timeout v0.2.1
+    Checking digest v0.11.3
+    Checking lazy_static v1.5.1
+    Checking nu-ansi-term v0.50.3
+    Checking cipher v0.5.2
+    Checking tracing-log v0.2.0
+    Checking rand_xorshift v0.5.0
+    Checking regex-automata v0.4.18
+    Checking thread_local v1.1.10
+    Checking smallvec v1.16.3
+    Checking bit-set v0.11.1
+    Checking unarray v0.1.4
+    Checking strsim v0.11.1
+    Checking clap_lex v1.1.1
+    Checking anstream v1.0.0
+    Checking uuid v1.28.0
+    Checking serde v1.0.229
+    Checking sha2 v0.11.1
+    Checking md-5 v0.11.0
+    Checking notify v8.2.0
+    Checking sharded-slab v0.1.7
+    Checking rusty-fork v0.3.1
+    Checking aes v0.9.3
+    Checking cbc v0.2.1
+    Checking ecb v0.2.1
+    Checking clap_builder v4.6.7
+    Checking proptest v1.12.0
+    Checking moxcms v0.8.1
+    Checking matchers v0.2.0
+    Checking tracing-subscriber v0.3.23
+    Checking lopdf v0.45.0
+    Checking clap v4.6.7
+   Compiling winreg v0.56.0
+   Compiling embed-resource v3.0.12
+   Compiling ferrostage-app v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app)
+    Checking image v0.25.10
+    Checking ferrostage-platform v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-platform)
+    Checking ferrostage-media v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-media)
+    Checking ferrostage-pdf v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+    Checking ferrostage-media-helper v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-media-helper)
+    Checking ferrostage-render v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+    Checking ferrostage-document v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-document)
+    Checking ferrostage-settings v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-settings)
+    Checking ferrostage-ui v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 12.81s
+cargo test --workspace --all-targets
+   Compiling ferrostage-core v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-core)
+   Compiling ferrostage-app v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app)
+   Compiling ferrostage-pdf v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+   Compiling ferrostage-media v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-media)
+   Compiling ferrostage-platform v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-platform)
+   Compiling ferrostage-render v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+   Compiling ferrostage-document v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-document)
+   Compiling ferrostage-settings v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-settings)
+   Compiling ferrostage-media-helper v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-media-helper)
+   Compiling ferrostage-ui v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 11.39s
+     Running unittests src\main.rs (target\debug\deps\ferrostage-2822addd4d70a45c.exe)
+
+running 1 test
+test logging_tests::runtime_is_quiet_by_default_and_keeps_diagnostic_override ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\check_config.rs (target\debug\deps\check_config-162dfb340044a152.exe)
+
+running 5 tests
+test missing_config_exits_one ... ok
+test startup_directory_config_appends_startup_error_log ... ok
+test startup_config_fills_missing_sections ... ok
+test check_config_leaf_fallback_exits_zero_and_does_not_write ... ok
+test check_config_syntax_error_exits_one_without_backup ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s
+
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_core-5aa60cffa50073e4.exe)
+
+running 32 tests
+test display::tests::roles_are_distinct ... ok
+test display::tests::core_manifest_does_not_link_io_crates ... ok
+test frame::tests::invalid_geometry_stride_and_length_are_rejected ... ok
+test frame::tests::packed_frame_shares_bgra_without_conversion ... ok
+test slide_map::tests::boundaries_and_physical_clamp_skip_notes ... ok
+test slide_map::tests::rejects_empty_reordered_duplicate_and_out_of_range_maps ... ok
+test state::lifecycle_tests::timer_pause_resume_stop_and_restart_use_only_injected_time ... ok
+test state::annotation_tests::annotation_presence_includes_off_page_ink_but_not_empty_strokes ... ok
+test state::lifecycle_tests::legal_lifecycle_edges_control_projection_and_document_resets ... ok
+test state::annotation_tests::navigation_ends_gesture_and_reload_cannot_reuse_old_annotations ... ok
+test state::annotation_tests::reload_applies_to_latest_timer_blank_and_ink_without_reset ... ok
+test state::annotation_tests::strokes_are_separate_page_local_and_eraser_hits_segments ... ok
+test state::lifecycle_tests::illegal_lifecycle_edges_leave_every_field_unchanged ... ok
+test state::annotation_tests::invalid_pointer_values_are_atomic_and_settings_bounds_match ... ok
+test state::lifecycle_tests::navigation_and_tools_require_a_document_but_not_a_live_session ... ok
+test state::tests::direct_jump_preserves_stage_timer_and_updates_audience ... ok
+test state::mapping_tests::legacy_crop_setter_rejects_invalid_geometry_without_mutation ... ok
+test state::mapping_tests::mapped_navigation_direct_jump_shadow_and_reconfiguration_preserve_lifecycle ... ok
+test state::tests::elapsed_time_never_navigates_before_or_after_start ... ok
+test state::tests::audience_snapshot_tracks_generation_and_has_no_notes_field ... ok
+test state::lifecycle_tests::descriptor_commit_is_atomic_clamps_position_and_preserves_session_timer ... ok
+test state::tests::blank_toggle_is_shown_on_the_snapshot_and_clears_on_repeat ... ok
+test state::tests::step_clamps_at_both_ends ... ok
+test state::tests::empty_document_is_rejected ... ok
+test state::mapping_tests::reconfigure_clears_direct_jump_and_preserves_paused_or_ready_timer ... ok
+test state::tests::jump_out_of_range_is_an_error_and_stale_generation_is_rejected ... ok
+test state::mapping_tests::checked_descriptor_rejects_empty_and_invalid_crop ... ok
+test state::tests::swap_screens_does_not_change_the_audience_page ... ok
+test state::tests::halves_cover_the_unit_square_without_overlap ... ok
+test ids::order_tests::generation_order_matches_the_inner_integer ... ok
+test slide_map::tests::neighbor_inverses_preserve_content_and_logical_groups ... ok
+test state::property_tests::arbitrary_commands_preserve_stage_privacy_and_error_atomicity ... ok
+
+test result: ok. 32 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_document-3ee1a1bba5bd023e.exe)
+
+running 7 tests
+test builder::tests::crop_halves_and_media_projection_are_explicit ... ok
+test builder::tests::raw_geometry_mismatch_or_nonfinite_is_rejected_and_mixed_rotation_is_not_cropped ... ok
+test builder::tests::reload_maps_unique_label_ordinal_and_ambiguous_physical_content ... ok
+test builder::tests::invalid_models_are_rejected_and_projection_has_no_secrets ... ok
+test builder::tests::labels_group_only_contiguous_content_and_notes_pair_by_step ... ok
+test builder::tests::layout_candidates_overrides_counterexamples_and_reload_scope ... ok
+test builder::tests::real_media_pdf_slots_keep_parameters_and_public_source_crop ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\native.rs (target\debug\deps\native-1204073943e898a9.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\notes_native.rs (target\debug\deps\notes_native-00a10c50ad084f35.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_media-178a4ced924d652f.exe)
+
+running 8 tests
+test protocol::tests::rejects_hostile_header_before_body_allocation ... ok
+test animation::tests::crop_removes_private_pixels_and_preserves_alpha ... ok
+test protocol::tests::frame_roundtrip_preserves_bgra_and_identity_sequence ... ok
+test supervisor::child::tests::child_frames_reject_duplicate_and_regressing_sequence ... ok
+test supervisor::child::tests::scanner_path_matches_selected_runtime_manifest ... ok
+test tests::limits_keep_proportion_and_reject_unbounded_input ... ok
+test animation::tests::animation_budget_reserves_contain_canvas_before_decoding ... ok
+test supervisor::child::tests::embedded_payload_is_owned_create_new_and_removed_after_release ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\playback.rs (target\debug\deps\playback-904caf9a33967366.exe)
+
+running 4 tests
+test contain_letterbox_then_crop_is_bounded_and_never_stretches_private_half ... ok
+test actual_missing_runtime_is_typed_and_does_not_poison_animation ... ok
+test actual_animation_delays_bgra_limits_pause_and_epoch_cancellation ... ok
+test unnamed_embedded_gif_webp_use_pure_decoder_and_output_bounds ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.64s
+
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_media_helper-75ab9fc7d7ee67a4.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_pdf-28471bbfe40007d9.exe)
+
+running 11 tests
+test raster::tests::fits_crop_aspect_and_rejects_invalid_input ... ok
+test structure::tests::rect_transform_all_rotations_and_clipping ... ok
+test tests::version_pins_match_the_workspace_plan ... ok
+test tests::empty_buffer_is_not_a_pdf ... ok
+test structure::tests::actual_beamer_movie_fixture_emits_scaled_times ... ok
+test structure::tests::authored_media_paths_times_and_inherited_geometry ... ok
+test structure::tests::richmedia_selection_membership_and_screen_precedence_are_explicit ... ok
+test structure::tests::movie_action_unsupported_parameters_are_diagnosed ... ok
+test structure::tests::movie_title_targets_must_be_unique_and_action_overrides_take_precedence ... ok
+test structure::tests::malformed_embedded_file_dictionary_does_not_become_an_external_source ... ok
+test structure::tests::malformed_geometry_and_unresolved_actions_are_reported ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_platform-c6b61c1e031a66f9.exe)
+
+running 29 tests
+test reload::tests::quiet_stable_timeout_and_exact_target ... ok
+test friendly::tests::device_path_maps_to_one_enum_key ... ok
+test monitor::tests::identity_is_owned_case_normalized_and_honestly_graded ... ok
+test watch::tests::error_is_immediate_diagnostic_only_and_same_topology_recovery_is_published ... ok
+test topology::tests::diff_reports_set_changes_and_new_ambiguity_without_indexes ... ok
+test topology::tests::saved_roles_are_authoritative_in_configuration_order ... ok
+test topology::tests::duplicate_bindings_first_none_wins_before_role_resolution ... ok
+test topology::tests::missing_primary_and_area_ties_are_independent_of_enumeration_order ... ok
+test friendly::tests::friendly_name_keeps_model_tokens_and_drops_generic_wrappers ... ok
+test topology::tests::saved_audience_resolves_before_missing_presenter_fallback ... ok
+test topology::tests::duplicate_roles_keep_first_valid_and_report_remaining_ids ... ok
+test topology::tests::zero_and_single_screen_are_safe ... ok
+test watch::tests::empty_topology_is_a_change_not_an_error_and_reversal_cancels_pending ... ok
+test topology::tests::any_identity_collision_disables_saved_and_heuristic_audience ... ok
+test topology::tests::saved_absent_or_explicitly_unused_audience_never_falls_back ... ok
+test watch::tests::fast_changes_coalesce_but_last_committed_topology_is_preserved ... ok
+test topology::tests::default_two_and_three_choose_largest_non_presenter ... ok
+test windows::tests::every_required_native_mode_field_must_be_present ... ok
+test windows::tests::invalid_scale_size_or_primary_is_not_accepted ... ok
+test windows::tests::changing_device_metadata_is_not_a_geometry_mismatch ... ok
+test windows::tests::omitted_or_extra_or_duplicate_geometry_is_rejected ... ok
+test watch::tests::disconnected_sink_ends_worker_and_stop_remains_successful ... ok
+test tests::eof_marker_is_required ... ok
+test windows::tests::stable_device_snapshots_still_require_complete_geometry ... ok
+test windows::tests::output_owns_physical_units_and_does_not_promote_handle_or_missing_path ... ok
+test watch::tests::explicit_stop_and_drop_join_the_worker_without_waiting_for_another_event ... ok
+test topology::tests::resolved_ids_are_present_unique_disjoint_and_never_unsaved_audience ... ok
+test windows::tests::getdc_v15_real_owner_preserves_topology_and_enumeration_releases_gdi ... ok
+test reload::tests::real_parent_watch_handles_chunks_rename_delete_recreate_and_ignores_siblings ... ok
+
+test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.29s
+
+     Running tests\settings_topology.rs (target\debug\deps\settings_topology-22596f1d3436e7a4.exe)
+
+running 2 tests
+test saved_roles_survive_enumeration_reordering_but_not_a_missing_identity ... ok
+test parsed_invalid_and_duplicate_bindings_cannot_promote_an_audience ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples\monitor_probe.rs (target\debug\examples\monitor_probe-097cf2faff50e021.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_render-ab01464dbdf38464.exe)
+
+running 18 tests
+test protocol::tests::thumbnail_target_keeps_180_height_even_for_narrow_pages ... ok
+test cache::tests::lru_bytes_oversize_resize_and_retirement ... ok
+test scheduler::tests::next_dispatch_obeys_priority_and_epoch_cancels_queued_work ... ok
+test cache::tests::generations_share_one_budget ... ok
+test cache::tests::cpu_frames_are_released_and_oversized_frame_is_not_cached ... ok
+test cache::tests::spare_vec_capacity_is_charged_to_the_budget ... ok
+test worker::tests::contracts::issued_readiness_expires_on_epoch_reprepare_and_abort ... ok
+test worker::tests::candidate_metadata_prerender_commit_abort_and_retire_are_separate ... ok
+test worker::tests::contracts::failed_candidate_render_releases_only_candidate_resources ... ok
+test worker::tests::cache_hit_has_no_render_timing_and_uncached_always_renders ... ok
+test worker::tests::in_flight_is_not_preempted_but_old_epoch_is_never_published ... ok
+test worker::tests::old_generation_inflight_cannot_publish_after_load ... ok
+test worker::tests::superseded_prerender_cannot_complete_a_new_batch ... ok
+test worker::tests::acknowledged_budget_shrink_evicts_both_caches_without_reloading_active_document ... ok
+test worker::tests::contracts::cache_identity_includes_pixels_but_replies_echo_new_epoch_and_priority ... ok
+test worker::tests::contracts::readiness_from_a_stopped_worker_cannot_commit_a_replacement_worker ... ok
+test worker::tests::candidate_batch_yields_to_active_priority_and_uses_its_own_epoch ... ok
+test worker::tests::reversible_commit_restores_active_raster_and_rejects_foreign_or_retired_capabilities ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\native.rs (target\debug\deps\native-ab2bb0ffac7ffa6c.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\native_missing.rs (target\debug\deps\native_missing-935797d02fb8d89c.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_settings-95ad3623d43e45ae.exe)
+
+running 48 tests
+test tests::parse::defaults_use_render_cache_budgets ... ok
+test tests::parse::manifest_does_not_link_platform_or_gpui ... ok
+test tests::parse::empty_document_is_the_default ... ok
+test tests::parse::invalid_syntax_is_an_error_for_pure_parse ... ok
+test tests::parse::explicitly_empty_keybinding_list_stays_unbound ... ok
+test tests::parse::illegal_target_type_falls_back_only_that_leaf ... ok
+test tests::parse::future_version_is_read_only ... ok
+test tests::parse::keybinding_conflicts_are_recorded_and_not_resolved ... ok
+test tests::parse::legacy_flat_keys_map_and_indexes_stay_unknown ... ok
+test tests::parse::color_and_ratio_ranges_fall_back_one_leaf ... ok
+test tests::parse::illegal_role_becomes_none_not_audience ... ok
+test tests::parse::invalid_keybinding_elements_fall_back_only_that_action ... ok
+test tests::parse::recent_files_are_deduped_and_truncated ... ok
+test tests::parse::legacy_notes_ratio_and_strip_are_readable_without_restoring_small_notes ... ok
+test tests::parse::recent_opened_times_follow_effective_deduplicated_path_limit ... ok
+test tests::parse::record_recent_file_updates_one_time_and_prunes_history ... ok
+test tests::parse::media_v1_defaults_bounds_unknown_and_future_readonly ... ok
+test tests::parse::wrong_section_type_falls_back_only_that_section ... ok
+test tests::parse::interface_font_leaves_default_validate_and_preserve_future_policy ... ok
+test tests::parse::default_toml_roundtrip_matches_default ... ok
+test tests::parse::yellow_must_exceed_red ... ok
+test tests::parse::zero_target_minutes_falls_back_and_names_the_key ... ok
+test tests::parse::audience_click_leaf_defaults_validates_and_preserves_future_policy ... ok
+test tests::store::config_dirs_follow_each_platform ... ok
+test tests::store::default_path_ends_at_ferrostage_settings ... ok
+test tests::parse::recent_opened_times_are_optional_and_validate_each_leaf ... ok
+test tests::parse::deleting_any_section_keeps_the_other_values ... ok
+test tests::store::parent_file_blocks_directory_creation ... ok
+test tests::store::failed_backup_keeps_the_original_and_forbids_writes ... ok
+test tests::parse::scratch_dirs_are_not_the_user_config ... ok
+test tests::store::future_version_refuses_save_and_keeps_the_bytes ... ok
+test tests::store::startup_does_not_rewrite_a_future_file ... ok
+test tests::store::temp_create_failure_does_not_touch_the_old_file ... ok
+test tests::store::injected_crash_after_temp_write_does_not_damage_settings ... ok
+test tests::store::missing_file_is_not_an_error_and_startup_can_create_it ... ok
+test tests::store::legacy_save_drops_mapped_keys_and_keeps_indexes ... ok
+test tests::store::interface_fonts_roundtrip_with_unknown_leaves ... ok
+test tests::store::save_failure_leaves_the_old_file ... ok
+test tests::store::startup_fills_missing_sections_and_check_style_load_does_not ... ok
+test tests::store::unknown_values_survive_a_known_edit ... ok
+test tests::store::failed_session_save_keeps_edits_and_retry_clears_dirty_state ... ok
+test tests::store::save_creates_a_missing_directory ... ok
+test tests::store::audience_click_roundtrips_with_unknown_display_and_monitor_fields ... ok
+test tests::store::duplicate_monitor_metadata_survives_repeated_session_saves ... ok
+test tests::store::explicit_save_after_backup_may_replace_the_original ... ok
+test tests::store::syntax_error_backs_up_and_returns_defaults ... ok
+test tests::store::recent_time_map_is_replaced_after_pruning_and_clearing ... ok
+test tests::windows::ntfs_replace_keeps_a_complete_file ... ok
+
+test result: ok. 48 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.51s
+
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-e3bfd95472e3e5da.exe)
+
+running 42 tests
+test display_settings::tests::projection_keeps_actual_configured_and_pending_roles_separate ... ok
+test policy::tests::placement_v10_work_area_and_narrow_clients_leave_native_frame_space ... ok
+test display_settings::tests::native_observation_requires_current_unique_mapping_and_running_owner ... ok
+test display_settings::tests::single_screen_windowed_pdf_can_share_actual_app_without_inventing_an_audience ... ok
+test policy::tests::fullscreen_request_without_native_bounds_evidence_is_not_confirmation ... ok
+test policy::tests::placement_v10_portrait_native_overflow_is_not_confirmation ... ok
+test display_settings::tests::stale_missing_ambiguous_and_conflicting_destinations_are_rejected ... ok
+test display_settings::tests::numbering_is_shared_stable_and_not_serialized ... ok
+test display_settings::tests::topology_diagram_preserves_negative_coordinates_and_physical_aspect ... ok
+test policy::tests::swap_prepares_authority_without_mutating_old_settings ... ok
+test policy::tests::single_monitor_requires_explicit_windowed_mode ... ok
+test policy::tests::uuid_includes_terminator_and_full_utf16_buffer ... ok
+test tests::gpui_pin_is_the_zed_tag_not_crates_io ... ok
+test theme::tests::semantic_button_states_keep_text_and_boundaries_readable ... ok
+test theme::tests::typography_retains_request_and_scales_roles_with_missing_fallback ... ok
+test policy::tests::mapping_rejects_partial_duplicate_and_unknown_sets ... ok
+test settings_panel::tests::font_filter_and_history_keep_real_values ... ok
+test theme::tests::used_text_and_focus_pairs_meet_design_contrast ... ok
+test transactions::tests::focus_waits_for_both_observations_and_rejects_retired_owners ... ok
+test transactions::tests::invalid_jump_text_cannot_resolve_to_a_content_page ... ok
+test transactions::tests::retiring_old_windows_cannot_stop_replacements ... ok
+test transactions::tests::settings_escape_closes_modal_before_stop ... ok
+test transactions::tests::invalid_import_preserves_document_state_and_presenter_path ... ok
+test transactions::tests::failed_second_replacement_returns_only_new_resources_for_cleanup ... ok
+test transactions::tests::startup_import_survives_presenter_confirmation_only ... ok
+test transactions::tests::shutdown_never_publishes_live_between_curtain_and_close ... ok
+test display_settings::tests::single_screen_choices_roundtrip_without_duplicate_role_or_inherited_mode ... ok
+test workbench::tests::audience_target_respects_its_half_of_the_gpu_budget ... ok
+test workbench::tests::awaiting_frame_keeps_complete_old_identity_and_immediate_covers ... ok
+test workbench::tests::direct_jumps_hold_previous_complete_projection_until_matching_frame ... ok
+test workbench::tests::numbering_uses_content_steps_and_original_positions_without_parity_or_label_math ... ok
+test workbench::tests::projection_rejects_every_mismatched_key_and_presenter_notes_priority ... ok
+test workbench::tests::thumbnail_failures_follow_exact_current_request_pixels ... ok
+test display_settings::tests::identical_driver_names_become_distinct_cards ... ok
+test locale::tests::monitor_failures_are_localized_without_raw_diagnostics ... ok
+test policy::tests::configured_bindings_cannot_collide_with_shell_shortcuts ... ok
+test policy::tests::conflicts_are_disabled_after_normalization ... ok
+test workbench::tests::pdf_numbering_schedules_only_content_in_the_visible_physical_slots ... ok
+test settings_panel::tests::recent_limit_trims_and_coupled_timer_validation_is_atomic ... ok
+test locale::tests::catalogs_have_identical_keys_and_interpolation_fields ... ok
+test workbench::tests::closed_grid_schedules_no_thumbnails_and_repeated_schedule_submits_nothing ... ok
+test settings_panel::tests::field_edits_reject_fallbacks_and_keep_unrelated_values ... ok
+
+test result: ok. 42 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+cargo deny check
+warning[license-exception-not-encountered]: license exception was not encountered
+   ┌─ D:\Documents\Code\Rust\Exp\ferrostage\deny.toml:11:16
+   │
+11 │     { crate = "arrayref@0.3.9", allow = ["BSD-2-Clause"] },
+   │                ━━━━━━━━━━━━━━ unmatched license exception
+
+warning[license-exception-not-encountered]: license exception was not encountered
+   ┌─ D:\Documents\Code\Rust\Exp\ferrostage\deny.toml:12:16
+   │
+12 │     { crate = "libbz2-rs-sys@0.2.5", allow = ["bzip2-1.0.6"] },
+   │                ━━━━━━━━━━━━━━━━━━━ unmatched license exception
+
+warning[license-exception-not-encountered]: license exception was not encountered
+   ┌─ D:\Documents\Code\Rust\Exp\ferrostage\deny.toml:13:16
+   │
+13 │     { crate = "cbindgen@0.28.0", allow = ["MPL-2.0"] },
+   │                ━━━━━━━━━━━━━━━ unmatched license exception
+
+warning[duplicate]: found 2 duplicate entries for crate 'syn'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage/Cargo.lock:144:1
+    │  
+144 │ ╭ syn 2.0.119 registry+https://github.com/rust-lang/crates.io-index
+145 │ │ syn 3.0.9 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰───────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ syn v2.0.119
+      ├── tracing-attributes v0.1.31
+      │   └── tracing v0.1.44
+      │       ├── ferrostage-app v1.0.0
+      │       ├── ferrostage-core v1.0.0
+      │       │   ├── ferrostage-app v1.0.0 (*)
+      │       │   ├── ferrostage-document v1.0.0
+      │       │   │   └── ferrostage-ui v1.0.0
+      │       │   │       └── ferrostage-app v1.0.0 (*)
+      │       │   ├── ferrostage-media v1.0.0
+      │       │   │   ├── ferrostage-media-helper v1.0.0
+      │       │   │   └── ferrostage-ui v1.0.0 (*)
+      │       │   ├── ferrostage-media-helper v1.0.0 (*)
+      │       │   ├── ferrostage-pdf v1.0.0
+      │       │   │   ├── ferrostage-app v1.0.0 (*)
+      │       │   │   ├── ferrostage-document v1.0.0 (*)
+      │       │   │   ├── (dev) ferrostage-media v1.0.0 (*)
+      │       │   │   ├── ferrostage-render v1.0.0
+      │       │   │   │   ├── ferrostage-app v1.0.0 (*)
+      │       │   │   │   ├── (dev) ferrostage-document v1.0.0 (*)
+      │       │   │   │   ├── ferrostage-settings v1.0.0
+      │       │   │   │   │   ├── ferrostage-app v1.0.0 (*)
+      │       │   │   │   │   ├── (dev) ferrostage-platform v1.0.0
+      │       │   │   │   │   │   ├── ferrostage-app v1.0.0 (*)
+      │       │   │   │   │   │   └── ferrostage-ui v1.0.0 (*)
+      │       │   │   │   │   └── ferrostage-ui v1.0.0 (*)
+      │       │   │   │   └── ferrostage-ui v1.0.0 (*)
+      │       │   │   └── ferrostage-ui v1.0.0 (*)
+      │       │   ├── ferrostage-platform v1.0.0 (*)
+      │       │   ├── ferrostage-render v1.0.0 (*)
+      │       │   ├── ferrostage-settings v1.0.0 (*)
+      │       │   └── ferrostage-ui v1.0.0 (*)
+      │       ├── ferrostage-media v1.0.0 (*)
+      │       ├── ferrostage-platform v1.0.0 (*)
+      │       ├── ferrostage-settings v1.0.0 (*)
+      │       ├── ferrostage-ui v1.0.0 (*)
+      │       └── tracing-subscriber v0.3.23
+      │           ├── ferrostage-app v1.0.0 (*)
+      │           └── (dev) ferrostage-ui v1.0.0 (*)
+      ├── windows-implement v0.60.2
+      │   └── windows-core v0.62.2
+      │       └── iana-time-zone v0.1.65
+      │           └── chrono v0.4.45
+      │               └── lopdf v0.45.0
+      │                   └── ferrostage-pdf v1.0.0 (*)
+      └── windows-interface v0.59.3
+          └── windows-core v0.62.2 (*)
+    ├ syn v3.0.9
+      ├── clap_derive v4.6.7
+      │   └── clap v4.6.7
+      │       └── ferrostage-app v1.0.0
+      ├── serde_derive v1.0.229
+      │   └── serde v1.0.229
+      │       └── ferrostage-settings v1.0.0
+      │           ├── ferrostage-app v1.0.0 (*)
+      │           ├── (dev) ferrostage-platform v1.0.0
+      │           │   ├── ferrostage-app v1.0.0 (*)
+      │           │   └── ferrostage-ui v1.0.0
+      │           │       └── ferrostage-app v1.0.0 (*)
+      │           └── ferrostage-ui v1.0.0 (*)
+      ├── thiserror-impl v2.0.21
+      │   └── thiserror v2.0.21
+      │       ├── ferrostage-core v1.0.0
+      │       │   ├── ferrostage-app v1.0.0 (*)
+      │       │   ├── ferrostage-document v1.0.0
+      │       │   │   └── ferrostage-ui v1.0.0 (*)
+      │       │   ├── ferrostage-media v1.0.0
+      │       │   │   ├── ferrostage-media-helper v1.0.0
+      │       │   │   └── ferrostage-ui v1.0.0 (*)
+      │       │   ├── ferrostage-media-helper v1.0.0 (*)
+      │       │   ├── ferrostage-pdf v1.0.0
+      │       │   │   ├── ferrostage-app v1.0.0 (*)
+      │       │   │   ├── ferrostage-document v1.0.0 (*)
+      │       │   │   ├── (dev) ferrostage-media v1.0.0 (*)
+      │       │   │   ├── ferrostage-render v1.0.0
+      │       │   │   │   ├── ferrostage-app v1.0.0 (*)
+      │       │   │   │   ├── (dev) ferrostage-document v1.0.0 (*)
+      │       │   │   │   ├── ferrostage-settings v1.0.0 (*)
+      │       │   │   │   └── ferrostage-ui v1.0.0 (*)
+      │       │   │   └── ferrostage-ui v1.0.0 (*)
+      │       │   ├── ferrostage-platform v1.0.0 (*)
+      │       │   ├── ferrostage-render v1.0.0 (*)
+      │       │   ├── ferrostage-settings v1.0.0 (*)
+      │       │   └── ferrostage-ui v1.0.0 (*)
+      │       ├── ferrostage-document v1.0.0 (*)
+      │       ├── ferrostage-media v1.0.0 (*)
+      │       ├── ferrostage-pdf v1.0.0 (*)
+      │       ├── ferrostage-platform v1.0.0 (*)
+      │       ├── ferrostage-render v1.0.0 (*)
+      │       ├── ferrostage-settings v1.0.0 (*)
+      │       ├── ferrostage-ui v1.0.0 (*)
+      │       └── lopdf v0.45.0
+      │           └── ferrostage-pdf v1.0.0 (*)
+      └── wasm-bindgen-macro-support v0.2.129
+          └── wasm-bindgen-macro v0.2.129
+              └── wasm-bindgen v0.2.129
+                  ├── iana-time-zone v0.1.65
+                  │   └── chrono v0.4.45
+                  │       └── lopdf v0.45.0 (*)
+                  └── js-sys v0.3.106
+                      └── iana-time-zone v0.1.65 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'weezl'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage/Cargo.lock:178:1
+    │  
+178 │ ╭ weezl 0.1.12 registry+https://github.com/rust-lang/crates.io-index
+179 │ │ weezl 0.2.1 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰─────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ weezl v0.1.12
+      └── gif v0.14.2
+          └── image v0.25.10
+              └── ferrostage-media v1.0.0
+                  ├── ferrostage-media-helper v1.0.0
+                  └── ferrostage-ui v1.0.0
+                      └── ferrostage-app v1.0.0
+    ├ weezl v0.2.1
+      └── lopdf v0.45.0
+          └── ferrostage-pdf v1.0.0
+              ├── ferrostage-app v1.0.0
+              ├── ferrostage-document v1.0.0
+              │   └── ferrostage-ui v1.0.0
+              │       └── ferrostage-app v1.0.0 (*)
+              ├── (dev) ferrostage-media v1.0.0
+              │   ├── ferrostage-media-helper v1.0.0
+              │   └── ferrostage-ui v1.0.0 (*)
+              ├── ferrostage-render v1.0.0
+              │   ├── ferrostage-app v1.0.0 (*)
+              │   ├── (dev) ferrostage-document v1.0.0 (*)
+              │   ├── ferrostage-settings v1.0.0
+              │   │   ├── ferrostage-app v1.0.0 (*)
+              │   │   ├── (dev) ferrostage-platform v1.0.0
+              │   │   │   ├── ferrostage-app v1.0.0 (*)
+              │   │   │   └── ferrostage-ui v1.0.0 (*)
+              │   │   └── ferrostage-ui v1.0.0 (*)
+              │   └── ferrostage-ui v1.0.0 (*)
+              └── ferrostage-ui v1.0.0 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'windows-sys'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage/Cargo.lock:187:1
+    │  
+187 │ ╭ windows-sys 0.60.2 registry+https://github.com/rust-lang/crates.io-index
+188 │ │ windows-sys 0.61.2 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰────────────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ windows-sys v0.60.2
+      └── notify v8.2.0
+          └── ferrostage-platform v1.0.0
+              ├── ferrostage-app v1.0.0
+              └── ferrostage-ui v1.0.0
+                  └── ferrostage-app v1.0.0 (*)
+    ├ windows-sys v0.61.2
+      ├── anstyle-query v1.1.5
+      │   └── anstream v1.0.0
+      │       └── clap_builder v4.6.7
+      │           └── clap v4.6.7
+      │               └── ferrostage-app v1.0.0
+      ├── anstyle-wincon v3.0.11
+      │   └── anstream v1.0.0 (*)
+      ├── errno v0.3.14
+      │   └── rustix v1.1.5
+      │       └── tempfile v3.27.0
+      │           ├── proptest v1.12.0
+      │           │   ├── (dev) ferrostage-core v1.0.0
+      │           │   │   ├── ferrostage-app v1.0.0 (*)
+      │           │   │   ├── ferrostage-document v1.0.0
+      │           │   │   │   └── ferrostage-ui v1.0.0
+      │           │   │   │       └── ferrostage-app v1.0.0 (*)
+      │           │   │   ├── ferrostage-media v1.0.0
+      │           │   │   │   ├── ferrostage-media-helper v1.0.0
+      │           │   │   │   └── ferrostage-ui v1.0.0 (*)
+      │           │   │   ├── ferrostage-media-helper v1.0.0 (*)
+      │           │   │   ├── ferrostage-pdf v1.0.0
+      │           │   │   │   ├── ferrostage-app v1.0.0 (*)
+      │           │   │   │   ├── ferrostage-document v1.0.0 (*)
+      │           │   │   │   ├── (dev) ferrostage-media v1.0.0 (*)
+      │           │   │   │   ├── ferrostage-render v1.0.0
+      │           │   │   │   │   ├── ferrostage-app v1.0.0 (*)
+      │           │   │   │   │   ├── (dev) ferrostage-document v1.0.0 (*)
+      │           │   │   │   │   ├── ferrostage-settings v1.0.0
+      │           │   │   │   │   │   ├── ferrostage-app v1.0.0 (*)
+      │           │   │   │   │   │   ├── (dev) ferrostage-platform v1.0.0
+      │           │   │   │   │   │   │   ├── ferrostage-app v1.0.0 (*)
+      │           │   │   │   │   │   │   └── ferrostage-ui v1.0.0 (*)
+      │           │   │   │   │   │   └── ferrostage-ui v1.0.0 (*)
+      │           │   │   │   │   └── ferrostage-ui v1.0.0 (*)
+      │           │   │   │   └── ferrostage-ui v1.0.0 (*)
+      │           │   │   ├── ferrostage-platform v1.0.0 (*)
+      │           │   │   ├── ferrostage-render v1.0.0 (*)
+      │           │   │   ├── ferrostage-settings v1.0.0 (*)
+      │           │   │   └── ferrostage-ui v1.0.0 (*)
+      │           │   └── (dev) ferrostage-platform v1.0.0 (*)
+      │           └── rusty-fork v0.3.1
+      │               └── proptest v1.12.0 (*)
+      ├── mio v1.2.4
+      │   └── notify v8.2.0
+      │       └── ferrostage-platform v1.0.0 (*)
+      ├── nu-ansi-term v0.50.3
+      │   └── tracing-subscriber v0.3.23
+      │       ├── ferrostage-app v1.0.0 (*)
+      │       └── (dev) ferrostage-ui v1.0.0 (*)
+      ├── rustix v1.1.5 (*)
+      ├── tempfile v3.27.0 (*)
+      ├── winapi-util v0.1.11
+      │   ├── same-file v1.0.6
+      │   │   └── walkdir v2.5.0
+      │   │       └── notify v8.2.0 (*)
+      │   └── walkdir v2.5.0 (*)
+      └── winreg v0.56.0
+          └── embed-resource v3.0.12
+              └── (build) ferrostage-app v1.0.0 (*)
+
+advisories ok, bans ok, licenses ok, sources ok

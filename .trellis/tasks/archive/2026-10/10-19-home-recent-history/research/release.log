@@ -1,0 +1,15 @@
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/windows-distribution.ps1 -Action release
+[START] Cargo metadata
+[PASS] Cargo metadata (0.2 s)
+[START] Desktop release build
+   Compiling ferrostage-settings v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-settings)
+   Compiling ferrostage-ui v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+   Compiling ferrostage-app v1.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app)
+    Finished `release` profile [optimized] target(s) in 13.51s
+[PASS] Desktop release build (13.6 s)
+D:\Documents\Code\Rust\Exp\ferrostage\target\release\pdfium.dll
+[PASS] Verified desktop payload: D:\Documents\Code\Rust\Exp\ferrostage\target\dist\payload-1.0.0
+[START] NSIS Setup
+[PASS] NSIS Setup (3.1 s)
+
+[PASS] Release verified: D:\Documents\Code\Rust\Exp\ferrostage\target\dist\release.json

@@ -1,0 +1,4 @@
+{"file":".trellis/spec/backend/database-guidelines.md","reason":"Check backward compatibility, whole-leaf merge and failed-save behavior"}
+{"file":".trellis/spec/backend/error-handling.md","reason":"No raw parser diagnostics in user copy"}
+{"file":".trellis/spec/frontend/component-guidelines.md","reason":"Native activation, focused paths and visual constraints"}
+{"file":".trellis/tasks/10-19-home-recent-history/design.md","reason":"Bounded screenshot repair and timestamp semantics"}

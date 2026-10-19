@@ -1,0 +1,6 @@
+{"file":".trellis/spec/backend/database-guidelines.md","reason":"Optional v1 settings leaves, unknown data, read-only and save semantics"}
+{"file":".trellis/spec/backend/error-handling.md","reason":"Typed errors and localized boundary"}
+{"file":".trellis/spec/frontend/component-guidelines.md","reason":"Existing home, typography, native activation and normal-window acceptance"}
+{"file":".trellis/spec/frontend/state-management.md","reason":"One settings owner and import acceptance"}
+{"file":"DESIGN.md","reason":"Established home tokens and visual direction"}
+{"file":".trellis/tasks/10-19-home-recent-history/research/history-research.md","reason":"Concrete history schema/merge/pruning pipeline"}
