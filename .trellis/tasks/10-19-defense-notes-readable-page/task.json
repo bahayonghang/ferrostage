@@ -1,0 +1,31 @@
+{
+  "id": "defense-notes-readable-page",
+  "name": "defense-notes-readable-page",
+  "title": "答辩备注页大字号深色版式",
+  "description": "备注页改为 16×15 cm、18pt/24pt、深色纸，配合 FerroStage 讲稿优先布局提高站立可读性",
+  "status": "planning",
+  "dev_type": null,
+  "scope": null,
+  "package": null,
+  "priority": "P2",
+  "creator": "lyh",
+  "assignee": "lyh",
+  "createdAt": "2026-10-19",
+  "completedAt": null,
+  "branch": null,
+  "base_branch": "main",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [],
+  "parent": null,
+  "relatedFiles": [
+    "D:/Documents/LYH/200-Learning/00博士毕业/毕业论文/thesis/src/thesis_analysis/defense_notes_sync.py",
+    "D:/Documents/LYH/200-Learning/00博士毕业/毕业论文/thesis/tests/test_defense_notes_sync.py",
+    "D:/Documents/LYH/200-Learning/00博士毕业/毕业论文/thesis/slides/deck-notes/defense.tex",
+    "D:/Documents/LYH/200-Learning/00博士毕业/毕业论文/thesis/slides/AGENTS.md"
+  ],
+  "notes": "Task files live in the FerroStage repository; all edits target the thesis repository at D:/Documents/LYH/200-Learning/00博士毕业/毕业论文/thesis",
+  "meta": {}
+}

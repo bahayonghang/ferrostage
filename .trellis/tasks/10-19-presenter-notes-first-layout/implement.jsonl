@@ -1,0 +1,4 @@
+{"file": "DESIGN.md", "reason": "Token layer and workbench layout contract"}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Workbench ordering and notes wrapper rules"}
+{"file": ".trellis/spec/frontend/state-management.md", "reason": "Notes workbench ratios and drag contract"}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Test and native acceptance gates"}
