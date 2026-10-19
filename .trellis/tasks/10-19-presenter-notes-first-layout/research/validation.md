@@ -36,4 +36,4 @@ The user reviewed the notes-first layout in the native app and asked to restore 
 | Headless UI tests         | `cargo test -p ferrostage-ui --features test-support --lib --locked`                                            | PASS, 212 tests |
 | GPUI lint                 | `cargo clippy -p ferrostage-app -p ferrostage-ui --features gpui,pdfium --all-targets --locked -- -D warnings` | PASS            |
 | Test-support lint         | `cargo clippy -p ferrostage-ui --features test-support --all-targets --locked -- -D warnings`                  | PASS            |
-| Native dual-display check | `just dev`                                                                                                      | NOT_RUN         |
+| Native dual-display check | user check in the native app with the rebuilt thesis PDF                                                         | PASS (user, 2026-10-19) |

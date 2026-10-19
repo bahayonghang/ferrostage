@@ -4,19 +4,19 @@
 
 FerroStage 把备注页缩放到讲稿栏内，屏幕字高 = 字号 / 页宽 × 页面显示宽度。页宽保持 16 cm 不变，所以字高只随字号和讲稿栏宽度变化。
 
-单位为用户截图像素（2000×1253，DPI 缩放未知，倍数与缩放无关）。工作区约 1990×1110；讲稿栏 60%、分隔线 8 px、面板内边距 8 px、标签行 24 px 后，讲稿区内尺寸约 1173×1070。
+单位为用户截图像素（2000×1253，DPI 缩放未知，倍数与缩放无关）。工作区约 1990×1110。恢复后的布局：当前页占 55%，分隔线 6 px、两侧间距各 6 px，右栏约 878 px 宽；右栏内下一页与讲稿按 35:65 分高，扣除 6 px 分隔线与间距后讲稿面板约 712 px 高；面板内边距 12 px、标签行约 24 px，讲稿区内尺寸约 854×664，宽高比约 1.29。备注页按讲稿区宽度显示，超出高度的部分纵向滚动。
 
 | 情形 | 页面显示宽度 | 字高 | 倍数 |
 |---|---|---|---|
-| 现状：16:9 页，16pt，右栏按宽适配 | 约 650 px | 23 px（实测） | 1.00 |
-| 仅 FerroStage 任务：16:9 页，16pt，按宽适配 | 1173 px（页高 660 px） | 约 41 px | 1.80 |
-| 两边完成：16×15 cm 页，18pt，按高适配 | 1141 px（1070×1.067） | 约 45 px | 1.97 |
+| 改动前：右栏 35%，16:9 页，16pt | 约 650 px | 23 px（实测） | 1.00 |
+| 右栏 45%，16:9 页，16pt | 约 854 px | 约 30 px | 1.31 |
+| 右栏 45%，16×13.5 cm 页，18pt | 约 854 px | 约 34 px | 1.47 |
 
-页高取 15 cm 的理由：讲稿区宽高比约 1173/1070 = 1.10，最贴合的页高是 453.5×1070/1173 ≈ 414 bp（14.6 cm）。取 15 cm（425.2 bp）时按高适配，右侧空 32 px（2.7%），换来多约 0.5 行容量。保留 15 cm。若用户把讲稿栏拖宽，页面仍按高适配，字高不变。
+页高取 13.5 cm 的理由：讲稿区默认可见高度对应页内约 664/854×453.5 ≈ 352 bp。页高只决定能否容纳最长备注，正文从页顶排起，底边不超过 352 bp 的备注无需滚动。计划先取 13 cm（368.5 bp），实测第 6 帧底边 365.6 bp，超出 358 bp 验收线，按预案改为 13.5 cm（382.7 bp），保留约 10 bp 底边距。15 cm 页在此布局下只会增加需要滚动的空白。
 
 ## 容量核算
 
-正文宽约 425 bp，18pt 每行约 23 个汉字；可用高度约 405 bp，24pt 行距约 16 行，容量约 370 字。现有最长备注 284 字，含段距后约 13 至 14 行，余量约 2 行。最坏情况按现有最大底边 260 bp 推算：260 × (24/20) × (16/18 的每行字数比倒数 1.125) ≈ 351 bp，低于 415 bp 的验收线。
+正文宽约 425 bp，18pt 每行约 23 个汉字；可用高度约 362 bp，24pt 行距约 15 行，容量约 340 字。现有最长备注 284 字，含段距后约 13 至 14 行，余量不足 1 行。最坏情况按现有最大底边 260 bp 推算：260 × (24/20) × (16/18 的每行字数比倒数 1.125) ≈ 351 bp，低于 372.7 bp 的验收线，余量小，以 AC3 实测为准。
 
 ## 生成器改动（`NOTES_BLOCK`）
 
@@ -27,8 +27,8 @@ FerroStage 把备注页缩放到讲稿栏内，屏幕字高 = 字号 / 页宽 ×
 \definecolor{ysuNoteInk}{HTML}{E6DFD8}
 \definecolor{ysuNoteStrong}{HTML}{FAF9F5}
 \setbeamertemplate{note page}{%
-  \special{pdf:pagesize width \the\paperwidth\space height 15cm}%
-  % 深色底：从页左上角铺 16 cm × 15 cm 色块，不占排版空间
+  \special{pdf:pagesize width \the\paperwidth\space height 13.5cm}%
+  % 深色底：从页左上角铺 16 cm × 13.5 cm 色块，不占排版空间
   ...（tikz overlay 或零尺寸 \rlap 色块，实施时二选一并验证像素）
   \hspace*{-0.5cm}%
   \begin{minipage}[t]{\dimexpr\textwidth+1cm\relax}
@@ -52,8 +52,8 @@ FerroStage 把备注页缩放到讲稿栏内，屏幕字高 = 字号 / 页宽 ×
 
 ## 背景实现的两种候选
 
-1. TikZ overlay：`\tikz[remember picture,overlay]\fill[ysuNoteBg](current page.north west) rectangle ++(\paperwidth,-15cm);`。需两遍编译取得 `current page` 坐标（`just slides-notes` 本已要求两遍）。
-2. 零尺寸色块：`\rlap{\smash{\raisebox{...}{\textcolor{ysuNoteBg}{\rule{\paperwidth}{15cm}}}}}`，偏移量按 note page 原点实测。无需 remember picture。
+1. TikZ overlay：`\tikz[remember picture,overlay]\fill[ysuNoteBg](current page.north west) rectangle ++(\paperwidth,-13.5cm);`。需两遍编译取得 `current page` 坐标（`just slides-notes` 本已要求两遍）。
+2. 零尺寸色块：`\rlap{\smash{\raisebox{...}{\textcolor{ysuNoteBg}{\rule{\paperwidth}{13.5cm}}}}}`，偏移量按 note page 原点实测。无需 remember picture。
 
 先试 2（无辅助文件依赖），像素不对齐再用 1。
 
@@ -72,4 +72,4 @@ FerroStage 把备注页缩放到讲稿栏内，屏幕字高 = 字号 / 页宽 ×
 ## 风险
 
 - `\textbf` 重定义可能影响备注中的公式加粗（`\bm` 不受影响，`\textbf` 在数学模式外才生效）。实施时检查含 `\textbf` 的 17 处。
-- 页面加高后 FerroStage 旧版（经典布局按宽适配）会让备注更高、需要滚动。配套任务未完成前不要用新 PDF 试讲。
+- 底边超过 352 bp 的备注在默认讲稿区高度下需要滚动；用户可在 FerroStage 拖动右栏分隔线加高讲稿区。

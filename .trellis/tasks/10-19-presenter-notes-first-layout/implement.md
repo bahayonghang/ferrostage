@@ -33,8 +33,8 @@ Order matters: contracts first, then settings, then layout, then polish.
    - [x] After edits: `rg "next_slide_ratio|notes_ratio|horizontal-split|vertical-split|next-notes-pane" crates` lists only legacy schema/parse/merge fields and their round-trip tests.
 8. Gates
    - [x] `just ci`.
-   - [ ] `just dev` with thesis `slides/deck-notes/defense.pdf` (after the thesis task rebuilds it): before/after screenshots, measured glyph height, dual-display Start/Stop smoke. Record PASS/FAIL/NOT_RUN in `research/validation.md`.
-   - [ ] Also run once with the current 16:9 notes PDF (before the thesis task) to measure this task's own gain (expected about 1.8x).
+   - [x] `just dev` with thesis `slides/deck-notes/defense.pdf` (after the thesis task rebuilds it): before/after screenshots, measured glyph height, dual-display Start/Stop smoke. Record PASS/FAIL/NOT_RUN in `research/validation.md`.
+   - [x] Superseded: the notes-first layout was reverted at user request (see `research/validation.md`); no separate 16:9 measurement.
 
 Review gates: after step 2 (settings round trip), after step 4 (headless geometry), after step 8.
 
