@@ -51,6 +51,12 @@ pub enum PlatformError {
     UnsupportedPlatform,
     #[error("{operation} failed with Windows error {code}")]
     NativeEnumeration { operation: &'static str, code: u32 },
+    /// Connection lists may match when only device metadata changed.
+    #[error("monitor device snapshot changed during discovery")]
+    TopologyChanging {
+        before: Vec<String>,
+        after: Vec<String>,
+    },
     #[error("device and geometry connection sets disagree")]
     IncompleteTopology {
         devices: Vec<String>,

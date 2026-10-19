@@ -28,13 +28,21 @@ struct Geometry {
 pub(crate) fn enumerate() -> Result<Vec<MonitorInfo>, PlatformError> {
     let devices = devices()?;
     let geometry = geometry()?;
-    // The providers are not an atomic OS snapshot. Reject a connection change
+    // The providers are not an atomic OS snapshot. Reject a device change
     // during the query; the watcher retries while projection stays unavailable.
     let after = self::devices()?;
+    combine_snapshots(devices, geometry, after)
+}
+
+fn combine_snapshots(
+    devices: BTreeMap<String, Device>,
+    geometry: Vec<Geometry>,
+    after: BTreeMap<String, Device>,
+) -> Result<Vec<MonitorInfo>, PlatformError> {
     if devices != after {
-        return Err(PlatformError::IncompleteTopology {
-            devices: devices.into_keys().collect(),
-            geometry: after.into_keys().collect(),
+        return Err(PlatformError::TopologyChanging {
+            before: devices.into_keys().collect(),
+            after: after.into_keys().collect(),
         });
     }
     combine(devices, geometry)

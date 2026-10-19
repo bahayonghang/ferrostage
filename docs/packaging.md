@@ -130,6 +130,22 @@ normal fixture run. Performance runs use `cargo run --release -p ferrostage-rend
 and every one of 200 uncached worker renders per case. Hardware thresholds are
 reported separately from hosted-CI correctness and do not imply GPU acceptance.
 
+## Display detection recovery
+
+If FerroStage reports that display devices and screen geometry disagree, or that
+connections are changing, open **Settings > Displays** (or **Display settings**).
+Check display power and cables, wait for switching to settle, then use **Detect
+again**. If Windows still misses a screen, open **Windows Settings > System >
+Display > Multiple displays > Detect**. For separate presenter and PDF screens,
+choose **Extend these displays**, also available through **Win + P > Extend**.
+
+Return to FerroStage, select **Detect again**, select the **Application window display**
+and **PDF playback display**, then select **Apply**. Screen numbers belong to
+FerroStage and may differ from Windows numbers. Detection failure stops
+projection immediately; recovery does not restart the presentation automatically.
+If the message says display monitoring could not start, restart FerroStage.
+These controls never change the Windows display configuration automatically.
+
 ## Media runtime and helper
 
 See ADR-009, ADR-010 and `packaging/media/runtime.json`. Only its49 executable/DLL entries (19 plugins) are distributed, with all17 original notices, source recipes and source URLs. Full upstream wheels include unselected components and must never be copied into the product.

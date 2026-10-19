@@ -80,6 +80,45 @@ fn geometry() -> Geometry {
 }
 
 #[test]
+fn changing_device_metadata_is_not_a_geometry_mismatch() {
+    let before = device("path-before");
+    for field in ["path", "name", "primary"] {
+        let mut after = before.clone();
+        let changed = after.get_mut("DISPLAY-A").unwrap();
+        match field {
+            "path" => changed.path = "path-after".into(),
+            "name" => changed.name = "renamed-model".into(),
+            "primary" => changed.primary = false,
+            _ => unreachable!(),
+        }
+        assert!(before.keys().eq(after.keys()));
+        assert_eq!(
+            combine_snapshots(before.clone(), vec![geometry()], after),
+            Err(PlatformError::TopologyChanging {
+                before: vec!["DISPLAY-A".into()],
+                after: vec!["DISPLAY-A".into()],
+            }),
+            "{field} change must not be reported as missing geometry"
+        );
+    }
+}
+
+#[test]
+fn stable_device_snapshots_still_require_complete_geometry() {
+    assert_eq!(
+        combine_snapshots(device("path"), vec![], device("path")),
+        Err(PlatformError::IncompleteTopology {
+            devices: vec!["DISPLAY-A".into()],
+            geometry: vec![],
+        })
+    );
+    assert_eq!(
+        combine_snapshots(device("path"), vec![geometry()], device("path")),
+        combine(device("path"), vec![geometry()])
+    );
+}
+
+#[test]
 fn every_required_native_mode_field_must_be_present() {
     let required =
         co::DM::POSITION | co::DM::DISPLAYORIENTATION | co::DM::PELSWIDTH | co::DM::PELSHEIGHT;
