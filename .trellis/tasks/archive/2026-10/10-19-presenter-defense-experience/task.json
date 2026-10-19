@@ -1,0 +1,32 @@
+{
+  "id": "presenter-defense-experience",
+  "name": "presenter-defense-experience",
+  "title": "FerroStage 1.1.0 答辩体验与 Beamer 动画兼容",
+  "description": "规划全屏布局、原版 Notes 源排版、标准转场与 overlay 定时播放，最后升级至 1.1.0。",
+  "status": "completed",
+  "dev_type": null,
+  "scope": null,
+  "package": null,
+  "priority": "P2",
+  "creator": "lyh",
+  "assignee": "lyh",
+  "createdAt": "2026-10-19",
+  "completedAt": "2026-10-19",
+  "branch": "dev",
+  "base_branch": "main",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [
+    "10-19-presenter-fullscreen-layout",
+    "10-19-presenter-readable-notes",
+    "10-19-beamer-page-transitions",
+    "10-19-beamer-overlay-timing",
+    "10-19-release-version-1-1-0"
+  ],
+  "parent": null,
+  "relatedFiles": [],
+  "notes": "Implementation and independent code review complete; 1.1.0 gates and local release PASS. Actual laptop/dual-display fullscreen, original Notes, all transition families and timed-playback samples verified. See parent research/validation.md and native-validation.md for explicit native qualification and standing-distance NOT_RUN items. No commit, archive, install or publication.",
+  "meta": {}
+}
