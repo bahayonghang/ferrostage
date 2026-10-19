@@ -1,0 +1,40 @@
+{
+  "id": "chapter-outline-navigation",
+  "name": "chapter-outline-navigation",
+  "title": "章节目录快速跳页（两级 PDF 书签）",
+  "description": "Implement two-level PDF chapter directory in the page browser, preserving safe content navigation and verifying core behavior.",
+  "status": "completed",
+  "dev_type": "fullstack",
+  "scope": "navigation",
+  "package": null,
+  "priority": "P2",
+  "creator": "lyh",
+  "assignee": "lyh",
+  "createdAt": "2026-10-19",
+  "completedAt": "2026-10-19",
+  "branch": "dev",
+  "base_branch": "main",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [],
+  "parent": null,
+  "relatedFiles": [
+    "crates/ferrostage-pdf/src/structure.rs",
+    "crates/ferrostage-document/src/builder.rs",
+    "crates/ferrostage-ui/src/page_browser.rs",
+    "crates/ferrostage-ui/src/shell/page_browser.rs",
+    "crates/ferrostage-ui/src/presenter/page_browser.rs",
+    "crates/ferrostage-ui/src/actions.rs",
+    "crates/ferrostage-ui/src/workbench.rs",
+    "DESIGN.md"
+  ],
+  "notes": "Implementation and focused/full gates passed; user reported manual acceptance. Scoped local commit/finish authorized, no push. Existing defense-experience work excluded from index.",
+  "meta": {
+    "planning_only": false,
+    "implementation_approved": "2026-10-19",
+    "commit_policy": "User authorized scoped local commit and finish; do not push.",
+    "manual_acceptance": "User reported manual verification complete and requested no further validation."
+  }
+}

@@ -1,0 +1,501 @@
+{
+  "source_path": "D:\\Documents\\LYH\\200-Learning\\00博士毕业\\毕业论文\\thesis\\slides\\deck-notes\\defense.pdf",
+  "source_bytes": 71901127,
+  "sha256": "3f7246010bfbd5e6352d4abcdeb119c73093f693d588042aa8f49398d5d24f45",
+  "physical_pages": 190,
+  "content_pages": 95,
+  "recognized_note_pages": 95,
+  "outline_total": 83,
+  "outline_depth_counts": {
+    "1": 10,
+    "2": 29,
+    "3": 44
+  },
+  "retained_count": 39,
+  "all_retained_targets_content": true,
+  "named_destinations": 381,
+  "label_sample": [
+    "1",
+    "notes:1",
+    "2",
+    "notes:2",
+    "3",
+    "notes:3",
+    "4",
+    "notes:4"
+  ],
+  "retained": [
+    {
+      "source_id": 0,
+      "parent_id": null,
+      "depth": 1,
+      "title": "封面",
+      "physical_page_zero_based": 0,
+      "pdf_page": 1,
+      "content_number": 1,
+      "label": "1"
+    },
+    {
+      "source_id": 1,
+      "parent_id": null,
+      "depth": 1,
+      "title": "目录",
+      "physical_page_zero_based": 2,
+      "pdf_page": 3,
+      "content_number": 2,
+      "label": "2"
+    },
+    {
+      "source_id": 2,
+      "parent_id": null,
+      "depth": 1,
+      "title": "第1章 绪论",
+      "physical_page_zero_based": 4,
+      "pdf_page": 5,
+      "content_number": 3,
+      "label": "3"
+    },
+    {
+      "source_id": 3,
+      "parent_id": 2,
+      "depth": 2,
+      "title": "1.1 研究背景与意义",
+      "physical_page_zero_based": 6,
+      "pdf_page": 7,
+      "content_number": 4,
+      "label": "4"
+    },
+    {
+      "source_id": 4,
+      "parent_id": 2,
+      "depth": 2,
+      "title": "1.2 国内外研究现状",
+      "physical_page_zero_based": 12,
+      "pdf_page": 13,
+      "content_number": 7,
+      "label": "7"
+    },
+    {
+      "source_id": 8,
+      "parent_id": 2,
+      "depth": 2,
+      "title": "1.3 研究问题与关键挑战",
+      "physical_page_zero_based": 18,
+      "pdf_page": 19,
+      "content_number": 10,
+      "label": "10"
+    },
+    {
+      "source_id": 9,
+      "parent_id": 2,
+      "depth": 2,
+      "title": "1.4 研究内容与章节安排",
+      "physical_page_zero_based": 20,
+      "pdf_page": 21,
+      "content_number": 11,
+      "label": "11"
+    },
+    {
+      "source_id": 10,
+      "parent_id": null,
+      "depth": 1,
+      "title": "第2章 水泥烧成系统工艺分析与运行优化框架",
+      "physical_page_zero_based": 22,
+      "pdf_page": 23,
+      "content_number": 12,
+      "label": "12"
+    },
+    {
+      "source_id": 11,
+      "parent_id": 10,
+      "depth": 2,
+      "title": "2.2 烧成系统工艺流程与运行特性",
+      "physical_page_zero_based": 24,
+      "pdf_page": 25,
+      "content_number": 13,
+      "label": "13"
+    },
+    {
+      "source_id": 15,
+      "parent_id": 10,
+      "depth": 2,
+      "title": "2.3 多源数据特征与过程变量选取",
+      "physical_page_zero_based": 32,
+      "pdf_page": 33,
+      "content_number": 17,
+      "label": "17"
+    },
+    {
+      "source_id": 17,
+      "parent_id": 10,
+      "depth": 2,
+      "title": "2.4 水泥烧成系统运行优化问题描述",
+      "physical_page_zero_based": 34,
+      "pdf_page": 35,
+      "content_number": 18,
+      "label": "18"
+    },
+    {
+      "source_id": 18,
+      "parent_id": 10,
+      "depth": 2,
+      "title": "2.5 水泥烧成系统运行优化框架设计",
+      "physical_page_zero_based": 38,
+      "pdf_page": 39,
+      "content_number": 20,
+      "label": "20"
+    },
+    {
+      "source_id": 19,
+      "parent_id": null,
+      "depth": 1,
+      "title": "第3章 基于多速率数据融合的熟料质量指标建模",
+      "physical_page_zero_based": 42,
+      "pdf_page": 43,
+      "content_number": 22,
+      "label": "22"
+    },
+    {
+      "source_id": 20,
+      "parent_id": 19,
+      "depth": 2,
+      "title": "3.1 引言",
+      "physical_page_zero_based": 44,
+      "pdf_page": 45,
+      "content_number": 23,
+      "label": "23"
+    },
+    {
+      "source_id": 23,
+      "parent_id": 19,
+      "depth": 2,
+      "title": "3.2 多源多速率软测量问题描述",
+      "physical_page_zero_based": 48,
+      "pdf_page": 49,
+      "content_number": 25,
+      "label": "25"
+    },
+    {
+      "source_id": 24,
+      "parent_id": 19,
+      "depth": 2,
+      "title": "3.3 扩散模型增强的多速率融合软测量",
+      "physical_page_zero_based": 50,
+      "pdf_page": 51,
+      "content_number": 26,
+      "label": "26"
+    },
+    {
+      "source_id": 28,
+      "parent_id": 19,
+      "depth": 2,
+      "title": "3.4 实验与结果分析",
+      "physical_page_zero_based": 62,
+      "pdf_page": 63,
+      "content_number": 32,
+      "label": "32"
+    },
+    {
+      "source_id": 33,
+      "parent_id": 19,
+      "depth": 2,
+      "title": "3.5 本章小结",
+      "physical_page_zero_based": 80,
+      "pdf_page": 81,
+      "content_number": 41,
+      "label": "41"
+    },
+    {
+      "source_id": 34,
+      "parent_id": null,
+      "depth": 1,
+      "title": "第4章 水泥烧成系统过程与质量联合预测模型",
+      "physical_page_zero_based": 82,
+      "pdf_page": 83,
+      "content_number": 42,
+      "label": "42"
+    },
+    {
+      "source_id": 35,
+      "parent_id": 34,
+      "depth": 2,
+      "title": "4.1 引言",
+      "physical_page_zero_based": 84,
+      "pdf_page": 85,
+      "content_number": 43,
+      "label": "43"
+    },
+    {
+      "source_id": 38,
+      "parent_id": 34,
+      "depth": 2,
+      "title": "4.2 多速率过程与质量联合预测问题",
+      "physical_page_zero_based": 88,
+      "pdf_page": 89,
+      "content_number": 45,
+      "label": "45"
+    },
+    {
+      "source_id": 40,
+      "parent_id": 34,
+      "depth": 2,
+      "title": "4.3 多速率过程与质量联合预测模型",
+      "physical_page_zero_based": 90,
+      "pdf_page": 91,
+      "content_number": 46,
+      "label": "46"
+    },
+    {
+      "source_id": 44,
+      "parent_id": 34,
+      "depth": 2,
+      "title": "4.4 过程与质量联合预测实验与分析",
+      "physical_page_zero_based": 102,
+      "pdf_page": 103,
+      "content_number": 52,
+      "label": "52"
+    },
+    {
+      "source_id": 48,
+      "parent_id": 34,
+      "depth": 2,
+      "title": "4.5 本章小结",
+      "physical_page_zero_based": 110,
+      "pdf_page": 111,
+      "content_number": 56,
+      "label": "56"
+    },
+    {
+      "source_id": 49,
+      "parent_id": null,
+      "depth": 1,
+      "title": "第5章 水泥烧成系统运行指标多目标动态优化算法",
+      "physical_page_zero_based": 112,
+      "pdf_page": 113,
+      "content_number": 57,
+      "label": "57"
+    },
+    {
+      "source_id": 50,
+      "parent_id": 49,
+      "depth": 2,
+      "title": "5.1 引言",
+      "physical_page_zero_based": 114,
+      "pdf_page": 115,
+      "content_number": 58,
+      "label": "58"
+    },
+    {
+      "source_id": 53,
+      "parent_id": 49,
+      "depth": 2,
+      "title": "5.2 运行指标动态优化问题描述",
+      "physical_page_zero_based": 118,
+      "pdf_page": 119,
+      "content_number": 60,
+      "label": "60"
+    },
+    {
+      "source_id": 55,
+      "parent_id": 49,
+      "depth": 2,
+      "title": "5.3 条件动态响应驱动的多目标动态优化方法",
+      "physical_page_zero_based": 122,
+      "pdf_page": 123,
+      "content_number": 62,
+      "label": "62"
+    },
+    {
+      "source_id": 59,
+      "parent_id": 49,
+      "depth": 2,
+      "title": "5.4 动态优化实验与结果分析",
+      "physical_page_zero_based": 134,
+      "pdf_page": 135,
+      "content_number": 68,
+      "label": "68"
+    },
+    {
+      "source_id": 64,
+      "parent_id": 49,
+      "depth": 2,
+      "title": "5.5 本章小结",
+      "physical_page_zero_based": 154,
+      "pdf_page": 155,
+      "content_number": 78,
+      "label": "78"
+    },
+    {
+      "source_id": 65,
+      "parent_id": null,
+      "depth": 1,
+      "title": "第6章 水泥烧成系统智能监测与决策平台设计及应用",
+      "physical_page_zero_based": 156,
+      "pdf_page": 157,
+      "content_number": 79,
+      "label": "79"
+    },
+    {
+      "source_id": 66,
+      "parent_id": 65,
+      "depth": 2,
+      "title": "6.1 引言",
+      "physical_page_zero_based": 158,
+      "pdf_page": 159,
+      "content_number": 80,
+      "label": "80"
+    },
+    {
+      "source_id": 68,
+      "parent_id": 65,
+      "depth": 2,
+      "title": "6.2 系统架构与功能设计",
+      "physical_page_zero_based": 160,
+      "pdf_page": 161,
+      "content_number": 81,
+      "label": "81"
+    },
+    {
+      "source_id": 70,
+      "parent_id": 65,
+      "depth": 2,
+      "title": "6.3 算法任务运行与调度机制",
+      "physical_page_zero_based": 162,
+      "pdf_page": 163,
+      "content_number": 82,
+      "label": "82"
+    },
+    {
+      "source_id": 73,
+      "parent_id": 65,
+      "depth": 2,
+      "title": "6.4 系统应用案例分析",
+      "physical_page_zero_based": 166,
+      "pdf_page": 167,
+      "content_number": 84,
+      "label": "84"
+    },
+    {
+      "source_id": 76,
+      "parent_id": 65,
+      "depth": 2,
+      "title": "6.5 本章小结",
+      "physical_page_zero_based": 178,
+      "pdf_page": 179,
+      "content_number": 90,
+      "label": "90"
+    },
+    {
+      "source_id": 77,
+      "parent_id": null,
+      "depth": 1,
+      "title": "第7章 结论",
+      "physical_page_zero_based": 180,
+      "pdf_page": 181,
+      "content_number": 91,
+      "label": "91"
+    },
+    {
+      "source_id": 78,
+      "parent_id": 77,
+      "depth": 2,
+      "title": "结论",
+      "physical_page_zero_based": 182,
+      "pdf_page": 183,
+      "content_number": 92,
+      "label": "92"
+    },
+    {
+      "source_id": 82,
+      "parent_id": null,
+      "depth": 1,
+      "title": "致谢",
+      "physical_page_zero_based": 188,
+      "pdf_page": 189,
+      "content_number": 95,
+      "label": "95"
+    }
+  ],
+  "excluded_depth3_examples": [
+    {
+      "source_id": 5,
+      "parent_id": 4,
+      "depth": 3,
+      "title": "1.2.1 水泥烧成系统运行指标建模研究现状",
+      "physical_page_zero_based": 12,
+      "pdf_page": 13,
+      "content_number": 7,
+      "label": "7"
+    },
+    {
+      "source_id": 6,
+      "parent_id": 4,
+      "depth": 3,
+      "title": "1.2.2 水泥烧成系统时间序列预测研究现状",
+      "physical_page_zero_based": 14,
+      "pdf_page": 15,
+      "content_number": 8,
+      "label": "8"
+    },
+    {
+      "source_id": 7,
+      "parent_id": 4,
+      "depth": 3,
+      "title": "1.2.3 水泥烧成系统运行指标优化研究现状",
+      "physical_page_zero_based": 16,
+      "pdf_page": 17,
+      "content_number": 9,
+      "label": "9"
+    },
+    {
+      "source_id": 12,
+      "parent_id": 11,
+      "depth": 3,
+      "title": "2.2.4 烧成系统运行特性与建模约束",
+      "physical_page_zero_based": 24,
+      "pdf_page": 25,
+      "content_number": 13,
+      "label": "13"
+    },
+    {
+      "source_id": 13,
+      "parent_id": 11,
+      "depth": 3,
+      "title": "2.2.2 旋风预热与分解炉预分解过程",
+      "physical_page_zero_based": 26,
+      "pdf_page": 27,
+      "content_number": 14,
+      "label": "14"
+    },
+    {
+      "source_id": 14,
+      "parent_id": 11,
+      "depth": 3,
+      "title": "2.2.3 回转窑煅烧与篦冷机冷却过程",
+      "physical_page_zero_based": 28,
+      "pdf_page": 29,
+      "content_number": 15,
+      "label": "15"
+    },
+    {
+      "source_id": 16,
+      "parent_id": 15,
+      "depth": 3,
+      "title": "2.3.2 过程变量分类与稳态边界",
+      "physical_page_zero_based": 32,
+      "pdf_page": 33,
+      "content_number": 17,
+      "label": "17"
+    },
+    {
+      "source_id": 21,
+      "parent_id": 20,
+      "depth": 3,
+      "title": "本章在运行优化框架中的位置",
+      "physical_page_zero_based": 44,
+      "pdf_page": 45,
+      "content_number": 23,
+      "label": "23"
+    }
+  ]
+}

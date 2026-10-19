@@ -1,0 +1,7 @@
+{"file": ".trellis/spec/backend/index.md", "reason": "Document/PDF boundaries and clean-room constraints"}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "Nonfatal outline extraction diagnostics"}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Native browser identity, input and shared controls"}
+{"file": ".trellis/spec/frontend/type-safety.md", "reason": "Physical page/generation newtypes and audience notes boundary; see evidence for scoped state-management contract"}
+{"file": ".trellis/spec/backend/pdf-outline.md", "reason": "Implemented bounded outline and content-only mapping contract"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "PDF to document to presenter data flow"}
+{"file": ".trellis/tasks/10-19-chapter-outline-navigation/research/evidence.md", "reason": "Verified private sample, affected code and visual study"}

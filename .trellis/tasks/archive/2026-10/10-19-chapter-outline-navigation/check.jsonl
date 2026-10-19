@@ -1,0 +1,5 @@
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Default/native dependency gates and notes isolation"}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Native acceptance independent from headless checks"}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Browser input, numbering, stale target and thumbnail invariants"}
+{"file": ".trellis/spec/backend/pdf-outline.md", "reason": "Implemented bounded outline and content-only mapping contract"}
+{"file": ".trellis/tasks/10-19-chapter-outline-navigation/research/evidence.md", "reason": "Verified 39-row acceptance oracle and layout evidence"}

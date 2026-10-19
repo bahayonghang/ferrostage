@@ -1,0 +1,50 @@
+[
+  {
+    "state": "current",
+    "title": "FerroStage 章节目录布局研究",
+    "rows": 39,
+    "overflow": false,
+    "panel": {
+      "x": 110,
+      "y": 58,
+      "width": 880,
+      "height": 812,
+      "top": 58,
+      "right": 990,
+      "bottom": 870,
+      "left": 110
+    }
+  },
+  {
+    "state": "long",
+    "title": "FerroStage 章节目录布局研究",
+    "rows": 39,
+    "overflow": false,
+    "panel": {
+      "x": 110,
+      "y": 58,
+      "width": 880,
+      "height": 812,
+      "top": 58,
+      "right": 990,
+      "bottom": 870,
+      "left": 110
+    }
+  },
+  {
+    "state": "empty",
+    "title": "FerroStage 章节目录布局研究",
+    "rows": 0,
+    "overflow": false,
+    "panel": {
+      "x": 110,
+      "y": 58,
+      "width": 880,
+      "height": 812,
+      "top": 58,
+      "right": 990,
+      "bottom": 870,
+      "left": 110
+    }
+  }
+]
