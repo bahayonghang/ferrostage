@@ -627,11 +627,11 @@ impl Shell {
                 }
             }
             Intent::Reconfigure { id, options } => self.reconfigure_layout(id, options, cx),
-            Intent::Split { notes_column, save }
+            Intent::Split { next, notes, save }
                 if !self.busy() && self.settings.write_policy == WritePolicy::Writable =>
             {
-                self.settings.settings.presenter.notes_column_ratio =
-                    notes_column.clamp(0.40, 0.75);
+                self.settings.settings.presenter.next_slide_ratio = next.clamp(0.1, 0.8);
+                self.settings.settings.presenter.notes_ratio = notes.clamp(0.55, 0.8);
                 self.settings.note_edit();
                 if save {
                     self.save(cx);
@@ -2000,13 +2000,7 @@ impl Shell {
                 ferrostage_pdf::PixelSize {
                     width: (f32::from(size.width)
                         * scale
-                        * (1.
-                            - self
-                                .settings
-                                .settings
-                                .presenter
-                                .effective_notes_column_ratio()
-                                as f32))
+                        * (1. - self.settings.settings.presenter.next_slide_ratio as f32))
                         .round()
                         .max(1.) as u32,
                     // Command bar, tool row, and start control. The canvas
@@ -6066,7 +6060,7 @@ mod tests {
         redraw(handle, cx);
         {
             let mut visual = gpui::VisualTestContext::from_window(handle, cx);
-            let split = visual.debug_bounds("column-split").unwrap();
+            let split = visual.debug_bounds("horizontal-split").unwrap();
             visual.simulate_mouse_down(
                 split.center(),
                 gpui::MouseButton::Left,
@@ -6085,18 +6079,16 @@ mod tests {
         }
         shell.read_with(cx, |shell, _| {
             assert!(!shell.settings.dirty);
-            assert!(shell.settings.settings.presenter.notes_column_ratio > 0.6);
+            assert!(shell.settings.settings.presenter.next_slide_ratio > 0.45);
         });
         let bytes = std::fs::read(fixture.0.join("blocked/settings.toml")).unwrap();
         let parsed = std::str::from_utf8(&bytes)
             .unwrap()
             .parse::<toml::Table>()
             .unwrap();
-        let saved = parsed["presenter"]["notes_column_ratio"]
-            .as_float()
-            .unwrap();
+        let saved = parsed["presenter"]["next_slide_ratio"].as_float().unwrap();
         shell.read_with(cx, |shell, _| {
-            assert_eq!(saved, shell.settings.settings.presenter.notes_column_ratio)
+            assert_eq!(saved, shell.settings.settings.presenter.next_slide_ratio)
         });
         shell.update(cx, |shell, cx| {
             shell.settings.write_policy = WritePolicy::ReadOnly {
@@ -6104,12 +6096,13 @@ mod tests {
             };
             shell.dispatch(
                 Intent::Split {
-                    notes_column: 0.5,
+                    next: 0.2,
+                    notes: 0.3,
                     save: true,
                 },
                 cx,
             );
-            assert_eq!(shell.settings.settings.presenter.notes_column_ratio, saved);
+            assert_eq!(shell.settings.settings.presenter.next_slide_ratio, saved);
         });
         assert_eq!(
             std::fs::read(fixture.0.join("blocked/settings.toml")).unwrap(),
@@ -6132,12 +6125,9 @@ mod tests {
         {
             let mut visual = gpui::VisualTestContext::from_window(handle, cx);
             let current = visual.debug_bounds("current-pane").unwrap();
-            let next = visual.debug_bounds("next-pane").unwrap();
-            let notes = visual.debug_bounds("notes-panel").unwrap();
+            let next = visual.debug_bounds("next-notes-pane").unwrap();
             assert!(next.origin.y >= current.bottom());
-            assert!(notes.origin.y >= next.bottom());
             assert!((next.origin.x - current.origin.x).abs() < px(1.));
-            assert!((notes.origin.x - current.origin.x).abs() < px(1.));
         }
         cx.test_window(handle)
             .simulate_resize(size(px(1280.), px(1200.)));
@@ -6866,7 +6856,6 @@ mod tests {
         let (shell, handle) = workbench_fixture(cx);
         shell.update(cx, |shell, cx| {
             shell.settings.settings.presenter.notes_ratio = 0.4;
-            shell.settings.settings.presenter.next_slide_ratio = 0.9;
             shell.settings.settings.presenter.show_thumbnail_strip = true;
             shell.settings.settings.general.recent_files = vec!["kept.pdf".into()];
             cx.notify();
@@ -6892,20 +6881,19 @@ mod tests {
             assert!(progress.origin.y > title.bottom());
             assert!(start.size.height >= px(crate::theme::SESSION_CONTROL));
             assert!(visual.debug_bounds("stop").is_none());
-            // Legacy ratios no longer move the notes column.
             let notes = visual.debug_bounds("notes-panel").unwrap();
-            let splits = visual.debug_bounds("workbench-splits").unwrap();
-            assert!((notes.size.width / splits.size.width - 0.60).abs() < 0.01);
-            assert!((notes.size.height - splits.size.height).abs() < px(1.));
-            let current = visual.debug_bounds("current-pane").unwrap();
+            let right = visual.debug_bounds("next-notes-pane").unwrap();
+            assert!(notes.size.height >= right.size.height * 0.50);
             let next = visual.debug_bounds("next-pane").unwrap();
-            assert!(next.origin.y >= current.bottom());
-            assert!(next.right() <= notes.origin.x && current.right() <= notes.origin.x);
+            assert!(next.bottom() < notes.origin.y);
+            assert!(notes.size.height > next.size.height);
             assert!(visual.debug_bounds("thumbnail-0").is_none());
             assert!(visual.debug_bounds("recent-0").is_none());
             let tools = visual.debug_bounds("previous").unwrap();
             assert!(notes.bottom() <= tools.origin.y);
-            assert!(current.size.height <= splits.size.height * 0.65 + px(1.));
+            let current = visual.debug_bounds("current-pane").unwrap();
+            let splits = visual.debug_bounds("workbench-splits").unwrap();
+            assert!((current.size.height - splits.size.height).abs() < px(1.));
             assert!(current.size.height > px(200.));
         }
         shell.update(cx, |shell, cx| {
@@ -6916,9 +6904,8 @@ mod tests {
         {
             let mut visual = gpui::VisualTestContext::from_window(handle, cx);
             let current = visual.debug_bounds("current-pane").unwrap();
-            let notes = visual.debug_bounds("notes-panel").unwrap();
-            assert!(current.size.height > px(100.));
-            assert!(notes.size.height > current.size.height);
+            let workbench = visual.debug_bounds("workbench").unwrap();
+            assert!(current.size.height + px(8.) >= workbench.size.height * 0.5);
         }
         cx.test_window(handle)
             .simulate_resize(size(px(700.), px(900.)));
@@ -6928,10 +6915,8 @@ mod tests {
         let home = visual.debug_bounds("home").unwrap();
         assert!(home.origin.y > title.bottom());
         let current = visual.debug_bounds("current-pane").unwrap();
-        let next = visual.debug_bounds("next-pane").unwrap();
-        let notes = visual.debug_bounds("notes-panel").unwrap();
+        let next = visual.debug_bounds("next-notes-pane").unwrap();
         assert!(next.origin.y >= current.bottom());
-        assert!(notes.origin.y >= next.bottom());
         assert!(current.size.height > px(40.));
     }
 

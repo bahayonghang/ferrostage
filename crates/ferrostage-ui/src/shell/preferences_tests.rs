@@ -255,14 +255,14 @@ fn settings_v09_numeric_editor_and_slider_use_real_keyboard_events(cx: &mut Test
     redraw(handle, cx);
     let mut visual = gpui::VisualTestContext::from_window(handle, cx);
     let bounds = visual
-        .debug_bounds("slider-presenter.notes_column_ratio")
+        .debug_bounds("slider-presenter.next_slide_ratio")
         .unwrap();
     visual.simulate_click(bounds.center(), gpui::Modifiers::default());
     cx.run_until_parked();
     let ratio = shell.read_with(cx, |shell, _| {
-        shell.settings.settings.presenter.notes_column_ratio
+        shell.settings.settings.presenter.next_slide_ratio
     });
-    assert!((ratio - 0.575).abs() < 0.02, "{ratio}");
+    assert!((ratio - 0.53).abs() < 0.02, "{ratio}");
     redraw(handle, cx);
     cx.simulate_keystrokes(handle, "right");
     cx.run_until_parked();
@@ -271,7 +271,7 @@ fn settings_v09_numeric_editor_and_slider_use_real_keyboard_events(cx: &mut Test
             .settings
             .settings
             .presenter
-            .notes_column_ratio)
+            .next_slide_ratio)
             > ratio
     );
     assert_eq!(
@@ -477,7 +477,7 @@ fn settings_v09_worker_ack_serializes_changes_and_failed_display_rolls_budget_ba
         let layout = shell.settings.settings.presenter.clone();
         shell.dispatch(Intent::Escape, cx);
         assert!(shell.modal.is_none());
-        shell.dispatch(Intent::Split { notes_column: 0.3, save: true }, cx);
+        shell.dispatch(Intent::Split { next: 0.3, notes: 0.4, save: true }, cx);
         assert_eq!(shell.settings.settings.presenter, layout);
         assert!(!shell.settings.dirty);
     });
@@ -485,11 +485,9 @@ fn settings_v09_worker_ack_serializes_changes_and_failed_display_rolls_budget_ba
     shell.update(cx, |shell, cx| {
         assert_eq!(shell.settings.settings.cache.l2_cpu_mib, 17);
         assert!(!shell.settings.dirty);
-        let before = shell.settings.settings.presenter.clone();
-        shell.dispatch(Intent::Split { notes_column: 0.3, save: true }, cx);
-        assert_eq!(shell.settings.settings.presenter.notes_column_ratio, 0.40);
-        assert_eq!(shell.settings.settings.presenter.next_slide_ratio, before.next_slide_ratio);
-        assert_eq!(shell.settings.settings.presenter.notes_ratio, before.notes_ratio);
+        shell.dispatch(Intent::Split { next: 0.3, notes: 0.4, save: true }, cx);
+        assert_eq!(shell.settings.settings.presenter.next_slide_ratio, 0.3);
+        assert_eq!(shell.settings.settings.presenter.notes_ratio, 0.55);
         assert_eq!(shell.store.load().unwrap().settings.presenter, shell.settings.settings.presenter);
         shell.modal = Some(Modal::Settings);
         let mut proposed = shell.settings.settings.clone();
@@ -513,7 +511,7 @@ fn settings_v09_closed_panel_split_waits_for_apply_and_rollback_ack(cx: &mut Tes
     fn drag(handle: AnyWindowHandle, cx: &mut TestAppContext) {
         redraw(handle, cx);
         let mut visual = gpui::VisualTestContext::from_window(handle, cx);
-        let split = visual.debug_bounds("column-split").unwrap();
+        let split = visual.debug_bounds("horizontal-split").unwrap();
         visual.simulate_mouse_down(split.center(), gpui::MouseButton::Left, gpui::Modifiers::default());
         visual.simulate_mouse_move(split.center() - gpui::point(px(100.), px(0.)), Some(gpui::MouseButton::Left), gpui::Modifiers::default());
         visual.simulate_mouse_up(gpui::point(px(1.), px(1.)), gpui::MouseButton::Left, gpui::Modifiers::default());
@@ -543,7 +541,7 @@ fn settings_v09_closed_panel_split_waits_for_apply_and_rollback_ack(cx: &mut Tes
     shell.update(cx, |shell, cx| {
         shell.rollback_preferences("test rollback".into(), cx);
         assert!(shell.preference_change.is_some() && shell.busy());
-        shell.dispatch(Intent::Split { notes_column: 0.5, save: true }, cx);
+        shell.dispatch(Intent::Split { next: 0.3, notes: 0.4, save: true }, cx);
     });
     drag(handle, cx);
     shell.read_with(cx, |shell, _| assert_eq!(shell.settings.settings.presenter, layout));
@@ -552,7 +550,7 @@ fn settings_v09_closed_panel_split_waits_for_apply_and_rollback_ack(cx: &mut Tes
     drag(handle, cx);
     shell.read_with(cx, |shell, _| {
         assert!(!shell.busy() && !shell.settings.dirty);
-        assert!(shell.settings.settings.presenter.notes_column_ratio > layout.notes_column_ratio);
+        assert!(shell.settings.settings.presenter.next_slide_ratio > layout.next_slide_ratio);
         assert_eq!(shell.store.load().unwrap().settings.presenter, shell.settings.settings.presenter);
     });
 }
@@ -641,7 +639,8 @@ fn settings_v09_values_reach_workbench_timer_layout_pointer_clock_and_diagnostic
         shell.modal = Some(Modal::Settings);
         for (id, value) in [
             ("presenter.notes_font_scale", "2"),
-            ("presenter.notes_column_ratio", "0.65"),
+            ("presenter.next_slide_ratio", "0.6"),
+            ("presenter.notes_ratio", "0.65"),
             ("presenter.show_clock", "false"),
             ("presenter.grid_columns", "4"),
             ("presenter.grid_visible_pages", "13"),
@@ -669,7 +668,8 @@ fn settings_v09_values_reach_workbench_timer_layout_pointer_clock_and_diagnostic
         .read_with(cx, |view, _| {
             let actual = view.preferences_probe();
             assert_eq!(actual.layout.notes_font_scale, 2.);
-            assert_eq!(actual.layout.notes_column_ratio, 0.65);
+            assert_eq!(actual.layout.next_slide_ratio, 0.6);
+            assert_eq!(actual.layout.notes_ratio, 0.65);
             assert_eq!(
                 (actual.layout.grid_columns, actual.layout.grid_visible_pages),
                 (4, 13)
