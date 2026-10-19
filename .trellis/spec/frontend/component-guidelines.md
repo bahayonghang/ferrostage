@@ -54,7 +54,7 @@ Settings use quiet category navigation, sans headings, bounded grouped label/con
 
 For every document-open state, one Start/Stop action shares a navigation group with Previous/Next when steps exist. Retain the no-step route and busy guards. Session face uses a geometric play/stop icon plus explicit text. Progress remains `Intent::Jump`; full logical/step/physical detail is accessible and available on pointer/focus, without reflowing the activation target. Focus detail and hover tooltip are mutually exclusive when both pointer and keyboard focus occupy the control. Explicit progress focus handles opt into Tab eligibility. Blanking/tool selection is derived from actual state and includes text/indicator, not color alone.
 
-Ready retains the 56px session face and scaled 208px minimum width. Presenting uses the ordinary 44px control minimum and natural session width to reclaim content space, preserving the 26px play/stop icon and explicit label. More contains Home/Open/Settings; Drawing contains Pen/Highlighter/Eraser/Clear. Laser, Previous/Next, progress, black/white, Page browser, Layout and display access remain direct. Ready keeps its management controls. Menu rows retain import/busy guards, skip disabled rows on arrows/Tab/Home/End, activate once on Enter/Space, and consume Escape/outside dismissal with focus restoration.
+Ready retains the 56px session face and scaled 208px minimum width. Presenting uses the ordinary 44px control minimum and natural session width to reclaim content space, preserving the 26px play/stop icon and explicit label. More contains Home/Open/Settings; Drawing contains Pen/Highlighter/Eraser/Clear. Laser, Previous/Next, progress, black/white, Layout and display access remain direct. Ready keeps its management controls. Menu rows retain import/busy guards, skip disabled rows on arrows/Tab/Home/End, activate once on Enter/Space, and consume Escape/outside dismissal with focus restoration.
 
 `Presenter::workbench_panel` orders Current left, Next upper-right, original Notes lower-right. Each Notes wrapper is full-width, `flex_shrink_0()` and `aspect_ratio(frame.width / frame.height)`; use the current or retained frame geometry, with 16:9 only while no raster geometry exists. Multiple Notes keep their ordered natural heights inside the existing scroll. Never apply interface font preferences to their pixels or add extracted-text rendering. Pane ratios and drag persistence follow [State Management](state-management.md#manual-navigation-and-original-notes-workbench).
 
@@ -118,7 +118,7 @@ Outline keeps the contextual browser open with grid scheduling disabled. Retire 
 
 ### 1. Scope / Trigger
 
-Progress, Jump and Page browser open one presenter-owned contextual surface above the toolbar. Preserve workbench rendering, Settings/Displays modal handling and snapshot-only audience ownership.
+Progress and the Jump shortcut open one presenter-owned contextual surface above the toolbar. Preserve workbench rendering, Settings/Displays modal handling and snapshot-only audience ownership.
 
 ### 2. Signatures
 
