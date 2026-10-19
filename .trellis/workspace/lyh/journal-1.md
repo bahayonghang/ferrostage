@@ -461,3 +461,26 @@ Created monitor discovery task; fixed typed error ownership/classification and A
 ### Next Steps
 
 - 已拆分提交改动并归档任务。
+
+
+## Session 14: 提交答辩演示体验并归档 1.1.0 任务
+<!-- trellis-session: v=2 fp=f477e7fa18e87d48 -->
+
+**Date**: 2026-10-19
+**Task**: 提交答辩演示体验并归档 1.1.0 任务
+**Branch**: `dev`
+
+### Summary
+
+把全屏、原版 Notes、章节目录、标准转场和 overlay 定时播放收成一次功能提交，并把工作区版本单独升到 1.1.0。七个相关任务已归档。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `a89c2a26b19362027484a401c0cef8d2347e163b` | feat(演示): ✨ 补齐全屏备注、目录、转场与定时放映 |
+| `f6f5c4864ac18391fc9051fb35c8c6a724b28aa0` | chore(release): 🔖 将工作区版本升至 1.1.0 |
+
+### Status
+
+[OK] **Completed**

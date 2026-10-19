@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 13
+- **Total Sessions**: 14
 - **Last Active**: 2026-10-19
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~463 | Active |
+| `journal-1.md` | ~486 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 14 | 2026-10-19 | 提交答辩演示体验并归档 1.1.0 任务 | `a89c2a26b19362027484a401c0cef8d2347e163b`, `f6f5c4864ac18391fc9051fb35c8c6a724b28aa0` | `dev` |
 | 13 | 2026-10-19 | 完成首页历史时间与中文 PDF 错误提示 | `a233665`, `3cd6fc7` | `dev` |
 | 12 | 2026-10-19 | 修复显示器检测错误残留与中文恢复提示 | `4d286d1`, `3cd6fc7` | `dev` |
 | 11 | 2026-10-18 | Windows 桌面 Setup、静默安装与发布流程 | `544df2046a5e56a6aa813b11b2cf2e66eeb07336` | `dev` |
