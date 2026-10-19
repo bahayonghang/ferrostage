@@ -1,5 +1,15 @@
 use super::*;
 
+pub(super) fn last_opened(locale: crate::locale::Locale, timestamp: Option<i64>) -> String {
+    timestamp
+        .filter(|timestamp| *timestamp >= 0)
+        .and_then(|timestamp| chrono::DateTime::from_timestamp(timestamp, 0))
+        .map(|date| date.with_timezone(&chrono::Local))
+        .and_then(|date| date.naive_utc().checked_add_offset(*date.offset()))
+        .map(|date| date.format("%Y-%m-%d %H:%M").to_string())
+        .unwrap_or_else(|| locale.text("recent-time-unknown").into())
+}
+
 impl Presenter {
     pub(super) fn home_content(&self, p: Palette, window: &Window) -> Stateful<Div> {
         let l = self.locale;
@@ -67,14 +77,32 @@ impl Presenter {
                             .active(move |state| state.bg(rgb(style.pressed)).top(px(1.)))
                     }),
             );
-        let mut recents = div().flex().flex_col().gap(px(4.)).child(
+        let time_width = self.data.typography.size(if compact { 98. } else { 152. });
+        let mut recents = div().flex().flex_col().child(
             div()
-                .pl(px(4.))
+                .id("recent-header")
+                .debug_selector(|| "recent-header".into())
+                .px(px(theme::FOCUS_WIDTH + theme::FOCUS_GAP))
+                .pb(px(8.))
                 .mb(px(4.))
+                .border_b_1()
+                .border_color(rgb(p.border))
+                .flex()
+                .items_center()
+                .gap(px(16.))
                 .text_size(px(self.data.typography.size(12.)))
                 .line_height(px(self.data.typography.size(18.)))
                 .text_color(rgb(p.muted))
-                .child(l.text("recent")),
+                .child(div().flex_1().min_w_0().child(l.text("recent")))
+                .child(
+                    div()
+                        .id("recent-time-header")
+                        .debug_selector(|| "recent-time-header".into())
+                        .w(px(time_width))
+                        .flex_shrink_0()
+                        .text_right()
+                        .child(l.text("recent-last-opened")),
+                ),
         );
         if self.data.recent.is_empty() {
             recents = recents.child(
@@ -88,7 +116,8 @@ impl Presenter {
                     .child(l.text("recent-empty")),
             );
         }
-        for (index, path) in self.data.recent.iter().enumerate() {
+        for (index, recent) in self.data.recent.iter().enumerate() {
+            let path = &recent.path;
             let file = std::path::Path::new(path);
             let filename = file
                 .file_name()
@@ -103,7 +132,10 @@ impl Presenter {
             let row = self
                 .activation_target(
                     format!("recent-{index}"),
-                    l.format("recent-open", &[("path", path.clone())]),
+                    l.format(
+                        "recent-open-time",
+                        &[("path", path.clone()), ("time", recent.last_opened.clone())],
+                    ),
                     self.data.can_open,
                     Intent::Import(path.into()),
                     p,
@@ -122,8 +154,8 @@ impl Presenter {
                         .debug_selector(move || format!("recent-{index}-face"))
                         .min_h(px(theme::CONTROL))
                         .flex()
-                        .flex_col()
-                        .justify_center()
+                        .items_center()
+                        .gap(px(16.))
                         .min_w_0()
                         .relative()
                         .rounded(px(4.))
@@ -132,26 +164,54 @@ impl Presenter {
                         .text_color(rgb(if self.data.can_open { p.ink } else { p.muted }))
                         .child(
                             div()
-                                .truncate()
-                                .font_weight(gpui::FontWeight::MEDIUM)
-                                .child(filename),
+                                .flex_1()
+                                .min_w_0()
+                                .flex()
+                                .flex_col()
+                                .child(
+                                    div()
+                                        .id(SharedString::from(format!("recent-{index}-name")))
+                                        .debug_selector(move || format!("recent-{index}-name"))
+                                        .truncate()
+                                        .font_weight(gpui::FontWeight::MEDIUM)
+                                        .child(filename),
+                                )
+                                .when_some(parent, |view, parent| {
+                                    view.child(
+                                        div()
+                                            .id(SharedString::from(format!(
+                                                "recent-{index}-parent"
+                                            )))
+                                            .debug_selector(move || {
+                                                format!("recent-{index}-parent")
+                                            })
+                                            .truncate()
+                                            .text_size(px(self.data.typography.size(12.)))
+                                            .line_height(px(self.data.typography.size(18.)))
+                                            .text_color(rgb(p.muted))
+                                            .child(parent),
+                                    )
+                                }),
                         )
-                        .when_some(parent, |view, parent| {
-                            view.child(
-                                div()
-                                    .truncate()
-                                    .text_size(px(self.data.typography.size(12.)))
-                                    .line_height(px(self.data.typography.size(18.)))
-                                    .text_color(rgb(p.muted))
-                                    .child(parent),
-                            )
-                        })
+                        .child(
+                            div()
+                                .id(SharedString::from(format!("recent-{index}-time")))
+                                .debug_selector(move || format!("recent-{index}-time"))
+                                .w(px(time_width))
+                                .flex_shrink_0()
+                                .text_right()
+                                .whitespace_normal()
+                                .text_size(px(self.data.typography.size(12.)))
+                                .line_height(px(self.data.typography.size(18.)))
+                                .text_color(rgb(p.muted))
+                                .child(recent.last_opened.clone()),
+                        )
                         .when(self.data.can_open, |view| {
                             view.hover(move |state| state.bg(rgb(p.soft)))
                                 .active(move |state| state.bg(rgb(p.card)).top(px(1.)))
                         }),
                 );
-            recents = recents.child(row);
+            recents = recents.child(div().border_b_1().border_color(rgb(p.border)).child(row));
         }
         // Keyboard users get the same complete path as the pointer tooltip.
         if let Some(path) = self
@@ -159,10 +219,10 @@ impl Presenter {
             .recent
             .iter()
             .enumerate()
-            .find_map(|(index, path)| {
+            .find_map(|(index, recent)| {
                 self.home_focus[index + 3]
                     .is_focused(window)
-                    .then_some(path)
+                    .then_some(&recent.path)
             })
         {
             recents = recents.child(
@@ -221,5 +281,32 @@ impl Presenter {
                             .active(move |state| state.bg(rgb(p.card)).top(px(1.)))
                     }),
             )
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::last_opened;
+    use crate::locale::Locale;
+
+    #[test]
+    fn recent_dates_use_local_minutes_and_localized_unknown_values() {
+        for language in ["zh-CN", "en-US"] {
+            let locale = Locale::new(language);
+            for timestamp in [None, Some(-1), Some(i64::MAX)] {
+                assert_eq!(
+                    last_opened(locale, timestamp),
+                    locale.text("recent-time-unknown")
+                );
+            }
+            let timestamp = 1_792_375_595;
+            let expected = chrono::DateTime::from_timestamp(timestamp, 0)
+                .unwrap()
+                .with_timezone(&chrono::Local)
+                .format("%Y-%m-%d %H:%M")
+                .to_string();
+            assert_eq!(last_opened(locale, Some(timestamp)), expected);
+            assert_eq!(expected.len(), 16);
+        }
     }
 }

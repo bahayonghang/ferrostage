@@ -468,8 +468,17 @@ mod tests {
     fn recent_limit_trims_and_coupled_timer_validation_is_atomic() {
         let mut settings = Settings::default();
         settings.general.recent_files = vec!["a.pdf".into(), "b.pdf".into(), "c.pdf".into()];
+        settings.general.recent_opened_at = std::collections::BTreeMap::from([
+            ("a.pdf".into(), 10),
+            ("b.pdf".into(), 20),
+            ("c.pdf".into(), 30),
+        ]);
         let next = edit(&settings, "general.recent_files_limit", "1").unwrap();
         assert_eq!(next.general.recent_files, vec!["a.pdf"]);
+        assert_eq!(
+            next.general.recent_opened_at,
+            std::collections::BTreeMap::from([("a.pdf".into(), 10)])
+        );
         assert!(
             edit(
                 &settings,

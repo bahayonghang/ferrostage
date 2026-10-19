@@ -352,3 +352,36 @@ Wrong: link native video DLLs into the GUI, rely on gst initialization to surviv
 - A global `lazy_static` deck.
 - Cloning speaker notes into the snapshot "just for the audience highlighter".
 - Two copies of the current page index, one in the view and one in the core. The view sends a command and renders the snapshot it gets back.
+
+## Monitor error recovery
+
+### 1. Scope / Trigger
+Applies to initial discovery, watcher failures/recovery and Detect again in both display-settings hosts.
+
+### 2. Signatures
+`Shell::monitor_error: Option<PlatformError>` owns discovery errors separately from `Shell::error` operation failures. `Shell::monitor_error_text()` projects the current typed failure (or watcher-start failure) through `Locale::monitor_error`. `DisplayPanel::monitor_error` carries the localized result into the shared panel.
+
+### 3. Contracts
+Startup failure and Unavailable set only the discovery-error slot. Changed sets valid topology and clears only that slot, including recovery to the same monitors. Never clear unrelated import/render/save/operation errors. Start/Swap shortcuts must not duplicate unavailable topology into the operation-error slot. Apply must leave derived panel validation in its live panel owner, including failure during its fresh probe and a stale draft after a successful topology change. A missing watcher remains a failure after successful synchronous detection; it cannot be repaired by clearing the discovery slot. Log structured typed diagnostics at startup/distinct failure delivery, not every healthy poll. Presenter and shared panel must use catalog copy instead of `PlatformError::to_string()`.
+
+Both Settings > Displays and standalone Display settings use the same recovery instructions and existing Detect again action: allow connections to settle, use Windows System > Display > Multiple displays > Detect when missing, select Extend when independent presenter/PDF screens are desired, detect again in FerroStage and explicitly choose destinations/Apply. Do not change Windows settings automatically, reset all preferences or silently replace an absent audience. Failure-specific guidance disappears after successful recovery; a permanent short help hint may remain.
+
+### 4. Validation / Error Matrix
+
+| Transition | Expected state |
+| --- | --- |
+| Startup or watcher discovery failure | Localized monitor reason, invalid topology, projection disabled |
+| Failed discovery then unchanged-topology Changed | Monitor message clears; unrelated operation error survives |
+| Detect again succeeds after unavailable | Fresh topology is usable, prior monitor error clears |
+| Apply probe fails or makes its draft stale | Live panel reason remains visible; no duplicate global error |
+| Unavailable topology plus Start/Swap shortcut | No transaction/config mutation or duplicate global error |
+| Watcher start failed, synchronous detection succeeds | Watcher failure remains visible; presentation stays blocked |
+
+### 5. Good / Base / Bad Cases
+Good: a transient failure recovers without leaving a red English banner. Base: healthy topology stays quiet. Bad: a shared unowned error string survives recovery, or clearing all errors hides an unrelated failure.
+
+### 6. Tests Required
+Run a real red/green same-topology recovery regression using the existing Shell interface. Cover startup locale projection, watcher lifecycle, preserved operation errors, Apply failure/stale-draft recovery and actual Start/Swap shortcuts, plus both shared panel hosts/retry controls using GPUI dispatch. Catalog tests must cover every PlatformError variant and matching interpolation fields. Keep native startup/three-monitor/GDI evidence separate from headless UI and physical hotplug acceptance.
+
+### 7. Wrong vs Correct
+Wrong: translate the global string and set it to None on every topology event. Correct: retain typed owner-specific discovery state, localize during presenter capture and clear it on successful recovery only.

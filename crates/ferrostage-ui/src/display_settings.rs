@@ -411,6 +411,7 @@ pub(crate) struct DisplayPanel {
     pub draft: DisplayDraft,
     pub problem: Option<String>,
     pub operation_error: Option<String>,
+    pub monitor_error: Option<String>,
     pub topology_valid: bool,
     pub editable: bool,
     pub can_identify: bool,
@@ -490,14 +491,30 @@ pub(crate) mod view {
                     .flex_wrap()
                     .items_center()
                     .gap(px(8.))
-                    .child(div().flex_1().child(if panel.topology_valid {
-                        l.format(
-                            "displays-count",
-                            &[("count", panel.monitors.len().to_string())],
-                        )
-                    } else {
-                        l.text("displays-unavailable").into()
-                    }))
+                    .child(
+                        div()
+                            .id("display-detection-status")
+                            .debug_selector(|| "display-detection-status".into())
+                            .flex_1()
+                            .min_w_0()
+                            .whitespace_normal()
+                            .when(panel.monitor_error.is_some(), |status| {
+                                status
+                                    .role(gpui::Role::Alert)
+                                    .text_size(px(view.ui_text_size(12.)))
+                                    .text_color(rgb(p.error))
+                            })
+                            .child(if let Some(error) = &panel.monitor_error {
+                                error.clone()
+                            } else if panel.topology_valid {
+                                l.format(
+                                    "displays-count",
+                                    &[("count", panel.monitors.len().to_string())],
+                                )
+                            } else {
+                                l.text("displays-unavailable").into()
+                            }),
+                    )
                     .child(view.button(
                         "identify-displays".into(),
                         l.text("displays-identify").into(),
@@ -526,6 +543,25 @@ pub(crate) mod view {
                         l.text("displays-identify-help")
                     )),
             );
+        if !panel.topology_valid {
+            let mut recovery = div()
+                .id("display-recovery")
+                .debug_selector(|| "display-recovery".into())
+                .flex()
+                .flex_col()
+                .gap(px(4.))
+                .text_size(px(view.ui_text_size(12.)))
+                .text_color(rgb(p.muted))
+                .whitespace_normal();
+            for key in [
+                "displays-recovery-wait",
+                "displays-recovery-windows",
+                "displays-recovery-apply",
+            ] {
+                recovery = recovery.child(div().child(l.text(key)));
+            }
+            content = content.child(recovery);
+        }
         if panel.topology_valid {
             for (index, warning) in policy::roles(&panel.monitors, &panel.effective)
                 .warnings
@@ -859,6 +895,7 @@ pub(crate) mod view {
             content = content.child(
                 div()
                     .id("display-validation")
+                    .debug_selector(|| "display-validation".into())
                     .role(gpui::Role::Alert)
                     .text_color(rgb(p.warning))
                     .child(problem.clone()),

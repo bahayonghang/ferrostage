@@ -37,10 +37,15 @@ pub(crate) struct PresenterData {
     save_error: Option<String>,
     #[cfg(all(test, feature = "test-support"))]
     pages: usize,
-    recent: Vec<String>,
+    recent: Vec<RecentFile>,
     workbench: workbench_view::WorkbenchData,
     preferences: settings_view::SettingsData,
     staging: Option<crate::shell::reload::PresenterStaging>,
+}
+
+struct RecentFile {
+    path: String,
+    last_opened: String,
 }
 
 impl PresenterData {
@@ -70,7 +75,8 @@ impl PresenterData {
                 .graphics_error
                 .as_ref()
                 .map(|error| shell.locale.error("wb-upload-error", error))
-                .or_else(|| shell.error.clone()),
+                .or_else(|| shell.error.clone())
+                .or_else(|| shell.monitor_error_text()),
             warnings: shell
                 .warnings
                 .iter()
@@ -92,7 +98,19 @@ impl PresenterData {
                 .recent_files
                 .iter()
                 .take(3)
-                .cloned()
+                .map(|path| RecentFile {
+                    path: path.clone(),
+                    last_opened: home_view::last_opened(
+                        shell.locale,
+                        shell
+                            .settings
+                            .settings
+                            .general
+                            .recent_opened_at
+                            .get(path)
+                            .copied(),
+                    ),
+                })
                 .collect(),
         }
     }
@@ -163,6 +181,18 @@ impl Render for FilenameTooltip {
 }
 
 impl Presenter {
+    #[cfg(all(test, feature = "test-support"))]
+    pub(crate) fn presented_error(&self) -> Option<&str> {
+        self.data.error.as_deref()
+    }
+    #[cfg(all(test, feature = "test-support"))]
+    pub(crate) fn recent_probe(&self) -> Vec<(&str, &str)> {
+        self.data
+            .recent
+            .iter()
+            .map(|recent| (recent.path.as_str(), recent.last_opened.as_str()))
+            .collect()
+    }
     #[cfg(all(test, feature = "test-support"))]
     pub(crate) fn seed_browser_failure(&mut self, index: usize, cx: &mut Context<Self>) {
         self.data.browser.as_mut().unwrap().failed_thumbnails = vec![index];

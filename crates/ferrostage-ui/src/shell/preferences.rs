@@ -135,6 +135,7 @@ impl Shell {
                 if self.preferences_editable() {
                     let mut next = self.settings.settings.clone();
                     next.general.recent_files.clear();
+                    next.general.recent_opened_at.clear();
                     self.apply_preferences(next, cx);
                 }
             }

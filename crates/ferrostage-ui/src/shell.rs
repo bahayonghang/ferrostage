@@ -36,6 +36,33 @@ use std::{
 
 const CONFIRM_TIMEOUT: Duration = Duration::from_secs(3);
 
+#[derive(Debug, thiserror::Error)]
+enum ImportReadError {
+    #[error(transparent)]
+    Io(#[from] std::io::Error),
+    #[error(transparent)]
+    Structure(#[from] ferrostage_pdf::PdfStructureError),
+}
+
+impl ImportReadError {
+    fn message(&self, locale: crate::locale::Locale) -> String {
+        use ferrostage_pdf::PdfStructureError;
+        let key = match self {
+            Self::Io(error) => match (error.kind(), error.raw_os_error()) {
+                // Windows sharing/lock violations often have PermissionDenied kind.
+                (_, Some(32 | 33)) => "read-locked",
+                (std::io::ErrorKind::NotFound, _) => "read-missing",
+                (std::io::ErrorKind::PermissionDenied, _) => "read-permission",
+                _ => "read-failed",
+            },
+            Self::Structure(PdfStructureError::Unreadable) => "read-incomplete",
+            Self::Structure(PdfStructureError::InvalidPageGeometry) => "read-geometry",
+            Self::Structure(PdfStructureError::UnsupportedUserUnit) => "read-user-unit",
+        };
+        locale.text(key).into()
+    }
+}
+
 /// The binary composes services; all GPUI objects stay in this crate.
 pub struct ShellInputs {
     pub settings: SettingsSession,
@@ -126,6 +153,7 @@ pub(crate) struct Shell {
     topology: Receiver<TopologyEvent>,
     _watcher: Result<TopologyWatcher, ferrostage_platform::PlatformError>,
     monitors: Vec<MonitorInfo>,
+    monitor_error: Option<ferrostage_platform::PlatformError>,
     topology_valid: bool,
     topology_revision: u64,
     identify: Vec<AnyWindowHandle>,
@@ -250,9 +278,16 @@ impl Shell {
         let locale = crate::locale::Locale::new(&inputs.settings.settings.general.language);
         let state = PresentationState::idle();
         let snapshot = cx.new(|_| state.audience_snapshot());
-        let (topology_valid, monitors, error) = match inputs.initial_monitors {
+        let (topology_valid, monitors, monitor_error) = match inputs.initial_monitors {
             Ok(monitors) => (true, monitors, None),
-            Err(error) => (false, Vec::new(), Some(error.to_string())),
+            Err(error) => {
+                tracing::warn!(
+                    ?error,
+                    origin = "startup discovery",
+                    "monitor discovery unavailable"
+                );
+                (false, Vec::new(), Some(error))
+            }
         };
         let warnings = inputs
             .settings
@@ -260,12 +295,13 @@ impl Shell {
             .iter()
             .map(|warning| format!("{}：{}", warning.key, warning.reason))
             .collect();
-        let error = inputs
-            .watcher
-            .as_ref()
-            .err()
-            .map(ToString::to_string)
-            .or(error);
+        if let Err(error) = &inputs.watcher {
+            tracing::warn!(
+                ?error,
+                origin = "watcher startup",
+                "monitor watcher unavailable"
+            );
+        }
         let escape_stops = policy::bindings(&inputs.settings.settings.keybindings, locale)
             .0
             .iter()
@@ -295,6 +331,7 @@ impl Shell {
             topology: inputs.topology,
             _watcher: inputs.watcher,
             monitors,
+            monitor_error,
             topology_valid,
             topology_revision: 0,
             identify: Vec::new(),
@@ -312,7 +349,7 @@ impl Shell {
             import_token: 0,
             loading: false,
             path: None,
-            error,
+            error: None,
             graphics_error: None,
             warnings,
             modal: None,
@@ -363,6 +400,13 @@ impl Shell {
         policy::audience_target(&self.monitors, &self.settings.settings.display)
             .err()
             .map(|e| e.localized(self.locale))
+    }
+
+    pub(crate) fn monitor_error_text(&self) -> Option<String> {
+        self.monitor_error
+            .as_ref()
+            .or_else(|| self._watcher.as_ref().err())
+            .map(|error| self.locale.monitor_error(error))
     }
 
     pub fn busy(&self) -> bool {
@@ -642,7 +686,8 @@ impl Shell {
             return;
         }
         if let Err(error) = &self.renderer {
-            self.error = Some(self.locale.error("import-unavailable", error));
+            tracing::warn!(%error, "PDF import unavailable");
+            self.error = Some(self.locale.text("import-unavailable").into());
             return;
         }
         self.import_token += 1;
@@ -673,11 +718,11 @@ impl Shell {
                             .spawn(async move {
                                 ferrostage_pdf::structure::extract_structure(&bytes)
                                     .map(|structure| (bytes, structure))
-                                    .map_err(std::io::Error::other)
+                                    .map_err(ImportReadError::Structure)
                             })
                             .await
                     }
-                    Err(error) => Err(error),
+                    Err(error) => Err(ImportReadError::Io(error)),
                 };
                 if let Err(error) = weak.update(cx, |shell, cx| {
                     if shell.import_token != token {
@@ -700,13 +745,15 @@ impl Shell {
                                 Ok(load) => shell.import = Some(ImportReply { token, path, load }),
                                 Err(error) => {
                                     shell.loading = false;
-                                    shell.error = Some(error);
+                                    tracing::warn!(%error, "PDF candidate preparation failed");
+                                    shell.error = Some(shell.locale.text("import-error").into());
                                 }
                             }
                         }
                         Err(error) => {
                             shell.loading = false;
-                            shell.error = Some(shell.locale.error("read-error", error));
+                            tracing::warn!(%error, "PDF import read or structure check failed");
+                            shell.error = Some(error.message(shell.locale));
                         }
                     }
                     cx.notify();
@@ -733,7 +780,10 @@ impl Shell {
         self.loading = false;
         match result {
             Ok(session) => self.finish_import(pending.path, pending.load.generation, session, cx),
-            Err(error) => self.error = Some(self.locale.error("import-error", error)),
+            Err(error) => {
+                tracing::warn!(%error, "PDF candidate load failed");
+                self.error = Some(self.locale.text("import-error").into());
+            }
         }
         cx.notify();
     }
@@ -773,17 +823,19 @@ impl Shell {
                 }
                 self.error = None;
                 if self.settings.write_policy == WritePolicy::Writable {
-                    let recent = &mut self.settings.settings.general.recent_files;
-                    let path = path.to_string_lossy().into_owned();
-                    recent.retain(|old| old != &path);
-                    recent.insert(0, path);
-                    recent.truncate(self.settings.settings.general.recent_files_limit as usize);
+                    self.settings.settings.general.record_recent_file(
+                        path.to_string_lossy().into_owned(),
+                        chrono::Utc::now().timestamp(),
+                    );
                     self.settings.note_edit();
                     self.save(cx);
                 }
                 self.publish(false, cx);
             }
-            Err(error) => self.error = Some(error.to_string()),
+            Err(error) => {
+                tracing::warn!(%error, "PDF document acceptance failed");
+                self.error = Some(self.locale.text("import-error").into());
+            }
         }
     }
 
@@ -1197,6 +1249,9 @@ impl Shell {
     }
 
     fn start(&mut self, cx: &mut Context<Self>) {
+        if !self.topology_valid || self._watcher.is_err() {
+            return;
+        }
         self.close_identify(cx);
         self.refresh_mapping(cx);
         if let Some(reason) = self.start_reason() {
@@ -1314,7 +1369,11 @@ impl Shell {
 
     fn swap(&mut self, cx: &mut Context<Self>) {
         self.close_contextual();
-        if self.pending.is_some() || self.loading || self.preference_change.is_some() {
+        if !self.topology_valid
+            || self.pending.is_some()
+            || self.loading
+            || self.preference_change.is_some()
+        {
             return;
         }
         if self.settings.write_policy != WritePolicy::Writable {
@@ -1480,6 +1539,7 @@ impl Shell {
             monitors: self.monitors.clone(),
             effective: self.settings.settings.display.clone(),
             draft: draft.clone(),
+            monitor_error: self.monitor_error_text(),
             operation_error: self
                 .error
                 .as_ref()
@@ -1563,8 +1623,7 @@ impl Shell {
         let Some(panel) = self.display_panel() else {
             return;
         };
-        if let Some(problem) = panel.problem {
-            self.error = Some(problem);
+        if panel.problem.is_some() {
             return;
         }
         match panel.draft.settings(
@@ -1899,10 +1958,18 @@ impl Shell {
             TopologyEvent::Changed(monitors) => {
                 self.monitors = monitors;
                 self.topology_valid = true;
+                self.monitor_error = None;
             }
             TopologyEvent::Unavailable { error, .. } => {
+                if self.monitor_error.as_ref() != Some(&error) {
+                    tracing::warn!(
+                        ?error,
+                        origin = "topology observation",
+                        "monitor discovery unavailable"
+                    );
+                }
                 self.topology_valid = false;
-                self.error = Some(error.to_string());
+                self.monitor_error = Some(error);
             }
         }
         self.refresh_mapping(cx);
@@ -1979,6 +2046,86 @@ mod tests {
     use super::*;
     use crate::display_settings::PdfTarget;
     use gpui::TestAppContext;
+
+    #[gpui::test]
+    fn incomplete_pdf_import_is_localized_and_preserves_active_document(cx: &mut TestAppContext) {
+        let (shell, _) = workbench_fixture(cx);
+        let generation = shell.read_with(cx, |shell, _| shell.state.generation());
+        shell.update(cx, |shell, cx| {
+            shell.locale = crate::locale::Locale::new("zh-CN");
+            shell.path = Some("active.pdf".into());
+            shell.settings.settings.general.recent_files = vec!["active.pdf".into()];
+            shell.settings.settings.general.recent_opened_at =
+                BTreeMap::from([("active.pdf".into(), 123)]);
+            let read = cx
+                .background_executor()
+                .spawn(async { Ok(b"%PDF-1.7\n1 0 obj\n<< /Type /Catalog >>".to_vec()) });
+            shell.loading = true;
+            shell.await_import_read("partial.pdf".into(), shell.import_token, read, cx);
+        });
+        cx.run_until_parked();
+        shell.read_with(cx, |shell, _| {
+            let message = shell.error.as_deref().unwrap();
+            assert!(message.contains("不完整或无效"), "{message}");
+            assert!(message.contains("若正在编译"), "{message}");
+            assert!(!message.contains("lopdf"), "{message}");
+            assert!(!shell.loading && shell.import.is_none());
+            assert_eq!(shell.state.generation(), generation);
+            assert_eq!(shell.path, Some("active.pdf".into()));
+            assert!(shell.workbench.document.is_some());
+            assert_eq!(shell.settings.settings.general.recent_files, ["active.pdf"]);
+            assert_eq!(
+                shell.settings.settings.general.recent_opened_at,
+                BTreeMap::from([("active.pdf".into(), 123)])
+            );
+        });
+    }
+
+    #[test]
+    fn import_read_errors_keep_actionable_localized_categories() {
+        use ferrostage_pdf::PdfStructureError;
+        let cases = [
+            (
+                ImportReadError::Io(std::io::Error::from_raw_os_error(32)),
+                "read-locked",
+            ),
+            (
+                ImportReadError::Io(std::io::Error::from_raw_os_error(33)),
+                "read-locked",
+            ),
+            (
+                ImportReadError::Io(std::io::Error::from(std::io::ErrorKind::NotFound)),
+                "read-missing",
+            ),
+            (
+                ImportReadError::Io(std::io::Error::from(std::io::ErrorKind::PermissionDenied)),
+                "read-permission",
+            ),
+            (
+                ImportReadError::Io(std::io::Error::other("private diagnostic")),
+                "read-failed",
+            ),
+            (
+                ImportReadError::Structure(PdfStructureError::Unreadable),
+                "read-incomplete",
+            ),
+            (
+                ImportReadError::Structure(PdfStructureError::InvalidPageGeometry),
+                "read-geometry",
+            ),
+            (
+                ImportReadError::Structure(PdfStructureError::UnsupportedUserUnit),
+                "read-user-unit",
+            ),
+        ];
+        for language in ["zh-CN", "en-US"] {
+            let locale = crate::locale::Locale::new(language);
+            for (error, key) in &cases {
+                assert_eq!(error.message(locale), locale.text(key));
+                assert_ne!(error.message(locale), error.to_string());
+            }
+        }
+    }
 
     fn pending_import_read(
         shell: &Entity<Shell>,
@@ -2076,12 +2223,9 @@ mod tests {
         cx.run_until_parked();
         assert!(completed.load(std::sync::atomic::Ordering::SeqCst));
         shell.update(cx, |shell, _| {
-            assert!(
-                shell
-                    .error
-                    .as_ref()
-                    .unwrap()
-                    .contains("controlled pending read")
+            assert_eq!(
+                shell.error.as_deref(),
+                Some(shell.locale.text("read-failed"))
             );
             assert!(!shell.loading);
             shell.error = None;
@@ -2208,6 +2352,368 @@ mod tests {
         });
         redraw(handle, cx);
         (shell, handle)
+    }
+
+    #[gpui::test]
+    fn monitor_recovery_clears_only_display_error_for_unchanged_topology(cx: &mut TestAppContext) {
+        let (shell, _) = display_fixture(cx);
+        for operation_error in [None, Some("unrelated PDF import failed".to_string())] {
+            shell.update(cx, |shell, cx| {
+                let monitors = shell.monitors.clone();
+                shell.error = operation_error.clone();
+                shell.topology_changed(
+                    TopologyEvent::Unavailable {
+                        error: ferrostage_platform::PlatformError::IncompleteTopology {
+                            devices: vec!["DISPLAY1".into()],
+                            geometry: Vec::new(),
+                        },
+                        last_known: monitors.clone(),
+                    },
+                    cx,
+                );
+                assert!(!shell.topology_valid);
+                shell.topology_changed(TopologyEvent::Changed(monitors), cx);
+                assert!(shell.topology_valid);
+                assert_eq!(
+                    shell.display_panel().unwrap().operation_error,
+                    operation_error,
+                    "recovered display discovery must remove its stale banner and preserve unrelated errors"
+                );
+            });
+        }
+    }
+
+    #[gpui::test]
+    fn monitor_apply_recheck_failure_keeps_discovery_error_owned(cx: &mut TestAppContext) {
+        for operation_error in [None, Some("unrelated PDF import failed".to_string())] {
+            let (shell, _) = display_fixture(cx);
+            shell.update(cx, |shell, cx| {
+                shell.error = operation_error.clone();
+                // Apply passes its initial editability guard, but its fresh
+                // discovery fails before the draft is applied.
+                assert!(shell.display_editable());
+                let monitors = shell.monitors.clone();
+                shell.topology_changed(
+                    TopologyEvent::Unavailable {
+                        error: ferrostage_platform::PlatformError::IncompleteTopology {
+                            devices: vec!["DISPLAY1".into()],
+                            geometry: Vec::new(),
+                        },
+                        last_known: monitors.clone(),
+                    },
+                    cx,
+                );
+                shell.apply_display_draft(cx);
+                assert_eq!(
+                    shell.error, operation_error,
+                    "Apply must not copy a detection error into the operation-error owner"
+                );
+                assert!(shell.monitor_error.is_some());
+                shell.topology_changed(TopologyEvent::Changed(monitors), cx);
+                assert!(shell.monitor_error.is_none());
+                assert_eq!(
+                    shell.display_panel().unwrap().operation_error,
+                    operation_error
+                );
+            });
+        }
+    }
+
+    #[gpui::test]
+    fn monitor_stale_draft_validation_recovers_without_operation_error(cx: &mut TestAppContext) {
+        for operation_error in [None, Some("unrelated PDF import failed".to_string())] {
+            let (shell, handle) = display_fixture(cx);
+            shell.update(cx, |shell, cx| {
+                shell.error = operation_error.clone();
+                let mut changed = test_monitor();
+                changed.native_size = (1280, 720);
+                shell.topology_changed(TopologyEvent::Changed(vec![changed]), cx);
+                // TestPlatform has no native connection identity. Retain its
+                // owned mapping to isolate the stale-draft validation path.
+                let display = shell.presenter.as_ref().unwrap().display;
+                shell.mapped = Ok([(test_monitor().id, display)].into());
+                assert_eq!(
+                    shell.display_panel().unwrap().problem.as_deref(),
+                    Some(shell.locale.text("displays-stale"))
+                );
+                shell.apply_display_draft(cx);
+                assert_eq!(
+                    shell.error, operation_error,
+                    "live draft validation must not become a persistent operation error"
+                );
+            });
+            redraw(handle, cx);
+            let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+            assert!(visual.debug_bounds("display-validation").is_some());
+            shell.update(cx, |shell, cx| {
+                shell.new_display_draft();
+                assert!(shell.display_panel().unwrap().problem.is_none());
+                assert_eq!(shell.error, operation_error);
+                cx.notify();
+            });
+            redraw(handle, cx);
+            assert!(visual.debug_bounds("display-validation").is_none());
+        }
+    }
+
+    #[gpui::test]
+    fn monitor_unavailable_start_and_swap_shortcuts_preserve_error_ownership(
+        cx: &mut TestAppContext,
+    ) {
+        for shortcut in ["f5", "s"] {
+            for operation_error in [None, Some("unrelated PDF import failed".to_string())] {
+                let (shell, handle) = input_presenter(cx);
+                let settings = shell.update(cx, |shell, cx| {
+                    load_ready(shell);
+                    shell.monitors = vec![test_monitor()];
+                    shell.error = operation_error.clone();
+                    shell.topology_changed(
+                        TopologyEvent::Unavailable {
+                            error: ferrostage_platform::PlatformError::IncompleteTopology {
+                                devices: vec!["DISPLAY1".into()],
+                                geometry: Vec::new(),
+                            },
+                            last_known: shell.monitors.clone(),
+                        },
+                        cx,
+                    );
+                    shell.settings.settings.clone()
+                });
+                redraw(handle, cx);
+                cx.simulate_keystrokes(handle, shortcut);
+                shell.read_with(cx, |shell, _| {
+                    assert_eq!(
+                        shell.error, operation_error,
+                        "{shortcut} must not duplicate a monitor error in the operation-error owner"
+                    );
+                    assert_eq!(shell.settings.settings, settings);
+                    assert!(shell.pending.is_none() && shell.audience.is_none());
+                    assert_eq!(shell.state.stage(), SessionStage::Ready);
+                });
+                shell.update(cx, |shell, cx| {
+                    shell.topology_changed(TopologyEvent::Changed(vec![test_monitor()]), cx);
+                    assert!(shell.monitor_error.is_none());
+                    assert_eq!(shell.error, operation_error);
+                });
+                if shortcut == "f5" {
+                    // Even a healthy discovery cannot restore a watcher that
+                    // failed to start; it retains its own visible error owner.
+                    redraw(handle, cx);
+                    cx.simulate_keystrokes(handle, shortcut);
+                    shell.read_with(cx, |shell, _| assert_eq!(shell.error, operation_error));
+                }
+            }
+        }
+    }
+
+    #[gpui::test]
+    fn monitor_watcher_failure_localizes_visible_banner_and_preserves_operation_errors(
+        cx: &mut TestAppContext,
+    ) {
+        let (shell, events) = headless_shell(cx);
+        let handle = shell.update(cx, |shell, cx| {
+            load_ready(shell);
+            shell.monitors = vec![test_monitor()];
+            shell.presenter = Some(test_window(shell, false, cx));
+            shell.presenter.as_ref().unwrap().handle
+        });
+        let view = handle.downcast::<Presenter>().unwrap().root(cx).unwrap();
+        let failure = ferrostage_platform::PlatformError::IncompleteTopology {
+            devices: vec!["DISPLAY1".into()],
+            geometry: Vec::new(),
+        };
+        events
+            .send(TopologyEvent::Unavailable {
+                error: failure.clone(),
+                last_known: vec![test_monitor()],
+            })
+            .unwrap();
+        shell.update(cx, |shell, cx| {
+            set_playing(shell, cx, Instant::now());
+            shell.tick(cx);
+            assert!(!shell.topology_valid);
+            assert!(shell.start_reason().is_some());
+            assert!(shell.audience.is_none());
+            assert_eq!(shell.state.stage(), SessionStage::Ready);
+            assert_eq!(shell.snapshot.read(cx).stage, AudienceStage::Curtain);
+        });
+        redraw(handle, cx);
+        view.read_with(cx, |view, _| {
+            assert_eq!(
+                view.presented_error(),
+                Some("显示器设备与屏幕位置、尺寸信息不一致。请在“设置 > 显示器”重新检测。")
+            );
+        });
+        events
+            .send(TopologyEvent::Changed(vec![test_monitor()]))
+            .unwrap();
+        shell.update(cx, |shell, cx| shell.tick(cx));
+        redraw(handle, cx);
+        view.read_with(cx, |view, _| {
+            // This fixture has an intentionally absent watcher. Its independent
+            // startup failure must survive recovery of the discovery failure.
+            assert_eq!(view.presented_error(), Some("当前系统不支持显示器检测。"));
+        });
+        shell.update(cx, |shell, cx| {
+            shell.error = Some("unrelated PDF import failed".into());
+            shell.topology_changed(
+                TopologyEvent::Unavailable {
+                    error: failure,
+                    last_known: shell.monitors.clone(),
+                },
+                cx,
+            );
+            shell.new_display_draft();
+            let panel = shell.display_panel().unwrap();
+            assert!(panel.monitor_error.unwrap().contains("位置、尺寸"));
+            assert_eq!(
+                panel.operation_error.as_deref(),
+                Some("unrelated PDF import failed")
+            );
+            shell.topology_changed(TopologyEvent::Changed(vec![test_monitor()]), cx);
+        });
+        redraw(handle, cx);
+        view.read_with(cx, |view, _| {
+            assert_eq!(view.presented_error(), Some("unrelated PDF import failed"));
+        });
+        shell.read_with(cx, |shell, _| assert!(shell.monitor_error.is_none()));
+    }
+
+    #[gpui::test]
+    fn monitor_startup_error_uses_current_locale_and_keeps_watcher_failure(
+        cx: &mut TestAppContext,
+    ) {
+        for language in ["zh-CN", "en-US"] {
+            let (_, topology) = std::sync::mpsc::channel();
+            let shell = cx.new(|cx| {
+                let mut settings = SettingsSession::from_outcome(
+                    ferrostage_settings::from_toml("schema_version = 1").unwrap(),
+                );
+                settings.settings.general.language = language.into();
+                Shell::new(
+                    ShellInputs {
+                        settings,
+                        store: SettingsStore::at(PathBuf::from("unused-headless-settings.toml")),
+                        renderer: Err(RenderError::FeatureDisabled),
+                        topology,
+                        watcher: Err(ferrostage_platform::PlatformError::WatcherStart {
+                            message: "raw OS error".into(),
+                        }),
+                        initial_monitors: Err(
+                            ferrostage_platform::PlatformError::TopologyChanging {
+                                before: vec!["DISPLAY1".into()],
+                                after: vec!["DISPLAY1".into()],
+                            },
+                        ),
+                        initial_pdf: None,
+                    },
+                    cx,
+                )
+            });
+            let handle = shell.update(cx, |shell, cx| {
+                assert!(!shell.topology_valid);
+                assert!(shell.error.is_none());
+                assert_eq!(
+                    shell.monitor_error_text().as_deref(),
+                    Some(shell.locale.text("monitor-changing"))
+                );
+                assert!(shell.mapped.is_err());
+                // Seed only the TestPlatform window lookup so the real first-draw
+                // capture can be inspected while discovery stays unavailable.
+                let display = u64::from(cx.displays().first().unwrap().id());
+                shell.mapped = Ok([(test_monitor().id, display)].into());
+                shell.presenter = Some(test_window(shell, false, cx));
+                shell.presenter.as_ref().unwrap().handle
+            });
+            let view = handle.downcast::<Presenter>().unwrap().root(cx).unwrap();
+            view.read_with(cx, |view, _| {
+                assert_eq!(
+                    view.presented_error(),
+                    Some(crate::locale::Locale::new(language).text("monitor-changing"))
+                );
+            });
+            shell.update(cx, |shell, cx| {
+                shell.topology_changed(TopologyEvent::Changed(Vec::new()), cx);
+                assert!(shell.monitor_error.is_none());
+                assert_eq!(
+                    shell.monitor_error_text().as_deref(),
+                    Some(shell.locale.text("monitor-watcher-start"))
+                );
+            });
+            redraw(handle, cx);
+            view.read_with(cx, |view, _| {
+                assert_eq!(
+                    view.presented_error(),
+                    Some(crate::locale::Locale::new(language).text("monitor-watcher-start"))
+                );
+            });
+        }
+    }
+
+    #[gpui::test]
+    fn monitor_recovery_help_and_retry_work_in_both_display_hosts(cx: &mut TestAppContext) {
+        for language in ["zh-CN", "en-US"] {
+            for embedded in [false, true] {
+                let (shell, _) = headless_shell(cx);
+                let handle = shell.update(cx, |shell, cx| {
+                    shell.locale = crate::locale::Locale::new(language);
+                    shell.monitors = vec![test_monitor()];
+                    load_ready(shell);
+                    shell.presenter = Some(test_window(shell, false, cx));
+                    shell.new_display_draft();
+                    if embedded {
+                        shell.preferences.category = crate::settings_panel::Category::Displays;
+                        shell.preferences.display = shell.display_draft().cloned();
+                        shell.modal = Some(Modal::Settings);
+                    }
+                    shell.error = Some("unrelated PDF import failed".into());
+                    shell.topology_changed(
+                        TopologyEvent::Unavailable {
+                            error: ferrostage_platform::PlatformError::InvalidGeometry {
+                                connection: "synthetic-stale-display".into(),
+                            },
+                            last_known: shell.monitors.clone(),
+                        },
+                        cx,
+                    );
+                    shell.presenter.as_ref().unwrap().handle
+                });
+                redraw(handle, cx);
+                let revision = shell.read_with(cx, |shell, _| shell.topology_revision);
+                let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+                assert!(
+                    visual.debug_bounds("display-recovery").is_some(),
+                    "{language}, embedded={embedded}"
+                );
+                assert!(visual.debug_bounds("refresh-displays").is_some());
+                click_control(handle, "apply-displays", cx);
+                shell.read_with(cx, |shell, _| {
+                    let panel = shell.display_panel().unwrap();
+                    assert!(!panel.editable && !panel.can_identify);
+                    assert!(shell.audience.is_none());
+                    assert_eq!(shell.error.as_deref(), Some("unrelated PDF import failed"));
+                });
+                click_control(handle, "refresh-displays", cx);
+                shell.read_with(cx, |shell, _| {
+                    assert!(shell.topology_revision > revision, "retry must reach the existing native enumeration path");
+                    assert_eq!(shell.display_draft().unwrap().revision, shell.topology_revision);
+                    assert_eq!(shell.error.as_deref(), Some("unrelated PDF import failed"));
+                    assert!(!matches!(&shell.monitor_error, Some(ferrostage_platform::PlatformError::InvalidGeometry { connection }) if connection == "synthetic-stale-display"));
+                    if shell.topology_valid {
+                        assert!(shell.monitor_error.is_none());
+                    } else {
+                        assert!(!shell.display_panel().unwrap().editable);
+                    }
+                });
+                // Keep the final recovery assertion deterministic even on a host
+                // whose native display query is itself unavailable.
+                shell.update(cx, |shell, cx| {
+                    shell.topology_changed(TopologyEvent::Changed(vec![test_monitor()]), cx);
+                });
+                redraw(handle, cx);
+                assert!(visual.debug_bounds("display-recovery").is_none());
+            }
+        }
     }
 
     #[gpui::test]
@@ -2833,7 +3339,8 @@ mod tests {
             shell.topology_changed(TopologyEvent::Changed(vec![changed]), cx);
             assert!(matches!(&shell.modal, Some(Modal::Displays(draft)) if draft.revision != shell.topology_revision));
             shell.apply_display_draft(cx);
-            assert_eq!(shell.error.as_deref(), Some(shell.locale.text("displays-stale")));
+            assert_eq!(shell.display_panel().unwrap().problem.as_deref(), Some(shell.locale.text("displays-stale")));
+            assert!(shell.error.is_none());
             assert_eq!(shell.settings.settings, old_settings);
             shell.topology_changed(TopologyEvent::Unavailable {
                 error: ferrostage_platform::PlatformError::UnsupportedPlatform,
@@ -4398,6 +4905,7 @@ mod tests {
             diagnostics: vec![],
         };
         let session = crate::workbench::DocumentSession::build(metadata, structure).unwrap();
+        let opened_after = chrono::Utc::now().timestamp();
         shell.update(cx, |shell, cx| {
             shell.store = fixture.store();
             shell.error = Some("previous import failure".into());
@@ -4418,6 +4926,8 @@ mod tests {
             );
             assert!(shell.error.is_none());
             assert!(shell.settings.dirty && shell.settings.save_error.is_some());
+            let opened_at = shell.settings.settings.general.recent_opened_at["owned-metadata.pdf"];
+            assert!((opened_after..=chrono::Utc::now().timestamp()).contains(&opened_at));
 
             let mut candidate = shell.settings.settings.display.clone();
             candidate
@@ -4455,9 +4965,94 @@ mod tests {
             let saved = shell.store.load().unwrap();
             assert_eq!(saved.settings.display.monitors[0].id, "new-role-authority");
             assert_eq!(saved.settings.general.recent_files[0], "owned-metadata.pdf");
+            assert_eq!(
+                saved.settings.general.recent_opened_at,
+                shell.settings.settings.general.recent_opened_at
+            );
             assert!(shell.settings.save_error.is_none());
             assert!(!shell.settings.dirty);
             assert_eq!(shell.error.as_deref(), Some("unrelated operation error"));
+        });
+    }
+
+    #[gpui::test]
+    fn import_history_records_reopens_only_after_acceptance_and_respects_readonly(
+        cx: &mut TestAppContext,
+    ) {
+        let fixture = SaveFixture::new();
+        fixture.unblock();
+        let (shell, _) = workbench_fixture(cx);
+        shell.update(cx, |shell, cx| {
+            shell.store = fixture.store();
+            shell.settings.settings.hot_reload.enabled = false;
+            shell.settings.settings.general.recent_files =
+                vec!["other.pdf".into(), "reopen.pdf".into()];
+            shell.settings.settings.general.recent_opened_at =
+                BTreeMap::from([("other.pdf".into(), 123), ("reopen.pdf".into(), 456)]);
+            let session = shell.workbench.document.clone().unwrap();
+            let opened_after = chrono::Utc::now().timestamp();
+            shell.finish_import(
+                "reopen.pdf".into(),
+                ferrostage_core::DocumentGeneration(3),
+                session.clone(),
+                cx,
+            );
+            assert_eq!(
+                shell.settings.settings.general.recent_files,
+                ["reopen.pdf", "other.pdf"]
+            );
+            assert_eq!(
+                shell.settings.settings.general.recent_opened_at["other.pdf"],
+                123
+            );
+            assert!(
+                (opened_after..=chrono::Utc::now().timestamp())
+                    .contains(&shell.settings.settings.general.recent_opened_at["reopen.pdf"])
+            );
+            let saved_bytes = std::fs::read(shell.store.path()).unwrap();
+            let history = shell.settings.settings.general.clone();
+            shell
+                .state
+                .apply_at(
+                    Command::StartPresentation {
+                        audience_available: true,
+                    },
+                    Instant::now(),
+                )
+                .unwrap();
+            shell.finish_import(
+                "rejected.pdf".into(),
+                ferrostage_core::DocumentGeneration(4),
+                session.clone(),
+                cx,
+            );
+            assert_eq!(shell.settings.settings.general, history);
+            assert_eq!(shell.path, Some("reopen.pdf".into()));
+            assert_eq!(
+                shell.state.generation(),
+                ferrostage_core::DocumentGeneration(3)
+            );
+            assert_eq!(
+                shell.error.as_deref(),
+                Some(shell.locale.text("import-error"))
+            );
+            shell
+                .state
+                .apply_at(Command::StopPresentation, Instant::now())
+                .unwrap();
+            shell.settings.write_policy = WritePolicy::ReadOnly {
+                reason: "future schema".into(),
+            };
+            shell.finish_import(
+                "readonly.pdf".into(),
+                ferrostage_core::DocumentGeneration(5),
+                session,
+                cx,
+            );
+            assert_eq!(shell.path, Some("readonly.pdf".into()));
+            assert_eq!(shell.settings.settings.general, history);
+            assert!(!shell.settings.dirty);
+            assert_eq!(std::fs::read(shell.store.path()).unwrap(), saved_bytes);
         });
     }
 
@@ -6280,6 +6875,93 @@ mod tests {
                 visual.debug_bounds(hidden).is_none(),
                 "Idle rendered {hidden}"
             );
+        }
+    }
+
+    #[gpui::test]
+    fn home_history_aligns_known_unknown_times_and_preserves_row_activation(
+        cx: &mut TestAppContext,
+    ) {
+        let (shell, handle) = input_presenter(cx);
+        shell.update(cx, |shell, cx| {
+            shell.settings.settings.general.ui_font_family = "WenYuan Serif SC".into();
+            shell.settings.settings.general.ui_font_size = 18;
+            shell.settings.settings.general.recent_files = vec![
+                r"C:\演示资料\Very long directory\same.pdf".into(),
+                r"D:\Archive\same.pdf".into(),
+                "unknown.pdf".into(),
+                "hidden-fourth.pdf".into(),
+            ];
+            shell.settings.settings.general.recent_opened_at = BTreeMap::from([
+                (
+                    shell.settings.settings.general.recent_files[0].clone(),
+                    1_792_375_595,
+                ),
+                (
+                    shell.settings.settings.general.recent_files[2].clone(),
+                    i64::MAX,
+                ),
+            ]);
+            cx.notify();
+        });
+        cx.simulate_window_resize(handle, size(px(1100.), px(760.)));
+        redraw(handle, cx);
+        handle
+            .downcast::<Presenter>()
+            .unwrap()
+            .read_with(cx, |view, _| {
+                let recent = view.recent_probe();
+                assert_eq!(recent.len(), 3);
+                assert_eq!(recent[0].0, r"C:\演示资料\Very long directory\same.pdf");
+                assert_eq!(recent[0].1.len(), 16);
+                assert_eq!(recent[1], (r"D:\Archive\same.pdf", "暂无记录"));
+                assert_eq!(recent[2], ("unknown.pdf", "暂无记录"));
+            })
+            .unwrap();
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let header = visual.debug_bounds("recent-time-header").unwrap();
+        let mut previous_bottom = header.bottom();
+        for index in 0..3 {
+            let row = visual
+                .debug_bounds(["recent-0", "recent-1", "recent-2"][index])
+                .unwrap();
+            let name = visual
+                .debug_bounds(["recent-0-name", "recent-1-name", "recent-2-name"][index])
+                .unwrap();
+            let time = visual
+                .debug_bounds(["recent-0-time", "recent-1-time", "recent-2-time"][index])
+                .unwrap();
+            assert_eq!(time.origin.x, header.origin.x);
+            assert_eq!(time.right(), header.right());
+            assert!(name.right() <= time.origin.x - px(16.));
+            assert!(time.top() >= row.top() && time.bottom() <= row.bottom());
+            assert!(row.top() >= previous_bottom);
+            assert!(
+                time.size.height <= px(21.),
+                "normal-window timestamp must fit one line: {time:?}"
+            );
+            previous_bottom = row.bottom();
+            println!(
+                "HOME_HISTORY_GEOMETRY client=1100x760 font_size=18 index={index} header={header:?} row={row:?} name={name:?} time={time:?}"
+            );
+        }
+        assert!(visual.debug_bounds("recent-3").is_none());
+        let history = shell.read_with(cx, |shell, _| shell.settings.settings.general.clone());
+        click_control(handle, "recent-0", cx);
+        for key in ["enter", "space"] {
+            shell.update(cx, |shell, cx| {
+                shell.error = None;
+                cx.notify();
+            });
+            redraw(handle, cx);
+            cx.simulate_keystrokes(handle, key);
+            shell.read_with(cx, |shell, _| {
+                assert_eq!(
+                    shell.error.as_deref(),
+                    Some(shell.locale.text("import-unavailable"))
+                );
+                assert_eq!(shell.settings.settings.general, history);
+            });
         }
     }
 

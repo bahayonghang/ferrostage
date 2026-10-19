@@ -769,6 +769,9 @@ fn settings_fonts_filter_apply_size_restore_and_history_through_real_input(
         shell.ui_fonts = std::sync::Arc::new(vec!["Arial".into(), "Microsoft YaHei UI".into()]);
         shell.settings.settings.general.recent_files =
             vec!["alpha/same.pdf".into(), "beta/same.pdf".into()];
+        shell.settings.settings.general.recent_opened_at = BTreeMap::from([
+            ("alpha/same.pdf".into(), 123), ("beta/same.pdf".into(), 456),
+        ]);
         shell.ui_fonts_loaded = true;
         shell.modal = Some(Modal::Settings);
         cx.notify();
@@ -876,7 +879,8 @@ fn settings_fonts_filter_apply_size_restore_and_history_through_real_input(
     shell.update(cx, |shell, cx| {
         shell.dispatch(Intent::ClearRecent, cx);
         assert!(shell.settings.settings.general.recent_files.is_empty());
-        assert!(shell.settings.settings.general.recent_files.is_empty());
+        assert!(shell.settings.settings.general.recent_opened_at.is_empty());
+        assert!(shell.store.load().unwrap().settings.general.recent_opened_at.is_empty());
         assert!(
             shell
                 .store
