@@ -259,7 +259,7 @@ impl PresenterSettings {
 impl Default for PresenterSettings {
     fn default() -> Self {
         Self {
-            next_slide_ratio: 0.35,
+            next_slide_ratio: 0.40,
             notes_ratio: 0.65,
             notes_font_scale: 1.0,
             show_clock: true,

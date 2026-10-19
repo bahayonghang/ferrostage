@@ -16,9 +16,9 @@ Core `AudienceProjectionSnapshot` includes `stage` and `visual`; its metadata pr
 
 The audience view receives only the assembled snapshot, never the document, notes, media sources, a full-cache handle, or an arbitrary-page request API. The assembler publishes matching generation/page/crop/target pixels together; it keeps the previous complete projection until the next one is ready. `Curtain` and black/white blank cover every visual layer immediately.
 
-Blank mode is `Option<BlankMode>` on the snapshot so the audience window does not invent a second blank flag.
+Blank mode is `Option<BlankMode>` on the snapshot so the audience window does not invent a second blank flag. [PDF playback](./pdf-playback.md) defines transition metadata, exact-image identities, delivered paint acknowledgements and the separate authored-dwell scheduler.
 
-## Manual navigation and notes-first workbench
+## Manual navigation and original Notes workbench
 
 ### 1. Scope / Trigger
 
@@ -30,9 +30,9 @@ Use `PresentationCommand::JumpTo(PhysicalPage)` through `PresentationState::appl
 
 ### 3. Contracts
 
-Import enters Ready with no audience or running presentation timer. Start is explicit. Timer reads and expiry never navigate. Grid clicks commit a direct jump; hover is inert. Page-number editing is local to its modal and submits only on Enter/Go. Committed-page changes use the existing media/annotation invalidation and exact-key raster path. No second authoritative preview page exists.
+Import enters Ready with no audience or running presentation timer. Start is explicit. Talk-timer reads and expiry never navigate; authored PDF dwell follows the separate PDF playback contract. Grid clicks commit a direct jump; hover is inert. Page-number editing is local to its modal and submits only on Enter/Go. Committed-page changes use the existing media/annotation invalidation and exact-key raster path. No second authoritative preview page exists.
 
-Current slide stays left; current notes appear above next slide in the right column. Default notes share is 0.65, with effective range 0.55 to 0.8 for old settings and divider interactions. Recent files appear only in Idle. Only an explicitly open grid schedules thumbnails; closing it retires obsolete requested/retained thumbnail frames. Keep the existing configured grid page bound.
+Current slide stays left; Next occupies the upper-right pane and original Notes the lower-right pane. Fresh `next_slide_ratio` is 0.40 (right-column width); stored ratios remain authoritative. Default `notes_ratio` is 0.65, with effective range 0.55 to 0.8 for old settings and divider interactions. Vertical drag measures the complement of the upper pane after subtracting the 6px divider and adjacent 4px gaps: dragging down reduces Notes height. Never invert stored ratios on load. Each ordered Notes raster fills the inner pane width at its own aspect ratio, does not flex-shrink, and shares the existing vertical scroll. No text extraction/reflow or Notes-mode/font selector is introduced. Recent files appear only in Idle. Only an explicitly open grid schedules thumbnails; closing it retires obsolete requested/retained thumbnail frames. Keep the existing configured grid page bound.
 
 ### 4. Validation & Error Matrix
 
@@ -40,21 +40,65 @@ Current slide stays left; current notes appear above next slide in the right col
 | --- | --- |
 | Valid content page | Set physical/logical page together, preserve session stage and timer |
 | Out-of-range or notes-only physical page | Typed error, no partial navigation |
-| Hover, elapsed time, partial input, invalid dialog submit, Escape | No page change |
+| Hover, talk-timer elapsed time, partial input, invalid dialog submit, Escape | No page change |
 | Legacy thumbnail strip enabled, grid closed | Zero thumbnail requests |
 | Legacy small notes ratio | Readable effective share without rewriting the settings file on load |
+| Divider dragged downward | Next grows, Notes shrinks; persisted ratio restores those sizes |
+| Multiple Notes rasters | Ordered natural-height pages in one scroll; no equal-height compression |
 
 ### 5. Good / Base / Bad Cases
 
-Good: clicking a grid page immediately navigates and its current notes follow. Base: opening a PDF shows Ready while the clock updates. Bad: moving the pointer over a thumbnail changes content, or a timer tick dispatches Next.
+Good: clicking a grid page immediately navigates and its current notes follow. Base: opening a PDF shows Ready while the clock updates. Bad: moving the pointer over a thumbnail changes content, or talk-timer expiry dispatches Next.
 
 ### 6. Tests Required
 
 Exercise actual GPUI mouse/key dispatch, partial versus submitted page input, modal cancellation and focus restoration. Assert Ready/Presenting page stability across ticks and overtime. Check real notes crop identity/privacy and pane ordering, closed/open/closed grid work, stale-frame retirement and duplicate-submission prevention. Native screenshot evidence remains separate from source or headless checks.
 
+Retain actual divider-input/settings-readback and multiple-Notes aspect/height regressions in `shell/presenter_layout_tests.rs`. PDF font measurements and raster geometry cannot establish standing readability; test the final original PDF in the integrated native presenter separately.
+
 ### 7. Wrong vs Correct
 
 Wrong: hide a thumbnail strip while its persisted flag still schedules raster work, or preserve invisible preview state after removing controls. Correct: gate raster requests on actual grid visibility and route explicit selection through the one committed-page command.
+
+## Start fullscreen and presenter restoration
+
+### 1. Scope / Trigger
+
+Start enters fullscreen on the existing presenter window while the audience is placed independently. Stop, failed Start and cancellation restore the private window without changing startup preferences or monitor bindings.
+
+### 2. Signatures
+
+`Shell::enter_presenter_fullscreen(cx) -> Result<(), String>`, `start_presenter_confirmed(cx) -> bool`, `restore_presenter(cx)`, `poll_presenter_restore(cx)` and `restoring_presenter()` own this lifecycle in `shell/presenter_fullscreen.rs`. `Restore` captures WindowId, MonitorId, display identity, bounds, fullscreen/maximized state, optional deadline and `exit_requested`.
+
+### 3. Contracts
+
+Capture native state before toggling in place; the existing audience transaction commits Start only when both its audience placement and presenter fullscreen readback pass. A manually moved private window whose observed display does not match its mapped role cannot authorize entry. Requested flags alone do not prove placement. Preserve the existing view/page/focus and do not save `display.presenter_start_fullscreen` or display roles as a Start side effect.
+
+Cancellation/Stop retires audience output first and requests restoration once. Restoration remains part of the busy guard. Windows queues fullscreen toggles: when Stop precedes entry, observe fullscreen entry before issuing exactly one exit, then verify the saved fullscreen/maximized state, display identity and normal bounds (2px tolerance). Do not accept the still-windowed pre-entry flag as restored. Starting already fullscreen retains fullscreen on Stop.
+
+Restore applies only to the captured WindowId. Confirmed role migration retires that record instead of applying old bounds to a replacement window. Missing original mapping or restore timeout uses existing safe windowed recovery; timeout reports `PlacementTimeout`. Preserve current-versus-retired window checks and deferred native callbacks.
+
+### 4. Validation & Error Matrix
+
+| Condition | Required result |
+| --- | --- |
+| Requested fullscreen without confirmed native placement | Start stays pending; no running session/timer |
+| Audience failure, cancellation or Stop before entry finishes | Retire audience; wait for entry, exit once, verify restore |
+| Repeated Stop/restore or already-fullscreen Start | Idempotent restoration, no extra toggle |
+| Missing original monitor or timed-out restore | Existing safe recovery and truthful placement error |
+| Presenter replaced by confirmed role migration | Discard obsolete restore record |
+
+### 5. Good / Base / Bad Cases
+
+Good: Start and Stop reuse the presenter and restore its maximized state. Base: an initially fullscreen presenter stays fullscreen after Stop. Bad: a queued entry arrives after Stop because the pre-entry windowed flag was mistaken for completed restoration.
+
+### 6. Tests Required
+
+Retain flag-only refusal/timeout, delayed-entry restoration, repeated/already-fullscreen cases in `shell/presenter_layout_tests.rs`. Native dual-display success, normal/maximized restoration and monitor-loss recovery require separate runtime evidence; headless GPUI placement flags do not establish them.
+
+### 7. Wrong vs Correct
+
+Wrong: toggle blindly on every Start/Stop or rewrite persisted startup fullscreen. Correct: capture native identity/state once, commit after readback, and restore through the identity-fenced asynchronous state machine.
 
 ## Audience click to advance
 

@@ -25,6 +25,7 @@ actions!(
 
 #[derive(Clone, Debug)]
 pub(crate) enum Intent {
+    ToggleAutoplay,
     Media(u64),
     SettingsCategory(crate::settings_panel::Category),
     EditSetting(&'static str, String),
@@ -53,6 +54,14 @@ pub(crate) enum Intent {
         id: u64,
         mode: crate::workbench::PageNumberMode,
     },
+    BrowserView {
+        id: u64,
+        view: crate::workbench::BrowserView,
+    },
+    BrowserOutlineJump {
+        id: u64,
+        entry_id: usize,
+    },
     BrowserEdit {
         id: u64,
         edit: crate::page_browser::NumberEdit,
@@ -66,6 +75,7 @@ pub(crate) enum Intent {
         value: u32,
     },
     CloseContextual,
+    PresenterMenu(bool),
     Document,
     Reconfigure {
         id: u64,
@@ -123,7 +133,14 @@ pub(crate) fn install(
             let shell = shell.read(cx);
             if shell.captures_preferences(window.window_handle().window_id())
                 || shell.browser().is_some() && shell.number_input_focus.is_focused(window)
-                || shell.layout_menu_open()
+                || (shell.layout_menu_open()
+                    || shell.browser().is_some_and(|_| {
+                        shell.workbench.browser_view == crate::workbench::BrowserView::Outline
+                    })
+                    || matches!(
+                        shell.contextual,
+                        Some(crate::page_browser::ContextualSurface::PresenterMenu { .. })
+                    ))
                     && matches!(
                         event.keystroke.unparse().as_str(),
                         "up" | "down"

@@ -428,6 +428,7 @@ mod staging_tests {
             },
         );
         let snapshot = AudienceProjectionSnapshot {
+            playback: None,
             stage: ferrostage_core::AudienceStage::Live,
             generation: ferrostage_core::DocumentGeneration(1),
             current_page: ferrostage_core::PhysicalPage(0),

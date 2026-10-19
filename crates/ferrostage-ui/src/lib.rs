@@ -12,6 +12,8 @@
 mod actions;
 #[cfg(feature = "gpui")]
 mod audience;
+#[cfg(any(feature = "gpui", test))]
+mod autoplay;
 pub mod display_settings;
 #[cfg(feature = "gpui")]
 mod document_load;
@@ -32,6 +34,8 @@ mod slide_surface;
 mod texture_cache;
 pub mod theme;
 pub mod transactions;
+#[cfg(any(feature = "gpui", test))]
+mod transitions;
 pub mod workbench;
 #[cfg(feature = "gpui")]
 pub use shell::{ShellInputs, run};

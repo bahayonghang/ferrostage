@@ -15,6 +15,13 @@ pub enum PageNumberMode {
     Content,
     Pdf,
 }
+/// Presenter-only browsing preference, reset when a different document is opened.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub enum BrowserView {
+    #[default]
+    Thumbnails,
+    Outline,
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct BrowserEntry {
     pub page: PhysicalPage,
@@ -109,12 +116,24 @@ pub struct Workbench {
     pub grid: bool,
     pub grid_start: usize,
     pub page_number_mode: PageNumberMode,
+    pub browser_view: BrowserView,
     pub audience_target: Option<PixelSize>,
     pub presenter_target: Option<PixelSize>,
     pub surface_targets: HashMap<Surface, PixelSize>,
     pub render_ms: f64,
 }
 impl Workbench {
+    #[cfg(feature = "gpui")]
+    pub(crate) fn retire_thumbnails(&mut self) {
+        self.frames
+            .retain(|(surface, _)| !matches!(surface, Surface::Thumbnail(_)));
+        self.surface_targets
+            .retain(|surface, _| !matches!(surface, Surface::Thumbnail(_)));
+        self.pending
+            .retain(|_, (surface, _)| !matches!(surface, Surface::Thumbnail(_)));
+        // Keep requested until schedule compares it: changing the epoch must
+        // still cancel work already queued in the raster worker.
+    }
     pub fn requested_surfaces(&self) -> Vec<Surface> {
         self.requested.iter().map(|(surface, _)| *surface).collect()
     }

@@ -1,0 +1,63 @@
+% Original FerroStage fixture. Standard Beamer only; no viewer implementation.
+\documentclass[aspectratio=169]{beamer}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{\hfill FerroStage overlay fixture: \insertframenumber\quad\vspace{1em}}
+\setbeameroption{show notes}
+\setbeamertemplate{note page}[plain]
+\addtobeamertemplate{note page}{}{\thispdfpagelabel{notes:\insertframenumber}}
+\newcount\motionvalue
+\begin{document}
+\begin{frame}{Pause: two steps}
+PUBLIC-PAUSE-A\pause\par PUBLIC-PAUSE-B
+\note<1>{PRIVATE-PAUSE-1}
+\note<2>{PRIVATE-PAUSE-2}
+\end{frame}
+\note{PRIVATE-EXTRA-NOTE-FOR-LAST-PAUSE-STEP}
+
+\begin{frame}{Overlay primitives: three steps}
+\only<1>{PUBLIC-ONLY-1}
+\uncover<2->{PUBLIC-UNCOVER-2}
+\visible<3>{PUBLIC-VISIBLE-3}
+\onslide<2->{PUBLIC-ONSLIDE-2}\onslide
+\par\alt<2>{PUBLIC-ALT-YES}{PUBLIC-ALT-NO}
+\par\temporal<2>{PUBLIC-TEMPORAL-BEFORE}{PUBLIC-TEMPORAL-DURING}{PUBLIC-TEMPORAL-AFTER}
+\note<1>{PRIVATE-PRIMITIVES-1}
+\note<2>{PRIVATE-PRIMITIVES-2}
+\note<3>{PRIVATE-PRIMITIVES-3}
+\end{frame}
+
+\begin{frame}{Incremental list: three steps}
+\begin{itemize}[<+->]
+\item PUBLIC-LIST-1
+\item PUBLIC-LIST-2
+\item PUBLIC-LIST-3
+\end{itemize}
+\note{PRIVATE-INCREMENTAL-LIST}
+\end{frame}
+
+\begin{frame}{Built-in animate and animatevalue: four steps}
+\animate<1-3>
+\animatevalue<1-4>{\motionvalue}{20}{140}
+PUBLIC-ANIMATE-VALUE: \the\motionvalue
+\par\bigskip\color{blue}\rule{\the\motionvalue pt}{30pt}
+\note{PRIVATE-ANIMATION-NOTE}
+\end{frame}
+
+\begin{frame}{Authored timing: positive, zero, then manual}
+\transduration<1>{1.5}
+\transduration<2>{0}
+\transfade<2>[duration=0.3]
+\only<1>{PUBLIC-DWELL-POSITIVE: 1.5 seconds}
+\only<2>{PUBLIC-DWELL-ZERO: wait for fade to settle}
+\only<3>{PUBLIC-DWELL-MANUAL: no duration, stay here}
+\note<1>{PRIVATE-DWELL-1}
+\note<2>{PRIVATE-DWELL-2}
+\note<3>{PRIVATE-DWELL-3}
+\end{frame}
+
+\begin{frame}{Final timed page: stop at end}
+\transduration{0}
+PUBLIC-FINAL-STABLE
+\note{PRIVATE-FINAL-NOTE}
+\end{frame}
+\end{document}

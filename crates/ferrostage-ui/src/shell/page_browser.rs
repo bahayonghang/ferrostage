@@ -11,12 +11,7 @@ impl Shell {
     pub(crate) fn close_contextual(&mut self) {
         self.contextual = None;
         self.workbench.grid = false;
-        self.workbench
-            .frames
-            .retain(|(surface, _)| !matches!(surface, crate::workbench::Surface::Thumbnail(_)));
-        self.workbench
-            .surface_targets
-            .retain(|surface, _| !matches!(surface, crate::workbench::Surface::Thumbnail(_)));
+        self.workbench.retire_thumbnails();
     }
     pub(crate) fn open_browser(&mut self) {
         if self.busy() || self.state.page_count() == 0 {
@@ -32,7 +27,8 @@ impl Shell {
             .position(|entry| entry.page == current)
             .unwrap_or(0);
         self.workbench.grid_start = position / capacity * capacity;
-        self.workbench.grid = true;
+        self.workbench.grid =
+            self.workbench.browser_view == crate::workbench::BrowserView::Thumbnails;
         self.contextual = Some(ContextualSurface::PageBrowser(PageBrowser {
             id: self.contextual_serial,
             generation: self.state.generation(),
@@ -50,6 +46,42 @@ impl Shell {
             && self.browser().is_some_and(|browser| {
                 browser.id == id && browser.generation == self.state.generation()
             })
+    }
+    pub(super) fn browser_view(&mut self, id: u64, view: crate::workbench::BrowserView) {
+        if !self.valid_browser(id) || view == self.workbench.browser_view {
+            return;
+        }
+        self.workbench.browser_view = view;
+        self.workbench.grid = view == crate::workbench::BrowserView::Thumbnails;
+        self.contextual_serial += 1;
+        if let Some(ContextualSurface::PageBrowser(browser)) = &mut self.contextual {
+            browser.id = self.contextual_serial;
+        }
+        self.workbench.retire_thumbnails();
+    }
+    pub(super) fn browser_outline_jump(
+        &mut self,
+        id: u64,
+        entry_id: usize,
+        cx: &mut Context<Self>,
+    ) {
+        if !self.valid_browser(id)
+            || self.workbench.browser_view != crate::workbench::BrowserView::Outline
+        {
+            return;
+        }
+        let page = self.workbench.document.as_ref().and_then(|session| {
+            session
+                .document
+                .outline
+                .iter()
+                .find(|entry| entry.id == entry_id)
+                .filter(|entry| entry.issue.is_none() && entry.content_number.is_some())
+                .and_then(|entry| entry.page)
+        });
+        if let Some(page) = page {
+            self.submit_browser(id, Some(page), cx);
+        }
     }
     pub(crate) fn browser_entries(&self) -> Vec<crate::workbench::BrowserEntry> {
         self.state
@@ -150,7 +182,11 @@ impl Shell {
         }
     }
     pub(super) fn grid_density(&mut self, column: bool, value: u32, cx: &mut Context<Self>) {
-        if self.browser().is_none() || self.busy() || !self.settings.write_policy.is_writable() {
+        if self.browser().is_none()
+            || !self.workbench.grid
+            || self.busy()
+            || !self.settings.write_policy.is_writable()
+        {
             return;
         }
         let settings = &self.settings.settings.presenter;

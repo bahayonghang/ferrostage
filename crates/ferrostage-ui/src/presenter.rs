@@ -3,6 +3,7 @@ mod layout_navigation;
 mod number_input;
 mod page_browser;
 mod settings_view;
+mod utility_menu;
 mod workbench_view;
 use crate::{
     actions::{self, Intent},
@@ -25,6 +26,7 @@ pub(crate) struct PresenterData {
     modal: Option<Modal>,
     browser: Option<page_browser::BrowserData>,
     layout_menu: Option<layout_navigation::LayoutMenuData>,
+    utility_menu: Option<bool>,
     number_focus: FocusHandle,
     displays: Option<crate::display_settings::DisplayPanel>,
     error: Option<String>,
@@ -69,6 +71,12 @@ impl PresenterData {
             modal: shell.modal.clone(),
             browser: page_browser::BrowserData::from_shell(shell),
             layout_menu: layout_navigation::LayoutMenuData::from_shell(shell),
+            utility_menu: match shell.contextual {
+                Some(crate::page_browser::ContextualSurface::PresenterMenu { tools }) => {
+                    Some(tools)
+                }
+                _ => None,
+            },
             number_focus: shell.number_input_focus.clone(),
             displays: shell.display_panel(),
             error: shell
@@ -123,6 +131,9 @@ pub(crate) struct Presenter {
     focus: FocusHandle,
     modal_focus: FocusHandle,
     contextual_focus: FocusHandle,
+    utility_focus: [FocusHandle; 4],
+    utility_trigger_focus: [FocusHandle; 2],
+    utility_anchor: [std::rc::Rc<std::cell::Cell<gpui::Bounds<gpui::Pixels>>>; 2],
     number_focus: FocusHandle,
     number_layout: number_input::NumberLayout,
     number_selecting: std::rc::Rc<std::cell::Cell<bool>>,
@@ -138,6 +149,11 @@ pub(crate) struct Presenter {
     had_browser_tile: Option<usize>,
     browser_tile_focus: [FocusHandle; 16],
     browser_tile_anchors: [gpui::ScrollAnchor; 16],
+    browser_outline_focus: Vec<FocusHandle>,
+    browser_outline_anchors: Vec<gpui::ScrollAnchor>,
+    browser_outline_scroll: gpui::ScrollHandle,
+    had_browser_view: Option<crate::workbench::BrowserView>,
+    had_outline_focus: Option<usize>,
     progress_focus: FocusHandle,
     font_picker_focus: FocusHandle,
     had_font_picker: bool,
@@ -203,6 +219,20 @@ impl Presenter {
         self.browser_tile_focus
             .iter()
             .position(|focus| focus.is_focused(window))
+    }
+    #[cfg(all(test, feature = "test-support"))]
+    pub(crate) fn browser_focused_outline(&self, window: &Window) -> Option<usize> {
+        self.browser_outline_focus
+            .iter()
+            .position(|focus| focus.is_focused(window))
+            .and_then(|index| {
+                self.data
+                    .browser
+                    .as_ref()?
+                    .outline
+                    .get(index)
+                    .map(|entry| entry.id)
+            })
     }
     #[cfg(all(test, feature = "test-support"))]
     pub(crate) fn font_picker_focused(&self, window: &Window) -> bool {
@@ -323,6 +353,9 @@ impl Presenter {
             focus,
             modal_focus: cx.focus_handle(),
             contextual_focus: cx.focus_handle(),
+            utility_focus: std::array::from_fn(|_| cx.focus_handle()),
+            utility_trigger_focus: std::array::from_fn(|_| cx.focus_handle()),
+            utility_anchor: Default::default(),
             number_focus,
             number_layout: Default::default(),
             number_selecting: Default::default(),
@@ -338,6 +371,11 @@ impl Presenter {
             had_browser_tile: None,
             browser_tile_focus,
             browser_tile_anchors,
+            browser_outline_focus: Vec::new(),
+            browser_outline_anchors: Vec::new(),
+            browser_outline_scroll: gpui::ScrollHandle::new(),
+            had_browser_view: None,
+            had_outline_focus: None,
             progress_focus,
             font_picker_focus: cx.focus_handle(),
             had_font_picker: false,
@@ -382,7 +420,11 @@ impl Presenter {
         let quiet_header = self.data.stage != SessionStage::Idle
             && matches!(
                 &intent,
-                Intent::Home | Intent::Open | Intent::Settings | Intent::Displays
+                Intent::Home
+                    | Intent::Open
+                    | Intent::Settings
+                    | Intent::Displays
+                    | Intent::PresenterMenu(false)
             );
         let preference_control = matches!(
             &intent,
@@ -392,6 +434,7 @@ impl Presenter {
                 | Intent::ToggleFontPicker
                 | Intent::GridDensity { .. }
                 | Intent::BrowserMode { .. }
+                | Intent::BrowserView { .. }
         );
         let category_control = matches!(&intent, Intent::SettingsCategory(_));
         let kind = match &intent {
@@ -408,6 +451,7 @@ impl Presenter {
             _ => theme::ButtonKind::Utility,
         };
         let selected = match &intent {
+            Intent::ToggleAutoplay => self.data.workbench.autoplay_paused,
             Intent::Black => {
                 self.data.workbench.overlay.blank_mode == Some(ferrostage_core::BlankMode::Black)
             }
@@ -444,11 +488,13 @@ impl Presenter {
             .child(
                 div()
                     .id(SharedString::from(format!("{id}-face")))
-                    .min_h(px(if session {
-                        theme::SESSION_CONTROL
-                    } else {
-                        theme::CONTROL
-                    }))
+                    .min_h(px(
+                        if session && self.data.stage != SessionStage::Presenting {
+                            theme::SESSION_CONTROL
+                        } else {
+                            theme::CONTROL
+                        },
+                    ))
                     .px(px(if quiet_header {
                         8.
                     } else if session
@@ -475,9 +521,10 @@ impl Presenter {
                     .border_1()
                     .border_color(rgb(style.border))
                     .min_w_0()
-                    .when(session, |view| {
-                        view.min_w(px(self.data.typography.size(theme::SESSION_WIDTH)))
-                    })
+                    .when(
+                        session && self.data.stage != SessionStage::Presenting,
+                        |view| view.min_w(px(self.data.typography.size(theme::SESSION_WIDTH))),
+                    )
                     .text_size(px(self.data.typography.size(14.)))
                     .when(session, |view| {
                         view.child(Self::session_icon(stop, style.ink))
@@ -516,6 +563,7 @@ impl Presenter {
         let click = intent.clone();
         let accessible = intent.clone();
         let page_control = id.starts_with("page-")
+            || id.starts_with("outline-")
             || id.starts_with("thumbnail-")
             || matches!(
                 id.as_str(),
@@ -523,10 +571,15 @@ impl Presenter {
             );
         let anchor = if id == "document-options" {
             self.layout_anchor.clone()
+        } else if id == "more" || id == "drawing-tools" {
+            self.utility_anchor[usize::from(id == "drawing-tools")].clone()
         } else {
             self.contextual_anchor.clone()
         };
-        let measure_anchor = matches!(id.as_str(), "workbench-progress" | "document-options");
+        let measure_anchor = matches!(
+            id.as_str(),
+            "workbench-progress" | "document-options" | "more" | "drawing-tools"
+        );
         let home_index = (self.data.stage == SessionStage::Idle)
             .then(|| {
                 [
@@ -559,9 +612,31 @@ impl Presenter {
             .tab_index(0)
             .tab_stop(
                 enabled
+                    && (self.data.utility_menu.is_none()
+                        || matches!(
+                            id.as_str(),
+                            "home"
+                                | "open"
+                                | "settings"
+                                | "pen"
+                                | "highlighter"
+                                | "eraser"
+                                | "clear-strokes"
+                        ))
                     && (self.data.browser.is_none() || page_control)
                     && (self.data.layout_menu.is_none() || id.starts_with("layout-row-")),
             )
+            .when(id == "more" || id == "drawing-tools", |view| {
+                view.track_focus(
+                    &self.utility_trigger_focus[usize::from(id == "drawing-tools")]
+                        .clone()
+                        .tab_stop(self.data.utility_menu.is_none()),
+                )
+                .aria_expanded(self.data.utility_menu == Some(id == "drawing-tools"))
+            })
+            .when_some(self.utility_row_index(&id), |view, index| {
+                view.track_focus(&self.utility_focus[index])
+            })
             .border(px(theme::FOCUS_WIDTH))
             .border_color(rgb(palette.canvas))
             .rounded(px(theme::RADIUS + theme::FOCUS_GAP))
@@ -677,7 +752,16 @@ impl Presenter {
             .items_center()
             .gap(px(8.))
             .flex_shrink_0();
-        if stage != SessionStage::Idle {
+        if stage == SessionStage::Presenting {
+            actions = actions.child(self.button(
+                "more".into(),
+                l.text("more").into(),
+                !busy,
+                false,
+                Intent::PresenterMenu(false),
+                p,
+            ));
+        } else if stage != SessionStage::Idle {
             actions = actions.child(self.button(
                 "home".into(),
                 l.text("home").into(),
@@ -688,22 +772,24 @@ impl Presenter {
             ));
         }
         actions = actions
-            .child(self.button(
-                "open".into(),
-                l.text("open").into(),
-                self.data.can_open,
-                false,
-                Intent::Open,
-                p,
-            ))
-            .child(self.button(
-                "settings".into(),
-                l.text("settings").into(),
-                !busy,
-                false,
-                Intent::Settings,
-                p,
-            ))
+            .when(stage != SessionStage::Presenting, |view| {
+                view.child(self.button(
+                    "open".into(),
+                    l.text("open").into(),
+                    self.data.can_open,
+                    false,
+                    Intent::Open,
+                    p,
+                ))
+                .child(self.button(
+                    "settings".into(),
+                    l.text("settings").into(),
+                    !busy,
+                    false,
+                    Intent::Settings,
+                    p,
+                ))
+            })
             .child(self.button(
                 "displays".into(),
                 l.text("displays").into(),
@@ -716,8 +802,16 @@ impl Presenter {
             .id("presenter-bar")
             .debug_selector(|| "presenter-bar".into())
             .px(px(16.))
-            .pt(px(8.))
-            .pb(px(8.))
+            .pt(px(if stage == SessionStage::Presenting {
+                0.
+            } else {
+                8.
+            }))
+            .pb(px(if stage == SessionStage::Presenting {
+                0.
+            } else {
+                8.
+            }))
             .border_b_1()
             .border_color(rgb(p.border))
             .flex()
@@ -795,6 +889,19 @@ impl Render for Presenter {
             _ => 3,
         });
         let browser_id = self.data.browser.as_ref().map(|data| data.browser.id);
+        let browser_view = self.data.browser.as_ref().map(|data| data.view);
+        let outline_count = self
+            .data
+            .browser
+            .as_ref()
+            .map_or(0, |data| data.outline.len());
+        if self.browser_outline_focus.len() != outline_count {
+            self.browser_outline_focus = (0..outline_count).map(|_| cx.focus_handle()).collect();
+            self.browser_outline_anchors = (0..outline_count)
+                .map(|_| gpui::ScrollAnchor::for_handle(self.browser_outline_scroll.clone()))
+                .collect();
+            self.had_outline_focus = None;
+        }
         if browser_id != self.had_browser {
             // Thumbnail indexes acquire a new page meaning across browser identities.
             // Retire their rollback images before syncing any replacement frames.
@@ -848,15 +955,22 @@ impl Render for Presenter {
             window.set_window_title(&format!("{filename} — {stage_label} — FerroStage"));
         }
         let layout_open = self.data.layout_menu.is_some();
-        let surface_open = modal.is_some() || self.data.browser.is_some() || layout_open;
+        let surface_open = modal.is_some()
+            || self.data.browser.is_some()
+            || layout_open
+            || self.data.utility_menu.is_some();
         if surface_open && !self.had_modal {
-            self.return_focus = if layout_open {
+            self.return_focus = if let Some(tools) = self.data.utility_menu {
+                Some(self.utility_trigger_focus[usize::from(tools)].clone())
+            } else if layout_open {
                 Some(self.layout_trigger_focus.clone())
             } else {
                 window.focused(cx)
             };
             window.focus(
-                if layout_open {
+                if self.data.utility_menu.is_some() {
+                    &self.utility_focus[0]
+                } else if layout_open {
                     &self.layout_row_focus
                         [self.data.layout_menu.as_ref().unwrap().selected_layout()]
                 } else if self.data.browser.is_some() {
@@ -875,14 +989,39 @@ impl Render for Presenter {
                 self.return_focus = Some(self.layout_trigger_focus.clone());
                 window.focus(&self.layout_row_focus[menu.selected_layout()], cx);
             } else if self.data.browser.is_some() {
-                self.return_focus = Some(self.progress_focus.clone());
+                if self.had_browser.is_none() {
+                    self.return_focus = Some(self.progress_focus.clone());
+                }
                 window.focus(&self.number_focus, cx);
             } else {
                 window.focus(&self.modal_focus, cx);
             }
         }
         self.had_layout_menu = layout_open;
+        if browser_view == Some(crate::workbench::BrowserView::Outline)
+            && (self.had_browser_view != browser_view || self.had_browser.is_none())
+            && let Some(data) = &self.data.browser
+            && let Some(index) = data
+                .outline
+                .iter()
+                .position(|entry| Some(entry.id) == data.current_outline)
+                .or_else(|| data.outline.iter().position(|entry| entry.issue.is_none()))
+        {
+            window.focus(&self.browser_outline_focus[index], cx);
+            self.browser_outline_anchors[index].scroll_to(window, cx);
+        }
+        self.had_browser_view = browser_view;
         self.had_browser = browser_id;
+        let outline_focus = self
+            .browser_outline_focus
+            .iter()
+            .position(|focus| focus.is_focused(window));
+        if outline_focus != self.had_outline_focus {
+            self.had_outline_focus = outline_focus;
+            if let Some(index) = outline_focus {
+                self.browser_outline_anchors[index].scroll_to(window, cx);
+            }
+        }
         let focused_tile = browser_id.and_then(|_| {
             self.browser_tile_focus
                 .iter()
@@ -920,7 +1059,8 @@ impl Render for Presenter {
                 }
                 if let Some(presenter) = presenter.upgrade() {
                     let presenter = presenter.read(cx);
-                    let fallback = if presenter.data.browser.is_some()
+                    let fallback = if presenter.data.utility_menu.is_some()
+                        || presenter.data.browser.is_some()
                         || presenter.data.layout_menu.is_some()
                     {
                         presenter.contextual_focus.clone()
@@ -977,7 +1117,10 @@ impl Render for Presenter {
                 .size_full(),
             )
             .capture_key_down(cx.listener(|this, event: &gpui::KeyDownEvent, window, cx| {
-                if this.layout_menu_key(event, window, cx) {
+                if this.utility_menu_key(event, window, cx)
+                    || this.layout_menu_key(event, window, cx)
+                    || this.outline_key(event, window, cx)
+                {
                     cx.stop_propagation();
                     return;
                 }
@@ -1047,7 +1190,11 @@ impl Render for Presenter {
                 .id("presenter-content")
                 .flex_1()
                 .min_h_0()
-                .p(px(12.))
+                .p(px(if stage == SessionStage::Presenting {
+                    6.
+                } else {
+                    12.
+                }))
                 .gap(px(8.))
                 .flex()
                 .flex_col()
@@ -1153,6 +1300,17 @@ impl Render for Presenter {
                     self.layout_menu_panel(p, window),
                     self.layout_anchor.get(),
                     gpui::Anchor::BottomRight,
+                ))
+            })
+            .when_some(self.data.utility_menu, |view, tools| {
+                view.child(self.contextual_host(
+                    self.utility_menu_panel(p),
+                    self.utility_anchor[usize::from(tools)].get(),
+                    if tools {
+                        gpui::Anchor::BottomRight
+                    } else {
+                        gpui::Anchor::TopRight
+                    },
                 ))
             })
             .into_any_element()

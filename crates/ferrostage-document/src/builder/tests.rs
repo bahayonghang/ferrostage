@@ -19,8 +19,10 @@ fn input(labels: &[Option<&str>], w: f32, h: f32) -> (DocumentMetadata, Document
                 .collect(),
         },
         DocumentStructure {
+            outline: Default::default(),
             pages: (0..labels.len())
                 .map(|i| PageStructure {
+                    presentation: Default::default(),
                     page: PhysicalPage(i),
                     geometry: PageGeometry {
                         bounds: [0.0, 0.0, w, h],
@@ -32,6 +34,189 @@ fn input(labels: &[Option<&str>], w: f32, h: f32) -> (DocumentMetadata, Document
             diagnostics: vec![],
         },
     )
+}
+#[test]
+fn presentation_metadata_follows_content_steps_and_never_independent_notes() {
+    let (metadata, mut structure) = input(
+        &[
+            Some("A"),
+            Some("notes:A"),
+            Some("A"),
+            Some("notes:A"),
+            Some("B"),
+        ],
+        320.,
+        180.,
+    );
+    for page in &mut structure.pages {
+        page.presentation.dwell_seconds = Some(page.page.0 as f64);
+    }
+    let document = LoadedDocument::load(&metadata, &structure).unwrap();
+    assert_eq!(
+        document
+            .page_presentation(PhysicalPage(0))
+            .unwrap()
+            .dwell_seconds,
+        Some(0.)
+    );
+    assert_eq!(
+        document
+            .page_presentation(PhysicalPage(2))
+            .unwrap()
+            .dwell_seconds,
+        Some(2.)
+    );
+    assert_eq!(
+        document
+            .page_presentation(PhysicalPage(4))
+            .unwrap()
+            .dwell_seconds,
+        Some(4.)
+    );
+    assert_eq!(document.page_presentation(PhysicalPage(1)), None);
+    assert_eq!(document.page_presentation(PhysicalPage(3)), None);
+    assert_eq!(document.page_presentation(PhysicalPage(999)), None);
+}
+
+fn bookmarks(
+    targets: &[(Option<usize>, u8, Option<ferrostage_pdf::PdfOutlineIssue>)],
+) -> ferrostage_pdf::PdfOutline {
+    ferrostage_pdf::PdfOutline {
+        entries: targets
+            .iter()
+            .enumerate()
+            .map(
+                |(id, &(page, depth, issue))| ferrostage_pdf::PdfOutlineEntry {
+                    id,
+                    parent: (depth == 2).then_some(0),
+                    depth,
+                    title: Some(format!("section {id}")),
+                    page: page.map(PhysicalPage),
+                    issue,
+                },
+            )
+            .collect(),
+        partial: false,
+    }
+}
+
+#[test]
+fn outline_numbers_actual_content_steps_with_irregular_notes_and_overlays() {
+    let (metadata, mut structure) = input(
+        &[
+            Some("notes:orphan"),
+            Some("A"),
+            Some("notes:A"),
+            Some("notes:A"),
+            Some("A"),
+            Some("B"),
+            Some("notes:B"),
+            None,
+        ],
+        320.,
+        180.,
+    );
+    structure.outline = bookmarks(&[
+        (Some(0), 1, None),
+        (Some(1), 1, None),
+        (Some(2), 2, None),
+        (Some(4), 2, None),
+        (Some(5), 1, None),
+        (Some(7), 2, None),
+        (Some(999), 1, None),
+        (None, 2, Some(ferrostage_pdf::PdfOutlineIssue::External)),
+    ]);
+    structure.outline.partial = true;
+    structure.outline.entries[0].title = None;
+    let document = LoadedDocument::load(&metadata, &structure).unwrap();
+    assert_eq!(document.slide_map.steps(), [1, 4, 5, 7].map(PhysicalPage));
+    assert_eq!(document.slide_map.groups().len(), 3);
+    assert_eq!(
+        document
+            .outline
+            .iter()
+            .map(|e| e.content_number)
+            .collect::<Vec<_>>(),
+        [None, Some(1), None, Some(2), Some(3), Some(4), None, None]
+    );
+    assert_eq!(document.outline[0].issue, Some(OutlineIssue::Notes));
+    assert_eq!(document.outline[0].title, None);
+    assert_eq!(document.outline[2].issue, Some(OutlineIssue::Notes));
+    assert_eq!(
+        document.outline[2].page,
+        Some(PhysicalPage(2)),
+        "never redirect to the notes owner"
+    );
+    assert_eq!(document.outline[6].issue, Some(OutlineIssue::Unavailable));
+    assert_eq!(document.outline[7].issue, Some(OutlineIssue::External));
+    assert_eq!(
+        document.outline[3].parent,
+        Some(0),
+        "disabled parents retain valid children"
+    );
+    assert!(document.outline_partial);
+}
+
+#[test]
+fn outline_reconfiguration_and_reload_rebuild_from_new_structure_and_options() {
+    let (metadata, mut structure) = input(&[Some("A"), Some("notes:A"), Some("B")], 320., 180.);
+    structure.outline = bookmarks(&[(Some(1), 1, None), (Some(2), 2, None)]);
+    let old = LoadedDocument::load(&metadata, &structure).unwrap();
+    assert_eq!(old.outline[0].issue, Some(OutlineIssue::Notes));
+    assert_eq!(old.outline[1].content_number, Some(2));
+    let overrides = DocumentOverrides {
+        identify_independent_notes: false,
+        physical_pages: true,
+        ..old.overrides
+    };
+    let changed = LoadedDocument::build(&metadata, &structure, overrides).unwrap();
+    assert_eq!(changed.slide_map.steps(), [0, 1, 2].map(PhysicalPage));
+    assert_eq!(changed.outline[0].issue, None);
+    assert_eq!(changed.outline[0].content_number, Some(2));
+    assert_eq!(changed.outline[1].content_number, Some(3));
+    structure.outline = bookmarks(&[(Some(0), 1, None)]);
+    let reloaded = changed.reload(&metadata, &structure).unwrap();
+    assert_eq!(reloaded.overrides, overrides);
+    assert_eq!(reloaded.outline.len(), 1);
+    assert_eq!(reloaded.outline[0].content_number, Some(1));
+    let plain = LoadedDocument::load(&metadata, &structure).unwrap();
+    assert_eq!(plain.outline[0].content_number, Some(1));
+    structure.outline = Default::default();
+    assert!(
+        plain
+            .reload(&metadata, &structure)
+            .unwrap()
+            .outline
+            .is_empty()
+    );
+}
+
+#[test]
+fn current_outline_uses_target_then_depth_then_source_order_without_reordering() {
+    let (metadata, mut structure) = input(&[None; 6], 320., 180.);
+    structure.outline = bookmarks(&[
+        (Some(1), 1, None),
+        (Some(4), 1, None),
+        (Some(2), 1, None),
+        (Some(2), 2, None),
+        (Some(2), 2, None),
+        (
+            Some(5),
+            2,
+            Some(ferrostage_pdf::PdfOutlineIssue::Unavailable),
+        ),
+    ]);
+    let document = LoadedDocument::load(&metadata, &structure).unwrap();
+    assert_eq!(document.current_outline_entry(PhysicalPage(0)), None);
+    assert_eq!(document.current_outline_entry(PhysicalPage(1)), Some(0));
+    assert_eq!(document.current_outline_entry(PhysicalPage(2)), Some(3));
+    assert_eq!(document.current_outline_entry(PhysicalPage(3)), Some(3));
+    assert_eq!(document.current_outline_entry(PhysicalPage(4)), Some(1));
+    assert_eq!(document.current_outline_entry(PhysicalPage(5)), Some(1));
+    assert_eq!(
+        document.outline.iter().map(|e| e.id).collect::<Vec<_>>(),
+        [0, 1, 2, 3, 4, 5]
+    );
 }
 #[test]
 fn reload_maps_unique_label_ordinal_and_ambiguous_physical_content() {

@@ -47,6 +47,27 @@ fn same(a: &BgraFrame, b: &BgraFrame) -> bool {
     a.pixels_bgra().as_ptr() == b.pixels_bgra().as_ptr()
 }
 impl<K: Copy + PartialEq> TextureCache<K> {
+    pub(crate) fn image(&self, key: K) -> Option<(BgraFrame, Arc<RenderImage>)> {
+        self.slots
+            .iter()
+            .find(|s| s.key == key)
+            .and_then(|s| s.committed.as_ref())
+            .map(|i| (i.frame.clone(), i.image.clone()))
+    }
+    pub(crate) fn discard(&mut self, key: K, cx: &mut App) {
+        if let Some(index) = self.slots.iter().position(|s| s.key == key)
+            && let Some(image) = self.slots.remove(index).committed
+        {
+            cx.drop_image(image.image, None);
+        }
+    }
+    /// Transfer the existing atlas owner; no upload or additional allocation.
+    pub(crate) fn rename(&mut self, from: K, to: K, cx: &mut App) {
+        self.discard(to, cx);
+        if let Some(slot) = self.slots.iter_mut().find(|s| s.key == from) {
+            slot.key = to;
+        }
+    }
     /// Half is settled capacity; half is swap headroom. A rejected budget
     /// keeps its previous effective value and cannot authorize new allocations.
     pub fn sync(

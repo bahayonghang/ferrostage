@@ -65,6 +65,9 @@ pub(crate) struct PageBrowser {
 
 #[derive(Clone, Debug)]
 pub(crate) enum ContextualSurface {
+    PresenterMenu {
+        tools: bool,
+    },
     PageBrowser(PageBrowser),
     LayoutNavigation {
         id: u64,

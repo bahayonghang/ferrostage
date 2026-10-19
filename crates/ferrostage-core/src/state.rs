@@ -173,6 +173,7 @@ impl PresentationState {
     #[must_use]
     pub fn audience_snapshot(&self) -> AudienceProjectionSnapshot {
         AudienceProjectionSnapshot {
+            playback: None,
             staging: None,
             stage: if self.stage == SessionStage::Presenting {
                 AudienceStage::Live

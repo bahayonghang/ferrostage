@@ -1,0 +1,205 @@
+{
+  "sha256": "8e40489ef4fe594585b19e64c20fd22e958aeb94b801e4b5a7ad7016c59dedd9",
+  "labels": [
+    "1",
+    "notes:1",
+    "1",
+    "notes:1",
+    "notes:1",
+    "2",
+    "notes:2",
+    "2",
+    "notes:2",
+    "2",
+    "notes:2",
+    "3",
+    "notes:3",
+    "3",
+    "notes:3",
+    "3",
+    "notes:3",
+    "4",
+    "notes:4",
+    "4",
+    "notes:4",
+    "4",
+    "notes:4",
+    "4",
+    "notes:4",
+    "5",
+    "notes:5",
+    "5",
+    "notes:5",
+    "5",
+    "notes:5",
+    "6",
+    "notes:6"
+  ],
+  "pages": [
+    {
+      "page": 1,
+      "dwell": null,
+      "text": "Pause: two steps\nPUBLIC-PAUSE-A\nPUBLIC-PAUSE-B\nFerroStage overlay fixture: 1"
+    },
+    {
+      "page": 2,
+      "dwell": null,
+      "text": "PRIVATE-PAUSE-1"
+    },
+    {
+      "page": 3,
+      "dwell": null,
+      "text": "Pause: two steps\nPUBLIC-PAUSE-A\nPUBLIC-PAUSE-B\nFerroStage overlay fixture: 1"
+    },
+    {
+      "page": 4,
+      "dwell": null,
+      "text": "PRIVATE-PAUSE-2"
+    },
+    {
+      "page": 5,
+      "dwell": null,
+      "text": "PRIVATE-EXTRA-NOTE-FOR-LAST-PAUSE-STEP"
+    },
+    {
+      "page": 6,
+      "dwell": null,
+      "text": "Overlay primitives: three steps\nPUBLIC-ONLY-1\nPUBLIC-UNCOVER-2 PUBLIC-VISIBLE-3 PUBLIC-ONSLIDE-2\nPUBLIC-ALT-NO\nPUBLIC-TEMPORAL-BEFORE\nFerroStage overlay fixture: 2"
+    },
+    {
+      "page": 7,
+      "dwell": null,
+      "text": "PRIVATE-PRIMITIVES-1"
+    },
+    {
+      "page": 8,
+      "dwell": null,
+      "text": "Overlay primitives: three steps\nPUBLIC-UNCOVER-2\nPUBLIC-VISIBLE-3\nPUBLIC-ONSLIDE-2\nPUBLIC-ALT-YES\nPUBLIC-TEMPORAL-DURING\nFerroStage overlay fixture: 2"
+    },
+    {
+      "page": 9,
+      "dwell": null,
+      "text": "PRIVATE-PRIMITIVES-2"
+    },
+    {
+      "page": 10,
+      "dwell": null,
+      "text": "Overlay primitives: three steps\nPUBLIC-UNCOVER-2 PUBLIC-VISIBLE-3 PUBLIC-ONSLIDE-2\nPUBLIC-ALT-NO\nPUBLIC-TEMPORAL-AFTER\nFerroStage overlay fixture: 2"
+    },
+    {
+      "page": 11,
+      "dwell": null,
+      "text": "PRIVATE-PRIMITIVES-3"
+    },
+    {
+      "page": 12,
+      "dwell": null,
+      "text": "Incremental list: three steps\n▶ PUBLIC-LIST-1\n▶ PUBLIC-LIST-2\n▶ PUBLIC-LIST-3\nFerroStage overlay fixture: 3"
+    },
+    {
+      "page": 13,
+      "dwell": null,
+      "text": "PRIVATE-INCREMENTAL-LIST"
+    },
+    {
+      "page": 14,
+      "dwell": null,
+      "text": "Incremental list: three steps\n▶ PUBLIC-LIST-1\n▶ PUBLIC-LIST-2\n▶ PUBLIC-LIST-3\nFerroStage overlay fixture: 3"
+    },
+    {
+      "page": 15,
+      "dwell": null,
+      "text": "PRIVATE-INCREMENTAL-LIST"
+    },
+    {
+      "page": 16,
+      "dwell": null,
+      "text": "Incremental list: three steps\n▶ PUBLIC-LIST-1\n▶ PUBLIC-LIST-2\n▶ PUBLIC-LIST-3\nFerroStage overlay fixture: 3"
+    },
+    {
+      "page": 17,
+      "dwell": null,
+      "text": "PRIVATE-INCREMENTAL-LIST"
+    },
+    {
+      "page": 18,
+      "dwell": 0,
+      "text": "Built-in animate and animatevalue: four steps\nPUBLIC-ANIMATE-VALUE: 20\nFerroStage overlay fixture: 4"
+    },
+    {
+      "page": 19,
+      "dwell": 0,
+      "text": "PRIVATE-ANIMATION-NOTE"
+    },
+    {
+      "page": 20,
+      "dwell": 0,
+      "text": "Built-in animate and animatevalue: four steps\nPUBLIC-ANIMATE-VALUE: 60\nFerroStage overlay fixture: 4"
+    },
+    {
+      "page": 21,
+      "dwell": 0,
+      "text": "PRIVATE-ANIMATION-NOTE"
+    },
+    {
+      "page": 22,
+      "dwell": 0,
+      "text": "Built-in animate and animatevalue: four steps\nPUBLIC-ANIMATE-VALUE: 100\nFerroStage overlay fixture: 4"
+    },
+    {
+      "page": 23,
+      "dwell": 0,
+      "text": "PRIVATE-ANIMATION-NOTE"
+    },
+    {
+      "page": 24,
+      "dwell": null,
+      "text": "Built-in animate and animatevalue: four steps\nPUBLIC-ANIMATE-VALUE: 140\nFerroStage overlay fixture: 4"
+    },
+    {
+      "page": 25,
+      "dwell": null,
+      "text": "PRIVATE-ANIMATION-NOTE"
+    },
+    {
+      "page": 26,
+      "dwell": 1.5,
+      "text": "Authored timing: positive, zero, then manual\nPUBLIC-DWELL-POSITIVE: 1.5 seconds\nFerroStage overlay fixture: 5"
+    },
+    {
+      "page": 27,
+      "dwell": 1.5,
+      "text": "PRIVATE-DWELL-1"
+    },
+    {
+      "page": 28,
+      "dwell": 0,
+      "text": "Authored timing: positive, zero, then manual\nPUBLIC-DWELL-ZERO: wait for fade to settle\nFerroStage overlay fixture: 5"
+    },
+    {
+      "page": 29,
+      "dwell": 0,
+      "text": "PRIVATE-DWELL-2"
+    },
+    {
+      "page": 30,
+      "dwell": null,
+      "text": "Authored timing: positive, zero, then manual\nPUBLIC-DWELL-MANUAL: no duration, stay here\nFerroStage overlay fixture: 5"
+    },
+    {
+      "page": 31,
+      "dwell": null,
+      "text": "PRIVATE-DWELL-3"
+    },
+    {
+      "page": 32,
+      "dwell": 0,
+      "text": "Final timed page: stop at end\nPUBLIC-FINAL-STABLE\nFerroStage overlay fixture: 6"
+    },
+    {
+      "page": 33,
+      "dwell": 0,
+      "text": "PRIVATE-FINAL-NOTE"
+    }
+  ]
+}

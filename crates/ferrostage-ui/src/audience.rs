@@ -6,6 +6,20 @@ use gpui::{
     canvas, div, prelude::*, rgb,
 };
 use std::{cell::RefCell, rc::Rc};
+mod playback;
+use playback::Playback;
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum PlaybackPhase {
+    FirstVisible,
+    Settled,
+}
+#[derive(Clone, Copy, Debug)]
+pub(crate) struct PlaybackEvent {
+    pub identity: ferrostage_core::PlaybackIdentity,
+    pub phase: PlaybackPhase,
+    pub at: std::time::Instant,
+}
 
 pub(crate) struct RenderStatus(pub Option<String>);
 pub(crate) struct StagingStatus(pub u64, pub Result<(), String>);
@@ -13,16 +27,20 @@ pub(crate) struct AdvanceRequested;
 #[derive(Clone, Copy, PartialEq)]
 enum Surface {
     Page,
+    Outgoing,
+    Difference,
     Media(u64),
 }
 pub(crate) struct Audience {
     pub snapshot: Entity<AudienceProjectionSnapshot>,
     textures: Rc<RefCell<TextureCache<Surface>>>,
     reported_error: Rc<RefCell<Option<String>>>,
+    playback: Rc<RefCell<Playback>>,
 }
 impl EventEmitter<RenderStatus> for Audience {}
 impl EventEmitter<StagingStatus> for Audience {}
 impl EventEmitter<AdvanceRequested> for Audience {}
+impl EventEmitter<PlaybackEvent> for Audience {}
 impl Audience {
     pub(crate) fn staged(&self, attempt: u64) -> bool {
         self.textures.borrow().staged(attempt)
@@ -78,6 +96,7 @@ impl Audience {
             snapshot,
             textures: Default::default(),
             reported_error: Default::default(),
+            playback: Default::default(),
         }
     }
 }
@@ -110,7 +129,7 @@ impl Render for Audience {
         } else {
             0xffffff
         };
-        let frames = snapshot
+        let mut frames = snapshot
             .visual
             .as_ref()
             .map(|v| {
@@ -127,7 +146,15 @@ impl Render for Audience {
             || self.textures.borrow().effective_budget(),
             |v| v.texture_budget_bytes,
         );
-        let active = std::iter::once(Surface::Page)
+        self.playback.borrow_mut().sync(
+            &snapshot,
+            &mut self.textures.borrow_mut(),
+            &mut frames,
+            cx,
+        );
+        let active = [Surface::Outgoing, Surface::Difference, Surface::Page]
+            .into_iter()
+            .filter(|key| *key == Surface::Page || frames.iter().any(|(k, _)| k == key))
             .chain(
                 frames
                     .iter()
@@ -138,7 +165,10 @@ impl Render for Audience {
             .borrow_mut()
             .sync(&frames, &active, budget, window, cx);
         report(
-            self.textures.borrow().error(),
+            self.playback
+                .borrow()
+                .error()
+                .or_else(|| self.textures.borrow().error()),
             &self.reported_error,
             cx.weak_entity(),
             cx,
@@ -149,6 +179,17 @@ impl Render for Audience {
         let staging = snapshot.staging.clone();
         let stage_cache = self.textures.clone();
         let stage_view = cx.weak_entity();
+        let animated = self.playback.borrow().active();
+        let animation = animated.then(|| {
+            playback::element(
+                self.playback.clone(),
+                self.textures.clone(),
+                snapshot.clone(),
+                cx.weak_entity(),
+                self.reported_error.clone(),
+            )
+        });
+        let playback = self.playback.clone();
         div()
             .id("audience-playback-surface")
             .debug_selector(|| "audience-playback-surface".into())
@@ -195,11 +236,14 @@ impl Render for Audience {
                 .size_full(),
             )
             .when(visible, |view_element| {
+                if let Some(animation) = animation {
+                    return view_element.child(animation);
+                }
                 view_element.child(
                     canvas(
                         |_, _, _| (),
                         move |bounds, _, window, cx| {
-                            crate::slide_surface::composite(
+                            let painted = crate::slide_surface::composite(
                                 &mut textures.borrow_mut(),
                                 (Surface::Page, bounds),
                                 Some(&snapshot),
@@ -214,7 +258,20 @@ impl Render for Audience {
                                 window,
                                 cx,
                             );
-                            report(textures.borrow().error(), &reported, view, cx);
+                            if painted {
+                                playback
+                                    .borrow_mut()
+                                    .painted(&snapshot, true, view.clone(), cx);
+                            }
+                            report(
+                                playback
+                                    .borrow()
+                                    .error()
+                                    .or_else(|| textures.borrow().error()),
+                                &reported,
+                                view,
+                                cx,
+                            );
                         },
                     )
                     .size_full(),

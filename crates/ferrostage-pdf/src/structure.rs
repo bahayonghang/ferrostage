@@ -1,18 +1,24 @@
 use crate::PdfStructureError;
 use ferrostage_core::{NormalizedRect, PhysicalPage};
 use lopdf::{Dictionary, Document, Object};
+mod active_content;
 mod geometry;
 mod media;
+mod outline;
+mod presentation;
 mod source;
 pub use geometry::PageGeometry;
+pub use outline::{PdfOutline, PdfOutlineEntry, PdfOutlineIssue};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct DocumentStructure {
     pub pages: Vec<PageStructure>,
     pub diagnostics: Vec<StructureDiagnostic>,
+    pub outline: PdfOutline,
 }
 #[derive(Clone, Debug, PartialEq)]
 pub struct PageStructure {
+    pub presentation: ferrostage_core::PagePresentation,
     pub page: PhysicalPage,
     pub geometry: PageGeometry,
     pub media: Vec<MediaAnnotation>,
@@ -74,13 +80,16 @@ pub fn extract_structure(bytes: &[u8]) -> Result<DocumentStructure, PdfStructure
     let mut result = DocumentStructure {
         pages: Vec::new(),
         diagnostics: Vec::new(),
+        outline: outline::extract(&document),
     };
+    active_content::document(&document, &mut result.diagnostics);
     for (index, (_, id)) in document.get_pages().into_iter().enumerate() {
         let page = PhysicalPage(index);
         let dictionary = document
             .get_dictionary(id)
             .map_err(|_| PdfStructureError::Unreadable)?;
         let geometry = geometry::extract(&document, id)?;
+        active_content::page(&document, page, dictionary, &mut result.diagnostics);
         let mut entries = Vec::new();
         if let Ok(annots) = dictionary.get(b"Annots") {
             if let Some(array) = resolve(&document, annots).and_then(|o| o.as_array().ok()) {
@@ -112,6 +121,15 @@ pub fn extract_structure(bytes: &[u8]) -> Result<DocumentStructure, PdfStructure
             }
         }
         result.pages.push(PageStructure {
+            presentation: presentation::extract(
+                &mut Parser {
+                    document: &document,
+                    page,
+                    annotation: None,
+                    diagnostics: &mut result.diagnostics,
+                },
+                dictionary,
+            ),
             page,
             geometry,
             media: entries,

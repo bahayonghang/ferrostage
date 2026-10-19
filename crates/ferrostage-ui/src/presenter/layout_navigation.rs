@@ -81,6 +81,17 @@ pub(super) fn document_warnings(shell: &Shell) -> Vec<String> {
         })
         .collect::<Vec<_>>();
     for diagnostic in &session.document.structure_diagnostics {
+        if diagnostic.field.ends_with("/ActiveContent") {
+            warnings.push(if diagnostic.field.starts_with("Document/") {
+                l.text("ln-warning-active-document").into()
+            } else {
+                l.format(
+                    "ln-warning-active-page",
+                    &[("page", (diagnostic.page.0 + 1).to_string())],
+                )
+            });
+            continue;
+        }
         use ferrostage_document::DiagnosticKind;
         let kind = match diagnostic.kind {
             DiagnosticKind::Missing => "ln-diagnostic-missing",

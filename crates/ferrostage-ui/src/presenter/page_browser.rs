@@ -1,7 +1,7 @@
 use super::*;
 use crate::{
     page_browser::PageBrowser,
-    workbench::{BrowserEntry, PageNumberMode, Surface},
+    workbench::{BrowserEntry, BrowserView, PageNumberMode, Surface},
 };
 
 pub(super) struct BrowserData {
@@ -11,6 +11,10 @@ pub(super) struct BrowserData {
     pub mode: PageNumberMode,
     pub target_context: String,
     pub failed_thumbnails: Vec<usize>,
+    pub view: BrowserView,
+    pub outline: Vec<ferrostage_document::OutlineEntry>,
+    pub outline_partial: bool,
+    pub current_outline: Option<usize>,
 }
 impl BrowserData {
     pub fn from_shell(shell: &Shell) -> Option<Self> {
@@ -47,11 +51,309 @@ impl BrowserData {
             captions,
             target_context,
             failed_thumbnails: shell.workbench.failed_thumbnails(),
+            view: shell.workbench.browser_view,
+            outline: shell
+                .workbench
+                .document
+                .as_ref()
+                .map(|s| s.document.outline.clone())
+                .unwrap_or_default(),
+            outline_partial: shell
+                .workbench
+                .document
+                .as_ref()
+                .is_some_and(|s| s.document.outline_partial),
+            current_outline: shell
+                .workbench
+                .document
+                .as_ref()
+                .and_then(|s| s.document.current_outline_entry(shell.state.current_page())),
         })
     }
 }
 
 impl Presenter {
+    pub(super) fn outline_key(
+        &self,
+        event: &gpui::KeyDownEvent,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) -> bool {
+        let Some(data) = self
+            .data
+            .browser
+            .as_ref()
+            .filter(|data| data.view == BrowserView::Outline)
+        else {
+            return false;
+        };
+        // The shared editor keeps its caret, selection and Home/End behavior.
+        if self.number_focus.is_focused(window) {
+            return false;
+        }
+        let current = self
+            .browser_outline_focus
+            .iter()
+            .position(|focus| focus.is_focused(window));
+        let enabled = data
+            .outline
+            .iter()
+            .enumerate()
+            .filter_map(|(index, entry)| {
+                (entry.issue.is_none() && entry.page.is_some() && entry.content_number.is_some())
+                    .then_some(index)
+            })
+            .collect::<Vec<_>>();
+        let key = event.keystroke.unparse();
+        if matches!(key.as_str(), "tab" | "shift-tab") {
+            if event.keystroke.modifiers.shift {
+                window.focus_prev(cx);
+            } else {
+                window.focus_next(cx);
+            }
+            return true;
+        }
+        if key == "escape" {
+            actions::dispatch(&self.shell, Intent::CloseContextual, cx);
+            return true;
+        }
+        let Some(current) = current else {
+            if matches!(key.as_str(), "enter" | "space") {
+                if !event.is_held {
+                    window.dispatch_action(Box::new(actions::ActivateButton), cx);
+                }
+                return true;
+            }
+            return false;
+        };
+        let position = enabled
+            .iter()
+            .position(|index| *index == current)
+            .unwrap_or(0);
+        let next = match key.as_str() {
+            "up" => position
+                .checked_sub(1)
+                .and_then(|i| enabled.get(i).copied()),
+            "down" => enabled.get(position + 1).copied(),
+            "home" => enabled.first().copied(),
+            "end" => enabled.last().copied(),
+            "enter" | "space" => {
+                if !event.is_held && !self.data.busy && enabled.contains(&current) {
+                    actions::dispatch(
+                        &self.shell,
+                        Intent::BrowserOutlineJump {
+                            id: data.browser.id,
+                            entry_id: data.outline[current].id,
+                        },
+                        cx,
+                    );
+                }
+                None
+            }
+            "left" | "right" | "pageup" | "pagedown" => None,
+            _ => return false,
+        };
+        if let Some(index) = next {
+            window.focus(&self.browser_outline_focus[index], cx);
+            self.browser_outline_anchors[index].scroll_to(window, cx);
+        }
+        true
+    }
+
+    fn outline_list(&self, data: &BrowserData, p: Palette) -> gpui::AnyElement {
+        let l = self.locale;
+        let page_width = self.ui_text_size(142.);
+        let mut rows = div().flex().flex_col();
+        for (index, entry) in data.outline.iter().enumerate() {
+            let title = entry.title.clone().unwrap_or_else(|| {
+                l.format(
+                    "pb-outline-untitled",
+                    &[("number", (index + 1).to_string())],
+                )
+            });
+            let current = data.current_outline == Some(entry.id);
+            let reason = entry.issue.map(|issue| {
+                l.text(match issue {
+                    ferrostage_document::OutlineIssue::Notes => "pb-notes-page",
+                    ferrostage_document::OutlineIssue::Unavailable => "pb-outline-unavailable",
+                    ferrostage_document::OutlineIssue::External => "pb-outline-external",
+                })
+            });
+            let enabled = !self.data.busy
+                && entry.issue.is_none()
+                && entry.page.is_some()
+                && entry.content_number.is_some();
+            let pages = if let Some(reason) = reason {
+                reason.to_owned()
+            } else if let (Some(content), Some(page)) = (entry.content_number, entry.page) {
+                l.format(
+                    "pb-outline-pages",
+                    &[
+                        ("content", content.to_string()),
+                        ("page", (page.0 + 1).to_string()),
+                    ],
+                )
+            } else {
+                l.text("pb-outline-unavailable").to_owned()
+            };
+            let label = format!(
+                "{title} · {pages}{}",
+                if current {
+                    format!(" · {}", l.text("pb-outline-current"))
+                } else {
+                    String::new()
+                }
+            );
+            rows = rows.child(
+                self.activation_target(
+                    format!("outline-{}", entry.id),
+                    label,
+                    enabled,
+                    Intent::BrowserOutlineJump {
+                        id: data.browser.id,
+                        entry_id: entry.id,
+                    },
+                    p,
+                )
+                .aria_selected(current)
+                .track_focus(&self.browser_outline_focus[index].clone().tab_stop(enabled))
+                .anchor_scroll(Some(self.browser_outline_anchors[index].clone()))
+                .flex_shrink_0()
+                .child(
+                    div()
+                        .id(SharedString::from(format!("outline-face-{}", entry.id)))
+                        .w_full()
+                        .min_w_0()
+                        .min_h(px(theme::CONTROL))
+                        .relative()
+                        .px(px(12.))
+                        .py(px(8.))
+                        .flex()
+                        .items_center()
+                        .gap(px(12.))
+                        .rounded(px(theme::RADIUS))
+                        .bg(rgb(if current { p.soft } else { p.card }))
+                        .when(enabled, |view| {
+                            view.hover(|s| s.bg(rgb(p.soft))).active(|s| s.top(px(1.)))
+                        })
+                        .child(
+                            div()
+                                .min_w_0()
+                                .flex_1()
+                                .flex()
+                                .flex_col()
+                                .gap(px(4.))
+                                .pl(px(if entry.depth == 2 { 24. } else { 0. }))
+                                .child(
+                                    div()
+                                        .id(SharedString::from(format!(
+                                            "outline-title-{}",
+                                            entry.id
+                                        )))
+                                        .debug_selector(|| format!("outline-title-{}", entry.id))
+                                        .whitespace_normal()
+                                        .text_size(px(self.ui_text_size(16.)))
+                                        .font_weight(if entry.depth == 1 {
+                                            gpui::FontWeight::SEMIBOLD
+                                        } else {
+                                            gpui::FontWeight::NORMAL
+                                        })
+                                        .text_color(rgb(if reason.is_some() {
+                                            p.muted
+                                        } else {
+                                            p.body
+                                        }))
+                                        .child(title),
+                                )
+                                .when(current, |view| {
+                                    view.child(
+                                        div()
+                                            .text_size(px(self.ui_text_size(12.)))
+                                            .text_color(rgb(p.focus))
+                                            .child(l.text("pb-outline-current")),
+                                    )
+                                }),
+                        )
+                        .child(
+                            div()
+                                .w(px(page_width))
+                                .flex_shrink_0()
+                                .text_right()
+                                .whitespace_normal()
+                                .text_size(px(self.ui_text_size(12.)))
+                                .text_color(rgb(p.muted))
+                                .child(pages),
+                        ),
+                ),
+            );
+        }
+        div()
+            .flex_1()
+            .min_h_0()
+            .flex()
+            .flex_col()
+            .gap(px(8.))
+            .when(data.outline_partial, |view| {
+                view.child(
+                    div()
+                        .flex_shrink_0()
+                        .text_size(px(self.ui_text_size(12.)))
+                        .text_color(rgb(p.warning))
+                        .child(l.text("pb-outline-partial")),
+                )
+            })
+            .child(
+                div()
+                    .flex()
+                    .items_center()
+                    .flex_shrink_0()
+                    .px(px(16.))
+                    .gap(px(12.))
+                    .text_size(px(self.ui_text_size(12.)))
+                    .text_color(rgb(p.muted))
+                    .child(div().flex_1().child(l.text("pb-outline-heading")))
+                    .child(
+                        div()
+                            .w(px(page_width))
+                            .text_right()
+                            .child(l.text("pb-outline-page-heading")),
+                    ),
+            )
+            .child(
+                div()
+                    .id("page-browser-outline")
+                    .debug_selector(|| "page-browser-outline".into())
+                    .flex_1()
+                    .min_h_0()
+                    .overflow_y_scroll()
+                    .track_scroll(&self.browser_outline_scroll)
+                    .child(rows)
+                    .when(data.outline.is_empty(), |view| {
+                        view.child(
+                            div()
+                                .p(px(16.))
+                                .text_color(rgb(p.muted))
+                                .child(l.text("pb-outline-empty")),
+                        )
+                    }),
+            )
+            .child(
+                div()
+                    .flex_shrink_0()
+                    .flex()
+                    .flex_wrap()
+                    .gap(px(12.))
+                    .text_size(px(self.ui_text_size(12.)))
+                    .text_color(rgb(p.muted))
+                    .child(l.format(
+                        "pb-outline-count",
+                        &[("count", data.outline.len().to_string())],
+                    ))
+                    .child(l.text("pb-outline-hint")),
+            )
+            .into_any_element()
+    }
+
     /// Shared contextual host: opaque child above an undimmed, input-occluding backdrop.
     /// The layout-menu child supplies its own content and measured trigger bounds.
     pub(super) fn contextual_host(
@@ -85,12 +387,19 @@ impl Presenter {
                 gpui::anchored()
                     .anchor(alignment)
                     .position(gpui::point(
-                        if alignment == gpui::Anchor::BottomRight {
+                        if matches!(
+                            alignment,
+                            gpui::Anchor::BottomRight | gpui::Anchor::TopRight
+                        ) {
                             anchor.right()
                         } else {
                             anchor.left()
                         },
-                        anchor.top() - px(8.),
+                        if alignment == gpui::Anchor::TopRight {
+                            anchor.bottom() + px(8.)
+                        } else {
+                            anchor.top() - px(8.)
+                        },
                     ))
                     .snap_to_window_with_margin(px(12.))
                     .child(content),
@@ -123,7 +432,7 @@ impl Presenter {
         let control_height = theme::CONTROL + (theme::FOCUS_WIDTH + theme::FOCUS_GAP) * 2.;
         let header_height = control_height.max(self.ui_text_size(32.) * 1.5);
         let mut chrome_height =
-            header_height + control_height * 4. + self.ui_text_size(20.) + 6. * 8. + 34.;
+            header_height + control_height * 5. + self.ui_text_size(20.) + 7. * 8. + 34.;
         if !wb.writable {
             chrome_height += self.ui_text_size(12.) * 1.5 + 8.;
         }
@@ -454,15 +763,43 @@ impl Presenter {
                     }))
                     .child(helper),
             )
-            .child(density.flex_shrink_0())
-            .when(!wb.writable, |view| {
-                view.child(
-                    div()
-                        .text_color(rgb(p.warning))
-                        .text_size(px(self.ui_text_size(12.)))
-                        .child(l.text("settings-readonly")),
-                )
+            .child(
+                div().flex().gap(px(8.)).flex_shrink_0().children(
+                    [
+                        (BrowserView::Thumbnails, "thumbnails", "pb-view-thumbnails"),
+                        (BrowserView::Outline, "outline", "pb-view-outline"),
+                    ]
+                    .into_iter()
+                    .map(|(view, id, label)| {
+                        self.button(
+                            format!("page-view-{id}"),
+                            l.text(label).into(),
+                            enabled,
+                            data.view == view,
+                            Intent::BrowserView {
+                                id: data.browser.id,
+                                view,
+                            },
+                            p,
+                        )
+                        .aria_selected(data.view == view)
+                    }),
+                ),
+            )
+            .when(data.view == BrowserView::Thumbnails, |view| {
+                view.child(density.flex_shrink_0())
             })
+            .when(
+                !wb.writable && data.view == BrowserView::Thumbnails,
+                |view| {
+                    view.child(
+                        div()
+                            .text_color(rgb(p.warning))
+                            .text_size(px(self.ui_text_size(12.)))
+                            .child(l.text("settings-readonly")),
+                    )
+                },
+            )
             .when(self.data.dirty, |view| {
                 view.child(
                     div()
@@ -493,26 +830,28 @@ impl Presenter {
                         )),
                 )
             })
-            .child(scroll)
-            .child(
-                div()
-                    .flex_shrink_0()
-                    .flex()
-                    .items_center()
-                    .gap(px(8.))
-                    .child(self.button(
-                        "grid-prev".into(),
-                        l.text("wb-earlier").into(),
-                        enabled && wb.grid_start > 0,
-                        false,
-                        Intent::GridMove(-(capacity as isize)),
-                        p,
-                    ))
-                    .child(
-                        div()
-                            .flex_1()
-                            .text_size(px(self.ui_text_size(12.)))
-                            .child(l.format(
+            .child(if data.view == BrowserView::Outline {
+                self.outline_list(data, p)
+            } else {
+                scroll.into_any_element()
+            })
+            .when(data.view == BrowserView::Thumbnails, |view| {
+                view.child(
+                    div()
+                        .flex_shrink_0()
+                        .flex()
+                        .items_center()
+                        .gap(px(8.))
+                        .child(self.button(
+                            "grid-prev".into(),
+                            l.text("wb-earlier").into(),
+                            enabled && wb.grid_start > 0,
+                            false,
+                            Intent::GridMove(-(capacity as isize)),
+                            p,
+                        ))
+                        .child(div().flex_1().text_size(px(self.ui_text_size(12.))).child(
+                            l.format(
                                 if data.mode == PageNumberMode::Content {
                                     "pb-range"
                                 } else {
@@ -530,17 +869,18 @@ impl Presenter {
                                     ("last", end.to_string()),
                                     ("total", data.entries.len().to_string()),
                                 ],
-                            )),
-                    )
-                    .child(self.button(
-                        "grid-next".into(),
-                        l.text("wb-later").into(),
-                        enabled && end < data.entries.len(),
-                        false,
-                        Intent::GridMove(capacity as isize),
-                        p,
-                    )),
-            )
+                            ),
+                        ))
+                        .child(self.button(
+                            "grid-next".into(),
+                            l.text("wb-later").into(),
+                            enabled && end < data.entries.len(),
+                            false,
+                            Intent::GridMove(capacity as isize),
+                            p,
+                        )),
+                )
+            })
             .into_any_element()
     }
 }

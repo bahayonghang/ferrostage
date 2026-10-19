@@ -14,6 +14,95 @@ pub(crate) struct PresenterStaging {
 
 #[cfg(all(test, feature = "test-support", feature = "pdfium"))]
 mod tests;
+#[cfg(all(test, feature = "test-support"))]
+mod playback_tests {
+    use super::*;
+
+    #[gpui::test]
+    fn timed_reload_worker_failure_latch_blocks_retained_pixels_until_recovery(
+        cx: &mut gpui::TestAppContext,
+    ) {
+        let (shell, _, audience) = crate::shell::tests::timed_fixture(cx);
+        shell.update(cx, |s, cx| {
+            crate::shell::tests::timed_frame(s, cx);
+            let old = s.snapshot.read(cx).playback.unwrap().identity;
+            s.invalidate_reload(true);
+            // A failed commit rollback has finished its transaction, but the
+            // worker generation remains unusable until explicit recovery.
+            s.reload.failed_worker = true;
+            s.reload.attempted = Some(s.reload.attempt);
+            s.publish(false, cx);
+            assert!(s.reload_blocks_render());
+            assert!(s.snapshot.read(cx).visual.is_some());
+            assert!(s.snapshot.read(cx).playback.is_none());
+            for phase in [
+                crate::audience::PlaybackPhase::FirstVisible,
+                crate::audience::PlaybackPhase::Settled,
+            ] {
+                s.playback_event(
+                    audience.window_id(),
+                    crate::audience::PlaybackEvent {
+                        identity: old,
+                        phase,
+                        at: Instant::now(),
+                    },
+                    cx,
+                );
+            }
+            s.poll_timed_playback(cx);
+            assert_eq!(s.state.current_page(), PhysicalPage(0));
+            s.reload.failed_worker = false;
+            s.publish(false, cx);
+            assert_ne!(s.snapshot.read(cx).playback.unwrap().identity, old);
+            s.poll_timed_playback(cx);
+            assert_eq!(s.state.current_page(), PhysicalPage(0));
+        });
+    }
+
+    #[gpui::test]
+    fn timed_reload_preflight_rejects_paint_events_until_a_fresh_snapshot(
+        cx: &mut gpui::TestAppContext,
+    ) {
+        let (shell, _, audience) = crate::shell::tests::timed_fixture(cx);
+        shell.update(cx, |s, cx| {
+            crate::shell::tests::timed_frame(s, cx);
+            let old = s.snapshot.read(cx).playback.unwrap().identity;
+            s.invalidate_reload(true);
+            s.reload.awaiting_bytes = true;
+            s.publish(false, cx);
+            assert!(s.snapshot.read(cx).playback.is_none());
+            for phase in [
+                crate::audience::PlaybackPhase::FirstVisible,
+                crate::audience::PlaybackPhase::Settled,
+            ] {
+                s.playback_event(
+                    audience.window_id(),
+                    crate::audience::PlaybackEvent {
+                        identity: old,
+                        phase,
+                        at: Instant::now(),
+                    },
+                    cx,
+                );
+            }
+            s.poll_timed_playback(cx);
+            assert_eq!(s.state.current_page(), PhysicalPage(0));
+            s.reload.awaiting_bytes = false;
+            let (_sender, receiver) = mpsc::channel();
+            s.reload.parsing = Some((s.reload.attempt, receiver));
+            s.publish(false, cx);
+            assert!(s.snapshot.read(cx).playback.is_none());
+            // A rejected replacement may keep the old document, but must paint
+            // a fresh identity before it is eligible to advance again.
+            s.reload.parsing = None;
+            s.reload.attempted = Some(s.reload.attempt);
+            s.publish(false, cx);
+            assert_ne!(s.snapshot.read(cx).playback.unwrap().identity, old);
+            s.poll_timed_playback(cx);
+            assert_eq!(s.state.current_page(), PhysicalPage(0));
+        });
+    }
+}
 pub(super) struct Watch {
     _owner: ferrostage_platform::PdfWatcher,
     events: Receiver<ferrostage_platform::PdfWatchEvent>,
@@ -62,6 +151,7 @@ pub(super) struct Reload {
     watch: Option<Watch>,
     attempt: u64,
     watch_attempt: u64,
+    awaiting_bytes: bool,
     bytes: Option<Vec<u8>>,
     structure: Option<DocumentStructure>,
     parsing: Option<(u64, Receiver<Result<DocumentStructure, String>>)>,
@@ -162,9 +252,11 @@ impl Shell {
     }
     pub(super) fn install_pdf_watch(&mut self, next: Option<Watch>) {
         self.reload.watch = next;
+        self.reload.awaiting_bytes = false;
         self.invalidate_reload(true);
     }
     fn invalidate_reload(&mut self, discard_bytes: bool) {
+        self.invalidate_playback();
         self.reload.attempt += 1;
         if let Some(pending) = &mut self.reload.pending {
             pending.obsolete = true;
@@ -193,6 +285,13 @@ impl Shell {
     }
     pub(super) fn reload_busy(&self) -> bool {
         self.reload.pending.is_some()
+    }
+    pub(super) fn reload_blocks_playback(&self) -> bool {
+        self.reload.failed_worker
+            || self.reload.awaiting_bytes
+            || self.reload.parsing.is_some()
+            || self.reload.pending.is_some()
+            || (self.reload.bytes.is_some() && self.reload.attempted != Some(self.reload.attempt))
     }
     pub(crate) fn presenter_staging(&self) -> Option<PresenterStaging> {
         let pending = self.reload.pending.as_ref()?;
@@ -333,13 +432,18 @@ impl Shell {
                 ferrostage_platform::PdfWatchEvent::Invalidated(attempt) => {
                     self.reload.watch_attempt = attempt;
                     self.invalidate_reload(true);
+                    self.reload.awaiting_bytes = true;
                 }
                 ferrostage_platform::PdfWatchEvent::Ready { attempt, bytes }
                     if attempt == self.reload.watch_attempt =>
                 {
+                    self.reload.awaiting_bytes = false;
                     self.reload.bytes = Some(bytes);
                 }
-                ferrostage_platform::PdfWatchEvent::TimedOut(attempt) => {
+                ferrostage_platform::PdfWatchEvent::TimedOut(attempt)
+                    if attempt == self.reload.watch_attempt =>
+                {
+                    self.reload.awaiting_bytes = false;
                     tracing::debug!(
                         attempt,
                         "external replacement left active document unchanged"

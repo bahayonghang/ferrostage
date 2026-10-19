@@ -15,6 +15,11 @@ mod slide_map;
 mod snapshot;
 mod state;
 mod timer;
+mod transition;
+pub use transition::{
+    AudiencePlayback, PagePresentation, PageTransition, PlaybackIdentity, TransitionDimension,
+    TransitionDirection, TransitionMotion, TransitionStyle,
+};
 
 pub use command::PresentationCommand;
 pub use display::{MonitorId, MonitorRole};

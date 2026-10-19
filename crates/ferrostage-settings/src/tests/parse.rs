@@ -521,7 +521,7 @@ fn color_and_ratio_ranges_fall_back_one_leaf() {
     );
     assert_eq!(outcome.settings.pointer.pen_color_bgra, [1, 2, 3, 4]);
     assert_eq!(outcome.settings.pointer.highlighter_alpha, 0.5);
-    assert_eq!(outcome.settings.presenter.next_slide_ratio, 0.35);
+    assert_eq!(outcome.settings.presenter.next_slide_ratio, 0.40);
     assert_eq!(outcome.settings.presenter.notes_ratio, 0.4);
     assert_eq!(outcome.settings.presenter.grid_columns, 4);
     assert_eq!(outcome.settings.presenter.grid_visible_pages, 8);

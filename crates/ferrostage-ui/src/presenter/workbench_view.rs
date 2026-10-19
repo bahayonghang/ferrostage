@@ -12,8 +12,8 @@ pub(super) struct WorkbenchData {
     slots: Vec<crate::media_playback::SlotView>,
     pub(super) settings: ferrostage_settings::PresenterSettings,
     pointer: ferrostage_settings::PointerSettings,
-    tool: Tool,
-    grid: bool,
+    pub(super) tool: Tool,
+    browser_open: bool,
     pub(super) grid_start: usize,
     pub steps: Vec<ferrostage_core::PhysicalPage>,
     pub progress: String,
@@ -23,6 +23,8 @@ pub(super) struct WorkbenchData {
     clock: Option<String>,
     warning: u8,
     paused: bool,
+    timed: bool,
+    pub(super) autoplay_paused: bool,
     pub budget: usize,
     debug: Option<String>,
     pub(super) writable: bool,
@@ -121,7 +123,7 @@ impl WorkbenchData {
             settings: shell.settings.settings.presenter.clone(),
             pointer: shell.settings.settings.pointer.clone(),
             tool: shell.workbench.tool,
-            grid: shell.workbench.grid,
+            browser_open: shell.browser().is_some(),
             grid_start: shell.workbench.grid_start,
             steps: session
                 .map(|s| s.document.slide_map.steps().to_vec())
@@ -159,6 +161,8 @@ impl WorkbenchData {
                 0
             },
             paused: shell.state.is_timer_paused(),
+            timed: shell.has_authored_timing(),
+            autoplay_paused: shell.autoplay_paused(),
             budget: shell.settings.settings.cache.l1_gpu_mib as usize * 1024 * 1024 / 2,
             debug: shell.settings.settings.general.debug_overlay.then(|| {
                 format!(
@@ -600,7 +604,25 @@ impl Presenter {
             .items_center()
             .flex_wrap()
             .gap(px(12.))
-            .child(navigation);
+            .child(navigation)
+            .when(self.data.workbench.timed, |view| {
+                view.child(
+                    self.button(
+                        "automatic-playback".into(),
+                        self.locale
+                            .text(if self.data.workbench.autoplay_paused {
+                                "wb-auto-resume"
+                            } else {
+                                "wb-auto-pause"
+                            })
+                            .into(),
+                        presenting && !self.data.busy,
+                        false,
+                        Intent::ToggleAutoplay,
+                        p,
+                    ),
+                )
+            });
         if has_steps {
             let mut blanking = div()
                 .flex()
@@ -632,6 +654,9 @@ impl Presenter {
                 ("highlighter", "wb-highlighter", Tool::Highlighter),
                 ("eraser", "wb-eraser", Tool::Eraser),
             ] {
+                if presenting && tool != Tool::Laser {
+                    continue;
+                }
                 tools = tools.child(self.button(
                     id.into(),
                     self.locale.text(label).into(),
@@ -641,24 +666,36 @@ impl Presenter {
                     p,
                 ));
             }
+            if presenting {
+                tools = tools.child(self.button(
+                    "drawing-tools".into(),
+                    self.locale.text("wb-drawing-tools").into(),
+                    !self.data.busy,
+                    false,
+                    Intent::PresenterMenu(true),
+                    p,
+                ));
+            }
             let secondary = div()
                 .flex()
                 .items_center()
                 .flex_wrap()
                 .gap(px(4.))
-                .child(self.button(
-                    "clear-strokes".into(),
-                    self.locale.text("wb-clear").into(),
-                    true,
-                    false,
-                    Intent::Core(Command::ClearStrokes),
-                    p,
-                ))
+                .when(!presenting, |view| {
+                    view.child(self.button(
+                        "clear-strokes".into(),
+                        self.locale.text("wb-clear").into(),
+                        true,
+                        false,
+                        Intent::Core(Command::ClearStrokes),
+                        p,
+                    ))
+                })
                 .child(self.button(
                     "grid".into(),
                     self.locale.text("wb-grid").into(),
                     true,
-                    self.data.workbench.grid,
+                    self.data.workbench.browser_open,
                     Intent::Grid,
                     p,
                 ))
@@ -759,15 +796,9 @@ impl Presenter {
             _ => 0,
         });
         notes_frames.dedup();
-        let scale = self.data.workbench.settings.notes_font_scale as f32;
         let mut note_panel = div()
-            .id("notes-panel")
-            .debug_selector(|| "notes-panel".into())
-            .flex_grow(notes.max(0.15))
-            .flex_shrink(1.)
-            .flex_basis(gpui::relative(0.))
-            .min_h_0()
-            .overflow_scroll()
+            .w_full()
+            .flex_shrink_0()
             .flex()
             .flex_col()
             .gap(px(4.))
@@ -789,12 +820,21 @@ impl Presenter {
             );
         }
         for surface in notes_frames {
+            let aspect = self
+                .frame(surface)
+                .map(|frame| frame.frame.width() as f32 / frame.frame.height().max(1) as f32)
+                .or_else(|| {
+                    self.textures
+                        .borrow()
+                        .frame(surface)
+                        .map(|frame| frame.width() as f32 / frame.height().max(1) as f32)
+                })
+                .unwrap_or(16. / 9.);
             note_panel = note_panel.child(
                 div()
                     .w_full()
-                    .flex_grow(1.)
-                    .flex_basis(gpui::relative(0.))
-                    .min_h(px(80. * scale))
+                    .flex_shrink_0()
+                    .aspect_ratio(aspect)
                     .child(self.picture(surface, false)),
             );
         }
@@ -827,8 +867,11 @@ impl Presenter {
                             this.data.workbench.settings.next_slide_ratio
                         };
                         let notes = if vertical {
-                            ((event.position.y - right.origin.y) / right.size.height)
-                                .clamp(0.55, 0.8) as f64
+                            // The divider's center includes its 6px bar and
+                            // adjacent 4px gaps; only pane heights own the ratio.
+                            (1. - ((event.position.y - right.origin.y - px(7.))
+                                / (right.size.height - px(14.)).max(px(1.))))
+                            .clamp(0.55, 0.8) as f64
                         } else {
                             this.data.workbench.settings.notes_ratio
                         };
@@ -908,24 +951,6 @@ impl Presenter {
                         .absolute()
                         .size_full(),
                     )
-                    .child(note_panel)
-                    .child(
-                        div()
-                            .id("vertical-split")
-                            .debug_selector(|| "vertical-split".into())
-                            .flex_shrink_0()
-                            .h(px(6.))
-                            .w_full()
-                            .bg(rgb(p.border))
-                            .on_mouse_down(
-                                MouseButton::Left,
-                                cx.listener(move |this, _, _, _| {
-                                    if can_drag {
-                                        this.split_drag = Some(true);
-                                    }
-                                }),
-                            ),
-                    )
                     .child(
                         div()
                             .id("next-pane")
@@ -950,6 +975,38 @@ impl Presenter {
                                     .min_h_0()
                                     .child(self.picture(Surface::Next, false)),
                             ),
+                    )
+                    .child(
+                        div()
+                            .id("vertical-split")
+                            .debug_selector(|| "vertical-split".into())
+                            .flex_shrink_0()
+                            .h(px(6.))
+                            .w_full()
+                            .bg(rgb(p.border))
+                            .on_mouse_down(
+                                MouseButton::Left,
+                                cx.listener(move |this, _, _, _| {
+                                    if can_drag {
+                                        this.split_drag = Some(true);
+                                    }
+                                }),
+                            ),
+                    )
+                    .child(
+                        div()
+                            .id("notes-panel")
+                            .debug_selector(|| "notes-panel".into())
+                            .flex_grow(notes)
+                            .flex_shrink(1.)
+                            .flex_basis(gpui::relative(0.))
+                            .min_h_0()
+                            .overflow_y_scroll()
+                            .flex()
+                            .flex_col()
+                            .rounded(px(theme::RADIUS))
+                            .bg(rgb(p.card))
+                            .child(note_panel),
                     ),
             );
         let mut view = div()

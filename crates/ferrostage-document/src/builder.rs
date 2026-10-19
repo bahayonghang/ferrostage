@@ -27,6 +27,7 @@ pub enum DocumentWarning {
 }
 #[derive(Clone, Debug, PartialEq)]
 pub struct LoadedDocument {
+    presentations: Vec<ferrostage_core::PagePresentation>,
     pub page_count: usize,
     pub labels: Vec<Option<String>>,
     pub layout: NotesLayout,
@@ -38,8 +39,38 @@ pub struct LoadedDocument {
     pub media: Vec<MediaSlot>,
     pub warnings: Vec<DocumentWarning>,
     pub structure_diagnostics: Vec<StructureDiagnostic>,
+    pub outline: Vec<OutlineEntry>,
+    pub outline_partial: bool,
 }
 impl LoadedDocument {
+    /// The active section follows committed content, independently of browser focus or edits.
+    pub fn current_outline_entry(&self, page: PhysicalPage) -> Option<usize> {
+        self.outline
+            .iter()
+            .filter(|entry| {
+                entry.issue.is_none()
+                    && entry.content_number.is_some()
+                    && entry.page.is_some_and(|target| target.0 <= page.0)
+            })
+            .max_by_key(|entry| {
+                (
+                    entry.page.map(|p| p.0),
+                    entry.depth,
+                    std::cmp::Reverse(entry.id),
+                )
+            })
+            .map(|entry| entry.id)
+    }
+    /// Content mapping is the authority; independent notes cannot acquire playback.
+    pub fn page_presentation(
+        &self,
+        page: PhysicalPage,
+    ) -> Option<ferrostage_core::PagePresentation> {
+        self.notes_mapping
+            .iter()
+            .any(|m| m.content_page == page)
+            .then(|| self.presentations[page.0])
+    }
     /// A new load starts with fresh, document-local options.
     pub fn load(
         metadata: &DocumentMetadata,
@@ -156,6 +187,7 @@ impl LoadedDocument {
             previous = Some(index);
         }
         let slide_map = SlideMap::new(labels.len(), groups)?;
+        let outline = crate::outline::map(&structure.outline, &slide_map, &labels);
         if slide_map.groups().iter().any(|g| g.len() > 1) {
             warnings.push(DocumentWarning::OverlayHeuristic);
         }
@@ -187,6 +219,7 @@ impl LoadedDocument {
             }
         }
         Ok(Self {
+            presentations: structure.pages.iter().map(|p| p.presentation).collect(),
             page_count: labels.len(),
             labels,
             layout,
@@ -198,6 +231,8 @@ impl LoadedDocument {
             media,
             warnings,
             structure_diagnostics: structure.diagnostics.clone(),
+            outline,
+            outline_partial: structure.outline.partial,
         })
     }
     pub fn descriptor(

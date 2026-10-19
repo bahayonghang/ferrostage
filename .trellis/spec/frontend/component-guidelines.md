@@ -42,7 +42,7 @@ Changes to interface fonts, settings composition, loaded-document header/progres
 
 ### 2. Signatures
 
-`theme::Typography::resolve(&GeneralSettings, &[String])` resolves family/missing-state/size scale; `font()` and `size(role)` are Presenter UI consumers. `Shell::ui_fonts` caches installed names; enumeration occurs when the picker first opens, or before first draw when a persisted override requires resolution. `Presenter::tools_panel` composes the single session/navigation/tool strip.
+`theme::Typography::resolve(&GeneralSettings, &[String])` resolves family/missing-state/size scale; `font()` and `size(role)` are Presenter UI consumers. `Shell::ui_fonts` caches installed names; enumeration occurs when the picker first opens, or before first draw when a persisted override requires resolution. `Presenter::tools_panel` composes the single session/navigation/tool strip. `Intent::PresenterMenu(bool)` selects Drawing (`true`) or More (`false`); `presenter::utility_menu` supplies rows and keyboard traversal through the shared contextual host.
 
 ### 3. Contracts
 
@@ -54,6 +54,10 @@ Settings use quiet category navigation, sans headings, bounded grouped label/con
 
 For every document-open state, one Start/Stop action shares a navigation group with Previous/Next when steps exist. Retain the no-step route and busy guards. Session face uses a geometric play/stop icon plus explicit text. Progress remains `Intent::Jump`; full logical/step/physical detail is accessible and available on pointer/focus, without reflowing the activation target. Focus detail and hover tooltip are mutually exclusive when both pointer and keyboard focus occupy the control. Explicit progress focus handles opt into Tab eligibility. Blanking/tool selection is derived from actual state and includes text/indicator, not color alone.
 
+Ready retains the 56px session face and scaled 208px minimum width. Presenting uses the ordinary 44px control minimum and natural session width to reclaim content space, preserving the 26px play/stop icon and explicit label. More contains Home/Open/Settings; Drawing contains Pen/Highlighter/Eraser/Clear. Laser, Previous/Next, progress, black/white, Page browser, Layout and display access remain direct. Ready keeps its management controls. Menu rows retain import/busy guards, skip disabled rows on arrows/Tab/Home/End, activate once on Enter/Space, and consume Escape/outside dismissal with focus restoration.
+
+`Presenter::workbench_panel` orders Current left, Next upper-right, original Notes lower-right. Each Notes wrapper is full-width, `flex_shrink_0()` and `aspect_ratio(frame.width / frame.height)`; use the current or retained frame geometry, with 16:9 only while no raster geometry exists. Multiple Notes keep their ordered natural heights inside the existing scroll. Never apply interface font preferences to their pixels or add extracted-text rendering. Pane ratios and drag persistence follow [State Management](state-management.md#manual-navigation-and-original-notes-workbench).
+
 ### 4. Validation / Error Matrix
 
 | Condition | Result |
@@ -64,6 +68,7 @@ For every document-open state, one Start/Stop action shares a navigation group w
 | Progress focused or hovered | Full detail discoverable without moving the control |
 | Jump text edited but not confirmed | Committed page stays unchanged |
 | Modal or conditional control closes/disappears | Restore valid focus, retain exactly-once deferred activation |
+| Presenting utility menu or disabled Open row | Preserve contextual key consumption and eligibility; no underlying page advance |
 
 ### 5. Good / Base / Bad Cases
 
@@ -72,6 +77,8 @@ Good: real settings input changes actual captured Presenter typography and survi
 ### 6. Tests Required
 
 Retain real input tests `settings_fonts_filter_apply_size_restore_and_history_through_real_input`, `workbench_controls_jump_directly_and_keep_note_pages_private`, and `workbench_session_strip_survives_empty_steps_and_busy_start`, plus existing home/focus/notes/privacy regressions. Run normal-window native core/visual smoke separately from headless checks. Do not add size/DPI/performance matrices to this polish work without user request.
+
+Keep real More/Drawing keyboard, Escape and focus-return tests and multiple original-raster geometry tests from `shell/presenter_layout_tests.rs`. Check Ready versus Presenting session-control geometry and direct/menu action membership without changing shared activation semantics. Native fullscreen/standing readability remains a separate acceptance item.
 
 ### 7. Wrong vs Correct
 
@@ -104,6 +111,10 @@ The same import eligibility contract controls Open buttons, global Open actions,
 Page-browser input editing must run before configurable global navigation bindings. The focused mode-aware page-number editor supports selection/caret, replacement, Delete/Backspace, Home/End and plain-text paste; editing only locates a target. Valid Enter/Go submits one direct jump. Stop, Swap and Escape dismissal discard input without changing the committed page. Whole-thumbnail activation jumps once; hover and cancelled presses are inert. There is no staged preview/commit state. Preserve core StopPresentation semantics and cover actual Shell/input dispatch, including navigation after dismissal.
 
 ## Contextual page browser
+
+The browser also supports `BrowserView::{Thumbnails,Outline}`, independent from `PageNumberMode`. `Intent::BrowserView { id, view }` renews interaction identity while preserving numeric draft/target; `BrowserOutlineJump { id, entry_id }` resolves the current mapped entry before the existing guarded submit. Directory rows use complete wrapped titles, 24px second-level indentation, fixed page columns and textual current-section status. The source/mapping contract is [PDF Chapter Directory](../backend/pdf-outline.md).
+
+Outline keeps the contextual browser open with grid scheduling disabled. Retire invisible thumbnail frames, surface targets, pending work and Presenter cache; keep requested keys until scheduling detects the changed request set and advances the worker epoch. Hidden density/grid intents cannot mutate or navigate. New documents reset view, same-document reopen remembers it. Per-id renewal inside one opening must preserve the original invoker focus. Directory key capture owns Tab/Shift+Tab, row arrows/Home/End and Enter/Space; non-row activation dispatches the existing ActivateButton action because global configurable-key interception can suppress bubble handlers. Numeric editor keys retain their own capture behavior. Real GPUI dispatch tests must prove one activation, inactive hover/cancelled press, stale callback rejection, visible current-row reveal and focus restoration.
 
 ### 1. Scope / Trigger
 

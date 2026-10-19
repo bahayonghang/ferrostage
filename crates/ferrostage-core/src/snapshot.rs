@@ -87,6 +87,7 @@ pub enum BlankMode {
 /// document handle.
 #[derive(Clone, Debug, PartialEq)]
 pub struct AudienceProjectionSnapshot {
+    pub playback: Option<crate::AudiencePlayback>,
     pub stage: AudienceStage,
     pub generation: DocumentGeneration,
     pub current_page: PhysicalPage,

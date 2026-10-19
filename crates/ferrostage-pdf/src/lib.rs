@@ -9,7 +9,9 @@ use thiserror::Error;
 
 mod metadata;
 pub mod structure;
-pub use structure::{DocumentStructure, extract_structure};
+pub use structure::{
+    DocumentStructure, PdfOutline, PdfOutlineEntry, PdfOutlineIssue, extract_structure,
+};
 pub mod raster;
 pub use metadata::{DocumentMetadata, PageMetadata};
 pub use raster::{BgraBitmap, PdfError, PixelSize, RuntimeConfig};

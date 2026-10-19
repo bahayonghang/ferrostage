@@ -1,7 +1,9 @@
 mod layout_navigation;
 mod page_browser;
 mod preferences;
+mod presenter_fullscreen;
 pub(crate) mod reload;
+mod timed_playback;
 use crate::{
     actions::{self, Intent},
     audience::Audience,
@@ -164,6 +166,8 @@ pub(crate) struct Shell {
     presenter: Option<WindowRecord>,
     audience: Option<WindowRecord>,
     pending: Option<Transaction>,
+    presenter_restore: Option<presenter_fullscreen::Restore>,
+    timed: timed_playback::TimedPlayback,
     focus_intent: Option<FocusIntent>,
     focus_token: u64,
     import: Option<ImportReply>,
@@ -342,6 +346,8 @@ impl Shell {
             presenter: None,
             audience: None,
             pending: None,
+            presenter_restore: None,
+            timed: Default::default(),
             focus_intent: None,
             focus_token: 0,
             import: None,
@@ -411,12 +417,14 @@ impl Shell {
 
     pub fn busy(&self) -> bool {
         self.pending.is_some()
+            || self.restoring_presenter()
             || self.loading
             || self.preference_change.is_some()
             || self.reload_busy()
     }
 
     fn publish(&mut self, curtain: bool, cx: &mut Context<Self>) {
+        self.sync_playback(curtain, cx);
         self.media.sync(
             &self.state,
             self.workbench.document.as_ref().map(|s| &s.document),
@@ -450,6 +458,7 @@ impl Shell {
             };
         }
         snapshot.staging = self.audience_staging();
+        self.attach_playback(&mut snapshot);
         self.snapshot.update(cx, |value, cx| {
             *value = snapshot;
             cx.notify();
@@ -457,8 +466,35 @@ impl Shell {
     }
 
     fn apply(&mut self, command: Command, cx: &mut Context<Self>) {
+        let before = (
+            self.state.generation(),
+            self.state.current_page(),
+            self.state.slide_crop(),
+        );
+        let sequential = matches!(command, Command::NextStep | Command::PreviousStep);
+        let jump = matches!(command, Command::JumpTo(_));
+        let annotation = matches!(
+            command,
+            Command::UpdateLaserPointer(Some(_))
+                | Command::BeginStroke { .. }
+                | Command::AppendStrokePoint(_)
+                | Command::EraseStrokeAt(_)
+                | Command::ClearStrokes
+        );
         if let Err(error) = self.state.apply_at(command, Instant::now()) {
             self.error = Some(error.to_string());
+        } else {
+            let after = (
+                self.state.generation(),
+                self.state.current_page(),
+                self.state.slide_crop(),
+            );
+            if before != after || jump {
+                self.select_playback(sequential);
+            }
+            if annotation {
+                self.pause_for_annotation();
+            }
         }
         self.publish(self.pending.is_some(), cx);
         cx.notify();
@@ -484,7 +520,37 @@ impl Shell {
         {
             return;
         }
+        if matches!(
+            self.contextual,
+            Some(crate::page_browser::ContextualSurface::PresenterMenu { .. })
+        ) && matches!(
+            intent,
+            Intent::Home
+                | Intent::Open
+                | Intent::Settings
+                | Intent::Tool(_)
+                | Intent::Core(Command::ClearStrokes)
+        ) {
+            self.close_contextual();
+        }
         match intent {
+            Intent::ToggleAutoplay
+                if self.has_authored_timing() && self.state.stage() == SessionStage::Presenting =>
+            {
+                self.timed
+                    .clock
+                    .pause(!self.timed.clock.paused, Instant::now());
+            }
+            Intent::PresenterMenu(tools) if !self.busy() => {
+                if matches!(self.contextual, Some(crate::page_browser::ContextualSurface::PresenterMenu { tools: current }) if current == tools)
+                {
+                    self.close_contextual();
+                } else {
+                    self.abandon_modal();
+                    self.contextual =
+                        Some(crate::page_browser::ContextualSurface::PresenterMenu { tools });
+                }
+            }
             Intent::Media(id) => {
                 if self.modal.is_none() {
                     self.media.select(
@@ -516,6 +582,9 @@ impl Shell {
                 } else {
                     tool
                 };
+                if self.workbench.tool != crate::workbench::Tool::Navigate {
+                    self.pause_for_annotation();
+                }
                 self.apply(Command::EndStroke, cx);
                 self.apply(Command::UpdateLaserPointer(None), cx);
             }
@@ -529,10 +598,18 @@ impl Shell {
             Intent::CloseContextual => self.close_contextual(),
             Intent::BrowserSubmit { id } => self.submit_browser(id, None, cx),
             Intent::BrowserMode { id, mode } => self.browser_mode(id, mode),
+            Intent::BrowserView { id, view } => self.browser_view(id, view),
+            Intent::BrowserOutlineJump { id, entry_id } => {
+                self.browser_outline_jump(id, entry_id, cx)
+            }
             Intent::BrowserEdit { id, edit } => self.edit_browser(id, edit),
-            Intent::BrowserJump { id, page } => self.submit_browser(id, Some(page), cx),
+            Intent::BrowserJump { id, page } if self.workbench.grid => {
+                self.submit_browser(id, Some(page), cx)
+            }
             Intent::GridDensity { column, value } => self.grid_density(column, value, cx),
-            Intent::GridMove(delta) if self.browser().is_some() && !self.busy() => {
+            Intent::GridMove(delta)
+                if self.browser().is_some() && self.workbench.grid && !self.busy() =>
+            {
                 let count = self.browser_entries().len();
                 let capacity = self.settings.settings.presenter.grid_visible_pages as usize;
                 let last = count.saturating_sub(1) / capacity * capacity;
@@ -653,6 +730,7 @@ impl Shell {
             }
             _ => {}
         }
+        self.sync_playback(self.pending.is_some(), cx);
         cx.notify();
     }
 
@@ -815,6 +893,7 @@ impl Shell {
                 self.close_contextual();
                 self.workbench.clear_frames();
                 self.workbench.page_number_mode = crate::workbench::PageNumberMode::Content;
+                self.workbench.browser_view = crate::workbench::BrowserView::Thumbnails;
                 self.workbench.document = Some(session);
                 if old.0 != 0
                     && let Ok(worker) = &self.renderer
@@ -1044,6 +1123,19 @@ impl Shell {
                 .map_err(|error| error.to_string())?;
             cx.subscribe(
                 &entity,
+                move |_, _, event: &crate::audience::PlaybackEvent, cx| {
+                    let event = *event;
+                    let shell = cx.weak_entity();
+                    cx.defer(move |cx| {
+                        let _ = shell.update(cx, |shell, cx| {
+                            shell.playback_event(handle.window_id(), event, cx)
+                        });
+                    });
+                },
+            )
+            .detach();
+            cx.subscribe(
+                &entity,
                 move |_, _, _: &crate::audience::AdvanceRequested, cx| {
                     // Input still owns its source window lease. Consume the request
                     // after that lease ends, and validate its current owner then.
@@ -1260,6 +1352,10 @@ impl Shell {
         }
         match policy::audience_target(&self.monitors, &self.settings.settings.display) {
             Ok((target, fullscreen)) => {
+                if let Err(error) = self.enter_presenter_fullscreen(cx) {
+                    self.error = Some(error);
+                    return;
+                }
                 self.publish(true, cx);
                 match self.open(target, fullscreen, true, cx) {
                     Ok(audience) => {
@@ -1270,7 +1366,10 @@ impl Shell {
                             deadline: Instant::now() + CONFIRM_TIMEOUT,
                         })
                     }
-                    Err(error) => self.error = Some(error),
+                    Err(error) => {
+                        self.error = Some(error);
+                        self.restore_presenter(cx);
+                    }
                 }
             }
             Err(error) => self.error = Some(error.localized(self.locale)),
@@ -1279,6 +1378,7 @@ impl Shell {
 
     fn retire_pending(&mut self, reason: &'static str, cx: &mut Context<Self>) {
         if let Some(pending) = self.pending.take() {
+            let starting = matches!(pending.kind, TransactionKind::Start);
             let preferences = matches!(pending.kind, TransactionKind::Preferences(_));
             tracing::info!(reason, operation=?pending.kind.operation(), "window transaction cancelled");
             if let Some(window) = pending.audience {
@@ -1291,6 +1391,9 @@ impl Shell {
             }
             if preferences {
                 self.rollback_preferences(reason.into(), cx);
+            }
+            if starting {
+                self.restore_presenter(cx);
             }
         }
     }
@@ -1326,6 +1429,7 @@ impl Shell {
                 }
             }
         }
+        self.restore_presenter(cx);
         cx.notify();
     }
 
@@ -1439,7 +1543,7 @@ impl Shell {
     }
 
     fn recover_presenter(&mut self, cx: &mut Context<Self>) {
-        if self.pending.is_some() || !self.topology_valid {
+        if self.pending.is_some() || self.restoring_presenter() || !self.topology_valid {
             return;
         }
         let Some(target) = policy::roles(&self.monitors, &self.settings.settings.display).presenter
@@ -1764,7 +1868,9 @@ impl Shell {
             && pending
                 .audience
                 .as_ref()
-                .is_none_or(|window| Self::confirmed(window, cx));
+                .is_none_or(|window| Self::confirmed(window, cx))
+            && (!matches!(pending.kind, TransactionKind::Start)
+                || self.start_presenter_confirmed(cx));
         if !confirmed {
             if Instant::now() > pending.deadline {
                 self.error = Some(ShellError::PlacementTimeout.localized(self.locale));
@@ -1794,6 +1900,7 @@ impl Shell {
             if let Some(window) = pending.audience {
                 Self::close(window, cx);
             }
+            self.restore_presenter(cx);
             return;
         }
         let old_presenter = if pending.presenter.is_some() {
@@ -1843,6 +1950,7 @@ impl Shell {
         }
         if let Some(window) = old_presenter {
             Self::close(window, cx);
+            self.presenter_restore = None;
         }
         tracing::info!(stage=?self.state.stage(),page=self.state.current_page().0,
             elapsed_ms=self.state.elapsed_at(Instant::now()).as_millis(),
@@ -1863,6 +1971,7 @@ impl Shell {
         self.poll_preferences(cx);
         self.poll_import(cx);
         self.poll_transaction(cx);
+        self.poll_presenter_restore(cx);
         self.poll_focus(cx);
         if let Some(audience) = &self.audience {
             audience.observed_display.set(None);
@@ -1934,6 +2043,7 @@ impl Shell {
             }
         }
         self.publish(self.pending.is_some(), cx);
+        self.poll_timed_playback(cx);
         cx.notify();
         // If startup had zero screens, the platform watcher owns recovery.
     }
@@ -3813,6 +3923,9 @@ mod tests {
 
     include!("shell/preferences_tests.rs");
     include!("shell/presenter_time_tests.rs");
+    include!("shell/outline_tests.rs");
+    include!("shell/presenter_layout_tests.rs");
+    include!("shell/timed_playback_tests.rs");
 
     fn headless_shell(
         cx: &mut TestAppContext,
@@ -4894,7 +5007,9 @@ mod tests {
             }],
         };
         let structure = ferrostage_pdf::DocumentStructure {
+            outline: Default::default(),
             pages: vec![ferrostage_pdf::structure::PageStructure {
+                presentation: Default::default(),
                 page: PhysicalPage(0),
                 geometry: ferrostage_pdf::structure::PageGeometry {
                     bounds: [0., 0., 640., 480.],
@@ -5249,7 +5364,10 @@ mod tests {
             cx.notify();
         });
         redraw(handle, cx);
-        cx.simulate_keystrokes(handle, "space enter"); // Same now-disabled Open.
+        click_control(handle, "more", cx);
+        redraw(handle, cx);
+        click_control(handle, "open", cx); // Disabled Open remains inert in More.
+        cx.simulate_keystrokes(handle, "escape");
         shell.read_with(cx, |shell, _| {
             assert_eq!(shell.state.stage(), SessionStage::Presenting);
             assert_eq!(shell.state.current_page(), PhysicalPage(1));
@@ -6188,8 +6306,10 @@ mod tests {
                     .collect(),
             };
             let structure = ferrostage_pdf::DocumentStructure {
+                outline: Default::default(),
                 pages: (0..4)
                     .map(|index| ferrostage_pdf::structure::PageStructure {
+                        presentation: Default::default(),
                         page: PhysicalPage(index),
                         geometry: ferrostage_pdf::structure::PageGeometry {
                             bounds: [0., 0., 640., 480.],
@@ -6770,7 +6890,7 @@ mod tests {
             let right = visual.debug_bounds("next-notes-pane").unwrap();
             assert!(notes.size.height >= right.size.height * 0.50);
             let next = visual.debug_bounds("next-pane").unwrap();
-            assert!(notes.bottom() < next.origin.y);
+            assert!(next.bottom() < notes.origin.y);
             assert!(notes.size.height > next.size.height);
             assert!(visual.debug_bounds("thumbnail-0").is_none());
             assert!(visual.debug_bounds("recent-0").is_none());
@@ -6842,9 +6962,10 @@ mod tests {
         assert!(visual.debug_bounds("start").is_none());
         let stop = visual.debug_bounds("stop").unwrap();
         assert_eq!(start.origin.x, stop.origin.x);
-        assert_eq!(
-            start.size, stop.size,
-            "Start and Stop retain session geometry"
+        assert!(stop.size.height >= px(44.));
+        assert!(
+            stop.size.height <= start.size.height,
+            "Presenting compacts the session strip"
         );
         visual.simulate_click(stop.center(), gpui::Modifiers::default());
         assert_eq!(
@@ -7180,6 +7301,8 @@ mod tests {
             cx.notify();
             handle
         });
+        redraw(handle, cx);
+        click_control(handle, "more", cx);
         redraw(handle, cx);
         click_control(handle, "home", cx);
         shell.read_with(cx, |shell, _| {

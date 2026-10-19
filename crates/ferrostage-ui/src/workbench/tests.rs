@@ -118,10 +118,12 @@ fn pdf_numbering_schedules_only_content_in_the_visible_physical_slots() {
         );
     }
     let structure = DocumentStructure {
+        outline: Default::default(),
         pages: metadata
             .pages
             .iter()
             .map(|page| ferrostage_pdf::structure::PageStructure {
+                presentation: Default::default(),
                 page: page.page,
                 geometry: ferrostage_pdf::structure::PageGeometry {
                     bounds: [0., 0., 640., 360.],
@@ -221,10 +223,12 @@ fn closed_grid_schedules_no_thumbnails_and_repeated_schedule_submits_nothing() {
         .unwrap();
     let metadata = hundred_pages();
     let structure = DocumentStructure {
+        outline: Default::default(),
         pages: metadata
             .pages
             .iter()
             .map(|page| ferrostage_pdf::structure::PageStructure {
+                presentation: Default::default(),
                 page: page.page,
                 geometry: ferrostage_pdf::structure::PageGeometry {
                     bounds: [0., 0., 640., 360.],
