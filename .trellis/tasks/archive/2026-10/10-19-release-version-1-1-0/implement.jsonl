@@ -1,0 +1,4 @@
+{"file": ".trellis/tasks/10-19-presenter-defense-experience/research/scope-revision.md", "reason": "Latest user decisions, two-repository boundaries and dirty baseline"}
+{"file": ".trellis/tasks/10-19-presenter-defense-experience/research/spec-reading-map.md", "reason": "Mandatory complete live-spec reads without truncated injection"}
+{"file": ".trellis/spec/backend/windows-distribution.md", "reason": "Single-source version and local distribution validation"}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Version change quality gates"}
