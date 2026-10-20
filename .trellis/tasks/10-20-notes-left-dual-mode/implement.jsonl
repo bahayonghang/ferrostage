@@ -1,0 +1,6 @@
+{"file":".trellis/spec/frontend/index.md","reason":"Frontend layer index and GPUI boundary"}
+{"file":".trellis/spec/frontend/component-guidelines.md","reason":"Workbench composition, menu and button conventions"}
+{"file":".trellis/spec/frontend/state-management.md","reason":"StartMode, presenter ratios and settings transaction contracts"}
+{"file":".trellis/spec/frontend/type-safety.md","reason":"Notes boundary and newtype rules"}
+{"file":".trellis/spec/frontend/quality-guidelines.md","reason":"Window rules and required GPUI tests"}
+{"file":"DESIGN.md","reason":"Token layer, Layout 08 and component faces to update first"}
