@@ -105,8 +105,17 @@ struct ClientResizeAttempt {
     corrected: bool,
 }
 
+/// Which timer a Start transaction applies once placement is confirmed.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum StartTimer {
+    /// Fresh start or Restart: the timer begins at zero.
+    Restart,
+    /// Continue the time frozen by the last stop.
+    Resume,
+}
+
 enum TransactionKind {
-    Start,
+    Start(StartTimer),
     Assign(DisplaySettings),
     Preferences(DisplaySettings),
     RecoverPresenter,
@@ -114,7 +123,7 @@ enum TransactionKind {
 impl TransactionKind {
     fn operation(&self) -> Operation {
         match self {
-            Self::Start => Operation::Start,
+            Self::Start(_) => Operation::Start,
             Self::Assign(_) | Self::Preferences(_) => Operation::Swap,
             Self::RecoverPresenter => Operation::RecoverPresenter,
         }
@@ -154,6 +163,10 @@ pub(crate) struct Shell {
     renderer: Result<RenderHandle, RenderError>,
     topology: Receiver<TopologyEvent>,
     _watcher: Result<TopologyWatcher, ferrostage_platform::PlatformError>,
+    /// Tests stand in for a running topology watcher and native display
+    /// identity (TestPlatform display UUIDs are random), keeping `mapped`.
+    #[cfg(all(test, feature = "test-support"))]
+    test_topology: bool,
     monitors: Vec<MonitorInfo>,
     monitor_error: Option<ferrostage_platform::PlatformError>,
     topology_valid: bool,
@@ -334,6 +347,8 @@ impl Shell {
             renderer: inputs.renderer,
             topology: inputs.topology,
             _watcher: inputs.watcher,
+            #[cfg(all(test, feature = "test-support"))]
+            test_topology: false,
             monitors,
             monitor_error,
             topology_valid,
@@ -374,6 +389,11 @@ impl Shell {
         for warning in policy::roles(&self.monitors, &self.settings.settings.display).warnings {
             tracing::warn!(?warning, "display role resolution warning");
         }
+        #[cfg(all(test, feature = "test-support"))]
+        if self.test_topology {
+            self.sample_window_locations(cx);
+            return;
+        }
         self.mapped = if self.topology_valid {
             let displays = cx
                 .displays()
@@ -397,7 +417,7 @@ impl Shell {
         if self.busy() {
             return Some(self.locale.text("confirming").into());
         }
-        if self._watcher.is_err() {
+        if self.watcher_failed() {
             return Some(self.locale.text("watcher-unavailable").into());
         }
         if let Err(error) = &self.mapped {
@@ -413,6 +433,19 @@ impl Shell {
             .as_ref()
             .or_else(|| self._watcher.as_ref().err())
             .map(|error| self.locale.monitor_error(error))
+    }
+
+    /// Frozen elapsed time of a stopped session that Start can continue.
+    pub(crate) fn resumable_elapsed(&self) -> Option<Duration> {
+        self.state.resumable_elapsed(Instant::now())
+    }
+
+    /// The timer choice of the Start transaction awaiting placement, if any.
+    pub(crate) fn pending_start(&self) -> Option<StartTimer> {
+        match self.pending.as_ref()?.kind {
+            TransactionKind::Start(timer) => Some(timer),
+            _ => None,
+        }
     }
 
     pub fn busy(&self) -> bool {
@@ -509,6 +542,7 @@ impl Shell {
             && matches!(
                 intent,
                 Intent::Start
+                    | Intent::Resume
                     | Intent::Stop
                     | Intent::Swap
                     | Intent::Next
@@ -692,7 +726,8 @@ impl Shell {
             }
             Intent::Stop => self.stop(cx),
             Intent::Home => self.return_home(cx),
-            Intent::Start => self.start(cx),
+            Intent::Start => self.start(StartTimer::Restart, cx),
+            Intent::Resume => self.start(StartTimer::Resume, cx),
             Intent::Swap => self.swap(cx),
             Intent::Open | Intent::Settings | Intent::Jump | Intent::Displays => {
                 self.request_focus(intent, cx)
@@ -1391,8 +1426,19 @@ impl Shell {
         );
     }
 
-    fn start(&mut self, cx: &mut Context<Self>) {
-        if !self.topology_valid || self._watcher.is_err() {
+    fn watcher_failed(&self) -> bool {
+        #[cfg(all(test, feature = "test-support"))]
+        if self.test_topology {
+            return false;
+        }
+        self._watcher.is_err()
+    }
+
+    fn start(&mut self, timer: StartTimer, cx: &mut Context<Self>) {
+        if !self.topology_valid || self.watcher_failed() {
+            return;
+        }
+        if timer == StartTimer::Resume && self.resumable_elapsed().is_none() {
             return;
         }
         self.close_identify(cx);
@@ -1414,7 +1460,7 @@ impl Shell {
                 match self.open(target.monitor, target.fullscreen, true, cx) {
                     Ok(audience) => {
                         self.pending = Some(Transaction {
-                            kind: TransactionKind::Start,
+                            kind: TransactionKind::Start(timer),
                             presenter: None,
                             audience: Some(audience),
                             deadline: Instant::now() + CONFIRM_TIMEOUT,
@@ -1432,7 +1478,7 @@ impl Shell {
 
     fn retire_pending(&mut self, reason: &'static str, cx: &mut Context<Self>) {
         if let Some(pending) = self.pending.take() {
-            let starting = matches!(pending.kind, TransactionKind::Start);
+            let starting = matches!(pending.kind, TransactionKind::Start(_));
             let preferences = matches!(pending.kind, TransactionKind::Preferences(_));
             tracing::info!(reason, operation=?pending.kind.operation(), "window transaction cancelled");
             if let Some(window) = pending.audience {
@@ -1923,7 +1969,7 @@ impl Shell {
                 .audience
                 .as_ref()
                 .is_none_or(|window| Self::confirmed(window, cx))
-            && (!matches!(pending.kind, TransactionKind::Start)
+            && (!matches!(pending.kind, TransactionKind::Start(_))
                 || self.start_presenter_confirmed(cx));
         if !confirmed {
             if Instant::now() > pending.deadline {
@@ -1943,10 +1989,15 @@ impl Shell {
         {
             Self::log_placement(record, "confirmed", cx);
         }
-        if matches!(pending.kind, TransactionKind::Start)
+        if let TransactionKind::Start(timer) = pending.kind
             && let Err(error) = self.state.apply_at(
-                Command::StartPresentation {
-                    audience_available: true,
+                match timer {
+                    StartTimer::Restart => Command::StartPresentation {
+                        audience_available: true,
+                    },
+                    StartTimer::Resume => Command::ResumePresentation {
+                        audience_available: true,
+                    },
                 },
                 Instant::now(),
             )
@@ -3998,6 +4049,7 @@ mod tests {
     include!("shell/outline_tests.rs");
     include!("shell/presenter_layout_tests.rs");
     include!("shell/timed_playback_tests.rs");
+    include!("shell/session_resume_tests.rs");
 
     fn headless_shell(
         cx: &mut TestAppContext,
@@ -4732,7 +4784,7 @@ mod tests {
             let candidate = test_window(s, true, cx);
             let handle = candidate.handle;
             s.pending = Some(Transaction {
-                kind: TransactionKind::Start,
+                kind: TransactionKind::Start(StartTimer::Restart),
                 presenter: None,
                 audience: Some(candidate),
                 deadline: Instant::now() + CONFIRM_TIMEOUT,
@@ -6141,7 +6193,7 @@ mod tests {
             let mut audience = test_window(shell, true, cx);
             audience.display = u64::MAX; // Actual window is deliberately on the wrong display.
             shell.pending = Some(Transaction {
-                kind: TransactionKind::Start,
+                kind: TransactionKind::Start(StartTimer::Restart),
                 presenter: None,
                 audience: Some(audience),
                 deadline: Instant::now() - Duration::from_secs(1),
@@ -6454,7 +6506,7 @@ mod tests {
             let replacement = test_window(shell, true, cx);
             let replacement_handle = replacement.handle;
             shell.pending = Some(Transaction {
-                kind: TransactionKind::Start,
+                kind: TransactionKind::Start(StartTimer::Restart),
                 presenter: None,
                 audience: Some(replacement),
                 deadline: Instant::now() + CONFIRM_TIMEOUT,
@@ -6531,9 +6583,7 @@ mod tests {
     const LAYOUT_CHECKS: [&str; 3] = ["layout-check-0", "layout-check-1", "layout-check-2"];
 
     #[gpui::test]
-    fn layout_menu_applies_each_layout_and_retains_upward_workbench_geometry(
-        cx: &mut TestAppContext,
-    ) {
+    fn layout_menu_applies_each_layout_and_opens_below_header_trigger(cx: &mut TestAppContext) {
         use ferrostage_document::NotesLayout;
         let (shell, handle) = workbench_fixture(cx);
         cx.test_window(handle)
@@ -6557,11 +6607,17 @@ mod tests {
                     <= 1.,
                 "panel={panel:?}, trigger={trigger:?}"
             );
+            // The trigger lives in the header and its menu opens downward.
+            let header = visual.debug_bounds("presenter-bar").unwrap();
+            assert!(header.contains(&trigger.center()));
+            assert!(visual.debug_bounds("workbench-controls").is_some());
+            let anchor_bottom =
+                trigger.bottom() + px(crate::theme::FOCUS_WIDTH + crate::theme::FOCUS_GAP);
             assert!(
-                (f32::from(trigger.top() - panel.bottom()) - 8.).abs() <= 1.,
+                (f32::from(panel.top() - anchor_bottom) - 8.).abs() <= 1.,
                 "{panel:?}, {trigger:?}"
             );
-            assert!(panel.top() >= px(12.));
+            assert!(panel.bottom() <= px(760. - 12.));
             for row in LAYOUT_ROWS {
                 let bounds = visual.debug_bounds(row).unwrap();
                 assert!(bounds.size.height >= px(44.));

@@ -60,6 +60,43 @@ Retain actual divider-input/settings-readback and multiple-Notes aspect/height r
 
 Wrong: hide a thumbnail strip while its persisted flag still schedules raster work, or preserve invisible preview state after removing controls. Correct: gate raster requests on actual grid visibility and route explicit selection through the one committed-page command.
 
+## Resumable presentation session
+
+### 1. Scope / Trigger
+
+Leaving Presenting (Escape/Stop, the bottom Stop button, or a safe stop because no audience display remains) freezes the talk timer. A later Start may continue that time or restart from zero.
+
+### 2. Signatures
+
+`PresentationState::resumable_elapsed(now) -> Option<Duration>` reports the frozen time while a session can resume. `PresentationCommand::ResumePresentation { audience_available }` (`"resume_presentation"`) continues it; `StartPresentation` always restarts at zero. Shell uses `StartTimer::{Restart, Resume}` inside `TransactionKind::Start(StartTimer)` and `Shell::start(timer, cx)`; the timer command is applied only after the existing native placement confirmation. `Intent::Start` restarts, `Intent::Resume` resumes, and the configured `start_presentation` shortcut resolves to Resume when `resumable_elapsed` is `Some`.
+
+### 3. Contracts
+
+`StopPresentation` pauses the timer and marks the session resumable only when elapsed time is at least one second. Resume requires Ready plus a resumable session; it keeps the accumulated time and always leaves the timer running. Start, Load/LoadMapped and Close clear the flag; Commit/Reconfigure and checked reload keep it and the frozen value. Invariant: resumable implies Ready. A failed or cancelled Start transaction never mutates core, so the session stays resumable. Neither path changes the committed page. The audience snapshot, settings schema and keybinding keys are unchanged.
+
+### 4. Validation & Error Matrix
+
+| Condition | Result |
+| --- | --- |
+| Stop with elapsed >= 1 s | Ready, frozen, resumable |
+| Stop with elapsed < 1 s | Ready, frozen, not resumable |
+| Resume outside Ready or with nothing to resume | `NotReady`, no mutation |
+| Resume/Start with `audience_available = false` | `NoAudienceDisplay`, no mutation |
+| Same-file reload while resumable | Frozen value and flag kept |
+| Open another PDF, Home, Restart | Flag cleared, timer zero |
+
+### 5. Good / Base / Bad Cases
+
+Good: Start, wait, Escape, Resume continues from the frozen time. Base: a fresh Ready shows a single Start. Bad: F5 after an interrupted talk silently zeroes the timer.
+
+### 6. Tests Required
+
+Core lifecycle/property tests for every row above; UI tests for split-control presence and dispatch, shortcut resolution and failed-transaction preservation.
+
+### 7. Wrong vs Correct
+
+Wrong: keep a second elapsed copy in Shell or zero the timer on Stop. Correct: one core flag beside the existing paused timer, consumed through the existing Start transaction.
+
 ## Start fullscreen and presenter restoration
 
 ### 1. Scope / Trigger

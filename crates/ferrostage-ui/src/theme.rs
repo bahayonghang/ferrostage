@@ -11,6 +11,8 @@ pub const HOME_WIDTH: f32 = 760.0;
 pub const SESSION_CONTROL: f32 = 56.;
 pub const SESSION_ICON: f32 = 26.;
 pub const SESSION_WIDTH: f32 = 208.;
+/// Minimum Restart segment width beside Resume at default text size.
+pub const RESTART_WIDTH: f32 = 144.;
 pub const SANS: &str = "Segoe UI";
 pub const DISPLAY: &str = "Georgia";
 pub const MONO: &str = "Consolas";
@@ -94,6 +96,8 @@ pub const PRIMARY: u32 = 0xA34F35;
 pub const PRIMARY_HOVER: u32 = 0x93452F;
 pub const PRIMARY_ACTIVE: u32 = 0x823C29;
 pub const ON_PRIMARY: u32 = 0xFFFFFF;
+/// Secondary text on the primary face: ON_PRIMARY at 85% over PRIMARY.
+pub const ON_PRIMARY_DETAIL: u32 = 0xF1E5E1;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum ButtonKind {
@@ -292,5 +296,28 @@ mod tests {
         }
         assert_eq!(palette(Theme::System, true).canvas, DARK.canvas);
         assert_eq!(palette(Theme::System, false).canvas, LIGHT.canvas);
+    }
+
+    #[test]
+    fn timer_capsule_and_split_session_pairs_meet_design_contrast() {
+        for p in [LIGHT, DARK] {
+            // Capsule label, live/quiet digits and warnings on the soft surface.
+            for text in [p.muted, p.body, p.ink, p.warning, p.error] {
+                assert!(contrast(text, p.soft) >= 4.5, "{text:x}/{:x}", p.soft);
+            }
+            // State marks are non-text UI: focus dot, muted ring/square, warnings.
+            for mark in [p.focus, p.muted, p.warning, p.error] {
+                assert!(contrast(mark, p.soft) >= 3.0, "{mark:x}");
+            }
+            // Restart segment: navigation face with a muted sublabel.
+            let restart = p.button(ButtonKind::Navigation, true, false);
+            for fill in [restart.fill, restart.hover, restart.pressed] {
+                assert!(contrast(p.muted, fill) >= 4.5);
+            }
+        }
+        // Resume sublabel on every enabled primary state.
+        for fill in [PRIMARY, PRIMARY_HOVER, PRIMARY_ACTIVE] {
+            assert!(contrast(ON_PRIMARY_DETAIL, fill) >= 4.5, "{fill:x}");
+        }
     }
 }

@@ -25,6 +25,12 @@ start-mode-dual-notes-help = "Notes left, current and next slides right; slides 
 start-mode-single = "Single screen"
 start-mode-single-help = "Slides fullscreen on this screen. Notes and controls are hidden."
 stop = "Stop presentation"
+resume = "Resume presentation"
+resume-detail = "Continue from {time}"
+resume-label = "Resume presentation, timer continues from {time}"
+restart = "Restart"
+restart-detail = "Timer resets to 00:00"
+restart-label = "Restart presentation, timer resets to zero"
 loading = "Opening…"
 preparing = "Preparing…"
 welcome = "Choose a PDF to present"
@@ -172,6 +178,10 @@ wb-progress = "Slide {slide}/{slides} · Step {step}/{steps} · PDF {page}/{page
 wb-budget = "Image exceeds texture budget"
 wb-timer-yellow = "Time is running low"
 wb-timer-red = "Time limit approaching or reached"
+wb-timer-paused = "Paused"
+wb-timer-stopped = "Stopped"
+wb-timer-low = "Running low"
+wb-timer-limit = "Time up"
 
 wb-upload-error = "Graphics update failed; the previous complete image is retained. Change page or reopen the document to retry. {error}"
 

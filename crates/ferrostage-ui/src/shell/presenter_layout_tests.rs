@@ -10,7 +10,7 @@ fn presenter_start_waits_for_native_fullscreen_and_timeout_restores(cx: &mut Tes
         // geometry. It must not count as a successfully started presentation.
         let audience = test_window(s, true, cx);
         s.pending = Some(Transaction {
-            kind: TransactionKind::Start,
+            kind: TransactionKind::Start(StartTimer::Restart),
             presenter: None,
             audience: Some(audience),
             deadline: Instant::now() + CONFIRM_TIMEOUT,

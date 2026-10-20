@@ -95,6 +95,8 @@ pub(crate) enum Intent {
     Next,
     Previous,
     Start,
+    /// Start that continues the timer frozen by the last stop.
+    Resume,
     Stop,
     Black,
     White,
@@ -188,7 +190,24 @@ pub(crate) fn install(
     });
     register!(Next, Next);
     register!(Previous, Previous);
-    register!(Start, Start);
+    let target = shell.clone();
+    cx.on_action(move |_: &Start, cx| {
+        let target = target.clone();
+        // Resolve after the window lease, as `dispatch` does, so the choice
+        // reads the session state the coordinator will act on.
+        cx.defer(move |cx| {
+            if let Err(error) = target.update(cx, |shell, cx| {
+                let intent = if shell.resumable_elapsed().is_some() {
+                    Intent::Resume
+                } else {
+                    Intent::Start
+                };
+                shell.dispatch(intent, cx)
+            }) {
+                tracing::debug!(%error, "action target retired");
+            }
+        });
+    });
     register!(Stop, Stop);
     register!(Black, Black);
     register!(White, White);

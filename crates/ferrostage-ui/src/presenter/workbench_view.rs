@@ -4,6 +4,17 @@ use ferrostage_core::{AudienceProjectionSnapshot, PresentationCommand as Command
 use gpui::{MouseButton, canvas};
 use std::{cell::Cell, rc::Rc, time::Instant};
 
+/// Visible presentation-timer state; the capsule shows it with a mark and label.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum TimerPhase {
+    /// Ready with nothing to resume.
+    Fresh,
+    Running,
+    Paused,
+    /// Ready after a stop that Resume can continue.
+    Stopped,
+}
+
 pub(super) struct WorkbenchData {
     pub frames: Vec<(Surface, ReadyFrame)>,
     pub surfaces: Vec<Surface>,
@@ -19,6 +30,10 @@ pub(super) struct WorkbenchData {
     progress_compact: String,
     timer: String,
     timer_label: &'static str,
+    phase: TimerPhase,
+    /// Formatted frozen time Resume continues from, when the session can resume.
+    pub(super) resumable: Option<String>,
+    pub(super) pending_start: Option<crate::shell::StartTimer>,
     clock: Option<String>,
     warning: u8,
     paused: bool,
@@ -30,6 +45,12 @@ pub(super) struct WorkbenchData {
 }
 impl WorkbenchData {
     pub fn from_shell(shell: &Shell) -> Self {
+        let mut data = Self::capture(shell);
+        // Resume continues the frozen value the capsule already shows.
+        data.resumable = (data.phase == TimerPhase::Stopped).then(|| data.timer.clone());
+        data
+    }
+    fn capture(shell: &Shell) -> Self {
         let elapsed = shell.state.elapsed_at(Instant::now()).as_secs();
         let timer = &shell.settings.settings.timer;
         let target = u64::from(timer.target_minutes) * 60;
@@ -159,6 +180,14 @@ impl WorkbenchData {
                 0
             },
             paused: shell.state.is_timer_paused(),
+            phase: match shell.state.stage() {
+                SessionStage::Presenting if shell.state.is_timer_paused() => TimerPhase::Paused,
+                SessionStage::Presenting => TimerPhase::Running,
+                _ if shell.resumable_elapsed().is_some() => TimerPhase::Stopped,
+                _ => TimerPhase::Fresh,
+            },
+            resumable: None,
+            pending_start: shell.pending_start(),
             timed: shell.has_authored_timing(),
             autoplay_paused: shell.autoplay_paused(),
             budget: shell.settings.settings.cache.l1_gpu_mib as usize * 1024 * 1024 / 2,
@@ -401,68 +430,153 @@ impl Presenter {
                 .into_any_element()
         })
     }
+    /// Label key the capsule shows; state labels outrank threshold labels.
+    fn capsule_label(data: &WorkbenchData) -> &'static str {
+        let overtime = data.timer_label == "wb-overtime";
+        match data.phase {
+            TimerPhase::Paused => "wb-timer-paused",
+            TimerPhase::Stopped => "wb-timer-stopped",
+            TimerPhase::Running if !overtime && data.warning == 2 => "wb-timer-limit",
+            TimerPhase::Running if !overtime && data.warning == 1 => "wb-timer-low",
+            _ => data.timer_label,
+        }
+    }
+    #[cfg(all(test, feature = "test-support"))]
+    pub(crate) fn capsule_probe(
+        &self,
+    ) -> (
+        TimerPhase,
+        &'static str,
+        Option<&str>,
+        Option<crate::shell::StartTimer>,
+    ) {
+        let data = &self.data.workbench;
+        (
+            data.phase,
+            Self::capsule_label(data),
+            data.resumable.as_deref(),
+            data.pending_start,
+        )
+    }
+    /// 8px state mark: dot (running), ring (paused), square (stopped) or an
+    /// empty reserved slot, so state never relies on colour alone.
+    fn timer_mark(phase: TimerPhase, warning: u8, p: Palette) -> gpui::AnyElement {
+        let mark = div().size(px(8.)).flex_shrink_0();
+        match phase {
+            TimerPhase::Running => mark
+                .debug_selector(|| "timer-mark-running".into())
+                .rounded_full()
+                .bg(rgb(match warning {
+                    2 => p.error,
+                    1 => p.warning,
+                    _ => p.focus,
+                })),
+            TimerPhase::Paused => mark
+                .debug_selector(|| "timer-mark-paused".into())
+                .rounded_full()
+                .border(px(1.5))
+                .border_color(rgb(p.muted)),
+            TimerPhase::Stopped => mark
+                .debug_selector(|| "timer-mark-stopped".into())
+                .rounded(px(1.))
+                .bg(rgb(p.muted)),
+            TimerPhase::Fresh => mark.debug_selector(|| "timer-mark-fresh".into()),
+        }
+        .into_any_element()
+    }
     pub(super) fn timer_panel(&self, p: Palette) -> gpui::AnyElement {
         let data = &self.data.workbench;
+        let presenting = self.data.stage == SessionStage::Presenting;
+        // A session that has not started cannot be running low.
+        let warning = if data.phase == TimerPhase::Fresh {
+            0
+        } else {
+            data.warning
+        };
+        let label = self.locale.text(Self::capsule_label(data));
+        let mut accessible = format!("{label} {}", data.timer);
+        if warning > 0 {
+            accessible.push_str(". ");
+            accessible.push_str(self.locale.text(if warning == 2 {
+                "wb-timer-red"
+            } else {
+                "wb-timer-yellow"
+            }));
+        }
         div()
             .id("presenter-timer")
             .debug_selector(|| "presenter-timer".into())
+            .aria_label(accessible)
+            .flex_shrink_0()
+            .min_h(px(theme::CONTROL))
+            .pl(px(16.))
+            .pr(px(if presenting { 4. } else { 16. }))
             .flex()
             .items_center()
-            .gap(px(12.))
-            .when(data.warning > 0, |view| {
-                view.child(self.locale.text(if data.warning == 2 {
-                    "wb-timer-red"
-                } else {
-                    "wb-timer-yellow"
-                }))
-            })
+            .gap(px(8.))
+            .rounded(px(theme::PANEL_RADIUS))
+            .bg(rgb(p.soft))
+            .child(Self::timer_mark(data.phase, warning, p))
             .child(
+                // Fixed slot: label changes never move the digits.
                 div()
+                    .id("presenter-timer-label")
+                    .debug_selector(|| "presenter-timer-label".into())
+                    .flex_shrink_0()
+                    .min_w(px(self.ui_text_size(12.) * 6.5))
+                    .flex()
+                    .justify_end()
+                    .font_weight(gpui::FontWeight::MEDIUM)
                     .text_size(px(self.ui_text_size(12.)))
                     .text_color(rgb(p.muted))
-                    .child(self.locale.text(data.timer_label)),
+                    .child(label),
             )
             .child(
                 div()
                     .id("presenter-timer-digits")
                     .debug_selector(|| "presenter-timer-digits".into())
-                    .min_w(px(self.ui_text_size(28.) * 4.2))
+                    // Seven monospace cells hold the longest signed value, −000:00.
+                    .min_w(px(self.ui_text_size(30.) * 0.6 * 7.))
                     .flex_shrink_0()
+                    .flex()
+                    .justify_end()
                     .font(gpui::font(theme::MONO))
                     .font_weight(gpui::FontWeight::MEDIUM)
-                    .text_size(px(self.data.typography.size(28.)))
-                    .text_color(rgb(match data.warning {
-                        2 => p.error,
-                        1 => p.warning,
-                        _ => p.ink,
+                    .text_size(px(self.data.typography.size(30.)))
+                    .text_color(rgb(match (warning, data.phase) {
+                        (2, _) => p.error,
+                        (1, _) => p.warning,
+                        (_, TimerPhase::Running) => p.ink,
+                        _ => p.body,
                     }))
                     .child(data.timer.clone()),
             )
-            .when(self.data.stage == SessionStage::Presenting, |v| {
-                v.child(
-                    self.button(
-                        "timer-pause".into(),
-                        self.locale
-                            .text(if data.paused { "wb-resume" } else { "wb-pause" })
-                            .into(),
+            .when(presenting, |v| {
+                v.child(div().w(px(1.)).h(px(20.)).flex_shrink_0().bg(rgb(p.border)))
+                    .child(
+                        self.button(
+                            "timer-pause".into(),
+                            self.locale
+                                .text(if data.paused { "wb-resume" } else { "wb-pause" })
+                                .into(),
+                            true,
+                            false,
+                            Intent::Core(if data.paused {
+                                Command::ResumeTimer
+                            } else {
+                                Command::PauseTimer
+                            }),
+                            p,
+                        ),
+                    )
+                    .child(self.button(
+                        "timer-reset".into(),
+                        self.locale.text("wb-reset").into(),
                         true,
                         false,
-                        Intent::Core(if data.paused {
-                            Command::ResumeTimer
-                        } else {
-                            Command::PauseTimer
-                        }),
+                        Intent::Core(Command::ResetTimer),
                         p,
-                    ),
-                )
-                .child(self.button(
-                    "timer-reset".into(),
-                    self.locale.text("wb-reset").into(),
-                    true,
-                    false,
-                    Intent::Core(Command::ResetTimer),
-                    p,
-                ))
+                    ))
             })
             .into_any_element()
     }
@@ -531,17 +645,177 @@ impl Presenter {
             .into_any_element()
     }
 
+    /// Drawn counter-clockwise arrow for Restart: a 270 degree polyline arc plus head.
+    fn restart_icon(ink: u32) -> gpui::AnyElement {
+        canvas(
+            |_, _, _| (),
+            move |bounds, _, window, _| {
+                let at = |x: f32, y: f32| {
+                    gpui::point(
+                        bounds.origin.x + bounds.size.width * x,
+                        bounds.origin.y + bounds.size.height * y,
+                    )
+                };
+                let mut arc = gpui::PathBuilder::stroke(px(2.));
+                // From the top, clockwise to the left side; the head points back.
+                for step in 0..=18 {
+                    let angle = -std::f32::consts::FRAC_PI_2
+                        + std::f32::consts::PI * 1.5 * step as f32 / 18.;
+                    let point = at(0.5 + 0.36 * angle.cos(), 0.5 + 0.36 * angle.sin());
+                    if step == 0 {
+                        arc.move_to(point);
+                    } else {
+                        arc.line_to(point);
+                    }
+                }
+                if let Ok(path) = arc.build() {
+                    window.paint_path(path, rgb(ink));
+                }
+                let mut head = gpui::PathBuilder::fill();
+                head.move_to(at(0.5, 0.0));
+                head.line_to(at(0.5, 0.28));
+                head.line_to(at(0.28, 0.14));
+                head.close();
+                if let Ok(path) = head.build() {
+                    window.paint_path(path, rgb(ink));
+                }
+            },
+        )
+        .size(px(20.))
+        .flex_shrink_0()
+        .into_any_element()
+    }
+
+    /// Ready after an interrupted session: joined Resume (primary) and Restart
+    /// segments in place of the single Start button.
+    fn session_split(&self, time: &str, p: Palette) -> gpui::AnyElement {
+        use crate::shell::StartTimer;
+        let l = self.locale;
+        let enabled = self.data.start_reason.is_none() && !self.data.busy;
+        let pending = self.data.workbench.pending_start;
+        // Overlap the focus reservations so both rings stay fully visible.
+        let reservation = theme::FOCUS_WIDTH + theme::FOCUS_GAP;
+        let mut split = div()
+            .id("session-start-split")
+            .debug_selector(|| "session-start-split".into())
+            .flex()
+            .items_center()
+            .flex_shrink_0();
+        for (id, timer, kind) in [
+            (
+                "start-resume",
+                StartTimer::Resume,
+                theme::ButtonKind::Primary,
+            ),
+            (
+                "start-restart",
+                StartTimer::Restart,
+                theme::ButtonKind::Navigation,
+            ),
+        ] {
+            let resume = timer == StartTimer::Resume;
+            let time_arg = [("time", time.to_string())];
+            let (label, detail, accessible, intent, width) = if resume {
+                (
+                    l.text("resume").to_string(),
+                    l.format("resume-detail", &time_arg),
+                    l.format("resume-label", &time_arg),
+                    Intent::Resume,
+                    theme::SESSION_WIDTH,
+                )
+            } else {
+                (
+                    l.text("restart").to_string(),
+                    l.text("restart-detail").to_string(),
+                    l.text("restart-label").to_string(),
+                    Intent::Start,
+                    theme::RESTART_WIDTH,
+                )
+            };
+            let label = if pending == Some(timer) {
+                l.text("preparing").to_string()
+            } else {
+                label
+            };
+            let style = p.button(kind, enabled, false);
+            let detail_ink = match (enabled, resume) {
+                (true, true) => theme::ON_PRIMARY_DETAIL,
+                (true, false) => p.muted,
+                (false, _) => style.ink,
+            };
+            let radius = px(theme::RADIUS);
+            let face = div()
+                .id(SharedString::from(format!("{id}-face")))
+                .min_h(px(theme::SESSION_CONTROL))
+                .min_w(px(self.data.typography.size(width)))
+                .px(px(12.))
+                .flex()
+                .items_center()
+                .gap(px(8.))
+                .relative()
+                .bg(rgb(style.fill))
+                .text_color(rgb(style.ink))
+                .border_1()
+                .border_color(rgb(style.border))
+                .when(resume, |view| view.rounded_tl(radius).rounded_bl(radius))
+                .when(!resume, |view| view.rounded_tr(radius).rounded_br(radius))
+                .child(if resume {
+                    Self::session_icon(false, style.ink)
+                } else {
+                    Self::restart_icon(style.ink)
+                })
+                .child(
+                    div()
+                        .flex()
+                        .flex_col()
+                        .child(
+                            div()
+                                .font_weight(gpui::FontWeight::MEDIUM)
+                                .text_size(px(self.data.typography.size(14.)))
+                                .child(label),
+                        )
+                        .child(
+                            div()
+                                .id(SharedString::from(format!("{id}-detail")))
+                                .debug_selector(move || format!("{id}-detail"))
+                                .text_size(px(self.data.typography.size(12.)))
+                                .text_color(rgb(detail_ink))
+                                .child(detail),
+                        ),
+                )
+                .when(enabled, |view| {
+                    view.hover(move |state| state.bg(rgb(style.hover)))
+                        .active(move |state| state.bg(rgb(style.pressed)).top(px(1.)))
+                });
+            split = split.child(
+                self.activation_target(id.into(), accessible, enabled, intent, p)
+                    .when(!resume, |view| view.ml(px(-reservation)))
+                    .child(face),
+            );
+        }
+        split.into_any_element()
+    }
+
     pub(super) fn tools_panel(&self, p: Palette, window: &Window) -> gpui::AnyElement {
         let presenting = self.data.stage == SessionStage::Presenting;
         let has_steps = !self.data.workbench.steps.is_empty();
+        let resumable = self
+            .data
+            .workbench
+            .resumable
+            .clone()
+            .filter(|_| !presenting);
         let mut navigation = div()
             .id("session-navigation")
             .debug_selector(|| "session-navigation".into())
             .flex()
             .items_center()
             .flex_shrink_0()
-            .gap(px(4.))
-            .child(
+            .gap(px(4.));
+        navigation = if let Some(time) = resumable {
+            navigation.child(self.session_split(&time, p))
+        } else {
+            navigation.child(
                 self.button(
                     if presenting { "stop" } else { "start" }.into(),
                     self.locale
@@ -562,7 +836,8 @@ impl Presenter {
                     },
                     p,
                 ),
-            );
+            )
+        };
         if !presenting {
             navigation = navigation.child(
                 self.button(
@@ -732,29 +1007,22 @@ impl Presenter {
                     p,
                 ));
             }
-            let secondary = div()
-                .flex()
-                .items_center()
-                .flex_wrap()
-                .gap(px(4.))
-                .when(!presenting, |view| {
-                    view.child(self.button(
-                        "clear-strokes".into(),
-                        self.locale.text("wb-clear").into(),
-                        true,
-                        false,
-                        Intent::Core(Command::ClearStrokes),
-                        p,
-                    ))
-                })
-                .child(self.button(
-                    "document-options".into(),
-                    self.locale.text("wb-document").into(),
-                    !self.data.busy,
-                    false,
-                    Intent::Document,
-                    p,
-                ));
+            let secondary =
+                div()
+                    .flex()
+                    .items_center()
+                    .flex_wrap()
+                    .gap(px(4.))
+                    .when(!presenting, |view| {
+                        view.child(self.button(
+                            "clear-strokes".into(),
+                            self.locale.text("wb-clear").into(),
+                            true,
+                            false,
+                            Intent::Core(Command::ClearStrokes),
+                            p,
+                        ))
+                    });
             strip = strip.child(blanking).child(tools).child(secondary);
         }
         div()

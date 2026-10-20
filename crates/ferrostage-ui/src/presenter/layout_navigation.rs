@@ -176,7 +176,11 @@ impl Presenter {
         let width = 320f32
             .min(f32::from(window.viewport_size().width) - 24.)
             .max(200.);
-        let available = (f32::from(self.layout_anchor.get().top()) - 20.).max(120.);
+        // Space below the header trigger, less the 8px gap and 12px margin.
+        let available = (f32::from(window.viewport_size().height)
+            - f32::from(self.layout_anchor.get().bottom())
+            - 20.)
+            .max(120.);
         let detected = layout_label(menu.detected);
         let mut body = div()
             .id("layout-menu-body")

@@ -25,6 +25,12 @@ start-mode-dual-notes-help = "左侧讲稿，右侧当前页和下一页；观�
 start-mode-single = "单屏"
 start-mode-single-help = "本屏全屏放映幻灯片，不显示讲稿和控件。"
 stop = "结束演示"
+resume = "继续演示"
+resume-detail = "从 {time} 继续"
+resume-label = "继续演示，从 {time} 继续计时"
+restart = "重新开始"
+restart-detail = "计时归零"
+restart-label = "重新开始演示，计时归零"
 loading = "正在打开…"
 preparing = "正在准备…"
 welcome = "选择 PDF，准备演示"
@@ -172,6 +178,10 @@ wb-progress = "逻辑页 {slide}/{slides} · 步进 {step}/{steps} · 物理页 
 wb-budget = "图像超出纹理缓存预算"
 wb-timer-yellow = "剩余时间不足"
 wb-timer-red = "即将或已经到达时间限制"
+wb-timer-paused = "已暂停"
+wb-timer-stopped = "已停止"
+wb-timer-low = "时间不多"
+wb-timer-limit = "到时"
 
 wb-upload-error = "图像更新失败，保留上一张完整画面。切换页面或重新打开文档可重试。{error}"
 

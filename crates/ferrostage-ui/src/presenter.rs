@@ -16,6 +16,8 @@ use gpui::{
     AccessibleAction, Context, Div, ExternalPaths, FocusHandle, Render, Role, SharedString,
     Stateful, WeakEntity, Window, WindowAppearance, div, prelude::*, px, rgb,
 };
+#[cfg(all(test, feature = "test-support"))]
+pub(crate) use workbench_view::TimerPhase;
 
 /// Drawing data, captured before open_window synchronously draws its first
 /// frame. Rendering never leases the controller that may be opening this view.
@@ -497,7 +499,7 @@ impl Presenter {
         let category_control = matches!(&intent, Intent::SettingsCategory(_));
         let kind = match &intent {
             _ if preference_control => theme::ButtonKind::Utility,
-            Intent::Start => theme::ButtonKind::Primary,
+            Intent::Start | Intent::Resume => theme::ButtonKind::Primary,
             Intent::Stop | Intent::Core(ferrostage_core::PresentationCommand::ClearStrokes) => {
                 theme::ButtonKind::Destructive
             }
@@ -542,8 +544,14 @@ impl Presenter {
             style.ink = if enabled { palette.body } else { palette.muted };
         }
         if quiet_header {
-            style.fill = palette.canvas;
-            style.border = palette.canvas;
+            // Timer controls sit inside the soft header capsule.
+            let capsule = matches!(&intent, Intent::Core(_));
+            style.fill = if capsule {
+                palette.soft
+            } else {
+                palette.canvas
+            };
+            style.border = style.fill;
         }
         self.activation_target(id.clone(), label.clone(), enabled, intent, palette)
             .rounded(px(style.radius + theme::FOCUS_GAP))
@@ -828,13 +836,36 @@ impl Presenter {
             .flex()
             .items_center()
             .child(self.timer_panel(p));
+        // Equal flexible sides keep the timer centered on the window until one
+        // side's content no longer fits; actions never shrink below content.
         let mut actions = div()
             .id("presenter-actions")
             .debug_selector(|| "presenter-actions".into())
             .flex()
             .items_center()
+            .justify_end()
             .gap(px(8.))
-            .flex_shrink_0();
+            .when(narrow, |view| view.w_full().flex_wrap())
+            .when(!narrow, |view| view.flex_1())
+            // Layout & navigation needs a mapped document session.
+            .when(!self.data.workbench.steps.is_empty(), |view| {
+                view.child(self.button(
+                    "document-options".into(),
+                    l.text("wb-document").into(),
+                    !busy,
+                    false,
+                    Intent::Document,
+                    p,
+                ))
+                .child(
+                    div()
+                        .id("presenter-actions-divider")
+                        .w(px(1.))
+                        .h(px(24.))
+                        .flex_shrink_0()
+                        .bg(rgb(p.border)),
+                )
+            });
         if stage == SessionStage::Presenting {
             actions = actions.child(self.button(
                 "more".into(),
@@ -901,16 +932,10 @@ impl Presenter {
             .items_center()
             .gap(px(12.));
         if narrow {
-            bar = bar.flex_col().child(
-                div()
-                    .flex()
-                    .items_center()
-                    .gap(px(12.))
-                    .min_w_0()
-                    .w_full()
-                    .child(identity)
-                    .child(timer),
-            );
+            bar = bar
+                .flex_col()
+                .child(identity.w_full())
+                .child(div().w_full().flex().justify_center().child(timer));
         } else {
             bar = bar.child(identity).child(timer);
         }
@@ -1432,7 +1457,8 @@ impl Render for Presenter {
                 view.child(self.contextual_host(
                     self.layout_menu_panel(p, window),
                     self.layout_anchor.get(),
-                    gpui::Anchor::BottomRight,
+                    // The header trigger opens its menu downward.
+                    gpui::Anchor::TopRight,
                 ))
             })
             .when(self.data.start_menu, |view| {
