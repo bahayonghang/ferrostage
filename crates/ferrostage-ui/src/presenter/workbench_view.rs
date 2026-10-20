@@ -530,6 +530,34 @@ impl Presenter {
                     p,
                 ),
             );
+        if !presenting {
+            navigation = navigation.child(
+                self.button(
+                    "start-mode".into(),
+                    format!(
+                        "{} {}",
+                        self.locale
+                            .text(super::start_mode::label(self.data.start_mode)),
+                        if self.data.start_menu { "⌃" } else { "⌄" }
+                    ),
+                    !self.data.busy,
+                    false,
+                    Intent::StartModeMenu,
+                    p,
+                )
+                .aria_label(
+                    self.locale.format(
+                        "start-mode-trigger",
+                        &[(
+                            "mode",
+                            self.locale
+                                .text(super::start_mode::label(self.data.start_mode))
+                                .into(),
+                        )],
+                    ),
+                ),
+            );
+        }
         if has_steps {
             for (id, label, intent) in [
                 ("previous", "wb-previous", Intent::Previous),

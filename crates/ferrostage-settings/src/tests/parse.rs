@@ -2,7 +2,7 @@ use ferrostage_core::MonitorRole;
 use ferrostage_render::{L1_GPU_BUDGET_MIB, L2_CPU_BUDGET_MIB, L3_THUMB_BUDGET_MIB};
 
 use crate::from_toml;
-use crate::schema::{BindingIssue, SECTION_NAMES, Settings, SingleMonitorMode};
+use crate::schema::{BindingIssue, SECTION_NAMES, Settings, SingleMonitorMode, StartMode};
 
 use super::Scratch;
 
@@ -37,7 +37,7 @@ fn defaults_use_render_cache_budgets() {
     assert_eq!(Settings::default().presenter.grid_visible_pages, 16);
     assert_eq!(
         Settings::default().display.single_monitor_mode,
-        SingleMonitorMode::PresenterOnly
+        SingleMonitorMode::FullscreenAudience
     );
 }
 
@@ -178,6 +178,68 @@ fn wrong_section_type_falls_back_only_that_section() {
 }
 
 #[test]
+fn single_monitor_mode_reads_legacy_presenter_only_as_fullscreen() {
+    let mode = |value: &str| {
+        let outcome = from_toml(&format!(
+            "schema_version = 1\n[display]\nsingle_monitor_mode = \"{value}\"\n"
+        ))
+        .expect("parse");
+        (
+            outcome.settings.display.single_monitor_mode,
+            outcome.warnings.len(),
+            outcome.settings,
+        )
+    };
+    let (legacy, warnings, settings) = mode("presenter_only");
+    assert_eq!(legacy, SingleMonitorMode::FullscreenAudience);
+    assert_eq!(warnings, 0);
+    let saved = crate::merge::merge_document(&toml::Table::new(), &settings, &[]).expect("merge");
+    assert_eq!(
+        saved["display"]["single_monitor_mode"].as_str(),
+        Some("fullscreen_audience")
+    );
+    assert_eq!(
+        mode("fullscreen_audience").0,
+        SingleMonitorMode::FullscreenAudience
+    );
+    assert_eq!(
+        mode("windowed_audience").0,
+        SingleMonitorMode::WindowedAudience
+    );
+    let (unknown, warnings, _) = mode("projector");
+    assert_eq!(unknown, SingleMonitorMode::FullscreenAudience);
+    assert_eq!(warnings, 1);
+}
+
+#[test]
+fn start_mode_defaults_to_dual_and_round_trips() {
+    assert_eq!(Settings::default().display.start_mode, StartMode::Dual);
+    for (value, mode) in [("dual", StartMode::Dual), ("single", StartMode::Single)] {
+        let outcome = from_toml(&format!(
+            "schema_version = 1
+[display]
+start_mode = \"{value}\"
+"
+        ))
+        .expect("parse");
+        assert_eq!(outcome.settings.display.start_mode, mode);
+        assert!(outcome.warnings.is_empty());
+        let saved = crate::merge::merge_document(&toml::Table::new(), &outcome.settings, &[])
+            .expect("merge");
+        assert_eq!(saved["display"]["start_mode"].as_str(), Some(value));
+    }
+    let outcome = from_toml(
+        "schema_version = 1
+[display]
+start_mode = \"triple\"
+",
+    )
+    .expect("parse");
+    assert_eq!(outcome.settings.display.start_mode, StartMode::Dual);
+    assert_eq!(outcome.warnings.len(), 1);
+}
+
+#[test]
 fn illegal_role_becomes_none_not_audience() {
     let outcome = from_toml(
         r#"
@@ -197,7 +259,7 @@ fn illegal_role_becomes_none_not_audience() {
     .expect("parse");
     assert_eq!(
         outcome.settings.display.single_monitor_mode,
-        SingleMonitorMode::PresenterOnly
+        SingleMonitorMode::FullscreenAudience
     );
     assert_eq!(outcome.settings.display.monitors[0].role, MonitorRole::None);
     assert_eq!(

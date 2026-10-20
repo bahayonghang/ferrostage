@@ -45,7 +45,7 @@ The audience window exists only in `Presenting`. `AudienceProjectionSnapshot` in
 
 Commands such as page turns, laser, and blank are accepted in `Ready` and `Presenting`. Only `Presenting` produces audience pixels. Hot reload does not change the stage or the timer.
 
-`StartPresentation { audience_available }` requires `Ready` and a resolved Audience. The only exception is one monitor with `display.single_monitor_mode = "windowed_audience"`, which allows a windowed audience on that screen. Zero monitors, an ambiguous mapping, and a missing Audience without that exception stay in `Ready`. Window creation failure also stays in `Ready` with no leftover audience window.
+`StartPresentation { audience_available }` requires `Ready` and a resolved Audience. The only exception is one monitor (one physical screen or OS display duplication): the audience opens on that screen, fullscreen above the windowed presenter for `display.single_monitor_mode = "fullscreen_audience"` (default), or windowed for `"windowed_audience"`. `display.start_mode = "single"` uses the fullscreen same-screen path on the presenter monitor at any monitor count; `"dual"` (default) follows the display roles. Zero monitors, an ambiguous mapping, and two or more monitors without an Audience stay in `Ready`. Window creation failure also stays in `Ready` with no leftover audience window.
 
 ## Monitor roles
 

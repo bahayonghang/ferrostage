@@ -375,6 +375,87 @@ impl Presenter {
                         ),
                     );
             }
+            Category::About => {
+                let text = |value: String| {
+                    div()
+                        .text_size(px(self.ui_text_size(14.)))
+                        .text_color(rgb(p.muted))
+                        .child(value)
+                        .into_any_element()
+                };
+                let built_at = crate::about::build_info()
+                    .and_then(|build| chrono::DateTime::from_timestamp(build.built_at, 0))
+                    .filter(|time| time.timestamp() > 0)
+                    .map(|time| time.with_timezone(&chrono::Local));
+                let built_at = match built_at {
+                    Some(time) => div()
+                        .flex()
+                        .items_center()
+                        .gap(px(8.))
+                        .child(text(
+                            time.format(l.text("about-build-time-format")).to_string(),
+                        ))
+                        .child(
+                            div()
+                                .px(px(6.))
+                                .rounded(px(4.))
+                                .border_1()
+                                .border_color(rgb(p.border))
+                                .text_size(px(self.ui_text_size(12.)))
+                                .text_color(rgb(p.muted))
+                                .child(time.format("UTC%:z").to_string()),
+                        )
+                        .into_any_element(),
+                    None => text(l.text("about-unknown").into()),
+                };
+                let repository = crate::about::REPOSITORY;
+                let repository = self
+                    .activation_target(
+                        "about-repository-link".into(),
+                        repository.into(),
+                        true,
+                        Intent::OpenRepository,
+                        p,
+                    )
+                    .role(Role::Link)
+                    .rounded(px(4.))
+                    .text_size(px(self.ui_text_size(14.)))
+                    .text_color(rgb(p.focus))
+                    .hover(|style| style.underline())
+                    .child(repository)
+                    .into_any_element();
+                for (key, value) in [
+                    ("about-version", text(crate::about::VERSION.to_owned())),
+                    (
+                        "about-author",
+                        text(crate::about::AUTHORS.replace(':', ", ")),
+                    ),
+                    ("about-build-time", built_at),
+                    ("about-license", text(crate::about::LICENSE.to_owned())),
+                    ("about-repository", repository),
+                ] {
+                    content = content.child(
+                        div()
+                            .id(SharedString::from(key))
+                            .debug_selector(move || key.into())
+                            .flex()
+                            .flex_wrap()
+                            .items_center()
+                            .justify_between()
+                            .gap(px(12.))
+                            .py(px(12.))
+                            .border_b_1()
+                            .border_color(rgb(p.border))
+                            .child(
+                                div()
+                                    .text_size(px(self.ui_text_size(16.)))
+                                    .text_color(rgb(p.ink))
+                                    .child(l.text(key)),
+                            )
+                            .child(value),
+                    );
+                }
+            }
             _ => {}
         }
         let mut footer = div()

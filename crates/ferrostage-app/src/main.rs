@@ -54,6 +54,9 @@ fn runtime_log_filter(directives: Option<&str>) -> tracing_subscriber::EnvFilter
 }
 
 fn main() -> ExitCode {
+    ferrostage_ui::about::set_build_info(ferrostage_ui::about::BuildInfo {
+        built_at: env!("FERROSTAGE_BUILD_EPOCH").parse().unwrap_or(0),
+    });
     tracing_subscriber::fmt()
         .with_file(true)
         .with_line_number(true)

@@ -31,7 +31,7 @@ There is at most one `Audience`.
 Resolution rules:
 
 - No saved record: the primary monitor is `Presenter`. If none is primary, the first id in sort order is `Presenter`. With two or more monitors, `Audience` is the largest remaining monitor by pixel area, excluding the resolved Presenter id. Equal areas break ties by `MonitorId` sort.
-- One monitor resolves to `Presenter` on that screen and `audience = None`, saved record or not. A same-screen audience window exists only when `display.single_monitor_mode = "windowed_audience"`.
+- One monitor resolves to `Presenter` on that screen and `audience = None`, saved record or not. The same-screen audience window is fullscreen when `display.single_monitor_mode = "fullscreen_audience"` (default) and windowed when it is `"windowed_audience"`. During fullscreen same-screen playback, shortcuts that activate the presenter window do nothing.
 - A saved record disables the audience heuristic. A missing saved Audience, or an explicit `None`, does not take another monitor (`SavedAudienceMissing` when the saved Audience is absent).
 - A missing Presenter may fall back to the primary after the saved Audience id is excluded, and emits `PresenterMissingFallbackPrimary`. Zero monitors yields `presenter = None` (`NoMonitors`).
 - Each `MonitorId` is normalized to one role first. The first duplicate binding wins (`DuplicateBinding`). Duplicate `Audience` or `Presenter` roles then keep the first valid binding in configuration order; the rest become `None` and warn (`DuplicateAudience`, `DuplicatePresenter`).

@@ -3,6 +3,7 @@ mod layout_navigation;
 mod number_input;
 mod page_browser;
 mod settings_view;
+mod start_mode;
 mod utility_menu;
 mod workbench_view;
 use crate::{
@@ -30,8 +31,12 @@ pub(crate) struct PresenterData {
     number_focus: FocusHandle,
     displays: Option<crate::display_settings::DisplayPanel>,
     error: Option<String>,
+    /// The shown error is an event message that `Intent::DismissError` clears.
+    error_dismissible: bool,
     warnings: Vec<String>,
     start_reason: Option<String>,
+    start_mode: ferrostage_settings::StartMode,
+    start_menu: bool,
     loading: bool,
     busy: bool,
     can_open: bool,
@@ -79,6 +84,7 @@ impl PresenterData {
             },
             number_focus: shell.number_input_focus.clone(),
             displays: shell.display_panel(),
+            error_dismissible: shell.graphics_error.is_some() || shell.error.is_some(),
             error: shell
                 .graphics_error
                 .as_ref()
@@ -92,6 +98,11 @@ impl PresenterData {
                 .chain(layout_navigation::document_warnings(shell))
                 .collect(),
             start_reason: shell.start_reason(),
+            start_mode: shell.settings.settings.display.start_mode,
+            start_menu: matches!(
+                shell.contextual,
+                Some(crate::page_browser::ContextualSurface::StartMode)
+            ),
             loading: shell.loading,
             busy: shell.busy(),
             can_open: shell.import_allowed() && !shell.busy(),
@@ -139,6 +150,8 @@ pub(crate) struct Presenter {
     number_selecting: std::rc::Rc<std::cell::Cell<bool>>,
     contextual_anchor: std::rc::Rc<std::cell::Cell<gpui::Bounds<gpui::Pixels>>>,
     layout_anchor: std::rc::Rc<std::cell::Cell<gpui::Bounds<gpui::Pixels>>>,
+    start_anchor: std::rc::Rc<std::cell::Cell<gpui::Bounds<gpui::Pixels>>>,
+    start_row_focus: [FocusHandle; 2],
     layout_trigger_focus: FocusHandle,
     layout_row_focus: [FocusHandle; layout_navigation::ROW_COUNT],
     layout_scroll: gpui::ScrollHandle,
@@ -385,6 +398,8 @@ impl Presenter {
             number_selecting: Default::default(),
             contextual_anchor: Default::default(),
             layout_anchor: Default::default(),
+            start_anchor: Default::default(),
+            start_row_focus: std::array::from_fn(|_| cx.focus_handle()),
             layout_trigger_focus: cx.focus_handle(),
             layout_row_focus,
             layout_scroll,
@@ -587,6 +602,8 @@ impl Presenter {
             );
         let anchor = if id == "document-options" {
             self.layout_anchor.clone()
+        } else if id == "start-mode" {
+            self.start_anchor.clone()
         } else if id == "more" || id == "drawing-tools" {
             self.utility_anchor[usize::from(id == "drawing-tools")].clone()
         } else {
@@ -594,7 +611,7 @@ impl Presenter {
         };
         let measure_anchor = matches!(
             id.as_str(),
-            "workbench-progress" | "document-options" | "more" | "drawing-tools"
+            "workbench-progress" | "document-options" | "start-mode" | "more" | "drawing-tools"
         );
         let home_index = (self.data.stage == SessionStage::Idle)
             .then(|| {
@@ -956,12 +973,13 @@ impl Render for Presenter {
         };
         let filename = self.data.filename.clone();
         let modal = self.data.modal.clone();
-        let error = self
+        let texture_error = self
             .textures
             .borrow()
             .error()
-            .map(|error| l.error("wb-upload-error", error))
-            .or_else(|| self.data.error.clone());
+            .map(|error| l.error("wb-upload-error", error));
+        let dismissible = texture_error.is_none() && self.data.error_dismissible;
+        let error = texture_error.or_else(|| self.data.error.clone());
         let warnings = self.data.warnings.clone();
         let dirty = self.data.dirty;
         let save_error = self.data.save_error.clone();
@@ -974,6 +992,7 @@ impl Render for Presenter {
         let surface_open = modal.is_some()
             || self.data.browser.is_some()
             || layout_open
+            || self.data.start_menu
             || self.data.utility_menu.is_some();
         if surface_open && !self.had_modal {
             self.return_focus = if let Some(tools) = self.data.utility_menu {
@@ -989,6 +1008,8 @@ impl Render for Presenter {
                 } else if layout_open {
                     &self.layout_row_focus
                         [self.data.layout_menu.as_ref().unwrap().selected_layout()]
+                } else if self.data.start_menu {
+                    &self.start_row_focus[self.start_mode_index()]
                 } else if self.data.browser.is_some() {
                     &self.number_focus
                 } else {
@@ -1234,8 +1255,52 @@ impl Render for Presenter {
                     .debug_selector(|| "presenter-error".into())
                     .flex_shrink_0()
                     .role(Role::Alert)
-                    .text_color(rgb(p.error))
-                    .child(error),
+                    .flex()
+                    .items_center()
+                    .gap(px(8.))
+                    .pl(px(12.))
+                    .pr(px(4.))
+                    .py(px(4.))
+                    .rounded(px(8.))
+                    .border_1()
+                    .border_l_4()
+                    .border_color(rgb(p.error))
+                    .bg(rgb(p.card))
+                    .child(
+                        div()
+                            .flex_shrink_0()
+                            .size(px(20.))
+                            .rounded_full()
+                            .bg(rgb(p.error))
+                            .text_color(rgb(theme::ON_PRIMARY))
+                            .text_size(px(self.ui_text_size(12.)))
+                            .flex()
+                            .items_center()
+                            .justify_center()
+                            .child("!"),
+                    )
+                    .child(
+                        div()
+                            .flex_1()
+                            .min_w_0()
+                            .whitespace_normal()
+                            .text_color(rgb(p.error))
+                            .child(error),
+                    )
+                    .when(dismissible, |view| {
+                        view.child(
+                            self.button(
+                                "dismiss-error".into(),
+                                "×".into(),
+                                true,
+                                false,
+                                Intent::DismissError,
+                                p,
+                            )
+                            .flex_shrink_0()
+                            .aria_label(l.text("dismiss-error")),
+                        )
+                    }),
             );
         }
         for warning in warnings {
@@ -1316,6 +1381,13 @@ impl Render for Presenter {
                     self.layout_menu_panel(p, window),
                     self.layout_anchor.get(),
                     gpui::Anchor::BottomRight,
+                ))
+            })
+            .when(self.data.start_menu, |view| {
+                view.child(self.contextual_host(
+                    self.start_mode_panel(p, window),
+                    self.start_anchor.get(),
+                    gpui::Anchor::BottomLeft,
                 ))
             })
             .when_some(self.data.utility_menu, |view, tools| {

@@ -60,9 +60,11 @@ impl Shell {
     }
 
     pub(super) fn start_presenter_confirmed(&self, cx: &mut App) -> bool {
+        // Single-screen Start does not toggle the presenter; its user-chosen
+        // bounds (for example maximized) are not part of the placement.
         self.presenter
             .as_ref()
-            .is_some_and(|p| Self::confirmed(p, cx))
+            .is_some_and(|p| self.presenter_restore.is_none() || Self::confirmed(p, cx))
     }
 
     pub(super) fn restore_presenter(&mut self, cx: &mut Context<Self>) {

@@ -102,7 +102,7 @@ Idle ──LoadDocument(ok)──▶ Ready ──StartPresentation──▶ Pres
 
 规则：
 
-- `StartPresentation` 的前置条件：`Ready`，且显示器角色解析出至少一个 Audience 屏；否则命令返回错误并由讲者窗口提示（例如"未找到观众显示器，请在设置中分配"）。单屏模式下允许以窗口化观众窗口演示，但必须由设置项 `display.single_monitor_mode = "windowed_audience"` 显式允许。
+- `StartPresentation` 的前置条件：`Ready`，且显示器角色解析出至少一个 Audience 屏；否则命令返回错误并由讲者窗口提示（例如"未找到观众显示器，请在设置中分配"）。单屏（含系统复制显示）时观众窗口开在同一屏：默认 `display.single_monitor_mode = "fullscreen_audience"`，观众窗口全屏覆盖窗口化的讲者窗口并接收键盘输入，只显示幻灯片；`"windowed_audience"` 为窗口化观众窗口。1.1.x 的 `"presenter_only"` 读取为 `"fullscreen_audience"`。
 - 翻页、激光笔、黑屏等命令在 `Ready` 和 `Presenting` 都接受（讲者可提前定位），但只有 `Presenting` 会产生观众像素。
 - 热重载不改变阶段；`StopPresentation` 不丢弃批注与计时读数；`CloseDocument` 全部清空。
 - `AudienceProjectionSnapshot` 新增 `stage: AudienceStage { Curtain, Live }`。非 `Presenting` 阶段的快照恒为 `Curtain`，观众窗口对 `Curtain` 只绘纯黑。
@@ -140,7 +140,8 @@ recent_files = []              # 02定义，07维护，09清空/限制
 debug_overlay = false          # 02定义，08实现，09控件
 
 [display]
-single_monitor_mode = "presenter_only"   # presenter_only | windowed_audience
+single_monitor_mode = "fullscreen_audience"   # fullscreen_audience | windowed_audience
+start_mode = "dual"                           # dual | single（single：任意显示器数量都在讲者屏全屏放映）
 audience_fullscreen = true
 presenter_start_fullscreen = false
 

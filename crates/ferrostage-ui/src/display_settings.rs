@@ -9,8 +9,17 @@ use ferrostage_settings::{DisplaySettings, MonitorBinding, SingleMonitorMode};
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum PdfTarget {
     None,
+    /// Fullscreen playback on the only monitor.
+    SameScreenFullscreen,
     Windowed,
     Display(MonitorId),
+}
+
+impl PdfTarget {
+    /// Playback on the presenter monitor; valid only with exactly one monitor.
+    pub fn same_screen(&self) -> bool {
+        matches!(self, Self::SameScreenFullscreen | Self::Windowed)
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -27,8 +36,9 @@ impl DisplayDraft {
             revision,
             presenter: roles.presenter,
             pdf: match policy::audience_target(monitors, settings) {
-                Ok((_, false)) if monitors.len() == 1 => PdfTarget::Windowed,
-                Ok((id, _)) => PdfTarget::Display(id),
+                Ok(target) if target.shared && target.fullscreen => PdfTarget::SameScreenFullscreen,
+                Ok(target) if target.shared => PdfTarget::Windowed,
+                Ok(target) => PdfTarget::Display(target.monitor),
                 Err(_) => PdfTarget::None,
             },
         }
@@ -52,7 +62,11 @@ impl DisplayDraft {
             PdfTarget::Display(id) if self.presenter.as_ref() == Some(id) => {
                 Some("displays-conflict")
             }
-            PdfTarget::Windowed if monitors.len() != 1 => Some("displays-windowed-single"),
+            target if target.same_screen() && monitors.len() != 1 => {
+                Some("displays-windowed-single")
+            }
+            // One monitor has no saved no-play mode; Stop ends playback instead.
+            PdfTarget::None if monitors.len() == 1 => Some("displays-no-play-single"),
             _ => None,
         }
     }
@@ -70,7 +84,7 @@ impl DisplayDraft {
         next.single_monitor_mode = if self.pdf == PdfTarget::Windowed {
             SingleMonitorMode::WindowedAudience
         } else {
-            SingleMonitorMode::PresenterOnly
+            SingleMonitorMode::FullscreenAudience
         };
         // Explicit None bindings suppress the unsaved-role heuristic. Replace
         // old offline bindings too, so reconnection cannot revive an old role.
@@ -365,8 +379,8 @@ impl RoleProjection {
         }
         let configured_pdf = match &self.configured.pdf {
             PdfTarget::Display(target) => target == id,
-            PdfTarget::Windowed => self.configured.presenter.as_ref() == Some(id),
-            PdfTarget::None => false,
+            target if target.same_screen() => self.configured.presenter.as_ref() == Some(id),
+            _ => false,
         };
         if configured_pdf && self.pdf != WindowLocation::Monitor(id.clone()) {
             markers.push((
@@ -385,13 +399,12 @@ impl RoleProjection {
             }
             let draft_pdf = match &draft.pdf {
                 PdfTarget::Display(target) => target == id,
-                PdfTarget::Windowed => draft.presenter.as_ref() == Some(id),
-                PdfTarget::None => false,
+                target if target.same_screen() => draft.presenter.as_ref() == Some(id),
+                _ => false,
             };
             if draft_pdf
                 && (draft.pdf != self.configured.pdf
-                    || draft.presenter != self.configured.presenter
-                        && draft.pdf == PdfTarget::Windowed)
+                    || draft.presenter != self.configured.presenter && draft.pdf.same_screen())
             {
                 markers.push(("displays-pending-pdf", false));
             }
@@ -724,20 +737,26 @@ pub(crate) mod view {
             for (number, monitor) in numbered(&panel.monitors) {
                 let copy = screen_copy(l, &panel.monitors, monitor);
                 let app_selected = panel.draft.presenter.as_ref() == Some(&monitor.id);
-                let (pdf_id, pdf_label, target) = if panel.monitors.len() == 1 {
-                    (
-                        "display-pdf-windowed".to_owned(),
-                        "displays-role-windowed",
-                        PdfTarget::Windowed,
-                    )
+                let pdf_choices = if panel.monitors.len() == 1 {
+                    vec![
+                        (
+                            "display-pdf-fullscreen".to_owned(),
+                            "displays-role-fullscreen",
+                            PdfTarget::SameScreenFullscreen,
+                        ),
+                        (
+                            "display-pdf-windowed".to_owned(),
+                            "displays-role-windowed",
+                            PdfTarget::Windowed,
+                        ),
+                    ]
                 } else {
-                    (
+                    vec![(
                         format!("display-pdf-{number}"),
                         "displays-role-pdf",
                         PdfTarget::Display(monitor.id.clone()),
-                    )
+                    )]
                 };
-                let selected = panel.draft.pdf == target;
                 let picked = |key, active| {
                     if active {
                         l.format("displays-role-picked", &[("label", l.text(key).into())])
@@ -832,13 +851,17 @@ pub(crate) mod view {
                                         Intent::SelectPresenter(monitor.id.clone()),
                                         p,
                                     ))
-                                    .child(view.button(
-                                        pdf_id,
-                                        picked(pdf_label, selected),
-                                        panel.editable,
-                                        false,
-                                        Intent::SelectPdf(target),
-                                        p,
+                                    .children(pdf_choices.into_iter().map(
+                                        |(pdf_id, pdf_label, target)| {
+                                            view.button(
+                                                pdf_id,
+                                                picked(pdf_label, panel.draft.pdf == target),
+                                                panel.editable,
+                                                false,
+                                                Intent::SelectPdf(target),
+                                                p,
+                                            )
+                                        },
                                     )),
                             ),
                     );
@@ -953,7 +976,7 @@ pub(crate) mod view {
                     .child(view.button(
                         "display-pdf-none".into(),
                         none_label,
-                        panel.editable,
+                        panel.editable && panel.monitors.len() != 1,
                         false,
                         Intent::SelectPdf(PdfTarget::None),
                         p,
@@ -1228,11 +1251,13 @@ mod tests {
             draft.validation_error(2, &screens),
             Some("displays-target-missing")
         );
-        draft.pdf = PdfTarget::Windowed;
-        assert_eq!(
-            draft.validation_error(2, &screens),
-            Some("displays-windowed-single")
-        );
+        for target in [PdfTarget::Windowed, PdfTarget::SameScreenFullscreen] {
+            draft.pdf = target;
+            assert_eq!(
+                draft.validation_error(2, &screens),
+                Some("displays-windowed-single")
+            );
+        }
         assert_eq!(
             draft.validation_error(2, &[monitor("a"), monitor("a")]),
             Some("displays-target-missing")
@@ -1242,27 +1267,49 @@ mod tests {
     fn single_screen_choices_roundtrip_without_duplicate_role_or_inherited_mode() {
         let screens = vec![monitor("a")];
         let mut draft = DisplayDraft::new(1, &screens, &DisplaySettings::default());
+        assert_eq!(draft.pdf, PdfTarget::SameScreenFullscreen);
+        let shared = |fullscreen| policy::AudienceTarget {
+            monitor: MonitorId("a".into()),
+            fullscreen,
+            shared: true,
+        };
         draft.pdf = PdfTarget::Windowed;
         let windowed = draft
             .settings(1, &screens, &DisplaySettings::default())
             .unwrap();
         assert_eq!(windowed.monitors.len(), 1);
         assert_eq!(
-            policy::audience_target(&screens, &windowed).unwrap(),
-            (MonitorId("a".into()), false)
+            windowed.single_monitor_mode,
+            SingleMonitorMode::WindowedAudience
         );
-        draft.pdf = PdfTarget::None;
-        let none = draft.settings(1, &screens, &windowed).unwrap();
+        assert_eq!(
+            policy::audience_target(&screens, &windowed).unwrap(),
+            shared(false)
+        );
+        assert_eq!(
+            DisplayDraft::new(1, &screens, &windowed).pdf,
+            PdfTarget::Windowed
+        );
+        draft.pdf = PdfTarget::SameScreenFullscreen;
+        let fullscreen = draft.settings(1, &screens, &windowed).unwrap();
         let settings = ferrostage_settings::Settings {
-            display: none,
+            display: fullscreen,
             ..Default::default()
         };
         let roundtrip =
             ferrostage_settings::from_toml(&toml::to_string(&settings).unwrap()).unwrap();
-        assert!(policy::audience_target(&screens, &roundtrip.settings.display).is_err());
         assert_eq!(
             roundtrip.settings.display.single_monitor_mode,
-            SingleMonitorMode::PresenterOnly
+            SingleMonitorMode::FullscreenAudience
+        );
+        assert_eq!(
+            policy::audience_target(&screens, &roundtrip.settings.display).unwrap(),
+            shared(true)
+        );
+        draft.pdf = PdfTarget::None;
+        assert_eq!(
+            draft.validation_error(1, &screens),
+            Some("displays-no-play-single")
         );
     }
     fn placed(

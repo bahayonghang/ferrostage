@@ -403,7 +403,7 @@ impl Shell {
         if let Err(error) = &self.mapped {
             return Some(error.localized(self.locale));
         }
-        policy::audience_target(&self.monitors, &self.settings.settings.display)
+        policy::start_target(&self.monitors, &self.settings.settings.display)
             .err()
             .map(|e| e.localized(self.locale))
     }
@@ -624,6 +624,34 @@ impl Shell {
                             generation: self.state.generation(),
                             error: None,
                         });
+                }
+            }
+            Intent::OpenRepository => cx.open_url(crate::about::REPOSITORY),
+            Intent::DismissError => {
+                self.error = None;
+                self.graphics_error = None;
+            }
+            Intent::StartModeMenu
+                if !self.busy() && self.state.stage() != SessionStage::Presenting =>
+            {
+                if matches!(
+                    self.contextual,
+                    Some(crate::page_browser::ContextualSurface::StartMode)
+                ) {
+                    self.close_contextual();
+                } else {
+                    self.abandon_modal();
+                    self.contextual = Some(crate::page_browser::ContextualSurface::StartMode);
+                }
+            }
+            Intent::SetStartMode(mode)
+                if !self.busy() && self.state.stage() != SessionStage::Presenting =>
+            {
+                self.close_contextual();
+                if self.settings.settings.display.start_mode != mode {
+                    self.settings.settings.display.start_mode = mode;
+                    self.settings.note_edit();
+                    self.save(cx);
                 }
             }
             Intent::Reconfigure { id, options } => self.reconfigure_layout(id, options, cx),
@@ -916,8 +944,19 @@ impl Shell {
         self.focus_token += 1;
     }
 
+    /// One monitor, fullscreen audience: the presenter window is behind it.
+    pub(crate) fn single_screen_playback(&self) -> bool {
+        self.audience
+            .as_ref()
+            .zip(self.presenter.as_ref())
+            .is_some_and(|(audience, presenter)| {
+                audience.fullscreen && audience.monitor == presenter.monitor
+            })
+    }
+
     fn request_focus(&mut self, intent: Intent, cx: &mut Context<Self>) {
-        if self.pending.is_some() {
+        // Activating the presenter would project notes in Duplicate mode.
+        if self.pending.is_some() || self.single_screen_playback() {
             return;
         }
         self.cancel_focus();
@@ -1033,6 +1072,13 @@ impl Shell {
         audience: bool,
         cx: &mut Context<Self>,
     ) -> Result<WindowRecord, String> {
+        // Shared fullscreen playback hides the presenter, so the audience takes input.
+        let takes_focus = !audience
+            || fullscreen
+                && self
+                    .presenter
+                    .as_ref()
+                    .is_some_and(|p| p.monitor == monitor);
         let target_display = *self
             .mapped
             .as_ref()
@@ -1063,7 +1109,7 @@ impl Shell {
                     ..Default::default()
                 })
             },
-            focus: !audience,
+            focus: takes_focus,
             window_min_size: Some(size(px(320.), px(240.))),
             ..Default::default()
         };
@@ -1343,14 +1389,17 @@ impl Shell {
             self.error = Some(reason);
             return;
         }
-        match policy::audience_target(&self.monitors, &self.settings.settings.display) {
-            Ok((target, fullscreen)) => {
-                if let Err(error) = self.enter_presenter_fullscreen(cx) {
+        match policy::start_target(&self.monitors, &self.settings.settings.display) {
+            Ok(target) => {
+                // Shared fullscreen playback covers the presenter window instead.
+                if !(target.shared && target.fullscreen)
+                    && let Err(error) = self.enter_presenter_fullscreen(cx)
+                {
                     self.error = Some(error);
                     return;
                 }
                 self.publish(true, cx);
-                match self.open(target, fullscreen, true, cx) {
+                match self.open(target.monitor, target.fullscreen, true, cx) {
                     Ok(audience) => {
                         self.pending = Some(Transaction {
                             kind: TransactionKind::Start,
@@ -1507,7 +1556,7 @@ impl Shell {
             if audience {
                 policy::audience_target(&self.monitors, &settings)
                     .map_err(|error| error.localized(self.locale))
-                    .and_then(|(target, fullscreen)| self.open(target, fullscreen, true, cx))
+                    .and_then(|target| self.open(target.monitor, target.fullscreen, true, cx))
             } else {
                 self.open(target.clone(), false, false, cx)
             }
@@ -1875,6 +1924,7 @@ impl Shell {
         let Some(pending) = self.pending.take() else {
             return;
         };
+        let new_audience = pending.audience.is_some();
         for record in [pending.presenter.as_ref(), pending.audience.as_ref()]
             .into_iter()
             .flatten()
@@ -1944,6 +1994,15 @@ impl Shell {
         if let Some(window) = old_presenter {
             Self::close(window, cx);
             self.presenter_restore = None;
+        }
+        if new_audience
+            && self.single_screen_playback()
+            && let Some(audience) = &self.audience
+            && let Err(error) = audience
+                .handle
+                .update(cx, |_, window, _| window.activate_window())
+        {
+            tracing::warn!(%error, "single-screen audience activation failed");
         }
         tracing::info!(stage=?self.state.stage(),page=self.state.current_page().0,
             elapsed_ms=self.state.elapsed_at(Instant::now()).as_millis(),
@@ -3146,6 +3205,7 @@ mod tests {
                 let state = shell.state.clone();
                 let settings = shell.settings.settings.clone();
                 let audience = shell.audience.as_ref().unwrap().handle;
+                add_spare_monitor(shell);
                 shell.new_display_draft();
                 shell.dispatch(Intent::SelectPdf(PdfTarget::None), cx);
                 shell.apply_display_draft(cx);
@@ -3294,6 +3354,7 @@ mod tests {
             let before = shell.state.clone();
             let settings = shell.settings.settings.clone();
             let audience = shell.audience.as_ref().unwrap().handle;
+            add_spare_monitor(shell);
             shell.new_display_draft();
             shell.dispatch(Intent::SelectPdf(PdfTarget::None), cx);
             shell.apply_display_draft(cx);
@@ -3498,7 +3559,7 @@ mod tests {
             shell.apply_display_draft(cx);
             assert_eq!(
                 shell.settings.settings.display.single_monitor_mode,
-                ferrostage_settings::SingleMonitorMode::PresenterOnly
+                ferrostage_settings::SingleMonitorMode::FullscreenAudience
             );
             assert_eq!(shell.snapshot.read(cx).stage, AudienceStage::Curtain);
             shell.poll_transaction(cx);
@@ -3536,6 +3597,7 @@ mod tests {
         let old_audience = shell.update(cx, |shell, cx| {
             shell.store = fixture.store();
             set_playing(shell, cx, started);
+            add_spare_monitor(shell);
             shell.new_display_draft();
             shell.dispatch(Intent::SelectPdf(PdfTarget::None), cx);
             let audience = shell.audience.as_ref().unwrap().handle;
@@ -3577,6 +3639,7 @@ mod tests {
             let before = shell.state.clone();
             let settings = shell.settings.settings.clone();
             let audience = shell.audience.as_ref().unwrap().handle;
+            add_spare_monitor(shell);
             shell.new_display_draft();
             shell.dispatch(Intent::SelectPdf(PdfTarget::None), cx);
             shell.apply_display_draft(cx);
@@ -4732,6 +4795,96 @@ mod tests {
         }
     }
 
+    #[gpui::test]
+    fn single_screen_start_accepts_an_untoggled_maximized_presenter(cx: &mut TestAppContext) {
+        let (shell, _) = input_presenter(cx);
+        shell.update(cx, |shell, cx| {
+            assert!(shell.presenter_restore.is_none());
+            assert!(shell.start_presenter_confirmed(cx));
+            // A maximized presenter no longer matches its creation client size.
+            // Single-screen Start does not toggle it, so it must not gate Start.
+            shell.presenter.as_mut().unwrap().client_size = size(px(1920.), px(1080.));
+            assert!(shell.start_presenter_confirmed(cx));
+        });
+    }
+
+    #[gpui::test]
+    fn single_screen_fullscreen_playback_takes_input_and_projects_slides_only(
+        cx: &mut TestAppContext,
+    ) {
+        let (shell, presenter) = input_presenter(cx);
+        let audience = shell.update(cx, |s, cx| {
+            // Right-half Beamer notes plus independent notes pages 1 and 3.
+            let map = ferrostage_core::SlideMap::new(
+                5,
+                vec![
+                    vec![PhysicalPage(0)],
+                    vec![PhysicalPage(2)],
+                    vec![PhysicalPage(4)],
+                ],
+            )
+            .unwrap();
+            let document = ferrostage_core::DocumentDescriptor::mapped(
+                ferrostage_core::DocumentGeneration(1),
+                map,
+                ferrostage_core::NormalizedRect::LEFT_HALF,
+            )
+            .unwrap();
+            s.state
+                .apply_at(Command::LoadMappedDocument(document), Instant::now())
+                .unwrap();
+            s.monitors = vec![test_monitor()];
+            let target =
+                policy::audience_target(&s.monitors, &s.settings.settings.display).unwrap();
+            assert!(target.shared && target.fullscreen);
+            // TestPlatform keeps windowed bounds for a fullscreen request, so
+            // placement confirmation and commit activation are native checks.
+            // Inject the committed state that Start produces.
+            s.state
+                .apply_at(
+                    Command::StartPresentation {
+                        audience_available: true,
+                    },
+                    Instant::now(),
+                )
+                .unwrap();
+            s.audience = Some(s.open(target.monitor, true, true, cx).unwrap());
+            assert!(s.single_screen_playback());
+            assert!(s.presenter_restore.is_none());
+            s.publish(false, cx);
+            s.audience.as_ref().unwrap().handle
+        });
+        audience
+            .update(cx, |_, window, _| window.activate_window())
+            .unwrap();
+        cx.run_until_parked();
+        assert_eq!(cx.update(|cx| cx.active_window()), Some(audience));
+        assert!(cx.windows().contains(&presenter));
+        for (keys, physical) in [("right", 2), ("left", 0), ("right right", 4)] {
+            cx.simulate_keystrokes(audience, keys);
+            shell.read_with(cx, |s, cx| {
+                let snapshot = s.snapshot.read(cx);
+                assert_eq!(s.state.current_page(), PhysicalPage(physical));
+                assert_eq!(snapshot.current_page, PhysicalPage(physical));
+                assert_eq!(
+                    snapshot.slide_crop,
+                    ferrostage_core::NormalizedRect::LEFT_HALF
+                );
+            });
+        }
+        cx.simulate_keystrokes(audience, "ctrl-o");
+        shell.read_with(cx, |s, _| assert!(s.focus_intent.is_none()));
+        assert_eq!(cx.update(|cx| cx.active_window()), Some(audience));
+        cx.simulate_keystrokes(audience, "escape");
+        cx.run_until_parked();
+        shell.read_with(cx, |s, _| {
+            assert_eq!(s.state.stage(), SessionStage::Ready);
+            assert!(s.audience.is_none() && !s.single_screen_playback());
+            assert_eq!(s.presenter.as_ref().unwrap().handle, presenter);
+        });
+        assert_eq!(cx.windows(), vec![presenter]);
+    }
+
     pub(super) fn input_presenter(cx: &mut TestAppContext) -> (Entity<Shell>, AnyWindowHandle) {
         let (shell, _) = headless_shell(cx);
         cx.update(|cx| {
@@ -5187,7 +5340,8 @@ mod tests {
         });
         redraw(handle, cx);
         fixture.unblock();
-        cx.simulate_keystrokes(handle, "tab shift-tab enter"); // Retry is the last enabled control.
+        // Start mode is the last enabled control; Retry precedes it.
+        cx.simulate_keystrokes(handle, "tab shift-tab shift-tab enter");
         shell.read_with(cx, |shell, _| {
             assert!(!shell.settings.dirty);
             assert!(shell.settings.save_error.is_none());
@@ -5322,10 +5476,11 @@ mod tests {
             shell.read_with(cx, |shell, _| shell.state.current_page()),
             PhysicalPage(1)
         );
-        cx.simulate_keystrokes(handle, "tab shift-tab");
+        cx.simulate_keystrokes(handle, "tab shift-tab shift-tab");
         redraw(handle, cx);
-        // Start is disabled without a watcher. Reverse traversal must skip it
-        // and reach Displays, the last enabled control in this Ready fixture.
+        // Start is disabled without a watcher. Reverse traversal from Start
+        // mode, the last enabled control in this Ready fixture, must skip
+        // Start and reach Displays.
         cx.simulate_keystrokes(handle, "space");
         shell.read_with(cx, |shell, _| {
             assert_eq!(shell.state.current_page(), PhysicalPage(1));
@@ -5694,6 +5849,20 @@ mod tests {
             assert!(shell.modal.is_none());
             assert_eq!(shell.state.stage(), SessionStage::Presenting);
         });
+    }
+
+    /// No-play is a multi-display choice; one display always has a playback target.
+    fn add_spare_monitor(shell: &mut Shell) {
+        let mut spare = test_monitor();
+        spare.id = MonitorId("headless-spare-display".into());
+        spare.connection_name = "spare-display".into();
+        spare.position = (1920, 0);
+        spare.is_primary = false;
+        if let Ok(mapped) = &mut shell.mapped {
+            let display = mapped[&test_monitor().id];
+            mapped.insert(spare.id.clone(), display + 1);
+        }
+        shell.monitors.push(spare);
     }
 
     fn test_monitor() -> MonitorInfo {

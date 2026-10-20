@@ -12,9 +12,10 @@ pub enum Category {
     Pointer,
     Keys,
     Advanced,
+    About,
 }
 impl Category {
-    pub const ALL: [Self; 7] = [
+    pub const ALL: [Self; 8] = [
         Self::General,
         Self::Displays,
         Self::Presenter,
@@ -22,6 +23,7 @@ impl Category {
         Self::Pointer,
         Self::Keys,
         Self::Advanced,
+        Self::About,
     ];
     pub fn id(self) -> &'static str {
         match self {
@@ -32,6 +34,7 @@ impl Category {
             Self::Pointer => "pointer",
             Self::Keys => "keys",
             Self::Advanced => "advanced",
+            Self::About => "about",
         }
     }
 }

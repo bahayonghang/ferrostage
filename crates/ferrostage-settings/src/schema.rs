@@ -54,8 +54,8 @@ impl Theme {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum SingleMonitorMode {
-    /// Keep the presenter on that monitor. Do not open an audience window.
-    PresenterOnly,
+    /// Fullscreen audience window on that monitor, above the presenter window.
+    FullscreenAudience,
     /// Allow a windowed audience view on the same monitor.
     WindowedAudience,
 }
@@ -63,8 +63,28 @@ pub enum SingleMonitorMode {
 impl SingleMonitorMode {
     pub(crate) const fn as_str(self) -> &'static str {
         match self {
-            Self::PresenterOnly => "presenter_only",
+            Self::FullscreenAudience => "fullscreen_audience",
             Self::WindowedAudience => "windowed_audience",
+        }
+    }
+}
+
+/// How Start places the playback window.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum StartMode {
+    /// Presenter and audience follow the display roles.
+    #[default]
+    Dual,
+    /// Fullscreen playback on the presenter monitor, at any monitor count.
+    Single,
+}
+
+impl StartMode {
+    pub(crate) const fn as_str(self) -> &'static str {
+        match self {
+            Self::Dual => "dual",
+            Self::Single => "single",
         }
     }
 }
@@ -206,8 +226,10 @@ impl GeneralSettings {
 /// `display` section.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct DisplaySettings {
-    /// Single-monitor policy. The default does not open a windowed audience.
+    /// Single-monitor policy. The default opens a fullscreen audience on that monitor.
     pub single_monitor_mode: SingleMonitorMode,
+    /// Start placement chosen next to the Start button.
+    pub start_mode: StartMode,
     /// Audience window starts fullscreen when a presentation starts.
     pub audience_fullscreen: bool,
     /// Completed left clicks in the playback window advance one content step.
@@ -221,7 +243,8 @@ pub struct DisplaySettings {
 impl Default for DisplaySettings {
     fn default() -> Self {
         Self {
-            single_monitor_mode: SingleMonitorMode::PresenterOnly,
+            single_monitor_mode: SingleMonitorMode::FullscreenAudience,
+            start_mode: StartMode::Dual,
             audience_fullscreen: true,
             audience_click_to_advance: true,
             presenter_start_fullscreen: false,

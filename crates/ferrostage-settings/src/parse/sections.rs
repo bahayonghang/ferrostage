@@ -6,8 +6,8 @@ use super::value::{
 use super::{SettingsWarning, warn};
 use crate::schema::{
     DisplaySettings, GRID_COLUMNS_RANGE, GRID_VISIBLE_PAGES_RANGE, GeneralSettings, LANGUAGES,
-    MonitorBinding, PresenterSettings, RECENT_FILES_LIMIT_RANGE, SingleMonitorMode, Theme,
-    UI_FONT_SIZE_RANGE, role_from_name,
+    MonitorBinding, PresenterSettings, RECENT_FILES_LIMIT_RANGE, SingleMonitorMode, StartMode,
+    Theme, UI_FONT_SIZE_RANGE, role_from_name,
 };
 use ferrostage_core::MonitorRole;
 use std::collections::BTreeMap;
@@ -173,15 +173,28 @@ pub(super) fn parse_display(
             "display.single_monitor_mode",
             &[
                 (
-                    SingleMonitorMode::PresenterOnly.as_str(),
-                    SingleMonitorMode::PresenterOnly,
+                    SingleMonitorMode::FullscreenAudience.as_str(),
+                    SingleMonitorMode::FullscreenAudience,
                 ),
+                // 1.1.x default; it could not start on one monitor.
+                ("presenter_only", SingleMonitorMode::FullscreenAudience),
                 (
                     SingleMonitorMode::WindowedAudience.as_str(),
                     SingleMonitorMode::WindowedAudience,
                 ),
             ],
             defaults.single_monitor_mode,
+            warnings,
+        ),
+        start_mode: parse_choice(
+            section,
+            "start_mode",
+            "display.start_mode",
+            &[
+                (StartMode::Dual.as_str(), StartMode::Dual),
+                (StartMode::Single.as_str(), StartMode::Single),
+            ],
+            defaults.start_mode,
             warnings,
         ),
         audience_fullscreen: parse_bool(

@@ -4,7 +4,9 @@ use std::collections::{BTreeMap, BTreeSet};
 use crate::locale::Locale;
 use ferrostage_core::{MonitorId, MonitorRole};
 use ferrostage_platform::{MonitorInfo, ResolvedTopology, resolve_roles};
-use ferrostage_settings::{DisplaySettings, Keybindings, MonitorBinding, SingleMonitorMode};
+use ferrostage_settings::{
+    DisplaySettings, Keybindings, MonitorBinding, SingleMonitorMode, StartMode,
+};
 use thiserror::Error;
 use uuid::Uuid;
 
@@ -90,21 +92,56 @@ pub fn roles(monitors: &[MonitorInfo], settings: &DisplaySettings) -> ResolvedTo
     )
 }
 
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct AudienceTarget {
+    pub monitor: MonitorId,
+    pub fullscreen: bool,
+    /// The audience shares the presenter monitor (one monitor, or `StartMode::Single`).
+    pub shared: bool,
+}
+
 pub fn audience_target(
     monitors: &[MonitorInfo],
     settings: &DisplaySettings,
-) -> Result<(MonitorId, bool), ShellError> {
+) -> Result<AudienceTarget, ShellError> {
     let resolved = roles(monitors, settings);
-    if monitors.len() == 1 && settings.single_monitor_mode == SingleMonitorMode::WindowedAudience {
+    if monitors.len() == 1 {
         return resolved
             .presenter
-            .map(|id| (id, false))
+            .map(|monitor| AudienceTarget {
+                monitor,
+                fullscreen: settings.single_monitor_mode == SingleMonitorMode::FullscreenAudience,
+                shared: true,
+            })
             .ok_or(ShellError::NoAudience);
     }
     resolved
         .audience
-        .map(|id| (id, settings.audience_fullscreen))
+        .map(|monitor| AudienceTarget {
+            monitor,
+            fullscreen: settings.audience_fullscreen,
+            shared: false,
+        })
         .ok_or(ShellError::NoAudience)
+}
+
+/// Start placement. `Single` plays fullscreen on the presenter monitor at any
+/// monitor count; `Dual` follows the display roles.
+pub fn start_target(
+    monitors: &[MonitorInfo],
+    settings: &DisplaySettings,
+) -> Result<AudienceTarget, ShellError> {
+    if settings.start_mode == StartMode::Single {
+        return roles(monitors, settings)
+            .presenter
+            .map(|monitor| AudienceTarget {
+                monitor,
+                fullscreen: true,
+                shared: true,
+            })
+            .ok_or(ShellError::NoAudience);
+    }
+    audience_target(monitors, settings)
 }
 
 /// Prepare settings only; the caller commits them after all replacement windows
@@ -395,15 +432,71 @@ mod tests {
         assert!(swapped(&monitors[..1], &old).is_err());
     }
     #[test]
-    fn single_monitor_requires_explicit_windowed_mode() {
+    fn single_monitor_defaults_to_shared_fullscreen_and_keeps_windowed_mode() {
+        let target = |fullscreen, shared| AudienceTarget {
+            monitor: MonitorId("a".into()),
+            fullscreen,
+            shared,
+        };
         let monitors = [monitor("a", "A")];
         let mut settings = DisplaySettings::default();
-        assert!(audience_target(&monitors, &settings).is_err());
+        assert_eq!(
+            audience_target(&monitors, &settings).unwrap(),
+            target(true, true)
+        );
         settings.single_monitor_mode = SingleMonitorMode::WindowedAudience;
         assert_eq!(
             audience_target(&monitors, &settings).unwrap(),
-            (MonitorId("a".into()), false)
+            target(false, true)
         );
+        // Two monitors ignore the single-monitor mode.
+        let two = [monitor("a", "A"), monitor("b", "B")];
+        for mode in [
+            SingleMonitorMode::FullscreenAudience,
+            SingleMonitorMode::WindowedAudience,
+        ] {
+            settings.single_monitor_mode = mode;
+            settings.monitors = vec![];
+            let resolved = audience_target(&two, &settings).unwrap();
+            assert!(!resolved.shared && resolved.fullscreen);
+            settings.monitors = ["a", "b"]
+                .map(|id| MonitorBinding {
+                    id: id.into(),
+                    friendly_name: id.into(),
+                    role: MonitorRole::None,
+                    source_occurrence: None,
+                })
+                .into();
+            assert_eq!(
+                audience_target(&two, &settings),
+                Err(ShellError::NoAudience)
+            );
+        }
+    }
+    #[test]
+    fn single_start_mode_plays_fullscreen_on_the_presenter_at_any_monitor_count() {
+        let mut settings = DisplaySettings {
+            start_mode: StartMode::Single,
+            ..DisplaySettings::default()
+        };
+        let presenter = AudienceTarget {
+            monitor: MonitorId("a".into()),
+            fullscreen: true,
+            shared: true,
+        };
+        let two = [monitor("a", "A"), monitor("b", "B")];
+        for monitors in [&two[..1], &two[..]] {
+            assert_eq!(start_target(monitors, &settings).unwrap(), presenter);
+        }
+        settings.single_monitor_mode = SingleMonitorMode::WindowedAudience;
+        assert_eq!(start_target(&two[..1], &settings).unwrap(), presenter);
+        settings.start_mode = StartMode::Dual;
+        assert_eq!(
+            start_target(&two, &settings),
+            audience_target(&two, &settings)
+        );
+        assert!(!start_target(&two, &settings).unwrap().shared);
+        assert!(start_target(&[], &settings).is_err());
     }
     #[test]
     fn placement_v10_portrait_native_overflow_is_not_confirmation() {

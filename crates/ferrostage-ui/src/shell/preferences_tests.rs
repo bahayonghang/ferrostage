@@ -601,6 +601,7 @@ fn settings_v09_shared_display_apply_cancel_timeout_and_topology(cx: &mut TestAp
             shell.store.load().unwrap().settings.display,
             shell.settings.settings.display
         );
+        add_spare_monitor(shell);
         shell.new_display_draft();
         shell.dispatch(Intent::SelectPdf(PdfTarget::None), cx);
         shell.apply_display_draft(cx);
@@ -892,4 +893,122 @@ fn settings_fonts_filter_apply_size_restore_and_history_through_real_input(
                 .is_empty()
         );
     });
+}
+
+#[gpui::test]
+fn start_mode_menu_selects_single_persists_and_hides_while_presenting(cx: &mut TestAppContext) {
+    let fixture = SaveFixture::new();
+    fixture.unblock();
+    let (shell, handle) = input_presenter(cx);
+    shell.update(cx, |shell, cx| {
+        load_ready(shell);
+        shell.store = fixture.store();
+        assert_eq!(shell.settings.settings.display.start_mode, ferrostage_settings::StartMode::Dual);
+        cx.notify();
+    });
+    redraw(handle, cx);
+    click_control(handle, "start-mode", cx);
+    redraw(handle, cx);
+    {
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        assert!(visual.debug_bounds("start-mode-menu").is_some());
+        assert!(visual.debug_bounds("start-mode-check-0").is_some());
+        assert!(visual.debug_bounds("start-mode-check-1").is_none());
+    }
+    click_control(handle, "start-mode-row-1", cx);
+    cx.run_until_parked();
+    shell.update(cx, |shell, cx| {
+        assert!(shell.contextual.is_none());
+        assert_eq!(shell.settings.settings.display.start_mode, ferrostage_settings::StartMode::Single);
+        assert!(!shell.settings.dirty);
+        assert_eq!(shell.store.load().unwrap().settings.display.start_mode, ferrostage_settings::StartMode::Single);
+        shell
+            .state
+            .apply_at(Command::StartPresentation { audience_available: true }, Instant::now())
+            .unwrap();
+        shell.dispatch(Intent::StartModeMenu, cx);
+        assert!(shell.contextual.is_none());
+        shell.dispatch(Intent::SetStartMode(ferrostage_settings::StartMode::Dual), cx);
+        assert_eq!(shell.settings.settings.display.start_mode, ferrostage_settings::StartMode::Single);
+        cx.notify();
+    });
+    redraw(handle, cx);
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    assert!(visual.debug_bounds("start-mode").is_none());
+}
+
+#[gpui::test]
+fn about_tab_shows_version_author_build_time_license_and_repository(cx: &mut TestAppContext) {
+    let (shell, handle) = input_presenter(cx);
+    shell.update(cx, |shell, cx| {
+        load_ready(shell);
+        shell.modal = Some(Modal::Settings);
+        shell.preferences.category = crate::settings_panel::Category::About;
+        cx.notify();
+    });
+    redraw(handle, cx);
+    {
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        for key in [
+            "about-version",
+            "about-author",
+            "about-build-time",
+            "about-license",
+            "about-repository",
+        ] {
+            assert!(visual.debug_bounds(key).is_some(), "{key} row is missing");
+        }
+        assert!(visual.debug_bounds("about-commit").is_none());
+    }
+    assert_eq!(crate::about::VERSION, "1.2.0");
+    assert!(!crate::about::AUTHORS.is_empty());
+    assert_eq!(crate::about::REPOSITORY, "https://github.com/bahayonghang/ferrostage");
+    let time = chrono::DateTime::from_timestamp(1_792_467_301, 0)
+        .unwrap()
+        .with_timezone(&chrono::FixedOffset::west_opt(4 * 3600).unwrap());
+    for (language, expected) in [("zh-CN", "2026年10月19日 23:35"), ("en-US", "2026-10-19 23:35")] {
+        let format = crate::locale::Locale::new(language).text("about-build-time-format");
+        assert_eq!(time.format(format).to_string(), expected);
+    }
+    assert_eq!(time.format("UTC%:z").to_string(), "UTC-04:00");
+    click_control(handle, "about-repository-link", cx);
+    assert_eq!(cx.opened_url().as_deref(), Some(crate::about::REPOSITORY));
+}
+
+#[gpui::test]
+fn event_error_flag_closes_and_persistent_monitor_error_has_no_close_button(
+    cx: &mut TestAppContext,
+) {
+    let (shell, handle) = input_presenter(cx);
+    let timeout = shell.update(cx, |shell, cx| {
+        load_ready(shell);
+        let timeout = ShellError::PlacementTimeout.localized(shell.locale);
+        shell.error = Some(timeout.clone());
+        cx.notify();
+        timeout
+    });
+    redraw(handle, cx);
+    let presented = |cx: &mut TestAppContext| {
+        handle
+            .update(cx, |root, _, cx| {
+                root.downcast::<Presenter>()
+                    .unwrap()
+                    .read(cx)
+                    .presented_error()
+                    .map(str::to_owned)
+            })
+            .unwrap()
+    };
+    assert_eq!(presented(cx), Some(timeout));
+    click_control(handle, "dismiss-error", cx);
+    redraw(handle, cx);
+    assert!(shell.read_with(cx, |shell, _| shell.error.is_none() && shell.graphics_error.is_none()));
+    // The headless shell has no topology watcher. That persistent condition
+    // stays visible and has no close button.
+    let monitor = shell.read_with(cx, |shell, _| shell.monitor_error_text());
+    assert!(monitor.is_some());
+    assert_eq!(presented(cx), monitor);
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    assert!(visual.debug_bounds("presenter-error").is_some());
+    assert!(visual.debug_bounds("dismiss-error").is_none());
 }

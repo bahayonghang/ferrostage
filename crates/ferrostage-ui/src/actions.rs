@@ -76,6 +76,10 @@ pub(crate) enum Intent {
     CloseContextual,
     PresenterMenu(bool),
     Document,
+    StartModeMenu,
+    DismissError,
+    OpenRepository,
+    SetStartMode(ferrostage_settings::StartMode),
     Reconfigure {
         id: u64,
         options: ferrostage_document::DocumentOverrides,

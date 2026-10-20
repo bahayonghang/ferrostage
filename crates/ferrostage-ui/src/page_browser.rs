@@ -74,6 +74,8 @@ pub(crate) enum ContextualSurface {
         generation: DocumentGeneration,
         error: Option<String>,
     },
+    /// Two-choice menu beside Start.
+    StartMode,
 }
 
 pub(crate) fn rectangular_rows(columns: u32, visible: u32) -> Option<u32> {

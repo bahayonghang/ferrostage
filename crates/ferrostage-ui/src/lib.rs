@@ -8,6 +8,7 @@
 //! - the audience view may only render [`ferrostage_core::AudienceProjectionSnapshot`]
 //! - neither view embeds a child HWND for video
 
+pub mod about;
 #[cfg(feature = "gpui")]
 mod actions;
 #[cfg(feature = "gpui")]
