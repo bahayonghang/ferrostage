@@ -19,6 +19,7 @@ The public just recipes are `build`, `release`, `install`, and `uninstall`. `jus
 
 ## 3. Contracts
 
+- Minimum OS is Windows 10 version 1903 (build 18362), x64; Windows 11 passes the same lower-bound policy. Preserve the independent architecture and Visual C++ runtime preflights. Do not substitute `AtLeastWin10` alone for the version-plus-build requirement or treat synthetic OS-policy tests as real Windows 10 runtime acceptance.
 - Build the actual `ferrostage-app` graph with `--release --features gpui,pdfium --locked`. Resolve metadata version/target directory and compiler-artifact executable. Honor `CARGO_TARGET_DIR`; run Cargo before runtime staging through a cache-managed target symlink.
 - Share an explicit verified payload across Setup, portable ZIP and installation. Never zip the entire release directory. Keep the exact pinned DLL and sixteen original PDFium notices from `docs/pdfium-runtime.json`.
 - Preserve PDFium root `LICENSE` and `licenses/`. Package application declaration/MIT/Apache texts as `FERROSTAGE-LICENSE.txt`, `FERROSTAGE-LICENSE-MIT.txt`, and `FERROSTAGE-LICENSE-APACHE.txt`; installer notices live under `installer-licenses/`.
@@ -36,6 +37,7 @@ The public just recipes are `build`, `release`, `install`, and `uninstall`. `jus
 | --- | --- |
 | Cargo/native command nonzero | Stop with failing stage/status; no successful release receipt |
 | Unsupported version | Fail before creating a misleading numeric installer version |
+| OS below Windows 10 1903 / build 18362 | Refuse with exit code 10 and the exact minimum OS/x64 requirement before payload changes |
 | Compiler/DLL/notice hash mismatch | Reject before packaging/installation |
 | Missing/extra payload file or bad checksum | Reject; do not merely trust inventory text |
 | Target directory override | Resolve Cargo's real output rather than stale default output |
@@ -53,6 +55,8 @@ Good: Setup installs current-user files, desktop/Start entries and one uninstall
 ## 6. Tests Required
 
 Verify missing/corrupt payload, complete notices and distinct licenses, checksum tampering, child-process failure propagation, target override and safe cleanup. On an explicitly controlled machine, verify fresh install, same-version reinstall, forward update, downgrade refusal, lock handling and native uninstall preserving settings/PDF/unknown-file canaries. End local acceptance with the requested real final version installed. Run `just ci`, relevant native build/lint and focused distribution checks.
+
+Exercise the actual production NSIS OS guard in a no-install fixture for Windows 7/8/8.1, Win10 build 18361 (reject), build 18362 and later Win10 (accept), and Win11 (accept). Verify the original Win11-only guard fails the Win10 acceptance case in an isolated fixture. Production packages must contain no test OS override. A successful policy matrix or Win11 launch/render smoke does not establish Win10 loader, graphics or CRT compatibility; mark unavailable native OS checks NOT_RUN and retain a concrete qualification checklist.
 
 Native Setup UI, icon/shortcut launch, Search discovery and real PDF-open acceptance are separate from compilation/headless tests. Record unrun UI or hosted CI checks honestly; do not substitute window-size/DPI matrices for core behavior. Inspect system imports and document VC prerequisites/signing limits; local success is not clean-machine qualification.
 

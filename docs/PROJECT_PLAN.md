@@ -24,7 +24,7 @@ FerroStage 是一个 clean-room 的 PDF / Beamer 双屏演示器。目标行为�
 
 ## 1. 产品定位与边界
 
-**一句话**：以答辩与授课可靠性为核心的 GPU 加速 PDF / Beamer 演示器，Windows 11 优先。
+**一句话**：以答辩与授课可靠性为核心的 GPU 加速 PDF / Beamer 演示器，面向 Windows 10 1903（build 18362）及以上 x64 系统，包括 Windows 11。
 
 **纳入 v1.0**
 
@@ -53,7 +53,7 @@ FerroStage 是一个 clean-room 的 PDF / Beamer 双屏演示器。目标行为�
 - 文件监听：`notify` 8.2.0，300 ms 防抖，等待 `%%EOF`，影子文档，严格更新 `DocumentGeneration`。FerroStage 不写用户 PDF。
 - 设置：TOML，`toml` 1.1.8 + `serde`；配置目录由平台约定决定（见 §4.4）。
 - 缓存预算：L1 GPU 256 MiB（current ±2），L2 CPU 512 MiB（current ±6），L3 缩略图 64 MiB。
-- 首发 Windows 11（DX11）；Ubuntu 24.04、macOS 15 在 Phase 3。无遥测。
+- Windows 桌面基线：Windows 10 1903（build 18362）及以上 x64，包括 Windows 11（DX11）；Windows 10 实机验收范围见 `docs/packaging.md`。Ubuntu 24.04、macOS 15 在 Phase 3。无遥测。
 - `cargo deny` 拒绝 GPL/AGPL（无 MuPDF）。URW Base35 字体仅在许可证核查后才入库。
 
 ## 3. 功能矩阵

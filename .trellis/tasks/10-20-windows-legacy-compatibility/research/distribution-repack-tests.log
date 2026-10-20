@@ -1,0 +1,49 @@
+[START] Cargo metadata
+[PASS] Cargo metadata (0.5 s)
+[START] Compile OS policy: Original guard rejects Windows 10 1903 (red comparison)
+[PASS] Compile OS policy: Original guard rejects Windows 10 1903 (red comparison) (0.1 s)
+
+[PASS] OS policy: Original guard rejects Windows 10 1903 (red comparison) (exit 10)
+[START] Compile OS policy: Windows 7
+[PASS] Compile OS policy: Windows 7 (0.1 s)
+
+[PASS] OS policy: Windows 7 (exit 10)
+[START] Compile OS policy: Windows 8
+[PASS] Compile OS policy: Windows 8 (0.1 s)
+
+[PASS] OS policy: Windows 8 (exit 10)
+[START] Compile OS policy: Windows 8.1
+[PASS] Compile OS policy: Windows 8.1 (0.1 s)
+
+[PASS] OS policy: Windows 8.1 (exit 10)
+[START] Compile OS policy: Windows 10 below 1903
+[PASS] Compile OS policy: Windows 10 below 1903 (0.1 s)
+
+[PASS] OS policy: Windows 10 below 1903 (exit 10)
+[START] Compile OS policy: Windows 10 1903 boundary
+[PASS] Compile OS policy: Windows 10 1903 boundary (0.1 s)
+
+[PASS] OS policy: Windows 10 1903 boundary (exit 0)
+[START] Compile OS policy: Windows 10 22H2
+[PASS] Compile OS policy: Windows 10 22H2 (0.1 s)
+
+[PASS] OS policy: Windows 10 22H2 (exit 0)
+[START] Compile OS policy: Windows 11
+[PASS] Compile OS policy: Windows 11 (0.1 s)
+
+[PASS] OS policy: Windows 11 (exit 0)
+[PASS] Missing runtime notice is rejected (Payload file set differs from the approved inventory)
+[PASS] Corrupt runtime is rejected (Payload checksum mismatch: pdfium.dll)
+[PASS] Modified inventory cannot override the pinned runtime hash (Pinned PDFium DLL mismatch)
+[PASS] Stale or unrelated payload file is rejected (Payload file set differs from the approved inventory)
+[PASS] Corrupt application license is rejected (Payload checksum mismatch: FERROSTAGE-LICENSE-MIT.txt)
+[PASS] Same-version different executable cannot pass installed verification (Installed inventory differs from the trusted release payload)
+[PASS] Release checksum tampering is rejected (Release checksum mismatch: FerroStage-1.1.1-windows-x64-Setup.exe)
+[START] Expected subprocess failure
+[PASS] Native failure propagates (Expected subprocess failure failed (exit 17))
+[START] Cargo metadata
+[PASS] Cargo metadata (0.3 s)
+[PASS] Cargo target-directory override is resolved from metadata
+[PASS] Cleanup cannot remove distribution root (Refusing cleanup outside distribution root: D:\Documents\Code\Rust\Exp\ferrostage\target\dist)
+[PASS] Cleanup cannot escape distribution root (Refusing cleanup outside distribution root: D:\Documents\Code\Rust\Exp\ferrostage\target\not-owned)
+[PASS] Windows distribution regression checks

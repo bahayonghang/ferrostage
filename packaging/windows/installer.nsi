@@ -120,9 +120,10 @@ FunctionEnd
 !insertmacro Preflight "un."
 
 Section "Install"
-  ${IfNot} ${AtLeastWin11}
+  ${IfNot} ${AtLeastWin10}
+  ${OrIfNot} ${AtLeastBuild} 18362
     SetErrorLevel 10
-    Abort "FerroStage requires Windows 11 x64."
+    Abort "FerroStage requires Windows 10 version 1903 (build 18362) or later, x64."
   ${EndIf}
   ${DisableX64FSRedirection}
   IfFileExists "$WINDIR\System32\VCRUNTIME140.dll" runtime_found

@@ -4,7 +4,7 @@
 
 A modern, GPU-accelerated, lock-free PDF & Beamer presentation stage built with Rust and GPUI.
 
-Windows 11 is the primary target. The application operates offline: no telemetry, no network calls, and no accounts.
+The desktop target is x64 Windows 10 version 1903 (build 18362) or later, including Windows 11. See [packaging guidance](docs/packaging.md) for prerequisites and native qualification limits. The application operates offline: no telemetry, no network calls, and no accounts.
 
 The optional desktop build links the presenter workbench, single-worker PDFium rasterization, complete settings, external PDF hot reload, animated GIF/WebP playback, and isolated native video decoding. Default workspace checks stay independent of native SDKs. Implementation and scoped verification status are tracked in [feature parity](docs/feature-parity.md).
 

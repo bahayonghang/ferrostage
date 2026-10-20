@@ -1,0 +1,23 @@
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/windows-distribution.ps1 -Action release
+[START] Cargo metadata
+[PASS] Cargo metadata (0.4 s)
+[START] Desktop release build
+   Compiling ferrostage-core v1.1.1 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-core)
+   Compiling ferrostage-app v1.1.1 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app)
+   Compiling ferrostage-pdf v1.1.1 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+   Compiling ferrostage-media v1.1.1 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-media)
+   Compiling ferrostage-platform v1.1.1 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-platform)
+   Compiling ferrostage-render v1.1.1 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+   Compiling ferrostage-document v1.1.1 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-document)
+   Compiling ferrostage-settings v1.1.1 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-settings)
+   Compiling ferrostage-ui v1.1.1 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `release` profile [optimized] target(s) in 14.90s
+mbx[cache]: 0 hits, 0 misses, 10 not looked up, 1 bypassed; 0 B downloaded, 0 B uploaded, 27.2 MiB stored locally
+mbx[savings]: 5787 compilations, and the box has forgotten none of them.
+[PASS] Desktop release build (15.5 s)
+D:\Documents\Code\Rust\Exp\ferrostage\target\release\pdfium.dll
+[PASS] Verified desktop payload: D:\Documents\Code\Rust\Exp\ferrostage\target\dist\payload-1.1.1
+[START] NSIS Setup
+[PASS] NSIS Setup (2.5 s)
+
+[PASS] Release verified: D:\Documents\Code\Rust\Exp\ferrostage\target\dist\release.json

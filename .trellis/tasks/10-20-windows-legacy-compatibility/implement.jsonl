@@ -1,0 +1,4 @@
+{"file":".trellis/spec/backend/windows-distribution.md","reason":"Installer, verified payload and native qualification contracts"}
+{"file":".trellis/spec/backend/quality-guidelines.md","reason":"Required quality gates and scoped native evidence"}
+{"file":".trellis/tasks/10-20-windows-legacy-compatibility/research/compatibility-audit.md","reason":"Root cause, pinned dependency floor and actual PE evidence"}
+{"file":".trellis/tasks/10-20-windows-legacy-compatibility/design.md","reason":"Approved design boundary after final planning review"}

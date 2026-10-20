@@ -1,6 +1,6 @@
 # Packaging
 
-Windows 11 x64 desktop distribution uses one verified payload for the NSIS Setup executable and portable ZIP. Build tools acquire runtimes; the installed application remains offline.
+The x64 desktop distribution targets Windows 10 version 1903 (build 18362) or later, including Windows 11, and uses one verified payload for the NSIS Setup executable and portable ZIP. Setup rejects earlier systems. Build tools acquire runtimes; the installed application remains offline.
 
 - `just ci` stays on default features and does not require `pdfium.dll`.
 - `just dev` first builds `ferrostage-app` with `gpui,pdfium`, stages the verified `pdfium.dll`, `LICENSE`, and `licenses/` into `target/debug`, then runs `cargo run -p ferrostage-app --features gpui,pdfium --locked`. Building first lets Cargo restore a collected target-cache directory before staging into a `target` symlink.
@@ -33,6 +33,10 @@ Setup is unsigned; code-signing and Windows reputation qualification are not par
 Release filenames are `FerroStage-<version>-windows-x64-Setup.exe`, `FerroStage-<version>-windows-x64-portable.zip`, and `FerroStage-<version>-windows-x64-SHA256SUMS.txt`. The staging payload is `dist/payload-<version>`; `dist/release.json` records `version`, `payload`, `setup`, `portable`, `checksums`, `setup_sha256`, and `portable_sha256`. The paths in that receipt are local absolute paths, not portable download URLs.
 
 Run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/windows-distribution.ps1 -Action verify` to verify the generated payload/artifacts. `scripts/test-windows-distribution.ps1` runs focused packaging regressions; its explicit `-Lifecycle` mode exercises the real current-user installation and should run only when that local mutation is intended or on a disposable CI runner. Script install/uninstall actions accept `-Silent`; `just install` always supplies it for unattended installation. Double-clicking Setup still opens the wizard.
+
+The regression suite compiles and executes isolated NSIS fixtures using the production OS guard and synthetic Windows version/build values. `scripts/test-windows-distribution.ps1 -OsPolicyOnly` runs just those cases without requiring a release payload or changing an installation. This checks installer policy, not OS loader, graphics driver or PDF rendering compatibility.
+
+Windows 10 native acceptance remains **NOT_RUN** until tested on a suitable Windows 10 x64 machine or VM. Confirm the OS build is at least 18362, install the required x64 Visual C++ runtime, install Setup, launch from a shortcut, open and render a PDF, start/flip/end a presentation while keeping speaker notes private, and uninstall while preserving settings and user PDFs. Policy fixtures and a Windows 11 smoke test do not establish Windows 10 runtime acceptance. Optional media is outside this qualification scope.
 
 Settings default to `%APPDATA%\ferrostage\settings.toml` on Windows,
 `$XDG_CONFIG_HOME/ferrostage/settings.toml` (or `~/.config/ferrostage/settings.toml`)

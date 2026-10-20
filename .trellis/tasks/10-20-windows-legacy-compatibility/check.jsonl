@@ -1,0 +1,4 @@
+{"file":".trellis/spec/backend/windows-distribution.md","reason":"Check distribution, prerequisites and native qualification separately"}
+{"file":".trellis/spec/backend/quality-guidelines.md","reason":"Check required CI and no waivers"}
+{"file":".trellis/tasks/10-20-windows-legacy-compatibility/prd.md","reason":"Trace every requirement and acceptance criterion"}
+{"file":".trellis/tasks/10-20-windows-legacy-compatibility/design.md","reason":"Check actual production predicate is exercised and no test bypass ships"}

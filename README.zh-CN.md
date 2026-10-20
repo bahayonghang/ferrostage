@@ -4,7 +4,7 @@
 
 基于 Rust 与 GPUI 的现代 GPU 加速无锁 PDF & Beamer 演示舞台。
 
-Windows 11 优先。应用完全离线运行：无遥测、无网络连接、无需账户。
+桌面版面向 Windows 10 1903（build 18362）及以上的 x64 系统，包括 Windows 11。运行前提和实机验证范围见[打包说明](docs/packaging.md)。应用完全离线运行：无遥测、无网络连接、无需账户。
 
 可选桌面构建已接入讲者工作台、单线程 PDFium 光栅化、完整设置系统、外部 PDF 热重载、GIF/WebP 动图播放与隔离进程视频解码。默认工作区检查不依赖原生 SDK。实施与分项验证记录见[功能对照](docs/feature-parity.md)。
 

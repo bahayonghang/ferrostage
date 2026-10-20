@@ -1,5 +1,5 @@
 # Focused artifact regressions. -Lifecycle explicitly exercises this user's installation.
-param([switch]$Lifecycle)
+param([switch]$Lifecycle, [switch]$OsPolicyOnly)
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'windows-distribution.ps1') -LibraryOnly
 
@@ -13,13 +13,76 @@ function Assert-DistributionFailure([scriptblock]$Operation, [string]$Message) {
     Assert-Distribution $failed "Expected failure: $Message"
 }
 
+function Test-DistributionOsPolicy([string]$Work) {
+    $compiler = Join-Path (Get-DistributionNsis) 'makensis.exe'
+    $template = [IO.File]::ReadAllText((Join-Path $script:DistributionRepo 'packaging/windows/installer.nsi'))
+    $guards = [regex]::Matches($template, '(?ms)^Section "Install"\r?\n(?<guard>.*?)^  \$\{DisableX64FSRedirection\}')
+    Assert-Distribution ($guards.Count -eq 1) 'Expected exactly one production installer OS guard'
+    $guard = $guards[0].Groups['guard'].Value
+    # Only the fixture supplies synthetic GetWinVer values. Production has no override.
+    # WinVer's comparison macros and the extracted production guard run unchanged.
+    $harness = @'
+Unicode true
+RequestExecutionLevel user
+SilentInstall silent
+OutFile "${OUTPUT_FILE}"
+!define __WinVer_GWV "!insertmacro FixtureGetWinVer"
+!macro FixtureGetWinVer OUTVAR FIELD
+  !if "${FIELD}" == "NTDDIMajMin"
+    StrCpy ${OUTVAR} ${FIXTURE_VERSION}
+  !else if "${FIELD}" == "Build"
+    StrCpy ${OUTVAR} ${FIXTURE_BUILD}
+  !else if "${FIELD}" == "Product"
+    StrCpy ${OUTVAR} 1 ; VER_NT_WORKSTATION
+  !else
+    StrCpy ${OUTVAR} 0
+  !endif
+!macroend
+!include "WinVer.nsh"
+Section
+  SetErrorLevel 99
+@GUARD@
+  SetErrorLevel 0
+SectionEnd
+'@
+    $source = Join-Path $Work 'os-policy.nsi'
+    $fixture = Join-Path $Work 'os-policy.exe'
+    $cases = @(
+        @{ Name = 'Windows 7'; Version = '0x0601'; Build = 7601; Exit = 10 },
+        @{ Name = 'Windows 8'; Version = '0x0602'; Build = 9200; Exit = 10 },
+        @{ Name = 'Windows 8.1'; Version = '0x0603'; Build = 9600; Exit = 10 },
+        @{ Name = 'Windows 10 below 1903'; Version = '0x0A00'; Build = 18361; Exit = 10 },
+        @{ Name = 'Windows 10 1903 boundary'; Version = '0x0A00'; Build = 18362; Exit = 0 },
+        @{ Name = 'Windows 10 22H2'; Version = '0x0A00'; Build = 19045; Exit = 0 },
+        @{ Name = 'Windows 11'; Version = '0x0A00'; Build = 22000; Exit = 0 }
+    )
+    # Keep the old guard isolated: it must reproduce the original Win10 rejection.
+    $oldGuard = @'
+  ${IfNot} ${AtLeastWin11}
+    SetErrorLevel 10
+    Abort "FerroStage requires Windows 11 x64."
+  ${EndIf}
+'@
+    foreach ($case in @(@{ Name = 'Original guard rejects Windows 10 1903 (red comparison)'; Version = '0x0A00'; Build = 18362; Exit = 10; Guard = $oldGuard }) + $cases) {
+        $policy = if ($case.ContainsKey('Guard')) { $case.Guard } else { $guard }
+        [IO.File]::WriteAllText($source, $harness.Replace('@GUARD@', $policy))
+        Invoke-DistributionTool $compiler @('/WX', '/V2', "/DOUTPUT_FILE=$fixture", "/DFIXTURE_VERSION=$($case.Version)", "/DFIXTURE_BUILD=$($case.Build)", $source) "Compile OS policy: $($case.Name)" | Out-Host
+        $process = Start-Process -FilePath $fixture -ArgumentList '/S' -WindowStyle Hidden -Wait -PassThru
+        try { $exitCode = $process.ExitCode } finally { $process.Dispose() }
+        Assert-Distribution ($exitCode -eq $case.Exit) "OS policy '$($case.Name)' returned $exitCode; expected $($case.Exit)"
+        Write-Host "[PASS] OS policy: $($case.Name) (exit $exitCode)"
+    }
+}
+
 $metadata = Get-DistributionMetadata
+$work = Join-Path $metadata.Dist 'distribution-tests'
+Reset-DistributionDirectory $work $metadata.Dist
+Test-DistributionOsPolicy $work
+if ($OsPolicyOnly) { return }
 $receipt = Get-Content -LiteralPath (Join-Path $metadata.Dist 'release.json') -Raw | ConvertFrom-Json
 $payload = $receipt.payload
 Test-DistributionPayload $payload | Out-Null
 Test-DistributionChecksums $metadata.Dist $receipt.checksums
-$work = Join-Path $metadata.Dist 'distribution-tests'
-Reset-DistributionDirectory $work $metadata.Dist
 $copy = Join-Path $work 'payload'
 Copy-Item -LiteralPath $payload -Destination $copy -Recurse
 

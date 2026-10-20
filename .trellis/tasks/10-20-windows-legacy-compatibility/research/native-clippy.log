@@ -1,0 +1,27 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Checking pulp v0.22.3 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\pulp)
+    Checking ferrostage-core v1.1.1 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-core)
+    Checking ref-cast v1.0.27
+    Checking lopdf v0.45.0
+   Compiling ferrostage-app v1.1.1 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app)
+    Checking schemars v1.2.3
+    Checking ferrostage-platform v1.1.1 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-platform)
+    Checking gpui_shared_string v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+    Checking exr v1.74.2
+    Checking ferrostage-pdf v1.1.1 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+    Checking ferrostage-render v1.1.1 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+    Checking ferrostage-document v1.1.1 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-document)
+    Checking ferrostage-settings v1.1.1 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-settings)
+    Checking image v0.25.10
+    Checking gpui v0.2.2 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui)
+    Checking ferrostage-media v1.1.1 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-media)
+mbx[progress]: 15s elapsed; 0 hits, 7 misses, 0 bypassed, 9 not looked up; ~0s compiler work saved
+    Checking gpui_windows v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+    Checking gpui_platform v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+    Checking ferrostage-ui v1.1.1 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 21.49s
+mbx[cache]: 0 hits, 10 misses, 14 not looked up; 0 B downloaded, 0 B uploaded, 40.1 MiB stored locally
+mbx[savings]: the running total stands at 1h 31m across 1347 builds. nobody is counting except the box.

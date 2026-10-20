@@ -1,0 +1,11 @@
+{
+  "version": "1.1.1",
+  "location": "C:\\Users\\lyh\\AppData\\Local\\Programs\\FerroStage",
+  "setup": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\dist\\FerroStage-1.1.1-windows-x64-Setup.exe",
+  "setup_sha256": "11bd9c8b9d51a93ab2c475de6576cd1e43563dc2769c2430fcb367113419239b",
+  "portable_sha256": "bcc8819be1591f49cc26c3458453db1da52813a8dd3e27bbf4f9d6d657e7ef52",
+  "settings_files_preserved": 2,
+  "installed_payload": "PASS",
+  "shortcuts_and_registry": "PASS",
+  "exit": 0
+}

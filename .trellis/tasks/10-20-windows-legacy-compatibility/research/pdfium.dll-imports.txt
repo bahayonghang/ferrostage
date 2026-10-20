@@ -1,0 +1,217 @@
+Microsoft (R) COFF/PE Dumper Version 14.51.36260.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+Dump of file target\dist\payload-1.1.0\pdfium.dll
+
+File Type: DLL
+
+  Section contains the following imports:
+
+    KERNEL32.dll
+             1806B0E20 Import Address Table
+             1806B08C8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           0 AcquireSRWLockExclusive
+                          9D CloseHandle
+                          B3 CompareStringW
+                          DE CreateFileA
+                          E3 CreateFileMappingW
+                          E6 CreateFileW
+                          F6 CreateMutexW
+                         12F DeleteCriticalSection
+                         136 DeleteFileW
+                         153 EncodePointer
+                         157 EnterCriticalSection
+                         17B EnumSystemLocalesW
+                         186 ExitProcess
+                         19D FindClose
+                         1A2 FindFirstFileExA
+                         1A3 FindFirstFileExW
+                         1B2 FindNextFileA
+                         1B4 FindNextFileW
+                         1C2 FlsAlloc
+                         1C3 FlsFree
+                         1C4 FlsGetValue
+                         1C6 FlsSetValue
+                         1C8 FlushFileBuffers
+                         1D3 FreeEnvironmentStringsW
+                         1D4 FreeLibrary
+                         1DB GetACP
+                         1EA GetCPInfo
+                         1FF GetCommandLineA
+                         200 GetCommandLineW
+                         225 GetConsoleMode
+                         229 GetConsoleOutputCP
+                         241 GetCurrentProcess
+                         242 GetCurrentProcessId
+                         246 GetCurrentThreadId
+                         24C GetDateFormatW
+                         262 GetEnvironmentStringsW
+                         277 GetFileSize
+                         278 GetFileSizeEx
+                         27A GetFileType
+                         28D GetLastError
+                         291 GetLocaleInfoW
+                         295 GetLogicalProcessorInformation
+                         2A1 GetModuleFileNameW
+                         2A4 GetModuleHandleExW
+                         2A5 GetModuleHandleW
+                         2C6 GetOEMCP
+                         2DD GetProcAddress
+                         2E4 GetProcessHeap
+                         301 GetStartupInfoW
+                         303 GetStdHandle
+                         308 GetStringTypeW
+                         310 GetSystemDirectoryA
+                         314 GetSystemInfo
+                         318 GetSystemTime
+                         31A GetSystemTimeAsFileTime
+                         341 GetTimeFormatW
+                         343 GetTimeZoneInformation
+                         349 GetUserDefaultLCID
+                         35C GetWindowsDirectoryA
+                         37C HeapAlloc
+                         380 HeapFree
+                         382 HeapQueryInformation
+                         383 HeapReAlloc
+                         385 HeapSize
+                         390 InitOnceExecuteOnce
+                         395 InitializeCriticalSection
+                         396 InitializeCriticalSectionAndSpinCount
+                         397 InitializeCriticalSectionEx
+                         39A InitializeSListHead
+                         39E InterlockedFlushSList
+                         3B0 IsDebuggerPresent
+                         3B8 IsProcessorFeaturePresent
+                         3BE IsValidCodePage
+                         3C0 IsValidLocale
+                         3E4 LCMapStringW
+                         3F0 LeaveCriticalSection
+                         3F4 LoadLibraryA
+                         3F6 LoadLibraryExW
+                         412 MapViewOfFile
+                         423 MultiByteToWideChar
+                         481 QueryPerformanceCounter
+                         498 RaiseException
+                         4A6 ReadConsoleW
+                         4A9 ReadFile
+                         4E6 ReleaseMutex
+                         4EA ReleaseSRWLockExclusive
+                         509 RtlCaptureContext
+                         511 RtlLookupFunctionEntry
+                         513 RtlPcToFileHeader
+                         516 RtlUnwind
+                         517 RtlUnwindEx
+                         518 RtlVirtualUnwind
+                         556 SetEndOfFile
+                         55A SetEnvironmentVariableW
+                         569 SetFilePointerEx
+                         578 SetLastError
+                         593 SetStdHandle
+                         5B8 SetUnhandledExceptionFilter
+                         5C8 Sleep
+                         5CA SleepConditionVariableSRW
+                         5D8 TerminateProcess
+                         5EA TlsAlloc
+                         5EB TlsFree
+                         5EC TlsGetValue
+                         5EE TlsSetValue
+                         5FB UnhandledExceptionFilter
+                         5FE UnmapViewOfFile
+                         614 VirtualAlloc
+                         61A VirtualProtect
+                         625 WaitForSingleObject
+                         62D WakeAllConditionVariable
+                         64C WideCharToMultiByte
+                         65F WriteConsoleW
+                         660 WriteFile
+
+    ADVAPI32.dll
+             1806B11B8 Import Address Table
+             1806B0C60 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          C2 CryptAcquireContextW
+                          D2 CryptGenRandom
+                          DC CryptReleaseContext
+
+    GDI32.dll
+             1806B11D8 Import Address Table
+             1806B0C80 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          12 BeginPath
+                          13 BitBlt
+                          1E CloseFigure
+                          29 CreateBitmap
+                          30 CreateCompatibleBitmap
+                          31 CreateCompatibleDC
+                          3F CreateFontA
+                          40 CreateFontIndirectA
+                          4F CreatePen
+                          53 CreateRectRgn
+                          5A CreateSolidBrush
+                         192 DeleteDC
+                         195 DeleteObject
+                         1A3 EndPath
+                         1D4 EnumFontFamiliesExA
+                         1E2 ExtCreatePen
+                         1E4 ExtEscape
+                         1F1 FillPath
+                         201 GdiComment
+                         282 GetCharWidthW
+                         285 GetClipBox
+                         286 GetClipRgn
+                         291 GetDIBits
+                         292 GetDeviceCaps
+                         2A0 GetFontData
+                         2C3 GetObjectType
+                         2C4 GetObjectW
+                         2C6 GetOutlineTextMetricsW
+                         2D3 GetRegionData
+                         2EB GetTextFaceA
+                         2EF GetTextMetricsW
+                         2FB IntersectClipRect
+                         301 LineTo
+                         315 MoveToEx
+                         32A PolyBezierTo
+                         344 RestoreDC
+                         34B SaveDC
+                         379 SelectClipPath
+                         37C SelectObject
+                         38E SetDIBitsToDevice
+                         39D SetMiterLimit
+                         3A3 SetPolyFillMode
+                         3A7 SetStretchBltMode
+                         3B9 StretchDIBits
+                         3BA StrokeAndFillPath
+                         3BB StrokePath
+                         3C8 WidenPath
+
+    USER32.dll
+             1806B1358 Import Address Table
+             1806B0E00 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         117 FillRect
+                         14B GetDC
+                         311 ReleaseDC
+
+  Summary
+
+        A000 .data
+        1000 .fptable
+       19000 .pdata
+      230000 .rdata
+        4000 .reloc
+        1000 .rsrc
+      48E000 .text
+        1000 .tls
+        1000 _RDATA
+        1000 malloc_h

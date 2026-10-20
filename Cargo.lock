@@ -1763,7 +1763,7 @@ dependencies = [
 
 [[package]]
 name = "ferrostage-app"
-version = "1.1.0"
+version = "1.1.1"
 dependencies = [
  "clap",
  "embed-resource",
@@ -1779,7 +1779,7 @@ dependencies = [
 
 [[package]]
 name = "ferrostage-core"
-version = "1.1.0"
+version = "1.1.1"
 dependencies = [
  "proptest 1.12.0",
  "thiserror 2.0.21",
@@ -1788,7 +1788,7 @@ dependencies = [
 
 [[package]]
 name = "ferrostage-document"
-version = "1.1.0"
+version = "1.1.1"
 dependencies = [
  "ferrostage-core",
  "ferrostage-pdf",
@@ -1798,7 +1798,7 @@ dependencies = [
 
 [[package]]
 name = "ferrostage-media"
-version = "1.1.0"
+version = "1.1.1"
 dependencies = [
  "ferrostage-core",
  "ferrostage-pdf",
@@ -1809,7 +1809,7 @@ dependencies = [
 
 [[package]]
 name = "ferrostage-media-helper"
-version = "1.1.0"
+version = "1.1.1"
 dependencies = [
  "ferrostage-core",
  "ferrostage-media",
@@ -1820,7 +1820,7 @@ dependencies = [
 
 [[package]]
 name = "ferrostage-pdf"
-version = "1.1.0"
+version = "1.1.1"
 dependencies = [
  "ferrostage-core",
  "lopdf",
@@ -1830,7 +1830,7 @@ dependencies = [
 
 [[package]]
 name = "ferrostage-platform"
-version = "1.1.0"
+version = "1.1.1"
 dependencies = [
  "ferrostage-core",
  "ferrostage-settings",
@@ -1843,7 +1843,7 @@ dependencies = [
 
 [[package]]
 name = "ferrostage-render"
-version = "1.1.0"
+version = "1.1.1"
 dependencies = [
  "ferrostage-core",
  "ferrostage-pdf",
@@ -1852,7 +1852,7 @@ dependencies = [
 
 [[package]]
 name = "ferrostage-settings"
-version = "1.1.0"
+version = "1.1.1"
 dependencies = [
  "ferrostage-core",
  "ferrostage-render",
@@ -1864,7 +1864,7 @@ dependencies = [
 
 [[package]]
 name = "ferrostage-ui"
-version = "1.1.0"
+version = "1.1.1"
 dependencies = [
  "chrono",
  "ferrostage-core",

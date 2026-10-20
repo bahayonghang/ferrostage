@@ -1,0 +1,8 @@
+{
+  "pid": 71236,
+  "exe": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\dist\\payload-1.1.1\\ferrostage.exe",
+  "fixture": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\beamer-timing\\overlays-timing.pdf",
+  "settings": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-20-windows-legacy-compatibility\\research\\smoke-settings.toml",
+  "exe_sha256": "159CCCD4671184329EC37B82751208DD74FD2ADD11043238B7A8E6F2B8BCA0CC",
+  "fixture_sha256": "8E40489EF4FE594585B19E64C20FD22E958AEB94B801E4B5A7AD7016C59DEDD9"
+}

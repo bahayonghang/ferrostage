@@ -1,0 +1,12 @@
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/windows-distribution.ps1 -Action release
+[START] Cargo metadata
+[PASS] Cargo metadata (0.4 s)
+[START] Desktop release build
+    Finished `release` profile [optimized] target(s) in 1.21s
+[PASS] Desktop release build (1.7 s)
+D:\Documents\Code\Rust\Exp\ferrostage\target\release\pdfium.dll
+[PASS] Verified desktop payload: D:\Documents\Code\Rust\Exp\ferrostage\target\dist\payload-1.1.1
+[START] NSIS Setup
+[PASS] NSIS Setup (2.6 s)
+
+[PASS] Release verified: D:\Documents\Code\Rust\Exp\ferrostage\target\dist\release.json
