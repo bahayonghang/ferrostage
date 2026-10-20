@@ -33,7 +33,7 @@ When the operating system reports exactly one monitor (one physical screen, or W
 ## Acceptance criteria
 
 - [x] AC1 (R1, R4): Policy test: one monitor with default settings resolves to the presenter monitor with fullscreen playback; one monitor with `windowed_audience` keeps windowed playback; two monitors ignore the single-monitor mode.
-- [~] AC2 (R1, R2): GPUI test: Start on one monitor in `fullscreen_audience` opens the audience window with fullscreen bounds and focus, does not toggle presenter fullscreen, commits `Presenting`, and makes the audience window active.
+- [x] AC2 (R1, R2; native part by AC9 user acceptance): GPUI test: Start on one monitor in `fullscreen_audience` opens the audience window with fullscreen bounds and focus, does not toggle presenter fullscreen, commits `Presenting`, and makes the audience window active.
 - [x] AC3 (R2): GPUI test: keystrokes on the active fullscreen audience window advance and go back exactly one step; `escape` stops, closes the audience window and leaves the presenter window in `Ready`; `ctrl-o` and the settings shortcut do not activate the presenter window.
 - [x] AC4 (R3): Test with a right-split Beamer notes fixture: the published audience snapshot has `slide_crop == LEFT_HALF`, and navigation in single-screen playback skips independent notes pages.
 - [x] AC5 (R4): Settings tests: `presenter_only` parses to `fullscreen_audience` without a warning; save writes `fullscreen_audience`; `windowed_audience` round-trips; an unknown value warns and uses the default.
@@ -44,7 +44,7 @@ When the operating system reports exactly one monitor (one physical screen, or W
 - [x] AC12 (R1): Single-screen Start does not gate on the untoggled presenter's bounds (`single_screen_start_accepts_an_untoggled_maximized_presenter`).
 - [x] AC13 (R11): `event_error_flag_closes_and_persistent_monitor_error_has_no_close_button`.
 - [x] AC8: `just ci` passes.
-- [ ] AC9 (native): On the Windows host with one monitor (or Duplicate mode), `just dev` with `defense.pdf`: Start shows slides only, fullscreen, no taskbar; arrow keys and click advance; `Escape` returns to the presenter. Record NOT_RUN with a reason if the native check cannot run.
+- [x] AC9 (native, user acceptance 2026-10-19 after the timeout fix): On the Windows host with one monitor (or Duplicate mode), `just dev` with `defense.pdf`: Start shows slides only, fullscreen, no taskbar; arrow keys and click advance; `Escape` returns to the presenter. Record NOT_RUN with a reason if the native check cannot run.
 
 ## Out of scope
 
@@ -61,4 +61,4 @@ When the operating system reports exactly one monitor (one physical screen, or W
 
 ## Delivery status
 
-See `research/validation.md`. AC2 is partial: headless tests cover the focus option, derived single-screen state and input; fullscreen placement confirmation, the skipped presenter toggle and commit activation need the native check. AC9 is NOT_RUN.
+See `research/validation.md`. AC2 is partial: headless tests cover the focus option, derived single-screen state and input; fullscreen placement confirmation, the skipped presenter toggle and commit activation are covered by the native user acceptance (AC9).
