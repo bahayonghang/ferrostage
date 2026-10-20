@@ -38,6 +38,8 @@ function Invoke-DistributionTool([string]$File, [string[]]$Arguments, [string]$S
         $process.StartInfo.CreateNoWindow = $true
         $process.StartInfo.RedirectStandardOutput = $true
         $process.StartInfo.RedirectStandardError = $true
+        $process.StartInfo.StandardOutputEncoding = [Text.Encoding]::UTF8
+        $process.StartInfo.StandardErrorEncoding = [Text.Encoding]::UTF8
         $process.Start() | Out-Null
         $stdout = $process.StandardOutput.ReadToEndAsync()
         $stderr = $process.StandardError.ReadToEndAsync()

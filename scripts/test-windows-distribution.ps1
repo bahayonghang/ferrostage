@@ -13,6 +13,19 @@ function Assert-DistributionFailure([scriptblock]$Operation, [string]$Message) {
     Assert-Distribution $failed "Expected failure: $Message"
 }
 
+$savedEncoding = [Console]::OutputEncoding
+try {
+    [Console]::OutputEncoding = [Text.Encoding]::GetEncoding(936)
+    $author = -join @([char]0x674e, [char]0x6c38, [char]0x822a)
+    $bytes = [Text.Encoding]::UTF8.GetBytes(('{"authors":["' + $author + '"]}'))
+    # Write actual UTF-8 bytes, independently of the child or parent console code page.
+    $fixture = '[Console]::OpenStandardOutput().Write([Convert]::FromBase64String(''{0}''), 0, {1})' -f [Convert]::ToBase64String($bytes), $bytes.Length
+    $command = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($fixture))
+    $captured = Invoke-DistributionTool 'powershell.exe' @('-NoProfile', '-EncodedCommand', $command) 'UTF-8 output under CP936' | ConvertFrom-Json
+    Assert-Distribution ($captured.authors[0] -ceq $author) 'Captured UTF-8 author was corrupted under CP936'
+    Write-Host '[PASS] UTF-8 JSON preserves Unicode under CP936'
+} finally { [Console]::OutputEncoding = $savedEncoding }
+
 function Test-DistributionOsPolicy([string]$Work) {
     $compiler = Join-Path (Get-DistributionNsis) 'makensis.exe'
     $template = [IO.File]::ReadAllText((Join-Path $script:DistributionRepo 'packaging/windows/installer.nsi'))
