@@ -151,7 +151,7 @@ pub(crate) struct Presenter {
     contextual_anchor: std::rc::Rc<std::cell::Cell<gpui::Bounds<gpui::Pixels>>>,
     layout_anchor: std::rc::Rc<std::cell::Cell<gpui::Bounds<gpui::Pixels>>>,
     start_anchor: std::rc::Rc<std::cell::Cell<gpui::Bounds<gpui::Pixels>>>,
-    start_row_focus: [FocusHandle; 2],
+    start_row_focus: [FocusHandle; 3],
     layout_trigger_focus: FocusHandle,
     layout_row_focus: [FocusHandle; layout_navigation::ROW_COUNT],
     layout_scroll: gpui::ScrollHandle,
@@ -178,16 +178,34 @@ pub(crate) struct Presenter {
     textures: std::rc::Rc<
         std::cell::RefCell<crate::texture_cache::TextureCache<crate::workbench::Surface>>,
     >,
-    split_drag: Option<bool>,
+    split_drag: Option<(crate::workbench::WorkbenchLayout, SplitAxis)>,
     settings_drag: std::rc::Rc<std::cell::Cell<Option<&'static str>>>,
     drawing: std::rc::Rc<std::cell::Cell<bool>>,
     paint_ms: std::rc::Rc<std::cell::Cell<f64>>,
+}
+
+/// Which workbench divider is being dragged.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum SplitAxis {
+    /// Divider between the two columns; dragging moves it horizontally.
+    Column,
+    /// Divider between the two panes of one column; dragging moves it vertically.
+    Row,
 }
 
 /// Page-browser thumbnails keep a black letterbox; presenter panes show the
 /// workbench canvas.
 pub(crate) fn letterbox(surface: crate::workbench::Surface) -> Option<u32> {
     matches!(surface, crate::workbench::Surface::Thumbnail(_)).then_some(0x000000)
+}
+
+/// Semantic dot colour of the header stage badge; the label always accompanies it.
+pub(crate) fn stage_dot(stage: SessionStage, p: Palette) -> u32 {
+    match stage {
+        SessionStage::Idle => p.muted,
+        SessionStage::Ready => p.success,
+        SessionStage::Presenting => p.focus,
+    }
 }
 
 /// Loaded-document header utilities use the quiet text face.
@@ -457,6 +475,15 @@ impl Presenter {
             _ => None,
         };
         let quiet_header = quiet_header(self.data.stage, &intent);
+        // Menu triggers draw their open/closed chevron after the label.
+        let chevron = match &intent {
+            Intent::StartModeMenu => Some(self.data.start_menu),
+            Intent::Document => Some(self.data.layout_menu.is_some()),
+            _ => None,
+        };
+        // The mode trigger shares Start's face height so the pair reads as one group.
+        let session_height = (session || matches!(&intent, Intent::StartModeMenu))
+            && self.data.stage != SessionStage::Presenting;
         let preference_control = matches!(
             &intent,
             Intent::SettingsCategory(_)
@@ -474,7 +501,11 @@ impl Presenter {
             Intent::Stop | Intent::Core(ferrostage_core::PresentationCommand::ClearStrokes) => {
                 theme::ButtonKind::Destructive
             }
-            Intent::Next | Intent::Previous => theme::ButtonKind::Navigation,
+            Intent::Next
+            | Intent::Previous
+            | Intent::StartModeMenu
+            | Intent::Document
+            | Intent::ToggleAutoplay => theme::ButtonKind::Navigation,
             Intent::Black => theme::ButtonKind::Black,
             Intent::White => theme::ButtonKind::White,
             Intent::Tool(_) => theme::ButtonKind::Tool,
@@ -519,13 +550,11 @@ impl Presenter {
             .child(
                 div()
                     .id(SharedString::from(format!("{id}-face")))
-                    .min_h(px(
-                        if session && self.data.stage != SessionStage::Presenting {
-                            theme::SESSION_CONTROL
-                        } else {
-                            theme::CONTROL
-                        },
-                    ))
+                    .min_h(px(if session_height {
+                        theme::SESSION_CONTROL
+                    } else {
+                        theme::CONTROL
+                    }))
                     .px(px(if quiet_header {
                         8.
                     } else if session
@@ -572,6 +601,13 @@ impl Presenter {
                         )
                     })
                     .child(div().when(!session, |view| view.truncate()).child(label))
+                    .when_some(chevron, |view, open| {
+                        view.child(Self::chevron(
+                            open,
+                            style.ink,
+                            format!("{id}-chevron-{}", if open { "open" } else { "closed" }),
+                        ))
+                    })
                     .when(enabled, |view| {
                         view.hover(move |state| state.bg(rgb(style.hover)))
                             .active(move |state| state.bg(rgb(style.pressed)).top(px(1.)))
@@ -671,7 +707,8 @@ impl Presenter {
                 view.track_focus(&self.utility_focus[index])
             })
             .border(px(theme::FOCUS_WIDTH))
-            .border_color(rgb(palette.canvas))
+            // Transparent at rest so menus and segmented groups keep their own surface.
+            .border_color(gpui::transparent_black())
             .rounded(px(theme::RADIUS + theme::FOCUS_GAP))
             .p(px(theme::FOCUS_GAP))
             .focus(|style| style.border_color(rgb(palette.focus)))
@@ -764,12 +801,25 @@ impl Presenter {
                     .id("stage-label")
                     .debug_selector(|| "stage-label".into())
                     .flex_shrink_0()
+                    .min_h(px(24.))
                     .px(px(8.))
-                    .py(px(4.))
+                    .flex()
+                    .items_center()
+                    .gap(px(6.))
                     .rounded(px(4.))
                     .bg(rgb(p.soft))
+                    .font_weight(gpui::FontWeight::MEDIUM)
                     .text_size(px(self.data.typography.size(12.)))
-                    .text_color(rgb(p.muted))
+                    .text_color(rgb(p.body))
+                    .child(
+                        div()
+                            .id("stage-dot")
+                            .debug_selector(|| "stage-dot".into())
+                            .size(px(8.))
+                            .flex_shrink_0()
+                            .rounded_full()
+                            .bg(rgb(stage_dot(stage, p))),
+                    )
                     .child(stage_label),
             );
         let timer = div()
@@ -1099,6 +1149,7 @@ impl Render for Presenter {
                     let fallback = if presenter.data.utility_menu.is_some()
                         || presenter.data.browser.is_some()
                         || presenter.data.layout_menu.is_some()
+                        || presenter.data.start_menu
                     {
                         presenter.contextual_focus.clone()
                     } else if presenter.had_modal {
@@ -1156,6 +1207,7 @@ impl Render for Presenter {
             .capture_key_down(cx.listener(|this, event: &gpui::KeyDownEvent, window, cx| {
                 if this.utility_menu_key(event, window, cx)
                     || this.layout_menu_key(event, window, cx)
+                    || this.start_mode_key(event, window, cx)
                     || this.outline_key(event, window, cx)
                 {
                     cx.stop_propagation();

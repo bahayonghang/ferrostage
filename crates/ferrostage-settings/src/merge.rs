@@ -99,6 +99,8 @@ fn merge_display(doc: &mut toml::Table, display: &DisplaySettings) -> Result<(),
 fn merge_presenter(doc: &mut toml::Table, presenter: &PresenterSettings) -> Result<(), SaveError> {
     let next_slide = float_value(presenter.next_slide_ratio);
     let notes = float_value(presenter.notes_ratio);
+    let notes_first_notes = float_value(presenter.notes_first_notes_ratio);
+    let notes_first_current = float_value(presenter.notes_first_current_ratio);
     let font = float_value(presenter.notes_font_scale);
     let clock = bool_value(presenter.show_clock);
     let strip = bool_value(presenter.show_thumbnail_strip);
@@ -107,6 +109,8 @@ fn merge_presenter(doc: &mut toml::Table, presenter: &PresenterSettings) -> Resu
     with_section(doc, "presenter", |table| {
         table.insert("next_slide_ratio".to_owned(), next_slide);
         table.insert("notes_ratio".to_owned(), notes);
+        table.insert("notes_first_notes_ratio".to_owned(), notes_first_notes);
+        table.insert("notes_first_current_ratio".to_owned(), notes_first_current);
         table.insert("notes_font_scale".to_owned(), font);
         table.insert("show_clock".to_owned(), clock);
         table.insert("show_thumbnail_strip".to_owned(), strip);

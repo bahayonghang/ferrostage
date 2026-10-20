@@ -477,7 +477,7 @@ fn settings_v09_worker_ack_serializes_changes_and_failed_display_rolls_budget_ba
         let layout = shell.settings.settings.presenter.clone();
         shell.dispatch(Intent::Escape, cx);
         assert!(shell.modal.is_none());
-        shell.dispatch(Intent::Split { next: 0.3, notes: 0.4, save: true }, cx);
+        shell.dispatch(Intent::Split { layout: crate::workbench::WorkbenchLayout::Standard, primary: 0.3, secondary: 0.4, save: true }, cx);
         assert_eq!(shell.settings.settings.presenter, layout);
         assert!(!shell.settings.dirty);
     });
@@ -485,7 +485,7 @@ fn settings_v09_worker_ack_serializes_changes_and_failed_display_rolls_budget_ba
     shell.update(cx, |shell, cx| {
         assert_eq!(shell.settings.settings.cache.l2_cpu_mib, 17);
         assert!(!shell.settings.dirty);
-        shell.dispatch(Intent::Split { next: 0.3, notes: 0.4, save: true }, cx);
+        shell.dispatch(Intent::Split { layout: crate::workbench::WorkbenchLayout::Standard, primary: 0.3, secondary: 0.4, save: true }, cx);
         assert_eq!(shell.settings.settings.presenter.next_slide_ratio, 0.3);
         assert_eq!(shell.settings.settings.presenter.notes_ratio, 0.55);
         assert_eq!(shell.store.load().unwrap().settings.presenter, shell.settings.settings.presenter);
@@ -541,7 +541,7 @@ fn settings_v09_closed_panel_split_waits_for_apply_and_rollback_ack(cx: &mut Tes
     shell.update(cx, |shell, cx| {
         shell.rollback_preferences("test rollback".into(), cx);
         assert!(shell.preference_change.is_some() && shell.busy());
-        shell.dispatch(Intent::Split { next: 0.3, notes: 0.4, save: true }, cx);
+        shell.dispatch(Intent::Split { layout: crate::workbench::WorkbenchLayout::Standard, primary: 0.3, secondary: 0.4, save: true }, cx);
     });
     drag(handle, cx);
     shell.read_with(cx, |shell, _| assert_eq!(shell.settings.settings.presenter, layout));
@@ -914,8 +914,9 @@ fn start_mode_menu_selects_single_persists_and_hides_while_presenting(cx: &mut T
         assert!(visual.debug_bounds("start-mode-menu").is_some());
         assert!(visual.debug_bounds("start-mode-check-0").is_some());
         assert!(visual.debug_bounds("start-mode-check-1").is_none());
+        assert!(visual.debug_bounds("start-mode-row-2").is_some());
     }
-    click_control(handle, "start-mode-row-1", cx);
+    click_control(handle, "start-mode-row-2", cx);
     cx.run_until_parked();
     shell.update(cx, |shell, cx| {
         assert!(shell.contextual.is_none());

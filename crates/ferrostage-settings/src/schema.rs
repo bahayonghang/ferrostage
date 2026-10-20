@@ -76,6 +76,8 @@ pub enum StartMode {
     /// Presenter and audience follow the display roles.
     #[default]
     Dual,
+    /// Same placement as `Dual`; the presenter workbench puts Notes on the left.
+    DualNotes,
     /// Fullscreen playback on the presenter monitor, at any monitor count.
     Single,
 }
@@ -84,6 +86,7 @@ impl StartMode {
     pub(crate) const fn as_str(self) -> &'static str {
         match self {
             Self::Dual => "dual",
+            Self::DualNotes => "dual_notes",
             Self::Single => "single",
         }
     }
@@ -260,6 +263,10 @@ pub struct PresenterSettings {
     pub next_slide_ratio: f64,
     /// Fraction of the right column height used by notes.
     pub notes_ratio: f64,
+    /// Notes-first layout: fraction of the workbench width used by the Notes column.
+    pub notes_first_notes_ratio: f64,
+    /// Notes-first layout: fraction of the right column height used by Current.
+    pub notes_first_current_ratio: f64,
     /// Notes font scale relative to the default size.
     pub notes_font_scale: f64,
     /// Show the clock.
@@ -277,6 +284,16 @@ impl PresenterSettings {
     pub fn effective_notes_ratio(&self) -> f64 {
         self.notes_ratio.clamp(0.55, 0.8)
     }
+
+    /// Notes-first Notes column width, kept inside the supported range.
+    pub fn effective_notes_first_notes_ratio(&self) -> f64 {
+        self.notes_first_notes_ratio.clamp(0.4, 0.7)
+    }
+
+    /// Notes-first Current pane height share, kept inside the supported range.
+    pub fn effective_notes_first_current_ratio(&self) -> f64 {
+        self.notes_first_current_ratio.clamp(0.5, 0.8)
+    }
 }
 
 impl Default for PresenterSettings {
@@ -284,6 +301,8 @@ impl Default for PresenterSettings {
         Self {
             next_slide_ratio: 0.45,
             notes_ratio: 0.65,
+            notes_first_notes_ratio: 0.55,
+            notes_first_current_ratio: 0.62,
             notes_font_scale: 1.0,
             show_clock: true,
             show_thumbnail_strip: false,

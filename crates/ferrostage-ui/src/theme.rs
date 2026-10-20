@@ -151,7 +151,6 @@ impl Palette {
             ButtonKind::Destructive => {
                 style.ink = self.error;
                 style.border = self.error;
-                style.radius = 4.;
             }
             ButtonKind::Utility => {}
         }

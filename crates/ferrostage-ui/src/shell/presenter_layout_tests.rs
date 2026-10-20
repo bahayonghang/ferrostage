@@ -252,3 +252,252 @@ fn presentation_menus_preserve_keyboard_focus_and_escape_precedence(cx: &mut Tes
         Some(crate::page_browser::ContextualSurface::PresenterMenu { tools: true })
     )));
 }
+
+#[gpui::test]
+fn notes_first_layout_puts_notes_left_and_larger_current_above_next(cx: &mut TestAppContext) {
+    let (shell, handle) = workbench_fixture(cx);
+    cx.test_window(handle)
+        .simulate_resize(size(px(1700.), px(1000.)));
+    shell.update(cx, |s, cx| {
+        s.settings.settings.display.start_mode = ferrostage_settings::StartMode::DualNotes;
+        cx.notify();
+    });
+    redraw(handle, cx);
+    {
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let splits = visual.debug_bounds("workbench-splits").unwrap();
+        let notes = visual.debug_bounds("notes-panel").unwrap();
+        let current = visual.debug_bounds("current-pane").unwrap();
+        let next = visual.debug_bounds("next-pane").unwrap();
+        assert!(notes.right() <= current.left());
+        assert!((notes.size.width / splits.size.width - 0.55).abs() < 0.02);
+        assert!((notes.size.height - splits.size.height).abs() < px(1.));
+        assert!(current.bottom() <= next.top());
+        assert!(current.size.height > next.size.height);
+        assert!(
+            (current.size.height / (current.size.height + next.size.height) - 0.62).abs() < 0.01
+        );
+        assert!(visual.debug_bounds("column-split").is_some());
+        assert!(visual.debug_bounds("row-split").is_some());
+        assert!(visual.debug_bounds("horizontal-split").is_none());
+    }
+    // Single keeps the standard workbench in Ready.
+    shell.update(cx, |s, cx| {
+        s.settings.settings.display.start_mode = ferrostage_settings::StartMode::Single;
+        cx.notify();
+    });
+    redraw(handle, cx);
+    {
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let notes = visual.debug_bounds("notes-panel").unwrap();
+        let current = visual.debug_bounds("current-pane").unwrap();
+        assert!(current.right() <= notes.left());
+        assert!(visual.debug_bounds("horizontal-split").is_some());
+        assert!(visual.debug_bounds("column-split").is_none());
+    }
+    // Narrow windows stack in the standard order in every mode.
+    shell.update(cx, |s, cx| {
+        s.settings.settings.display.start_mode = ferrostage_settings::StartMode::DualNotes;
+        cx.notify();
+    });
+    cx.test_window(handle)
+        .simulate_resize(size(px(700.), px(900.)));
+    redraw(handle, cx);
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    let current = visual.debug_bounds("current-pane").unwrap();
+    let next = visual.debug_bounds("next-pane").unwrap();
+    let notes = visual.debug_bounds("notes-panel").unwrap();
+    assert!(current.bottom() <= next.top() && next.bottom() <= notes.top());
+    assert!(visual.debug_bounds("column-split").is_none());
+}
+
+#[gpui::test]
+fn notes_first_dividers_drag_live_and_persist_only_their_ratios(cx: &mut TestAppContext) {
+    let fixture = SaveFixture::new();
+    fixture.unblock();
+    let (shell, handle) = workbench_fixture(cx);
+    cx.test_window(handle)
+        .simulate_resize(size(px(1700.), px(1000.)));
+    let standard = shell.update(cx, |s, cx| {
+        s.store = fixture.store();
+        s.settings.settings.display.start_mode = ferrostage_settings::StartMode::DualNotes;
+        cx.notify();
+        s.settings.settings.presenter.clone()
+    });
+    redraw(handle, cx);
+    let drag = |from: gpui::Point<Pixels>, to: gpui::Point<Pixels>, cx: &mut TestAppContext| {
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        visual.simulate_mouse_down(from, gpui::MouseButton::Left, gpui::Modifiers::default());
+        visual.simulate_mouse_move(
+            to,
+            Some(gpui::MouseButton::Left),
+            gpui::Modifiers::default(),
+        );
+        visual.simulate_mouse_up(to, gpui::MouseButton::Left, gpui::Modifiers::default());
+    };
+    let (splits, column) = {
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        (
+            visual.debug_bounds("workbench-splits").unwrap(),
+            visual.debug_bounds("column-split").unwrap(),
+        )
+    };
+    let target = gpui::point(
+        splits.left() + px(4.) + splits.size.width * 0.62,
+        column.center().y,
+    );
+    drag(column.center(), target, cx);
+    redraw(handle, cx);
+    let (previews, row) = {
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let notes = visual.debug_bounds("notes-panel").unwrap();
+        assert!((notes.size.width / splits.size.width - 0.62).abs() < 0.01);
+        (
+            visual.debug_bounds("previews-column").unwrap(),
+            visual.debug_bounds("row-split").unwrap(),
+        )
+    };
+    let target = gpui::point(
+        row.center().x,
+        previews.top() + px(4.) + (previews.size.height - px(8.)) * 0.7,
+    );
+    drag(row.center(), target, cx);
+    redraw(handle, cx);
+    {
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let current = visual.debug_bounds("current-pane").unwrap();
+        let next = visual.debug_bounds("next-pane").unwrap();
+        assert!(
+            (current.size.height / (current.size.height + next.size.height) - 0.7).abs() < 0.01
+        );
+    }
+    shell.read_with(cx, |s, _| assert!(!s.settings.dirty));
+    let saved = std::fs::read_to_string(fixture.store().path()).unwrap();
+    let parsed = ferrostage_settings::from_toml(&saved)
+        .unwrap()
+        .settings
+        .presenter;
+    assert!((parsed.notes_first_notes_ratio - 0.62).abs() < 0.002);
+    assert!((parsed.notes_first_current_ratio - 0.7).abs() < 0.002);
+    assert_eq!(parsed.next_slide_ratio, standard.next_slide_ratio);
+    assert_eq!(parsed.notes_ratio, standard.notes_ratio);
+}
+
+#[gpui::test]
+fn start_mode_menu_selects_notes_first_and_switches_the_ready_layout(cx: &mut TestAppContext) {
+    let fixture = SaveFixture::new();
+    fixture.unblock();
+    let (shell, handle) = workbench_fixture(cx);
+    cx.test_window(handle)
+        .simulate_resize(size(px(1700.), px(1000.)));
+    shell.update(cx, |s, cx| {
+        s.store = fixture.store();
+        cx.notify();
+    });
+    redraw(handle, cx);
+    {
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let start = visual.debug_bounds("start").unwrap();
+        let trigger = visual.debug_bounds("start-mode").unwrap();
+        assert!((start.size.height - trigger.size.height).abs() < px(1.));
+        // Drawn chevrons, not font glyphs, mark both menu triggers.
+        assert!(visual.debug_bounds("start-mode-chevron-closed").is_some());
+        assert!(visual.debug_bounds("document-options-chevron-closed").is_some());
+    }
+    click_control(handle, "start-mode", cx);
+    redraw(handle, cx);
+    {
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let menu = visual.debug_bounds("start-mode-menu").unwrap();
+        assert!((menu.size.width - px(360.)).abs() < px(1.));
+        assert!(visual.debug_bounds("start-mode-chevron-open").is_some());
+        let rows = ["start-mode-row-0", "start-mode-row-1", "start-mode-row-2"]
+            .map(|row| visual.debug_bounds(row).unwrap());
+        assert!(rows[0].bottom() <= rows[1].top() && rows[1].bottom() <= rows[2].top());
+        assert!(visual.debug_bounds("start-mode-check-0").is_some());
+    }
+    click_control(handle, "start-mode-row-1", cx);
+    cx.run_until_parked();
+    shell.read_with(cx, |s, _| {
+        assert!(s.contextual.is_none());
+        assert_eq!(
+            s.settings.settings.display.start_mode,
+            ferrostage_settings::StartMode::DualNotes
+        );
+        assert_eq!(
+            s.store.load().unwrap().settings.display.start_mode,
+            ferrostage_settings::StartMode::DualNotes
+        );
+    });
+    redraw(handle, cx);
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    let notes = visual.debug_bounds("notes-panel").unwrap();
+    let current = visual.debug_bounds("current-pane").unwrap();
+    assert!(notes.right() <= current.left());
+}
+
+#[test]
+fn polished_faces_keep_semantic_badge_and_regular_clear_radius() {
+    use crate::theme::{ButtonKind, DARK, LIGHT, RADIUS};
+    for p in [LIGHT, DARK] {
+        assert_eq!(crate::presenter::stage_dot(SessionStage::Ready, p), p.success);
+        assert_eq!(crate::presenter::stage_dot(SessionStage::Presenting, p), p.focus);
+        assert_eq!(crate::presenter::stage_dot(SessionStage::Idle, p), p.muted);
+        for enabled in [false, true] {
+            assert_eq!(p.button(ButtonKind::Destructive, enabled, false).radius, RADIUS);
+        }
+    }
+}
+
+#[gpui::test]
+fn start_mode_menu_keyboard_reaches_every_row_without_navigating(cx: &mut TestAppContext) {
+    let fixture = SaveFixture::new();
+    fixture.unblock();
+    let (shell, handle) = workbench_fixture(cx);
+    cx.test_window(handle)
+        .simulate_resize(size(px(1700.), px(1000.)));
+    shell.update(cx, |s, cx| {
+        s.store = fixture.store();
+        cx.notify();
+    });
+    redraw(handle, cx);
+    let page = shell.read_with(cx, |s, _| s.state.current_page());
+    click_control(handle, "start-mode", cx);
+    redraw(handle, cx);
+    // Focus starts on the checked Dual row; arrows stay inside the menu.
+    cx.simulate_keystrokes(handle, "down down");
+    redraw(handle, cx);
+    shell.read_with(cx, |s, _| {
+        assert_eq!(s.state.current_page(), page);
+        assert!(matches!(
+            s.contextual,
+            Some(crate::page_browser::ContextualSurface::StartMode)
+        ));
+    });
+    cx.simulate_keystrokes(handle, "enter");
+    cx.run_until_parked();
+    shell.read_with(cx, |s, _| {
+        assert!(s.contextual.is_none());
+        assert_eq!(
+            s.settings.settings.display.start_mode,
+            ferrostage_settings::StartMode::Single
+        );
+    });
+    redraw(handle, cx);
+    click_control(handle, "start-mode", cx);
+    redraw(handle, cx);
+    cx.simulate_keystrokes(handle, "up enter");
+    cx.run_until_parked();
+    shell.read_with(cx, |s, _| {
+        assert_eq!(s.state.current_page(), page);
+        assert_eq!(
+            s.store.load().unwrap().settings.display.start_mode,
+            ferrostage_settings::StartMode::DualNotes
+        );
+    });
+    redraw(handle, cx);
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    let notes = visual.debug_bounds("notes-panel").unwrap();
+    let current = visual.debug_bounds("current-pane").unwrap();
+    assert!(notes.right() <= current.left());
+}

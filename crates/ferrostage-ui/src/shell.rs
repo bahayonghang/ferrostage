@@ -655,11 +655,23 @@ impl Shell {
                 }
             }
             Intent::Reconfigure { id, options } => self.reconfigure_layout(id, options, cx),
-            Intent::Split { next, notes, save }
-                if !self.busy() && self.settings.write_policy == WritePolicy::Writable =>
-            {
-                self.settings.settings.presenter.next_slide_ratio = next.clamp(0.1, 0.8);
-                self.settings.settings.presenter.notes_ratio = notes.clamp(0.55, 0.8);
+            Intent::Split {
+                layout,
+                primary,
+                secondary,
+                save,
+            } if !self.busy() && self.settings.write_policy == WritePolicy::Writable => {
+                let presenter = &mut self.settings.settings.presenter;
+                match layout {
+                    crate::workbench::WorkbenchLayout::Standard => {
+                        presenter.next_slide_ratio = primary.clamp(0.1, 0.8);
+                        presenter.notes_ratio = secondary.clamp(0.55, 0.8);
+                    }
+                    crate::workbench::WorkbenchLayout::NotesFirst => {
+                        presenter.notes_first_notes_ratio = primary.clamp(0.4, 0.7);
+                        presenter.notes_first_current_ratio = secondary.clamp(0.5, 0.8);
+                    }
+                }
                 self.settings.note_edit();
                 if save {
                     self.save(cx);
@@ -2059,7 +2071,11 @@ impl Shell {
                 ferrostage_pdf::PixelSize {
                     width: (f32::from(size.width)
                         * scale
-                        * (1. - self.settings.settings.presenter.next_slide_ratio as f32))
+                        * crate::workbench::WorkbenchLayout::for_mode(
+                            self.settings.settings.display.start_mode,
+                        )
+                        .current_width(&self.settings.settings.presenter)
+                            as f32)
                         .round()
                         .max(1.) as u32,
                     // Command bar, tool row, and start control. The canvas
@@ -6265,8 +6281,9 @@ mod tests {
             };
             shell.dispatch(
                 Intent::Split {
-                    next: 0.2,
-                    notes: 0.3,
+                    layout: crate::workbench::WorkbenchLayout::Standard,
+                    primary: 0.2,
+                    secondary: 0.3,
                     save: true,
                 },
                 cx,

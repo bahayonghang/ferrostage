@@ -69,6 +69,46 @@ pub enum Tool {
     Highlighter,
     Eraser,
 }
+/// Presenter workbench composition, derived from the presentation mode.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub enum WorkbenchLayout {
+    /// Current left; Next upper-right; Notes lower-right.
+    #[default]
+    Standard,
+    /// Notes left; Current upper-right; Next lower-right.
+    NotesFirst,
+}
+
+impl WorkbenchLayout {
+    pub fn for_mode(mode: ferrostage_settings::StartMode) -> Self {
+        match mode {
+            ferrostage_settings::StartMode::DualNotes => Self::NotesFirst,
+            ferrostage_settings::StartMode::Dual | ferrostage_settings::StartMode::Single => {
+                Self::Standard
+            }
+        }
+    }
+
+    /// Fraction of the presenter width given to the Current preview.
+    pub fn current_width(self, settings: &ferrostage_settings::PresenterSettings) -> f64 {
+        match self {
+            Self::Standard => 1. - settings.next_slide_ratio,
+            Self::NotesFirst => 1. - settings.effective_notes_first_notes_ratio(),
+        }
+    }
+
+    /// The two persisted ratios this layout's dividers edit.
+    pub fn ratios(self, settings: &ferrostage_settings::PresenterSettings) -> (f64, f64) {
+        match self {
+            Self::Standard => (settings.next_slide_ratio, settings.notes_ratio),
+            Self::NotesFirst => (
+                settings.notes_first_notes_ratio,
+                settings.notes_first_current_ratio,
+            ),
+        }
+    }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum Surface {
     Audience,

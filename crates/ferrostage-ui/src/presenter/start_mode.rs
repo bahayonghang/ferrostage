@@ -2,8 +2,13 @@ use super::*;
 use ferrostage_settings::StartMode;
 
 /// Menu rows in display order: (mode, label key, helper key).
-pub(super) const CHOICES: [(StartMode, &str, &str); 2] = [
+pub(super) const CHOICES: [(StartMode, &str, &str); 3] = [
     (StartMode::Dual, "start-mode-dual", "start-mode-dual-help"),
+    (
+        StartMode::DualNotes,
+        "start-mode-dual-notes",
+        "start-mode-dual-notes-help",
+    ),
     (
         StartMode::Single,
         "start-mode-single",
@@ -26,9 +31,50 @@ impl Presenter {
             .unwrap_or(0)
     }
 
+    /// Arrow/Tab/Home/End move between rows; Enter/Space selects once; Escape
+    /// closes. Captured so arrows never reach slide navigation behind the menu.
+    pub(super) fn start_mode_key(
+        &self,
+        event: &gpui::KeyDownEvent,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) -> bool {
+        if !self.data.start_menu {
+            return false;
+        }
+        let count = CHOICES.len();
+        let current = self
+            .start_row_focus
+            .iter()
+            .position(|focus| focus.is_focused(window))
+            .unwrap_or_else(|| self.start_mode_index());
+        let next = match event.keystroke.unparse().as_str() {
+            "up" | "shift-tab" => Some((current + count - 1) % count),
+            "down" | "tab" => Some((current + 1) % count),
+            "home" => Some(0),
+            "end" => Some(count - 1),
+            "enter" | "space" => {
+                if !self.data.busy && !event.is_held {
+                    actions::dispatch(&self.shell, Intent::SetStartMode(CHOICES[current].0), cx);
+                }
+                None
+            }
+            "escape" => {
+                actions::dispatch(&self.shell, Intent::CloseContextual, cx);
+                None
+            }
+            "left" | "right" | "pageup" | "pagedown" => None,
+            _ => return false,
+        };
+        if let Some(index) = next {
+            window.focus(&self.start_row_focus[index], cx);
+        }
+        true
+    }
+
     pub(super) fn start_mode_panel(&self, p: Palette, window: &Window) -> gpui::AnyElement {
         let l = self.locale;
-        let width = 320f32
+        let width = 360f32
             .min(f32::from(window.viewport_size().width) - 24.)
             .max(200.);
         let mut body = div().flex().flex_col().gap(px(2.));

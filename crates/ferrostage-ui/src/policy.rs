@@ -126,7 +126,8 @@ pub fn audience_target(
 }
 
 /// Start placement. `Single` plays fullscreen on the presenter monitor at any
-/// monitor count; `Dual` follows the display roles.
+/// monitor count; `Dual` and `DualNotes` follow the display roles (they differ
+/// only in the presenter workbench layout).
 pub fn start_target(
     monitors: &[MonitorInfo],
     settings: &DisplaySettings,
@@ -497,6 +498,29 @@ mod tests {
         );
         assert!(!start_target(&two, &settings).unwrap().shared);
         assert!(start_target(&[], &settings).is_err());
+    }
+    #[test]
+    fn dual_notes_start_mode_places_exactly_like_dual() {
+        let two = [monitor("a", "A"), monitor("b", "B")];
+        for single in [
+            SingleMonitorMode::FullscreenAudience,
+            SingleMonitorMode::WindowedAudience,
+        ] {
+            let dual = DisplaySettings {
+                single_monitor_mode: single,
+                ..DisplaySettings::default()
+            };
+            let notes = DisplaySettings {
+                start_mode: StartMode::DualNotes,
+                ..dual.clone()
+            };
+            for monitors in [&two[..0], &two[..1], &two[..]] {
+                assert_eq!(
+                    start_target(monitors, &notes),
+                    start_target(monitors, &dual)
+                );
+            }
+        }
     }
     #[test]
     fn placement_v10_portrait_native_overflow_is_not_confirmation() {

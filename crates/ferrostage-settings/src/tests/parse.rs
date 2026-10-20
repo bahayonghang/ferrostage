@@ -214,7 +214,11 @@ fn single_monitor_mode_reads_legacy_presenter_only_as_fullscreen() {
 #[test]
 fn start_mode_defaults_to_dual_and_round_trips() {
     assert_eq!(Settings::default().display.start_mode, StartMode::Dual);
-    for (value, mode) in [("dual", StartMode::Dual), ("single", StartMode::Single)] {
+    for (value, mode) in [
+        ("dual", StartMode::Dual),
+        ("dual_notes", StartMode::DualNotes),
+        ("single", StartMode::Single),
+    ] {
         let outcome = from_toml(&format!(
             "schema_version = 1
 [display]
@@ -237,6 +241,49 @@ start_mode = \"triple\"
     .expect("parse");
     assert_eq!(outcome.settings.display.start_mode, StartMode::Dual);
     assert_eq!(outcome.warnings.len(), 1);
+}
+
+#[test]
+fn notes_first_ratios_default_clamp_and_round_trip_without_touching_standard_ratios() {
+    let defaults = Settings::default().presenter;
+    assert_eq!(defaults.notes_first_notes_ratio, 0.55);
+    assert_eq!(defaults.notes_first_current_ratio, 0.62);
+    let outcome = from_toml(
+        "schema_version = 1
+[presenter]
+next_slide_ratio = 0.3
+notes_ratio = 0.7
+notes_first_notes_ratio = 0.9
+notes_first_current_ratio = 0.2
+future_leaf = 7
+",
+    )
+    .expect("parse");
+    assert!(outcome.warnings.is_empty());
+    let presenter = &outcome.settings.presenter;
+    assert_eq!(presenter.effective_notes_first_notes_ratio(), 0.7);
+    assert_eq!(presenter.effective_notes_first_current_ratio(), 0.5);
+    let source: toml::Table = toml::from_str(
+        "[presenter]
+future_leaf = 7
+",
+    )
+    .unwrap();
+    let saved = crate::merge::merge_document(&source, &outcome.settings, &[]).expect("merge");
+    let table = saved["presenter"].as_table().unwrap();
+    assert_eq!(table["notes_first_notes_ratio"].as_float(), Some(0.9));
+    assert_eq!(table["notes_first_current_ratio"].as_float(), Some(0.2));
+    assert_eq!(table["next_slide_ratio"].as_float(), Some(0.3));
+    assert_eq!(table["notes_ratio"].as_float(), Some(0.7));
+    assert_eq!(table["future_leaf"].as_integer(), Some(7));
+    let missing = from_toml(
+        "schema_version = 1
+[presenter]
+",
+    )
+    .expect("parse");
+    assert_eq!(missing.settings.presenter.notes_first_notes_ratio, 0.55);
+    assert_eq!(missing.settings.presenter.notes_first_current_ratio, 0.62);
 }
 
 #[test]

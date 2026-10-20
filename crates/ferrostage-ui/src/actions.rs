@@ -84,9 +84,12 @@ pub(crate) enum Intent {
         id: u64,
         options: ferrostage_document::DocumentOverrides,
     },
+    /// Divider drag. `primary`/`secondary` are the two ratios of `layout`
+    /// (see `WorkbenchLayout::ratios`).
     Split {
-        next: f64,
-        notes: f64,
+        layout: crate::workbench::WorkbenchLayout,
+        primary: f64,
+        secondary: f64,
         save: bool,
     },
     Next,
@@ -142,7 +145,10 @@ pub(crate) fn install(
                     })
                     || matches!(
                         shell.contextual,
-                        Some(crate::page_browser::ContextualSurface::PresenterMenu { .. })
+                        Some(
+                            crate::page_browser::ContextualSurface::PresenterMenu { .. }
+                                | crate::page_browser::ContextualSurface::StartMode
+                        )
                     ))
                     && matches!(
                         event.keystroke.unparse().as_str(),
