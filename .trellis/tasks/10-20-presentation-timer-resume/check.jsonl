@@ -1,0 +1,5 @@
+{"file":".trellis/spec/frontend/quality-guidelines.md","reason":"Frontend test and check requirements"}
+{"file":".trellis/spec/frontend/state-management.md","reason":"Resumable session lifecycle and start transaction contract"}
+{"file":".trellis/spec/frontend/type-safety.md","reason":"Audience snapshot must not gain timer or notes state"}
+{"file":".trellis/spec/backend/quality-guidelines.md","reason":"Workspace CI and evidence rules"}
+{"file":"DESIGN.md","reason":"Contrast and component face contracts"}

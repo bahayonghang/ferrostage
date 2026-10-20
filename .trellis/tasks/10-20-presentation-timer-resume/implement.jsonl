@@ -1,0 +1,7 @@
+{"file":".trellis/spec/frontend/index.md","reason":"Frontend layer index and GPUI boundary"}
+{"file":".trellis/spec/frontend/component-guidelines.md","reason":"Button faces, menus, activation targets and focus conventions"}
+{"file":".trellis/spec/frontend/state-management.md","reason":"Core/snapshot boundary, start transaction, timer lifecycle"}
+{"file":".trellis/spec/frontend/type-safety.md","reason":"Notes boundary; audience snapshot must not change"}
+{"file":".trellis/spec/frontend/quality-guidelines.md","reason":"Window rules and required GPUI tests"}
+{"file":".trellis/spec/backend/quality-guidelines.md","reason":"Core crate rules and workspace CI"}
+{"file":"DESIGN.md","reason":"Token layer, header/timer/session control contracts to update first"}
