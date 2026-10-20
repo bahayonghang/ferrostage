@@ -14,6 +14,8 @@ use crate::{DocumentDescriptor, SessionStage, SlideMap};
 
 const DEFAULT_STROKE_COLOR_BGRA: [u8; 4] = [0, 0, 255, 255];
 const DEFAULT_STROKE_WIDTH_NORM: f32 = 0.004;
+/// A stopped session shorter than this restarts instead of resuming.
+const MIN_RESUMABLE: Duration = Duration::from_secs(1);
 
 /// Presenter-side state. Fields stay private so the audience window can only
 /// observe [`AudienceProjectionSnapshot`].
@@ -21,6 +23,8 @@ const DEFAULT_STROKE_WIDTH_NORM: f32 = 0.004;
 pub struct PresentationState {
     stage: SessionStage,
     timer: TimerState,
+    /// The last Presenting → Ready stop froze at least [`MIN_RESUMABLE`].
+    resumable: bool,
     generation: DocumentGeneration,
     page_count: usize,
     slide_map: Option<SlideMap>,
@@ -95,6 +99,7 @@ impl PresentationState {
         Self {
             stage: SessionStage::Idle,
             timer: TimerState::default(),
+            resumable: false,
             generation: DocumentGeneration(0),
             page_count: 0,
             slide_map: None,
@@ -118,6 +123,12 @@ impl PresentationState {
     #[must_use]
     pub fn elapsed_at(&self, now: Instant) -> Duration {
         self.timer.elapsed_at(now)
+    }
+
+    /// Frozen elapsed time of the last stopped session when it can resume.
+    #[must_use]
+    pub fn resumable_elapsed(&self, now: Instant) -> Option<Duration> {
+        self.resumable.then(|| self.timer.elapsed_at(now))
     }
 
     #[must_use]
@@ -211,6 +222,9 @@ impl PresentationState {
             PresentationCommand::LoadDocument { .. }
             | PresentationCommand::LoadMappedDocument(_) => self.stage != SessionStage::Presenting,
             PresentationCommand::StartPresentation { .. } => self.stage == SessionStage::Ready,
+            PresentationCommand::ResumePresentation { .. } => {
+                self.stage == SessionStage::Ready && self.resumable
+            }
             PresentationCommand::StopPresentation
             | PresentationCommand::PauseTimer
             | PresentationCommand::ResumeTimer
@@ -236,10 +250,20 @@ impl PresentationState {
                     return Err(CoreError::NoAudienceDisplay);
                 }
                 self.timer.start(now);
+                self.resumable = false;
+                self.stage = SessionStage::Presenting;
+            }
+            PresentationCommand::ResumePresentation { audience_available } => {
+                if !audience_available {
+                    return Err(CoreError::NoAudienceDisplay);
+                }
+                self.timer.resume(now);
+                self.resumable = false;
                 self.stage = SessionStage::Presenting;
             }
             PresentationCommand::StopPresentation => {
                 self.timer.pause(now);
+                self.resumable = self.timer.elapsed_at(now) >= MIN_RESUMABLE;
                 self.stage = SessionStage::Ready;
             }
             PresentationCommand::CloseDocument => *self = Self::idle(),

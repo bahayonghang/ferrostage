@@ -20,6 +20,10 @@ pub enum PresentationCommand {
     StartPresentation {
         audience_available: bool,
     },
+    /// Continue the timer frozen by the last stop instead of restarting it.
+    ResumePresentation {
+        audience_available: bool,
+    },
     StopPresentation,
     CloseDocument,
     PauseTimer,
@@ -59,6 +63,7 @@ impl PresentationCommand {
             Self::ReconfigureDocument(_) => "reconfigure_document",
             Self::LoadDocument { .. } => "load_document",
             Self::StartPresentation { .. } => "start_presentation",
+            Self::ResumePresentation { .. } => "resume_presentation",
             Self::StopPresentation => "stop_presentation",
             Self::CloseDocument => "close_document",
             Self::PauseTimer => "pause_timer",

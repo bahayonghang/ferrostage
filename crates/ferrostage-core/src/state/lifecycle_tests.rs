@@ -100,14 +100,28 @@ fn illegal_lifecycle_edges_leave_every_field_unchanged() {
                 StartPresentation {
                     audience_available: true,
                 },
+                ResumePresentation {
+                    audience_available: true,
+                },
                 StopPresentation,
                 PauseTimer,
                 ResumeTimer,
                 ResetTimer,
             ],
-            SessionStage::Ready => vec![StopPresentation, PauseTimer, ResumeTimer, ResetTimer],
+            SessionStage::Ready => vec![
+                ResumePresentation {
+                    audience_available: true,
+                },
+                StopPresentation,
+                PauseTimer,
+                ResumeTimer,
+                ResetTimer,
+            ],
             SessionStage::Presenting => vec![
                 StartPresentation {
+                    audience_available: true,
+                },
+                ResumePresentation {
                     audience_available: true,
                 },
                 LoadDocument {
@@ -273,4 +287,154 @@ fn descriptor_commit_is_atomic_clamps_position_and_preserves_session_timer() {
         );
         assert_eq!(idle, PresentationState::idle());
     }
+}
+
+fn resumable(origin: Instant, seconds: u64) -> PresentationState {
+    let mut state = live(origin);
+    state.apply_at(NextStep, origin).unwrap();
+    state
+        .apply_at(StopPresentation, origin + Duration::from_secs(seconds))
+        .unwrap();
+    state
+}
+
+#[test]
+fn stopped_session_resumes_from_frozen_time_or_restarts_at_zero() {
+    let origin = Instant::now();
+    let at = |seconds| origin + Duration::from_secs(seconds);
+    let mut state = resumable(origin, 12);
+    assert_eq!(state.stage(), SessionStage::Ready);
+    assert_eq!(
+        state.resumable_elapsed(at(40)),
+        Some(Duration::from_secs(12))
+    );
+    assert_eq!(state.elapsed_at(at(40)), Duration::from_secs(12));
+    let page = state.current_page();
+
+    let before = state.clone();
+    assert_eq!(
+        state.apply_at(
+            ResumePresentation {
+                audience_available: false
+            },
+            at(40)
+        ),
+        Err(CoreError::NoAudienceDisplay)
+    );
+    assert_eq!(state, before);
+
+    state
+        .apply_at(
+            ResumePresentation {
+                audience_available: true,
+            },
+            at(40),
+        )
+        .unwrap();
+    assert_eq!(state.stage(), SessionStage::Presenting);
+    assert_eq!(state.current_page(), page);
+    assert_eq!(state.resumable_elapsed(at(45)), None);
+    assert!(!state.is_timer_paused());
+    assert_eq!(state.elapsed_at(at(45)), Duration::from_secs(17));
+
+    // A pause before stopping does not carry over: resume always runs.
+    state.apply_at(PauseTimer, at(45)).unwrap();
+    state.apply_at(StopPresentation, at(50)).unwrap();
+    assert_eq!(
+        state.resumable_elapsed(at(60)),
+        Some(Duration::from_secs(17))
+    );
+    state
+        .apply_at(
+            ResumePresentation {
+                audience_available: true,
+            },
+            at(60),
+        )
+        .unwrap();
+    assert!(!state.is_timer_paused());
+    assert_eq!(state.elapsed_at(at(61)), Duration::from_secs(18));
+
+    state.apply_at(StopPresentation, at(61)).unwrap();
+    state
+        .apply_at(
+            StartPresentation {
+                audience_available: true,
+            },
+            at(70),
+        )
+        .unwrap();
+    assert_eq!(state.current_page(), page);
+    assert_eq!(state.resumable_elapsed(at(70)), None);
+    assert_eq!(state.elapsed_at(at(72)), Duration::from_secs(2));
+}
+
+#[test]
+fn short_sessions_and_document_boundaries_clear_resumable_time() {
+    let origin = Instant::now();
+    let mut short = live(origin);
+    short
+        .apply_at(StopPresentation, origin + Duration::from_millis(999))
+        .unwrap();
+    assert_eq!(short.resumable_elapsed(origin), None);
+    let before = short.clone();
+    assert_eq!(
+        short.apply_at(
+            ResumePresentation {
+                audience_available: true
+            },
+            origin
+        ),
+        Err(CoreError::NotReady {
+            stage: SessionStage::Ready
+        })
+    );
+    assert_eq!(short, before);
+
+    let mut exact = live(origin);
+    exact
+        .apply_at(StopPresentation, origin + Duration::from_secs(1))
+        .unwrap();
+    assert_eq!(
+        exact.resumable_elapsed(origin),
+        Some(Duration::from_secs(1))
+    );
+
+    for command in [
+        LoadDocument {
+            generation: DocumentGeneration(9),
+            page_count: 2,
+        },
+        LoadMappedDocument(DocumentDescriptor::identity(DocumentGeneration(9), 2).unwrap()),
+        CloseDocument,
+    ] {
+        let mut state = resumable(origin, 12);
+        state.apply_at(command, origin).unwrap();
+        assert_eq!(state.resumable_elapsed(origin), None);
+        assert_eq!(state.elapsed_at(origin), Duration::ZERO);
+    }
+
+    let mut reloaded = resumable(origin, 12);
+    reloaded
+        .apply_at(
+            CommitDocument(DocumentDescriptor::identity(DocumentGeneration(4), 4).unwrap()),
+            origin + Duration::from_secs(20),
+        )
+        .unwrap();
+    assert_eq!(
+        reloaded.resumable_elapsed(origin + Duration::from_secs(30)),
+        Some(Duration::from_secs(12))
+    );
+    let mut checked = resumable(origin, 12);
+    checked
+        .commit_reload(
+            DocumentDescriptor::identity(DocumentGeneration(4), 4).unwrap(),
+            PhysicalPage(1),
+            &[],
+        )
+        .unwrap();
+    assert_eq!(
+        checked.resumable_elapsed(origin),
+        Some(Duration::from_secs(12))
+    );
 }

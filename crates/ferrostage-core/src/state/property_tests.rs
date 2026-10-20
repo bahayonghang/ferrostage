@@ -4,7 +4,7 @@ use proptest::prelude::*;
 proptest! {
     #[test]
     fn arbitrary_commands_preserve_stage_privacy_and_error_atomicity(
-        commands in prop::collection::vec((0u8..23, 0usize..8, 0u64..16), 0..80)
+        commands in prop::collection::vec((0u8..25, 0usize..8, 0u64..16), 0..80)
     ) {
         let origin = Instant::now();
         let mut state = PresentationState::idle();
@@ -34,6 +34,8 @@ proptest! {
                 19 => ClearStrokes,
                 20 => SwapScreens,
                 21 => CommitDocument(descriptor),
+                22 => ResumePresentation { audience_available: true },
+                23 => ResumePresentation { audience_available: false },
                 _ => StageShadowDocument { new_generation: descriptor.generation, bytes: Arc::new(vec![1; page]) },
             };
             let must_preserve_page = matches!(command, PauseTimer | ResumeTimer | ResetTimer | ToggleBlank(_) | ClearStrokes);
@@ -50,6 +52,12 @@ proptest! {
                 prop_assert_eq!(snapshot.stage, AudienceStage::Live);
             }
             prop_assert_eq!(snapshot.current_page, state.current_page());
+            let now = origin + Duration::from_secs(index as u64);
+            if let Some(frozen) = state.resumable_elapsed(now) {
+                prop_assert_eq!(state.stage(), SessionStage::Ready);
+                prop_assert!(frozen >= Duration::from_secs(1));
+                prop_assert_eq!(state.elapsed_at(now + Duration::from_secs(5)), frozen);
+            }
             if must_preserve_page {
                 prop_assert_eq!(snapshot.current_page, before.current_page());
             }
