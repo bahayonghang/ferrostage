@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 16
-- **Last Active**: 2026-10-19
+- **Total Sessions**: 17
+- **Last Active**: 2026-10-20
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~557 | Active |
+| `journal-1.md` | ~581 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 17 | 2026-10-20 | 演示计时续接与顶栏计时器重设计 | `4b3a572`, `51f0570`, `cd25b4a` | `dev` |
 | 16 | 2026-10-19 | 单屏全屏放映、演示方式下拉框与关于页（1.2.0） | `487653e`, `aa569fd` | `dev` |
 | 15 | 2026-10-20 | Windows 10 安装兼容修复与 1.1.1 本机安装 | `e262705783f2c77032539dbb2a1b5a777a1d6e45` | `dev` |
 | 14 | 2026-10-19 | 提交答辩演示体验并归档 1.1.0 任务 | `a89c2a26b19362027484a401c0cef8d2347e163b`, `f6f5c4864ac18391fc9051fb35c8c6a724b28aa0` | `dev` |

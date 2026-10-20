@@ -555,3 +555,27 @@ Created monitor discovery task; fixed typed error ownership/classification and A
 ### Status
 
 [OK] **Completed**
+
+
+## Session 17: 演示计时续接与顶栏计时器重设计
+<!-- trellis-session: v=2 fp=63033b2e3ee4781f -->
+
+**Date**: 2026-10-20
+**Task**: 演示计时续接与顶栏计时器重设计
+**Branch**: `dev`
+
+### Summary
+
+中途结束演示后冻结计时，左下分体按钮提供继续演示/重新开始，F5 在可续接时继续；顶栏改为三栏并居中柔底胶囊计时器（≥1100 宽居中，以下为部分达成），布局与导航移至顶栏右侧并向下展开。core 34 项、UI 230 项测试与 just ci（除未安装的 cargo deny）通过，用户实机验收通过。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `4b3a572` | feat(core): ✨ 中途结束演示后保留计时并支持续接 |
+| `51f0570` | feat(ui): ✨ 新增继续/重新开始分体按钮并重设计居中计时器 |
+| `cd25b4a` | docs(task): 📝 记录演示计时续接任务规划与验收结果 |
+
+### Status
+
+[OK] **Completed**
