@@ -272,7 +272,10 @@ fn outline_switch_retires_thumbnail_work_and_ignores_stale_view_generation(
     cx: &mut TestAppContext,
 ) {
     use crate::workbench::{BrowserView, Surface};
+    let fixture = SaveFixture::new();
+    fixture.unblock();
     let (shell, handle) = outline_fixture(cx);
+    shell.update(cx, |s, _| s.store = fixture.store());
     let worker = ferrostage_render::RenderHandle::with_backend(
         || Box::new(SettingsBackend),
         ferrostage_render::CacheBudgets::default(),
