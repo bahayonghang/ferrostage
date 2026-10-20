@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 14
-- **Last Active**: 2026-10-19
+- **Total Sessions**: 15
+- **Last Active**: 2026-10-20
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~486 | Active |
+| `journal-1.md` | ~522 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 15 | 2026-10-20 | Windows 10 安装兼容修复与 1.1.1 本机安装 | `e262705783f2c77032539dbb2a1b5a777a1d6e45` | `dev` |
 | 14 | 2026-10-19 | 提交答辩演示体验并归档 1.1.0 任务 | `a89c2a26b19362027484a401c0cef8d2347e163b`, `f6f5c4864ac18391fc9051fb35c8c6a724b28aa0` | `dev` |
 | 13 | 2026-10-19 | 完成首页历史时间与中文 PDF 错误提示 | `a233665`, `3cd6fc7` | `dev` |
 | 12 | 2026-10-19 | 修复显示器检测错误残留与中文恢复提示 | `4d286d1`, `3cd6fc7` | `dev` |

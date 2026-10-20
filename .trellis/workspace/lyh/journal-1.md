@@ -484,3 +484,39 @@ Created monitor discovery task; fixed typed error ownership/classification and A
 ### Status
 
 [OK] **Completed**
+
+
+## Session 15: Windows 10 安装兼容修复与 1.1.1 本机安装
+<!-- trellis-session: v=2 fp=878d75cb39d5cf63 -->
+
+**Date**: 2026-10-20
+**Task**: Windows 10 安装兼容修复与 1.1.1 本机安装
+**Branch**: `dev`
+
+### Summary
+
+修复 Windows 10 1903+ x64 安装门槛，重新打包并安装 1.1.1；保留实机与视觉验收限制。
+
+### Main Changes
+
+- 生产 NSIS 系统检查、边界回归、版本及支持文档同步；任务已按授权归档。
+- just release 重打包后静默安装，本机清单/快捷方式/注册版本及两份设置保留校验通过。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `e262705783f2c77032539dbb2a1b5a777a1d6e45` | fix(installer): 🐛 修复 Windows 10 安装并升级至 1.1.1 |
+
+### Testing
+
+- [OK] just ci 235 项测试、native clippy、all-features deny、发行校验及最终分发回归通过。
+- [OK] 本机新版进程启动通过；可视渲染与 Windows 10 实机验收 NOT_RUN。
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- 在 Windows 10 1903+ x64 设备执行打包文档中的安装/渲染/演示/卸载验收。
