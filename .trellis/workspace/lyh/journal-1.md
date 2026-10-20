@@ -520,3 +520,38 @@ Created monitor discovery task; fixed typed error ownership/classification and A
 ### Next Steps
 
 - 在 Windows 10 1903+ x64 设备执行打包文档中的安装/渲染/演示/卸载验收。
+
+
+## Session 16: 单屏全屏放映、演示方式下拉框与关于页（1.2.0）
+<!-- trellis-session: v=2 fp=9b2df5d53ec2153f -->
+
+**Date**: 2026-10-19
+**Task**: 单屏全屏放映、演示方式下拉框与关于页（1.2.0）
+**Branch**: `dev`
+
+### Summary
+
+单屏或复制显示时全屏播放幻灯片；开始按钮旁新增双屏/单屏下拉框；修复单屏开始时最大化讲者窗口导致的确认超时；报错改为可关闭提示条；设置新增关于页；版本升级至 1.2.0。
+
+### Main Changes
+
+- 单屏开始不再按创建尺寸确认未切换的讲者窗口（presenter_restore 为 None 时放行）
+- display.start_mode = dual | single；presenter_only 读取为 fullscreen_audience
+- 关于页：版本、作者、构建时间（本地格式 + UTC 偏移）、许可证、GitHub 仓库链接
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `487653e` | feat(ui): ✨ 新增单屏全屏放映、演示方式下拉框与关于页并升级至 1.2.0 |
+| `aa569fd` | chore(task): archive 10-19-single-screen-fullscreen-playback |
+
+### Testing
+
+- [OK] just ci exit 0
+- [OK] just check-shell exit 0，218 个 UI 测试
+- [OK] 用户原生验收单屏放映通过
+
+### Status
+
+[OK] **Completed**
