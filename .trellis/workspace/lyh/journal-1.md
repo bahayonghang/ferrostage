@@ -579,3 +579,26 @@ Created monitor discovery task; fixed typed error ownership/classification and A
 ### Status
 
 [OK] **Completed**
+
+
+## Session 18: 文档警告改成可关闭的浮层小旗
+<!-- trellis-session: v=2 fp=b18e441f66df957a -->
+
+**Date**: 2026-10-20
+**Task**: 文档警告改成可关闭的浮层小旗
+**Branch**: `dev`
+
+### Summary
+
+Ready 与演示中的文档警告改为内容区左下可关闭小旗，关闭只在当前文档代际有效；外壳警告仍是原行。UI test-support 231 项与 GPUI clippy 通过，just ci 的 fmt/clippy/test 通过，cargo deny 因本机未安装未运行。深色实绘未在本会话开窗核对。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `a9e5e6527b50d7d97c5d08641774df629fc1371f` | feat(ui): ✨ 把文档警告改成可关闭的浮层小旗 |
+| `0f5ce9fb577fd4f748f07abd3d57b3487028bc4a` | docs(task): 📝 记录文档警告小旗任务规划与验收结果 |
+
+### Status
+
+[OK] **Completed**

@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 17
+- **Total Sessions**: 18
 - **Last Active**: 2026-10-20
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~581 | Active |
+| `journal-1.md` | ~604 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 18 | 2026-10-20 | 文档警告改成可关闭的浮层小旗 | `a9e5e6527b50d7d97c5d08641774df629fc1371f`, `0f5ce9fb577fd4f748f07abd3d57b3487028bc4a` | `dev` |
 | 17 | 2026-10-20 | 演示计时续接与顶栏计时器重设计 | `4b3a572`, `51f0570`, `cd25b4a` | `dev` |
 | 16 | 2026-10-19 | 单屏全屏放映、演示方式下拉框与关于页（1.2.0） | `487653e`, `aa569fd` | `dev` |
 | 15 | 2026-10-20 | Windows 10 安装兼容修复与 1.1.1 本机安装 | `e262705783f2c77032539dbb2a1b5a777a1d6e45` | `dev` |
