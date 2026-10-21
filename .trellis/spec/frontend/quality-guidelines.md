@@ -30,3 +30,16 @@ A change of either constant updates `docs/adr/ADR-001-gpui-from-zed-tag.md` in t
 ## Presenter v0.3 implementation-first scheduling
 
 For the existing10-14-presenter-v0.3 tree, the2026-10-15 user decision in `.trellis/tasks/10-14-presenter-v0.3/acceptance-policy.md` defers physical/exhaustive native/size/performance matrices until after feature implementation. Retain automatic regressions, strict lint/typecheck/build/license checks and native-functional smoke where needed. Do not weaken runtime contracts or label deferred checks PASS; the original quality/performance targets remain later qualification work.
+
+## Headless presenter bounds
+
+`just ci` uses default features. Presenter code is behind `gpui`, so that recipe does not compile it. Also run:
+
+```text
+cargo clippy -p ferrostage-ui --features test-support --all-targets --locked -- -D warnings
+cargo test -p ferrostage-ui --features test-support --lib --locked
+```
+
+`VisualTestContext::debug_bounds` only returns elements that set `.debug_selector`. `.id()` alone records nothing. `window.draw` clears the next frame's debug map before paint.
+
+An explicit `track_focus` handle does not copy the div's `.tab_stop`. Call `.tab_index(0).tab_stop(...)` on that `FocusHandle` before `track_focus`. GPUI copies `tab_stop` onto an auto-created handle only when no handle is tracked.

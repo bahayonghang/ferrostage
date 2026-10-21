@@ -59,7 +59,7 @@ impl LayoutMenuData {
 }
 
 /// Real document warnings stay in ordinary feedback, without an internal Debug dump.
-pub(super) fn document_warnings(shell: &Shell) -> Vec<String> {
+pub(crate) fn document_warnings(shell: &Shell) -> Vec<String> {
     let Some(session) = &shell.workbench.document else {
         return vec![];
     };
@@ -328,6 +328,95 @@ impl Presenter {
             })
             .into_any_element()
     }
+
+    /// Document warnings float above the workbench. Shell warnings stay inline.
+    pub(super) fn document_warning_flags(&self, p: Palette) -> gpui::AnyElement {
+        let blocked = self.data.utility_menu.is_some()
+            || self.data.browser.is_some()
+            || self.data.layout_menu.is_some()
+            || self.data.start_menu;
+        let mut stack = div()
+            .id("document-warning-stack")
+            .debug_selector(|| "document-warning-stack".into())
+            .absolute()
+            .left(px(12.))
+            .bottom(px(12.))
+            .max_w(px(420.))
+            .flex()
+            .flex_col_reverse()
+            .items_start()
+            .gap(px(8.));
+        for (index, warning) in self.data.document_warnings.iter().enumerate() {
+            let id = format!("document-warning-{index}");
+            let dismiss_id = format!("dismiss-document-warning-{index}");
+            let selector = id.clone();
+            let face_id = format!("{dismiss_id}-face");
+            let focus = self.warning_dismiss_focus[index]
+                .clone()
+                .tab_index(0)
+                .tab_stop(!blocked);
+            stack = stack.child(
+                div()
+                    .id(SharedString::from(id))
+                    .debug_selector(move || selector)
+                    .role(Role::Status)
+                    .max_w(px(420.))
+                    .flex()
+                    .items_center()
+                    .gap(px(8.))
+                    .pl(px(12.))
+                    .rounded(px(8.))
+                    .border_1()
+                    .border_color(rgb(p.border))
+                    .bg(rgb(p.card))
+                    .on_mouse_down(gpui::MouseButton::Left, |_, _, cx| cx.stop_propagation())
+                    .child(
+                        div()
+                            .size(px(8.))
+                            .flex_shrink_0()
+                            .rounded_full()
+                            .bg(rgb(p.warning)),
+                    )
+                    .child(
+                        div()
+                            .min_w_0()
+                            .max_w(px(312.))
+                            .whitespace_normal()
+                            .font_weight(gpui::FontWeight::MEDIUM)
+                            .text_size(px(self.ui_text_size(14.)))
+                            .text_color(rgb(p.warning))
+                            .child(warning.clone()),
+                    )
+                    .child(
+                        self.activation_target(
+                            dismiss_id,
+                            self.locale.text("dismiss-warning").into(),
+                            true,
+                            Intent::DismissDocumentWarning(warning.clone()),
+                            p,
+                        )
+                        .flex_shrink_0()
+                        .track_focus(&focus)
+                        .child(
+                            div()
+                                .id(SharedString::from(face_id))
+                                .size(px(44.))
+                                .flex()
+                                .items_center()
+                                .justify_center()
+                                .rounded(px(crate::theme::RADIUS))
+                                .text_size(px(self.ui_text_size(16.)))
+                                .text_color(rgb(p.body))
+                                .hover(|style| style.bg(rgb(p.soft)))
+                                .active(|style| style.top(px(1.)))
+                                .child("×"),
+                        ),
+                    ),
+            );
+        }
+        stack.into_any_element()
+    }
+
     fn layout_group_heading(&self, key: &str, p: Palette) -> Div {
         div()
             .px(px(12.))

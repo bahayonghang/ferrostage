@@ -1,5 +1,5 @@
 mod home_view;
-mod layout_navigation;
+pub(crate) mod layout_navigation;
 mod number_input;
 mod page_browser;
 mod settings_view;
@@ -35,7 +35,8 @@ pub(crate) struct PresenterData {
     error: Option<String>,
     /// The shown error is an event message that `Intent::DismissError` clears.
     error_dismissible: bool,
-    warnings: Vec<String>,
+    shell_warnings: Vec<String>,
+    document_warnings: Vec<String>,
     start_reason: Option<String>,
     start_mode: ferrostage_settings::StartMode,
     start_menu: bool,
@@ -93,12 +94,17 @@ impl PresenterData {
                 .map(|error| shell.locale.error("wb-upload-error", error))
                 .or_else(|| shell.error.clone())
                 .or_else(|| shell.monitor_error_text()),
-            warnings: shell
-                .warnings
-                .iter()
-                .cloned()
-                .chain(layout_navigation::document_warnings(shell))
-                .collect(),
+            shell_warnings: shell.warnings.clone(),
+            document_warnings: {
+                let generation = shell.state.generation();
+                let dismissed = shell.dismissed_warning_generation == generation;
+                layout_navigation::document_warnings(shell)
+                    .into_iter()
+                    .filter(|warning| {
+                        !(dismissed && shell.dismissed_document_warnings.contains(warning))
+                    })
+                    .collect()
+            },
             start_reason: shell.start_reason(),
             start_mode: shell.settings.settings.display.start_mode,
             start_menu: matches!(
@@ -156,6 +162,7 @@ pub(crate) struct Presenter {
     start_row_focus: [FocusHandle; 3],
     layout_trigger_focus: FocusHandle,
     layout_row_focus: [FocusHandle; layout_navigation::ROW_COUNT],
+    warning_dismiss_focus: Vec<FocusHandle>,
     layout_scroll: gpui::ScrollHandle,
     layout_row_anchors: [gpui::ScrollAnchor; layout_navigation::ROW_COUNT],
     had_layout_menu: bool,
@@ -340,6 +347,10 @@ impl Presenter {
         ));
     }
     #[cfg(all(test, feature = "test-support"))]
+    pub(crate) fn warning_dismiss_focus(&self, index: usize) -> FocusHandle {
+        self.warning_dismiss_focus[index].clone()
+    }
+    #[cfg(all(test, feature = "test-support"))]
     pub(crate) fn effective_texture_budget(&self) -> usize {
         self.textures.borrow().effective_budget()
     }
@@ -422,6 +433,7 @@ impl Presenter {
             start_row_focus: std::array::from_fn(|_| cx.focus_handle()),
             layout_trigger_focus: cx.focus_handle(),
             layout_row_focus,
+            warning_dismiss_focus: Vec::new(),
             layout_scroll,
             layout_row_anchors,
             had_layout_menu: false,
@@ -1055,7 +1067,11 @@ impl Render for Presenter {
             .map(|error| l.error("wb-upload-error", error));
         let dismissible = texture_error.is_none() && self.data.error_dismissible;
         let error = texture_error.or_else(|| self.data.error.clone());
-        let warnings = self.data.warnings.clone();
+        let warning_count = self.data.document_warnings.len();
+        if self.warning_dismiss_focus.len() != warning_count {
+            self.warning_dismiss_focus = (0..warning_count).map(|_| cx.focus_handle()).collect();
+        }
+        let shell_warnings = self.data.shell_warnings.clone();
         let dirty = self.data.dirty;
         let save_error = self.data.save_error.clone();
         if stage == SessionStage::Idle {
@@ -1300,8 +1316,10 @@ impl Render for Presenter {
         let drop_target = self.shell.clone();
         let document_open = stage != SessionStage::Idle;
         let mut body = if document_open {
-            div()
+            let mut content = div()
                 .id("presenter-content")
+                .debug_selector(|| "presenter-content".into())
+                .relative()
                 .flex_1()
                 .min_h_0()
                 .p(px(if stage == SessionStage::Presenting {
@@ -1320,7 +1338,11 @@ impl Render for Presenter {
                         .flex()
                         .flex_col()
                         .child(self.workbench_panel(p, window, cx)),
-                )
+                );
+            if !self.data.document_warnings.is_empty() {
+                content = content.child(self.document_warning_flags(p));
+            }
+            content
         } else {
             self.home_content(p, window)
         };
@@ -1380,9 +1402,11 @@ impl Render for Presenter {
                     }),
             );
         }
-        for warning in warnings {
+        for (index, warning) in shell_warnings.into_iter().enumerate() {
             body = body.child(
                 div()
+                    .id(SharedString::from(format!("shell-warning-{index}")))
+                    .debug_selector(move || format!("shell-warning-{index}"))
                     .flex_shrink_0()
                     .text_color(rgb(p.warning))
                     .child(warning),

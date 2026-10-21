@@ -78,6 +78,7 @@ pub(crate) enum Intent {
     Document,
     StartModeMenu,
     DismissError,
+    DismissDocumentWarning(String),
     OpenRepository,
     SetStartMode(ferrostage_settings::StartMode),
     Reconfigure {

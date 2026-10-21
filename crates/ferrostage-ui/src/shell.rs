@@ -14,8 +14,8 @@ use crate::{
     transactions::{self, Operation, Shutdown},
 };
 use ferrostage_core::{
-    AudienceProjectionSnapshot, AudienceStage, BlankMode, MonitorId, PhysicalPage,
-    PresentationCommand as Command, PresentationState, SessionStage,
+    AudienceProjectionSnapshot, AudienceStage, BlankMode, DocumentGeneration, MonitorId,
+    PhysicalPage, PresentationCommand as Command, PresentationState, SessionStage,
 };
 #[cfg(all(test, feature = "test-support"))]
 use ferrostage_pdf::DocumentMetadata;
@@ -29,7 +29,7 @@ use gpui::{
 };
 use std::{
     cell::Cell,
-    collections::BTreeMap,
+    collections::{BTreeMap, HashSet},
     path::PathBuf,
     rc::Rc,
     sync::mpsc::Receiver,
@@ -191,6 +191,9 @@ pub(crate) struct Shell {
     pub error: Option<String>,
     pub graphics_error: Option<String>,
     pub warnings: Vec<String>,
+    /// Localized document warnings hidden for `dismissed_warning_generation`.
+    pub(crate) dismissed_document_warnings: HashSet<String>,
+    pub(crate) dismissed_warning_generation: DocumentGeneration,
     pub modal: Option<Modal>,
     pub contextual: Option<crate::page_browser::ContextualSurface>,
     contextual_serial: u64,
@@ -373,6 +376,8 @@ impl Shell {
             error: None,
             graphics_error: None,
             warnings,
+            dismissed_document_warnings: HashSet::new(),
+            dismissed_warning_generation: DocumentGeneration(0),
             modal: None,
             contextual: None,
             contextual_serial: 0,
@@ -533,6 +538,19 @@ impl Shell {
         cx.notify();
     }
 
+    fn dismiss_document_warning(&mut self, text: String) {
+        let current = crate::presenter::layout_navigation::document_warnings(self);
+        if !current.iter().any(|warning| warning == &text) {
+            return;
+        }
+        let generation = self.state.generation();
+        if self.dismissed_warning_generation != generation {
+            self.dismissed_document_warnings.clear();
+            self.dismissed_warning_generation = generation;
+        }
+        self.dismissed_document_warnings.insert(text);
+    }
+
     pub fn dispatch(&mut self, intent: Intent, cx: &mut Context<Self>) {
         if self.dispatch_preference(&intent, cx) {
             cx.notify();
@@ -665,6 +683,7 @@ impl Shell {
                 self.error = None;
                 self.graphics_error = None;
             }
+            Intent::DismissDocumentWarning(text) => self.dismiss_document_warning(text),
             Intent::StartModeMenu
                 if !self.busy() && self.state.stage() != SessionStage::Presenting =>
             {
@@ -4517,6 +4536,234 @@ mod tests {
                 Instant::now(),
             )
             .unwrap();
+    }
+
+    fn labeled_pair() -> crate::workbench::DocumentSession {
+        let metadata = DocumentMetadata {
+            pages: (0..2)
+                .map(|index| ferrostage_pdf::PageMetadata {
+                    page: PhysicalPage(index),
+                    width_points: 640.,
+                    height_points: 480.,
+                    rotation_degrees: 0,
+                    label: Some("3".into()),
+                })
+                .collect(),
+        };
+        let structure = ferrostage_pdf::DocumentStructure {
+            outline: Default::default(),
+            pages: (0..2)
+                .map(|index| ferrostage_pdf::structure::PageStructure {
+                    presentation: Default::default(),
+                    page: PhysicalPage(index),
+                    geometry: ferrostage_pdf::structure::PageGeometry {
+                        bounds: [0., 0., 640., 480.],
+                        rotation_degrees: 0,
+                    },
+                    media: vec![],
+                })
+                .collect(),
+            diagnostics: vec![],
+        };
+        crate::workbench::DocumentSession::build(metadata, structure).unwrap()
+    }
+
+    fn show_labeled_document(shell: &mut Shell, generation: u64) {
+        let session = labeled_pair();
+        assert!(
+            session
+                .document
+                .warnings
+                .contains(&ferrostage_document::DocumentWarning::OverlayHeuristic)
+        );
+        shell
+            .state
+            .apply_at(
+                Command::LoadMappedDocument(
+                    session
+                        .document
+                        .descriptor(ferrostage_core::DocumentGeneration(generation))
+                        .unwrap(),
+                ),
+                Instant::now(),
+            )
+            .unwrap();
+        shell.workbench.document = Some(session);
+    }
+
+    #[gpui::test]
+    fn document_warning_flag_floats_and_dismisses_for_one_generation(cx: &mut TestAppContext) {
+        let (shell, handle) = input_presenter(cx);
+        shell.update(cx, |shell, cx| {
+            show_labeled_document(shell, 2);
+            shell
+                .workbench
+                .document
+                .as_mut()
+                .unwrap()
+                .document
+                .warnings
+                .push(ferrostage_document::DocumentWarning::MixedGeometry);
+            shell.warnings = vec!["shell-only-notice".into()];
+            shell.dispatch(
+                Intent::DismissDocumentWarning("not-a-document-warning".into()),
+                cx,
+            );
+            assert!(shell.dismissed_document_warnings.is_empty());
+            cx.notify();
+        });
+        redraw(handle, cx);
+        cx.simulate_keystrokes(handle, "escape");
+        cx.run_until_parked();
+        redraw(handle, cx);
+        shell.read_with(cx, |shell, _| {
+            assert_eq!(shell.state.stage(), SessionStage::Ready);
+        });
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        assert!(visual.debug_bounds("document-warning-0").is_some());
+        assert!(visual.debug_bounds("document-warning-1").is_some());
+        assert!(visual.debug_bounds("document-warning-2").is_none());
+        assert!(visual.debug_bounds("shell-warning-0").is_some());
+        let (overlay, mixed_index) = shell.read_with(cx, |shell, _| {
+            let locale = shell.locale;
+            let overlay = locale.text("ln-warning-overlays").to_string();
+            let mixed = locale.text("ln-warning-mixed").to_string();
+            let mut ordered = [overlay.clone(), mixed.clone()];
+            ordered.sort();
+            let mixed_index = ordered.iter().position(|text| text == &mixed).unwrap();
+            (overlay, mixed_index)
+        });
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let content = visual.debug_bounds("presenter-content").unwrap();
+        let flag0 = visual.debug_bounds("document-warning-0").unwrap();
+        let flag1 = visual.debug_bounds("document-warning-1").unwrap();
+        let tools = visual.debug_bounds("workbench-controls").unwrap();
+        let (upper, lower) = if flag0.origin.y < flag1.origin.y {
+            (flag0, flag1)
+        } else {
+            (flag1, flag0)
+        };
+        assert!(
+            (f32::from(lower.origin.y - upper.bottom()) - 8.).abs() <= 1.,
+            "flag gap {:?} {:?}",
+            upper,
+            lower
+        );
+        assert!((f32::from(flag0.origin.x - content.origin.x) - 12.).abs() <= 1.);
+        assert!(flag0.bottom() <= tools.origin.y);
+        assert!(flag1.bottom() <= tools.origin.y);
+        assert!(flag0.bottom() <= content.bottom());
+        let height = content.size.height;
+        let mixed_dismiss = if mixed_index == 0 {
+            "dismiss-document-warning-0"
+        } else {
+            "dismiss-document-warning-1"
+        };
+        click_control(handle, mixed_dismiss, cx);
+        cx.run_until_parked();
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let content = visual.debug_bounds("presenter-content").unwrap();
+        assert!((content.size.height - height).abs() < px(0.5));
+        assert!(visual.debug_bounds("document-warning-0").is_some());
+        assert!(visual.debug_bounds("document-warning-1").is_none());
+        assert!(visual.debug_bounds("shell-warning-0").is_some());
+        shell.read_with(cx, |shell, _| {
+            assert!(!shell.dismissed_document_warnings.contains(&overlay));
+            assert_eq!(shell.dismissed_document_warnings.len(), 1);
+        });
+        let reached = handle
+            .update(cx, |root, window, cx| {
+                let presenter = root.downcast::<Presenter>().unwrap();
+                let target = presenter.read(cx).warning_dismiss_focus(0);
+                window.blur(cx);
+                for _ in 0..100 {
+                    window.focus_next(cx);
+                    if target.is_focused(window) {
+                        return true;
+                    }
+                }
+                false
+            })
+            .unwrap();
+        assert!(reached, "Tab must reach the warning close control");
+        cx.simulate_keystrokes(handle, "escape");
+        cx.run_until_parked();
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        assert!(visual.debug_bounds("document-warning-0").is_some());
+        cx.simulate_keystrokes(handle, "enter");
+        cx.run_until_parked();
+        redraw(handle, cx);
+        shell.read_with(cx, |shell, _| {
+            assert!(shell.dismissed_document_warnings.contains(&overlay));
+            assert_eq!(shell.state.generation().0, 2);
+        });
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        assert!(visual.debug_bounds("document-warning-0").is_none());
+        shell.update(cx, |shell, cx| {
+            let generation = shell.state.generation();
+            shell.contextual_serial += 1;
+            let id = shell.contextual_serial;
+            shell.contextual = Some(crate::page_browser::ContextualSurface::LayoutNavigation {
+                id,
+                generation,
+                error: None,
+            });
+            let mut options = shell
+                .workbench
+                .document
+                .as_ref()
+                .unwrap()
+                .document
+                .overrides;
+            options.layout = None;
+            shell.reconfigure_layout(id, options, cx);
+        });
+        redraw(handle, cx);
+        shell.read_with(cx, |shell, _| {
+            assert!(shell.contextual.is_none());
+            assert!(
+                shell
+                    .workbench
+                    .document
+                    .as_ref()
+                    .unwrap()
+                    .document
+                    .warnings
+                    .contains(&ferrostage_document::DocumentWarning::OverlayHeuristic)
+            );
+            assert_eq!(shell.state.generation().0, 2);
+        });
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        assert!(visual.debug_bounds("document-warning-0").is_none());
+        shell.update(cx, |shell, cx| {
+            show_labeled_document(shell, 3);
+            cx.notify();
+        });
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        assert!(visual.debug_bounds("document-warning-0").is_some());
+        assert!(visual.debug_bounds("document-warning-1").is_none());
+        shell.read_with(cx, |shell, _| {
+            assert_eq!(shell.dismissed_warning_generation.0, 2);
+            assert_eq!(shell.state.generation().0, 3);
+        });
+        shell.update(cx, |shell, cx| {
+            shell
+                .state
+                .apply_at(
+                    Command::StartPresentation {
+                        audience_available: true,
+                    },
+                    Instant::now(),
+                )
+                .unwrap();
+            cx.notify();
+        });
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        assert!(visual.debug_bounds("document-warning-0").is_some());
     }
 
     fn audience_input_fixture(
