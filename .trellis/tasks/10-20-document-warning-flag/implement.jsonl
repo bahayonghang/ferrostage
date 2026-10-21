@@ -1,0 +1,2 @@
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Shared activation boundary and presenter-only faces; the flag must not grow a second button primitive."}
+{"file": ".trellis/tasks/10-20-document-warning-flag/design.md", "reason": "Flag geometry, generation-scoped dismiss set, and the shell-warning split."}

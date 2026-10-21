@@ -1,0 +1,2 @@
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "just ci remains the UI gate. Audience input stays AudienceProjectionSnapshot."}
+{"file": ".trellis/tasks/10-20-document-warning-flag/prd.md", "reason": "Acceptance criteria for height, dismiss lifetime, stack, and shell-warning isolation."}
