@@ -602,3 +602,37 @@ Ready 与演示中的文档警告改为内容区左下可关闭小旗，关闭�
 ### Status
 
 [OK] **Completed**
+
+
+## Session 19: 演讲者点击翻页、关于页更新日志并升至 1.2.1
+<!-- trellis-session: v=2 fp=ee97a2c57acd5aea -->
+
+**Date**: 2026-10-22
+**Task**: 演讲者点击翻页、关于页更新日志并升至 1.2.1
+**Branch**: `dev`
+
+### Summary
+
+演讲者视图单击当前页、下一页或讲稿可前进一页；关于页可打开离线更新日志；版本升至 1.2.1。
+
+### Main Changes
+
+- 标准与讲稿优先布局的当前页、下一页和讲稿单击走现有下一页。
+- 关于页更新日志不写入设置；工作区版本为 1.2.1。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `4b07b929e7df7d18cf10af6fff4d4612c22de59a` | docs(task): 📝 记录演讲者点击翻页与更新日志任务 |
+| `a4ebc865bf3261ee365cf29c2becb75b8b18f78a` | feat(ui): ✨ 演讲者点击翻页、关于页更新日志，并将版本升至 1.2.1 |
+
+### Testing
+
+- [OK] cargo clippy -p ferrostage-ui --features test-support --all-targets --locked -- -D warnings
+- [OK] cargo test -p ferrostage-ui --features test-support --lib --locked（231 项）
+- [OK] cargo metadata 确认十个 ferrostage 包为 1.2.1
+
+### Status
+
+[OK] **Completed**
