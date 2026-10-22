@@ -33,6 +33,7 @@ impl Shell {
         self.preferences.edit = None;
         self.preferences.recording = None;
         self.preferences.font_picker = None;
+        self.preferences.changelog_open = false;
         if let Some(pending) = &mut self.preference_change {
             pending.return_settings = false;
         }
@@ -47,6 +48,7 @@ impl Shell {
                     return true;
                 }
                 self.preferences.confirm_reset = false;
+                self.preferences.changelog_open = false;
                 self.preferences.category = *category;
                 self.preferences.font_picker = None;
                 self.preferences.edit = None;
@@ -142,6 +144,13 @@ impl Shell {
             Intent::OpenConfigDirectory => {
                 if self.preferences_editable() {
                     cx.reveal_path(self.store.path());
+                }
+            }
+            Intent::ToggleChangelog => {
+                if self.modal == Some(Modal::Settings)
+                    && self.preferences.category == Category::About
+                {
+                    self.preferences.changelog_open = !self.preferences.changelog_open;
                 }
             }
             Intent::ResetPreferences(confirm) => {

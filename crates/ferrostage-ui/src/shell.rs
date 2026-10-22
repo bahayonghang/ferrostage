@@ -4899,10 +4899,27 @@ mod tests {
         });
     }
 
+    fn click_named(handle: AnyWindowHandle, name: &'static str, cx: &mut TestAppContext) {
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let bounds = visual.debug_bounds(name).expect(name);
+        visual.simulate_click(bounds.center(), gpui::Modifiers::default());
+        cx.run_until_parked();
+    }
+
+    fn page_is(shell: &Entity<Shell>, page: usize, cx: &TestAppContext) {
+        assert_eq!(
+            shell.read_with(cx, |s, _| s.state.current_page()),
+            PhysicalPage(page)
+        );
+    }
+
     #[gpui::test]
-    fn audience_click_does_not_bind_the_presenter_slide_preview(cx: &mut TestAppContext) {
+    fn presenter_preview_and_notes_clicks_advance_one_step(cx: &mut TestAppContext) {
         let (shell, presenter) = workbench_fixture(cx);
-        let audience = shell.update(cx, |shell, cx| {
+        cx.test_window(presenter)
+            .simulate_resize(size(px(1100.), px(760.)));
+        shell.update(cx, |shell, cx| {
             shell
                 .state
                 .apply_at(
@@ -4923,25 +4940,170 @@ mod tests {
                     frame: ferrostage_core::BgraFrame::new(4, 3, 16, vec![255; 48]).unwrap(),
                 },
             ));
-            shell.audience = Some(test_window(shell, true, cx));
-            shell.publish(false, cx);
+            shell.settings.settings.display.audience_click_to_advance = false;
             cx.notify();
-            shell.audience.as_ref().unwrap().handle
         });
         redraw(presenter, cx);
+        let position = {
+            let mut visual = gpui::VisualTestContext::from_window(presenter, cx);
+            visual.debug_bounds("surface-Current").unwrap().center()
+        };
         let mut visual = gpui::VisualTestContext::from_window(presenter, cx);
-        let preview = visual.debug_bounds("surface-Current").unwrap();
-        visual.simulate_click(preview.center(), gpui::Modifiers::default());
+        visual.simulate_mouse_down(
+            position,
+            gpui::MouseButton::Left,
+            gpui::Modifiers::default(),
+        );
         cx.run_until_parked();
-        assert_eq!(
-            shell.read_with(cx, |s, _| s.state.current_page()),
-            PhysicalPage(0)
+        page_is(&shell, 0, cx);
+        visual.simulate_mouse_up(
+            point(px(-10.), px(-10.)),
+            gpui::MouseButton::Left,
+            gpui::Modifiers::default(),
         );
-        click_audience(audience, cx);
-        assert_eq!(
-            shell.read_with(cx, |s, _| s.state.current_page()),
-            PhysicalPage(2)
+        visual.simulate_mouse_down(
+            position,
+            gpui::MouseButton::Right,
+            gpui::Modifiers::default(),
         );
+        visual.simulate_mouse_up(
+            position,
+            gpui::MouseButton::Right,
+            gpui::Modifiers::default(),
+        );
+        cx.run_until_parked();
+        page_is(&shell, 0, cx);
+
+        shell.update(cx, |shell, cx| {
+            shell.workbench.tool = crate::workbench::Tool::Pen;
+            cx.notify();
+        });
+        click_named(presenter, "surface-Current", cx);
+        page_is(&shell, 0, cx);
+        shell.update(cx, |shell, cx| {
+            shell.workbench.tool = crate::workbench::Tool::Navigate;
+            shell
+                .workbench
+                .document
+                .as_mut()
+                .unwrap()
+                .document
+                .media
+                .push(ferrostage_document::MediaSlot {
+                    page: PhysicalPage(0),
+                    annotation: 0,
+                    media: ferrostage_pdf::structure::MediaAnnotation {
+                        kind: ferrostage_pdf::structure::MediaKind::Movie,
+                        rect: Some(ferrostage_core::NormalizedRect::FULL),
+                        source: None,
+                        start: None,
+                        duration: None,
+                        repeat: None,
+                        autostart: None,
+                        play_on_activation: None,
+                    },
+                    slide_rect: Some(ferrostage_core::NormalizedRect::FULL),
+                    source_crop: None,
+                    aspect_ratio: None,
+                });
+            cx.notify();
+        });
+        click_named(presenter, "surface-Current", cx);
+        page_is(&shell, 0, cx);
+        shell.update(cx, |shell, cx| {
+            shell
+                .workbench
+                .document
+                .as_mut()
+                .unwrap()
+                .document
+                .media
+                .clear();
+            shell.contextual =
+                Some(crate::page_browser::ContextualSurface::PresenterMenu { tools: false });
+            cx.notify();
+        });
+        click_named(presenter, "surface-Current", cx);
+        page_is(&shell, 0, cx);
+        shell.update(cx, |shell, cx| {
+            shell.close_contextual();
+            shell.pending = Some(Transaction {
+                kind: TransactionKind::RecoverPresenter,
+                presenter: None,
+                audience: None,
+                deadline: Instant::now() + CONFIRM_TIMEOUT,
+            });
+            cx.notify();
+        });
+        click_named(presenter, "surface-Current", cx);
+        page_is(&shell, 0, cx);
+        shell.update(cx, |shell, cx| {
+            shell.pending = None;
+            shell.modal = Some(Modal::Settings);
+            cx.notify();
+        });
+        redraw(presenter, cx);
+        assert!(
+            gpui::VisualTestContext::from_window(presenter, cx)
+                .debug_bounds("surface-Current")
+                .is_none()
+        );
+        shell.update(cx, |shell, cx| {
+            shell.dispatch(Intent::Next, cx);
+            assert_eq!(shell.state.current_page(), PhysicalPage(0));
+            shell.modal = None;
+            cx.notify();
+        });
+
+        click_named(presenter, "surface-Current", cx);
+        page_is(&shell, 2, cx);
+        click_named(presenter, "next-pane", cx);
+        page_is(&shell, 3, cx);
+        click_named(presenter, "notes-content", cx);
+        page_is(&shell, 3, cx);
+
+        shell.update(cx, |shell, cx| {
+            shell
+                .state
+                .apply_at(Command::JumpTo(PhysicalPage(0)), Instant::now())
+                .unwrap();
+            shell
+                .state
+                .apply_at(Command::ToggleBlank(BlankMode::Black), Instant::now())
+                .unwrap();
+            cx.notify();
+        });
+        click_named(presenter, "surface-Current", cx);
+        page_is(&shell, 2, cx);
+
+        shell.update(cx, |shell, cx| {
+            shell
+                .state
+                .apply_at(Command::JumpTo(PhysicalPage(0)), Instant::now())
+                .unwrap();
+            shell
+                .state
+                .apply_at(Command::ToggleBlank(BlankMode::Black), Instant::now())
+                .unwrap();
+            shell.settings.settings.display.start_mode = ferrostage_settings::StartMode::DualNotes;
+            cx.notify();
+        });
+        click_named(presenter, "current-pane", cx);
+        page_is(&shell, 2, cx);
+        click_named(presenter, "next-pane", cx);
+        page_is(&shell, 3, cx);
+        shell.update(cx, |shell, cx| {
+            shell
+                .state
+                .apply_at(Command::JumpTo(PhysicalPage(0)), Instant::now())
+                .unwrap();
+            cx.notify();
+        });
+        click_named(presenter, "notes-content", cx);
+        page_is(&shell, 2, cx);
+        shell.read_with(cx, |shell, _| {
+            assert!(!shell.settings.settings.display.audience_click_to_advance);
+        });
     }
 
     #[gpui::test]

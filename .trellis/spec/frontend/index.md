@@ -18,7 +18,7 @@ The skeleton originally left GPUI unlinked. Task07 is adopting the explicitly ap
 | Guide | Description | Status |
 |-------|-------------|--------|
 | [Directory Structure](./directory-structure.md) | Where views will live | Filled |
-| [Component Guidelines](./component-guidelines.md) | GPUI views, not React components | Filled |
+| [Component Guidelines](./component-guidelines.md) | GPUI views, presenter pane clicks, and the About changelog | Filled |
 | [Hook Guidelines](./hook-guidelines.md) | No React hooks; GPUI context updates | Filled |
 | [State Management](./state-management.md) | Core/snapshot boundary and shared display-assignment contract | Filled |
 | [PDF Playback](./pdf-playback.md) | Transition metadata, paint acknowledgements and authored dwell lifecycle | Filled |

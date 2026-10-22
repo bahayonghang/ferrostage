@@ -274,6 +274,7 @@ pub struct PanelState {
     pub display: Option<DisplayDraft>,
     pub error: Option<String>,
     pub confirm_reset: bool,
+    pub changelog_open: bool,
     pub font_picker: Option<FontPicker>,
 }
 #[derive(Clone, Debug, Default)]

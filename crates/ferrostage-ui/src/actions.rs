@@ -80,6 +80,7 @@ pub(crate) enum Intent {
     DismissError,
     DismissDocumentWarning(String),
     OpenRepository,
+    ToggleChangelog,
     SetStartMode(ferrostage_settings::StartMode),
     Reconfigure {
         id: u64,

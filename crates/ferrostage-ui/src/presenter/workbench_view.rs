@@ -321,6 +321,11 @@ impl Presenter {
             )
             .when(interactive, |view| {
                 view.on_mouse_down(MouseButton::Left, move |event, _, cx| {
+                    // Drawing and media own this surface. Stop before the pane's
+                    // completed click can dispatch Next.
+                    if tool != Tool::Navigate {
+                        cx.stop_propagation();
+                    }
                     if let Some(point) =
                         crate::slide_surface::normalize(down_bounds.get(), event.position)
                     {
@@ -333,6 +338,7 @@ impl Presenter {
                             })
                         {
                             actions::dispatch(&down_target, Intent::Media(slot.id), cx);
+                            cx.stop_propagation();
                             return;
                         }
                         down_drawing.set(true);
@@ -1076,6 +1082,15 @@ impl Presenter {
             )
             .into_any_element()
     }
+    /// Completed left click only. Keyboard activation is not a page turn.
+    fn advance_on_click(&self, event: &gpui::ClickEvent, cx: &mut gpui::App) {
+        if let gpui::ClickEvent::Mouse(event) = event
+            && event.down.button == MouseButton::Left
+            && event.up.button == MouseButton::Left
+        {
+            actions::dispatch(&self.shell, Intent::Next, cx);
+        }
+    }
     /// One caption style for every workbench pane label.
     fn pane_caption(&self, key: &'static str, p: Palette) -> gpui::Div {
         div()
@@ -1165,6 +1180,11 @@ impl Presenter {
         });
         notes_frames.dedup();
         let mut note_panel = div()
+            .id("notes-content")
+            .debug_selector(|| "notes-content".into())
+            .on_click(cx.listener(|this, event: &gpui::ClickEvent, _, cx| {
+                this.advance_on_click(event, cx);
+            }))
             .w_full()
             .flex_shrink_0()
             .flex()
@@ -1327,6 +1347,9 @@ impl Presenter {
                             div()
                                 .id("current-pane")
                                 .debug_selector(|| "current-pane".into())
+                                .on_click(cx.listener(|this, event: &gpui::ClickEvent, _, cx| {
+                                    this.advance_on_click(event, cx);
+                                }))
                                 .flex_grow(current_share)
                                 .flex_shrink(1.)
                                 .flex_basis(gpui::relative(0.))
@@ -1353,6 +1376,9 @@ impl Presenter {
                             div()
                                 .id("next-pane")
                                 .debug_selector(|| "next-pane".into())
+                                .on_click(cx.listener(|this, event: &gpui::ClickEvent, _, cx| {
+                                    this.advance_on_click(event, cx);
+                                }))
                                 .flex_grow(1. - current_share)
                                 .flex_shrink(1.)
                                 .flex_basis(gpui::relative(0.))
@@ -1375,6 +1401,9 @@ impl Presenter {
                     div()
                         .id("current-pane")
                         .debug_selector(|| "current-pane".into())
+                        .on_click(cx.listener(|this, event: &gpui::ClickEvent, _, cx| {
+                            this.advance_on_click(event, cx);
+                        }))
                         .when(!stacked, |view| view.w(gpui::relative(1. - ratio)).h_full())
                         .when(stacked, |view| view.w_full().flex_1().min_h_0())
                         .overflow_hidden()
@@ -1426,6 +1455,9 @@ impl Presenter {
                             div()
                                 .id("next-pane")
                                 .debug_selector(|| "next-pane".into())
+                                .on_click(cx.listener(|this, event: &gpui::ClickEvent, _, cx| {
+                                    this.advance_on_click(event, cx);
+                                }))
                                 .flex_grow((1. - notes).max(0.15))
                                 .flex_shrink(1.)
                                 .flex_basis(gpui::relative(0.))

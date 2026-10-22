@@ -376,6 +376,43 @@ impl Presenter {
                     );
             }
             Category::About => {
+                content = content.child(self.button(
+                    "about-changelog".into(),
+                    l.text("about-changelog").into(),
+                    true,
+                    data.panel.changelog_open,
+                    Intent::ToggleChangelog,
+                    p,
+                ));
+                if data.panel.changelog_open {
+                    for (version, key) in crate::about::CHANGELOG {
+                        let selector = format!("changelog-{version}");
+                        content = content.child(
+                            div()
+                                .id(SharedString::from(selector.clone()))
+                                .debug_selector(move || selector.clone())
+                                .flex()
+                                .flex_col()
+                                .gap(px(4.))
+                                .py(px(12.))
+                                .border_b_1()
+                                .border_color(rgb(p.border))
+                                .child(
+                                    div()
+                                        .text_size(px(self.ui_text_size(16.)))
+                                        .text_color(rgb(p.ink))
+                                        .child(*version),
+                                )
+                                .child(
+                                    div()
+                                        .text_size(px(self.ui_text_size(14.)))
+                                        .text_color(rgb(p.muted))
+                                        .whitespace_normal()
+                                        .child(l.text(key)),
+                                ),
+                        );
+                    }
+                }
                 let text = |value: String| {
                     div()
                         .text_size(px(self.ui_text_size(14.)))

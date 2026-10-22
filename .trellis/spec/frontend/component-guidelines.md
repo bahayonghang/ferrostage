@@ -207,3 +207,62 @@ Use real GPUI input for the three visible rows, arrows/Tab/Home/End wrap, Enter/
 ### 7. Wrong vs Correct
 
 Wrong: add a second modal system, save document overrides as global settings, change core clear policy or expose note state to audience. Correct: captured menu data in the existing contextual host, checked session overrides and a minimal core annotation-presence query, with deferred Shell commands and no new UI/IO core dependencies.
+
+## Presenter pane click and About changelog
+
+### 1. Scope / Trigger
+
+A completed left click in the presenter current pane, next pane, or notes content dispatches one existing `Intent::Next`. Settings > About toggles a local changelog. `display.audience_click_to_advance` stays an audience-only policy. Layout menus, the page grid, and outline rows still do not advance the underlying page.
+
+### 2. Signatures
+
+`WorkbenchView::advance_on_click(&self, event: &gpui::ClickEvent, cx: &mut gpui::App)` dispatches `Intent::Next` only for `ClickEvent::Mouse` whose down and up buttons are both `MouseButton::Left`. Bind it with `on_click` on `current-pane` and `next-pane` in both the Notes-first and Standard branches, and on the inner `notes-content` of `notes-panel`.
+
+The interactive current picture (`picture(Surface::Current, true)`) calls `cx.stop_propagation()` on left mouse-down when `tool != Tool::Navigate`, and after `Intent::Media` when Navigate hits a media slot. Next and Notes pictures stay non-interactive. `Intent::Next` still maps to `PresentationCommand::NextStep`.
+
+Handle `Intent::ToggleChangelog` in `Shell::dispatch_preference` before `_ => return false`. A handled arm falls through to `true`, so the intent is consumed. It flips `PanelState.changelog_open`. `about::VERSION` is `env!("CARGO_PKG_VERSION")`. `about::CHANGELOG: &[(&str, &str)]` is newest-first `(heading, locale key)`.
+
+### 3. Contracts
+
+One completed click inside the pane, including captions, letterbox, the rendering placeholder, and the empty-notes line, advances one Beamer content step. A second completed click may advance again. Mouse-down alone, a non-left button, keyboard `ClickEvent`, and mouse-up outside the clicked pane do not advance. Wheel and scrollbar dragging inside `notes-panel` scroll; `overflow_y_scroll` stays on that outer id. Splitter drag, toolbar buttons, the page grid, and outline rows are unchanged.
+
+Ready and Presenting advance. Idle, an open Settings modal, any contextual surface, and a pending transaction do not. Blank mode does not block. The last step stays. Notes pages stay off the audience content map. The audience toggle does not gate these panes, and these clicks do not write that setting. Width below 800 px uses the stacked Standard layout; both layouts bind the same three click targets.
+
+GPUI paints parent listeners before children and bubbles children first. `stop_propagation()` on the picture's mouse-down keeps the pane from recording a pending click, so the pane `on_click` does not fire. Each mouse event starts with propagation enabled, so that stop does not cancel the picture's own mouse-up. Do not also dispatch `Next` from the picture: a Navigate click that is not a media hit must reach the pane exactly once.
+
+`PanelState.changelog_open` is panel UI state, not a settings key. The About button id is `about-changelog`, label key `about-changelog` (更新日志 / Changelog), and it is the first About child. The same button toggles the log. Entries render only while the flag is true, one block per `CHANGELOG` row, debug id `changelog-{version}`, heading equal to the version string, paragraph `locale.text(key)`. The five existing About rows and `about-repository-link` stay after the log. Opening is offline. Category changes and `dismiss_preferences` clear the flag. The toggle applies only when `modal == Some(Modal::Settings)` and the category is About.
+
+Product version lives only in `[workspace.package].version`. `CHANGELOG[0].0` must equal `VERSION`. Headings are exactly `1.2.1`, `1.2.0`, `1.1.1`, `1.1.0`, `1.0.0`. Paragraphs live in `about-changelog-1-2-1` through `about-changelog-1-0-0` in both `zh-CN` and `en-US`, with identical keys. Do not add a second version constant or fetch the log.
+
+### 4. Validation & Error Matrix
+
+| Condition | Result |
+| --- | --- |
+| Completed left click on current, next, or notes content | One `Intent::Next`; existing `NextStep` rules |
+| Mouse-down only, non-left, keyboard click, or release outside | No navigation |
+| Pen, highlighter, eraser, or laser on the current slide | Drawing or pointer only; no `Next` |
+| Navigate hit on a current-slide media slot | `Intent::Media` once; no `Next` |
+| Drawing tool selected, click on next pane or notes | Still one `Next` |
+| Settings modal, contextual surface, pending transaction, or Idle | No navigation |
+| Blank mode | Next still applies |
+| `audience_click_to_advance = false` | Presenter panes still advance; audience clicks do not |
+| `ToggleChangelog` while Settings > About is open | Flip `changelog_open`; no network and no settings write |
+| `ToggleChangelog` in any other modal or category | Flag unchanged; intent still consumed |
+| Category change or Settings dismiss | `changelog_open = false` |
+| Settings open | Workbench is not rendered; `Intent::Next` still must not advance |
+
+### 5. Good / Base / Bad Cases
+
+Good: Standard and Notes-first each advance from current, next, and notes, and the last step stays. Base: a placeholder with no frame still advances from the pane click. Bad: a second `Next` from the picture, a persisted changelog flag, or a presenter click that writes `audience_click_to_advance`.
+
+### 6. Tests Required
+
+`presenter_preview_and_notes_clicks_advance_one_step` drives GPUI mouse down/up on `surface-Current`, `next-pane`, and `notes-content`: outside release, right click, pen, full-rect media, contextual `PresenterMenu`, pending `RecoverPresenter`, Settings plus direct `Intent::Next`, blank, and `StartMode::DualNotes`. Assert the audience toggle stays false.
+
+The About test clicks `about-changelog`, asserts static ids `changelog-1.2.1` through `changelog-1.0.0`, asserts no opened URL, toggles the log closed, then shows that `settings-category-general` clears the flag and removes the About button. Assert `VERSION == CHANGELOG[0].0` and the `1.2.1` / `1.0.0` strings in both locales. `catalogs_have_identical_keys` must keep passing.
+
+### 7. Wrong vs Correct
+
+Wrong: bind `on_click` only on the picture, stop propagation for every current-slide click, or treat presenter panes as gated by the audience toggle. Also wrong: store the changelog in settings, hardcode a second product version, or let a layout-menu or grid click advance because the pane handler exists.
+
+Correct: pane-level completed left clicks call the existing `Intent::Next`, the interactive picture stops propagation only for drawing tools and media hits, and the changelog is local About UI state whose first heading matches `CARGO_PKG_VERSION`.

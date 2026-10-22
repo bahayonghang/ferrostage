@@ -960,8 +960,65 @@ fn about_tab_shows_version_author_build_time_license_and_repository(cx: &mut Tes
             assert!(visual.debug_bounds(key).is_some(), "{key} row is missing");
         }
         assert!(visual.debug_bounds("about-commit").is_none());
+        assert!(visual.debug_bounds("about-changelog").is_some());
+        assert!(visual.debug_bounds("changelog-1.2.1").is_none());
     }
-    assert_eq!(crate::about::VERSION, "1.2.0");
+    click_control(handle, "about-changelog", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+    {
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        for id in [
+            "changelog-1.2.1",
+            "changelog-1.2.0",
+            "changelog-1.1.1",
+            "changelog-1.1.0",
+            "changelog-1.0.0",
+        ] {
+            assert!(visual.debug_bounds(id).is_some(), "{id}");
+        }
+    }
+    assert!(cx.opened_url().is_none());
+    click_control(handle, "about-changelog", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+    assert!(
+        gpui::VisualTestContext::from_window(handle, cx)
+            .debug_bounds("changelog-1.2.1")
+            .is_none()
+    );
+    click_control(handle, "about-changelog", cx);
+    cx.run_until_parked();
+    click_control(handle, "settings-category-general", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+    {
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        assert!(visual.debug_bounds("changelog-1.2.1").is_none());
+        assert!(visual.debug_bounds("about-changelog").is_none());
+    }
+    shell.read_with(cx, |shell, _| assert!(!shell.preferences.changelog_open));
+    click_control(handle, "settings-category-about", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+    assert_eq!(crate::about::VERSION, "1.2.1");
+    assert_eq!(crate::about::CHANGELOG[0].0, crate::about::VERSION);
+    for (language, v121, v100) in [
+        (
+            "zh-CN",
+            "演讲者视图中，单击当前页、下一页或讲稿区域可前进一页。设置的关于页可以打开更新日志。新增讲稿优先的双屏布局。中途结束演示后可以继续计时，或重新开始。文档警告改为可关闭的浮层小旗。",
+            "首次发布：双窗口 PDF / Beamer 演讲、演讲者备注、批注，以及外部 PDF 热重载。",
+        ),
+        (
+            "en-US",
+            "In the presenter, click the current slide, the next slide, or the notes area to advance one step. Settings > About can open this changelog. Added the notes-first dual-screen layout. After stopping mid-presentation, the talk timer can resume or restart. Document warnings are a closable flag.",
+            "First release: dual-window PDF and Beamer presentation, speaker notes, annotations, and external PDF hot reload.",
+        ),
+    ] {
+        let locale = crate::locale::Locale::new(language);
+        assert_eq!(locale.text("about-changelog-1-2-1"), v121);
+        assert_eq!(locale.text("about-changelog-1-0-0"), v100);
+    }
     assert!(!crate::about::AUTHORS.is_empty());
     assert_eq!(crate::about::REPOSITORY, "https://github.com/bahayonghang/ferrostage");
     let time = chrono::DateTime::from_timestamp(1_792_467_301, 0)

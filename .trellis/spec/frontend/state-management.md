@@ -30,7 +30,7 @@ Use `PresentationCommand::JumpTo(PhysicalPage)` through `PresentationState::appl
 
 ### 3. Contracts
 
-Import enters Ready with no audience or running presentation timer. Start is explicit. Talk-timer reads and expiry never navigate; authored PDF dwell follows the separate PDF playback contract. Grid clicks commit a direct jump; hover is inert. Page-number editing is local to its modal and submits only on Enter/Go. Committed-page changes use the existing media/annotation invalidation and exact-key raster path. No second authoritative preview page exists.
+Import enters Ready with no audience or running presentation timer. Start is explicit. Talk-timer reads and expiry never navigate; authored PDF dwell follows the separate PDF playback contract. Grid clicks commit a direct jump; hover is inert. Completed left clicks on `current-pane`, `next-pane`, and `notes-content` dispatch `Intent::Next` once; drawing tools and a media-slot hit on the current slide do not. That contract is [Presenter pane click and About changelog](./component-guidelines.md#presenter-pane-click-and-about-changelog). Page-number editing is local to its modal and submits only on Enter/Go. Committed-page changes use the existing media/annotation invalidation and exact-key raster path. No second authoritative preview page exists.
 
 Current slide stays left; Next occupies the upper-right pane and original Notes the lower-right pane. Fresh `next_slide_ratio` is 0.45 (right-column width); stored ratios remain authoritative. Default `notes_ratio` is 0.65, with effective range 0.55 to 0.8 for old settings and divider interactions. Vertical drag measures the complement of the upper pane after subtracting the 6px divider and adjacent 4px gaps: dragging down reduces Notes height. Never invert stored ratios on load. `StartMode::DualNotes` selects the Notes-first workbench with its own keys: `presenter.notes_first_notes_ratio` (Notes column width, default 0.55, effective 0.40 to 0.70) and `presenter.notes_first_current_ratio` (Current share of the right column, default 0.62, effective 0.50 to 0.80). `Intent::Split { layout, primary, secondary, save }` writes only the two fields of `layout`; switching modes never changes the other layout's ratios. Each ordered Notes raster fills the inner pane width at its own aspect ratio, does not flex-shrink, and shares the existing vertical scroll. No text extraction/reflow or Notes-mode/font selector is introduced. Recent files appear only in Idle. Only an explicitly open grid schedules thumbnails; closing it retires obsolete requested/retained thumbnail frames. Keep the existing configured grid page bound.
 
@@ -141,7 +141,7 @@ Wrong: toggle blindly on every Start/Stop or rewrite persisted startup fullscree
 
 ### 1. Scope / Trigger
 
-Audience playback accepts completed left clicks, including the letterbox client area. Presenter previews and their pen/laser/media handlers retain their own behavior.
+Audience playback accepts completed left clicks, including the letterbox client area. That policy does not describe presenter panes: their click-to-next path is separate and ignores `display.audience_click_to_advance`. Pen, highlighter, eraser, and laser on the current slide, and a Navigate hit on a media slot, still own that surface and do not also advance.
 
 ### 2. Signatures
 
