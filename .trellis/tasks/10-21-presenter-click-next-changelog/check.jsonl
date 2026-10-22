@@ -1,0 +1,5 @@
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Required presenter verification commands and window boundaries"}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Pane identity, notes pixels, and settings control contracts to review against"}
+{"file": ".trellis/spec/frontend/state-management.md", "reason": "Navigation and notes-pane contracts the click path must not fork"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "Check that presenter clicks do not leak notes or settings into the audience snapshot"}
+{"file": ".trellis/tasks/10-21-presenter-click-next-changelog/research/presenter-click-and-about.md", "reason": "Source anchors for the previous audience-click test and version literals"}

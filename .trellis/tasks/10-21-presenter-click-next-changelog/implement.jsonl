@@ -1,0 +1,6 @@
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Workbench pane ids, notes rasters, settings activation, and no underlying page advance from menus"}
+{"file": ".trellis/spec/frontend/state-management.md", "reason": "Single Next/Jump command path, notes scroll contract, and layout ratios that click targets must not disturb"}
+{"file": ".trellis/spec/frontend/pdf-playback.md", "reason": "NextStep overlay and dwell behavior the new click must reuse unchanged"}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "test-support clippy/test commands required because just ci does not compile the gpui presenter"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "Click stays a presenter Intent; core NextStep and audience snapshot policy stay separate"}
+{"file": ".trellis/tasks/10-21-presenter-click-next-changelog/research/presenter-click-and-about.md", "reason": "Verified click, About, and version-boundary evidence"}
