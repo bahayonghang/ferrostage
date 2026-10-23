@@ -57,8 +57,9 @@ pub struct Keybindings {
 impl Default for Keybindings {
     fn default() -> Self {
         Self {
-            next: owned(&["PageDown", "Space", "Right"]),
-            previous: owned(&["PageUp", "Backspace", "Left"]),
+            // Presenter remotes such as Deli clickers send Up/Down arrows.
+            next: owned(&["PageDown", "Space", "Right", "Down"]),
+            previous: owned(&["PageUp", "Backspace", "Left", "Up"]),
             start_presentation: owned(&["F5"]),
             stop_presentation: owned(&["Escape"]),
             blank_black: owned(&["B"]),
@@ -87,6 +88,31 @@ impl Keybindings {
             ("toggle_pen", &self.toggle_pen),
             ("jump", &self.jump),
         ]
+    }
+
+    /// Replace untouched legacy `next`/`previous` defaults with the current
+    /// ones, which add the arrow keys sent by presenter remotes.
+    ///
+    /// Customized lists are kept, and an arrow already bound to another action
+    /// is not taken from it.
+    pub(crate) fn upgrade_legacy_defaults(&mut self) {
+        let current = Self::default();
+        if self.next == owned(LEGACY_NEXT) && self.unclaimed("Down", "next") {
+            self.next = current.next;
+        }
+        if self.previous == owned(LEGACY_PREVIOUS) && self.unclaimed("Up", "previous") {
+            self.previous = current.previous;
+        }
+    }
+
+    /// No action other than `owner` lists `key` (ASCII case-insensitive).
+    fn unclaimed(&self, key: &str, owner: &str) -> bool {
+        self.actions().iter().all(|(action, values)| {
+            *action == owner
+                || !values
+                    .iter()
+                    .any(|value| value.trim().eq_ignore_ascii_case(key))
+        })
     }
 
     /// Duplicates, empty strings, and cross-action conflicts.
@@ -127,6 +153,11 @@ impl Keybindings {
         issues
     }
 }
+
+/// `next` default before arrow keys were added.
+const LEGACY_NEXT: &[&str] = &["PageDown", "Space", "Right"];
+/// `previous` default before arrow keys were added.
+const LEGACY_PREVIOUS: &[&str] = &["PageUp", "Backspace", "Left"];
 
 fn owned(values: &[&str]) -> Vec<String> {
     values.iter().map(|value| (*value).to_owned()).collect()

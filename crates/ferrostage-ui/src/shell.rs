@@ -5421,6 +5421,17 @@ mod tests {
                 PhysicalPage(1)
             );
             cx.simulate_keystrokes(handle, "pageup");
+            assert_eq!(
+                shell.read_with(cx, |shell, _| shell.state.current_page()),
+                PhysicalPage(0)
+            );
+            // Presenter remotes such as Deli clickers send arrow keys.
+            cx.simulate_keystrokes(handle, "down");
+            assert_eq!(
+                shell.read_with(cx, |shell, _| shell.state.current_page()),
+                PhysicalPage(1)
+            );
+            cx.simulate_keystrokes(handle, "up");
             shell.update(cx, |shell, _| {
                 assert_eq!(shell.state.current_page(), PhysicalPage(0));
                 shell

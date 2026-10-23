@@ -149,7 +149,7 @@ pub(super) fn parse_keybindings(
     let Some(section) = section else {
         return defaults;
     };
-    let bindings = Keybindings {
+    let mut bindings = Keybindings {
         next: parse_binding_list(section, "next", defaults.next, warnings),
         previous: parse_binding_list(section, "previous", defaults.previous, warnings),
         start_presentation: parse_binding_list(
@@ -171,6 +171,7 @@ pub(super) fn parse_keybindings(
         toggle_pen: parse_binding_list(section, "toggle_pen", defaults.toggle_pen, warnings),
         jump: parse_binding_list(section, "jump", defaults.jump, warnings),
     };
+    bindings.upgrade_legacy_defaults();
     warn_binding_issues(&bindings, warnings);
     bindings
 }

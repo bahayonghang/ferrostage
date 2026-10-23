@@ -173,8 +173,8 @@ pen_width_norm = 0.004
 highlighter_alpha = 0.5
 
 [keybindings]
-next = ["PageDown", "Space", "Right"]
-previous = ["PageUp", "Backspace", "Left"]
+next = ["PageDown", "Space", "Right", "Down"]
+previous = ["PageUp", "Backspace", "Left", "Up"]
 start_presentation = ["F5"]
 stop_presentation = ["Escape"]
 blank_black = ["B"]

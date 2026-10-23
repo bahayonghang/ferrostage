@@ -516,6 +516,47 @@ fn keybinding_conflicts_are_recorded_and_not_resolved() {
 }
 
 #[test]
+fn legacy_default_navigation_gains_presenter_remote_arrows() {
+    let strings = |values: &[&str]| values.iter().map(|v| (*v).to_owned()).collect::<Vec<_>>();
+    let legacy = from_toml(
+        r#"
+        schema_version = 1
+        [keybindings]
+        next = ["PageDown", "Space", "Right"]
+        previous = ["PageUp", "Backspace", "Left"]
+        "#,
+    )
+    .expect("parse");
+    assert_eq!(
+        legacy.settings.keybindings.next,
+        strings(&["PageDown", "Space", "Right", "Down"])
+    );
+    assert_eq!(
+        legacy.settings.keybindings.previous,
+        strings(&["PageUp", "Backspace", "Left", "Up"])
+    );
+    assert!(legacy.warnings.is_empty());
+
+    let custom = from_toml(
+        r#"
+        schema_version = 1
+        [keybindings]
+        next = ["Space"]
+        previous = ["PageUp", "Backspace", "Left"]
+        jump = ["up"]
+        "#,
+    )
+    .expect("parse");
+    assert_eq!(custom.settings.keybindings.next, strings(&["Space"]));
+    assert_eq!(
+        custom.settings.keybindings.previous,
+        strings(&["PageUp", "Backspace", "Left"]),
+        "an arrow claimed by another action is not taken"
+    );
+    assert!(custom.warnings.is_empty());
+}
+
+#[test]
 fn future_version_is_read_only() {
     let outcome = from_toml(
         r#"
