@@ -636,3 +636,26 @@ Ready 与演示中的文档警告改为内容区左下可关闭小旗，关闭�
 ### Status
 
 [OK] **Completed**
+
+
+## Session 20: 翻页笔方向键兼容
+<!-- trellis-session: v=2 fp=d1fb7bbd24329f5e -->
+
+**Date**: 2026-10-22
+**Task**: 翻页笔方向键兼容
+**Branch**: `dev`
+
+### Summary
+
+用 WndProc 键值探测确认得力激光翻页笔短按发送 Up/Down 方向键而非 PageUp/PageDown；默认 next/previous 增加 Down/Up，加载时把未改动的旧默认列表升级为新默认值（方向键被其他动作占用时不升级），菜单/大纲/页码输入对方向键的拦截不变；just ci 与 231 项 UI 测试通过，用户用实体翻页笔验证。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `664aa85` | docs(task): 📝 记录翻页笔方向键兼容任务 |
+| `a9eb5fe` | fix(settings): 🐛 翻页笔方向键可翻页，旧默认绑定自动升级 |
+
+### Status
+
+[OK] **Completed**
