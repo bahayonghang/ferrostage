@@ -1,0 +1,5 @@
+{"file":".trellis/spec/frontend/state-management.md","reason":"文稿、设置和观众快照的状态所有权"}
+{"file":".trellis/spec/frontend/pdf-playback.md","reason":"公开帧身份、绘制确认和遮屏时序"}
+{"file":".trellis/spec/frontend/quality-guidelines.md","reason":"实际 GPUI 输入及桌面验收"}
+{"file":".trellis/spec/backend/quality-guidelines.md","reason":"最终工作区质量门"}
+{"file":".trellis/tasks/11-07-presenter-improvements/research/item-review.md","reason":"核对引用分析的首轮范围和后续项"}
