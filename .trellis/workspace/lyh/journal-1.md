@@ -726,3 +726,41 @@ Ready 与演示中的文档警告改为内容区左下可关闭小旗，关闭�
 ### Status
 
 [OK] **Completed**
+
+
+## Session 24: 完成放映优化六项任务与父任务归档
+<!-- trellis-session: v=2 fp=acb137d451066ab6 -->
+
+**Date**: 2026-11-07
+**Task**: 完成放映优化六项任务与父任务归档
+**Branch**: `dev`
+
+### Summary
+
+完成无备注布局、真实投影状态和精确返回原处，修复原生页脚问题；六个子任务与父任务全部归档。
+
+### Main Changes
+
+- 返回锚点依赖真实 Ready 绘制或公开 Settled，显式重试保留旧画面与诊断；只读和观众隔离契约同步。
+- 已归档全部七个任务目录，170 个 Markdown 链接及 JSONL 上下文路径在最终档案树中有效，五份压缩质量门原始日志哈希一致。
+- 最终二进制 SHA256 09fa7c5a1297e6d2b487f892d3ff63fe7562b2c7c7987c1c8a9cef0d89c4fd6b；测试窗口均已关闭，无推送。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `5dfb995` | feat(ui): 为无备注文稿提供稳定双预览布局 |
+| `1c2f3d5` | feat(ui): 显示真实绘制进度与观众窗口位置 |
+| `85ba283` | feat(ui): 添加答疑跳转后的精确返回位置 |
+| `b9c8383` | docs(task): 完成放映优化集成验收并修正归档引用 |
+
+### Testing
+
+- [OK] 最终 just ci 通过：fmt、严格 Clippy、251 工作区测试与 cargo deny；just check-shell 通过：原生产品构建、严格 Clippy、269 GPUI 测试。
+- [OK] 设置55项、直接受影响的 PDFium reload 9项通过；真实 Beamer 连续跳转返回第2步、遮屏、计时/工具、停止续讲、设置Ctrl+R重绑及失败/成功重载均有原生证据。
+- [OK] 最终版1100×760中文页脚无裁切；F5裁切门禁→Esc创建观众窗口数为0；独立视觉审核ship。
+- [OK] Sky Alt+R两次未录入原因尚未定位；默认Alt+Left和Ctrl+R通过。未做物理投影仪、线缆热插拔、额外DPI或其他平台验收。
+
+### Status
+
+[OK] **Completed**
