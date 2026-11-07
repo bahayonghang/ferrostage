@@ -3,8 +3,8 @@ fn crop_menu_keyboard_changes_only_the_draft_and_escape_restores_focus(cx: &mut 
     let (shell, handle) = workbench_fixture(cx);
     click_control(handle, "document-options", cx);
     redraw(handle, cx);
-    // End chooses the inspection action after the existing layout options.
-    cx.simulate_keystrokes(handle, "end enter");
+    // The inspection action precedes the final layout-reset action.
+    cx.simulate_keystrokes(handle, "end up enter");
     redraw(handle, cx);
     let mut visual = gpui::VisualTestContext::from_window(handle, cx);
     for selector in [

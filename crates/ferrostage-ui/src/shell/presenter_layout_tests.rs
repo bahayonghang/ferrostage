@@ -503,3 +503,299 @@ fn start_mode_menu_keyboard_reaches_every_row_without_navigating(cx: &mut TestAp
     let current = visual.debug_bounds("current-pane").unwrap();
     assert!(notes.right() <= current.left());
 }
+
+
+fn ordinary_session(shell: &Shell) -> crate::workbench::DocumentSession {
+    let session = shell.workbench.document.as_ref().unwrap();
+    let mut metadata = session.metadata.clone();
+    for page in &mut metadata.pages {
+        page.label = None;
+    }
+    crate::workbench::DocumentSession::build(metadata, session.structure.clone()).unwrap()
+}
+
+#[gpui::test]
+fn notes_free_layout_uses_document_mapping_and_keeps_next_at_the_end(cx: &mut TestAppContext) {
+    use crate::workbench::WorkbenchLayout;
+    let (shell, handle) = workbench_fixture(cx);
+    shell.update(cx, |s, cx| {
+        let session = ordinary_session(s);
+        s.state
+            .apply_at(
+                Command::LoadMappedDocument(
+                    session
+                        .document
+                        .descriptor(ferrostage_core::DocumentGeneration(3))
+                        .unwrap(),
+                ),
+                Instant::now(),
+            )
+            .unwrap();
+        s.workbench.document = Some(session);
+        assert_eq!(s.workbench_layout(), WorkbenchLayout::Previews);
+        cx.notify();
+    });
+    for mode in [
+        ferrostage_settings::StartMode::Dual,
+        ferrostage_settings::StartMode::DualNotes,
+        ferrostage_settings::StartMode::Single,
+    ] {
+        shell.update(cx, |s, cx| {
+            s.settings.settings.display.start_mode = mode;
+            cx.notify();
+        });
+        for width in [1700., 800., 799.] {
+            cx.test_window(handle)
+                .simulate_resize(size(px(width), px(1000.)));
+            redraw(handle, cx);
+            let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+            assert!(visual.debug_bounds("notes-panel").is_none());
+            let current = visual.debug_bounds("current-pane").unwrap();
+            let next = visual.debug_bounds("next-pane").unwrap();
+            if width >= 800. {
+                assert!(current.right() <= next.left());
+                assert!(next.size.width >= px(240.));
+                if width == 1700. {
+                    assert!(
+                        (current.size.width / (current.size.width + next.size.width) - 0.7).abs()
+                            < 0.01
+                    );
+                }
+            } else {
+                assert!(current.bottom() <= next.top());
+            }
+        }
+    }
+    shell.update(cx, |s, cx| {
+        s.apply(Command::JumpTo(PhysicalPage(3)), cx);
+    });
+    redraw(handle, cx);
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    assert!(visual.debug_bounds("next-pane").is_some());
+    assert!(visual.debug_bounds("next-end").is_some());
+}
+
+#[gpui::test]
+fn notes_free_drag_reset_and_reopen_preserve_saved_note_ratios_and_presentation(
+    cx: &mut TestAppContext,
+) {
+    let fixture = SaveFixture::new();
+    fixture.unblock();
+    let (shell, handle) = workbench_fixture(cx);
+    cx.test_window(handle)
+        .simulate_resize(size(px(1700.), px(1000.)));
+    let (notes_session, saved_settings, snapshot) = shell.update(cx, |s, cx| {
+        s.store = fixture.store();
+        let notes = s.workbench.document.clone().unwrap();
+        let session = ordinary_session(s);
+        s.finish_import(
+            PathBuf::from("ordinary.pdf"),
+            ferrostage_core::DocumentGeneration(3),
+            session,
+            cx,
+        );
+        (
+            notes,
+            s.settings.settings.presenter.clone(),
+            s.state.audience_snapshot(),
+        )
+    });
+    redraw(handle, cx);
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    let divider = visual.debug_bounds("horizontal-split").unwrap();
+    let bounds = visual.debug_bounds("workbench-splits").unwrap();
+    let target = gpui::point(bounds.left() + bounds.size.width * 0.55, divider.center().y);
+    visual.simulate_mouse_down(
+        divider.center(),
+        gpui::MouseButton::Left,
+        gpui::Modifiers::default(),
+    );
+    visual.simulate_mouse_move(
+        target,
+        Some(gpui::MouseButton::Left),
+        gpui::Modifiers::default(),
+    );
+    visual.simulate_mouse_up(target, gpui::MouseButton::Left, gpui::Modifiers::default());
+    redraw(handle, cx);
+    shell.read_with(cx, |s, _| {
+        assert!((s.workbench.previews_ratio.unwrap() - 0.45).abs() < 0.01);
+        assert_eq!(s.settings.settings.presenter, saved_settings);
+        assert_eq!(s.state.audience_snapshot(), snapshot);
+        assert!(!s.settings.dirty);
+    });
+    click_control(handle, "document-options", cx);
+    redraw(handle, cx);
+    cx.simulate_keystrokes(handle, "end down up space");
+    redraw(handle, cx);
+    shell.read_with(cx, |s, _| {
+        assert!(s.contextual.is_none());
+        assert_eq!(s.workbench.previews_ratio, Some(0.3));
+        assert_eq!(s.settings.settings.presenter, saved_settings);
+        assert_eq!(s.state.audience_snapshot(), snapshot);
+    });
+    assert!(layout_focus(handle, cx).1);
+    let parsed = fixture.store().load().unwrap();
+    assert_eq!(parsed.settings.presenter, saved_settings);
+    shell.update(cx, |s, cx| {
+        s.workbench.previews_ratio = Some(0.5);
+        s.workbench.document = Some(notes_session);
+        assert_eq!(
+            s.workbench_layout(),
+            crate::workbench::WorkbenchLayout::Standard
+        );
+        assert_eq!(s.settings.settings.presenter, saved_settings);
+        let session = ordinary_session(s);
+        s.finish_import(
+            PathBuf::from("another.pdf"),
+            ferrostage_core::DocumentGeneration(4),
+            session,
+            cx,
+        );
+        assert_eq!(s.workbench.previews_ratio, None);
+    });
+}
+
+#[gpui::test]
+fn mixed_notes_keep_geometry_between_absent_and_loading_pages(cx: &mut TestAppContext) {
+    let (shell, handle) = workbench_fixture(cx);
+    cx.test_window(handle)
+        .simulate_resize(size(px(1200.), px(900.)));
+    shell.update(cx, |s, cx| {
+        s.apply(Command::JumpTo(PhysicalPage(2)), cx);
+    });
+    redraw(handle, cx);
+    let before = {
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        assert!(visual.debug_bounds("notes-empty").is_some());
+        visual.debug_bounds("notes-panel").unwrap()
+    };
+    shell.update(cx, |s, cx| {
+        s.apply(Command::JumpTo(PhysicalPage(0)), cx);
+    });
+    redraw(handle, cx);
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    assert!(visual.debug_bounds("notes-loading").is_some());
+    assert_eq!(visual.debug_bounds("notes-panel"), Some(before));
+}
+
+#[gpui::test]
+fn unconfirmed_same_page_notes_keep_the_notes_workbench(cx: &mut TestAppContext) {
+    let (shell, handle) = crop_gate_fixture(cx, false);
+    shell.read_with(cx, |s, _| {
+        assert!(s.crop_needs_confirmation());
+        assert_eq!(
+            s.workbench_layout(),
+            crate::workbench::WorkbenchLayout::Standard
+        );
+    });
+    redraw(handle, cx);
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    assert!(visual.debug_bounds("notes-panel").is_some());
+    shell.update(cx, |s, cx| {
+        s.crop_confirmed = true;
+        cx.notify();
+    });
+    redraw(handle, cx);
+    assert_eq!(
+        shell.read_with(cx, |s, _| s.workbench_layout()),
+        crate::workbench::WorkbenchLayout::Previews
+    );
+}
+
+#[gpui::test]
+fn read_only_layout_menu_skips_disabled_reset_and_retains_session_reset(cx: &mut TestAppContext) {
+    let (shell, handle) = workbench_fixture(cx);
+    let (settings, snapshot) = shell.update(cx, |s, cx| {
+        s.settings.write_policy = WritePolicy::ReadOnly {
+            reason: "future schema".into(),
+        };
+        s.apply(
+            Command::StartPresentation {
+                audience_available: true,
+            },
+            cx,
+        );
+        (
+            s.settings.settings.presenter.clone(),
+            s.state.audience_snapshot(),
+        )
+    });
+    redraw(handle, cx);
+    click_control(handle, "document-options", cx);
+    redraw(handle, cx);
+    for key in ["down", "up", "tab", "shift-tab", "home", "end"] {
+        cx.simulate_keystrokes(handle, key);
+        redraw(handle, cx);
+        assert_eq!(layout_focus(handle, cx).0, Some(3));
+    }
+    cx.simulate_keystrokes(handle, "enter");
+    redraw(handle, cx);
+    shell.read_with(cx, |s, _| {
+        assert_eq!(s.modal, Some(Modal::Crop));
+        assert_eq!(s.settings.settings.presenter, settings);
+        assert_eq!(s.state.audience_snapshot(), snapshot);
+    });
+    cx.simulate_keystrokes(handle, "escape");
+    redraw(handle, cx);
+    shell.update(cx, |s, cx| {
+        s.stop(cx);
+        let session = ordinary_session(s);
+        s.finish_import(
+            PathBuf::from("readonly-ordinary.pdf"),
+            ferrostage_core::DocumentGeneration(4),
+            session,
+            cx,
+        );
+        s.workbench.previews_ratio = Some(0.5);
+        cx.notify();
+    });
+    redraw(handle, cx);
+    click_control(handle, "document-options", cx);
+    redraw(handle, cx);
+    cx.simulate_keystrokes(handle, "end");
+    redraw(handle, cx);
+    assert_eq!(layout_focus(handle, cx).0, Some(4));
+    cx.simulate_keystrokes(handle, "space");
+    redraw(handle, cx);
+    shell.read_with(cx, |s, _| {
+        assert!(s.contextual.is_none());
+        assert_eq!(s.workbench.previews_ratio, Some(0.3));
+        assert_eq!(s.settings.settings.presenter, settings);
+        assert!(!s.settings.dirty);
+    });
+}
+
+#[gpui::test]
+fn narrow_notes_first_reset_restores_the_visible_standard_proportions(
+    cx: &mut TestAppContext,
+) {
+    let fixture = SaveFixture::new();
+    fixture.unblock();
+    let (shell, handle) = workbench_fixture(cx);
+    cx.test_window(handle).simulate_resize(size(px(799.), px(1000.)));
+    let (notes_width, current_share) = shell.update(cx, |s, cx| {
+        s.store = fixture.store();
+        s.settings.settings.display.start_mode = ferrostage_settings::StartMode::DualNotes;
+        s.settings.settings.presenter.next_slide_ratio = 0.2;
+        s.settings.settings.presenter.notes_ratio = 0.75;
+        s.settings.settings.presenter.notes_first_notes_ratio = 0.65;
+        s.settings.settings.presenter.notes_first_current_ratio = 0.75;
+        cx.notify();
+        (s.settings.settings.presenter.notes_first_notes_ratio,
+         s.settings.settings.presenter.notes_first_current_ratio)
+    });
+    redraw(handle, cx);
+    click_control(handle, "document-options", cx);
+    redraw(handle, cx);
+    cx.simulate_keystrokes(handle, "end enter");
+    redraw(handle, cx);
+    shell.read_with(cx, |s, _| {
+        let settings = &s.settings.settings.presenter;
+        let defaults = ferrostage_settings::PresenterSettings::default();
+        assert_eq!(settings.next_slide_ratio, defaults.next_slide_ratio);
+        assert_eq!(settings.notes_ratio, defaults.notes_ratio);
+        assert_eq!(settings.notes_first_notes_ratio, notes_width);
+        assert_eq!(settings.notes_first_current_ratio, current_share);
+        assert!(s.contextual.is_none());
+    });
+}

@@ -436,3 +436,9 @@ crop-retry = "Retry preview"
 crop-apply = "Apply crop"
 crop-start = "Confirm and present"
 crop-start-whole = "Present whole page"
+
+wb-reset-layout = "Reset pane proportions"
+
+wb-end = "End of presentation"
+
+wb-render-failed = "Preview could not be rendered"

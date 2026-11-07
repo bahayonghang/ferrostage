@@ -1,0 +1,17 @@
+{
+  "summary": {
+    "floorFail": 0,
+    "houseFail": 0,
+    "houseWaived": 0,
+    "reflex": 0,
+    "reflexWaived": 0,
+    "waived": 0,
+    "warn": 0,
+    "note": 0,
+    "files": 0,
+    "design": "DESIGN.md",
+    "scope": "component",
+    "fail": 0
+  },
+  "findings": []
+}

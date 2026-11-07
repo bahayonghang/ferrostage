@@ -2,6 +2,48 @@ use super::*;
 use crate::page_browser::ContextualSurface;
 
 impl Shell {
+    pub(crate) fn workbench_layout(&self) -> crate::workbench::WorkbenchLayout {
+        if self.workbench.document.as_ref().is_some_and(|session| {
+            ferrostage_document::notes_crop(session.document.layout).is_none()
+                && session
+                    .document
+                    .notes_mapping
+                    .iter()
+                    .all(|mapping| mapping.notes_pages.is_empty())
+        }) && !self.crop_needs_confirmation()
+            && !self.crop_reload_pending_confirmation()
+        {
+            crate::workbench::WorkbenchLayout::Previews
+        } else {
+            crate::workbench::WorkbenchLayout::for_mode(self.settings.settings.display.start_mode)
+        }
+    }
+
+    pub(super) fn reset_workbench(
+        &mut self,
+        id: u64,
+        layout: crate::workbench::WorkbenchLayout,
+        cx: &mut Context<Self>,
+    ) {
+        if self.busy()
+            || !matches!(self.contextual, Some(ContextualSurface::LayoutNavigation { id: current, generation, .. }) if current == id && generation == self.state.generation())
+        {
+            return;
+        }
+        let (primary, secondary) =
+            layout.ratios(&ferrostage_settings::PresenterSettings::default());
+        self.dispatch(
+            Intent::Split {
+                layout,
+                primary,
+                secondary,
+                save: true,
+            },
+            cx,
+        );
+        self.close_contextual();
+    }
+
     pub(crate) fn layout_menu_open(&self) -> bool {
         matches!(
             self.contextual,

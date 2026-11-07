@@ -678,3 +678,18 @@ fn audience_target_respects_its_half_of_the_gpu_budget() {
     assert!(target.width as usize * target.height as usize * 4 <= budget);
     assert!((target.width as f64 / target.height as f64 - 16. / 9.).abs() < 0.002);
 }
+
+#[cfg(feature = "gpui")]
+#[test]
+fn note_raster_failures_follow_current_request_identity() {
+    let request = request_for(DocumentGeneration(1), PhysicalPage(2), NormalizedRect::FULL);
+    let mut workbench = Workbench {
+        requested: vec![(Surface::Notes(0), request)],
+        ..Default::default()
+    };
+    assert!(workbench.failed_surfaces().is_empty());
+    workbench.failed.push(request);
+    assert_eq!(workbench.failed_surfaces(), [Surface::Notes(0)]);
+    workbench.requested[0].1.page = PhysicalPage(3);
+    assert!(workbench.failed_surfaces().is_empty());
+}

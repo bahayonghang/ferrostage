@@ -60,6 +60,41 @@ Retain actual divider-input/settings-readback and multiple-Notes aspect/height r
 
 Wrong: hide a thumbnail strip while its persisted flag still schedules raster work, or preserve invisible preview state after removing controls. Correct: gate raster requests on actual grid visibility and route explicit selection through the one committed-page command.
 
+## Notes-free preview layout
+
+### 1. Scope / Trigger
+
+Use the full document's effective notes crop/mapping and unconfirmed crop/reload state to select the presenter layout. Missing textures never mean a document has no notes.
+
+### 2. Signatures
+
+`Shell::workbench_layout()` selects `WorkbenchLayout::Previews` only for a confirmed notes-free document. `Workbench::previews_ratio: Option<f64>` stores the next-pane share for this open session. `Intent::Split { layout: Previews, primary, secondary, save }` changes it without writing presenter settings. `Intent::ResetWorkbench { id, layout }` captures `Presenter::visible_workbench_layout(window)` and resets that displayed layout through the existing menu identity guard. Narrow NotesFirst windows display Standard, so reset must target Standard there.
+
+### 3. Contracts
+
+Previews starts Current:Next at 70:30. At viewport width >=800 logical pixels, Next fills the right column with a minimum width of 240; below 800, Current and Next stack and retain full-page fit. Keep the final Next position with an end-of-document message. Any effective same-page notes, independent notes anywhere, or crop confirmation pending retains Standard/NotesFirst. A mixed document's note-free page shows no-notes text; loading and raster failure are separate states. Opening another document resets only the session preview ratio. Existing saved Standard/NotesFirst ratios remain authoritative when notes return. Reset uses the corresponding layout defaults and preserves output, monitor assignments, timer and ink.
+
+### 4. Validation & Error Matrix
+
+- Missing note texture or failed note raster: retain the notes layout and show its loading/error state.
+- No notes anywhere and no pending confirmation: two previews, no Notes pane.
+- Mixed document's empty cover followed by notes: stable pane bounds across navigation.
+- Reset from a stale menu identity: no ratio or settings mutation.
+- Narrow NotesFirst window: reset visible Standard proportions, preserve hidden NotesFirst settings.
+- Disabled menu entries: traversal and activation both reject ineligible rows.
+
+### 5. Good / Base / Bad Cases
+
+Good: drag a notes-free split, then open a notes document and recover its saved ratios. Base: final step keeps Next's empty position with an end label. Bad: hide Notes because rasterization is pending or persist the session-only ratio over notes settings.
+
+### 6. Tests Required
+
+Use actual GPUI divider and menu keyboard input; assert default/reset ratios, narrow/wide breakpoint geometry, right minimum width, end placeholder, full-document classification, mixed-page stability, and independent new-open ratio lifetime. Check page, timer and annotation preservation. A normal native window check remains distinct from headless bounds assertions.
+
+### 7. Wrong vs Correct
+
+Wrong: choose the layout from `Surface::Notes` frame presence. Correct: `workbench_layout()` reads document metadata and confirmation state; rendering only supplies content to the already-selected panes.
+
 ## Resumable presentation session
 
 ### 1. Scope / Trigger

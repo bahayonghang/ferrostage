@@ -98,6 +98,10 @@ pub(crate) enum Intent {
         id: u64,
         options: ferrostage_document::DocumentOverrides,
     },
+    ResetWorkbench {
+        id: u64,
+        layout: crate::workbench::WorkbenchLayout,
+    },
     /// Divider drag. `primary`/`secondary` are the two ratios of `layout`
     /// (see `WorkbenchLayout::ratios`).
     Split {

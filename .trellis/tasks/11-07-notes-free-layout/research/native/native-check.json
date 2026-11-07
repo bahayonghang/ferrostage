@@ -1,0 +1,27 @@
+{
+  "first_native_executable_sha256": "cc56fae36bfda23b6bc2aa3933bc64a12cbeca3fbc74dfdd3166049945f4d6c5",
+  "final_executable_sha256": "491334d74bb603457f24cd8ec824c61146f444e4b4cc2e9046f5f74987f3a1dc",
+  "fixtures": {
+    "ordinary": "8dee2795e4584edde264ec4c83f2e509b852bb27d3bd248918374af8411cb5eb",
+    "mixed": "4b0b65f62e4498962a77bed22ef46daa83cae0aefa8e3cd9342563e1ae8aca68",
+    "independent": "c5f6204da4c5a7c2c7775c3484bb2327652c15509261e2add95d40ae8afc2568"
+  },
+  "final_narrow_reset_presenter_settings": {
+    "grid_columns": 4,
+    "grid_visible_pages": 16,
+    "next_slide_ratio": 0.45,
+    "notes_first_current_ratio": 0.71,
+    "notes_first_notes_ratio": 0.59,
+    "notes_font_scale": 1.0,
+    "notes_ratio": 0.65,
+    "show_clock": true,
+    "show_thumbnail_strip": false
+  },
+  "native_scenarios": [
+    "ordinary two previews",
+    "drag and reset session ratio",
+    "last step end placeholder",
+    "independent notes then no-notes panel stable",
+    "final narrow DualNotes reset changes Standard only"
+  ]
+}

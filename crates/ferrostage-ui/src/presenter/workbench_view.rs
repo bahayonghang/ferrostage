@@ -19,6 +19,11 @@ pub(super) struct WorkbenchData {
     pub frames: Vec<(Surface, ReadyFrame)>,
     pub surfaces: Vec<Surface>,
     note_aspects: Vec<(usize, f32)>,
+    failed_surfaces: Vec<Surface>,
+    pub(super) layout: WorkbenchLayout,
+    previews_ratio: f64,
+    has_next: bool,
+    has_current_notes: bool,
     pub overlay: AudienceProjectionSnapshot,
     pub media: Vec<ferrostage_core::AudienceMediaFrame>,
     slots: Vec<crate::media_playback::SlotView>,
@@ -104,6 +109,20 @@ impl WorkbenchData {
         let overlay = shell.state.audience_snapshot();
         Self {
             note_aspects: shell.workbench.note_aspects(),
+            failed_surfaces: shell.workbench.failed_surfaces(),
+            layout: shell.workbench_layout(),
+            previews_ratio: shell.workbench.previews_ratio.unwrap_or(0.3),
+            has_next: session.is_some_and(|session| {
+                session
+                    .document
+                    .slide_map
+                    .next_step(page)
+                    .is_some_and(|next| next != page)
+            }),
+            has_current_notes: session.is_some_and(|session| {
+                ferrostage_document::notes_crop(session.document.layout).is_some()
+                    || !session.document.notes_pages_for(page).is_empty()
+            }),
             frames: shell
                 .workbench
                 .frames
@@ -215,6 +234,17 @@ impl Presenter {
             .map(|(_, f)| f)
     }
     pub(super) fn picture(&self, surface: Surface, interactive: bool) -> gpui::AnyElement {
+        if surface == Surface::Next && !self.data.workbench.has_next {
+            return div()
+                .id("next-end")
+                .size_full()
+                .flex()
+                .items_center()
+                .justify_center()
+                .debug_selector(|| "next-end".into())
+                .child(self.locale.text("wb-end"))
+                .into_any_element();
+        }
         let frame = self
             .frame(surface)
             .map(|frame| frame.frame.clone())
@@ -225,7 +255,13 @@ impl Presenter {
                 .flex()
                 .items_center()
                 .justify_center()
-                .child(self.locale.text("wb-rendering"))
+                .child(self.locale.text(
+                    if self.data.workbench.failed_surfaces.contains(&surface) {
+                        "wb-render-failed"
+                    } else {
+                        "wb-rendering"
+                    },
+                ))
                 .into_any_element();
         };
         let textures = self.textures.clone();
@@ -1184,17 +1220,18 @@ impl Presenter {
         cx: &mut Context<Self>,
     ) -> gpui::AnyElement {
         let settings = &self.data.workbench.settings;
-        let ratio = settings.next_slide_ratio as f32;
+        let previews = self.data.workbench.layout == WorkbenchLayout::Previews;
+        let ratio = if previews {
+            self.data.workbench.previews_ratio
+        } else {
+            settings.next_slide_ratio
+        } as f32;
         let notes = settings.effective_notes_ratio() as f32;
         let notes_width = settings.effective_notes_first_notes_ratio() as f32;
         let current_share = settings.effective_notes_first_current_ratio() as f32;
         let stacked = window.viewport_size().width < px(800.);
         // Narrow windows always stack in the standard order.
-        let layout = if stacked {
-            WorkbenchLayout::Standard
-        } else {
-            WorkbenchLayout::for_mode(self.data.start_mode)
-        };
+        let layout = self.visible_workbench_layout(window);
         let mut note_panel = div()
             .id("notes-content")
             .debug_selector(|| "notes-content".into())
@@ -1211,10 +1248,23 @@ impl Presenter {
             .bg(rgb(p.card))
             .child(self.pane_caption("wb-notes", p));
         if self.data.workbench.note_aspects.is_empty() {
+            let has_notes = self.data.workbench.has_current_notes;
             note_panel = note_panel.child(
                 div()
+                    .debug_selector(move || {
+                        if has_notes {
+                            "notes-loading"
+                        } else {
+                            "notes-empty"
+                        }
+                        .into()
+                    })
                     .text_color(rgb(p.muted))
-                    .child(self.locale.text("wb-no-notes")),
+                    .child(self.locale.text(if has_notes {
+                        "wb-rendering"
+                    } else {
+                        "wb-no-notes"
+                    })),
             );
         }
         for &(index, aspect) in &self.data.workbench.note_aspects {
@@ -1226,7 +1276,21 @@ impl Presenter {
                     .child(self.picture(Surface::Notes(index), false)),
             );
         }
-        let can_drag = self.data.workbench.writable && !self.data.busy;
+        if self
+            .data
+            .workbench
+            .failed_surfaces
+            .iter()
+            .any(|surface| matches!(surface, Surface::Notes(_)))
+        {
+            note_panel = note_panel.child(
+                div()
+                    .debug_selector(|| "notes-render-failed".into())
+                    .text_color(rgb(p.error))
+                    .child(self.locale.text("wb-render-failed")),
+            );
+        }
+        let can_drag = (previews || self.data.workbench.writable) && !self.data.busy;
         let split_bounds = Rc::new(Cell::new(gpui::Bounds::<gpui::Pixels>::default()));
         let next_bounds = Rc::new(Cell::new(gpui::Bounds::<gpui::Pixels>::default()));
         let split_measure = split_bounds.clone();
@@ -1239,7 +1303,9 @@ impl Presenter {
             .min_h_0()
             .flex()
             .when(stacked, |view| view.flex_col())
-            .when(layout == WorkbenchLayout::Standard, |view| view.gap(px(6.)))
+            .when(layout != WorkbenchLayout::NotesFirst, |view| {
+                view.gap(px(6.))
+            })
             .on_mouse_move(
                 cx.listener(move |this, event: &gpui::MouseMoveEvent, _, cx| {
                     if event.pressed_button != Some(MouseButton::Left) {
@@ -1250,8 +1316,14 @@ impl Presenter {
                     };
                     let bounds = split_bounds.get();
                     let column = next_bounds.get();
-                    let (mut primary, mut secondary) = layout.ratios(&this.data.workbench.settings);
+                    let (mut primary, mut secondary) = this.split_ratios(layout);
                     match (layout, axis) {
+                        (WorkbenchLayout::Previews, _) => {
+                            primary = (1.
+                                - (event.position.x - bounds.origin.x) / bounds.size.width)
+                                .clamp((240. / f32::from(bounds.size.width)).max(0.15), 0.65)
+                                as f64;
+                        }
                         (WorkbenchLayout::Standard, super::SplitAxis::Column) => {
                             primary = (1.
                                 - (event.position.x - bounds.origin.x) / bounds.size.width)
@@ -1412,10 +1484,33 @@ impl Presenter {
                         .on_click(cx.listener(|this, event: &gpui::ClickEvent, _, cx| {
                             this.advance_on_click(event, cx);
                         }))
-                        .when(!stacked, |view| view.w(gpui::relative(1. - ratio)).h_full())
+                        .when(!stacked && !previews, |view| {
+                            view.w(gpui::relative(1. - ratio)).h_full()
+                        })
+                        .when(!stacked && previews, |view| {
+                            view.flex_grow(1. - ratio)
+                                .flex_basis(gpui::relative(0.))
+                                .min_w_0()
+                                .h_full()
+                        })
                         .when(stacked, |view| view.w_full().flex_1().min_h_0())
                         .overflow_hidden()
-                        .child(self.picture(Surface::Current, true)),
+                        .when(previews, |view| {
+                            view.flex()
+                                .flex_col()
+                                .child(self.pane_caption("wb-current-slide", p))
+                        })
+                        .when(previews, |view| {
+                            view.child(
+                                div()
+                                    .flex_1()
+                                    .min_h_0()
+                                    .child(self.picture(Surface::Current, true)),
+                            )
+                        })
+                        .when(!previews, |view| {
+                            view.child(self.picture(Surface::Current, true))
+                        }),
                 )
                 .when(!stacked, |view| {
                     view.child(self.hairline_split(
@@ -1434,6 +1529,11 @@ impl Presenter {
                         .relative()
                         .flex_1()
                         .min_w_0()
+                        .when(previews && !stacked, |view| {
+                            view.flex_grow(ratio)
+                                .flex_basis(gpui::relative(0.))
+                                .min_w(px(240.))
+                        })
                         .when(!stacked, |view| view.h_full())
                         .when(stacked, |view| view.w_full().flex_1().min_h_0())
                         .overflow_hidden()
@@ -1455,7 +1555,7 @@ impl Presenter {
                                 .on_click(cx.listener(|this, event: &gpui::ClickEvent, _, cx| {
                                     this.advance_on_click(event, cx);
                                 }))
-                                .flex_grow((1. - notes).max(0.15))
+                                .flex_grow(if previews { 1. } else { (1. - notes).max(0.15) })
                                 .flex_shrink(1.)
                                 .flex_basis(gpui::relative(0.))
                                 .min_h_0()
@@ -1470,29 +1570,33 @@ impl Presenter {
                                         .child(self.picture(Surface::Next, false)),
                                 ),
                         )
-                        .child(self.hairline_split(
-                            "vertical-split",
-                            layout,
-                            super::SplitAxis::Row,
-                            can_drag,
-                            p,
-                            cx,
-                        ))
-                        .child(
-                            div()
-                                .id("notes-panel")
-                                .debug_selector(|| "notes-panel".into())
-                                .flex_grow(notes)
-                                .flex_shrink(1.)
-                                .flex_basis(gpui::relative(0.))
-                                .min_h_0()
-                                .overflow_y_scroll()
-                                .flex()
-                                .flex_col()
-                                .rounded(px(theme::RADIUS))
-                                .bg(rgb(p.card))
-                                .child(note_panel),
-                        ),
+                        .when(!previews, |view| {
+                            view.child(self.hairline_split(
+                                "vertical-split",
+                                layout,
+                                super::SplitAxis::Row,
+                                can_drag,
+                                p,
+                                cx,
+                            ))
+                        })
+                        .when(!previews, |view| {
+                            view.child(
+                                div()
+                                    .id("notes-panel")
+                                    .debug_selector(|| "notes-panel".into())
+                                    .flex_grow(notes)
+                                    .flex_shrink(1.)
+                                    .flex_basis(gpui::relative(0.))
+                                    .min_h_0()
+                                    .overflow_y_scroll()
+                                    .flex()
+                                    .flex_col()
+                                    .rounded(px(theme::RADIUS))
+                                    .bg(rgb(p.card))
+                                    .child(note_panel),
+                            )
+                        }),
                 )
         };
         let mut view = div()
@@ -1549,7 +1653,7 @@ impl Presenter {
     }
     fn finish_split(&mut self, cx: &mut Context<Self>) {
         if let Some((layout, _)) = self.split_drag.take() {
-            let (primary, secondary) = layout.ratios(&self.data.workbench.settings);
+            let (primary, secondary) = self.split_ratios(layout);
             actions::dispatch(
                 &self.shell,
                 Intent::Split {
@@ -1560,6 +1664,22 @@ impl Presenter {
                 },
                 cx,
             );
+        }
+    }
+
+    pub(super) fn visible_workbench_layout(&self, window: &Window) -> WorkbenchLayout {
+        match self.data.workbench.layout {
+            WorkbenchLayout::Previews => WorkbenchLayout::Previews,
+            _ if window.viewport_size().width < px(800.) => WorkbenchLayout::Standard,
+            layout => layout,
+        }
+    }
+
+    fn split_ratios(&self, layout: WorkbenchLayout) -> (f64, f64) {
+        if layout == WorkbenchLayout::Previews {
+            (self.data.workbench.previews_ratio, 0.)
+        } else {
+            layout.ratios(&self.data.workbench.settings)
         }
     }
 }

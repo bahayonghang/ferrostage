@@ -77,6 +77,8 @@ pub enum WorkbenchLayout {
     Standard,
     /// Notes left; Current upper-right; Next lower-right.
     NotesFirst,
+    /// A document with no notes: Current and Next only.
+    Previews,
 }
 
 impl WorkbenchLayout {
@@ -94,6 +96,7 @@ impl WorkbenchLayout {
         match self {
             Self::Standard => 1. - settings.next_slide_ratio,
             Self::NotesFirst => 1. - settings.effective_notes_first_notes_ratio(),
+            Self::Previews => 0.7,
         }
     }
 
@@ -105,6 +108,7 @@ impl WorkbenchLayout {
                 settings.notes_first_notes_ratio,
                 settings.notes_first_current_ratio,
             ),
+            Self::Previews => (0.3, 0.),
         }
     }
 }
@@ -167,8 +171,22 @@ pub struct Workbench {
     pub presenter_target: Option<PixelSize>,
     pub surface_targets: HashMap<Surface, PixelSize>,
     pub render_ms: f64,
+    /// Next-pane share for this open document only; never persisted as settings.
+    pub previews_ratio: Option<f64>,
 }
 impl Workbench {
+    #[cfg(feature = "gpui")]
+    pub(crate) fn failed_surfaces(&self) -> Vec<Surface> {
+        self.requested
+            .iter()
+            .filter(|(_, request)| {
+                self.failed
+                    .iter()
+                    .any(|failed| same_pixels(*request, *failed))
+            })
+            .map(|(surface, _)| *surface)
+            .collect()
+    }
     /// Natural size comes from PDF geometry. Using the returned raster's
     /// rounded aspect to size its own pane can alternate target height by 1 px.
     #[cfg(feature = "gpui")]
@@ -399,7 +417,11 @@ impl Workbench {
             Surface::Current,
             make(page, crop, target, RenderPriority::Presenter),
         ));
-        if let Some(next) = document.slide_map.next_step(page) {
+        if let Some(next) = document
+            .slide_map
+            .next_step(page)
+            .filter(|next| *next != page)
+        {
             wanted.push((
                 Surface::Next,
                 make(

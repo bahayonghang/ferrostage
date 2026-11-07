@@ -733,6 +733,16 @@ impl Shell {
                 }
             }
             Intent::Reconfigure { id, options } => self.reconfigure_layout(id, options, cx),
+            Intent::ResetWorkbench { id, layout } => self.reset_workbench(id, layout, cx),
+            Intent::Split {
+                layout: crate::workbench::WorkbenchLayout::Previews,
+                primary,
+                ..
+            } if !self.busy()
+                && self.workbench_layout() == crate::workbench::WorkbenchLayout::Previews =>
+            {
+                self.workbench.previews_ratio = Some(primary.clamp(0.15, 0.65));
+            }
             Intent::Split {
                 layout,
                 primary,
@@ -749,6 +759,7 @@ impl Shell {
                         presenter.notes_first_notes_ratio = primary.clamp(0.4, 0.7);
                         presenter.notes_first_current_ratio = secondary.clamp(0.5, 0.8);
                     }
+                    crate::workbench::WorkbenchLayout::Previews => return,
                 }
                 self.settings.note_edit();
                 if save {
@@ -1011,6 +1022,7 @@ impl Shell {
                 self.workbench.clear_frames();
                 self.workbench.page_number_mode = crate::workbench::PageNumberMode::Content;
                 self.workbench.browser_view = crate::workbench::BrowserView::Thumbnails;
+                self.workbench.previews_ratio = None;
                 self.workbench.document = Some(session);
                 if old.0 != 0
                     && let Ok(worker) = &self.renderer
@@ -2180,6 +2192,13 @@ impl Shell {
         if let Some(presenter) = &self.presenter {
             presenter.observed_display.set(None);
         }
+        let current_width =
+            if self.workbench_layout() == crate::workbench::WorkbenchLayout::Previews {
+                1. - self.workbench.previews_ratio.unwrap_or(0.3)
+            } else {
+                self.workbench_layout()
+                    .current_width(&self.settings.settings.presenter)
+            };
         if let Some(presenter) = &self.presenter
             && let Ok(target) = presenter.handle.update(cx, |_, window, cx| {
                 presenter
@@ -2188,13 +2207,7 @@ impl Shell {
                 let size = window.viewport_size();
                 let scale = window.scale_factor();
                 ferrostage_pdf::PixelSize {
-                    width: (f32::from(size.width)
-                        * scale
-                        * crate::workbench::WorkbenchLayout::for_mode(
-                            self.settings.settings.display.start_mode,
-                        )
-                        .current_width(&self.settings.settings.presenter)
-                            as f32)
+                    width: (f32::from(size.width) * scale * current_width as f32)
                         .round()
                         .max(1.) as u32,
                     // Command bar, tool row, and start control. The canvas
@@ -7171,9 +7184,9 @@ mod tests {
             cx.simulate_keystrokes(
                 handle,
                 if expected {
-                    "end up enter"
+                    "end up up enter"
                 } else {
-                    "end up space"
+                    "end up up space"
                 },
             );
             redraw(handle, cx);

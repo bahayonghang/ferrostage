@@ -436,3 +436,9 @@ crop-retry = "重新读取预览"
 crop-apply = "应用裁切"
 crop-start = "确认并开始演示"
 crop-start-whole = "按整页开始演示"
+
+wb-reset-layout = "恢复布局比例"
+
+wb-end = "演示结束"
+
+wb-render-failed = "预览加载失败"
