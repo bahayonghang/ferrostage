@@ -28,5 +28,5 @@
 
 - [元数据探针](probe_metadata.py) 与 [30 次采样](pdfium-metadata-baseline.json)。
 - [翻步探针](probe_paging.py) 与 [200 次采样](pdfium-paging-baseline.json)。
-- 在仓库根运行 `python -B .trellis/tasks/11-07-presenter-performance/research/probe_metadata.py` 或同目录的 `probe_paging.py`。二者只读输入并输出 JSON；不同机器记录为单独基线。
+- 在仓库根运行 `python -B .trellis/tasks/archive/2026-11/11-07-presenter-performance/research/probe_metadata.py` 或同目录的 `probe_paging.py`。二者只读输入并输出 JSON；不同机器记录为单独基线。
 - 现有 `crates/ferrostage-render/examples/poc2.rs` 是无缓存 Rust worker 光栅对照，见 `docs/packaging.md`；产品打开到首帧、键入到绘制、热缓存、OS Present 和优化后对照仍待测。

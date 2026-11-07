@@ -13,7 +13,7 @@ import statistics
 import subprocess
 import time
 
-ROOT = Path(__file__).resolve().parents[4]
+ROOT = next(p.parent for p in Path(__file__).resolve().parents if p.name == ".trellis")
 PDF = ROOT / "fixtures/pdf/perf-100.pdf"
 DLL = ROOT / "cache/pdfium-7881-win-x64/bin/pdfium.dll"
 CONFIG = """schema_version = 1
