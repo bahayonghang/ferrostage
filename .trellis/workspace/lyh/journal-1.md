@@ -681,3 +681,25 @@ Ready 与演示中的文档警告改为内容区左下可关闭小旗，关闭�
 ### Status
 
 [OK] **Completed**
+
+
+## Session 22: 轻盈毛玻璃讲者界面与材质偏好
+<!-- trellis-session: v=2 fp=a79a65aee948b2de -->
+
+**Date**: 2026-11-07
+**Task**: 轻盈毛玻璃讲者界面与材质偏好
+**Branch**: `dev`
+
+### Summary
+
+保留明暗三选一和独立材质开关，原生验证背景模糊、窄窗回退、观众像素隔离与首帧速度。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `d332e20` | feat(ui): 将讲者界面改为可切换的轻盈毛玻璃 |
+
+### Status
+
+[OK] **Completed**
