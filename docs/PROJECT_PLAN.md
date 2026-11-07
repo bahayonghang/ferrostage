@@ -131,7 +131,8 @@ schema_version = 1
 
 [general]
 language = "zh-CN"            # zh-CN | en-US（assets/locales 已有）
-theme = "dark"                # dark | light | system
+theme = "light"               # light | dark | system
+glass_effect = true           # request frosted presenter surfaces
 reopen_last_document = false
 ui_font_family = "" # System default; installed interface family override
 ui_font_size = 16 # Logical pixels, integer 12..=24; PDF/notes pixels unaffected

@@ -64,10 +64,6 @@ impl Shell {
             }
             Intent::ToggleFontPicker => {
                 if self.preferences_editable() {
-                    if !self.ui_fonts_loaded {
-                        self.ui_fonts = std::sync::Arc::new(cx.text_system().all_font_names());
-                        self.ui_fonts_loaded = true;
-                    }
                     self.preferences.font_picker = if self.preferences.font_picker.is_some() {
                         None
                     } else {

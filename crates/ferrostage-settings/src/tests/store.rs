@@ -65,6 +65,7 @@ vendor_meta = { keep = true }
 
 [general]
 language = "zh-CN"
+theme = "dark"
 extra = "keep-me"
 recent_files = ['C:\talks\first.pdf', 'unknown.pdf']
 recent_opened_at = { 'C:\talks\first.pdf' = 1792370000 }
@@ -95,7 +96,9 @@ marker = "b"
     let store = SettingsStore::at(&path);
     let mut outcome = store.load().expect("load");
     assert!(outcome.write_policy.is_writable());
+    assert!(outcome.settings.general.glass_effect);
     outcome.settings.general.language = "en-US".to_owned();
+    outcome.settings.general.glass_effect = false;
     outcome.settings.display.monitors[1].role = MonitorRole::None;
     outcome.settings.display.monitors.remove(2);
     outcome.settings.display.monitors.push(MonitorBinding {
@@ -113,6 +116,8 @@ marker = "b"
     assert_eq!(saved["general"]["extra"].as_str(), Some("keep-me"));
     assert_eq!(saved["general"]["language"].as_str(), Some("en-US"));
     let reloaded = store.load().expect("reload");
+    assert_eq!(reloaded.settings.general.theme, crate::Theme::Dark);
+    assert!(!reloaded.settings.general.glass_effect);
     assert_eq!(
         reloaded.settings.general.recent_opened_at,
         [(r"C:\talks\first.pdf".into(), 1792370000)].into()

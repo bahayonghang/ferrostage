@@ -17,7 +17,7 @@ The optional desktop build links the presenter workbench, single-worker PDFium r
 - **In-Memory Annotations & Pointer**: Normalized vector laser pointer and freehand digital pen, highlighter, eraser, and clear actions. All strokes stay in session memory and synchronize in real time to the audience screen; the PDF file is never modified.
 - **External PDF Hot Reload**: Monitors external file changes with `notify`, applies 300 ms debounce, checks trailing `%%EOF`, and executes an atomic background swap that preserves the current slide, presentation stage, and ink annotations.
 - **Media Playback**: Embedded pure-Rust GIF and animated WebP playback, plus an isolated out-of-process GStreamer native video helper (BGRA offscreen frames, zero child HWNDs, graceful fallback on missing dependencies).
-- **Settings & Visual Themes**: Full TOML configuration backend with GUI settings and a `check-config` CLI validator. Dark, light, and system themes with Claude-inspired visual tokens.
+- **Settings & Visual Themes**: Full TOML configuration backend with GUI settings and a `check-config` CLI validator. The presenter offers Light, Dark, and System appearances with an independent frosted-glass switch.
 
 ## GitHub topics
 

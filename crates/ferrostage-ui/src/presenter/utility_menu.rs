@@ -103,7 +103,7 @@ impl Presenter {
             .rounded(px(theme::PANEL_RADIUS))
             .border_1()
             .border_color(rgb(p.border))
-            .bg(rgb(p.card))
+            .bg(rgb(p.canvas))
             .flex()
             .flex_col()
             .occlude();

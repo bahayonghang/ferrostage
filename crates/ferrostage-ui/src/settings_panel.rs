@@ -83,8 +83,9 @@ pub const FIELDS: &[Field] = &[
     field!(
         "general.theme",
         General,
-        Choice(&["dark", "light", "system"])
+        Choice(&["light", "dark", "system"])
     ),
+    field!("general.glass_effect", General, Toggle),
     field!("general.ui_font_family", General, FontFamily),
     field!(
         "general.ui_font_size",

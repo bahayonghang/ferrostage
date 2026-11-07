@@ -650,20 +650,32 @@ impl Presenter {
                     ));
             }
             Kind::Toggle => {
+                let checked = value == "true";
                 controls = controls.child(
                     self.button(
                         format!("setting-{}", field.id),
-                        l.text(if value == "true" {
+                        l.text(if checked {
                             "settings-on"
                         } else {
                             "settings-off"
                         })
                         .into(),
                         enabled,
-                        value == "true",
-                        Intent::EditSetting(field.id, (value != "true").to_string()),
+                        checked,
+                        Intent::EditSetting(field.id, (!checked).to_string()),
                         p,
-                    ),
+                    )
+                    .role(Role::Switch)
+                    .aria_label(if enabled {
+                        label.to_owned()
+                    } else {
+                        l.format("disabled-label", &[("label", label.to_owned())])
+                    })
+                    .aria_toggled(if checked {
+                        gpui::Toggled::True
+                    } else {
+                        gpui::Toggled::False
+                    }),
                 )
             }
             Kind::Choice(choices) => {
@@ -742,6 +754,7 @@ impl Presenter {
             .py(px(8.))
             .child(div().text_color(rgb(p.ink)).child(label));
         let help = match field.id {
+            "general.glass_effect" => Some(self.material.status_key()),
             "general.language" | "display.presenter_start_fullscreen" => {
                 Some("settings-restart-help")
             }
@@ -969,7 +982,7 @@ impl Presenter {
                     .top(px(19.))
                     .h(px(6.))
                     .w(relative(((value - min) / (max - min)).clamp(0., 1.) as f32))
-                    .bg(rgb(theme::PRIMARY)),
+                    .bg(rgb(p.focus)),
             )
             .child(
                 canvas(move |bounds, _, _| measured.set(bounds), |_, _, _, _| {})

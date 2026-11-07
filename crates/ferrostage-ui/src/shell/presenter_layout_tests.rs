@@ -437,14 +437,14 @@ fn start_mode_menu_selects_notes_first_and_switches_the_ready_layout(cx: &mut Te
 }
 
 #[test]
-fn polished_faces_keep_semantic_badge_and_regular_clear_radius() {
-    use crate::theme::{ButtonKind, DARK, LIGHT, RADIUS};
+fn airy_faces_keep_semantic_badge_and_pill_controls() {
+    use crate::theme::{ButtonKind, DARK, LIGHT, PILL_RADIUS};
     for p in [LIGHT, DARK] {
         assert_eq!(crate::presenter::stage_dot(SessionStage::Ready, p), p.success);
-        assert_eq!(crate::presenter::stage_dot(SessionStage::Presenting, p), p.focus);
+        assert_eq!(crate::presenter::stage_dot(SessionStage::Presenting, p), p.output);
         assert_eq!(crate::presenter::stage_dot(SessionStage::Idle, p), p.muted);
         for enabled in [false, true] {
-            assert_eq!(p.button(ButtonKind::Destructive, enabled, false).radius, RADIUS);
+            assert_eq!(p.button(ButtonKind::Destructive, enabled, false).radius, PILL_RADIUS);
         }
     }
 }

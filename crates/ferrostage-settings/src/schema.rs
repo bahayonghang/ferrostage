@@ -170,6 +170,8 @@ pub struct GeneralSettings {
     pub language: String,
     /// Palette selection.
     pub theme: Theme,
+    /// Request a frosted presenter window when transparency is available.
+    pub glass_effect: bool,
     /// Installed interface family; empty selects the system default.
     pub ui_font_family: String,
     /// Interface base size in logical pixels; content fonts are unaffected.
@@ -191,7 +193,8 @@ impl Default for GeneralSettings {
     fn default() -> Self {
         Self {
             language: "zh-CN".to_owned(),
-            theme: Theme::Dark,
+            theme: Theme::Light,
+            glass_effect: true,
             ui_font_family: String::new(),
             ui_font_size: 16,
             reopen_last_document: false,

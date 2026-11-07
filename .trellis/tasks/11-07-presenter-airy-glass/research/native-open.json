@@ -1,0 +1,172 @@
+{
+  "fixture": "395d8bb26ad5f8f7ca5245901abdcb8de1fccd2be5ff7e30482e54f776526cb6",
+  "pdfium": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118",
+  "reference_exe": "622cca25cf586ee03c6b78b115cf3085c7c67c9a4d9c98aa532feccf9aaad91a",
+  "candidate_exe": "a9fa03da4e123a9c0136af8460ab8efa9dfe8814c7456fd53253e5b459339dbd",
+  "samples": {
+    "reference": [
+      {
+        "launch_to_observed_preview_ms": 720.72,
+        "accept_to_preview_ms": 146.356,
+        "actual_px": [
+          756,
+          213
+        ]
+      },
+      {
+        "launch_to_observed_preview_ms": 761.27,
+        "accept_to_preview_ms": 155.617,
+        "actual_px": [
+          756,
+          213
+        ]
+      },
+      {
+        "launch_to_observed_preview_ms": 721.32,
+        "accept_to_preview_ms": 157.403,
+        "actual_px": [
+          756,
+          213
+        ]
+      },
+      {
+        "launch_to_observed_preview_ms": 670.5,
+        "accept_to_preview_ms": 146.84,
+        "actual_px": [
+          756,
+          213
+        ]
+      },
+      {
+        "launch_to_observed_preview_ms": 690.2,
+        "accept_to_preview_ms": 146.889,
+        "actual_px": [
+          756,
+          213
+        ]
+      },
+      {
+        "launch_to_observed_preview_ms": 648.63,
+        "accept_to_preview_ms": 141.183,
+        "actual_px": [
+          756,
+          213
+        ]
+      }
+    ],
+    "glass-on": [
+      {
+        "launch_to_observed_preview_ms": 690.72,
+        "accept_to_preview_ms": 137.777,
+        "actual_px": [
+          756,
+          213
+        ]
+      },
+      {
+        "launch_to_observed_preview_ms": 774.09,
+        "accept_to_preview_ms": 161.476,
+        "actual_px": [
+          756,
+          213
+        ]
+      },
+      {
+        "launch_to_observed_preview_ms": 782.07,
+        "accept_to_preview_ms": 151.215,
+        "actual_px": [
+          756,
+          213
+        ]
+      },
+      {
+        "launch_to_observed_preview_ms": 666.45,
+        "accept_to_preview_ms": 145.89,
+        "actual_px": [
+          756,
+          213
+        ]
+      },
+      {
+        "launch_to_observed_preview_ms": 677.4,
+        "accept_to_preview_ms": 141.908,
+        "actual_px": [
+          756,
+          213
+        ]
+      },
+      {
+        "launch_to_observed_preview_ms": 664.25,
+        "accept_to_preview_ms": 137.47,
+        "actual_px": [
+          756,
+          213
+        ]
+      }
+    ],
+    "glass-off": [
+      {
+        "launch_to_observed_preview_ms": 708.81,
+        "accept_to_preview_ms": 155.704,
+        "actual_px": [
+          756,
+          213
+        ]
+      },
+      {
+        "launch_to_observed_preview_ms": 662.48,
+        "accept_to_preview_ms": 129.784,
+        "actual_px": [
+          756,
+          213
+        ]
+      },
+      {
+        "launch_to_observed_preview_ms": 674.2,
+        "accept_to_preview_ms": 145.155,
+        "actual_px": [
+          756,
+          213
+        ]
+      },
+      {
+        "launch_to_observed_preview_ms": 733.21,
+        "accept_to_preview_ms": 142.134,
+        "actual_px": [
+          756,
+          213
+        ]
+      },
+      {
+        "launch_to_observed_preview_ms": 668.13,
+        "accept_to_preview_ms": 138.19,
+        "actual_px": [
+          756,
+          213
+        ]
+      },
+      {
+        "launch_to_observed_preview_ms": 713.3,
+        "accept_to_preview_ms": 146.289,
+        "actual_px": [
+          756,
+          213
+        ]
+      }
+    ]
+  },
+  "medians": {
+    "reference": {
+      "launch_to_observed_preview_ms": 705.46,
+      "accept_to_preview_ms": 146.86
+    },
+    "glass-on": {
+      "launch_to_observed_preview_ms": 684.06,
+      "accept_to_preview_ms": 143.9
+    },
+    "glass-off": {
+      "launch_to_observed_preview_ms": 691.5,
+      "accept_to_preview_ms": 143.64
+    }
+  }
+}

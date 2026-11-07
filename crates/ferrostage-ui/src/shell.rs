@@ -157,7 +157,6 @@ pub(crate) struct Shell {
     pub settings: SettingsSession,
     pub preferences: crate::settings_panel::PanelState,
     pub ui_fonts: std::sync::Arc<Vec<String>>,
-    ui_fonts_loaded: bool,
     preference_change: Option<preferences::PendingPreferences>,
     store: SettingsStore,
     renderer: Result<RenderHandle, RenderError>,
@@ -347,14 +346,7 @@ impl Shell {
             .iter()
             .any(|(key, action)| key == "escape" && *action == "stop_presentation");
         let recover_windowed = !topology_valid || monitors.is_empty();
-        // A saved override needs resolution before first draw. Otherwise defer
-        // enumeration until the family selector opens, then cache for the session.
-        let ui_fonts_loaded = !inputs.settings.settings.general.ui_font_family.is_empty();
-        let ui_fonts = std::sync::Arc::new(if ui_fonts_loaded {
-            cx.text_system().all_font_names()
-        } else {
-            Vec::new()
-        });
+        let ui_fonts = std::sync::Arc::new(cx.text_system().all_font_names());
         Self {
             locale,
             state,
@@ -365,7 +357,6 @@ impl Shell {
             store: inputs.store,
             preferences: Default::default(),
             ui_fonts,
-            ui_fonts_loaded,
             preference_change: None,
             renderer: inputs.renderer,
             topology: inputs.topology,
@@ -1957,6 +1948,9 @@ impl Shell {
             }
         };
         for (number, monitor, title, name, display_id, bounds) in targets {
+            let general = &self.settings.settings.general;
+            let appearance = general.theme;
+            let typography = crate::theme::Typography::resolve(general, &self.ui_fonts);
             let size = size(px(460.), px(240.));
             let origin = point(
                 bounds.origin.x + (bounds.size.width - size.width) / 2.,
@@ -1982,7 +1976,12 @@ impl Shell {
                             Self::log_bounds(window, cx)
                         })
                         .detach();
-                        Identify { number, name }
+                        Identify {
+                            number,
+                            name,
+                            appearance,
+                            typography,
+                        }
                     })
                 },
             );

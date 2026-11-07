@@ -1,190 +1,272 @@
 ---
 version: alpha
-name: FerroStage
-description: Native presenter UI inspired by the Claude design language.
+name: 轻盈毛玻璃
+description: "轻盈毛玻璃 is airy frosted glass: a light field, white paper, and two semantic colors, green for input and purple for output."
 colors:
-  primary: "#A34F35"
-  primary-hover: "#93452F"
-  primary-active: "#823C29"
-  on-primary: "#FFFFFF"
-  canvas: "#FAF9F5"
-  surface-soft: "#F5F0E8"
-  surface-card: "#EFE9DE"
-  ink: "#141413"
-  body: "#3D3D3A"
-  muted: "#69665F"
-  border: "#858078"
-  hairline: "#E6DFD8"
-  focus: "#A34F35"
-  success: "#28613D"
-  warning: "#825315"
-  error: "#A63232"
-  canvas-dark: "#181715"
-  surface-soft-dark: "#1F1E1B"
-  surface-card-dark: "#252320"
-  ink-dark: "#FAF9F5"
-  body-dark: "#E6DFD8"
-  muted-dark: "#B9B3A8"
-  border-dark: "#91897C"
-  focus-dark: "#E5A38B"
-  success-dark: "#8DCEA0"
-  warning-dark: "#E8B774"
-  error-dark: "#FFA5A0"
-  audience-curtain: "#000000"
+  canvas-mint: "#E7F6F1"
+  canvas-lavender: "#EDE7F8"
+  sheet: "rgba(255,255,255,0.78)"
+  sheet-solid: "rgba(255,255,255,0.96)"
+  sheet-edge: "rgba(255,255,255,0.80)"
+  ink: "#24303A"
+  muted: "#5C6B76"
+  input: "#187A56"
+  input-wash: "#E7F7F0"
+  output: "#6D4BD6"
+  output-wash: "#F3EEFC"
+  dark-field-mint: "#142723"
+  dark-field-lavender: "#242037"
+  dark-sheet: "#172321"
+  dark-sheet-edge: "#A3B9B1"
+  dark-input-wash: "#213A32"
+  dark-output-wash: "#312C44"
+  dark-ink: "#F3FAF7"
+  dark-body: "#D9E6E1"
+  dark-muted: "#B2C5BF"
+  dark-boundary: "#859D94"
+  dark-input: "#83DFB7"
+  dark-output: "#C6B4FF"
+  dark-warning: "#F1C27C"
+  dark-error: "#FFABB6"
 typography:
-  home-brand:
-    fontFamily: "Georgia, serif"
+  display-num:
+    fontFamily: 'Figtree, "PingFang SC", "Noto Sans SC", sans-serif'
     fontSize: 32px
-    lineHeight: 38px
-    fontWeight: 600
-  display:
-    fontFamily: "Segoe UI, Microsoft YaHei UI, system-ui"
-    fontSize: 28px
-    fontWeight: 400
+    fontWeight: 700
+    letterSpacing: -0.02em
+    fontVariantNumeric: tabular-nums
   title:
-    fontFamily: "Segoe UI, Microsoft YaHei UI, system-ui"
-    fontSize: 20px
-    fontWeight: 600
-  body:
-    fontFamily: "Segoe UI, Microsoft YaHei UI, system-ui"
+    fontFamily: 'Figtree, "PingFang SC", "Noto Sans SC", sans-serif'
     fontSize: 16px
-    fontWeight: 400
-  label:
-    fontFamily: "Segoe UI, Microsoft YaHei UI, system-ui"
+    fontWeight: 650
+    letterSpacing: 0
+  body:
+    fontFamily: 'Figtree, "PingFang SC", "Noto Sans SC", sans-serif'
     fontSize: 14px
-    fontWeight: 500
-  timer:
-    fontFamily: "Consolas, ui-monospace"
-    fontSize: 30px
-    fontWeight: 500
+    fontWeight: 400
+    lineHeight: 1.7
+    letterSpacing: 0
+  meta:
+    fontFamily: 'Figtree, "PingFang SC", "Noto Sans SC", sans-serif'
+    fontSize: 12px
+    fontWeight: 400
+    letterSpacing: 0
 rounded:
-  sm: 4px
-  md: 8px
-  lg: 12px
+  image: 12px
+  well: 16px
+  sheet: 20px
+  pill: 999px
 spacing:
-  xxs: 4px
-  xs: 8px
+  min: 8px
   sm: 12px
   md: 16px
   lg: 24px
   xl: 32px
-sizes:
-  home-content-max: 760px
-  control: 44px
-  focus-width: 2px
-  focus-gap: 2px
-  toolbar: 64px
-  session-control: 56px
-  presenting-session-control: 44px
-  session-icon: 26px
-  session-width-at-default-text-size: 208px
-  restart-width-at-default-text-size: 144px
-  sidebar: 208px
+  xxl: 48px
+material:
+  field-angle: 160deg
+  sheet-blur: 20px
+  sheet-blur-min: 16px
+  sheet-blur-max: 24px
+  sheet-saturate: 1.15
+  blob-blur: 80px
+  blob-opacity: 0.55
+  blob-max: 3
+  backdrop-max: 6
+  solid-breakpoint: 960px
+elevation:
+  sheet-shadow: "0 20px 48px rgba(70, 90, 120, 0.08)"
+motion:
+  press-scale: 0.98
+  press-duration: 120ms
 ---
-
-<!-- design-md: entry=brand:claude; source=https://github.com/VoltAgent/awesome-design-md@3b60532; license=MIT -->
-<!-- customized: FerroStage native presenter; accessible clay actions; light/dark palettes; system fonts; task-owned runtime verification. -->
-<!-- customized: home-design-refactor, dedicated FerroStage wordmark, compact file entry, Idle-only information hierarchy. -->
+<!-- design-atlas: entry=style:airy-glass; source=first-party; license=MIT -->
 
 ## Overview
 
-Warm cream surfaces, dark ink, and a restrained clay primary action keep the presenter's attention on the slides. This is a FerroStage interface inspired by Claude's design language. Product UI uses FerroStage identity and existing project assets only.
+轻盈毛玻璃 is airy frosted glass for a workbench. The field is bright, low-chroma, cool air. White paper floats on a mint-to-lavender gradient. Read status, then the number, then the action. There is no marketing hero.
 
-The single Rust token layer belongs to task 07 at `crates/ferrostage-ui/src/theme.rs`. Tasks 08 and 09 extend that layer. Theme resolution consumes `general.theme` (`light`, `dark`, `system`); system mode responds to OS theme changes. Dark mode maps each surface/text/semantic role to its `-dark` token; the primary button family stays the same. Theme resolution introduces no additional theme keys or parallel palettes.
+绿与紫是两个语义色. `{colors.input}` means input or completion. `{colors.output}` means output. Text sits on paper or on a solid well, never on the field.
+
+Glass is not the default card skin. Only the paper uses `backdrop-filter`, and only once. This file does not define a component library. Do not import the glassmorphism palette, fonts, or radii.
 
 ## Colors
 
-Light canvas/surfaces use ink, body, or muted text. Dark surfaces use their dark counterparts. Primary actions use white on primary/hover/active. Semantic text uses matching light/dark success, warning, or error tokens and an explicit label/icon. Hairlines are decorative separators only; interactive boundaries use border. Keyboard focus uses the matching focus token, with a surface-colored gap around primary buttons.
+Field:
 
-PDF pixels, rasterized speaker notes, media, annotation colors, and black/white audience overlays are content; never tint them or apply a theme filter. The audience view remains snapshot-only and receives no settings or theme controller. Its curtain is pure black and has no controls.
+- `{colors.canvas-mint}` (`#E7F6F1`) to `{colors.canvas-lavender}` (`#EDE7F8`), about 160deg.
+- At most 3 blobs. A blob keeps the hue of one field end and raises chroma slightly. Do not assign a new hex. Blur about 80px, opacity about 0.55. Keep blobs out from under text.
+
+Paper is the only surface that may blur:
+
+- Fill `{colors.sheet}` (`rgba(255,255,255,0.78)`).
+- 模糊 20px, written `backdrop-filter: blur(20px) saturate(1.15)`. The allowed blur is 16px to 24px. The default is 20px. Saturation stays 1.15.
+- 1px edge `{colors.sheet-edge}` (`rgba(255,255,255,0.80)`). This is a light edge, not an opaque fence, and not a control boundary.
+- One shadow: `{elevation.sheet-shadow}`.
+
+Wells are solid and do not blur again. `{colors.input-wash}` (`#E7F7F0`) is the input and completion well. `{colors.output-wash}` (`#F3EEFC`) is the output well.
+
+Text:
+
+- `{colors.ink}` (`#24303A`) for titles and body.
+- `{colors.muted}` (`#5C6B76`) for 12px secondary text.
+- `{colors.input}` (`#187A56`) for input, completion, links, and the focus ring.
+- `{colors.output}` (`#6D4BD6`) for output and secondary figures.
+
+窄屏、减少透明度时的不透明回退、以及没有 `backdrop-filter` 时,纸改为 `{colors.sheet-solid}` (`rgba(255,255,255,0.96)`),模糊为 none. 保持同一色相,只提高不透明度. 填充 0.78 是有意比水晶卡更实,好让低饱和字段上的文字稳定过 4.5:1. 轻来自字段的颜色、大圆角和淡阴影,不来自把纸做成全透明.
 
 ## Typography
 
-Use installed system fonts; never download proprietary brand fonts. Idle uses a dedicated FerroStage wordmark in Georgia, 32/38px semibold, separate from ordinary headings. All other home copy uses the sans stack: instruction 14/22px, actions and filenames 14/20px, recent section and parent paths 12/18px. Do not apply Latin tracking to Chinese. Other short empty-state headings may use the display stack. Controls, filenames, and settings use the sans stack; elapsed time uses the monospace stack. Font fallback must cover Chinese. Text scaling must not clip labels or hide Start/Stop. Long filenames truncate in the header and expose the full name on demand.
+Family: `Figtree, "PingFang SC", "Noto Sans SC", sans-serif`. Do not use Inter, Plus Jakarta Sans, or DM Sans.
 
-Optional schema-v1 leaves `general.ui_font_family = ""` and `general.ui_font_size = 16` control interface typography. Empty family means System default; installed families are selected in a bounded searchable list. Missing families retain the requested setting and show a fallback notice. Base size accepts 12–24 logical pixels; existing text roles scale by base/16. The home wordmark keeps its fixed Georgia role, timers keep their monospace face and scale, and OS titlebar, PDF/raster notes, media and audience pixels are excluded. A mixed Chinese/Latin preview and explicit default restoration accompany these preferences.
+| Role | Token | Size | Weight | Notes |
+| --- | --- | --- | --- | --- |
+| Large numbers | `{typography.display-num}` | 32px | 700 | `tabular-nums`. Latin digits may use -0.02em |
+| Title | `{typography.title}` | 16px | 650 | No negative tracking |
+| Body | `{typography.body}` | 14px | 400 | Chinese running text line-height 1.7 |
+| Secondary | `{typography.meta}` | 12px | 400 | Color `{colors.muted}` |
+
+The -0.02em tracking belongs only to large Latin numerals. Chinese running text does not use negative letter-spacing.
 
 ## Layout
 
-Idle: one app-content FerroStage wordmark, quiet Settings/Displays utilities, one short instruction, one natural-width Open PDF action, then up to three recent-file rows. Native Idle title is `FerroStage`. Omit document-status chrome, clocks/timer, duplicate Open and disabled Start footer in Idle. Preserve import/topology warnings and unsaved/save-error Retry. Ready/Presenting retain filename/stage header and Start/Stop; show the reason beside a disabled Start button there. Visibility changes never mutate timer/settings state.
+Spacing is 8 / 12 / 16 / 24 / 32 / 48 (`{spacing.min}` through `{spacing.xxl}`). The minimum gap is 8px.
 
-Home content is a top-anchored, centered column capped at 760px. Use 32px side gutters at widths >=800px, 16px below; top inset 48px at heights >=600px, 24px below. Brand, copy, action and recent text share a left edge. Utilities wrap into a separate row below 600px width. Section spacing uses 8/16/24/32px. The home scroll container includes conditional feedback and remains usable at 320x240 logical client size. No large welcome card or fixed bottom action strip.
+Order on the workbench is status, number, action. Do not add a marketing hero.
 
-08: current slide on the left, Next upper-right and original Notes lower-right. Fresh defaults reserve 45% width for the right column and 65% of its pane height for Notes; the effective Notes share is clamped to 55–80%. Existing saved ratios remain authoritative. The horizontal divider measures the complement of the upper Next pane after excluding its bar and gaps; dragging down makes Next taller and Notes shorter. Each Notes raster fills the inner width at its natural aspect height, without flex shrinking; multiple pages remain ordered in one vertical scroll. The opt-in Dual · Notes first presentation mode (`display.start_mode = "dual_notes"`) mirrors this at widths >=800px: original Notes fill a full-height left column (fresh default 55% width, effective 40–70%), Current sits upper-right with a caption and Next lower-right; Current takes 62% of the right column height by default (effective 50–80%). Its two dividers are 1px lines inside 8px targets and persist `presenter.notes_first_notes_ratio` / `presenter.notes_first_current_ratio`, independent from the standard ratios. Single and narrow stacked layouts keep the standard composition. Notes stay original PDF pixels, with source typography authored outside the app and no text reflow or mode/font selector. The header has three regions: identity on the left (a quiet 14px monospace local clock, then filename and session label), the presentation timer capsule centered on the window, and document actions on the right. Identity and actions take equal flexible space so the capsule stays centered until one side's content no longer fits; it then degrades to an uncentered row without overlap. Long filenames truncate and never move the digits. When a document session is loaded, the right actions begin with the Layout & navigation menu trigger and a 1px, 24px border-colored divider, then the stage utilities (Ready: Home/Open/Settings/Displays; Presenting: More/Displays). Below 800px the header stacks identity, the centered capsule and wrapping actions. The capsule uses neutral ink normally and semantic warning colors at existing thresholds; full signed values fit without truncation. One bottom strip groups Start/Stop (or Resume/Restart), Previous/Next and compact actionable page progress, followed by blanking, laser and secondary utilities. Presenting places Home/Open/Settings under More and Pen/Highlighter/Eraser/Clear under Drawing; display access and Page browser stay direct in the bottom strip, and Layout stays direct in the header. Ready retains management controls. The Start dropdown lists Dual · Standard (default), Dual · Notes first and Single in a 360px menu. Full logical/step/physical progress is available on hover, keyboard focus and accessibility. No separate full-width session footer or leftover divider. Disabled Start explains its reason locally; busy preparation preserves its geometry and blocks duplicate activation. Keep slide aspect ratio. Presenter panes letterbox on the workbench canvas; page-browser thumbnails keep a black letterbox. Recent files belong only to Idle. Progress, Jump and Page browser share one contextual panel above the toolbar, retaining the workbench underneath. The bordered number field supports caret/selection and shows the active Content or PDF original numbering context; edits only locate a target. Explicit Enter/Go or whole-thumbnail activation jumps directly once and closes. Independent 1–4 column/row controls default to 4×4 and update the visible group without navigation. Thumbnails appear only while this browser is open; the legacy show_thumbnail_strip setting is read-compatible but ignored. The elapsed talk timer never changes slides.
+When the paper padding is 8px, an inner image uses a 12px radius, because outer radius = inner radius + padding.
 
-Start requests fullscreen on the existing presenter window and commits only after native presenter and audience placement readback. Stop or failed Start retires audience output and restores the captured normal/maximized/fullscreen state on the same window and monitor. Windows fullscreen toggles are asynchronous: restoration waits for entry before issuing one exit, and remains busy until verified or safely recovered. Startup fullscreen preferences and saved monitor roles are unchanged. A replacement presenter never receives the retired window's saved bounds. Native fullscreen and standing readability need runtime evidence; flags and headless geometry alone do not establish them.
-
-09: category navigation on the left and a scrollable settings panel on the right. Display topology is the primary content of the Displays category. Keep saved/unsaved/read-only state and Retry visible. Use short descriptions such as “Saved audience display is disconnected” and “Language changes after restart”.
-
-Settings use quiet category navigation and sans headings, a left-aligned content column capped at 960 logical pixels (1120 for Displays), section hairlines and content-driven rows of at least 56px. Labels and local help sit left, bounded controls right; no background card per field. General groups Appearance, Startup and Recent files. Recent files retain order and show filename plus real parent/full-path context with count/limit and a content-sized Clear. Keep all seven categories and existing edit/reset/recording behavior. Preference save status does not imply display allocation has been applied.
+Icons are linear, about a 1.5px stroke, in `currentColor`. Do not add illustrated characters.
 
 ## Elevation & Depth
 
-Prefer surface changes and borders to shadows. Only presenter-owned modal/popover layers may use subtle elevation. No gradients, glow, decorative dashboards, or extra feature cards.
+Depth is the field showing past the paper, one soft shadow, and the large radius. Do not stack shadows or add a glow.
+
+```css
+.field {
+  background: linear-gradient(160deg, #E7F6F1, #EDE7F8);
+}
+.sheet {
+  background: rgba(255,255,255,0.78);
+  backdrop-filter: blur(20px) saturate(1.15);
+  border: 1px solid rgba(255,255,255,0.80);
+  box-shadow: 0 20px 48px rgba(70, 90, 120, 0.08);
+  border-radius: 20px;
+}
+.sheet.is-solid {
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: none;
+}
+.sheet:active {
+  transform: scale(0.98);
+  transition: transform 120ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sheet:active {
+    transform: none;
+  }
+}
+```
+
+The 1px border is the light edge only. CSS `border-style: solid` here only paints the translucent color. It is not an opaque fence and it is not the control boundary.
+
+Pointer press uses `transform: scale(0.98)` for about 120ms, and animates `transform` only. Keyboard state changes do not animate. `prefers-reduced-motion: reduce` cancels the scale. Do not animate the blur radius.
+
+One viewport holds at most 6 `backdrop-filter` layers. Do not nest paper inside paper. Wells, list rows, and tables stay solid.
 
 ## Shapes
 
-Controls use md radius, panels lg, status badges sm. Content images retain their natural rectangle. All interactive targets are at least 44 by 44 logical pixels, including tool icons.
+| Token | Radius | Use |
+| --- | --- | --- |
+| `{rounded.image}` | 12px | Image inside paper when padding is 8px |
+| `{rounded.well}` | 16px | Solid wells |
+| `{rounded.sheet}` | 20px | Paper |
+| `{rounded.pill}` | 999px | Buttons and tags |
 
-## Components
+Buttons and tags are pills. Paper is 20px. With 8px padding, the inner image is 12px so that outer = inner + padding.
 
-**button-primary**: label plus optional progress indicator, primary/on-primary, label type, control height, xs/md padding, md radius. Hover uses primary-hover; pressed uses primary-active; focus adds the focus ring; disabled uses surface-card/muted with explanatory text and no action; loading preserves geometry and blocks duplicate invocation; error displays text and retry. Dark primary controls also use border-dark to separate the clay fill from elevated surfaces.
+## Accessibility
 
-**home-open / home-recent / home-utility**: reuse shared activation/focus/disabled/accessibility dispatch while keeping home faces distinct. Open retains the 44px face height plus existing focus reservation, with natural 120-200px face width for shipped labels at default scale. Recent rows form a flat table with a quiet header and separators: a flexible filename/actual-parent column and a shared right-aligned last-opened column. Retain 48-56px outer targets at default scale and allow content to grow with interface typography. Display persisted successful-open events as local `YYYY-MM-DD HH:MM`; legacy, invalid or unrepresentable times show localized unknown copy. Never derive dates from PDF metadata or filesystem access. Rows have quiet hover/pressed surfaces and visible keyboard focus, without permanent command-button outlines. Reveal complete paths on hover and keyboard focus and include the path and time in accessible labels. Same-named files retain distinguishable parent context. Settings/Displays keep explicit text and >=44px targets. Do not shrink global CONTROL to fix home width. Keep 0/1/3 recent states and existing busy/import guards; never invent dates, metadata or shortcuts.
+Meet WCAG 2.2 AA on the worst specified background, not on an average of the field. These ratios were measured for this palette. Do not replace them with a new calculation in this file.
 
-**button-secondary / tool-button**: loaded-document header utilities, including Pause/Resume/Reset timer, are quiet text controls. Navigation uses a bounded neutral surface and regular 8px radius. Black/white audience toggles use small bordered black/white swatches beside explicit labels and a selected check. Drawing tools share a soft segmented group with regular 8px faces; selection uses a stronger surface and check, never color alone. Stop and Clear use semantic error text/border on the soft surface and the regular 8px radius, with Clear separated from tool selection. Menu triggers (bottom-strip presentation mode, header Layout & navigation) and automatic playback use the neutral navigation face; their open/closed state is a drawn chevron, never a font glyph. The presentation-mode trigger matches the Start face height in Ready. Focus reservation around every activation target is transparent at rest, so menus and segmented groups show their own surface without rings or seams. Start retains the filled clay action. Ready Start uses a 56px face and scaled 208px minimum width; Presenting Stop uses the ordinary 44px minimum with natural width. Both retain a 26px geometric play/stop icon plus explicit label in the same group as Previous/Next. After a Presenting session stopped with at least one second of elapsed time, Ready replaces the single Start with a joined two-segment control in the same place: Resume (clay primary face, play icon, "Resume presentation" plus a "Continue from MM:SS" sublabel; 56px, scaled 208px minimum) and Restart (neutral navigation face, "Restart" plus a "Timer resets to 00:00" sublabel; 56px, scaled 144px minimum), joined so their transparent focus reservations overlap (a 4px visual gap keeps both focus rings whole), outer corners md radius and inner corners square. The Start shortcut resumes when such a session exists; only the Restart segment zeroes the timer. Busy preparation shows Preparing on the activated segment, disables both and preserves their geometry. Opening another PDF, Home and Restart discard the resumable session; same-file reload keeps it. Every variant shares keyboard, accessibility, disabled and focus handling. Hover changes the surface; pointer press moves the face down 1px without animation. Text contrast is at least 4.5:1 and focus/necessary boundary contrast at least 3:1 in both themes.
+Controls show their boundary by fill, plus a 2px focus ring in `{colors.input}` (`#187A56`). On white that ring is 5.31:1. The white edge on the mint field is 1.11:1, which is below the 3:1 non-text boundary, so the edge cannot be the control boundary.
 
-**field / select / slider / keybinding-row**: label/help beside the control in ordinary rows, with content-driven multi-line variants. Choices share one soft segmented group and numeric minus/value/plus share one field group. Hover uses surface-card; focus uses focus; invalid uses error plus a specific message. Read-only future-version controls cannot mutate settings; save failure leaves effective session values visible with Retry. Keyboard conflicts are named, not color-only. Native accessibility names and values are mandatory where GPUI supports them; unsupported behavior remains an explicit gap.
+| 前景 | 背景 | 比值 | 用途 |
+| --- | --- | --- | --- |
+| `#24303A` | `#FFFFFF` | 13.47 | 正文,不透明回退 |
+| `#24303A` | 白 0.78 叠 `#E7F6F1` | 13.16 | 正文,最亮薄荷字段 |
+| `#5C6B76` | 白 0.78 叠 `#E7F6F1` | 5.37 | 次要文字 |
+| `#187A56` | `#E7F7F0` | 4.79 | 输入或完成,正文与大号数字 |
+| `#187A56` | `#FFFFFF` | 5.31 | 链接与焦点环 |
+| `#6D4BD6` | `#F3EEFC` | 5.08 | 输出,正文与大号数字 |
+| `#6D4BD6` | `#FFFFFF` | 5.79 | 输出色在白纸上 |
+| `#FFFFFF` | `#E7F6F1` | 1.11 | 白描边,不能当控件边界 |
+| `#1F8A62` | `#E7F7F0` | 3.89 | 更亮的绿,不够正文,不使用 |
 
-**status / timer**: on document screens stage text always accompanies color. The header stage badge is a 24px sm-radius soft chip with an 8px leading dot (Ready success, Presenting focus, Idle muted) and body-colored text. Workbench pane captions share one 12px medium muted style. Presentation timing is one centered header capsule: soft surface, lg radius, 44px tall, no border or shadow. It contains an 8px drawn state mark (running: filled focus dot, recolored warning/error at thresholds; paused: muted ring; stopped and resumable: muted square; not started: reserved empty slot), a 12px medium muted label in a fixed right-aligned slot (Elapsed / Remaining / Overtime, Paused, Stopped, Running low, Time up), then 30px medium monospace digits with a fixed minimum width for the longest signed value. Live digits use ink; paused, stopped and not-started digits use body; warnings use semantic warning/error text. In Presenting a 1px border-colored divider separates inline quiet Pause/Resume and Reset controls (44px targets). State is carried by the mark shape and label text, never color alone. The independent current-time readout stays at the leading header edge. Remove the standalone Navigate tool button, keeping neutral navigation internally and reactivating the selected laser/pen/highlighter/eraser to exit it. The fixed label slot precedes the fixed-minimum-width numeric readout so state and threshold changes do not move the digits or right-side controls. Warnings use semantic text with a label/icon, retain legibility in both themes, and read core elapsed time. Idle omits this presentation without changing data or preferences. No flashing or time-dependent motion as the sole signal.
+`#1F8A62` is not a token. On the input well it is 3.89:1, short of 4.5:1. Use `#187A56` (4.79:1) and keep the well light.
 
-**modal / category-nav**: presenter-owned; Escape closes the topmost modal and consumes the event. Tab/Shift+Tab follow visible order, Enter/Space activate; restore focus to the invoker. Settings navigation marks selection with a check, text weight and a soft surface, preserving the shared keyboard focus ring.
+## Writing Tone
 
-**page-browser**: one presenter-owned upward contextual panel, preferred 880px width with adaptive height above the toolbar trigger, constrained inside the window. Reuse 16px padding, 12px panel radius, 8px grid gap and existing 44px controls. Below title/status, Content pages / 内容页 (default) and PDF original pages / PDF 原页码 select the numbering used by input, range, targets, captions and group footer. Content numbers index the actual ordered content steps, excluding recognized notes; PDF numbers retain every original physical position. Never halve totals or infer odd/even pairing. Original-PDF notes positions are non-projectable text placeholders without note thumbnail requests. Entering a recognized notes number shows 备注页不可投影 and never redirects to content. Switching numbering converts a valid physical target or resets invalid input to the current page, renews interaction identity and never navigates, reconfigures the document, changes grouping, clears ink or saves settings. Remember the mode for the document session; new documents reset to Content. Explicit Enter/Go or whole-content-tile activation jumps once. Hover, cancelled presses, mode changes and group browsing are inert. Keep the existing visible-slot limit of 16, including notes placeholders; only content slots request thumbnails. Retire stale exact-key thumbnail work on mode changes and all thumbnail work on close. Input/helper/mode/density/footer remain stable while image content scrolls. Independent 1-4 column/row controls retain paired persistence, legacy custom counts, read-only and save-failure behavior. Escape/outside dismissal consumes the action and restores focus. Stop/Home/Swap/document replacement discard stale targets.
-
-**chapter-directory**: extend the existing page-browser with Thumbnails / 缩略图 and Chapter directory / 章节目录 tabs below the common numeric controls/helper. Keep the 880px preferred contextual panel, theme tokens and typography. Thumbnails retain density/grid/group navigation; directory replaces those with one fully expanded two-level PDF-outline list. Use >=44px rows, 24px second-level indent, complete wrapped authored titles, a nonshrinking right-aligned Content / PDF number column, and quiet separators/surface steps instead of row cards. Preserve source order, unnumbered entries and duplicate destinations. Mark the committed current section with explicit text independently from focus/editor target, and reveal it on entering the directory. A valid title click or focused Enter/Space commits once through existing guarded navigation and closes; focus/scroll/view switches never navigate. Notes, unavailable and external targets stay disabled with a reason. Empty/partial states retain other navigation. View is document-session-only and independent from numbering, defaults to thumbnails for new documents, renews interaction identity on switch and retires invisible thumbnail work/cache. Contextual Escape/outside dismissal consumes input and restores focus. No collapse/search/new settings or decorative motion. Native acceptance is separate from the layout study.
-
-**layout-navigation-menu**: the Layout & navigation / 布局与导航 trigger lives at the start of the header actions in Ready and Presenting. Its 320px opaque contextual menu opens downward, right-aligned 8px below the trigger with a 12px viewport margin; the trigger chevron points down when closed and up when open. Its three rows are Automatic and No split radio choices, then Identify independent notes pages as a checkbox. Remove directional crop choices and the misleading physical-navigation checkbox; browser numbering is owned by the jump panel and does not alter the internal overlay-grouping flag. New documents default to No split with independent-note recognition enabled. Automatic is explicit opt-in and still describes detected directional layouts through a complete label mapping independent of selectable rows. Same-document reload retains overrides; new documents reset. Preserve localized document warnings. Selecting the effective requested choice closes without clearing ink or frames; actual document-option changes retain guarded reconfiguration, failure feedback and the annotation-loss notice. Arrow/Home/End/Tab traverse only visible rows; Enter/Space activates once; outside/Escape consumes dismissal and restores focus. Overrides remain session-only.
-
-**display-assignment**: Settings and standalone Displays share one compact allocation body. Each host owns one scroll, without a fixed-height embedded scroller. Show count and Identify/Refresh first, then a contained 420×240px spatial overview beside numbered assignment rows in an ordinary window. Stack naturally when space is insufficient. Use one uniform contain scale, preserve desktop positions and portrait aspect, and keep number-linked callouts for small rectangles. The same projection supplies diagram, summary and rows: checked text means observed current application/PDF window; configured PDF is explicitly not running before Start; outlined text prefixed Pending means unapplied draft. Unknown native location stays unknown, never inferred from the requested target. Manual OS moves update observation only. No audience means no running PDF; Stop/Home retires its marker. Diagnostics collapse per display; missing/degraded/stale warnings and recovery remain visible. Apply retains native confirmation/rollback; allocation Cancel discards only its draft and never reverses autosaved fullscreen preferences. Ordinary preference Saved feedback does not imply allocation committed. Numbers match Identify, while settings bind MonitorId. Existing Swap keys remain secondary compatibility actions.
+State the status, then the number, then the action. Keep labels short. No slogan and no marketing headline. Do not tighten Chinese text to match the Latin number tracking.
 
 ## Do's and Don'ts
 
-- Use the single token layer; do not scatter raw styling values across views.
-- Keep Open, Start, Stop, and Retry labels explicit; do not add speculative actions.
-- Preserve read-only PDF and notes isolation; do not send presenter theme/state to the audience.
-- Honor reduced motion; use no nonessential animation in the initial native UI.
-- Use FerroStage branding; do not reproduce Claude logos, product names, artwork, or proprietary fonts.
+### Do
+
+- Put text only on paper or on a solid well.
+- Use `{colors.input}` for input, completion, links, and the 2px focus ring.
+- Use `{colors.output}` for output and secondary figures.
+- Blur only the paper, once, at 模糊 20px and saturate 1.15.
+- Use the 不透明回退, `{colors.sheet-solid}`, below 960px, for 减少透明度, and when `backdrop-filter` is missing.
+- Set numbers in `tabular-nums`.
+- On pointer press, scale to 0.98 for about 120ms on `transform` only. Skip that motion for keyboard activation and for `prefers-reduced-motion`.
+
+### Don't
+
+- Don't use glass as the default card skin. Wells, list rows, and tables are solid. Only paper on the field may use one `backdrop-filter`.
+- Don't use the 1px `rgba(255,255,255,0.80)` edge as a control boundary or as an opaque fence. On mint it is 1.11:1.
+- Don't nest paper, and don't put more than 6 `backdrop-filter` layers in one viewport.
+- Don't animate blur.
+- Don't use Inter, Plus Jakarta Sans, or DM Sans.
+- Don't set body text in `#1F8A62`. On `#E7F7F0` it is 3.89:1.
+- Don't apply negative letter-spacing to Chinese running text.
+- Don't add a second shadow, a neon glow, or a purple-to-blue neon gradient.
+- Don't put text on the field or on a blob.
+- Don't turn this field gradient off as decoration, and don't paste it onto another DESIGN.md. Choosing this style means the gradient is the material.
 
 ## Responsive Behavior
 
-| Logical width | Native window behavior |
+| Condition | Paper |
 | --- | --- |
-| >= 1280 | Full workbench split and labeled toolbar; settings category rail |
-| 800–1279 | Compact secondary labels; wrap tool groups; settings keeps a scrollable panel |
-| 390–799 | Stack previews; notes remain scrollable; categories collapse to a keyboard-accessible selector; Start/Stop remain visible |
-| 320–389 | Same compact layout; only internal content scrolls; controls retain target size |
+| 960px and above, transparency allowed, `backdrop-filter` supported | Fill 0.78, 模糊 20px, at most 6 papers |
+| Below 960px | `{colors.sheet-solid}`, blur none |
+| `prefers-reduced-transparency: reduce` | 减少透明度时的不透明回退, at every width |
+| No `backdrop-filter` | 不透明回退 |
 
-Desktop is the target platform. The workbench/settings refinement validates ordinary native-window core interactions and visuals, including relevant themes/locales and keyboard focus. Additional dimension, DPI and performance matrices are outside this task's user-approved acceptance scope; source/build checks do not establish native visual acceptance.
-
-## Iteration Guide
-
-1. Change this document before the token layer when design decisions change.
-2. 07 owns foundational components and all control states; 08 owns workbench composition; 09 owns theme/system and settings interactions.
-3. Compare native screenshots in both themes against this source. Browser mockups cannot establish GPUI behavior.
-4. Run contrast checks for every allowed text/surface, boundary, and focus pair. Normal text >= 4.5:1, large text and UI/focus >= 3:1.
-5. Record keyboard, hover, disabled, loading/error, long-label, and reduced-motion checks independently; do not infer visual success from compile tests.
+Pills stay pills. The focus ring stays 2px `{colors.input}`. Keyboard focus does not scale.
 
 ## Known Gaps
 
-- The upstream coral/white 14px button pair is insufficient; primary is darkened to #A34F35. Muted text and semantic colors are also adapted for contrast. Original display fonts are replaced by installed system fonts.
-- Task07 has a native GPUI shell and shared theme. Light/dark/system initial appearance, Chinese/en-US labels, long filename truncation, Start/Stop, screen Swap and close have been observed. The earlier focused Enter/Space, disappearing-control focus and stale save-feedback defects are repaired and natively retested through v6. Native chooser import and saved-role relaunch pass. Some narrow captures exist; the exact logical-client size/state matrix, live OS theme-change event, drag/drop, physical topology, real PDF workbench and final settings UI acceptance remain pending. Current source-bound evidence is recorded in task07 research/native-v6-checkpoint.md and native-v5-checkpoint.md; these partial checks do not establish later-task acceptance.
-- GPUI accessibility and theme-change APIs require the pinned-version research gate in 07. An unsupported API must be recorded, not fabricated.
+- FerroStage supplies a dark variant of this design for low-light presentations. Its mint and lavender field, green input and violet output use the same roles as the light variant.
+- No chart palette.
+- Contrast ratios above are measured on static wells and on the white-paper mix (white 0.78 over `#E7F6F1`, or `#FFFFFF` for the opaque fallback). They are not measured on photographs.
+- If Figtree is unavailable, fall back to the system sans-serif and keep `"PingFang SC", "Noto Sans SC"` after the Latin family.
+- Title weight 650 needs the Figtree variable font. Static Figtree files step by 100. If only a static file is available, use 600 for that role and do not add a second token.
+- Line-height is specified for Chinese body text only (1.7). Other roles do not add a second line-height.
+- Blob paints raise chroma without a separate hex. Do not invent one.
 
-## QA
+## FerroStage native presenter
 
-- [ ] Single Rust theme layer and component states conform to this document.
-- [ ] Contrast passes for all used pairs in light and dark modes.
-- [ ] Native keyboard navigation, focus restoration, and state feedback pass.
-- [ ] Native screenshots and core interactions cover the ordinary-window scope and relevant themes/locales.
-- [ ] No brand assets/proprietary fonts or tinted PDF/audience content.
+The presenter owns this theme. Its home, document header, timer, tools, settings, menus and dialogs use the same Rust token layer in `crates/ferrostage-ui/src/theme.rs`. PDF previews and private note images retain the document's colors and aspect ratio. The audience window paints only its public snapshot, including its original black and white covers.
+
+**Appearance.** General settings provide Light, Dark and System plus an independent glass preference. The initial appearance is light with glass enabled. An explicitly stored theme survives upgrade. Applying appearance settings updates the presenter in place and uses the existing settings transaction. System follows the window's observed appearance. Selecting a solid surface keeps the chosen color scheme. A narrow window below 960 logical pixels, a system reduced-transparency preference or an unsupported backend uses a solid sheet while keeping the saved glass choice.
+
+**Material.** The outer presenter surface carries the mint-to-lavender field. A single sheet holds controls and text, and inner wells use solid fills. The native backend controls window blur. The catalog's CSS radius and saturation describe its visual target; native compositor parameters depend on the platform. A sheet's light edge is decorative. The focus indicator and control fill provide the interactive boundary. Font overrides and interface scaling apply to presenter controls.
+
+**Composition.** Home retains its 760 px reading column, one Open PDF action, Settings and Displays, and up to three recent documents. It scrolls on small windows. Ready and Presenting retain the filename, session controls and centered presentation timer. Standard layout keeps Current on the left and Next and Notes on the right. Notes-first keeps Notes on the left at widths of 800 logical pixels and above. Existing saved splitter ratios, keyboard targets and note scrolling apply in both themes. Changes of appearance preserve the current page, timer, annotations, media and window roles.
+
+**Controls.** Primary actions use input green, selected and output states also carry a textual or positional cue. Preserve hover, pressed, disabled and focused states, a 2 px focus indicator and the existing minimum 44 px interactive target. Text and status icons stay legible throughout light and dark modes. Time digits keep a stable width. PDF and media are never assigned control fonts or tinted by the presenter.
+
+On Windows the native implementation uses 0.75 opacity for the field above the compositor and 0.78 for its sheet. The solid fallback combines an opaque field with a 0.96 sheet. The wide idle home exposes a 24 logical pixel field around the sheet on ordinary-height windows. In the document workbench a fine divider sits inside its wider drag target.
+
+The presenter uses an installed interface-font override first, then installed Figtree, then the platform UI family. It reads the available family names once per session. The clock and timer request tabular digits on that same face, so a missing optional font does not trigger a new native font search when the first PDF opens.

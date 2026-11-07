@@ -1,5 +1,6 @@
 mod home_view;
 pub(crate) mod layout_navigation;
+mod material;
 mod number_input;
 mod page_browser;
 mod settings_view;
@@ -23,6 +24,7 @@ pub(crate) use workbench_view::TimerPhase;
 /// frame. Rendering never leases the controller that may be opening this view.
 pub(crate) struct PresenterData {
     theme: ferrostage_settings::Theme,
+    glass_effect: bool,
     typography: theme::Typography,
     stage: SessionStage,
     filename: String,
@@ -62,6 +64,7 @@ impl PresenterData {
     pub(crate) fn from_shell(shell: &Shell) -> Self {
         Self {
             theme: shell.settings.settings.general.theme,
+            glass_effect: shell.settings.settings.general.glass_effect,
             typography: theme::Typography::resolve(
                 &shell.settings.settings.general,
                 &shell.ui_fonts,
@@ -144,6 +147,7 @@ impl PresenterData {
 }
 
 pub(crate) struct Presenter {
+    material: material::Material,
     shell: WeakEntity<Shell>,
     data: PresenterData,
     locale: crate::locale::Locale,
@@ -214,7 +218,7 @@ pub(crate) fn stage_dot(stage: SessionStage, p: Palette) -> u32 {
     match stage {
         SessionStage::Idle => p.muted,
         SessionStage::Ready => p.success,
-        SessionStage::Presenting => p.focus,
+        SessionStage::Presenting => p.output,
     }
 }
 
@@ -419,6 +423,7 @@ impl Presenter {
             shell,
             data,
             locale,
+            material: material::Material::default(),
             focus,
             modal_focus: cx.focus_handle(),
             contextual_focus: cx.focus_handle(),
@@ -510,7 +515,6 @@ impl Presenter {
                 | Intent::BrowserMode { .. }
                 | Intent::BrowserView { .. }
         );
-        let category_control = matches!(&intent, Intent::SettingsCategory(_));
         let kind = match &intent {
             _ if preference_control => theme::ButtonKind::Utility,
             Intent::Start | Intent::Resume => theme::ButtonKind::Primary,
@@ -546,26 +550,13 @@ impl Presenter {
             label
         };
         let mut style = palette.button(kind, enabled, selected);
-        if preference_control {
-            style.fill = if selected {
+        if quiet_header && enabled {
+            // Timer controls share the ink and fill of the surrounding output well.
+            style.fill = if matches!(&intent, Intent::Core(_)) {
                 palette.card
-            } else if category_control {
-                palette.canvas
-            } else {
-                palette.soft
-            };
-            style.border = style.fill;
-            style.ink = if enabled { palette.body } else { palette.muted };
-        }
-        if quiet_header {
-            // Timer controls sit inside the soft header capsule.
-            let capsule = matches!(&intent, Intent::Core(_));
-            style.fill = if capsule {
-                palette.soft
             } else {
                 palette.canvas
             };
-            style.border = style.fill;
         }
         self.activation_target(id.clone(), label.clone(), enabled, intent, palette)
             .rounded(px(style.radius + theme::FOCUS_GAP))
@@ -828,8 +819,12 @@ impl Presenter {
                     .flex()
                     .items_center()
                     .gap(px(6.))
-                    .rounded(px(4.))
-                    .bg(rgb(p.soft))
+                    .rounded_full()
+                    .bg(rgb(if stage == SessionStage::Presenting {
+                        p.card
+                    } else {
+                        p.soft
+                    }))
                     .font_weight(gpui::FontWeight::MEDIUM)
                     .text_size(px(self.data.typography.size(12.)))
                     .text_color(rgb(p.body))
@@ -1054,6 +1049,7 @@ impl Render for Presenter {
             WindowAppearance::Dark | WindowAppearance::VibrantDark
         );
         let p = theme::palette(self.data.theme, dark);
+        self.material.update(self.data.glass_effect, window);
         let stage = self.data.stage;
         let stage_label = match stage {
             SessionStage::Idle => l.text("stage-idle"),
@@ -1212,6 +1208,18 @@ impl Render for Presenter {
         let staging = self.data.staging.clone();
         let stage_cache = self.textures.clone();
         let stage_shell = self.shell.clone();
+        let viewport = window.viewport_size();
+        let inset = if viewport.width < px(800.) {
+            4.
+        } else if stage == SessionStage::Idle && modal.is_none() {
+            if viewport.width >= px(960.) && viewport.height >= px(600.) {
+                24.
+            } else {
+                16.
+            }
+        } else {
+            8.
+        };
         let root = div()
             .id("presenter-root")
             .role(Role::Application)
@@ -1220,10 +1228,12 @@ impl Render for Presenter {
             .relative()
             .flex()
             .flex_col()
-            .bg(rgb(p.canvas))
+            .bg(self.material.field(p))
+            .p(px(inset))
             .text_color(rgb(p.body))
             .font(self.data.typography.font())
             .text_size(px(self.data.typography.size(16.)))
+            .child(self.material.paper(p, inset))
             .child(
                 gpui::canvas(
                     |_, _, _| (),
@@ -1362,7 +1372,7 @@ impl Render for Presenter {
                     .pl(px(12.))
                     .pr(px(4.))
                     .py(px(4.))
-                    .rounded(px(8.))
+                    .rounded(px(theme::RADIUS))
                     .border_1()
                     .border_l_4()
                     .border_color(rgb(p.error))
@@ -1373,7 +1383,7 @@ impl Render for Presenter {
                             .size(px(20.))
                             .rounded_full()
                             .bg(rgb(p.error))
-                            .text_color(rgb(theme::ON_PRIMARY))
+                            .text_color(rgb(p.on_action))
                             .text_size(px(self.ui_text_size(12.)))
                             .flex()
                             .items_center()

@@ -450,7 +450,7 @@ impl Presenter {
                 .debug_selector(|| "presenter-clock".into())
                 .aria_label(self.locale.format("wb-clock", &[("time", clock.clone())]))
                 .flex_shrink_0()
-                .font(gpui::font(theme::MONO))
+                .font(self.data.typography.numeric_font())
                 .text_size(px(self.data.typography.size(14.)))
                 .text_color(rgb(p.muted))
                 .child(clock.clone())
@@ -541,8 +541,8 @@ impl Presenter {
             .flex()
             .items_center()
             .gap(px(8.))
-            .rounded(px(theme::PANEL_RADIUS))
-            .bg(rgb(p.soft))
+            .rounded_full()
+            .bg(rgb(p.card))
             .child(Self::timer_mark(data.phase, warning, p))
             .child(
                 // Fixed slot: label changes never move the digits.
@@ -562,18 +562,18 @@ impl Presenter {
                 div()
                     .id("presenter-timer-digits")
                     .debug_selector(|| "presenter-timer-digits".into())
-                    // Seven monospace cells hold the longest signed value, −000:00.
+                    // Reserve seven tabular digits for the longest signed value, −000:00.
                     .min_w(px(self.ui_text_size(30.) * 0.6 * 7.))
                     .flex_shrink_0()
                     .flex()
                     .justify_end()
-                    .font(gpui::font(theme::MONO))
+                    .font(self.data.typography.numeric_font())
                     .font_weight(gpui::FontWeight::MEDIUM)
                     .text_size(px(self.data.typography.size(30.)))
                     .text_color(rgb(match (warning, data.phase) {
                         (2, _) => p.error,
                         (1, _) => p.warning,
-                        (_, TimerPhase::Running) => p.ink,
+                        (_, TimerPhase::Running) => p.output,
                         _ => p.body,
                     }))
                     .child(data.timer.clone()),
@@ -766,11 +766,11 @@ impl Presenter {
             };
             let style = p.button(kind, enabled, false);
             let detail_ink = match (enabled, resume) {
-                (true, true) => theme::ON_PRIMARY_DETAIL,
+                (true, true) => style.ink,
                 (true, false) => p.muted,
                 (false, _) => style.ink,
             };
-            let radius = px(theme::RADIUS);
+            let radius = px(style.radius);
             let face = div()
                 .id(SharedString::from(format!("{id}-face")))
                 .min_h(px(theme::SESSION_CONTROL))
@@ -940,7 +940,9 @@ impl Presenter {
                         .items_center()
                         .gap(px(8.))
                         .relative()
-                        .rounded(px(theme::RADIUS))
+                        .rounded_full()
+                        .border_1()
+                        .border_color(rgb(p.border))
                         .bg(rgb(p.soft))
                         .text_size(px(self.data.typography.size(14.)))
                         .text_color(rgb(p.body))
@@ -985,7 +987,7 @@ impl Presenter {
             let mut blanking = div()
                 .flex()
                 .items_center()
-                .rounded(px(theme::PANEL_RADIUS))
+                .rounded(px(theme::RADIUS))
                 .bg(rgb(p.soft));
             for (id, label, intent) in [
                 ("black", "wb-black", Intent::Black),
@@ -1004,7 +1006,7 @@ impl Presenter {
                 .flex()
                 .items_center()
                 .flex_wrap()
-                .rounded(px(theme::PANEL_RADIUS))
+                .rounded(px(theme::RADIUS))
                 .bg(rgb(p.soft));
             for (id, label, tool) in [
                 ("laser", "wb-laser", Tool::Laser),
@@ -1122,17 +1124,18 @@ impl Presenter {
             .text_color(rgb(p.muted))
             .child(self.locale.text(key))
     }
-    /// Notes-first divider: a 1px line inside an 8px hit target.
+    /// A centered hairline inside an 8px drag target for either layout.
     fn hairline_split(
         &self,
         id: &'static str,
+        layout: WorkbenchLayout,
         axis: super::SplitAxis,
         can_drag: bool,
         p: Palette,
         cx: &mut Context<Self>,
     ) -> gpui::Stateful<Div> {
         let column = axis == super::SplitAxis::Column;
-        let dragging = self.split_drag == Some((WorkbenchLayout::NotesFirst, axis));
+        let dragging = self.split_drag == Some((layout, axis));
         div()
             .id(id)
             .debug_selector(move || id.into())
@@ -1142,6 +1145,15 @@ impl Presenter {
             .justify_center()
             .when(column, |view| view.w(px(8.)).h_full())
             .when(!column, |view| view.flex_col().h(px(8.)).w_full())
+            // Standard reserves 6px for its splitter. Extend its hit area
+            // one pixel into each adjacent gap without moving the panes.
+            .when(layout == WorkbenchLayout::Standard, |view| {
+                if column {
+                    view.mx(px(-1.))
+                } else {
+                    view.my(px(-1.))
+                }
+            })
             .when(can_drag && column, |view| view.cursor_col_resize())
             .when(can_drag && !column, |view| view.cursor_row_resize())
             .child(
@@ -1157,7 +1169,7 @@ impl Presenter {
                 MouseButton::Left,
                 cx.listener(move |this, _, _, cx| {
                     if can_drag {
-                        this.split_drag = Some((WorkbenchLayout::NotesFirst, axis));
+                        this.split_drag = Some((layout, axis));
                         cx.notify();
                     }
                 }),
@@ -1340,6 +1352,7 @@ impl Presenter {
                 )
                 .child(self.hairline_split(
                     "column-split",
+                    layout,
                     super::SplitAxis::Column,
                     can_drag,
                     p,
@@ -1388,6 +1401,7 @@ impl Presenter {
                         )
                         .child(self.hairline_split(
                             "row-split",
+                            layout,
                             super::SplitAxis::Row,
                             can_drag,
                             p,
@@ -1431,25 +1445,14 @@ impl Presenter {
                         .child(self.picture(Surface::Current, true)),
                 )
                 .when(!stacked, |view| {
-                    view.child(
-                        div()
-                            .id("horizontal-split")
-                            .debug_selector(|| "horizontal-split".into())
-                            .w(px(6.))
-                            .h_full()
-                            .bg(rgb(p.border))
-                            .on_mouse_down(
-                                MouseButton::Left,
-                                cx.listener(move |this, _, _, _| {
-                                    if can_drag {
-                                        this.split_drag = Some((
-                                            WorkbenchLayout::Standard,
-                                            super::SplitAxis::Column,
-                                        ));
-                                    }
-                                }),
-                            ),
-                    )
+                    view.child(self.hairline_split(
+                        "horizontal-split",
+                        layout,
+                        super::SplitAxis::Column,
+                        can_drag,
+                        p,
+                        cx,
+                    ))
                 })
                 .child(
                     div()
@@ -1494,26 +1497,14 @@ impl Presenter {
                                         .child(self.picture(Surface::Next, false)),
                                 ),
                         )
-                        .child(
-                            div()
-                                .id("vertical-split")
-                                .debug_selector(|| "vertical-split".into())
-                                .flex_shrink_0()
-                                .h(px(6.))
-                                .w_full()
-                                .bg(rgb(p.border))
-                                .on_mouse_down(
-                                    MouseButton::Left,
-                                    cx.listener(move |this, _, _, _| {
-                                        if can_drag {
-                                            this.split_drag = Some((
-                                                WorkbenchLayout::Standard,
-                                                super::SplitAxis::Row,
-                                            ));
-                                        }
-                                    }),
-                                ),
-                        )
+                        .child(self.hairline_split(
+                            "vertical-split",
+                            layout,
+                            super::SplitAxis::Row,
+                            can_drag,
+                            p,
+                            cx,
+                        ))
                         .child(
                             div()
                                 .id("notes-panel")

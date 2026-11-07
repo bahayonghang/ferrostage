@@ -87,6 +87,48 @@ fn audience_click_combined_placement_edit_keeps_display_transaction(cx: &mut Tes
 }
 
 #[gpui::test]
+fn theme_and_glass_controls_persist_independently_during_presentation(cx: &mut TestAppContext) {
+    use ferrostage_settings::Theme;
+    let fixture = SaveFixture::new();
+    fixture.unblock();
+    let (shell, presenter, audience) = audience_input_fixture(cx);
+    let before = shell.update(cx, |s, cx| {
+        s.store = fixture.store();
+        s.modal = Some(Modal::Settings);
+        s.preferences.category = crate::settings_panel::Category::General;
+        cx.notify();
+        s.state.clone()
+    });
+    redraw(presenter, cx);
+    click_control(presenter, "setting-general.theme-dark", cx);
+    cx.run_until_parked();
+    redraw(presenter, cx);
+    click_control(presenter, "setting-general.glass_effect", cx);
+    cx.run_until_parked();
+    shell.read_with(cx, |s, _| {
+        let saved = s.store.load().unwrap().settings.general;
+        assert_eq!(saved.theme, Theme::Dark);
+        assert!(!saved.glass_effect);
+        assert_eq!(s.state, before);
+        assert_eq!(s.audience.as_ref().unwrap().handle, audience);
+    });
+    redraw(presenter, cx);
+    cx.simulate_keystrokes(presenter, "space");
+    cx.run_until_parked();
+    redraw(presenter, cx);
+    click_control(presenter, "setting-general.theme-system", cx);
+    cx.run_until_parked();
+    shell.read_with(cx, |s, _| {
+        let saved = s.store.load().unwrap().settings.general;
+        assert_eq!(saved.theme, Theme::System);
+        assert!(saved.glass_effect);
+        assert_eq!(s.settings.settings.general, saved);
+        assert_eq!(s.state, before);
+        assert_eq!(s.presenter.as_ref().unwrap().handle, presenter);
+    });
+}
+
+#[gpui::test]
 fn settings_v09_edit_save_retry_readonly_and_runtime_consumers(cx: &mut TestAppContext) {
     let fixture = SaveFixture::new();
     let (shell, handle) = input_presenter(cx);
@@ -97,12 +139,12 @@ fn settings_v09_edit_save_retry_readonly_and_runtime_consumers(cx: &mut TestAppC
         cx.notify();
     });
     redraw(handle, cx);
-    click_control(handle, "setting-general.theme-light", cx);
+    click_control(handle, "setting-general.theme-dark", cx);
     cx.run_until_parked();
     shell.read_with(cx, |shell, _| {
         assert_eq!(
             shell.settings.settings.general.theme,
-            ferrostage_settings::Theme::Light
+            ferrostage_settings::Theme::Dark
         );
         assert!(shell.settings.dirty);
         assert!(shell.settings.save_error.is_some());
@@ -151,7 +193,7 @@ fn settings_v09_edit_save_retry_readonly_and_runtime_consumers(cx: &mut TestAppC
         shell.settings.write_policy = ferrostage_settings::from_toml("schema_version=999")
             .unwrap()
             .write_policy;
-        shell.dispatch(Intent::EditSetting("general.theme", "dark".into()), cx);
+        shell.dispatch(Intent::EditSetting("general.theme", "light".into()), cx);
         shell.dispatch(Intent::ResetPreferences(true), cx);
         shell.dispatch(Intent::ClearRecent, cx);
         assert_eq!(shell.settings.settings, before);
@@ -378,10 +420,10 @@ fn settings_v09_dual_gpu_preflight_never_applies_half_a_transaction(cx: &mut Tes
             budget
         );
         // Unrelated settings remain editable behind the safety cover.
-        shell.dispatch(Intent::EditSetting("general.theme", "light".into()), cx);
+        shell.dispatch(Intent::EditSetting("general.theme", "dark".into()), cx);
         assert_eq!(
             shell.settings.settings.general.theme,
-            ferrostage_settings::Theme::Light
+            ferrostage_settings::Theme::Dark
         );
         shell.snapshot.update(cx, |snapshot, _| {
             snapshot.visual = Some(AudienceVisual {
@@ -472,7 +514,8 @@ fn settings_v09_worker_ack_serializes_changes_and_failed_display_rolls_budget_ba
         assert!(shell.busy());
         assert_eq!(shell.settings.settings.cache.l2_cpu_mib, old);
         shell.dispatch(Intent::EditSetting("cache.l2_cpu_mib", "19".into()), cx);
-        shell.dispatch(Intent::EditSetting("general.theme", "light".into()), cx);
+        shell.dispatch(Intent::EditSetting("general.theme", "dark".into()), cx);
+        assert_eq!(shell.settings.settings.general.theme, ferrostage_settings::Theme::Light);
         assert_eq!(shell.settings.settings.cache.l2_cpu_mib, old);
         let layout = shell.settings.settings.presenter.clone();
         shell.dispatch(Intent::Escape, cx);
@@ -773,7 +816,6 @@ fn settings_fonts_filter_apply_size_restore_and_history_through_real_input(
         shell.settings.settings.general.recent_opened_at = BTreeMap::from([
             ("alpha/same.pdf".into(), 123), ("beta/same.pdf".into(), 456),
         ]);
-        shell.ui_fonts_loaded = true;
         shell.modal = Some(Modal::Settings);
         cx.notify();
     });

@@ -25,6 +25,34 @@ fn default_toml_roundtrip_matches_default() {
 }
 
 #[test]
+fn appearance_preserves_legacy_modes_and_defaults_missing_or_invalid_glass() {
+    use crate::Theme;
+    let default = Settings::default().general;
+    assert_eq!(default.theme, Theme::Light);
+    assert!(default.glass_effect);
+    for (value, expected) in [
+        ("dark", Theme::Dark),
+        ("light", Theme::Light),
+        ("system", Theme::System),
+    ] {
+        let input = format!("schema_version=1\n[general]\ntheme='{value}'");
+        let old = from_toml(&input).unwrap();
+        assert_eq!(old.settings.general.theme, expected);
+        assert!(old.settings.general.glass_effect);
+        assert!(old.warnings.is_empty());
+        let invalid = from_toml(&format!("{input}\nglass_effect='off'")).unwrap();
+        assert_eq!(invalid.settings.general.theme, expected);
+        assert!(invalid.settings.general.glass_effect);
+        assert!(
+            invalid
+                .warnings
+                .iter()
+                .any(|w| w.key == "general.glass_effect")
+        );
+    }
+}
+
+#[test]
 fn defaults_use_render_cache_budgets() {
     let cache = Settings::default().cache;
     assert_eq!(cache.l1_gpu_mib, L1_GPU_BUDGET_MIB);

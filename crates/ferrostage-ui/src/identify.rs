@@ -5,11 +5,17 @@ use gpui::{Context, Render, Window, div, prelude::*, px, rgb};
 pub(crate) struct Identify {
     pub number: usize,
     pub name: String,
+    pub appearance: ferrostage_settings::Theme,
+    pub typography: theme::Typography,
 }
 
 impl Render for Identify {
-    fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
-        let palette = theme::palette(ferrostage_settings::Theme::Dark, true);
+    fn render(&mut self, window: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
+        let dark = matches!(
+            window.appearance(),
+            gpui::WindowAppearance::Dark | gpui::WindowAppearance::VibrantDark
+        );
+        let palette = theme::palette(self.appearance, dark);
         div()
             .size_full()
             .flex()
@@ -18,16 +24,23 @@ impl Render for Identify {
             .justify_center()
             .bg(rgb(palette.canvas))
             .text_color(rgb(palette.ink))
-            .font(theme::sans_font())
+            .font(self.typography.font())
             .border_2()
             .border_color(rgb(palette.focus))
             .p(px(16.))
-            .child(div().text_size(px(72.)).child(self.number.to_string()))
+            .child(
+                div()
+                    .font(self.typography.numeric_font())
+                    .font_weight(gpui::FontWeight::BOLD)
+                    .text_size(px(self.typography.size(72.)))
+                    .text_color(rgb(palette.output))
+                    .child(self.number.to_string()),
+            )
             .child(
                 div()
                     .w_full()
                     .text_center()
-                    .text_size(px(16.))
+                    .text_size(px(self.typography.size(16.)))
                     .whitespace_normal()
                     .child(self.name.clone()),
             )

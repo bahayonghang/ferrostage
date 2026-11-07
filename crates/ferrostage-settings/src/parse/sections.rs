@@ -34,6 +34,13 @@ pub(super) fn parse_general(
     let mut general = GeneralSettings {
         language: parse_language(section, &defaults.language, warnings),
         theme: parse_theme(section, defaults.theme, warnings),
+        glass_effect: parse_bool(
+            section,
+            "glass_effect",
+            "general.glass_effect",
+            defaults.glass_effect,
+            warnings,
+        ),
         ui_font_family: parse_ui_font_family(section, warnings),
         ui_font_size: parse_u32_inclusive(
             section,

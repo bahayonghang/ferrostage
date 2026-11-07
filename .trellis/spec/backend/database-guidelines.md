@@ -58,6 +58,8 @@ A keybinding action is one `Vec<String>` leaf: any non-string element falls back
 
 Changes to presenter UI typography must extend the existing v1 general section, loader and known-key merge together. These preferences do not edit PDF/notes fonts or audience content.
 
+The v1 `general.theme` leaf accepts `light`, `dark` or `system`; a fresh configuration defaults to `light`. The separate boolean `general.glass_effect` defaults to `true` when missing. An invalid value emits a warning for that leaf and uses its default. Preserve existing explicit themes, a stored `false`, and unknown sibling keys through save and reopen. Effective native material or its solid fallback is derived by the presenter and is never written back over the requested preference.
+
 ### 2. Signatures
 
 `GeneralSettings::ui_font_family: String` defaults to `""` (system default). `GeneralSettings::ui_font_size: u32` defaults to 16; `UI_FONT_SIZE_RANGE` is 12..=24 logical pixels. Loading remains `from_toml`; runtime edits remain checked through `settings_panel::edit` and the existing preference application/save flow.

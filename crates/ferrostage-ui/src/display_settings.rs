@@ -473,7 +473,7 @@ pub(crate) mod view {
                 div()
                     .px(px(4.))
                     .py(px(2.))
-                    .rounded(px(4.))
+                    .rounded_full()
                     .border_1()
                     .border_color(rgb(if key.starts_with("displays-pending-") {
                         p.focus
@@ -483,7 +483,7 @@ pub(crate) mod view {
                         p.canvas
                     }))
                     .bg(rgb(if actual { p.card } else { p.canvas }))
-                    .text_color(rgb(if actual { p.ink } else { p.muted }))
+                    .text_color(rgb(if actual { p.output } else { p.muted }))
                     .child(l.text(key)),
             );
         }

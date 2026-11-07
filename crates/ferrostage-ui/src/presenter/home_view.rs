@@ -31,9 +31,10 @@ impl Presenter {
                     .id("home-brand")
                     .debug_selector(|| "home-brand".into())
                     .pl(px(theme::FOCUS_WIDTH + theme::FOCUS_GAP))
-                    .font(theme::home_brand_font())
-                    .text_size(px(32.))
-                    .line_height(px(38.))
+                    .font(self.data.typography.font())
+                    .font_weight(gpui::FontWeight::SEMIBOLD)
+                    .text_size(px(self.ui_text_size(32.)))
+                    .line_height(px(self.ui_text_size(38.)))
                     .text_color(rgb(p.ink))
                     .child("FerroStage"),
             )
@@ -52,6 +53,7 @@ impl Presenter {
                 Intent::Open,
                 p,
             )
+            .rounded_full()
             .child(
                 div()
                     .id("welcome-open-face")
@@ -63,7 +65,7 @@ impl Presenter {
                     .items_center()
                     .justify_center()
                     .relative()
-                    .rounded(px(theme::RADIUS))
+                    .rounded_full()
                     .bg(rgb(style.fill))
                     .text_color(rgb(style.ink))
                     .border_1()
@@ -262,6 +264,7 @@ impl Presenter {
 
     fn home_utility(&self, id: &str, label: &str, intent: Intent, p: Palette) -> Stateful<Div> {
         self.activation_target(id.into(), label.into(), !self.data.busy, intent, p)
+            .rounded_full()
             .child(
                 div()
                     .id(SharedString::from(format!("{id}-face")))
@@ -271,10 +274,13 @@ impl Presenter {
                     .items_center()
                     .justify_center()
                     .relative()
-                    .rounded(px(theme::RADIUS))
+                    .rounded_full()
                     .text_size(px(self.data.typography.size(14.)))
                     .line_height(px(self.data.typography.size(20.)))
-                    .text_color(rgb(if self.data.busy { p.muted } else { p.body }))
+                    .border_1()
+                    .border_color(rgb(p.border))
+                    .bg(rgb(p.canvas))
+                    .text_color(rgb(if self.data.busy { p.muted } else { p.focus }))
                     .child(label.to_string())
                     .when(!self.data.busy, |view| {
                         view.hover(move |state| state.bg(rgb(p.soft)))

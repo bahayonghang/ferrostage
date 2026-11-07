@@ -50,6 +50,7 @@ fn merge_general(doc: &mut toml::Table, general: &GeneralSettings) -> Result<(),
     with_section(doc, "general", |table| {
         table.insert("language".to_owned(), language);
         table.insert("theme".to_owned(), theme);
+        table.insert("glass_effect".into(), bool_value(general.glass_effect));
         table.insert(
             "ui_font_family".into(),
             string_value(&general.ui_font_family),

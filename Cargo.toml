@@ -75,6 +75,9 @@ proptest = "1.12.0"
 notify = "8.2.0"
 # Reviewed safe Windows monitor adapters; target-gated by platform.
 winsafe = { version = "=0.0.29", features = ["gdi", "advapi"] }
+# Safe system appearance queries used only by the native presenter.
+windows = { version = "=0.62.2", default-features = false }
+objc2-app-kit = { version = "=0.3.2", default-features = false }
 # Optional dynamic bindings only; the application supplies the PDFium runtime.
 pdfium-render = { version = "=0.9.4", default-features = false, features = ["pdfium_7881"] }
 # hayro-syntax 0.8.0 (MSRV 1.92). Not linked until the syntax PoC calls a stable API.
