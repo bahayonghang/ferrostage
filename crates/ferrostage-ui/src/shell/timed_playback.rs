@@ -11,6 +11,7 @@ pub(super) struct TimedPlayback {
     document: Option<ferrostage_core::DocumentGeneration>,
     navigation: Option<Navigation>,
     pub clock: Autoplay,
+    settled: Option<(WindowId, PlaybackIdentity)>,
 }
 
 struct Navigation {
@@ -24,6 +25,46 @@ impl Shell {
         self.timed.navigation = None;
         self.timed.clock.cancel();
     }
+    pub(crate) fn settled_playback(&self) -> Option<PlaybackIdentity> {
+        let (source, identity) = self.timed.settled?;
+        (self.state.stage() == SessionStage::Presenting
+            && identity.generation == self.state.generation()
+            && self
+                .audience
+                .as_ref()
+                .is_some_and(|a| a.handle.window_id() == source))
+        .then_some(identity)
+    }
+
+    pub(super) fn selected_playback(&self) -> Option<PlaybackIdentity> {
+        let navigation = self.timed.navigation.as_ref()?;
+        let identity = navigation.playback.identity;
+        (self.state.stage() == SessionStage::Presenting
+            && identity.generation == self.state.generation()
+            && identity.page == self.state.current_page()
+            && navigation.crop == self.state.slide_crop()
+            && self
+                .audience
+                .as_ref()
+                .is_some_and(|a| a.handle.window_id() == navigation.audience))
+        .then_some(identity)
+    }
+
+    /// Exact public pixels are ready, including while a blank covers them.
+    /// This is not a receipt that the audience has visibly painted them.
+    pub(crate) fn public_frame_ready(&self) -> bool {
+        self.selected_playback().is_some()
+            && self.pending.is_none()
+            && !self.loading
+            && self.graphics_error.is_none()
+            && !self.reload_blocks_playback()
+            && self
+                .timed
+                .navigation
+                .as_ref()
+                .is_some_and(|n| self.playback_frame_matches(n))
+    }
+
     pub(crate) fn autoplay_paused(&self) -> bool {
         self.timed.clock.paused
     }
@@ -125,11 +166,7 @@ impl Shell {
                     .update(cx, |_, window, _| window.is_window_active())
                     .unwrap_or(false)
         });
-        let frame_ready = self
-            .timed
-            .navigation
-            .as_ref()
-            .is_some_and(|n| self.playback_frame_matches(n));
+        let frame_ready = self.public_frame_ready();
         self.timed.clock.suspend(
             !frame_ready
                 || !presenter_active
@@ -137,8 +174,7 @@ impl Shell {
                 || self.contextual.is_some()
                 || self.focus_intent.is_some()
                 || self.preference_change.is_some()
-                || self.state.audience_snapshot().blank_mode.is_some()
-                || self.graphics_error.is_some(),
+                || self.state.audience_snapshot().blank_mode.is_some(),
             Instant::now(),
         );
     }
@@ -182,6 +218,8 @@ impl Shell {
         event: PlaybackEvent,
         cx: &mut Context<Self>,
     ) {
+        // Audience commits delivery while Live and uncovered. A later blank
+        // between the deferred callbacks cannot undo that historical paint.
         if self.pending.is_some()
             || self.reload_blocks_playback()
             || self.state.stage() != SessionStage::Presenting
@@ -201,7 +239,11 @@ impl Shell {
         self.suspend_playback(cx);
         match event.phase {
             PlaybackPhase::FirstVisible => self.timed.clock.first_visible(event.identity, event.at),
-            PlaybackPhase::Settled => self.timed.clock.settled(event.identity, event.at),
+            PlaybackPhase::Settled => {
+                self.timed.clock.settled(event.identity, event.at);
+                self.timed.settled = Some((source, event.identity));
+                cx.notify();
+            }
         }
         crate::perf::mark!(
             at event.at, "perf_audience",

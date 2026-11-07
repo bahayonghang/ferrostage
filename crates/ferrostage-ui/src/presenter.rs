@@ -4,6 +4,7 @@ pub(crate) mod layout_navigation;
 mod material;
 mod number_input;
 mod page_browser;
+mod projection_status;
 mod settings_view;
 mod start_mode;
 mod utility_menu;
@@ -44,6 +45,7 @@ pub(crate) struct PresenterData {
     shell_warnings: Vec<String>,
     document_warnings: Vec<String>,
     start_reason: Option<String>,
+    projection: Option<crate::shell::projection_status::ProjectionStatus>,
     start_mode: ferrostage_settings::StartMode,
     start_menu: bool,
     loading: bool,
@@ -116,6 +118,7 @@ impl PresenterData {
                     .collect()
             },
             start_reason: shell.start_reason(),
+            projection: shell.projection_status(),
             start_mode: shell.settings.settings.display.start_mode,
             start_menu: matches!(
                 shell.contextual,
@@ -965,7 +968,12 @@ impl Presenter {
         } else {
             bar = bar.child(identity).child(timer);
         }
-        bar.child(actions).into_any_element()
+        div()
+            .flex()
+            .flex_col()
+            .child(bar.child(actions))
+            .when_some(self.projection_status(p), |view, status| view.child(status))
+            .into_any_element()
     }
 }
 

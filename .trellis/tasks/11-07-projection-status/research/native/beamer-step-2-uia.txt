@@ -1,0 +1,23 @@
+Window: "overlays-timing.pdf — 演示中 — FerroStage", App: ferrostage.exe.
+	0 region overlays-timing.pdf — 演示中 — FerroStage Secondary Actions: Raise
+		7 application FerroStage 讲者窗口
+			30 button 暂停计时 ID: timer-pause
+			31 button 重置计时 ID: timer-reset
+			8 button 布局与导航 ID: document-options
+			32 button 更多 ID: more
+			12 button 显示器设置 ID: displays
+			13 status 已绘制：第 1/6 页 · 步进 2/2 ID: projection-status
+				14 button 窗口位置：屏幕 2 内置屏 NE160QDM-NM9 ID: projection-location
+			15 status
+				16 button 关闭这条说明 ID: dismiss-document-warning-0
+			33 button 结束演示 ID: stop
+			19 button 上一页 ID: previous
+			20 button 下一页 ID: next
+			21 button 跳转页面。逻辑页 1/6 · 步进 2/2 · 物理页 3/33 ID: workbench-progress
+			22 button 暂停动画 ID: automatic-playback
+			23 button 黑屏 ID: black
+			24 button 白屏 ID: white
+			25 button 激光笔 ID: laser
+			34 button 绘图工具 ID: drawing-tools
+
+The focused UI element is 7 application FerroStage 讲者窗口.

@@ -218,6 +218,12 @@ First Start, Resume and Restart share the pre-window check. A normal PDF or corr
 
 The single render worker routes presenter-only samples by request identity. A superseded reply must not make an older sample confirmable. Candidate reloads preserve the old public document while review is outstanding; strict generation and reversible upload/commit checks still apply.
 
+## Presenter projection status
+
+The presenter adds one compact status row below the existing top bar, preserving the stage/timer hierarchy. `projection-status` uses `Role::Status`, a stable accessibility id and an explicit `aria_label(summary)`; GPUI does not derive this name from child text. Native UIA must expose the real summary. `projection-location` reuses the Displays action; `projection-restore` appears only while blanked and uses the shared accessible button/focus path. No status row is rendered on the audience.
+
+Use the selected/settled/covered-readiness contracts in [PDF playback](pdf-playback.md), including ordinary pages and full transition settlement. Keep generic output-problem text for graphics diagnostics because a successful immediate transition fallback can also report a warning; never claim old pixels were retained solely because that warning exists.
+
 ## Presenter pane click and About changelog
 
 ### 1. Scope / Trigger

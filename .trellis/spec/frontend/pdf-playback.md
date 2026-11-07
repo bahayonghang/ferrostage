@@ -16,6 +16,7 @@ The talk timer is independent. Original PDF Notes remain private rasters.
   content pages. Independent notes return `None`; navigation uses `SlideMap::next_step`.
 - `Shell::{select_playback, sync_playback, attach_playback, playback_event, poll_timed_playback}`
   bridge committed state, exact public pixels, source window and the pure `Autoplay` clock.
+- `Shell::{settled_playback, selected_playback}() -> Option<PlaybackIdentity>` expose separate last-painted and selected identities. `Shell::public_frame_ready() -> bool` reports exact current public raster readiness under the normal gates, including while a blank covers it; it is not a paint receipt.
 - Audience emits `PlaybackEvent { identity, phase: FirstVisible | Settled, at: Instant }`.
   `Autoplay::{first_visible, settled}(identity, at)` accept matching events;
   `next_turn(now)` returns at most one eligible identity, never a backlog.
@@ -53,6 +54,28 @@ Live/unblanked snapshot and playback identity. A blank may discard a queued even
 retaining the identity; such a discarded event must not consume its future acknowledgement.
 Shell additionally checks the current source audience window, active generation/navigation,
 session stage and reload/placement gates before accepting it.
+
+Presenter projection status records only accepted Settled events with their source
+WindowId. FirstVisible, selected core page, successful raster and snapshot publication
+never advance the last-painted page. Retain the last valid receipt while a different
+target renders or fails; filter it out after generation, audience-window or session-stage
+change. Display the selected page/overlay separately until complete settlement.
+Audience owns the final Live/unblanked delivery gate and never emits a paint performed
+while covered. Once it commits delivered flags
+and emits a phase, Shell must not add another blank/Curtain rejection: a blank can land
+between the two deferred callbacks without renewing identity, permanently consuming that
+phase. A historical paint delivered before blanking remains valid; existing Shell source,
+generation/navigation, pending/reload, session and snapshot-identity checks still apply.
+`public_frame_ready` additionally rejects loading, pending placement, graphics errors and
+all reload blocks including failed-worker recovery. Keep its exact generation/page/crop/
+Audience-priority/target-size check. Covered readiness can support a masked return action,
+but must not be presented as visible output or be turned into a fake Settled event.
+
+The presenter-only status uses observed_location and MonitorId mapping for actual location;
+requested placement is shown only as configured target. Ready and pending Start have
+separate not-started/preparing text. Unknown observation stays unknown. Black/white status
+and `Intent::RestoreProjection` clear only the current blank via the existing command;
+retain timer and explicit authored-playback pause. Audience rendering receives no status UI.
 
 Positive dwell begins at `Settled.at`, after the incoming transition, as in PDF Reference
 Figure 8.1. Zero dwell still requires FirstVisible and Settled, then a later Shell poll
@@ -96,6 +119,9 @@ support; built-in Beamer animate/animatevalue are ordinary compiled page/timing 
 | Incoming upload fails | Retain old image; no false FirstVisible/Settled |
 | Same-identity blank before deferred delivery | Drop callback without consuming the phase; acknowledge after visible repaint |
 | Old window/generation/navigation callback | Reject before clock mutation |
+| FirstVisible or delayed target before Settled | Last-painted page stays; selected target is separate |
+| Reload/placement/recovery block with matching retained raster | Public readiness is false; last valid painted receipt is preserved |
+| Restore black/white blank | Remove only blank; preserve timer and authored-playback pause |
 | Positive `/Dur` plus transition | Full authored dwell after settlement |
 | Zero `/Dur` | Paint and settle every step; advance on a later poll only |
 | Pause then manual navigation | New target selected, explicit pause retained |
@@ -111,6 +137,8 @@ Bad: tag old retained pixels with a new page identity, count transition time as 
 consume an undelivered phase, or resume because a failed reload's transaction was removed.
 
 ## 6. Tests Required
+
+Retain `shell::projection_status_tests` for plain-page actual paint, full settlement, stale source/generation/navigation, unknown/configured positions, masked restore and blocked readiness. Retain the actual-Audience delivery/blank interleaving regression; unblank must permit authored zero-dwell navigation after the accepted phase.
 
 Retain `transitions::tests`, actual `audience::playback::tests` scene/atlas coverage,
 `visible_completions_coalesce_without_consuming_results` and

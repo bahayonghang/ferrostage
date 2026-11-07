@@ -1,0 +1,80 @@
+{
+  "executable_sha256": "8505723be0008b28ff8a55121ba36c964605e33061932336bfd27a8ec107d3b5",
+  "fixture_sha256": "6f3825385193f6d65a68cfa30f3add5a97e7651c6f443ad684c11fb1415c9241",
+  "beamer_fixture_sha256": "8e40489ef4fe594585b19e64c20fd22e958aeb94b801e4b5a7ad7016c59dedd9",
+  "transition_first_to_settled_us": 3005678,
+  "events": [
+    {
+      "us": "24505706",
+      "generation": "1",
+      "navigation": "1",
+      "page": "0",
+      "window": "4294967298",
+      "phase": "FirstVisible"
+    },
+    {
+      "us": "24505706",
+      "generation": "1",
+      "navigation": "1",
+      "page": "0",
+      "window": "4294967298",
+      "phase": "Settled"
+    },
+    {
+      "us": "83516697",
+      "generation": "1",
+      "navigation": "2",
+      "page": "1",
+      "window": "4294967298",
+      "phase": "FirstVisible"
+    },
+    {
+      "us": "86522375",
+      "generation": "1",
+      "navigation": "2",
+      "page": "1",
+      "window": "4294967298",
+      "phase": "Settled"
+    },
+    {
+      "us": "192709121",
+      "generation": "1",
+      "navigation": "3",
+      "page": "1",
+      "window": "4294967298",
+      "phase": "FirstVisible"
+    },
+    {
+      "us": "192709121",
+      "generation": "1",
+      "navigation": "3",
+      "page": "1",
+      "window": "4294967298",
+      "phase": "Settled"
+    },
+    {
+      "us": "243631422",
+      "generation": "2",
+      "navigation": "5",
+      "page": "1",
+      "window": "4294967298",
+      "phase": "FirstVisible"
+    },
+    {
+      "us": "243631422",
+      "generation": "2",
+      "navigation": "5",
+      "page": "1",
+      "window": "4294967298",
+      "phase": "Settled"
+    }
+  ],
+  "observed_actual_display": 131073,
+  "paused_timer_before_and_after_restore": "42:57",
+  "native_failures": "malformed external replacement retained the active document; actual raster/upload failure covered by GPUI tests, not injected natively",
+  "not_run": [
+    "physical projector receipt",
+    "physical cable hotplug",
+    "single physical monitor hardware scenario"
+  ]
+}

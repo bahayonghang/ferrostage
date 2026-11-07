@@ -1,0 +1,10 @@
+Window: "", App: ferrostage.exe.
+	0 region Secondary Actions: Raise
+		1 title bar
+			2 menu bar System ID: MenuBar
+				3 menu item System
+			4 button Minimize
+			5 button Maximize
+			6 button Close
+
+The focused UI element is 0 region Secondary Actions: Raise.

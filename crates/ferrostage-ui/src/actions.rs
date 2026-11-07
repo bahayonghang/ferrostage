@@ -26,6 +26,7 @@ actions!(
 #[derive(Clone, Debug)]
 pub(crate) enum Intent {
     ToggleAutoplay,
+    RestoreProjection,
     Media(u64),
     SettingsCategory(crate::settings_panel::Category),
     EditSetting(&'static str, String),

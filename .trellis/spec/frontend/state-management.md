@@ -6,6 +6,7 @@ There is one presenter state and one audience projection.
 |-------|--------|-----------------|
 | `PresentationState` | `ferrostage-core` | Presenter commands via `apply_at(command, Instant)`; `elapsed_at` is pure and core never samples the clock |
 | `AudienceProjectionSnapshot` | Core metadata from `audience_snapshot`, matching visual added by the UI assembler | Audience window only while `Presenting`; the presenter may also read it. Includes `stage: AudienceStage`. `Idle` / `Ready` snapshots are `Curtain` and carry no visual |
+| Last accepted public Settled receipt + selected playback identity | Shell, tied to audience WindowId and document generation | Presenter status and precise session navigation only; covered frame readiness is a separate fact |
 | `SlideNotes` | `ferrostage-document` | Presenter window only |
 | `Settings` | `ferrostage-settings` | App and presenter-side consumers. Successful runtime edits are saved; failed runtime application rolls back before save. A failed save keeps the runtime value and shows unsaved. A future `schema_version` is read-only and is not reset or written back |
 | `MonitorId` + `MonitorRole` | `display.monitors` | The only role authority. Not monitor indexes |

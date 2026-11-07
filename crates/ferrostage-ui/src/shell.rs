@@ -3,6 +3,7 @@ mod layout_navigation;
 mod page_browser;
 mod preferences;
 mod presenter_fullscreen;
+pub(crate) mod projection_status;
 pub(crate) mod reload;
 mod timed_playback;
 use crate::{
@@ -845,6 +846,12 @@ impl Shell {
                     Intent::Previous => Some(Command::PreviousStep),
                     Intent::Black => Some(Command::ToggleBlank(BlankMode::Black)),
                     Intent::White => Some(Command::ToggleBlank(BlankMode::White)),
+                    Intent::RestoreProjection if self.state.stage() == SessionStage::Presenting => {
+                        self.state
+                            .audience_snapshot()
+                            .blank_mode
+                            .map(Command::ToggleBlank)
+                    }
                     _ => None,
                 };
                 if let Some(command) = command {
@@ -4135,6 +4142,7 @@ mod tests {
     include!("shell/outline_tests.rs");
     include!("shell/presenter_layout_tests.rs");
     include!("shell/timed_playback_tests.rs");
+    include!("shell/projection_status_tests.rs");
     include!("shell/session_resume_tests.rs");
     include!("shell/crop_gate_tests.rs");
     include!("shell/crop_view_tests.rs");

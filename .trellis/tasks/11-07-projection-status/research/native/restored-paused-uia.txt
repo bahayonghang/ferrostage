@@ -1,0 +1,20 @@
+Window: "slow-transition.pdf — 演示中 — FerroStage", App: ferrostage.exe.
+	0 region slow-transition.pdf — 演示中 — FerroStage Secondary Actions: Raise
+		7 application FerroStage 讲者窗口
+			33 button 继续计时 ID: timer-pause
+			34 button 重置计时 ID: timer-reset
+			14 button 布局与导航 ID: document-options
+			35 button 更多 ID: more
+			18 button 显示器设置 ID: displays
+			19 status 已绘制：第 2/3 页 ID: projection-status
+				20 button 窗口位置：屏幕 2 内置屏 NE160QDM-NM9 ID: projection-location
+			36 button 结束演示 ID: stop
+			23 button 上一页 ID: previous
+			24 button 下一页 ID: next
+			25 button 跳转页面。逻辑页 2/3 · 步进 1/1 · 物理页 2/3 ID: workbench-progress
+			26 button 黑屏 ID: black
+			27 button 白屏 ID: white
+			28 button 激光笔 ID: laser
+			37 button 绘图工具 ID: drawing-tools
+
+The focused UI element is 7 application FerroStage 讲者窗口.
