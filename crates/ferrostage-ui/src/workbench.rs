@@ -256,6 +256,15 @@ impl Workbench {
             .collect()
     }
 
+    #[cfg(feature = "gpui")]
+    pub(crate) fn retry_failed_current(&mut self) {
+        self.failed.retain(|failed| {
+            !self.requested.iter().any(|(surface, wanted)| {
+                matches!(surface, Surface::Current | Surface::Audience)
+                    && same_pixels(*wanted, *failed)
+            })
+        });
+    }
     pub fn clear_frames(&mut self) {
         self.frames.clear();
         self.crop_frames.clear();

@@ -242,6 +242,7 @@ impl Shell {
             PlaybackPhase::Settled => {
                 self.timed.clock.settled(event.identity, event.at);
                 self.timed.settled = Some((source, event.identity));
+                self.consume_displayed_return();
                 cx.notify();
             }
         }

@@ -100,7 +100,13 @@ impl Shell {
         self.state
             .apply_at(Command::ReconfigureDocument(descriptor), Instant::now())
             .map_err(|e| e.to_string())?;
+        let changed = session.document.layout != document.layout
+            || session.document.notes_mapping != document.notes_mapping
+            || session.document.slide_map != document.slide_map;
         session.document = document;
+        if changed {
+            self.return_position = None;
+        }
         self.workbench.clear_frames();
         self.error = None;
         Ok(())

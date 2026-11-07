@@ -814,3 +814,33 @@ fn audience_click_leaf_defaults_validates_and_preserves_future_policy() {
         }
     }
 }
+
+#[test]
+fn return_position_binding_defaults_validate_and_keep_future_readonly() {
+    assert_eq!(
+        from_toml("schema_version = 1")
+            .unwrap()
+            .settings
+            .keybindings
+            .return_position,
+        ["Alt+Left"]
+    );
+    let empty = from_toml("[keybindings]\nreturn_position=[]").unwrap();
+    assert!(empty.settings.keybindings.return_position.is_empty());
+    let invalid = from_toml("[keybindings]\nreturn_position=[42]\nnext=['N']").unwrap();
+    assert_eq!(invalid.settings.keybindings.return_position, ["Alt+Left"]);
+    assert_eq!(invalid.settings.keybindings.next, ["N"]);
+    assert!(
+        invalid
+            .warnings
+            .iter()
+            .any(|w| w.key == "keybindings.return_position")
+    );
+    let future = from_toml("schema_version=999\n[keybindings]\nreturn_position=['Alt+R']").unwrap();
+    assert!(!future.write_policy.is_writable());
+    assert_eq!(future.settings.keybindings.return_position, ["Alt+R"]);
+    let conflict = from_toml("[keybindings]\nnext=['Alt+Left']").unwrap();
+    assert!(conflict.settings.keybindings.issues().iter().any(
+        |i| matches!(i,BindingIssue::Conflict{actions,..} if actions.contains(&"return_position"))
+    ));
+}

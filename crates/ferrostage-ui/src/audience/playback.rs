@@ -53,6 +53,10 @@ impl Playback {
                 .as_ref()
                 .is_some_and(|v| !v.media.is_empty());
         if identity != self.identity {
+            // A fresh navigation identity is one new attempt, including an
+            // explicit same-page Return retry. Idle redraws retain failure latches.
+            cache.inherit_fallback(Surface::Outgoing, Surface::Page);
+            cache.retry_failed(Surface::Page);
             let previous = self.identity;
             let effect = playback.and_then(|p| p.transition).filter(|t| {
                 t.style != TransitionStyle::Replace

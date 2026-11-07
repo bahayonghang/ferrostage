@@ -458,3 +458,7 @@ projection-black = "Black screen"
 projection-white = "White screen"
 projection-failed = "Output problem"
 projection-restore = "Restore slide"
+
+settings-action-return_position = "Return to talk position"
+wb-return = "Return to {page}"
+wb-return-clear = "Clear return position"

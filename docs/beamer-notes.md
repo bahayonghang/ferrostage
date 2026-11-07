@@ -64,6 +64,18 @@ The compatibility `set_slide_crop` returns `Result<(), CoreError>` and rejects i
 
 The checked-in Beamer 3.72 fixtures demonstrate both useful grouping (`overlays.pdf`: labels `1,1,2`, two frames) and a limitation (`notes-right.pdf`: two source frames, labels `1,1`). The latter deliberately remains unmodified; `physical_pages` gives two groups. Geometry detection still correctly selects Right. Ordinary wide and portrait fixtures show that a ratio candidate can be a false positive. See `fixtures/beamer/README.md`.
 
+## Presenter layout and output status
+
+A confirmed document with no same-page or independent notes uses Current and Next previews only. Their initial width share is 70:30; the split is local to this open document session. **Layout & navigation → Reset pane proportions** restores the displayed layout. A document that has notes on only some pages keeps its Notes pane on every page and shows a no-notes message where appropriate. The last Next pane stays in place with an end-of-presentation message.
+
+The presenter status distinguishes the selected page from the last page and overlay step fully painted by the audience window. It keeps the previous painted identity while a target is pending, and reports the observed window location separately from the configured target. Black and white covers offer **Restore slide**, which removes the cover while keeping timer and explicit automatic-playback pause state. This status describes application painting and window placement.
+
+## Returning after a jump
+
+The first successful numeric, outline or thumbnail jump saves the talk position you left, including its exact overlay step. Further jumps and ordinary stepping keep that first position. The footer shows its destination and a clear action. **Alt+Left** returns by default; the shortcut can be changed in Settings. Backspace remains Previous and Escape keeps its existing dialog/Stop behavior.
+
+The return point stays available until the matching destination is successfully displayed. An explicit Return retries a failed attempt; ordinary redraws keep the existing failure latch. Under black/white cover, exact underlying public-frame readiness completes the return while keeping the cover. Stop/Resume and timer reset preserve the return point. Home, reopening, successful reload or successful notes/crop reconfiguration clear it; failed replacement retains it. No return location is written into the PDF or persisted across document sessions.
+
 ## Read-only media metadata
 
 `ferrostage_pdf::extract_structure` returns owned structures and diagnostics. `MediaAnnotation.rect` is normalized against the visible CropBox after clockwise page rotation. Document clips that rectangle to the selected slide crop and rescales it to `MediaSlot.slide_rect`; no intersection yields None. `MediaSlot.annotation` is the ordinal in that page's extracted media list; `StructureDiagnostic.annotation` is the original PDF Annots ordinal. Neither is a global cross-generation identity. Consumers must also bind generation and physical page.

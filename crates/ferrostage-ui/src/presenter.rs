@@ -46,6 +46,7 @@ pub(crate) struct PresenterData {
     document_warnings: Vec<String>,
     start_reason: Option<String>,
     projection: Option<crate::shell::projection_status::ProjectionStatus>,
+    return_attempt: Option<std::rc::Rc<()>>,
     start_mode: ferrostage_settings::StartMode,
     start_menu: bool,
     loading: bool,
@@ -119,6 +120,7 @@ impl PresenterData {
             },
             start_reason: shell.start_reason(),
             projection: shell.projection_status(),
+            return_attempt: shell.return_attempt_token(),
             start_mode: shell.settings.settings.display.start_mode,
             start_menu: matches!(
                 shell.contextual,
@@ -365,6 +367,40 @@ impl Presenter {
         ));
     }
     #[cfg(all(test, feature = "test-support"))]
+    pub(crate) fn current_texture_probe(
+        &self,
+    ) -> (Option<ferrostage_core::BgraFrame>, Option<String>) {
+        let cache = self.textures.borrow();
+        (
+            cache.frame(crate::workbench::Surface::Current),
+            cache.error(),
+        )
+    }
+    #[cfg(all(test, feature = "test-support"))]
+    pub(crate) fn fail_current_upload(
+        &mut self,
+        frame: ferrostage_core::BgraFrame,
+        window: &mut Window,
+        cx: &mut gpui::App,
+    ) {
+        let mut cache = self.textures.borrow_mut();
+        let budget = cache.effective_budget();
+        cache.sync(
+            &[(crate::workbench::Surface::Current, frame)],
+            &[crate::workbench::Surface::Current],
+            budget,
+            window,
+            cx,
+        );
+        assert!(!cache.paint(
+            crate::workbench::Surface::Current,
+            None,
+            window,
+            cx,
+            |_, _, _, _| Err("injected one-shot current upload failure".into())
+        ));
+    }
+    #[cfg(all(test, feature = "test-support"))]
     pub(crate) fn warning_dismiss_focus(&self, index: usize) -> FocusHandle {
         self.warning_dismiss_focus[index].clone()
     }
@@ -389,7 +425,20 @@ impl Presenter {
             cx.observe(&model, |presenter, model, cx| {
                 // GPUI delivers entity notifications after the controller lease
                 // ends. Keep reads here, outside all synchronous draw paths.
-                presenter.data = PresenterData::from_shell(model.read(cx));
+                let data = PresenterData::from_shell(model.read(cx));
+                if data.return_attempt.as_ref().is_some_and(|attempt| {
+                    presenter
+                        .data
+                        .return_attempt
+                        .as_ref()
+                        .is_none_or(|old| !std::rc::Rc::ptr_eq(old, attempt))
+                }) {
+                    presenter
+                        .textures
+                        .borrow_mut()
+                        .retry_failed(crate::workbench::Surface::Current);
+                }
+                presenter.data = data;
                 cx.notify();
             })
             .detach();

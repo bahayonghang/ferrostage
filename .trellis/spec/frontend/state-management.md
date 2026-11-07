@@ -96,6 +96,54 @@ Use actual GPUI divider and menu keyboard input; assert default/reset ratios, na
 
 Wrong: choose the layout from `Surface::Notes` frame presence. Correct: `workbench_layout()` reads document metadata and confirmation state; rendering only supplies content to the already-selected panes.
 
+## Exact return position
+
+### 1. Scope / Trigger
+
+The first successful direct JumpTo that changes the committed page saves its pre-jump generation and exact PhysicalPage. Numeric, thumbnail and outline activation share this boundary. No general history stack is introduced.
+
+### 2. Signatures
+
+Shell owns `Option<ReturnPosition>` with generation, page and a private `Rc<()>` paint capability. `record_return_position(direct, generation, page)` preserves the origin and renews only the capability on subsequent navigation. `Intent::{ReturnPosition, ClearReturnPosition}` invoke exact JumpTo or explicit clearing. `return_attempt_token()` carries the private attempt capability to the presenter cache owner. `ready_return_token()` and `return_preview_painted(source, token, RenderRequest, cx)` validate the presenter result; `consume_displayed_return()` uses public settlement or covered readiness while Presenting.
+
+### 3. Contracts
+
+Same-page/invalid/cancelled/preview-only actions create no anchor. Later jumps, sequential steps and autoplay preserve the first origin. Return preserves timer, selected drawing tool, ink and explicit autoplay pause. Stop/Resume/reset timer keep the anchor. Home, a successful new open, successful document reload, and successful crop/mapping reconfiguration clear it; rejected opens/reloads/crop changes retain it. Selecting the identical override value follows the existing no-op path.
+
+Ready consumption requires the current presenter WindowId, full current ReadyFrame request, expected generation/page/crop/target/priority, and a successful current texture/composite paint. Cached frames can retain older request epochs; renew an anchor-local allocation identity on navigation to reject delayed A→B→A callbacks without forcing rerasterization. Keep the allocation alive in the callback and compare Rc identity. Raster readiness alone cannot consume a Ready return.
+
+An explicit same-page Return renews the private attempt capability, rearms only failed
+Current/Audience raster requests through Workbench, and grants one cache-owner retry.
+The private cache uses the changed capability; Audience uses its fresh existing playback
+identity. `TextureCache::retry_failed` retains the prior diagnostic and committed image
+until a real successful paint. Ordinary redraws keep the existing failure latch. Before
+retiring an Outgoing slot, move its committed image into an empty Page fallback with
+`inherit_fallback`; retain the failed incoming slot's desired/error bookkeeping. Do not
+clear whole caches, discard valid fallback pixels, or run automatic retry loops.
+
+Presenting consumption requires the current selected identity to equal the accepted current-window Settled identity. Presenter preview paint never substitutes for audience completion. Under black/white cover, the existing guarded exact public-frame readiness is sufficient and the cover remains. Any other navigation reaching the exact origin consumes only at the same display boundary. A failed or interrupted return keeps its origin for retry; late receipts cannot clear a different navigation.
+
+### 4. Validation & Error Matrix
+
+- Same page, error, cancelled editor or mere sample browsing: no anchor.
+- A step2→B→C: origin remains A step2 until accepted display there.
+- Old presenter/window/request/capability or retained atlas image after failed upload: do not consume.
+- Uncovered public target pending or FirstVisible only: do not consume. Failed-worker/placement blocks also reject covered readiness.
+- Covered exact target ready: consume while retaining blank, timer and pause.
+- Successful document replacement: clear; failed replacement: preserve.
+
+### 5. Good / Base / Bad Cases
+
+Good: jump through several appendix pages and return to the original overlay. Base: with no anchor, footer controls are absent and Alt+Left is inert. Bad: consume on selected page or CPU raster completion, overwrite origin on every jump, or use approximate cross-generation mapping.
+
+### 6. Tests Required
+
+Retain actual GPUI input and paint regressions for same-page explicit raster/upload retry without navigating away, unchanged ordinary-redraw latching, outgoing-fallback/diagnostic preservation, first-origin capture, unchanged follow-up origin, Ready actual paint/retry/late same-page capability, current public settlement versus private preview, masked readiness, explicit clear, editor/menu precedence, key rebinding and lifecycle reset/preservation. Assert Resume/Restart plus Return/Clear bounds within an ordinary 1100×760 window using a supported larger UI font and actual Clear input; native default Chinese font remains a separate check. Run directly affected PDFium-enabled UI reload tests as well as settings and full product checks. Native compiled Beamer step2→B→C→return and final crop cancellation are independent observations.
+
+### 7. Wrong vs Correct
+
+Wrong: treat a cached frame's generation/page alone as proof of the current Ready navigation. Correct: actual successful composite plus exact request, source window and private anchor capability. Public playback continues to use its existing identity and delivery contract.
+
 ## Resumable presentation session
 
 ### 1. Scope / Trigger
@@ -340,7 +388,7 @@ Good: candidate atlas insertion succeeds, then retire the old image. Base: ident
 
 ### 6. Tests Required
 
-Keep task08 texture regressions for failed upload rollback, covers, identity-aligned overlays, capacity recovery, rejected-budget retry suppression, notes retention and resource accounting. Exercise actual GPUI paint-result handling and Audience error propagation. Native snapshots establish displayed PDF/notes isolation separately; paint timing is not actual Present latency.
+Keep task08 texture regressions for failed upload rollback, covers, identity-aligned overlays, capacity recovery, ordinary-redraw rejected-budget retry suppression, bounded explicit attempt retry, notes retention and resource accounting. Exercise actual GPUI paint-result handling and Audience error propagation. Native snapshots establish displayed PDF/notes isolation separately; paint timing is not actual Present latency.
 
 ### 7. Wrong vs Correct
 

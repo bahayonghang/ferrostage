@@ -126,6 +126,40 @@ Cover defaults, explicit true/false, invalid type, roundtrip, unknown-data reten
 
 Wrong: bump the schema or rewrite user settings for a missing optional bool. Correct: compatible leaf default plus existing checked save pipeline.
 
+## Return-position keybinding
+
+### 1. Scope / Trigger
+
+Add return navigation as an optional v1 keybindings leaf, using the existing raw-binding loader and UI grammar.
+
+### 2. Signatures
+
+`Keybindings::return_position: Vec<String>`, TOML `keybindings.return_position`, defaults to `["Alt+Left"]`. Include it in `Keybindings::actions()`, parser controls, Serialize, known-leaf merge and the settings binding editor. Keep `SCHEMA_VERSION = 1`.
+
+### 3. Contracts
+
+A missing leaf uses the default; an explicit empty list disables its shortcut while the footer action remains available. Invalid values diagnose this leaf and use existing local fallback behavior without resetting other actions. Runtime syntax/semantic conflict handling belongs to the UI. Save through the normal SettingsStore pipeline and preserve unknown sibling keys; future schema stays read-only. Backspace remains Previous and Escape retains modal/Stop behavior.
+
+### 4. Validation & Error Matrix
+
+- Old v1 file without return_position: Alt+Left available.
+- Explicit []: no return shortcut.
+- Invalid array value: warn/fall back locally, preserve valid Next and other leaves.
+- Rebind to Alt+R and save/reopen: retain that value and unknown keys.
+- Conflicting runtime bindings: diagnose through existing conflict handling; never dispatch two actions.
+
+### 5. Good / Base / Bad Cases
+
+Good: rebind through the existing editor and restore from SettingsStore. Base: old settings gain the optional default. Bad: derive a new field but forget parser/merge/editor support or bump the schema for this leaf.
+
+### 6. Tests Required
+
+Cover missing/empty/invalid/future-schema loading, unknown-data roundtrip and actual UI rebinding/modal precedence. Session anchor state is never serialized.
+
+### 7. Wrong vs Correct
+
+Wrong: save the return anchor or PDF page into settings. Correct: persist only the configurable binding; keep the exact origin and paint capability in Shell.
+
 ## Forbidden
 
 - SQLite, Postgres, or any ORM "for later".

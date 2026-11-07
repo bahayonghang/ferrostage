@@ -170,6 +170,12 @@ pub(super) fn parse_keybindings(
         toggle_laser: parse_binding_list(section, "toggle_laser", defaults.toggle_laser, warnings),
         toggle_pen: parse_binding_list(section, "toggle_pen", defaults.toggle_pen, warnings),
         jump: parse_binding_list(section, "jump", defaults.jump, warnings),
+        return_position: parse_binding_list(
+            section,
+            "return_position",
+            defaults.return_position,
+            warnings,
+        ),
     };
     bindings.upgrade_legacy_defaults();
     warn_binding_issues(&bindings, warnings);

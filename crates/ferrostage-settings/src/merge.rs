@@ -169,6 +169,7 @@ fn merge_keybindings(doc: &mut toml::Table, bindings: &Keybindings) -> Result<()
         ("toggle_laser", strings_value(&bindings.toggle_laser)),
         ("toggle_pen", strings_value(&bindings.toggle_pen)),
         ("jump", strings_value(&bindings.jump)),
+        ("return_position", strings_value(&bindings.return_position)),
     ];
     with_section(doc, "keybindings", |table| {
         for (key, value) in pairs {

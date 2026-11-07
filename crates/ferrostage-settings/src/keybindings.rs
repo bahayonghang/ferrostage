@@ -52,6 +52,8 @@ pub struct Keybindings {
     pub toggle_pen: Vec<String>,
     /// Jump to a slide.
     pub jump: Vec<String>,
+    /// Return to the first direct jump's exact talk position.
+    pub return_position: Vec<String>,
 }
 
 impl Default for Keybindings {
@@ -68,6 +70,7 @@ impl Default for Keybindings {
             toggle_laser: owned(&["L"]),
             toggle_pen: owned(&["P"]),
             jump: owned(&["G"]),
+            return_position: owned(&["Alt+Left"]),
         }
     }
 }
@@ -75,7 +78,7 @@ impl Default for Keybindings {
 impl Keybindings {
     /// Action name and binding list, in file order.
     #[must_use]
-    pub fn actions(&self) -> [(&'static str, &[String]); 10] {
+    pub fn actions(&self) -> [(&'static str, &[String]); 11] {
         [
             ("next", &self.next),
             ("previous", &self.previous),
@@ -87,6 +90,7 @@ impl Keybindings {
             ("toggle_laser", &self.toggle_laser),
             ("toggle_pen", &self.toggle_pen),
             ("jump", &self.jump),
+            ("return_position", &self.return_position),
         ]
     }
 

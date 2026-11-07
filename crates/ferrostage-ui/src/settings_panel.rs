@@ -412,6 +412,7 @@ pub fn bindings_mut<'a>(keys: &'a mut Keybindings, action: &str) -> Option<&'a m
         "toggle_laser" => &mut keys.toggle_laser,
         "toggle_pen" => &mut keys.toggle_pen,
         "jump" => &mut keys.jump,
+        "return_position" => &mut keys.return_position,
         _ => return None,
     })
 }

@@ -61,6 +61,21 @@ impl<K: Copy + PartialEq> TextureCache<K> {
             cx.drop_image(image.image, None);
         }
     }
+    /// Preserve a prior image as rollback without discarding the failed desired
+    /// slot or its diagnostic. Ownership moves; bytes and atlas handles do not.
+    pub(crate) fn inherit_fallback(&mut self, from: K, to: K) {
+        let Some(source) = self.slots.iter().position(|slot| slot.key == from) else {
+            return;
+        };
+        if let Some(target) = self.slots.iter().position(|slot| slot.key == to) {
+            if self.slots[target].committed.is_none() {
+                let image = self.slots[source].committed.take();
+                self.slots[target].committed = image;
+            }
+        } else {
+            self.slots[source].key = to;
+        }
+    }
     /// Transfer the existing atlas owner; no upload or additional allocation.
     pub(crate) fn rename(&mut self, from: K, to: K, cx: &mut App) {
         self.discard(to, cx);
@@ -144,6 +159,19 @@ impl<K: Copy + PartialEq> TextureCache<K> {
         self.budget = bytes;
         self.budget_error = false;
         Ok(())
+    }
+    /// A new explicit display attempt may retry this failed desired image once.
+    /// Keep the last committed image and normal redraw failure latching.
+    pub(crate) fn retry_failed(&mut self, key: K) {
+        if let Some(slot) = self
+            .slots
+            .iter_mut()
+            .find(|slot| slot.key == key && slot.failed)
+        {
+            slot.failed = false;
+            // Keep the diagnostic until a real successful paint. In particular,
+            // a covered audience must not report recovery before attempting it.
+        }
     }
     pub fn effective_budget(&self) -> usize {
         self.budget
@@ -406,6 +434,39 @@ mod tests {
     };
     fn frame(value: u8) -> BgraFrame {
         BgraFrame::new(2, 2, 8, vec![value; 16]).unwrap()
+    }
+    #[gpui::test]
+    fn explicit_retry_rearms_one_failed_image_without_reporting_unpainted_recovery(
+        cx: &mut gpui::TestAppContext,
+    ) {
+        let window = cx.add_empty_window();
+        let mut cache = TextureCache::default();
+        window.update(|window, cx| {
+            cache.sync(&[((), frame(1))], &[()], 64, window, cx);
+            assert!(cache.paint((), None, window, cx, |_, _, _, _| Ok(())));
+            cache.sync(&[((), frame(2))], &[()], 64, window, cx);
+            assert!(!cache.paint((), None, window, cx, |frame, _, _, _| {
+                if frame.pixels_bgra()[0] == 2 {
+                    Err("one-shot atlas failure".into())
+                } else {
+                    Ok(())
+                }
+            }));
+            assert_eq!(cache.frame(()).unwrap().pixels_bgra()[0], 1);
+            cache.retry_failed(());
+            assert!(
+                cache.error().unwrap().contains("one-shot"),
+                "rearm is not a successful paint"
+            );
+            let mut attempts = 0;
+            assert!(cache.paint((), None, window, cx, |_, _, _, _| {
+                attempts += 1;
+                Ok(())
+            }));
+            assert_eq!(attempts, 1);
+            assert!(cache.error().is_none());
+            assert_eq!(cache.frame(()).unwrap().pixels_bgra()[0], 2);
+        });
     }
     #[gpui::test]
     fn staged_upload_keeps_old_pixels_counts_both_and_promotes_the_same_arc(

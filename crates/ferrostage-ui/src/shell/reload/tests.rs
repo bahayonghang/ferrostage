@@ -377,6 +377,18 @@ fn real_pdfium_two_window_commit_obsolete_ack_rollback_and_latest_state(
     redraw(presenter, cx);
     cx.run_until_parked();
     shell.update(cx, |shell, _| {
+        // Model an existing Q&A anchor away from the current page. Direct-jump
+        // establishment and exact return are exercised by return_position_tests.
+        let anchor = *shell
+            .state
+            .slide_map()
+            .unwrap()
+            .steps()
+            .iter()
+            .find(|page| **page != shell.state.current_page())
+            .unwrap();
+        shell.record_return_position(true, shell.state.generation(), anchor);
+        assert!(shell.return_target().is_some());
         shell.reload.attempt = 1;
         shell.reload.bytes = Some(bytes.clone());
         shell.reload.structure = Some(structure.clone());
@@ -416,6 +428,10 @@ fn real_pdfium_two_window_commit_obsolete_ack_rollback_and_latest_state(
     });
     shell.read_with(cx, |shell, cx| {
         assert!(!shell.reload.failed_worker);
+        assert!(
+            shell.return_target().is_none(),
+            "a successful native document commit clears the old exact anchor"
+        );
         assert!(
             shell.crop_confirmed,
             "equal-structure reload keeps the accepted crop"
@@ -497,6 +513,18 @@ fn real_pdfium_two_window_commit_obsolete_ack_rollback_and_latest_state(
     });
     // A failed upload keeps both old complete projection and worker generation.
     let previous = shell.read_with(cx, |shell, cx| shell.snapshot.read(cx).clone());
+    let anchor = shell.update(cx, |shell, _| {
+        let anchor = *shell
+            .state
+            .slide_map()
+            .unwrap()
+            .steps()
+            .iter()
+            .find(|page| **page != shell.state.current_page())
+            .unwrap();
+        shell.record_return_position(true, shell.state.generation(), anchor);
+        shell.return_target().unwrap()
+    });
     shell.update(cx, |shell, _| {
         shell.invalidate_reload(true);
         shell.reload.bytes = Some(bytes.clone());
@@ -523,6 +551,11 @@ fn real_pdfium_two_window_commit_obsolete_ack_rollback_and_latest_state(
         assert_eq!(snapshot.visual, previous.visual);
         assert!(snapshot.staging.is_none());
         assert!(shell.error.as_ref().unwrap().contains("injected GPU"));
+        assert_eq!(
+            shell.return_target(),
+            Some(anchor),
+            "failed replacement preserves the exact session anchor"
+        );
     });
     // Real notify -> read-only stability worker -> lopdf/PDFium -> two real
     // GPUI view paint callbacks. Only this newly created temporary file is written.

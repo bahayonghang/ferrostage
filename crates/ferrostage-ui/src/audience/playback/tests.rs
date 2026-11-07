@@ -351,3 +351,83 @@ fn actual_gpui_paint_reuses_atlas_images_and_applies_opacity_clip_motion_and_cle
             .any(|event| event.identity.navigation == 99)
     );
 }
+
+#[gpui::test]
+fn same_page_retry_keeps_outgoing_image_and_diagnostic_until_success(
+    cx: &mut gpui::TestAppContext,
+) {
+    let window = cx.add_empty_window();
+    let mut cache = TextureCache::default();
+    let mut playback = Playback::default();
+    window.update(|window, cx| {
+        let first = snapshot(0, 1, None);
+        let mut frames = vec![(Surface::Page, first.visual.as_ref().unwrap().page.clone())];
+        playback.sync(&first, &mut cache, &mut frames, cx);
+        cache.sync(&frames, &[Surface::Page], 4096, window, cx);
+        assert!(cache.paint(Surface::Page, Some(&first), window, cx, |_, _, _, _| Ok(())));
+        let old_image = cache.image(Surface::Page).unwrap().1;
+        let next = snapshot(1, 2, Some(TransitionStyle::Fade));
+        let mut frames = vec![(Surface::Page, next.visual.as_ref().unwrap().page.clone())];
+        playback.sync(&next, &mut cache, &mut frames, cx);
+        cache.sync(
+            &frames,
+            &[Surface::Page, Surface::Outgoing],
+            4096,
+            window,
+            cx,
+        );
+        assert!(
+            !cache.paint(Surface::Page, Some(&next), window, cx, |_, _, _, _| Err(
+                "first incoming upload failed".into()
+            ))
+        );
+        assert!(cache.frame(Surface::Page).is_none());
+        assert!(Arc::ptr_eq(
+            &cache.image(Surface::Outgoing).unwrap().1,
+            &old_image
+        ));
+        let mut retry = next.clone();
+        retry.playback.as_mut().unwrap().identity.navigation = 3;
+        retry.playback.as_mut().unwrap().transition = None;
+        let mut frames = vec![(Surface::Page, retry.visual.as_ref().unwrap().page.clone())];
+        playback.sync(&retry, &mut cache, &mut frames, cx);
+        cache.sync(&frames, &[Surface::Page], 4096, window, cx);
+        assert!(Arc::ptr_eq(
+            &cache.image(Surface::Page).unwrap().1,
+            &old_image
+        ));
+        assert!(
+            cache.error().is_some(),
+            "new attempt is not a paint receipt"
+        );
+        assert!(
+            !cache.paint(Surface::Page, Some(&retry), window, cx, |frame, _, _, _| {
+                if frame.pixels_bgra()[0] == 20 {
+                    Err("retry upload failed".into())
+                } else {
+                    Ok(())
+                }
+            })
+        );
+        assert!(Arc::ptr_eq(
+            &cache.image(Surface::Page).unwrap().1,
+            &old_image
+        ));
+        playback.sync(&retry, &mut cache, &mut vec![], cx);
+        assert!(
+            !cache.paint(Surface::Page, Some(&retry), window, cx, |frame, _, _, _| {
+                assert_eq!(
+                    frame.pixels_bgra()[0],
+                    0,
+                    "same-identity redraw cannot reattempt failed incoming pixels"
+                );
+                Ok(())
+            })
+        );
+        retry.playback.as_mut().unwrap().identity.navigation = 4;
+        playback.sync(&retry, &mut cache, &mut vec![], cx);
+        assert!(cache.paint(Surface::Page, Some(&retry), window, cx, |_, _, _, _| Ok(())));
+        assert_eq!(cache.frame(Surface::Page).unwrap().pixels_bgra()[0], 20);
+        assert!(cache.error().is_none());
+    });
+}

@@ -1,0 +1,9 @@
+{
+  "return_position": [
+    "ctrl-r"
+  ],
+  "vendor_return_test": "keep",
+  "old_Alt_Left_inert": true,
+  "new_Ctrl_R_returned_physical_page": 3,
+  "alt_r_recording": "not_passed; cause unlocated"
+}

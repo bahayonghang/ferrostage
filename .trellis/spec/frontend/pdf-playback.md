@@ -101,7 +101,12 @@ remains scale-only. Test just inside endpoints because exact-endpoint replacemen
 
 Old/new/Fly images share the existing texture cache and budget with staging/media. Do not
 rerasterize PDFs or copy full images each tick. Failed destination upload retains the last
-valid public pixels and must not acknowledge the destination. Blanking/Curtain always cover
+valid public pixels and must not acknowledge the destination. A fresh playback identity permits
+one retry of a failed incoming Page cache slot. `TextureCache::retry_failed` rearms its
+attempt flag while preserving the diagnostic until paint succeeds. `inherit_fallback`
+transfers an available committed Outgoing image into an empty Page rollback slot before
+Outgoing retirement, preserving the failed desired image and error bookkeeping. Identical
+ordinary redraws remain latched; no automatic retry loop or full-image copy is introduced. Blanking/Curtain always cover
 all layers. Media and drawing cancel effects. Native visual acceptance remains separate
 from geometry/scene/atlas tests.
 
@@ -117,6 +122,7 @@ support; built-in Beamer animate/animatevalue are ordinary compiled page/timing 
 | --- | --- |
 | Destination raster missing or wrong target/crop/priority | Keep previous public image/identity; no destination dwell |
 | Incoming upload fails | Retain old image; no false FirstVisible/Settled |
+| Fresh same-page retry after failed transition upload | Keep outgoing rollback image and error until actual incoming success; one retry per fresh identity |
 | Same-identity blank before deferred delivery | Drop callback without consuming the phase; acknowledge after visible repaint |
 | Old window/generation/navigation callback | Reject before clock mutation |
 | FirstVisible or delayed target before Settled | Last-painted page stays; selected target is separate |

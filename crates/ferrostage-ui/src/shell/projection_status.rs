@@ -10,7 +10,7 @@ pub(crate) struct ProjectionStatus {
 }
 
 impl Shell {
-    fn projection_page(&self, identity: PlaybackIdentity) -> String {
+    pub(super) fn projection_page(&self, identity: PlaybackIdentity) -> String {
         let map = self.state.slide_map();
         let logical = map.and_then(|m| m.logical_for(identity.page));
         let group = logical.and_then(|logical| map?.groups().get(logical.0));

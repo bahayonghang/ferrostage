@@ -626,3 +626,25 @@ fn interface_fonts_roundtrip_with_unknown_leaves() {
         Some("keep")
     );
 }
+
+#[test]
+fn return_position_binding_roundtrips_with_unknown_keys() {
+    let scratch = Scratch::new("return-position");
+    let store = SettingsStore::at(scratch.child("settings.toml"));
+    fs::write(
+        store.path(),
+        "schema_version=1\n[keybindings]\nvendor='keep'\nreturn_position=['Alt+Left']",
+    )
+    .unwrap();
+    let mut session = crate::SettingsSession::from_outcome(store.load().unwrap());
+    session.settings.keybindings.return_position = vec!["Alt+R".into()];
+    session.note_edit();
+    store.save_session(&mut session).unwrap();
+    let loaded = store.load().unwrap();
+    assert_eq!(loaded.settings.keybindings.return_position, ["Alt+R"]);
+    assert_eq!(
+        loaded.raw_table["keybindings"]["vendor"].as_str(),
+        Some("keep")
+    );
+    assert_eq!(loaded.settings.schema_version, 1);
+}

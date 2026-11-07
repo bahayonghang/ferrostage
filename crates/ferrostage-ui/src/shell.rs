@@ -5,6 +5,7 @@ mod preferences;
 mod presenter_fullscreen;
 pub(crate) mod projection_status;
 pub(crate) mod reload;
+mod return_position;
 mod timed_playback;
 use crate::{
     actions::{self, Intent},
@@ -183,6 +184,7 @@ pub(crate) struct Shell {
     pending: Option<Transaction>,
     presenter_restore: Option<presenter_fullscreen::Restore>,
     timed: timed_playback::TimedPlayback,
+    return_position: Option<return_position::ReturnPosition>,
     focus_intent: Option<FocusIntent>,
     focus_token: u64,
     import: Option<ImportReply>,
@@ -382,6 +384,7 @@ impl Shell {
             pending: None,
             presenter_restore: None,
             timed: Default::default(),
+            return_position: None,
             focus_intent: None,
             focus_token: 0,
             import: None,
@@ -520,6 +523,9 @@ impl Shell {
             *value = snapshot;
             cx.notify();
         });
+        if self.consume_displayed_return() {
+            cx.notify();
+        }
     }
 
     fn apply(&mut self, command: Command, cx: &mut Context<Self>) {
@@ -546,6 +552,9 @@ impl Shell {
                 self.state.current_page(),
                 self.state.slide_crop(),
             );
+            if before.1 != after.1 {
+                self.record_return_position(jump, before.0, before.1);
+            }
             if before != after || jump {
                 self.select_playback(sequential);
             }
@@ -574,6 +583,15 @@ impl Shell {
     }
 
     pub fn dispatch(&mut self, intent: Intent, cx: &mut Context<Self>) {
+        if let Intent::ReturnPreviewPainted {
+            source,
+            token,
+            request,
+        } = &intent
+        {
+            self.return_preview_painted(*source, token, *request, cx);
+            return;
+        }
         if self.dispatch_crop(&intent, cx) {
             cx.notify();
             return;
@@ -782,6 +800,11 @@ impl Shell {
             }
             Intent::Stop => self.stop(cx),
             Intent::Home => self.return_home(cx),
+            Intent::ReturnPosition
+                if self.modal.is_none() && self.contextual.is_none() && !self.busy() =>
+            {
+                self.return_to_position(cx)
+            }
             Intent::Start => self.start(StartTimer::Restart, cx),
             Intent::Resume => self.start(StartTimer::Resume, cx),
             Intent::Swap => self.swap(cx),
@@ -844,6 +867,11 @@ impl Shell {
                 let command = match action {
                     Intent::Next => Some(Command::NextStep),
                     Intent::Previous => Some(Command::PreviousStep),
+
+                    Intent::ClearReturnPosition => {
+                        self.return_position = None;
+                        None
+                    }
                     Intent::Black => Some(Command::ToggleBlank(BlankMode::Black)),
                     Intent::White => Some(Command::ToggleBlank(BlankMode::White)),
                     Intent::RestoreProjection if self.state.stage() == SessionStage::Presenting => {
@@ -1016,6 +1044,7 @@ impl Shell {
                     .apply_at(Command::LoadMappedDocument(descriptor), Instant::now())
             }) {
             Ok(()) => {
+                self.return_position = None;
                 self.path = Some(path.clone());
                 self.reset_crop_session();
                 self.reload.failed_worker = false;
@@ -1634,6 +1663,7 @@ impl Shell {
             cx.notify();
             return;
         }
+        self.return_position = None;
         self.path = None;
         self.reset_crop_session();
         self.workbench.document = None;
@@ -4143,6 +4173,7 @@ mod tests {
     include!("shell/presenter_layout_tests.rs");
     include!("shell/timed_playback_tests.rs");
     include!("shell/projection_status_tests.rs");
+    include!("shell/return_position_tests.rs");
     include!("shell/session_resume_tests.rs");
     include!("shell/crop_gate_tests.rs");
     include!("shell/crop_view_tests.rs");

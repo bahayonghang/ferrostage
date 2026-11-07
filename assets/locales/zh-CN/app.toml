@@ -458,3 +458,7 @@ projection-black = "黑屏遮挡中"
 projection-white = "白屏遮挡中"
 projection-failed = "输出异常"
 projection-restore = "恢复幻灯片"
+
+settings-action-return_position = "返回讲述位置"
+wb-return = "返回{page}"
+wb-return-clear = "清除返回位置"

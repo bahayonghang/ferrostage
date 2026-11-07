@@ -1,0 +1,27 @@
+[
+  {
+    "file": "ci-footer-final.log",
+    "bytes": 40345,
+    "sha256": "745994ac4136dd2760c27397b36b9528b79b2558b5ffd722742b626370ec14e6"
+  },
+  {
+    "file": "check-shell-footer-final.log",
+    "bytes": 29650,
+    "sha256": "6374a9d38b1dca25541d17473c1607c1bd1e083aa3ff50ce1d6a2d9095e739be"
+  },
+  {
+    "file": "clippy-test-support-footer.log",
+    "bytes": 958,
+    "sha256": "9b523fd52e7834b1acf35c402aa36541326535de7e5c89d6d7cc220f759ff7be"
+  },
+  {
+    "file": "reload-pdfium.log",
+    "bytes": 2565,
+    "sha256": "4b6d1c7246a217b0decfa3b59788cbc48fc4afd49d21c72e332ba6d48089ab55"
+  },
+  {
+    "file": "deny-product-final.log",
+    "bytes": 275331,
+    "sha256": "e619b48b88751d033bf6ef0b04018c6265b68cb41c3ad17a364f2a655f7598f3"
+  }
+]

@@ -1002,6 +1002,7 @@ impl Shell {
                     // the state publication run in one main-thread dispatch turn.
                     self.promote_reload_images(pending.attempt, cx);
                     self.close_contextual();
+                    self.return_position = None;
                     self.state = state;
                     self.workbench.clear_frames();
                     self.workbench.frames = pending.frames.clone();

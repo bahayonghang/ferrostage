@@ -15,6 +15,7 @@ actions!(
         Open,
         Settings,
         Jump,
+        ReturnPosition,
         Escape,
         Commit,
         ActivateButton,
@@ -27,6 +28,13 @@ actions!(
 pub(crate) enum Intent {
     ToggleAutoplay,
     RestoreProjection,
+    ReturnPosition,
+    ClearReturnPosition,
+    ReturnPreviewPainted {
+        source: gpui::WindowId,
+        token: std::rc::Rc<()>,
+        request: ferrostage_render::RenderRequest,
+    },
     Media(u64),
     SettingsCategory(crate::settings_panel::Category),
     EditSetting(&'static str, String),
@@ -260,6 +268,7 @@ pub(crate) fn install(
     register!(Open, Open);
     register!(Settings, Settings);
     register!(Jump, Jump);
+    register!(ReturnPosition, ReturnPosition);
     register!(Escape, Escape);
     let submit = shell.clone();
     cx.on_action(move |_: &Commit, cx| {
@@ -297,6 +306,7 @@ pub(crate) fn replace_bindings(
             "settings" => cx.bind_keys([KeyBinding::new(&key, Settings, None)]),
             "commit" => cx.bind_keys([KeyBinding::new(&key, Commit, None)]),
             "jump" => cx.bind_keys([KeyBinding::new(&key, Jump, None)]),
+            "return_position" => cx.bind_keys([KeyBinding::new(&key, ReturnPosition, None)]),
             "toggle_laser" => cx.bind_keys([KeyBinding::new(&key, Laser, None)]),
             "toggle_pen" => cx.bind_keys([KeyBinding::new(&key, Pen, None)]),
             _ => {

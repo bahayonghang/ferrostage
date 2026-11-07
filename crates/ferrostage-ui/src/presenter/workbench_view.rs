@@ -22,6 +22,8 @@ pub(super) struct WorkbenchData {
     failed_surfaces: Vec<Surface>,
     pub(super) layout: WorkbenchLayout,
     previews_ratio: f64,
+    return_label: Option<String>,
+    return_paint: Option<Rc<()>>,
     has_next: bool,
     has_current_notes: bool,
     pub overlay: AudienceProjectionSnapshot,
@@ -112,6 +114,8 @@ impl WorkbenchData {
             failed_surfaces: shell.workbench.failed_surfaces(),
             layout: shell.workbench_layout(),
             previews_ratio: shell.workbench.previews_ratio.unwrap_or(0.3),
+            return_label: shell.return_label(),
+            return_paint: shell.ready_return_token(),
             has_next: session.is_some_and(|session| {
                 session
                     .document
@@ -264,6 +268,16 @@ impl Presenter {
                 ))
                 .into_any_element();
         };
+        let return_paint = (surface == Surface::Current)
+            .then(|| {
+                self.data
+                    .workbench
+                    .return_paint
+                    .clone()
+                    .zip(self.frame(surface).map(|f| f.request))
+            })
+            .flatten();
+        let return_target = self.shell.clone();
         let textures = self.textures.clone();
         let paint_ms = self.paint_ms.clone();
         let preview_trace = if surface == Surface::Current
@@ -357,6 +371,17 @@ impl Presenter {
                         );
                         if !current {
                             input_bounds.set(gpui::Bounds::default());
+                        }
+                        if current && let Some((token, request)) = &return_paint {
+                            actions::dispatch(
+                                &return_target,
+                                Intent::ReturnPreviewPainted {
+                                    source: window.window_handle().window_id(),
+                                    token: token.clone(),
+                                    request: *request,
+                                },
+                                cx,
+                            );
                         }
                         if surface == Surface::Current {
                             paint_ms.set(started.elapsed().as_secs_f64() * 1000.);
@@ -875,6 +900,8 @@ impl Presenter {
             .debug_selector(|| "session-navigation".into())
             .flex()
             .items_center()
+            .flex_wrap()
+            .max_w_full()
             .flex_shrink_0()
             .gap(px(4.));
         navigation = if let Some(time) = resumable {
@@ -994,6 +1021,25 @@ impl Presenter {
                         ),
                 ),
             );
+        }
+        if let Some(label) = &self.data.workbench.return_label {
+            navigation = navigation
+                .child(self.button(
+                    "return-position".into(),
+                    label.clone(),
+                    !self.data.busy,
+                    false,
+                    Intent::ReturnPosition,
+                    p,
+                ))
+                .child(self.button(
+                    "clear-return-position".into(),
+                    self.locale.text("wb-return-clear").into(),
+                    !self.data.busy,
+                    false,
+                    Intent::ClearReturnPosition,
+                    p,
+                ));
         }
         let mut strip = div()
             .id("workbench-controls")
