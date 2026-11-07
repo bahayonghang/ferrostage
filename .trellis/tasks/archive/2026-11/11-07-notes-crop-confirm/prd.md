@@ -17,6 +17,6 @@
 
 ## 范围
 
-仅处理本项在只读 PDF 放映流程中的行为。相关后续建议见[父任务逐项分析](../../../11-07-presenter-improvements/research/item-review.md)。
+仅处理本项在只读 PDF 放映流程中的行为。相关后续建议见[父任务逐项分析](../11-07-presenter-improvements/research/item-review.md)。
 
 [Windows 原生验收与回归结果](research/verification.md)

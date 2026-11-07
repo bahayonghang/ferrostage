@@ -1,0 +1,8 @@
+{
+  "scenario": "F5 crop gate then synthetic Escape",
+  "successful_audience_creations": 0,
+  "final_native_windows": 1,
+  "final_stage": "Ready",
+  "binary_sha256": "09fa7c5a1297e6d2b487f892d3ff63fe7562b2c7c7987c1c8a9cef0d89c4fd6b",
+  "fixture_sha256": "a0b857f6fd1009db87b17317139c603518af2ad27a0be8ee9b67d009e29a94a7"
+}

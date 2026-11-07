@@ -1,0 +1,24 @@
+Window: "notes-right.pdf — 准备就绪 — FerroStage", App: ferrostage.exe.
+	0 region notes-right.pdf — 准备就绪 — FerroStage Secondary Actions: Raise
+		1 title bar (settable, string) Value: notes-right.pdf — 准备就绪 — FerroStage
+			2 menu bar System ID: MenuBar
+				3 menu item System
+			4 button Minimize
+			5 button Maximize
+			6 button Close
+		7 application FerroStage 讲者窗口
+			31 dialog 检查投影裁切 Secondary Actions: Raise ID: crop-panel
+				32 radio group 备注布局
+					33 radio button (selectable) ✓ 整页 ID: crop-layout-whole
+					34 radio button (selectable) 备注在右侧 ID: crop-layout-right
+					35 radio button (selectable) 备注在左侧 ID: crop-layout-left
+					36 radio button (selectable) 备注在下方 ID: crop-layout-bottom
+					37 radio button (selectable) 备注在上方 ID: crop-layout-top
+				38 group 投影画面 · 观众可见 ID: crop-public-preview
+				39 group 备注画面 · 仅讲者可见 ID: crop-notes-preview
+				40 button 上一样本（不可用） ID: crop-sample-prev
+				41 button 下一样本 ID: crop-sample-next
+				42 button 取消 ID: crop-cancel
+				43 button 按整页开始演示 ID: crop-confirm
+
+The focused UI element is 33 radio button (selectable) ✓ 整页 ID: crop-layout-whole.

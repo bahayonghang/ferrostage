@@ -1,0 +1,34 @@
+Window: "notes-right.pdf — 准备就绪 — FerroStage", App: ferrostage.exe.
+	0 region notes-right.pdf — 准备就绪 — FerroStage Secondary Actions: Raise
+		1 title bar (settable, string) Value: notes-right.pdf — 准备就绪 — FerroStage
+			2 menu bar System ID: MenuBar
+				3 menu item System
+			4 button Minimize
+			5 button Maximize
+			6 button Close
+		7 application FerroStage 讲者窗口
+			44 button 布局与导航 ID: document-options
+			45 button 返回首页 ID: home
+			46 button 打开 PDF ID: open
+			47 button 设置 ID: settings
+			48 button 显示器设置 ID: displays
+			49 status 尚未放映 ID: projection-status
+				50 button 配置目标：屏幕 2 内置屏 NE160QDM-NM9 · 独立观众窗口 ID: projection-location
+			51 status
+				52 button 关闭这条说明 ID: dismiss-document-warning-0
+			53 status
+			54 button 检查投影裁切… ID: crop-check-hint
+			55 button 开始演示 ID: start
+			56 button 演示方式：双屏 · 标准 ID: start-mode
+			57 button 上一页 ID: previous
+			58 button 下一页 ID: next
+			59 button 跳转页面。逻辑页 1/1 · 步进 1/2 · 物理页 1/2 ID: workbench-progress
+			60 button 黑屏 ID: black
+			61 button 白屏 ID: white
+			62 button 激光笔 ID: laser
+			63 button 画笔 ID: pen
+			64 button 荧光笔 ID: highlighter
+			65 button 橡皮 ID: eraser
+			66 button 清空笔画 ID: clear-strokes
+
+The focused UI element is 7 application FerroStage 讲者窗口.
