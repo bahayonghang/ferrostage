@@ -659,3 +659,25 @@ Ready 与演示中的文档警告改为内容区左下可关闭小旗，关闭�
 ### Status
 
 [OK] **Completed**
+
+
+## Session 21: PDF 打开与 Beamer 翻页性能优化
+<!-- trellis-session: v=2 fp=76440485716c63a9 -->
+
+**Date**: 2026-11-07
+**Task**: PDF 打开与 Beamer 翻页性能优化
+**Branch**: `dev`
+
+### Summary
+
+同一份 100 页文稿完成原生 A/B，打开中位数 243→148 ms，连续翻页开始绘制 48.0→7.7 ms；桌面、PDFium 和 CI 全部通过。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `56bdc62` | perf(render): 缩短 PDF 首张预览与 Beamer 翻页等待 |
+
+### Status
+
+[OK] **Completed**

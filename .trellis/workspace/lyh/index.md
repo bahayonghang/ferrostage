@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 20
-- **Last Active**: 2026-10-22
+- **Total Sessions**: 21
+- **Last Active**: 2026-11-07
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~661 | Active |
+| `journal-1.md` | ~683 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 21 | 2026-11-07 | PDF 打开与 Beamer 翻页性能优化 | `56bdc62` | `dev` |
 | 20 | 2026-10-22 | 翻页笔方向键兼容 | `664aa85`, `a9eb5fe` | `dev` |
 | 19 | 2026-10-22 | 演讲者点击翻页、关于页更新日志并升至 1.2.1 | `4b07b929e7df7d18cf10af6fff4d4612c22de59a`, `a4ebc865bf3261ee365cf29c2becb75b8b18f78a` | `dev` |
 | 18 | 2026-10-20 | 文档警告改成可关闭的浮层小旗 | `a9e5e6527b50d7d97c5d08641774df629fc1371f`, `0f5ce9fb577fd4f748f07abd3d57b3487028bc4a` | `dev` |
