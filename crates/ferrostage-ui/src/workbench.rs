@@ -115,6 +115,8 @@ pub enum Surface {
     Current,
     Next,
     Notes(usize),
+    /// Private sample for the presenter's crop confirmation dialog.
+    CropSample(usize),
     Thumbnail(usize),
     Prefetch(usize),
     Media(u64),
@@ -148,6 +150,10 @@ impl DocumentSession {
 pub struct Workbench {
     pub document: Option<DocumentSession>,
     pub frames: Vec<(Surface, ReadyFrame)>,
+    // Draft pixels share the worker and its epoch, but never join the normal presentation.
+    crop_requests: Vec<RenderRequest>,
+    crop_frames: Vec<(Surface, ReadyFrame)>,
+    crop_failed: Vec<RenderRequest>,
     pending: HashMap<u64, (Surface, RenderRequest)>,
     failed: Vec<RenderRequest>,
     requested: Vec<(Surface, RenderRequest)>,
@@ -163,6 +169,37 @@ pub struct Workbench {
     pub render_ms: f64,
 }
 impl Workbench {
+    /// Natural size comes from PDF geometry. Using the returned raster's
+    /// rounded aspect to size its own pane can alternate target height by 1 px.
+    #[cfg(feature = "gpui")]
+    pub(crate) fn note_aspects(&self) -> Vec<(usize, f32)> {
+        let Some(session) = &self.document else {
+            return Vec::new();
+        };
+        let mut notes: Vec<_> = self
+            .requested
+            .iter()
+            .copied()
+            .chain(
+                self.frames
+                    .iter()
+                    .map(|(surface, frame)| (*surface, frame.request)),
+            )
+            .filter_map(|(surface, req)| {
+                let Surface::Notes(index) = surface else {
+                    return None;
+                };
+                let page = session.metadata.pages.get(req.page.0)?;
+                Some((
+                    index,
+                    page.width_points * req.crop.w / (page.height_points * req.crop.h),
+                ))
+            })
+            .collect();
+        notes.sort_by_key(|&(index, _)| index);
+        notes.dedup_by_key(|(index, _)| *index);
+        notes
+    }
     #[cfg(feature = "gpui")]
     pub(crate) fn retire_thumbnails(&mut self) {
         self.frames
@@ -175,7 +212,12 @@ impl Workbench {
         // still cancel work already queued in the raster worker.
     }
     pub fn requested_surfaces(&self) -> Vec<Surface> {
-        self.requested.iter().map(|(surface, _)| *surface).collect()
+        self.requested
+            .iter()
+            .filter_map(|(surface, _)| {
+                (!matches!(surface, Surface::CropSample(_))).then_some(*surface)
+            })
+            .collect()
     }
 
     #[cfg(any(feature = "gpui", test))]
@@ -198,21 +240,39 @@ impl Workbench {
 
     pub fn clear_frames(&mut self) {
         self.frames.clear();
+        self.crop_frames.clear();
+        self.crop_requests.clear();
+        self.crop_failed.clear();
         self.pending.clear();
         self.failed.clear();
         self.requested.clear();
     }
     pub fn frame(&self, surface: Surface) -> Option<&ReadyFrame> {
-        self.frames
-            .iter()
-            .find(|(s, _)| *s == surface)
-            .map(|(_, f)| f)
+        let frames = if matches!(surface, Surface::CropSample(_)) {
+            &self.crop_frames
+        } else {
+            &self.frames
+        };
+        frames.iter().find(|(s, _)| *s == surface).map(|(_, f)| f)
     }
     pub fn bytes(&self) -> usize {
         self.frames
             .iter()
+            .chain(&self.crop_frames)
             .map(|(_, f)| f.frame.allocation_bytes())
             .sum()
+    }
+    #[cfg(feature = "gpui")]
+    pub(crate) fn set_crop_requests(&mut self, requests: Vec<RenderRequest>) {
+        self.pending
+            .retain(|_, (s, _)| !matches!(s, Surface::CropSample(_)));
+        self.crop_failed.clear();
+        self.crop_frames.clear();
+        self.crop_requests = requests;
+    }
+    #[cfg(feature = "gpui")]
+    pub(crate) fn crop_request_failed(&self) -> bool {
+        !self.crop_failed.is_empty()
     }
     pub fn request(
         &mut self,
@@ -225,7 +285,11 @@ impl Workbench {
                 .pending
                 .values()
                 .any(|(s, r)| *s == surface && *r == request)
-            || self.failed.contains(&request)
+            || if matches!(surface, Surface::CropSample(_)) {
+                self.crop_failed.contains(&request)
+            } else {
+                self.failed.contains(&request)
+            }
         {
             return Ok(());
         }
@@ -267,8 +331,13 @@ impl Workbench {
                     if let Some(duration) = result.render_duration {
                         self.render_ms = duration.as_secs_f64() * 1000.;
                     }
-                    self.frames.retain(|(s, _)| *s != surface);
-                    self.frames.push((
+                    let frames = if matches!(surface, Surface::CropSample(_)) {
+                        &mut self.crop_frames
+                    } else {
+                        &mut self.frames
+                    };
+                    frames.retain(|(s, _)| *s != surface);
+                    frames.push((
                         surface,
                         ReadyFrame {
                             request: expected,
@@ -279,8 +348,12 @@ impl Workbench {
                 Ok(_) => errors.push("Raster result identity mismatch".into()),
                 Err(ferrostage_render::RenderError::Cancelled) => {}
                 Err(error) => {
-                    self.failed.push(expected);
-                    errors.push(error.to_string());
+                    if matches!(surface, Surface::CropSample(_)) {
+                        self.crop_failed.push(expected);
+                    } else {
+                        self.failed.push(expected);
+                        errors.push(error.to_string());
+                    }
                 }
             }
         }
@@ -410,7 +483,14 @@ impl Workbench {
         state: &PresentationState,
         settings: &ferrostage_settings::PresenterSettings,
     ) -> Result<(), String> {
-        let wanted = self.requests(state, settings)?;
+        let mut wanted = self.requests(state, settings)?;
+        wanted.extend(
+            self.crop_requests
+                .iter()
+                .copied()
+                .enumerate()
+                .map(|(slot, req)| (Surface::CropSample(slot), req)),
+        );
         if self.requested != wanted {
             self.epoch += 1;
             // FIFO worker command ordering cancels stale queued work before

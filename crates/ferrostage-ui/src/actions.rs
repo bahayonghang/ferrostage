@@ -76,6 +76,18 @@ pub(crate) enum Intent {
     CloseContextual,
     PresenterMenu(bool),
     Document,
+    OpenCrop,
+    CropLayout {
+        id: u64,
+        layout: ferrostage_document::NotesLayout,
+    },
+    CropSample {
+        id: u64,
+        delta: isize,
+    },
+    RetryCrop(u64),
+    ConfirmCrop(u64),
+    CancelCrop(u64),
     StartModeMenu,
     DismissError,
     DismissDocumentWarning(String),
@@ -159,6 +171,15 @@ pub(crate) fn install(
         if let Some(shell) = editing.upgrade() {
             let shell = shell.read(cx);
             if shell.captures_preferences(window.window_handle().window_id())
+                || shell.modal == Some(crate::shell::Modal::Crop)
+                    && window
+                        .window_handle()
+                        .downcast::<crate::presenter::Presenter>()
+                        .is_some()
+                    && matches!(
+                        event.keystroke.unparse().as_str(),
+                        "left" | "right" | "up" | "down" | "home" | "end" | "pageup" | "pagedown"
+                    )
                 || shell.browser().is_some() && shell.number_input_focus.is_focused(window)
                 || (shell.layout_menu_open()
                     || shell.browser().is_some_and(|_| {

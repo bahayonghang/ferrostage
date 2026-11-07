@@ -1,0 +1,13 @@
+{
+  "replacement": {
+    "old_generation_retained": true,
+    "idle_raster_submissions_in_600ms": 0,
+    "new_audience_pixels": {
+      "public": 555961,
+      "private": 0
+    },
+    "new_pdf_sha256": "21208e093e9a7c74f31fa4911af868c2833508f1a72f32dc869dcd83a9a61f5a"
+  },
+  "executable_sha256": "3f81bea2cefde74ab0988676ea7fd5a1602ea6b4378387bb0dbaaea7359a333a",
+  "pdfium_sha256": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118"
+}

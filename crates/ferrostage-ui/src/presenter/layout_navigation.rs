@@ -3,7 +3,8 @@ use ferrostage_document::{DocumentOverrides, DocumentWarning, NotesLayout};
 
 const LAYOUTS: [(&str, Option<NotesLayout>); 2] =
     [("wb-auto", None), ("wb-unsplit", Some(NotesLayout::None))];
-pub(super) const ROW_COUNT: usize = LAYOUTS.len() + 1;
+const CHECK_CROP: usize = LAYOUTS.len() + 1;
+pub(super) const ROW_COUNT: usize = CHECK_CROP + 1;
 
 fn layout_label(layout: NotesLayout) -> &'static str {
     match layout {
@@ -20,6 +21,7 @@ pub(super) struct LayoutMenuData {
     options: DocumentOverrides,
     detected: NotesLayout,
     annotations: bool,
+    read_only: bool,
     error: Option<String>,
 }
 impl LayoutMenuData {
@@ -35,17 +37,24 @@ impl LayoutMenuData {
             options: document.overrides,
             detected: document.layout,
             annotations: shell.state.has_annotations(),
+            read_only: shell.state.stage() == SessionStage::Presenting,
             error: error.clone(),
         })
     }
     pub fn selected_layout(&self) -> usize {
+        if self.read_only {
+            return CHECK_CROP;
+        }
         LAYOUTS
             .iter()
             .position(|(_, layout)| *layout == self.options.layout)
-            .unwrap_or(0)
+            .unwrap_or(CHECK_CROP)
     }
-    fn choice(&self, index: usize) -> DocumentOverrides {
-        match index {
+    fn intent(&self, index: usize) -> Intent {
+        if index == CHECK_CROP {
+            return Intent::OpenCrop;
+        }
+        let options = match index {
             0..2 => DocumentOverrides {
                 layout: LAYOUTS[index].1,
                 ..self.options
@@ -54,6 +63,10 @@ impl LayoutMenuData {
                 identify_independent_notes: !self.options.identify_independent_notes,
                 ..self.options
             },
+        };
+        Intent::Reconfigure {
+            id: self.id,
+            options,
         }
     }
 }
@@ -144,14 +157,7 @@ impl Presenter {
             "end" => Some(ROW_COUNT - 1),
             "enter" | "space" => {
                 if !self.data.busy && !event.is_held {
-                    actions::dispatch(
-                        &self.shell,
-                        Intent::Reconfigure {
-                            id: menu.id,
-                            options: menu.choice(current),
-                        },
-                        cx,
-                    );
+                    actions::dispatch(&self.shell, menu.intent(current), cx);
                 }
                 None
             }
@@ -163,6 +169,7 @@ impl Presenter {
             _ => return false,
         };
         if let Some(index) = next {
+            let index = if menu.read_only { CHECK_CROP } else { index };
             window.focus(&self.layout_row_focus[index], cx);
         }
         true
@@ -209,6 +216,7 @@ impl Presenter {
                     menu.selected_layout() == index,
                     None,
                 ),
+                CHECK_CROP => (l.text("crop-check-entry"), false, None),
                 _ => (
                     l.text("wb-independent"),
                     menu.options.identify_independent_notes,
@@ -218,72 +226,69 @@ impl Presenter {
             let accessible_label = helper
                 .as_ref()
                 .map_or_else(|| label.to_string(), |helper| format!("{label}. {helper}"));
-            let id = format!("layout-row-{index}");
+            let id = if index == CHECK_CROP {
+                "crop-check".to_owned()
+            } else {
+                format!("layout-row-{index}")
+            };
+            let enabled = !self.data.busy && (!menu.read_only || index == CHECK_CROP);
             body = body.child(
-                self.activation_target(
-                    id,
-                    accessible_label,
-                    !self.data.busy,
-                    Intent::Reconfigure {
-                        id: menu.id,
-                        options: menu.choice(index),
-                    },
-                    p,
-                )
-                .track_focus(&focus.clone().tab_stop(!self.data.busy))
-                .anchor_scroll(Some(self.layout_row_anchors[index].clone()))
-                .aria_selected(checked)
-                .role(if index < LAYOUTS.len() {
-                    Role::MenuItemRadio
-                } else {
-                    Role::MenuItemCheckBox
-                })
-                .aria_toggled(if checked {
-                    gpui::Toggled::True
-                } else {
-                    gpui::Toggled::False
-                })
-                .flex_shrink_0()
-                .child(
-                    div()
-                        .id(SharedString::from(format!("layout-row-{index}-face")))
-                        .relative()
-                        .min_h(px(36.))
-                        .px(px(8.))
-                        .py(px(4.))
-                        .rounded(px(theme::RADIUS))
-                        .flex()
-                        .items_center()
-                        .gap(px(8.))
-                        .bg(rgb(if checked { p.soft } else { p.canvas }))
-                        .text_color(rgb(p.ink))
-                        .hover(|style| style.bg(rgb(p.soft)))
-                        .active(|style| style.bg(rgb(p.soft)).top(px(1.)))
-                        .child(
-                            div()
-                                .w(px(16.))
-                                .flex_shrink_0()
-                                .when(checked, |view| {
-                                    view.debug_selector(move || format!("layout-check-{index}"))
-                                })
-                                .child(if checked { "✓" } else { "" }),
-                        )
-                        .child(
-                            div()
-                                .flex_1()
-                                .min_w_0()
-                                .text_size(px(self.ui_text_size(14.)))
-                                .child(label)
-                                .when_some(helper, |view, helper| {
-                                    view.child(
-                                        div()
-                                            .text_size(px(self.ui_text_size(12.)))
-                                            .text_color(rgb(p.muted))
-                                            .child(helper),
-                                    )
-                                }),
-                        ),
-                ),
+                self.activation_target(id, accessible_label, enabled, menu.intent(index), p)
+                    .track_focus(&focus.clone().tab_stop(enabled))
+                    .anchor_scroll(Some(self.layout_row_anchors[index].clone()))
+                    .role(match index {
+                        CHECK_CROP => Role::MenuItem,
+                        i if i < LAYOUTS.len() => Role::MenuItemRadio,
+                        _ => Role::MenuItemCheckBox,
+                    })
+                    .when(index != CHECK_CROP, |view| {
+                        view.aria_selected(checked).aria_toggled(if checked {
+                            gpui::Toggled::True
+                        } else {
+                            gpui::Toggled::False
+                        })
+                    })
+                    .flex_shrink_0()
+                    .child(
+                        div()
+                            .id(SharedString::from(format!("layout-row-{index}-face")))
+                            .relative()
+                            .min_h(px(36.))
+                            .px(px(8.))
+                            .py(px(4.))
+                            .rounded(px(theme::RADIUS))
+                            .flex()
+                            .items_center()
+                            .gap(px(8.))
+                            .bg(rgb(if checked { p.soft } else { p.canvas }))
+                            .text_color(rgb(if enabled { p.ink } else { p.muted }))
+                            .hover(|style| style.bg(rgb(p.soft)))
+                            .active(|style| style.bg(rgb(p.soft)).top(px(1.)))
+                            .child(
+                                div()
+                                    .w(px(16.))
+                                    .flex_shrink_0()
+                                    .when(checked, |view| {
+                                        view.debug_selector(move || format!("layout-check-{index}"))
+                                    })
+                                    .child(if checked { "✓" } else { "" }),
+                            )
+                            .child(
+                                div()
+                                    .flex_1()
+                                    .min_w_0()
+                                    .text_size(px(self.ui_text_size(14.)))
+                                    .child(label)
+                                    .when_some(helper, |view, helper| {
+                                        view.child(
+                                            div()
+                                                .text_size(px(self.ui_text_size(12.)))
+                                                .text_color(rgb(p.muted))
+                                                .child(helper),
+                                        )
+                                    }),
+                            ),
+                    ),
             );
         }
         div()

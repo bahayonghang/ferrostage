@@ -35,6 +35,30 @@ fn input(labels: &[Option<&str>], w: f32, h: f32) -> (DocumentMetadata, Document
         },
     )
 }
+
+#[test]
+fn crop_suggestion_uses_uniform_geometry_without_applying_it() {
+    for (w, h, expected) in [
+        (640., 360., None),
+        (1280., 360., Some(NotesLayout::Right)),
+        (640., 720., Some(NotesLayout::Bottom)),
+    ] {
+        let (metadata, structure) = input(&[None, None], w, h);
+        let document = LoadedDocument::load(&metadata, &structure).unwrap();
+        assert_eq!(document.suggested_notes_layout(), expected);
+        assert_eq!(document.layout, NotesLayout::None);
+    }
+    let (mut metadata, mut structure) = input(&[None, None], 1280., 360.);
+    metadata.pages[1].width_points = 640.;
+    structure.pages[1].geometry.bounds[2] = 640.;
+    let mixed = LoadedDocument::load(&metadata, &structure).unwrap();
+    assert_eq!(mixed.suggested_notes_layout(), None);
+
+    let (metadata, structure) = input(&[Some("A"), Some("notes:A")], 1280., 360.);
+    let paired = LoadedDocument::load(&metadata, &structure).unwrap();
+    assert_eq!(paired.notes_pages_for(PhysicalPage(0)), [PhysicalPage(1)]);
+    assert_eq!(paired.suggested_notes_layout(), None);
+}
 #[test]
 fn presentation_metadata_follows_content_steps_and_never_independent_notes() {
     let (metadata, mut structure) = input(

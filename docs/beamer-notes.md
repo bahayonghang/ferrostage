@@ -1,6 +1,6 @@
 # Beamer notes
 
-The document model below is implemented and tested with pure Rust and native PDFium fixtures. Presenter UI and playback integration belong to later tasks. FerroStage reads a finished PDF. It does not call a document compiler, and it does not promise to reconstruct an arbitrary export. Media fields are checked against the PDF dictionary subset this project supports. Unknown structure produces a presenter warning.
+FerroStage reads a finished PDF. The presenter uses its page geometry, labels and notes mapping to decide which pixels to display. Unknown structure produces a presenter warning.
 
 When a Beamer PDF uses a second-screen notes layout, one physical page holds both the slide and the notes. The audience crop is the slide half. The presenter reads notes from `ferrostage-document`, not from `AudienceProjectionSnapshot`.
 
@@ -16,6 +16,12 @@ Automatic detection is only a candidate, and only when every page in the documen
 A ratio does not prove that notes exist, and it does not prove which side they are on. A same-size document receives an automatic `Right` candidate only when `W/H` is in a left/right band, and an automatic `Bottom` candidate only when `W/H` is in a top/bottom band. Outside those bands there is no automatic crop. A normal 16:9 or 4:3 page, and a tall page outside the top/bottom bands, are counterexamples. The UI shows that the source is a ratio guess, plus any warning. Mixed page sizes do not receive a document-wide crop.
 
 ## Manual override
+
+Open **Layout & navigation → Check projection crop** to inspect what the audience will see. On the first Start of a suspected same-page notes document, the presenter opens this check before creating the audience window. Ordinary documents and already paired independent notes follow the usual Start action.
+
+Review **Audience view** beside **Private notes**, choose the full page or a notes direction, and move between sample content pages. Sample navigation leaves the talk position unchanged. Using the full page can include any notes printed on that page. Confirm from the Start prompt to begin projection, or apply from the menu to stay in Ready. Cancel and Escape discard the draft. A rule change clears session annotations only when it is applied; keeping the effective rule preserves them.
+
+Confirmation belongs to this document session. Stopping and resuming reuses it. While presenting, crop controls are read-only. If an external replacement changes confirmed page geometry, crop or notes mapping, the old output stays in place for the speaker to stop and review the new layout.
 
 A document-level override is the final authority: `None`, `Left`, `Right`, `Top`, or `Bottom`. The slide crop is the opposite half.
 

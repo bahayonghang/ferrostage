@@ -52,6 +52,8 @@ PDFium instances, probes and documents live on the single render worker. Channel
 
 Candidate readiness is scoped to the worker instance that issued it, as well as generation, epoch and batch nonce. A stopped worker's token must not authorize a replacement worker even when its counters repeat. Keep the private shared identity alive in both worker and token and compare allocation identity at commit; do not use a per-worker numeric counter as the sole capability identity.
 
+`RenderHandle::preview_candidate` returns private raster results for draft crop samples. It supersedes the previous candidate batch and invalidates previous readiness. A failed preview cancels its remaining jobs and keeps the worker candidate available for retry. A successful preview returns pixels without a commit capability; the normal `pre_render_candidate` preparation must still succeed before reversible replacement. Preserve the stricter candidate-discard behavior on failure of that final preparation.
+
 
 ## Document mapping boundary
 

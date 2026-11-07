@@ -32,6 +32,234 @@ fn until(shell: &Entity<Shell>, cx: &mut gpui::TestAppContext, condition: impl F
     }
 }
 #[gpui::test]
+fn changed_crop_waits_across_stop_before_any_replacement_is_published(
+    cx: &mut gpui::TestAppContext,
+) {
+    // PDFium initialization is process-global.
+    if std::env::var_os("FERROSTAGE_CROP_RELOAD_TEST_CHILD").is_none() {
+        let result = std::process::Command::new(std::env::current_exe().unwrap())
+            .args(["--exact", "shell::reload::tests::changed_crop_waits_across_stop_before_any_replacement_is_published"])
+            .env("FERROSTAGE_CROP_RELOAD_TEST_CHILD", "1").status().unwrap();
+        assert!(result.success());
+        return;
+    }
+    let active = include_bytes!("../../../../../fixtures/beamer/ordinary.pdf").to_vec();
+    let changed = include_bytes!("../../../../../fixtures/beamer/notes-right.pdf").to_vec();
+    let worker = RenderHandle::spawn(
+        RuntimeConfig {
+            library_path: std::env::var_os("FERROSTAGE_TEST_PDFIUM")
+                .expect("pinned PDFium required")
+                .into(),
+            font_directories: vec![],
+        },
+        Default::default(),
+    )
+    .unwrap();
+    let generation = DocumentGeneration(1);
+    let metadata = worker
+        .load_active(generation, active.clone())
+        .unwrap()
+        .recv()
+        .unwrap()
+        .unwrap();
+    let session = DocumentSession::build(
+        metadata,
+        ferrostage_pdf::extract_structure(&active).unwrap(),
+    )
+    .unwrap();
+    let (shell, presenter) = input_presenter(cx);
+    shell.update(cx, |shell, cx| {
+        shell.renderer = Ok(worker);
+        shell
+            .state
+            .apply_at(
+                Command::LoadMappedDocument(session.document.descriptor(generation).unwrap()),
+                Instant::now(),
+            )
+            .unwrap();
+        shell.workbench.document = Some(session);
+        shell
+            .state
+            .apply_at(
+                Command::StartPresentation {
+                    audience_available: true,
+                },
+                Instant::now(),
+            )
+            .unwrap();
+        shell.audience = Some(
+            shell
+                .open(
+                    ferrostage_core::MonitorId("headless-test-display".into()),
+                    false,
+                    true,
+                    cx,
+                )
+                .unwrap(),
+        );
+        shell.reload.attempt = 1;
+        shell.reload.structure = Some(ferrostage_pdf::extract_structure(&changed).unwrap());
+        shell.reload.bytes = Some(changed);
+        shell.publish(false, cx);
+    });
+    redraw(presenter, cx);
+    // The old presenter's scaled notes pane can change size while PDFium
+    // prepares the replacement. Private review must still make progress.
+    let deadline = Instant::now() + Duration::from_secs(20);
+    let mut height = 610;
+    while !shell.read_with(cx, |s, _| s.crop_reload_pending_confirmation()) {
+        shell.update(cx, |s, _| {
+            s.workbench.surface_targets.insert(
+                Surface::Notes(0),
+                PixelSize {
+                    width: 1085,
+                    height,
+                },
+            );
+        });
+        height = if height == 610 { 611 } else { 610 };
+        step(&shell, cx);
+        assert!(
+            Instant::now() < deadline,
+            "Changing pane size starved private crop review"
+        );
+    }
+    let candidate = shell.update(cx, |shell, cx| {
+        assert_eq!(shell.state.stage(), SessionStage::Presenting);
+        assert_eq!(shell.state.generation(), generation);
+        assert!(shell.audience_staging().is_none());
+        assert!(shell.presenter_staging().is_none());
+        let (candidate, _) = shell.crop_reload_candidate().unwrap();
+        assert!(
+            shell
+                .confirm_reload_crop(candidate, ferrostage_document::NotesLayout::Right, cx)
+                .is_err()
+        );
+        shell.stop(cx);
+        candidate
+    });
+    step(&shell, cx);
+    shell.update(cx, |s, cx| {
+        assert_eq!(s.state.stage(), SessionStage::Ready);
+        assert!(s.audience.is_none());
+        assert_eq!(s.crop_reload_candidate().unwrap().0, candidate);
+        assert!(!s.reload_busy());
+        s.apply(Command::UpdateLaserPointer(Some((0.4, 0.6))), cx);
+        s.dispatch(Intent::OpenCrop, cx);
+        let same = s.crop_preview().unwrap();
+        assert!(same.remapping_annotations && !same.changing_with_annotations);
+        s.dispatch(
+            Intent::CropLayout {
+                id: same.id,
+                layout: ferrostage_document::NotesLayout::Right,
+            },
+            cx,
+        );
+        let changed = s.crop_preview().unwrap();
+        assert!(changed.changing_with_annotations && !changed.remapping_annotations);
+        s.dispatch(Intent::CancelCrop(changed.id), cx);
+        assert!(s.state.has_annotations());
+        assert!(
+            s.confirm_reload_crop(
+                DocumentGeneration(candidate.0 + 1),
+                ferrostage_document::NotesLayout::Right,
+                cx
+            )
+            .is_err()
+        );
+        s.confirm_reload_crop(candidate, ferrostage_document::NotesLayout::Right, cx)
+            .unwrap();
+        assert!(s.cancel_crop_reload(candidate));
+    });
+    until(&shell, cx, |s| s.crop_reload_pending_confirmation());
+    let retried = shell.update(cx, |s, _| {
+        let fresh = s.crop_reload_candidate().unwrap().0;
+        assert!(fresh > candidate);
+        assert_eq!(s.state.generation(), generation);
+        assert!(s.state.has_annotations());
+        assert!(s.audience.is_none());
+        s.open_crop(Some(crate::shell::StartTimer::Restart));
+        fresh
+    });
+    let tick_to = |cx: &mut gpui::TestAppContext, predicate: &dyn Fn(&Shell) -> bool| {
+        let deadline = Instant::now() + Duration::from_secs(10);
+        while !shell.read_with(cx, |s, _| predicate(s)) {
+            shell.update(cx, |s, cx| {
+                s.poll_reload(cx);
+                s.update_render();
+            });
+            assert!(
+                Instant::now() < deadline,
+                "crop transaction did not reach expected phase"
+            );
+            std::thread::sleep(Duration::from_millis(2));
+        }
+    };
+    let can_confirm = |s: &Shell| s.crop_preview().is_some_and(|p| p.can_confirm);
+    tick_to(cx, &can_confirm);
+    shell.update(cx, |s, cx| {
+        let preview = s.crop_preview().unwrap();
+        assert!(preview.from_start);
+        s.dispatch(Intent::ConfirmCrop(preview.id), cx);
+        assert_eq!(
+            s.crop_preview().unwrap().phase,
+            crate::shell::crop::CropPhase::Applying
+        );
+    });
+    tick_to(cx, &|s| s.presenter_staging().is_some());
+    shell.update(cx, |s, cx| {
+        let attempt = s.presenter_staging().unwrap().attempt;
+        s.staging_status(attempt, false, Err("upload rejected by test".into()), cx);
+    });
+    tick_to(cx, &|s| {
+        s.crop_preview()
+            .is_some_and(|p| p.phase == crate::shell::crop::CropPhase::Failed)
+    });
+    shell.update(cx, |s, cx| {
+        let err = s.crop_preview().unwrap();
+        assert!(
+            err.error
+                .as_deref()
+                .is_some_and(|e| e.contains("upload rejected by test"))
+        );
+        assert!(!err.from_start && !err.can_confirm);
+        assert!(s.audience.is_none() && s.pending.is_none());
+        assert_eq!(s.state.generation(), generation);
+        assert!(s.state.has_annotations());
+        s.dispatch(Intent::RetryCrop(err.id), cx);
+        assert!(s.error.is_none());
+    });
+    tick_to(cx, &can_confirm);
+    let candidate = shell.update(cx, |s, cx| {
+        let preview = s.crop_preview().unwrap();
+        assert!(!preview.from_start);
+        let next = s.crop_reload_candidate().unwrap().0;
+        assert!(next > retried);
+        s.dispatch(
+            Intent::CropLayout {
+                id: preview.id,
+                layout: ferrostage_document::NotesLayout::Right,
+            },
+            cx,
+        );
+        next
+    });
+    tick_to(cx, &can_confirm);
+    shell.update(cx, |s, cx| {
+        let id = s.crop_preview().unwrap().id;
+        s.dispatch(Intent::ConfirmCrop(id), cx);
+    });
+    until(&shell, cx, |s| s.reload.pending.is_none());
+    shell.read_with(cx, |s, _| {
+        assert_eq!(s.state.generation(), candidate);
+        assert_eq!(s.state.slide_crop(), NormalizedRect::LEFT_HALF);
+        assert!(s.crop_confirmed);
+        assert_eq!(s.state.stage(), SessionStage::Ready);
+        assert!(s.audience.is_none());
+    });
+}
+
+#[gpui::test]
 fn real_pdfium_two_window_commit_obsolete_ack_rollback_and_latest_state(
     cx: &mut gpui::TestAppContext,
 ) {
@@ -109,6 +337,7 @@ fn real_pdfium_two_window_commit_obsolete_ack_rollback_and_latest_state(
             )
             .unwrap();
         shell.workbench.document = Some(session);
+        shell.crop_confirmed = true;
         shell.workbench.page_number_mode = crate::workbench::PageNumberMode::Pdf;
         shell.open_browser();
         shell.workbench.audience_target = Some(target);
@@ -187,6 +416,10 @@ fn real_pdfium_two_window_commit_obsolete_ack_rollback_and_latest_state(
     });
     shell.read_with(cx, |shell, cx| {
         assert!(!shell.reload.failed_worker);
+        assert!(
+            shell.crop_confirmed,
+            "equal-structure reload keeps the accepted crop"
+        );
         assert_eq!(
             shell.workbench.page_number_mode,
             crate::workbench::PageNumberMode::Pdf
@@ -370,8 +603,9 @@ fn real_pdfium_two_window_commit_obsolete_ack_rollback_and_latest_state(
     assert!(shell.read_with(cx, |s, _| s.error.is_none()));
     // A stale EOF can also pass structure inspection yet be rejected by PDFium
     // or by the metadata/structure consistency check. These are input failures,
-    // not runtime faults, and must leave the complete projection untouched.
-    let previous = shell.read_with(cx, |s, cx| s.snapshot.read(cx).clone());
+    // not runtime faults. Retain every public field except the freshly issued
+    // playback identity: a pre-reload paint acknowledgement must stay stale.
+    let mut previous = shell.read_with(cx, |s, cx| s.snapshot.read(cx).clone());
     for native_reject in [true, false] {
         shell.update(cx, |shell, _| {
             shell.invalidate_reload(true);
@@ -392,7 +626,12 @@ fn real_pdfium_two_window_commit_obsolete_ack_rollback_and_latest_state(
         shell.read_with(cx, |shell, cx| {
             assert!(shell.error.is_none());
             assert_eq!(shell.state.generation(), generation);
-            assert_eq!(*shell.snapshot.read(cx), previous);
+            let current = shell.snapshot.read(cx);
+            let navigation = current.playback.unwrap().identity.navigation;
+            let old = &mut previous.playback.as_mut().unwrap().identity.navigation;
+            assert!(navigation > *old);
+            *old = navigation;
+            assert_eq!(current, &previous);
         });
     }
     // New import is queued while a Commit acknowledgement is outstanding. Its

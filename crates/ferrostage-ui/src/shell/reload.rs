@@ -18,6 +18,48 @@ mod tests;
 mod playback_tests {
     use super::*;
 
+    #[test]
+    fn crop_review_tracks_effective_projection_structure_without_blocking_ordinary_pdfs() {
+        let bytes = include_bytes!("../../../../fixtures/beamer/overlays.pdf");
+        let structure = ferrostage_pdf::extract_structure(bytes).unwrap();
+        let metadata = DocumentMetadata {
+            pages: structure
+                .pages
+                .iter()
+                .map(|page| {
+                    let (width_points, height_points) = page.geometry.visible_size();
+                    ferrostage_pdf::PageMetadata {
+                        page: page.page,
+                        width_points,
+                        height_points,
+                        rotation_degrees: page.geometry.rotation_degrees,
+                        label: None,
+                    }
+                })
+                .collect(),
+        };
+        let base = DocumentSession::build(metadata, structure).unwrap();
+        assert!(!base.replacement_needs_crop_review(&base.clone(), true));
+        let mut changed = base.clone();
+        changed.structure.pages[0].geometry.bounds[0] += 10.;
+        assert!(!base.replacement_needs_crop_review(&changed, false));
+        assert!(base.replacement_needs_crop_review(&changed, true));
+        let mut changed = base.clone();
+        changed.structure.pages[0].geometry.rotation_degrees = 180;
+        assert!(base.replacement_needs_crop_review(&changed, true));
+        let mut changed = base.clone();
+        changed.structure.pages.pop();
+        assert!(base.replacement_needs_crop_review(&changed, true));
+        let mut changed = base.clone();
+        changed.document.layout = ferrostage_document::NotesLayout::Left;
+        assert!(base.replacement_needs_crop_review(&changed, false));
+        let mut changed = base.clone();
+        changed.document.notes_mapping[0]
+            .notes_pages
+            .push(PhysicalPage(1));
+        assert!(base.replacement_needs_crop_review(&changed, false));
+    }
+
     #[gpui::test]
     fn timed_reload_worker_failure_latch_blocks_retained_pixels_until_recovery(
         cx: &mut gpui::TestAppContext,
@@ -121,9 +163,16 @@ struct Identity {
     settings: ferrostage_settings::PresenterSettings,
     budget: usize,
 }
+impl Identity {
+    fn same_document_options(&self, other: &Self) -> bool {
+        self.generation == other.generation && self.options == other.options
+    }
+}
 enum Phase {
     Metadata(Reply<DocumentMetadata>),
     Document(Receiver<Result<DocumentSession, String>>),
+    AwaitCrop,
+    Prepare,
     Raster(Reply<CandidateReady>),
     Upload,
     Commit(Reply<RollbackToken>),
@@ -145,6 +194,41 @@ struct Pending {
     audience_ready: bool,
     obsolete: bool,
     published: bool,
+    crop_approved: bool,
+}
+
+impl DocumentSession {
+    fn same_projection_structure(&self, next: &Self) -> bool {
+        self.document.layout == next.document.layout
+            && self.document.notes_mapping == next.document.notes_mapping
+            && self
+                .metadata
+                .pages
+                .iter()
+                .map(|p| (p.width_points, p.height_points, p.rotation_degrees))
+                .eq(next
+                    .metadata
+                    .pages
+                    .iter()
+                    .map(|p| (p.width_points, p.height_points, p.rotation_degrees)))
+            && self.structure.pages.iter().map(|p| p.geometry).eq(next
+                .structure
+                .pages
+                .iter()
+                .map(|p| p.geometry))
+    }
+    fn replacement_needs_crop_review(&self, next: &Self, confirmed: bool) -> bool {
+        let notes_affected = [self, next].iter().any(|session| {
+            session.document.layout != ferrostage_document::NotesLayout::None
+                || session.document.suggested_notes_layout().is_some()
+                || session
+                    .document
+                    .notes_mapping
+                    .iter()
+                    .any(|m| !m.notes_pages.is_empty())
+        });
+        (confirmed || notes_affected) && !self.same_projection_structure(next)
+    }
 }
 #[derive(Default)]
 pub(super) struct Reload {
@@ -159,6 +243,7 @@ pub(super) struct Reload {
     attempted: Option<u64>,
     last_identity: Option<Identity>,
     pub(super) failed_worker: bool,
+    failed_crop: Option<DocumentGeneration>,
     queued_import: Option<PathBuf>,
     orphans: Vec<DocumentGeneration>,
     retirements: Vec<Reply<GenerationAck>>,
@@ -264,6 +349,8 @@ impl Shell {
         if discard_bytes {
             self.reload.bytes = None;
             self.reload.structure = None;
+            self.reload.last_identity = None;
+            self.reload.failed_crop = None;
         }
     }
     pub(super) fn queue_reload_import(&mut self, path: PathBuf) -> bool {
@@ -284,14 +371,109 @@ impl Shell {
                 .is_some_and(|p| matches!(p.phase, Phase::Commit(_) | Phase::Rollback(_)))
     }
     pub(super) fn reload_busy(&self) -> bool {
-        self.reload.pending.is_some()
+        self.reload
+            .pending
+            .as_ref()
+            .is_some_and(|p| p.obsolete || !matches!(p.phase, Phase::AwaitCrop))
     }
     pub(super) fn reload_blocks_playback(&self) -> bool {
         self.reload.failed_worker
             || self.reload.awaiting_bytes
             || self.reload.parsing.is_some()
-            || self.reload.pending.is_some()
+            || self.reload_busy()
             || (self.reload.bytes.is_some() && self.reload.attempted != Some(self.reload.attempt))
+    }
+    /// Held versions are private to the presenter. They have no staging frames.
+    pub(super) fn crop_reload_candidate(&self) -> Option<(DocumentGeneration, &DocumentSession)> {
+        let p = self.reload.pending.as_ref()?;
+        if p.obsolete || !matches!(p.phase, Phase::AwaitCrop) {
+            return None;
+        }
+        Some((p.generation, p.session.as_ref()?))
+    }
+    pub(crate) fn crop_reload_pending_confirmation(&self) -> bool {
+        self.crop_reload_candidate().is_some()
+    }
+    pub(super) fn cancel_crop_reload(&mut self, generation: DocumentGeneration) -> bool {
+        if !self.reload.pending.as_ref().is_some_and(|p| {
+            p.generation == generation && p.crop_approved && !p.obsolete && !p.published
+        }) {
+            return false;
+        }
+        self.invalidate_reload(false);
+        true
+    }
+    pub(super) fn retry_crop_reload(&mut self, generation: DocumentGeneration) -> bool {
+        if self.reload.failed_crop != Some(generation)
+            || self.reload.pending.is_some()
+            || self.reload.failed_worker
+            || self.reload.bytes.is_none()
+        {
+            return false;
+        }
+        self.reload.failed_crop = None;
+        self.invalidate_reload(false);
+        true
+    }
+    pub(super) fn crop_reload_preview(
+        &self,
+        generation: DocumentGeneration,
+        requests: Vec<ferrostage_render::RenderRequest>,
+    ) -> Result<Reply<Vec<ferrostage_render::RenderResult>>, String> {
+        if self.state.stage() != SessionStage::Ready
+            || self.crop_reload_candidate().map(|(g, _)| g) != Some(generation)
+            || requests.iter().any(|r| r.generation != generation)
+        {
+            return Err("Replacement is no longer available for crop review".into());
+        }
+        self.renderer
+            .as_ref()
+            .map_err(ToString::to_string)?
+            .preview_candidate(generation, requests)
+            .map_err(|e| e.to_string())
+    }
+    pub(super) fn confirm_reload_crop(
+        &mut self,
+        generation: DocumentGeneration,
+        layout: ferrostage_document::NotesLayout,
+        cx: &mut Context<Self>,
+    ) -> Result<(), String> {
+        if self.state.stage() != SessionStage::Ready {
+            return Err("Stop presenting before changing the replacement crop".into());
+        }
+        let identity = self.reload_identity().ok_or("Document closed")?;
+        let pending = self
+            .reload
+            .pending
+            .as_mut()
+            .filter(|p| {
+                !p.obsolete && p.generation == generation && matches!(p.phase, Phase::AwaitCrop)
+            })
+            .ok_or("Replacement is no longer available for crop review")?;
+        let session = pending
+            .session
+            .as_mut()
+            .ok_or("Missing replacement document")?;
+        if session.document.layout != layout {
+            let options = ferrostage_document::DocumentOverrides {
+                layout: Some(layout),
+                ..session.document.overrides
+            };
+            session.document = session.reconfigure(options)?;
+        }
+        pending.identity = identity.clone();
+        self.reload.last_identity = Some(identity);
+        pending.audience_ready = true;
+        pending.crop_approved = true;
+        pending.phase = Phase::Prepare;
+        tracing::info!(
+            attempt = pending.attempt,
+            generation = generation.0,
+            ?layout,
+            "replacement crop approved"
+        );
+        cx.notify();
+        Ok(())
     }
     pub(crate) fn presenter_staging(&self) -> Option<PresenterStaging> {
         let pending = self.reload.pending.as_ref()?;
@@ -437,6 +619,7 @@ impl Shell {
                 ferrostage_platform::PdfWatchEvent::Ready { attempt, bytes }
                     if attempt == self.reload.watch_attempt =>
                 {
+                    tracing::debug!(attempt, "external PDF replacement bytes ready");
                     self.reload.awaiting_bytes = false;
                     self.reload.bytes = Some(bytes);
                 }
@@ -455,18 +638,24 @@ impl Shell {
         let identity = self.reload_identity();
         if self.reload.pending.is_none()
             && self.reload.bytes.is_some()
+            && self.reload.failed_crop.is_none()
+            && self.reload.attempted == Some(self.reload.attempt)
             && self.reload.last_identity.is_some()
             && self.reload.last_identity != identity
         {
             self.invalidate_reload(false);
             self.reload.last_identity = identity.clone();
         }
-        if self
-            .reload
-            .pending
-            .as_ref()
-            .is_some_and(|p| !p.obsolete && !p.published && Some(&p.identity) != identity.as_ref())
-        {
+        if self.reload.pending.as_ref().is_some_and(|p| {
+            !p.obsolete
+                && !p.published
+                && Some(&p.identity) != identity.as_ref()
+                // Parsing, crop review and planning are private to the candidate.
+                // Resize/navigation must not starve them. Freeze the exact window
+                // and target identities immediately before raster/staging instead.
+                && !(matches!(p.phase, Phase::Metadata(_) | Phase::Document(_) | Phase::AwaitCrop | Phase::Prepare)
+                    && identity.as_ref().is_some_and(|i| i.same_document_options(&p.identity)))
+        }) {
             self.invalidate_reload(false);
         }
         if let Some(mut pending) = self.reload.pending.take() {
@@ -475,6 +664,15 @@ impl Shell {
                 self.reload.pending = Some(pending);
             } else {
                 self.cancel_reload_images(cx);
+                if pending.crop_approved {
+                    if !pending.published
+                        && pending.attempt == self.reload.attempt
+                        && self.reload.bytes.is_some()
+                    {
+                        self.reload.failed_crop = Some(pending.generation);
+                    }
+                    self.finish_crop_reload(cx);
+                }
             }
         }
         if self.reload.pending.is_none()
@@ -561,6 +759,7 @@ impl Shell {
                     audience_ready: self.audience.is_none(),
                     obsolete: false,
                     published: false,
+                    crop_approved: false,
                 })
             }
             Err(error) => self.error = Some(error.to_string()),
@@ -573,7 +772,12 @@ impl Shell {
         if pending.obsolete
             && matches!(
                 pending.phase,
-                Phase::Metadata(_) | Phase::Document(_) | Phase::Raster(_) | Phase::Upload
+                Phase::Metadata(_)
+                    | Phase::Document(_)
+                    | Phase::AwaitCrop
+                    | Phase::Prepare
+                    | Phase::Raster(_)
+                    | Phase::Upload
             )
         {
             match self
@@ -638,7 +842,25 @@ impl Shell {
                             return Err("Document builder unavailable".into());
                         }
                     };
+                    let old = self.workbench.document.as_ref().ok_or("Document closed")?;
+                    let review = old.replacement_needs_crop_review(&session, self.crop_confirmed);
                     pending.session = Some(session);
+                    if review {
+                        tracing::info!(
+                            attempt = pending.attempt,
+                            generation = pending.generation.0,
+                            "replacement awaiting crop confirmation"
+                        );
+                        Ok(Some(Phase::AwaitCrop))
+                    } else {
+                        Ok(Some(Phase::Prepare))
+                    }
+                }
+                Phase::AwaitCrop => Ok(None),
+                Phase::Prepare => {
+                    pending.identity = self.reload_identity().ok_or("Document closed")?;
+                    self.reload.last_identity = Some(pending.identity.clone());
+                    pending.audience_ready = self.audience.is_none();
                     let session = pending
                         .session
                         .as_ref()
@@ -747,9 +969,12 @@ impl Shell {
                         .as_ref()
                         .ok_or("Missing replacement session")?;
                     let old = self.workbench.document.as_ref().ok_or("Document closed")?;
-                    let mapping = old
+                    let mut mapping = old
                         .document
                         .reload_mapping(&session.document, self.state.current_page());
+                    if old.document.layout != session.document.layout {
+                        mapping.pages.clear();
+                    }
                     let mut state = self.state.clone();
                     let applied = session
                         .document
@@ -781,6 +1006,9 @@ impl Shell {
                     self.workbench.clear_frames();
                     self.workbench.frames = pending.frames.clone();
                     self.workbench.document = pending.session.take();
+                    if pending.crop_approved {
+                        self.crop_confirmed = true;
+                    }
                     if dropped > 0 {
                         self.warnings.push(
                             self.locale

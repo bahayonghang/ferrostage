@@ -16,31 +16,22 @@ impl Shell {
         cx: &mut Context<Self>,
     ) {
         if self.busy()
+            || self.state.stage() != SessionStage::Ready
             || !matches!(self.contextual, Some(ContextualSurface::LayoutNavigation { id: current, generation, .. }) if current == id && generation == self.state.generation())
         {
             return;
         }
-        let Some(session) = &mut self.workbench.document else {
+        let Some(session) = &self.workbench.document else {
             return;
         };
         if session.document.overrides == options {
             self.close_contextual();
             return;
         }
-        let result = session.reconfigure(options).and_then(|document| {
-            let descriptor = document
-                .descriptor(self.state.generation())
-                .map_err(|e| e.to_string())?;
-            self.state
-                .apply_at(Command::ReconfigureDocument(descriptor), Instant::now())
-                .map_err(|e| e.to_string())?;
-            session.document = document;
-            Ok(())
-        });
-        match result {
+        match self.apply_layout_options(options) {
             Ok(()) => {
                 self.close_contextual();
-                self.workbench.clear_frames();
+                self.crop_confirmed = false;
                 self.error = None;
                 self.publish(false, cx);
             }
@@ -53,5 +44,23 @@ impl Shell {
                 }
             }
         }
+    }
+
+    pub(super) fn apply_layout_options(
+        &mut self,
+        options: ferrostage_document::DocumentOverrides,
+    ) -> Result<(), String> {
+        let session = self.workbench.document.as_mut().ok_or("Missing document")?;
+        let document = session.reconfigure(options)?;
+        let descriptor = document
+            .descriptor(self.state.generation())
+            .map_err(|e| e.to_string())?;
+        self.state
+            .apply_at(Command::ReconfigureDocument(descriptor), Instant::now())
+            .map_err(|e| e.to_string())?;
+        session.document = document;
+        self.workbench.clear_frames();
+        self.error = None;
+        Ok(())
     }
 }

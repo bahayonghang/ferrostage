@@ -1,3 +1,4 @@
+mod crop;
 mod home_view;
 pub(crate) mod layout_navigation;
 mod material;
@@ -31,6 +32,9 @@ pub(crate) struct PresenterData {
     modal: Option<Modal>,
     browser: Option<page_browser::BrowserData>,
     layout_menu: Option<layout_navigation::LayoutMenuData>,
+    crop: Option<crate::shell::crop::CropPreview>,
+    needs_crop_confirmation: bool,
+    held_crop_reload: bool,
     utility_menu: Option<bool>,
     number_focus: FocusHandle,
     displays: Option<crate::display_settings::DisplayPanel>,
@@ -82,6 +86,9 @@ impl PresenterData {
             modal: shell.modal.clone(),
             browser: page_browser::BrowserData::from_shell(shell),
             layout_menu: layout_navigation::LayoutMenuData::from_shell(shell),
+            crop: shell.crop_preview(),
+            needs_crop_confirmation: shell.crop_needs_confirmation(),
+            held_crop_reload: shell.crop_reload_pending_confirmation(),
             utility_menu: match shell.contextual {
                 Some(crate::page_browser::ContextualSurface::PresenterMenu { tools }) => {
                     Some(tools)
@@ -170,6 +177,9 @@ pub(crate) struct Presenter {
     layout_scroll: gpui::ScrollHandle,
     layout_row_anchors: [gpui::ScrollAnchor; layout_navigation::ROW_COUNT],
     had_layout_menu: bool,
+    had_crop_id: Option<u64>,
+    crop_layout_focus: [FocusHandle; 5],
+    crop_cancel_focus: FocusHandle,
     had_browser: Option<u64>,
     browser_scroll: gpui::ScrollHandle,
     had_browser_tile: Option<usize>,
@@ -443,6 +453,9 @@ impl Presenter {
             layout_scroll,
             layout_row_anchors,
             had_layout_menu: false,
+            had_crop_id: None,
+            crop_layout_focus: std::array::from_fn(|_| cx.focus_handle()),
+            crop_cancel_focus: cx.focus_handle(),
             had_browser: None,
             browser_scroll,
             had_browser_tile: None,
@@ -509,6 +522,7 @@ impl Presenter {
             &intent,
             Intent::SettingsCategory(_)
                 | Intent::EditSetting(_, _)
+                | Intent::CropLayout { .. }
                 | Intent::BeginSettingEdit(_)
                 | Intent::ToggleFontPicker
                 | Intent::GridDensity { .. }
@@ -534,6 +548,7 @@ impl Presenter {
         };
         let selected = match &intent {
             Intent::ToggleAutoplay => self.data.workbench.autoplay_paused,
+            Intent::CropLayout { .. } => primary,
             Intent::Black => {
                 self.data.workbench.overlay.blank_mode == Some(ferrostage_core::BlankMode::Black)
             }
@@ -706,7 +721,9 @@ impl Presenter {
                                 | "clear-strokes"
                         ))
                     && (self.data.browser.is_none() || page_control)
-                    && (self.data.layout_menu.is_none() || id.starts_with("layout-row-")),
+                    && (self.data.layout_menu.is_none()
+                        || id.starts_with("layout-row-")
+                        || id == "crop-check"),
             )
             .when(id == "more" || id == "drawing-tools", |view| {
                 view.track_focus(
@@ -1005,6 +1022,19 @@ impl Render for Presenter {
             crate::workbench::Surface::Notes(_) => 3,
             _ => 3,
         });
+        let crop_id = self.data.crop.as_ref().map(|crop| crop.id);
+        if let Some(crop) = &self.data.crop {
+            // Only the dialog is visible. Retire the prior sample before a rule
+            // change so a failed upload cannot paint the previous rule's pixels.
+            if self.had_crop_id != crop_id {
+                self.textures
+                    .borrow_mut()
+                    .sync(&[], &[], self.data.workbench.budget, window, cx);
+            }
+            frames = crop::frames(crop);
+            active = frames.iter().map(|(key, _)| *key).collect();
+        }
+        self.had_crop_id = crop_id;
         let browser_id = self.data.browser.as_ref().map(|data| data.browser.id);
         let browser_view = self.data.browser.as_ref().map(|data| data.view);
         let outline_count = self
@@ -1092,7 +1122,9 @@ impl Render for Presenter {
                 window.focused(cx)
             };
             window.focus(
-                if self.data.utility_menu.is_some() {
+                if let Some(crop) = &self.data.crop {
+                    self.crop_initial_focus(crop)
+                } else if self.data.utility_menu.is_some() {
                     &self.utility_focus[0]
                 } else if layout_open {
                     &self.layout_row_focus
@@ -1119,6 +1151,8 @@ impl Render for Presenter {
                     self.return_focus = Some(self.progress_focus.clone());
                 }
                 window.focus(&self.number_focus, cx);
+            } else if let Some(crop) = &self.data.crop {
+                window.focus(self.crop_initial_focus(crop), cx);
             } else {
                 window.focus(&self.modal_focus, cx);
             }
@@ -1258,7 +1292,8 @@ impl Render for Presenter {
                 .size_full(),
             )
             .capture_key_down(cx.listener(|this, event: &gpui::KeyDownEvent, window, cx| {
-                if this.utility_menu_key(event, window, cx)
+                if this.crop_key(event, window, cx)
+                    || this.utility_menu_key(event, window, cx)
                     || this.layout_menu_key(event, window, cx)
                     || this.start_mode_key(event, window, cx)
                     || this.outline_key(event, window, cx)
@@ -1302,6 +1337,13 @@ impl Render for Presenter {
                 }
             }));
         if let Some(modal) = modal {
+            if modal == Modal::Crop {
+                return root
+                    .track_focus(&self.modal_focus)
+                    .key_context("FerroStageCropDialog")
+                    .child(self.crop_panel(p, window, cx))
+                    .into_any_element();
+            }
             if modal == Modal::Settings {
                 return root
                     .track_focus(&self.modal_focus)
@@ -1353,6 +1395,11 @@ impl Render for Presenter {
                 );
             if !self.data.document_warnings.is_empty() {
                 content = content.child(self.document_warning_flags(p));
+            }
+            if self.data.needs_crop_confirmation && self.data.stage == SessionStage::Ready
+                || self.data.held_crop_reload
+            {
+                content = content.child(self.crop_hint(p));
             }
             content
         } else {

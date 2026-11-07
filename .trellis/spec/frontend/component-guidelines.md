@@ -178,7 +178,7 @@ The loaded-workbench Layout & navigation trigger opens an upward menu without re
 
 ### 3. Contracts
 
-Three visible rows remain: Automatic and No split as mutually exclusive radio choices, then Identify independent notes pages as a checkbox. New `DocumentOverrides::default()` uses `layout=Some(NotesLayout::None)`, independent-note recognition true and physical grouping false. Automatic is explicit `layout=None`; its detected directional label must be independent of the selectable rows. Remove directional choices and the physical-navigation checkbox, preserving internal crop and overlay-grouping capabilities. Browser numbering is independent of those overrides. Use localized labels/helpers and retain real document/structure warnings without a Debug dump.
+The menu has four entries: Automatic, No split, Identify independent notes pages, and Check projection crop. In Presenting, the rule controls are read-only; the inspection entry remains available. New `DocumentOverrides::default()` uses `layout=Some(NotesLayout::None)`, independent-note recognition true and physical grouping false. Automatic is explicit `layout=None`; its detected directional label must be independent of the selectable rows. The five whole-page/directional choices live in the presenter-only crop check. The menu keeps its compact controls and excludes the physical-navigation checkbox. Browser numbering is independent of those overrides. Use localized labels/helpers and retain real document/structure warnings without a Debug dump.
 
 Identical overrides close immediately without document building, core reconfiguration or clearing frames/annotations. Deferred selection carries the per-open menu id and requires its captured generation to match current state. Actual change builds a candidate document/descriptor, gets core acceptance, assigns the session document, invalidates frames, publishes the updated projection and closes. Failure preserves effective state/checks and keeps a local error in the open menu. Overrides remain session-only. When any annotations exist, explain the unchanged core clear-on-reconfiguration effect before activation; the getter must not report empty strokes or retained empty per-page containers as visible ink.
 
@@ -189,7 +189,9 @@ Anchor the menu right-aligned 8px above its measured trigger with a 12px viewpor
 | State/action | Expected behavior |
 | --- | --- |
 | Choose current layout | Close only, strokes/frames unchanged |
-| Choose another layout or flip a toggle | Apply immediately, close, correct checks on reopen |
+| Choose another layout or flip a toggle in Ready | Apply immediately, close, correct checks on reopen; recheck consent when effective settings change |
+| Start with unconfirmed same-page candidate | Open the crop check before creating the audience window; Cancel/Escape returns to Ready |
+| Inspect during Presenting | Sample browsing remains private; crop edits are disabled |
 | Candidate/core rejection | Old state retained, menu stays open with local error |
 | Annotation on another page | Clear-on-change notice still visible |
 | Empty erased-stroke list | No false ink notice |
@@ -202,11 +204,19 @@ Good: a fresh document checks No split; explicit Auto can report detected Right 
 
 ### 6. Tests Required
 
-Use real GPUI input for the three visible rows, arrows/Tab/Home/End wrap, Enter/Space, apply/reopen, independent-note recognition, outside/Escape and focus recovery. Deleted rows have no hidden focus or action target. Reactivating each drawing/pointer tool returns to internal neutral Navigate, ends live strokes/laser, and needs no standalone Navigate button. Exercise same-layout no-op, induced transaction failure and off-page annotation notice. Retain browser mutual exclusion, independent-notes privacy, core reconfiguration semantics and first-render borrow regressions. Default core tests cover the read-only getter; normal-window native screenshots establish actual menu placement/live visual result separately.
+Use real GPUI input for the four visible entries, arrows/Tab/Home/End wrap, Enter/Space, apply/reopen, independent-note recognition, outside/Escape and focus recovery. Deleted rows have no hidden focus or action target. Reactivating each drawing/pointer tool returns to internal neutral Navigate, ends live strokes/laser, and needs no standalone Navigate button. Exercise same-layout no-op, induced transaction failure and off-page annotation notice. Retain browser mutual exclusion, independent-notes privacy, core reconfiguration semantics and first-render borrow regressions. Default core tests cover the read-only getter; normal-window native screenshots establish actual menu placement/live visual result separately.
 
 ### 7. Wrong vs Correct
 
 Wrong: add a second modal system, save document overrides as global settings, change core clear policy or expose note state to audience. Correct: captured menu data in the existing contextual host, checked session overrides and a minimal core annotation-presence query, with deferred Shell commands and no new UI/IO core dependencies.
+
+## Presenter-only crop confirmation
+
+Use the existing presenter modal host with a session-local draft. Inspect whole page or an equal split with notes on the left, right, top or bottom. The active document’s effective rule initializes the draft. Show the aspect-ratio suggestion separately. The sample selector walks mapped content steps without dispatching presentation navigation. Independent note pages remain private when Whole page is selected.
+
+First Start, Resume and Restart share the pre-window check. A normal PDF or correctly paired independent notes can start directly. Require current sample pixels before confirming; errors remain in the draft with a retry. A menu confirmation applies without starting. Cancellation discards the draft and neither publishes a new crop nor starts an audience transaction. Preserve annotations when effective crop is unchanged.
+
+The single render worker routes presenter-only samples by request identity. A superseded reply must not make an older sample confirmable. Candidate reloads preserve the old public document while review is outstanding; strict generation and reversible upload/commit checks still apply.
 
 ## Presenter pane click and About changelog
 

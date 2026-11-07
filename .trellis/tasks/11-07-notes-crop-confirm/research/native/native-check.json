@@ -1,0 +1,94 @@
+{
+  "cancel_button": {
+    "created_audience_windows": 0
+  },
+  "cancel_escape": {
+    "created_audience_windows": 0
+  },
+  "right": {
+    "public_preview_pixels": {
+      "public": 184342,
+      "private": 0
+    },
+    "private_preview_pixels": {
+      "public": 0,
+      "private": 185040
+    },
+    "audience_pixels": {
+      "public": 555961,
+      "private": 0
+    },
+    "sha256": "663c10c536eca0b28432b10c6505ab2c05def55f5037e6b222b968b70c80f51a"
+  },
+  "left": {
+    "public_preview_pixels": {
+      "public": 184342,
+      "private": 0
+    },
+    "private_preview_pixels": {
+      "public": 0,
+      "private": 185040
+    },
+    "audience_pixels": {
+      "public": 555961,
+      "private": 0
+    },
+    "sha256": "54c0d73e6403e50c133fe2cb9731979df4130eebffca44386c6d63a85900ae71"
+  },
+  "top": {
+    "public_preview_pixels": {
+      "public": 184342,
+      "private": 0
+    },
+    "private_preview_pixels": {
+      "public": 0,
+      "private": 185040
+    },
+    "audience_pixels": {
+      "public": 555961,
+      "private": 0
+    },
+    "sha256": "2f2f9f36fc6643e2eebfc3d9ef365cf6b985841d80b78dafc87aa545e5ae56df"
+  },
+  "bottom": {
+    "public_preview_pixels": {
+      "public": 184342,
+      "private": 0
+    },
+    "private_preview_pixels": {
+      "public": 0,
+      "private": 185040
+    },
+    "audience_pixels": {
+      "public": 555961,
+      "private": 0
+    },
+    "sha256": "08483926d5571d09b8756ab504362a316c31a386d8957c236f852d2bb2058419"
+  },
+  "ordinary": {
+    "direct_start_audience_windows": 1
+  },
+  "independent": {
+    "direct_start_audience_windows": 1
+  },
+  "whole_page_by_choice": {
+    "public": 138257,
+    "private": 138519
+  },
+  "real_beamer": {
+    "menu_confirm_audience_windows": 0,
+    "sample_browsing_preserved_page": 0,
+    "starts_including_resume": 2
+  },
+  "replacement": {
+    "old_generation_retained": true,
+    "idle_raster_submissions_in_600ms": 0,
+    "new_audience_pixels": {
+      "public": 555961,
+      "private": 0
+    },
+    "new_pdf_sha256": "21208e093e9a7c74f31fa4911af868c2833508f1a72f32dc869dcd83a9a61f5a"
+  },
+  "executable_sha256": "73663dc6c614187428042aa9c4ae2f4fc8c0e864f53c0e6a5608ecdef798b178",
+  "pdfium_sha256": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118"
+}

@@ -1,3 +1,4 @@
+pub(crate) mod crop;
 mod layout_navigation;
 mod page_browser;
 mod preferences;
@@ -85,6 +86,7 @@ impl Global for ShellRoot {}
 pub(crate) enum Modal {
     Settings,
     Displays(DisplayDraft),
+    Crop,
 }
 
 struct WindowRecord {
@@ -184,6 +186,8 @@ pub(crate) struct Shell {
     focus_token: u64,
     import: Option<ImportReply>,
     reload: reload::Reload,
+    crop: Option<crop::CropDraft>,
+    crop_confirmed: bool,
     import_token: u64,
     pub loading: bool,
     pub path: Option<PathBuf>,
@@ -381,6 +385,8 @@ impl Shell {
             focus_token: 0,
             import: None,
             reload: Default::default(),
+            crop: None,
+            crop_confirmed: false,
             import_token: 0,
             loading: false,
             path: None,
@@ -567,6 +573,10 @@ impl Shell {
     }
 
     pub fn dispatch(&mut self, intent: Intent, cx: &mut Context<Self>) {
+        if self.dispatch_crop(&intent, cx) {
+            cx.notify();
+            return;
+        }
         if self.dispatch_preference(&intent, cx) {
             cx.notify();
             return;
@@ -989,6 +999,7 @@ impl Shell {
             }) {
             Ok(()) => {
                 self.path = Some(path.clone());
+                self.reset_crop_session();
                 self.reload.failed_worker = false;
                 self.recover_reload_orphans();
                 if let Err(error) =
@@ -1490,6 +1501,10 @@ impl Shell {
             self.error = Some(reason);
             return;
         }
+        if self.crop_needs_confirmation() {
+            self.open_crop(Some(timer));
+            return;
+        }
         match policy::start_target(&self.monitors, &self.settings.settings.display) {
             Ok(target) => {
                 // Shared fullscreen playback covers the presenter window instead.
@@ -1547,6 +1562,7 @@ impl Shell {
     }
 
     fn abandon_modal(&mut self) {
+        self.close_crop();
         self.close_contextual();
         self.modal = None;
     }
@@ -1600,6 +1616,7 @@ impl Shell {
             return;
         }
         self.path = None;
+        self.reset_crop_session();
         self.workbench.document = None;
         self.workbench.clear_frames();
         if let Err(error) = self.replace_pdf_watch(&self.settings.settings.hot_reload.clone()) {
@@ -2207,6 +2224,7 @@ impl Shell {
     }
 
     fn update_render(&mut self) {
+        self.poll_crop();
         if !self.reload_blocks_render()
             && let Ok(worker) = &self.renderer
         {
@@ -4105,6 +4123,8 @@ mod tests {
     include!("shell/presenter_layout_tests.rs");
     include!("shell/timed_playback_tests.rs");
     include!("shell/session_resume_tests.rs");
+    include!("shell/crop_gate_tests.rs");
+    include!("shell/crop_view_tests.rs");
 
     fn headless_shell(
         cx: &mut TestAppContext,
@@ -7133,15 +7153,6 @@ mod tests {
         let (shell, handle) = workbench_fixture(cx);
         shell.update(cx, |shell, cx| {
             shell.workbench.tool = crate::workbench::Tool::Pen;
-            shell
-                .state
-                .apply_at(
-                    Command::StartPresentation {
-                        audience_available: true,
-                    },
-                    Instant::now(),
-                )
-                .unwrap();
             cx.notify();
         });
         redraw(handle, cx);
@@ -7157,7 +7168,14 @@ mod tests {
             shell.read_with(cx, |shell, _| {
                 assert_eq!(shell.state.current_page(), PhysicalPage(0))
             });
-            cx.simulate_keystrokes(handle, if expected { "end enter" } else { "end space" });
+            cx.simulate_keystrokes(
+                handle,
+                if expected {
+                    "end up enter"
+                } else {
+                    "end up space"
+                },
+            );
             redraw(handle, cx);
             shell.read_with(cx, |shell, _| {
                 assert!(shell.contextual.is_none());
@@ -7166,7 +7184,7 @@ mod tests {
                 if doc.overrides.identify_independent_notes {
                     assert!(!doc.slide_map.steps().contains(&PhysicalPage(1)));
                 }
-                assert_eq!(shell.state.stage(), SessionStage::Presenting);
+                assert_eq!(shell.state.stage(), SessionStage::Ready);
             });
             cx.simulate_keystrokes(handle, "enter");
             redraw(handle, cx);
@@ -7175,9 +7193,17 @@ mod tests {
             cx.simulate_keystrokes(handle, "escape");
             redraw(handle, cx);
             shell.read_with(cx, |shell, _| {
-                assert_eq!(shell.state.stage(), SessionStage::Presenting)
+                assert_eq!(shell.state.stage(), SessionStage::Ready)
             });
         }
+        shell.update(cx, |shell, cx| {
+            shell.apply(
+                Command::StartPresentation {
+                    audience_available: true,
+                },
+                cx,
+            );
+        });
         click_control(handle, "document-options", cx);
         redraw(handle, cx);
         let mut visual = gpui::VisualTestContext::from_window(handle, cx);

@@ -195,7 +195,9 @@ fn original_notes_keep_width_and_natural_height_for_multiple_pages(cx: &mut Test
                         PhysicalPage(1),
                         ferrostage_core::NormalizedRect::FULL,
                     ),
-                    frame: ferrostage_core::BgraFrame::new(4, 3, 16, vec![255; 48]).unwrap(),
+                    // Integer raster dimensions round the original 4:3 page.
+                    // They must not feed back into the document layout.
+                    frame: ferrostage_core::BgraFrame::new(7, 5, 28, vec![255; 140]).unwrap(),
                 },
             ));
         }

@@ -18,6 +18,7 @@ pub(crate) enum TimerPhase {
 pub(super) struct WorkbenchData {
     pub frames: Vec<(Surface, ReadyFrame)>,
     pub surfaces: Vec<Surface>,
+    note_aspects: Vec<(usize, f32)>,
     pub overlay: AudienceProjectionSnapshot,
     pub media: Vec<ferrostage_core::AudienceMediaFrame>,
     slots: Vec<crate::media_playback::SlotView>,
@@ -102,6 +103,7 @@ impl WorkbenchData {
             .unwrap_or_default();
         let overlay = shell.state.audience_snapshot();
         Self {
+            note_aspects: shell.workbench.note_aspects(),
             frames: shell
                 .workbench
                 .frames
@@ -1193,25 +1195,6 @@ impl Presenter {
         } else {
             WorkbenchLayout::for_mode(self.data.start_mode)
         };
-        let mut notes_frames = self
-            .data
-            .workbench
-            .surfaces
-            .iter()
-            .chain(
-                self.data
-                    .workbench
-                    .frames
-                    .iter()
-                    .map(|(surface, _)| surface),
-            )
-            .filter_map(|surface| matches!(surface, Surface::Notes(_)).then_some(*surface))
-            .collect::<Vec<_>>();
-        notes_frames.sort_by_key(|surface| match surface {
-            Surface::Notes(index) => *index,
-            _ => 0,
-        });
-        notes_frames.dedup();
         let mut note_panel = div()
             .id("notes-content")
             .debug_selector(|| "notes-content".into())
@@ -1227,30 +1210,20 @@ impl Presenter {
             .rounded(px(theme::RADIUS))
             .bg(rgb(p.card))
             .child(self.pane_caption("wb-notes", p));
-        if notes_frames.is_empty() {
+        if self.data.workbench.note_aspects.is_empty() {
             note_panel = note_panel.child(
                 div()
                     .text_color(rgb(p.muted))
                     .child(self.locale.text("wb-no-notes")),
             );
         }
-        for surface in notes_frames {
-            let aspect = self
-                .frame(surface)
-                .map(|frame| frame.frame.width() as f32 / frame.frame.height().max(1) as f32)
-                .or_else(|| {
-                    self.textures
-                        .borrow()
-                        .frame(surface)
-                        .map(|frame| frame.width() as f32 / frame.height().max(1) as f32)
-                })
-                .unwrap_or(16. / 9.);
+        for &(index, aspect) in &self.data.workbench.note_aspects {
             note_panel = note_panel.child(
                 div()
                     .w_full()
                     .flex_shrink_0()
                     .aspect_ratio(aspect)
-                    .child(self.picture(surface, false)),
+                    .child(self.picture(Surface::Notes(index), false)),
             );
         }
         let can_drag = self.data.workbench.writable && !self.data.busy;

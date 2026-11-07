@@ -1,6 +1,6 @@
 use crate::{
     CacheBudgets, CandidateReady, GenerationAck, RenderError, RenderEvent, RenderRequest,
-    RequestId, scheduler::Job,
+    RenderResult, RequestId, scheduler::Job,
 };
 use ferrostage_core::DocumentGeneration;
 use ferrostage_pdf::{DocumentMetadata, RuntimeConfig, raster::RasterBackend};
@@ -19,6 +19,23 @@ mod tests;
 pub type Reply<T> = Receiver<Result<T, RenderError>>;
 type Response<T> = Sender<Result<T, RenderError>>;
 
+pub(super) enum CandidateReply {
+    Prepare(Response<CandidateReady>),
+    Preview(Response<Vec<RenderResult>>),
+}
+impl CandidateReply {
+    fn reject(self, error: RenderError) {
+        match self {
+            Self::Prepare(reply) => {
+                let _ = reply.send(Err(error));
+            }
+            Self::Preview(reply) => {
+                let _ = reply.send(Err(error));
+            }
+        }
+    }
+}
+
 pub(super) enum Message {
     Probe(Vec<u8>, Response<DocumentMetadata>),
     Load(
@@ -27,7 +44,7 @@ pub(super) enum Message {
         bool,
         Response<DocumentMetadata>,
     ),
-    PreRender(DocumentGeneration, Vec<Job>, Response<CandidateReady>),
+    PreRender(DocumentGeneration, Vec<Job>, CandidateReply),
     Render(Job),
     Epoch(DocumentGeneration, u64, Response<GenerationAck>),
     Commit(CandidateReady, Response<GenerationAck>),
@@ -158,11 +175,28 @@ impl RenderHandle {
         generation: DocumentGeneration,
         requests: Vec<RenderRequest>,
     ) -> Result<Reply<CandidateReady>, RenderError> {
+        self.reply(|tx| self.candidate_batch(generation, requests, CandidateReply::Prepare(tx)))
+    }
+    /// Private inspection only. A failed sample leaves the candidate available
+    /// for another attempt. Successful previews cannot authorize a commit.
+    pub fn preview_candidate(
+        &self,
+        generation: DocumentGeneration,
+        requests: Vec<RenderRequest>,
+    ) -> Result<Reply<Vec<RenderResult>>, RenderError> {
+        self.reply(|tx| self.candidate_batch(generation, requests, CandidateReply::Preview(tx)))
+    }
+    fn candidate_batch(
+        &self,
+        generation: DocumentGeneration,
+        requests: Vec<RenderRequest>,
+        reply: CandidateReply,
+    ) -> Message {
         let jobs = requests
             .into_iter()
             .map(|request| self.job(request, false, true))
             .collect();
-        self.reply(|tx| Message::PreRender(generation, jobs, tx))
+        Message::PreRender(generation, jobs, reply)
     }
     fn job(&self, request: RenderRequest, bypass_cache: bool, candidate: bool) -> Job {
         Job {

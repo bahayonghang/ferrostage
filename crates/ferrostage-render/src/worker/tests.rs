@@ -10,6 +10,7 @@ use std::{
 type Calls = Arc<Mutex<Vec<(DocumentGeneration, PhysicalPage)>>>;
 struct Fake {
     calls: Calls,
+    fail_once: Option<PhysicalPage>,
     entered: Option<Sender<()>>,
     release: Option<Receiver<()>>,
     removed: Arc<Mutex<Vec<DocumentGeneration>>>,
@@ -48,6 +49,10 @@ impl RasterBackend for Fake {
         target: PixelSize,
     ) -> Result<BgraFrame, PdfError> {
         self.calls.lock().unwrap().push((generation, page));
+        if self.fail_once == Some(page) {
+            self.fail_once = None;
+            return Err(PdfError::InvalidBitmap);
+        }
         if let Some(entered) = self.entered.take() {
             entered.send(()).unwrap();
             self.release.take().unwrap().recv().unwrap();
@@ -91,6 +96,7 @@ fn simple() -> (RenderHandle, Calls, Arc<Mutex<Vec<DocumentGeneration>>>) {
     let removed = Arc::new(Mutex::new(Vec::new()));
     let fake = Fake {
         calls: calls.clone(),
+        fail_once: None,
         removed: removed.clone(),
         entered: None,
         release: None,
@@ -125,6 +131,70 @@ fn visible_completions_coalesce_without_consuming_results() {
     reply(worker.probe(vec![1]).unwrap()).unwrap();
     assert_eq!(notifications.try_recv(), Ok(()));
     assert!(notifications.is_empty());
+}
+
+#[test]
+fn failed_private_preview_can_retry_without_replacing_active_or_authorizing_commit() {
+    let calls = Calls::default();
+    let fake = Fake {
+        calls: calls.clone(),
+        fail_once: Some(PhysicalPage(1)),
+        removed: Default::default(),
+        entered: None,
+        release: None,
+    };
+    let worker =
+        RenderHandle::with_backend(move || Box::new(fake), CacheBudgets::default()).unwrap();
+    let generation = DocumentGeneration(2);
+    reply(worker.load_active(DocumentGeneration(1), vec![1]).unwrap()).unwrap();
+    reply(worker.prepare_candidate(generation, vec![2]).unwrap()).unwrap();
+    let stage = req(2, 0, 0, RenderPriority::Presenter);
+    let old_token = reply(
+        worker
+            .pre_render_candidate(generation, vec![stage])
+            .unwrap(),
+    )
+    .unwrap();
+    let first = req(2, 1, 0, RenderPriority::Presenter);
+    let last = req(2, 2, 0, RenderPriority::Presenter);
+    assert_eq!(
+        reply(
+            worker
+                .preview_candidate(generation, vec![first, last])
+                .unwrap()
+        )
+        .unwrap_err(),
+        RenderError::Pdf(PdfError::InvalidBitmap)
+    );
+    let frames = reply(worker.preview_candidate(generation, vec![first]).unwrap()).unwrap();
+    assert_eq!(frames[0].request, first);
+    assert!(
+        !calls
+            .lock()
+            .unwrap()
+            .iter()
+            .any(|(_, page)| *page == last.page)
+    );
+    assert_eq!(
+        reply(worker.commit_candidate(old_token).unwrap()).unwrap_err(),
+        RenderError::NotReady
+    );
+    worker
+        .submit(req(1, 0, 0, RenderPriority::Audience))
+        .unwrap();
+    assert!(event(&worker).outcome.is_ok());
+    let ready = reply(
+        worker
+            .pre_render_candidate(generation, vec![stage])
+            .unwrap(),
+    )
+    .unwrap();
+    assert_eq!(
+        reply(worker.commit_candidate(ready).unwrap())
+            .unwrap()
+            .generation,
+        generation
+    );
 }
 
 #[test]
@@ -206,6 +276,7 @@ fn blocked() -> (RenderHandle, Calls, Receiver<()>, Sender<()>) {
     let (release, release_rx) = mpsc::channel();
     let fake = Fake {
         calls: calls.clone(),
+        fail_once: None,
         removed: Default::default(),
         entered: Some(entered_tx),
         release: Some(release_rx),

@@ -1,4 +1,4 @@
-use super::{Message, Response};
+use super::{CandidateReply, Message};
 use crate::{
     cache::FrameCache,
     scheduler::{Job, Scheduler},
@@ -18,7 +18,7 @@ use std::{
 struct Batch {
     remaining: usize,
     token: CandidateReady,
-    reply: Response<CandidateReady>,
+    reply: CandidateReply,
 }
 struct Engine<'a> {
     backend: &'a mut dyn RasterBackend,
@@ -116,7 +116,7 @@ impl Engine<'_> {
     fn abort_batch(&mut self) {
         self.ready = None;
         if let Some(batch) = self.batch.take() {
-            batch.reply.send(Err(RenderError::Cancelled)).ok();
+            batch.reply.reject(RenderError::Cancelled);
         }
         self.scheduler.cancel(|job| job.candidate);
     }
@@ -206,14 +206,14 @@ impl Engine<'_> {
             }
             Message::PreRender(generation, jobs, reply) => {
                 if self.candidate != Some(generation) {
-                    reply.send(Err(RenderError::NotCandidate)).ok();
+                    reply.reject(RenderError::NotCandidate);
                 } else if jobs.is_empty()
                     || jobs.iter().any(|job| {
                         job.request.generation != generation
                             || self.epochs.get(&generation) != Some(&job.request.epoch)
                     })
                 {
-                    reply.send(Err(RenderError::InvalidCandidateRequests)).ok();
+                    reply.reject(RenderError::InvalidCandidateRequests);
                 } else {
                     self.abort_batch();
                     self.nonce += 1;
@@ -410,19 +410,31 @@ impl Engine<'_> {
                         batch.token.frames.push(result);
                         batch.remaining -= 1;
                         if batch.remaining == 0 {
-                            self.ready = Some((
-                                batch.token.generation,
-                                batch.token.epoch,
-                                batch.token.nonce,
-                            ));
-                            batch.reply.send(Ok(batch.token)).ok();
+                            match batch.reply {
+                                CandidateReply::Prepare(reply) => {
+                                    self.ready = Some((
+                                        batch.token.generation,
+                                        batch.token.epoch,
+                                        batch.token.nonce,
+                                    ));
+                                    let _ = reply.send(Ok(batch.token));
+                                }
+                                CandidateReply::Preview(reply) => {
+                                    let _ = reply.send(Ok(batch.token.frames));
+                                }
+                            }
                         } else {
                             self.batch = Some(batch);
                         }
                     }
                     Err(error) => {
-                        batch.reply.send(Err(error)).ok();
-                        self.discard_candidate();
+                        let preview = matches!(batch.reply, CandidateReply::Preview(_));
+                        batch.reply.reject(error);
+                        if preview {
+                            self.abort_batch();
+                        } else {
+                            self.discard_candidate();
+                        }
                     }
                 }
             }

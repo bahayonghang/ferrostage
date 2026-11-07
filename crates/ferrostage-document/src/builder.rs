@@ -28,6 +28,7 @@ pub enum DocumentWarning {
 #[derive(Clone, Debug, PartialEq)]
 pub struct LoadedDocument {
     presentations: Vec<ferrostage_core::PagePresentation>,
+    suggested_layout: Option<NotesLayout>,
     pub page_count: usize,
     pub labels: Vec<Option<String>>,
     pub layout: NotesLayout,
@@ -43,6 +44,11 @@ pub struct LoadedDocument {
     pub outline_partial: bool,
 }
 impl LoadedDocument {
+    /// Same-page crop suggested by uniform geometry, independent of the effective override.
+    pub fn suggested_notes_layout(&self) -> Option<NotesLayout> {
+        self.suggested_layout
+    }
+
     /// The active section follows committed content, independently of browser focus or edits.
     pub fn current_outline_entry(&self, page: PhysicalPage) -> Option<usize> {
         self.outline
@@ -125,26 +131,26 @@ impl LoadedDocument {
                 && (p.height_points - first.height_points).abs() < 0.05
                 && p.rotation_degrees == first.rotation_degrees
         });
+        let ratio = first.width_points / first.height_points;
+        let suggested = if !uniform {
+            None
+        } else if (3.1..=3.6).contains(&ratio) || (2.4..=2.7).contains(&ratio) {
+            Some(NotesLayout::Right)
+        } else if (0.85..=0.95).contains(&ratio) || (0.63..=0.70).contains(&ratio) {
+            Some(NotesLayout::Bottom)
+        } else {
+            None
+        };
         let (layout, layout_source) = if let Some(layout) = overrides.layout {
             (layout, LayoutSource::Manual)
         } else if !uniform {
             warnings.push(DocumentWarning::MixedGeometry);
             (NotesLayout::None, LayoutSource::Unsplit)
+        } else if let Some(layout) = suggested {
+            warnings.push(DocumentWarning::AmbiguousLayout);
+            (layout, LayoutSource::AspectRatio)
         } else {
-            let ratio = first.width_points / first.height_points;
-            let layout = if (3.1..=3.6).contains(&ratio) || (2.4..=2.7).contains(&ratio) {
-                NotesLayout::Right
-            } else if (0.85..=0.95).contains(&ratio) || (0.63..=0.70).contains(&ratio) {
-                NotesLayout::Bottom
-            } else {
-                NotesLayout::None
-            };
-            if layout == NotesLayout::None {
-                (layout, LayoutSource::Unsplit)
-            } else {
-                warnings.push(DocumentWarning::AmbiguousLayout);
-                (layout, LayoutSource::AspectRatio)
-            }
+            (NotesLayout::None, LayoutSource::Unsplit)
         };
         let labels: Vec<_> = metadata
             .pages
@@ -220,6 +226,12 @@ impl LoadedDocument {
         }
         Ok(Self {
             presentations: structure.pages.iter().map(|p| p.presentation).collect(),
+            suggested_layout: suggested.filter(|_| {
+                notes_mapping.iter().all(|m| m.notes_pages.is_empty())
+                    || warnings
+                        .iter()
+                        .any(|w| matches!(w, DocumentWarning::OrphanNotes { .. }))
+            }),
             page_count: labels.len(),
             labels,
             layout,
