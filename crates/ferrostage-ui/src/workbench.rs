@@ -230,6 +230,16 @@ impl Workbench {
             return Ok(());
         }
         let RequestId(id) = worker.submit(request).map_err(|e| e.to_string())?;
+        crate::perf::mark!(
+            "perf_submit",
+            id,
+            surface = ?surface,
+            generation = request.generation.0,
+            page = request.page.0,
+            epoch = request.epoch,
+            width = request.target_px.width,
+            height = request.target_px.height
+        );
         self.pending.insert(id, (surface, request));
         Ok(())
     }
@@ -244,6 +254,16 @@ impl Workbench {
             }
             match event.outcome {
                 Ok(result) if result.id == event.id && result.request == expected => {
+                    crate::perf::mark!(
+                        "perf_result",
+                        id = event.id.0,
+                        surface = ?surface,
+                        generation = expected.generation.0,
+                        page = expected.page.0,
+                        epoch = expected.epoch,
+                        cache_hit = result.cache_hit,
+                        render_us = result.render_duration.map(|d| d.as_micros() as u64)
+                    );
                     if let Some(duration) = result.render_duration {
                         self.render_ms = duration.as_secs_f64() * 1000.;
                     }

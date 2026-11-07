@@ -19,6 +19,8 @@ The talk timer is independent. Original PDF Notes remain private rasters.
 - Audience emits `PlaybackEvent { identity, phase: FirstVisible | Settled, at: Instant }`.
   `Autoplay::{first_visible, settled}(identity, at)` accept matching events;
   `next_turn(now)` returns at most one eligible identity, never a backlog.
+- `RenderHandle::completion_notifications()` returns a receiver of coalesced unit
+  notifications. Import replies and `RenderEvent` channels carry the actual results.
 
 ## 3. Contracts
 
@@ -35,6 +37,13 @@ navigation identity for a selected destination, but attach it only when generati
 physical page, crop, Audience priority and current target pixels match the assembled
 public image. While rasterization is pending, retained old pixels retain their old
 identity. The scheduler rejects their events for the newly selected destination.
+
+When navigation changes the physical page, the shell schedules the new request in the
+same action. A worker completion wakes the foreground to drain available results and
+advance the import or redraw the matching frame. Multiple completions may share one
+wake. Generation, epoch, target and reload checks still apply before publication.
+The periodic tick continues to handle maintenance and authored dwell. Shutdown drops
+the completion listener together with the polling task.
 
 Audience starts an effect only after successful incoming atlas upload. FirstVisible
 acknowledges a successfully painted effect frame (which may be its outgoing zero-progress
@@ -104,6 +113,8 @@ consume an undelivered phase, or resume because a failed reload's transaction wa
 ## 6. Tests Required
 
 Retain `transitions::tests`, actual `audience::playback::tests` scene/atlas coverage,
+`visible_completions_coalesce_without_consuming_results` and
+`navigation_requests_current_page_without_advancing_the_poll_timer`,
 `autoplay::tests`, Shell `timed_*` regressions and reload playback tests. Assert exact
 destination matching, note exclusion, source-window rejection, no recursive zero advance,
 positive post-settlement dwell, pause/remainder preservation, deferred blank race and

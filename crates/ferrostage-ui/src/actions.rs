@@ -122,10 +122,27 @@ pub(crate) enum Intent {
 
 pub(crate) fn dispatch(shell: &WeakEntity<Shell>, intent: Intent, cx: &mut App) {
     let shell = shell.clone();
+    let input = match intent {
+        Intent::Next => Some("next"),
+        Intent::Previous => Some("previous"),
+        _ => None,
+    }
+    .filter(|_| tracing::enabled!(target: "ferrostage_perf", tracing::Level::INFO))
+    .map(|direction| (direction, std::time::Instant::now()));
     // Input callbacks run while GPUI has taken the current Window out of App.
     // Release that window before coordinator actions update/activate/remove it.
     cx.defer(move |cx| {
-        if let Err(error) = shell.update(cx, |shell, cx| shell.dispatch(intent, cx)) {
+        if let Err(error) = shell.update(cx, |shell, cx| {
+            if let Some((direction, at)) = input {
+                crate::perf::mark!(
+                    at at, "perf_input",
+                    direction = %direction,
+                    generation = shell.state.generation().0,
+                    page = shell.state.current_page().0
+                );
+            }
+            shell.dispatch(intent, cx);
+        }) {
             tracing::debug!(%error, "action target retired");
         }
     });

@@ -1845,6 +1845,7 @@ dependencies = [
 name = "ferrostage-render"
 version = "1.2.1"
 dependencies = [
+ "async-channel",
  "ferrostage-core",
  "ferrostage-pdf",
  "thiserror 2.0.21",

@@ -109,6 +109,25 @@ fn simple() -> (RenderHandle, Calls, Arc<Mutex<Vec<DocumentGeneration>>>) {
     )
 }
 #[test]
+fn visible_completions_coalesce_without_consuming_results() {
+    let (worker, _, _) = simple();
+    let notifications = worker.completion_notifications();
+    let request = req(1, 0, 0, RenderPriority::Audience);
+    reply(worker.load_active(DocumentGeneration(1), vec![1]).unwrap()).unwrap();
+    // Clear the independent load wake before testing raster completion.
+    reply(worker.probe(vec![1]).unwrap()).unwrap();
+    assert_eq!(notifications.try_recv(), Ok(()));
+    let first = worker.submit(request).unwrap();
+    let second = worker.submit(request).unwrap();
+    assert_eq!(event(&worker).id, first);
+    assert_eq!(event(&worker).id, second);
+    // A probe is a worker barrier and emits no visible-frame notification.
+    reply(worker.probe(vec![1]).unwrap()).unwrap();
+    assert_eq!(notifications.try_recv(), Ok(()));
+    assert!(notifications.is_empty());
+}
+
+#[test]
 fn reversible_commit_restores_active_raster_and_rejects_foreign_or_retired_capabilities() {
     let (worker, _, removed) = simple();
     let (foreign, _, _) = simple();

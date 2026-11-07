@@ -42,6 +42,7 @@ publish = false
 rust-version = "1.99"
 
 [workspace.dependencies]
+async-channel = "=2.5.0"
 ferrostage-core = { path = "crates/ferrostage-core" }
 ferrostage-document = { path = "crates/ferrostage-document" }
 ferrostage-pdf = { path = "crates/ferrostage-pdf" }

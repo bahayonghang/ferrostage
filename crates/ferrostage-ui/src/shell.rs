@@ -201,6 +201,7 @@ pub(crate) struct Shell {
     pub snapshot: Entity<AudienceProjectionSnapshot>,
     escape_stops: bool,
     poll_task: Option<gpui::Task<()>>,
+    render_wake_task: Option<gpui::Task<()>>,
     import_read_task: Option<gpui::Task<()>>,
     path_prompt_task: Option<gpui::Task<()>>,
 }
@@ -264,6 +265,24 @@ fn install_close_handler(shell: &Entity<Shell>, cx: &mut App) {
 
 impl Shell {
     fn start_polling(&mut self, cx: &mut Context<Self>) {
+        if let Ok(worker) = &self.renderer {
+            let completions = worker.completion_notifications();
+            self.render_wake_task = Some(cx.spawn(async move |weak, cx| {
+                while completions.recv().await.is_ok() {
+                    if weak
+                        .update(cx, |shell, cx| {
+                            shell.poll_import(cx);
+                            shell.update_render();
+                            shell.publish(shell.pending.is_some(), cx);
+                            cx.notify();
+                        })
+                        .is_err()
+                    {
+                        break;
+                    }
+                }
+            }));
+        }
         self.poll_task = Some(cx.spawn(async move |weak, cx| {
             loop {
                 cx.background_executor()
@@ -285,6 +304,7 @@ impl Shell {
         if self.poll_task.take().is_some() {
             tracing::debug!(reason, "shell polling task cancelled before quit");
         }
+        drop(self.render_wake_task.take());
         drop(self.import_read_task.take());
         drop(self.path_prompt_task.take());
     }
@@ -385,6 +405,7 @@ impl Shell {
             snapshot,
             escape_stops,
             poll_task: None,
+            render_wake_task: None,
             import_read_task: None,
             path_prompt_task: None,
         }
@@ -529,6 +550,9 @@ impl Shell {
             );
             if before != after || jump {
                 self.select_playback(sequential);
+            }
+            if before != after && (sequential || jump) {
+                self.update_render();
             }
             if annotation {
                 self.pause_for_annotation();
@@ -857,6 +881,7 @@ impl Shell {
         }
         self.import_token += 1;
         let token = self.import_token;
+        crate::perf::mark!("perf_open", token);
         self.import = None;
         self.loading = true;
         self.error = None;
@@ -877,6 +902,7 @@ impl Shell {
         self.import_read_task =
             Some(cx.spawn(async move |weak, cx| {
                 let bytes = read.await;
+                crate::perf::mark!("perf_read", token, ok = bytes.is_ok());
                 let bytes = match bytes {
                     Ok(bytes) => {
                         cx.background_executor()
@@ -889,6 +915,7 @@ impl Shell {
                     }
                     Err(error) => Err(ImportReadError::Io(error)),
                 };
+                crate::perf::mark!("perf_structure", token, ok = bytes.is_ok());
                 if let Err(error) = weak.update(cx, |shell, cx| {
                     if shell.import_token != token {
                         return;
@@ -899,6 +926,7 @@ impl Shell {
                                 shell.next_generation.max(shell.state.generation().0 + 1),
                             );
                             shell.next_generation = generation.0 + 1;
+                            crate::perf::mark!("perf_candidate", token, generation = generation.0);
                             let load = shell.renderer.as_ref().map_err(|e| e.to_string()).and_then(
                                 |worker| {
                                     crate::document_load::PendingLoad::new(
@@ -1460,6 +1488,11 @@ impl Shell {
         if timer == StartTimer::Resume && self.resumable_elapsed().is_none() {
             return;
         }
+        crate::perf::mark!(
+            "perf_start",
+            generation = self.state.generation().0,
+            page = self.state.current_page().0
+        );
         self.close_identify(cx);
         self.refresh_mapping(cx);
         if let Some(reason) = self.start_reason() {
@@ -2167,6 +2200,14 @@ impl Shell {
             Instant::now(),
         );
         self.poll_reload(cx);
+        self.update_render();
+        self.publish(self.pending.is_some(), cx);
+        self.poll_timed_playback(cx);
+        cx.notify();
+        // If startup had zero screens, the platform watcher owns recovery.
+    }
+
+    fn update_render(&mut self) {
         if !self.reload_blocks_render()
             && let Ok(worker) = &self.renderer
         {
@@ -2180,10 +2221,6 @@ impl Shell {
                 self.error = Some(error);
             }
         }
-        self.publish(self.pending.is_some(), cx);
-        self.poll_timed_playback(cx);
-        cx.notify();
-        // If startup had zero screens, the platform watcher owns recovery.
     }
 
     fn topology_changed(&mut self, event: TopologyEvent, cx: &mut Context<Self>) {
@@ -6997,6 +7034,29 @@ mod tests {
             .unwrap()
             .update(cx, |view, window, _| view.layout_focus_probe(window))
             .unwrap()
+    }
+
+    #[gpui::test]
+    fn navigation_requests_current_page_without_advancing_the_poll_timer(cx: &mut TestAppContext) {
+        use crate::workbench::Surface;
+        let (shell, _) = workbench_fixture(cx);
+        shell.update(cx, |shell, cx| {
+            shell.renderer = Ok(RenderHandle::with_backend(
+                || Box::new(SettingsBackend),
+                ferrostage_render::CacheBudgets::default(),
+            )
+            .unwrap());
+            assert!(shell.workbench.requested_surfaces().is_empty());
+            shell.apply(Command::NextStep, cx);
+            // The first physical page after the current one is private.
+            assert_eq!(shell.state.current_page(), PhysicalPage(2));
+            assert!(
+                shell
+                    .workbench
+                    .requested_surfaces()
+                    .contains(&Surface::Current)
+            );
+        });
     }
 
     const LAYOUT_ROWS: [&str; 3] = ["layout-row-0", "layout-row-1", "layout-row-2"];

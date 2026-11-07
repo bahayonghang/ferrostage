@@ -35,6 +35,7 @@ struct Engine<'a> {
     l2: FrameCache,
     l3: FrameCache,
     results: Sender<RenderEvent>,
+    completions: async_channel::Sender<()>,
 }
 
 pub(super) fn run(
@@ -42,6 +43,7 @@ pub(super) fn run(
     budgets: CacheBudgets,
     messages: Receiver<Message>,
     results: Sender<RenderEvent>,
+    completions: async_channel::Sender<()>,
 ) {
     let mut engine = Engine {
         backend,
@@ -58,6 +60,7 @@ pub(super) fn run(
         l2: FrameCache::new(budgets.l2_bytes),
         l3: FrameCache::new(budgets.l3_bytes),
         results,
+        completions,
     };
     let mut completed = None;
     loop {
@@ -126,6 +129,10 @@ impl Engine<'_> {
         }
     }
     fn message(&mut self, message: Message) -> bool {
+        let import_command = matches!(
+            message,
+            Message::Load(..) | Message::PreRender(..) | Message::Commit(..)
+        );
         match message {
             Message::Shutdown => return false,
             Message::Budgets(budgets, reply) => {
@@ -226,6 +233,8 @@ impl Engine<'_> {
                         job.candidate_nonce = self.nonce;
                         self.scheduler.push(job);
                     }
+                    // The batch replies when its final raster completes.
+                    return true;
                 }
             }
             Message::Commit(token, reply) => {
@@ -321,6 +330,9 @@ impl Engine<'_> {
                     };
                 reply.send(result).ok();
             }
+        }
+        if import_command {
+            let _ = self.completions.try_send(());
         }
         true
     }
@@ -422,6 +434,9 @@ impl Engine<'_> {
                     outcome: result,
                 })
                 .ok();
+        }
+        if job.candidate || job.request.priority <= RenderPriority::Presenter {
+            let _ = self.completions.try_send(());
         }
     }
 }

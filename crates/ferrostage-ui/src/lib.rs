@@ -23,6 +23,7 @@ mod identify;
 pub mod locale;
 #[cfg(feature = "gpui")]
 mod page_browser;
+mod perf;
 pub mod policy;
 #[cfg(feature = "gpui")]
 mod presenter;

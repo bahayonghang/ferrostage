@@ -12,6 +12,7 @@ default = []
 pdfium = ["ferrostage-pdf/pdfium"]
 
 [dependencies]
+async-channel.workspace = true
 ferrostage-pdf.workspace = true
 thiserror.workspace = true
 ferrostage-core.workspace = true

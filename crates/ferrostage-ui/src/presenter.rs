@@ -191,6 +191,7 @@ pub(crate) struct Presenter {
     settings_drag: std::rc::Rc<std::cell::Cell<Option<&'static str>>>,
     drawing: std::rc::Rc<std::cell::Cell<bool>>,
     paint_ms: std::rc::Rc<std::cell::Cell<f64>>,
+    traced_preview: std::rc::Rc<std::cell::Cell<Option<ferrostage_core::DocumentGeneration>>>,
 }
 
 /// Which workbench divider is being dragged.
@@ -460,6 +461,7 @@ impl Presenter {
             settings_drag: Default::default(),
             drawing: Default::default(),
             paint_ms: Default::default(),
+            traced_preview: Default::default(),
         }
     }
 

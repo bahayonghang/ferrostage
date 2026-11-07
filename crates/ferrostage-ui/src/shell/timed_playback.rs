@@ -58,6 +58,13 @@ impl Shell {
             navigation: self.timed.serial,
             page: self.state.current_page(),
         };
+        crate::perf::mark!(
+            "perf_selected",
+            generation = identity.generation.0,
+            navigation = identity.navigation,
+            page = identity.page.0,
+            window = audience.handle.window_id().as_u64()
+        );
         self.timed.navigation = Some(Navigation {
             playback: AudiencePlayback {
                 identity,
@@ -196,6 +203,14 @@ impl Shell {
             PlaybackPhase::FirstVisible => self.timed.clock.first_visible(event.identity, event.at),
             PlaybackPhase::Settled => self.timed.clock.settled(event.identity, event.at),
         }
+        crate::perf::mark!(
+            at event.at, "perf_audience",
+            generation = event.identity.generation.0,
+            navigation = event.identity.navigation,
+            page = event.identity.page.0,
+            window = source.as_u64(),
+            phase = ?event.phase
+        );
         tracing::debug!(?event.identity, ?event.phase, "audience playback acknowledged");
     }
 

@@ -48,6 +48,7 @@ impl PendingLoad {
                     let Some(metadata) = receive(reply) else {
                         return Ok(None);
                     };
+                    crate::perf::mark!("perf_metadata", generation = self.generation.0);
                     let session = DocumentSession::build(
                         metadata?,
                         self.structure.take().ok_or("missing candidate structure")?,
@@ -69,6 +70,7 @@ impl PendingLoad {
                     let Some(ready) = receive(reply) else {
                         return Ok(None);
                     };
+                    crate::perf::mark!("perf_candidate_raster", generation = self.generation.0);
                     self.phase = LoadPhase::Commit(
                         worker.commit_candidate(ready?).map_err(|e| e.to_string())?,
                     );
@@ -80,6 +82,7 @@ impl PendingLoad {
                     if ack?.generation != self.generation {
                         return Err("candidate commit generation mismatch".into());
                     }
+                    crate::perf::mark!("perf_commit", generation = self.generation.0);
                     return self
                         .session
                         .take()

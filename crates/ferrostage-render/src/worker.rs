@@ -44,6 +44,7 @@ pub(super) enum Message {
 pub struct RenderHandle {
     commands: Sender<Message>,
     results: Receiver<RenderEvent>,
+    completions: async_channel::Receiver<()>,
     next_id: AtomicU64,
     thread: Option<JoinHandle<()>>,
 }
@@ -52,11 +53,11 @@ impl RenderHandle {
     pub fn spawn(config: RuntimeConfig, budgets: CacheBudgets) -> Result<Self, RenderError> {
         #[cfg(feature = "pdfium")]
         {
-            Self::start(move |rx, tx, ready| {
+            Self::start(move |rx, tx, ready, completions| {
                 let report = ready.clone();
                 if let Err(error) = ferrostage_pdf::with_native_session(config, |backend| {
                     if ready.send(Ok(())).is_ok() {
-                        engine::run(backend, budgets, rx, tx);
+                        engine::run(backend, budgets, rx, tx, completions);
                     }
                 }) {
                     report.send(Err(error.into())).ok();
@@ -78,28 +79,36 @@ impl RenderHandle {
         factory: impl FnOnce() -> Box<dyn RasterBackend> + Send + 'static,
         budgets: CacheBudgets,
     ) -> Result<Self, RenderError> {
-        Self::start(move |rx, tx, ready| {
+        Self::start(move |rx, tx, ready, completions| {
             let mut backend = factory();
             if ready.send(Ok(())).is_ok() {
-                engine::run(backend.as_mut(), budgets, rx, tx);
+                engine::run(backend.as_mut(), budgets, rx, tx, completions);
             }
         })
     }
 
     fn start(
-        run: impl FnOnce(Receiver<Message>, Sender<RenderEvent>, Response<()>) + Send + 'static,
+        run: impl FnOnce(
+            Receiver<Message>,
+            Sender<RenderEvent>,
+            Response<()>,
+            async_channel::Sender<()>,
+        ) + Send
+        + 'static,
     ) -> Result<Self, RenderError> {
         let (commands, rx) = mpsc::channel();
         let (tx, results) = mpsc::channel();
         let (ready, status) = mpsc::channel();
+        let (wake, completions) = async_channel::bounded(1);
         let thread = thread::Builder::new()
             .name("ferrostage-pdf".into())
-            .spawn(move || run(rx, tx, ready))
+            .spawn(move || run(rx, tx, ready, wake))
             .map_err(|_| RenderError::WorkerUnavailable)?;
         match status.recv().unwrap_or(Err(RenderError::WorkerUnavailable)) {
             Ok(()) => Ok(Self {
                 commands,
                 results,
+                completions,
                 next_id: AtomicU64::new(1),
                 thread: Some(thread),
             }),
@@ -185,6 +194,11 @@ impl RenderHandle {
     }
     pub fn results(&self) -> &Receiver<RenderEvent> {
         &self.results
+    }
+    /// One coalesced wake for import replies and visible raster results. The
+    /// normal reply/result channels retain the data and its exact identity.
+    pub fn completion_notifications(&self) -> async_channel::Receiver<()> {
+        self.completions.clone()
     }
     pub fn advance_epoch(
         &self,

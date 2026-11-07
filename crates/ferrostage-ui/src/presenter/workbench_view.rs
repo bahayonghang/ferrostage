@@ -228,6 +228,14 @@ impl Presenter {
         };
         let textures = self.textures.clone();
         let paint_ms = self.paint_ms.clone();
+        let preview_trace = if surface == Surface::Current
+            && tracing::enabled!(target: "ferrostage_perf", tracing::Level::INFO)
+        {
+            self.frame(surface)
+                .map(|ready| (self.traced_preview.clone(), ready.request))
+        } else {
+            None
+        };
         let bounds = Rc::new(Cell::new(gpui::Bounds::default()));
         let paint_bounds = bounds.clone();
         let input_bounds = bounds.clone();
@@ -314,6 +322,19 @@ impl Presenter {
                         }
                         if surface == Surface::Current {
                             paint_ms.set(started.elapsed().as_secs_f64() * 1000.);
+                            if current
+                                && let Some((seen, request)) = &preview_trace
+                                && seen.get() != Some(request.generation)
+                            {
+                                seen.set(Some(request.generation));
+                                crate::perf::mark!(
+                                    "perf_preview",
+                                    generation = request.generation.0,
+                                    page = request.page.0,
+                                    width,
+                                    height
+                                );
+                            }
                         }
                     },
                 )
