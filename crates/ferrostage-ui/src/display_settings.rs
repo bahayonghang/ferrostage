@@ -478,12 +478,12 @@ pub(crate) mod view {
                     .border_color(rgb(if key.starts_with("displays-pending-") {
                         p.focus
                     } else if actual {
-                        p.card
+                        p.accent_wash
                     } else {
-                        p.canvas
+                        p.raised
                     }))
-                    .bg(rgb(if actual { p.card } else { p.canvas }))
-                    .text_color(rgb(if actual { p.output } else { p.muted }))
+                    .bg(rgb(if actual { p.accent_wash } else { p.raised }))
+                    .text_color(rgb(if actual { p.accent_text } else { p.muted }))
                     .child(l.text(key)),
             );
         }
@@ -620,8 +620,8 @@ pub(crate) mod view {
                 .w(px(preview_width))
                 .h(px(preview_height))
                 .flex_shrink_0()
-                .bg(rgb(p.soft))
-                .rounded(px(theme::RADIUS));
+                .bg(rgb(p.well))
+                .rounded(px(theme::WELL_RADIUS));
             let mut callouts = Vec::new();
             for (number, x, y, w, h) in topology_rectangles(&panel.monitors) {
                 let monitor = numbered(&panel.monitors)[number - 1].1;
@@ -640,7 +640,7 @@ pub(crate) mod view {
                     .h(px(rect_h))
                     .border_1()
                     .border_color(rgb(if actual { p.focus } else { p.border }))
-                    .bg(rgb(p.card))
+                    .bg(rgb(p.raised))
                     .flex()
                     .flex_col()
                     .items_center()
@@ -770,7 +770,7 @@ pub(crate) mod view {
                     .debug_selector(move || format!("display-card-{number}"))
                     .min_w_0()
                     .border_b_1()
-                    .border_color(rgb(p.border))
+                    .border_color(gpui::rgba(p.hairline))
                     .py(px(8.))
                     .flex()
                     .flex_col()
@@ -787,7 +787,7 @@ pub(crate) mod view {
                                     .h(px(theme::CONTROL))
                                     .flex_shrink_0()
                                     .rounded(px(theme::RADIUS))
-                                    .bg(rgb(p.soft))
+                                    .bg(rgb(p.control))
                                     .flex()
                                     .items_center()
                                     .justify_center()
@@ -950,7 +950,7 @@ pub(crate) mod view {
             .flex_shrink_0()
             .gap(px(4.))
             .border_t_1()
-            .border_color(rgb(p.border))
+            .border_color(gpui::rgba(p.hairline))
             .pt(px(8.))
             .child(
                 div()

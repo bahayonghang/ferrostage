@@ -22,7 +22,7 @@ impl Render for Identify {
             .flex_col()
             .items_center()
             .justify_center()
-            .bg(rgb(palette.canvas))
+            .bg(rgb(palette.layer_solid))
             .text_color(rgb(palette.ink))
             .font(self.typography.font())
             .border_2()
@@ -33,7 +33,7 @@ impl Render for Identify {
                     .font(self.typography.numeric_font())
                     .font_weight(gpui::FontWeight::BOLD)
                     .text_size(px(self.typography.size(72.)))
-                    .text_color(rgb(palette.output))
+                    .text_color(rgb(palette.accent_text))
                     .child(self.number.to_string()),
             )
             .child(

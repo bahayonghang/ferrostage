@@ -1,16 +1,16 @@
-//! The single presenter theme foundation from root DESIGN.md. Never used by AudienceView.
+//! The single presenter theme foundation from root DESIGN.md (warm-orange glass).
+//! Never used by AudienceView.
 use ferrostage_settings::Theme;
 
 pub const CONTROL: f32 = 44.0;
 pub const FOCUS_WIDTH: f32 = 2.0;
 pub const FOCUS_GAP: f32 = 2.0;
 pub const RADIUS: f32 = 16.0;
-pub const PANEL_RADIUS: f32 = 20.0;
+/// Panels and floating surfaces.
+pub const PANEL_RADIUS: f32 = 16.0;
+/// Inset wells and images inside a 4px-padded panel.
+pub const WELL_RADIUS: f32 = 12.0;
 pub const PILL_RADIUS: f32 = 999.0;
-pub const FIELD_ALPHA: f32 = 0.75;
-pub const SHEET_ALPHA: f32 = 0.78;
-pub const SOLID_SHEET_ALPHA: f32 = 0.96;
-pub const SHEET_SHADOW: u32 = 0x465A7814;
 pub const SPACING: f32 = 16.0;
 pub const HOME_WIDTH: f32 = 760.0;
 pub const SESSION_CONTROL: f32 = 56.;
@@ -96,29 +96,57 @@ impl Typography {
     }
 }
 
+/// Presenter colors. Every value is opaque `0xRRGGBB` except the fields documented
+/// as RGBA (`hairline`, `shadow`); `layer` is drawn at `layer_alpha` only when the
+/// native window blur is active, otherwise panels use `layer_solid`.
 #[derive(Clone, Copy, Debug)]
 pub struct Palette {
-    pub field_mint: u32,
-    pub field_lavender: u32,
-    pub sheet: u32,
-    pub sheet_edge: u32,
-    pub canvas: u32,
-    pub soft: u32,
-    pub card: u32,
+    /// Window field gradient ends (160deg). Text never sits directly on the field.
+    pub field_top: u32,
+    pub field_bottom: u32,
+    /// Field opacity over the native blurred window backdrop. High enough that an
+    /// arbitrary desktop tints the field without replacing its warm hue.
+    pub field_alpha: f32,
+    /// Panel layer over the native blurred field.
+    pub layer: u32,
+    pub layer_alpha: f32,
+    /// Panel color for every solid fallback surface.
+    pub layer_solid: u32,
+    /// Floating menus and dialogs.
+    pub raised: u32,
+    /// The selected option on a `control` track; always lighter than the track.
+    pub segment: u32,
+    /// Inset area inside a panel: note text, inputs and grouped settings.
+    pub well: u32,
+    /// Neutral control fill and its hover/pressed states, precomposited over `layer_solid`.
+    pub control: u32,
+    pub control_hover: u32,
+    pub control_pressed: u32,
+    /// Decorative separator, RGBA. Never a control boundary.
+    pub hairline: u32,
+    /// Boundary for inputs that need one; >=3:1 on `well` and `layer_solid`.
+    pub border: u32,
     pub ink: u32,
     pub body: u32,
     pub muted: u32,
-    pub border: u32,
+    /// Primary action fill and its text.
+    pub accent: u32,
+    pub on_accent: u32,
+    pub accent_hover: u32,
+    pub accent_pressed: u32,
+    /// Orange text and links.
+    pub accent_text: u32,
+    /// Focus ring and selection indicator.
     pub focus: u32,
-    pub output: u32,
-    pub on_action: u32,
-    action_hover: u32,
-    action_pressed: u32,
-    control_hover: u32,
-    control_pressed: u32,
+    /// Selected row or menu entry fill.
+    pub accent_wash: u32,
+    /// Status colors, for status text and marks only.
     pub success: u32,
     pub warning: u32,
     pub error: u32,
+    pub error_wash: u32,
+    /// The single floating-surface shadow, RGBA.
+    pub shadow: u32,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -130,106 +158,151 @@ pub enum ButtonKind {
     Tool,
     Destructive,
     Utility,
+    /// One option of a segmented control; the track is `control`.
+    Segment,
+    /// The session Stop action: error text on its own wash.
+    Stop,
 }
 
 #[derive(Clone, Copy)]
 pub struct ButtonStyle {
     pub fill: u32,
     pub ink: u32,
-    pub border: u32,
     pub hover: u32,
     pub pressed: u32,
     pub radius: f32,
+    /// Non-color selected-state mark, drawn in a fixed slot.
+    pub indicator: Option<u32>,
 }
 
 impl Palette {
     pub fn button(self, kind: ButtonKind, enabled: bool, selected: bool) -> ButtonStyle {
         let mut style = ButtonStyle {
-            fill: self.canvas,
+            fill: self.control,
             ink: self.body,
-            border: self.border,
             hover: self.control_hover,
             pressed: self.control_pressed,
             radius: PILL_RADIUS,
+            indicator: None,
         };
         match kind {
             ButtonKind::Primary => {
-                style.fill = self.focus;
-                style.ink = self.on_action;
-                style.border = self.focus;
-                style.hover = self.action_hover;
-                style.pressed = self.action_pressed;
+                style.fill = self.accent;
+                style.ink = self.on_accent;
+                style.hover = self.accent_hover;
+                style.pressed = self.accent_pressed;
+                style.indicator = selected.then_some(self.on_accent);
+            }
+            ButtonKind::Stop => {
+                style.fill = self.error_wash;
+                style.ink = self.error;
+                style.hover = over(self.ink, self.error_wash, 0.03);
+                style.pressed = over(self.ink, self.error_wash, 0.06);
+                style.indicator = selected.then_some(self.focus);
             }
             ButtonKind::Destructive => {
                 style.ink = self.error;
-                style.border = self.error;
+                style.indicator = selected.then_some(self.focus);
+            }
+            // Black/white cover and drawing tools are options of segmented groups.
+            ButtonKind::Segment | ButtonKind::Black | ButtonKind::White | ButtonKind::Tool
+                if selected =>
+            {
+                style.fill = self.segment;
+                style.ink = self.ink;
+                style.hover = over(self.ink, self.segment, 0.03);
+                style.pressed = over(self.ink, self.segment, 0.06);
+                style.indicator = Some(self.focus);
             }
             _ if selected => {
-                style.fill = self.soft;
-                style.ink = self.focus;
-                style.border = self.focus;
-            }
-            ButtonKind::Navigation => {
-                style.fill = self.soft;
-                style.ink = self.focus;
+                style.fill = self.accent_wash;
+                style.ink = self.ink;
+                style.indicator = Some(self.focus);
             }
             _ => {}
         }
         if !enabled {
-            style.fill = self.canvas;
+            style.fill = self.control;
             style.ink = self.muted;
-            style.border = self.border;
+            style.indicator = selected.then_some(self.muted);
         }
         style
     }
 }
 
+/// Source-over composition of opaque `front` at `alpha` on opaque `back`.
+pub fn over(front: u32, back: u32, alpha: f32) -> u32 {
+    [16, 8, 0].into_iter().fold(0, |rgb, shift| {
+        let a = ((front >> shift) & 255) as f32;
+        let b = ((back >> shift) & 255) as f32;
+        rgb | (((a * alpha + b * (1. - alpha)).round() as u32) << shift)
+    })
+}
+
 pub const LIGHT: Palette = Palette {
-    field_mint: 0xE7F6F1,
-    field_lavender: 0xEDE7F8,
-    sheet: 0xFFFFFF,
-    sheet_edge: 0xFFFFFF,
-    canvas: 0xFEFEFF,
-    soft: 0xE7F7F0,
-    card: 0xF3EEFC,
-    ink: 0x24303A,
-    body: 0x354650,
-    muted: 0x5C6B76,
-    border: 0x77878B,
-    focus: 0x187A56,
-    output: 0x6D4BD6,
-    on_action: 0xFFFFFF,
-    action_hover: 0x126747,
-    action_pressed: 0x0E583D,
-    control_hover: 0xEFF4F2,
-    control_pressed: 0xE2F2EC,
-    success: 0x187A56,
-    warning: 0x875411,
-    error: 0xA03242,
+    field_top: 0xF7F2EB,
+    field_bottom: 0xEFE6DB,
+    field_alpha: 0.88,
+    layer: 0xFFFFFF,
+    layer_alpha: 0.66,
+    layer_solid: 0xFBF8F4,
+    raised: 0xFFFFFF,
+    segment: 0xFFFFFF,
+    well: 0xF3EEE7,
+    // Ink #1F1B17 at 0.06 / 0.10 / 0.14 over `layer_solid`.
+    control: 0xEEEBE7,
+    control_hover: 0xE5E2DE,
+    control_pressed: 0xDCD9D5,
+    hairline: 0x1F1B1714,
+    border: 0x8C847A,
+    ink: 0x1F1B17,
+    body: 0x3D3833,
+    muted: 0x5F5850,
+    accent: 0xD97757,
+    on_accent: 0x1F1712,
+    accent_hover: 0xE0866A,
+    accent_pressed: 0xC9694A,
+    accent_text: 0xA3492A,
+    focus: 0xA3492A,
+    accent_wash: 0xF7E6DC,
+    success: 0x2F6B45,
+    warning: 0x8A5A12,
+    error: 0xA63A32,
+    error_wash: 0xF8E3DF,
+    shadow: 0x1F1B171F,
 };
 
 pub const DARK: Palette = Palette {
-    field_mint: 0x142723,
-    field_lavender: 0x242037,
-    sheet: 0x172321,
-    sheet_edge: 0xA3B9B1,
-    canvas: 0x172321,
-    soft: 0x213A32,
-    card: 0x312C44,
-    ink: 0xF3FAF7,
-    body: 0xD9E6E1,
-    muted: 0xB2C5BF,
-    border: 0x859D94,
-    focus: 0x83DFB7,
-    output: 0xC6B4FF,
-    on_action: 0x10271E,
-    action_hover: 0xA4EACE,
-    action_pressed: 0x70CEAA,
-    control_hover: 0x26342F,
-    control_pressed: 0x324037,
-    success: 0x83DFB7,
-    warning: 0xF1C27C,
-    error: 0xFFABB6,
+    field_top: 0x1D1B19,
+    field_bottom: 0x26221E,
+    field_alpha: 0.82,
+    layer: 0x2C2824,
+    layer_alpha: 0.74,
+    layer_solid: 0x2A2622,
+    raised: 0x38332E,
+    segment: 0x524D48,
+    well: 0x221F1C,
+    // White at 0.08 / 0.12 / 0.16 over `layer_solid`.
+    control: 0x3B3734,
+    control_hover: 0x44403D,
+    control_pressed: 0x4C4945,
+    hairline: 0xFFFFFF14,
+    border: 0x8F877C,
+    ink: 0xF5F1EB,
+    body: 0xE2DBD2,
+    muted: 0xC4BCB2,
+    accent: 0xD97757,
+    on_accent: 0x1F1712,
+    accent_hover: 0xE0866A,
+    accent_pressed: 0xC9694A,
+    accent_text: 0xEBA98C,
+    focus: 0xEBA98C,
+    accent_wash: 0x3A2A22,
+    success: 0x8DCEA0,
+    warning: 0xE8B774,
+    error: 0xFFA5A0,
+    error_wash: 0x3B2523,
+    shadow: 0x00000066,
 };
 
 pub fn palette(theme: Theme, system_dark: bool) -> Palette {
@@ -295,92 +368,177 @@ mod tests {
         let b = luminance(b);
         (a.max(b) + 0.05) / (a.min(b) + 0.05)
     }
+    const KINDS: [ButtonKind; 9] = [
+        ButtonKind::Primary,
+        ButtonKind::Navigation,
+        ButtonKind::Black,
+        ButtonKind::White,
+        ButtonKind::Tool,
+        ButtonKind::Destructive,
+        ButtonKind::Utility,
+        ButtonKind::Segment,
+        ButtonKind::Stop,
+    ];
+    /// Every opaque panel color text can land on, including the native composite of
+    /// field and layer over the two desktop extremes behind the blurred window.
+    fn panels(p: Palette) -> Vec<u32> {
+        let mut panels = vec![p.layer_solid];
+        for edge in [p.field_top, p.field_bottom] {
+            for desktop in [0, 0xFFFFFF] {
+                panels.push(over(
+                    p.layer,
+                    over(edge, desktop, p.field_alpha),
+                    p.layer_alpha,
+                ));
+            }
+        }
+        panels
+    }
+
     #[test]
-    fn semantic_button_states_keep_text_and_boundaries_readable() {
-        for palette in [LIGHT, DARK] {
-            for kind in [
-                ButtonKind::Primary,
-                ButtonKind::Navigation,
-                ButtonKind::Black,
-                ButtonKind::White,
-                ButtonKind::Tool,
-                ButtonKind::Destructive,
-                ButtonKind::Utility,
-            ] {
+    fn control_fills_are_the_documented_precomposites() {
+        for (p, base, alphas) in [
+            (LIGHT, LIGHT.ink, [0.06, 0.10, 0.14]),
+            (DARK, 0xFFFFFF, [0.08, 0.12, 0.16]),
+        ] {
+            let fills = [p.control, p.control_hover, p.control_pressed];
+            for (fill, alpha) in fills.into_iter().zip(alphas) {
+                assert_eq!(fill, over(base, p.layer_solid, alpha), "{fill:06x}");
+            }
+        }
+    }
+
+    #[test]
+    fn semantic_button_states_keep_text_focus_and_selection_readable() {
+        for p in [LIGHT, DARK] {
+            for kind in KINDS {
                 for enabled in [false, true] {
                     for selected in [false, true] {
-                        let style = palette.button(kind, enabled, selected);
+                        let style = p.button(kind, enabled, selected);
                         assert!(contrast(style.ink, style.fill) >= 4.5, "{kind:?}");
-                        if matches!(
-                            kind,
-                            ButtonKind::Primary | ButtonKind::Destructive | ButtonKind::Utility
-                        ) || !enabled
-                        {
-                            assert!(contrast(style.border, palette.canvas) >= 3.);
-                        }
-                        assert!(
-                            contrast(palette.focus, style.fill) >= 3.
-                                || kind == ButtonKind::Primary
-                        );
                         if enabled {
                             assert!(contrast(style.ink, style.hover) >= 4.5, "hover {kind:?}");
                             assert!(contrast(style.ink, style.pressed) >= 4.5, "press {kind:?}");
                         }
+                        // The 2px ring sits outside a 2px gap on the panel; it must
+                        // also read against every neutral fill it can touch.
+                        if kind != ButtonKind::Primary {
+                            assert!(contrast(p.focus, style.fill) >= 3., "focus {kind:?}");
+                        }
+                        // Selection always carries a non-color mark.
+                        assert_eq!(style.indicator.is_some(), selected, "{kind:?}");
+                        if let Some(mark) = style.indicator.filter(|_| enabled) {
+                            for fill in [style.fill, style.hover, style.pressed] {
+                                assert!(contrast(mark, fill) >= 3., "mark {kind:?} {fill:06x}");
+                            }
+                        }
                     }
                 }
             }
+            for panel in panels(p) {
+                assert!(contrast(p.focus, panel) >= 3., "focus on {panel:06x}");
+            }
+            // The selected segment reads as lifted off its track in both variants.
+            assert!(luminance(p.segment) > luminance(p.control));
+            assert!(contrast(p.segment, p.control) >= 1.1, "segment lift");
         }
     }
 
     #[test]
-    fn used_text_and_focus_pairs_meet_design_contrast() {
+    fn primary_action_is_warm_orange_with_dark_text() {
         for p in [LIGHT, DARK] {
-            for surface in [p.canvas, p.soft, p.card] {
+            assert_eq!(p.accent, 0xD97757);
+            for fill in [p.accent, p.accent_hover, p.accent_pressed] {
+                assert!(contrast(p.on_accent, fill) >= 4.5, "{fill:06x}");
+            }
+            // White text on the warm orange is only about 3.1:1.
+            assert!(contrast(0xFFFFFF, p.accent) < 4.5);
+        }
+    }
+
+    #[test]
+    fn used_text_and_boundary_pairs_meet_design_contrast() {
+        for p in [LIGHT, DARK] {
+            let mut surfaces = panels(p);
+            surfaces.extend([p.raised, p.well, p.accent_wash, p.control]);
+            for surface in surfaces {
                 for text in [
-                    p.ink, p.body, p.muted, p.success, p.output, p.warning, p.error,
+                    p.ink,
+                    p.body,
+                    p.muted,
+                    p.accent_text,
+                    p.success,
+                    p.warning,
+                    p.error,
                 ] {
-                    assert!(contrast(text, surface) >= 4.5, "{text:x}/{surface:x}");
-                }
-                for boundary in [p.border, p.focus] {
-                    assert!(contrast(boundary, surface) >= 3.0);
+                    assert!(contrast(text, surface) >= 4.5, "{text:06x}/{surface:06x}");
                 }
             }
+            for surface in [p.well, p.layer_solid, p.raised] {
+                assert!(contrast(p.border, surface) >= 3., "border/{surface:06x}");
+            }
+            assert!(contrast(p.error, p.error_wash) >= 4.5);
+            // The alert badge glyph, and the slider's value fill on its well.
+            assert!(contrast(p.layer_solid, p.error) >= 4.5);
+            assert!(contrast(p.focus, p.well) >= 3.);
         }
 
-        assert_eq!(palette(Theme::System, true).canvas, DARK.canvas);
-        assert_eq!(palette(Theme::System, false).canvas, LIGHT.canvas);
+        assert_eq!(palette(Theme::System, true).layer_solid, DARK.layer_solid);
+        assert_eq!(palette(Theme::System, false).layer_solid, LIGHT.layer_solid);
     }
 
     #[test]
-    fn paper_over_each_field_edge_and_desktop_extreme_keeps_aa_contrast() {
-        fn over(front: u32, back: u32, alpha: f32) -> u32 {
-            [16, 8, 0].into_iter().fold(0, |rgb, shift| {
-                let a = ((front >> shift) & 255) as f32;
-                let b = ((back >> shift) & 255) as f32;
-                rgb | (((a * alpha + b * (1. - alpha)).round() as u32) << shift)
-            })
+    fn chrome_uses_one_warm_hue_without_green_or_purple() {
+        fn hue_saturation(color: u32) -> (f64, f64) {
+            let [r, g, b] = [color >> 16, color >> 8, color].map(|v| f64::from(v & 255) / 255.);
+            let (max, min) = (r.max(g).max(b), r.min(g).min(b));
+            let delta = max - min;
+            if delta == 0. {
+                return (0., 0.);
+            }
+            let lightness = (max + min) / 2.;
+            let saturation = delta / (1. - (2. * lightness - 1.).abs());
+            let hue = if max == r {
+                60. * ((g - b) / delta).rem_euclid(6.)
+            } else if max == g {
+                60. * ((b - r) / delta + 2.)
+            } else {
+                60. * ((r - g) / delta + 4.)
+            };
+            (hue, saturation)
         }
         for p in [LIGHT, DARK] {
-            for edge in [p.field_mint, p.field_lavender] {
-                for desktop in [0, 0xffffff] {
-                    let field = over(edge, desktop, FIELD_ALPHA);
-                    for paper in [
-                        over(p.sheet, field, SHEET_ALPHA),
-                        over(p.sheet, edge, SOLID_SHEET_ALPHA),
-                    ] {
-                        for ink in [
-                            p.ink, p.body, p.muted, p.output, p.success, p.warning, p.error,
-                        ] {
-                            assert!(contrast(ink, paper) >= 4.5, "{ink:06x} on {paper:06x}");
-                        }
-                        for boundary in [p.focus, p.border] {
-                            assert!(
-                                contrast(boundary, paper) >= 3.,
-                                "{boundary:06x} on {paper:06x}"
-                            );
-                        }
-                    }
-                }
+            // Status colors are excluded: they mark state text only.
+            for color in [
+                p.field_top,
+                p.field_bottom,
+                p.layer,
+                p.layer_solid,
+                p.raised,
+                p.segment,
+                p.well,
+                p.control,
+                p.control_hover,
+                p.control_pressed,
+                p.hairline >> 8,
+                p.border,
+                p.ink,
+                p.body,
+                p.muted,
+                p.accent,
+                p.on_accent,
+                p.accent_hover,
+                p.accent_pressed,
+                p.accent_text,
+                p.focus,
+                p.accent_wash,
+                p.error_wash,
+            ] {
+                let (hue, saturation) = hue_saturation(color);
+                assert!(
+                    !(90. ..=300.).contains(&hue) || saturation <= 0.25,
+                    "{color:06x}: hue {hue:.0} saturation {saturation:.2}"
+                );
             }
         }
     }
@@ -388,18 +546,18 @@ mod tests {
     #[test]
     fn timer_capsule_and_split_session_pairs_meet_design_contrast() {
         for p in [LIGHT, DARK] {
-            // Capsule label, live/quiet digits and warnings on the output well.
-            for text in [p.muted, p.body, p.output, p.warning, p.error] {
-                assert!(contrast(text, p.card) >= 4.5, "{text:x}/{:x}", p.card);
+            // Capsule label, digits and warnings on the neutral control pill.
+            for text in [p.muted, p.body, p.ink, p.warning, p.error] {
+                assert!(contrast(text, p.control) >= 4.5, "{text:x}/{:x}", p.control);
             }
-            // State marks are non-text UI: focus dot, muted ring/square, warnings.
+            // State marks are non-text UI: running dot, muted ring/square, warnings.
             for mark in [p.focus, p.muted, p.warning, p.error] {
-                assert!(contrast(mark, p.card) >= 3.0, "{mark:x}");
+                assert!(contrast(mark, p.control) >= 3.0, "{mark:x}");
             }
             // Restart segment: navigation face with a muted sublabel.
             let restart = p.button(ButtonKind::Navigation, true, false);
             for fill in [restart.fill, restart.hover, restart.pressed] {
-                assert!(contrast(p.muted, fill) >= 4.5);
+                assert!(contrast(p.muted, fill) >= 4.5, "{fill:06x}");
             }
         }
     }

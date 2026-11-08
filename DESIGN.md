@@ -1,33 +1,56 @@
 ---
 version: alpha
-name: 轻盈毛玻璃
-description: "轻盈毛玻璃 is airy frosted glass: a light field, white paper, and two semantic colors, green for input and purple for output."
+name: 暖橙毛玻璃
+description: "暖橙毛玻璃 is warm frosted glass for a presenter: an ivory field, translucent panels of the same hue, and one warm-orange accent for action, focus and selection."
 colors:
-  canvas-mint: "#E7F6F1"
-  canvas-lavender: "#EDE7F8"
-  sheet: "rgba(255,255,255,0.78)"
-  sheet-solid: "rgba(255,255,255,0.96)"
-  sheet-edge: "rgba(255,255,255,0.80)"
-  ink: "#24303A"
-  muted: "#5C6B76"
-  input: "#187A56"
-  input-wash: "#E7F7F0"
-  output: "#6D4BD6"
-  output-wash: "#F3EEFC"
-  dark-field-mint: "#142723"
-  dark-field-lavender: "#242037"
-  dark-sheet: "#172321"
-  dark-sheet-edge: "#A3B9B1"
-  dark-input-wash: "#213A32"
-  dark-output-wash: "#312C44"
-  dark-ink: "#F3FAF7"
-  dark-body: "#D9E6E1"
-  dark-muted: "#B2C5BF"
-  dark-boundary: "#859D94"
-  dark-input: "#83DFB7"
-  dark-output: "#C6B4FF"
-  dark-warning: "#F1C27C"
-  dark-error: "#FFABB6"
+  field-top: "#F7F2EB"
+  field-bottom: "#EFE6DB"
+  layer: "rgba(255,255,255,0.66)"
+  layer-solid: "#FBF8F4"
+  raised: "#FFFFFF"
+  segment: "#FFFFFF"
+  well: "#F3EEE7"
+  control: "#EEEBE7"
+  control-hover: "#E5E2DE"
+  control-pressed: "#DCD9D5"
+  hairline: "rgba(31,27,23,0.08)"
+  border: "#8C847A"
+  ink: "#1F1B17"
+  body: "#3D3833"
+  muted: "#5F5850"
+  primary: "#D97757"
+  primary-hover: "#E0866A"
+  primary-active: "#C9694A"
+  on-primary: "#1F1712"
+  accent-text: "#A3492A"
+  focus: "#A3492A"
+  accent-wash: "#F7E6DC"
+  success: "#2F6B45"
+  warning: "#8A5A12"
+  error: "#A63A32"
+  error-wash: "#F8E3DF"
+  dark-field-top: "#1D1B19"
+  dark-field-bottom: "#26221E"
+  dark-layer: "rgba(44,40,36,0.74)"
+  dark-layer-solid: "#2A2622"
+  dark-raised: "#38332E"
+  dark-segment: "#524D48"
+  dark-well: "#221F1C"
+  dark-control: "#3B3734"
+  dark-control-hover: "#44403D"
+  dark-control-pressed: "#4C4945"
+  dark-hairline: "rgba(255,255,255,0.08)"
+  dark-border: "#8F877C"
+  dark-ink: "#F5F1EB"
+  dark-body: "#E2DBD2"
+  dark-muted: "#C4BCB2"
+  dark-accent-text: "#EBA98C"
+  dark-focus: "#EBA98C"
+  dark-accent-wash: "#3A2A22"
+  dark-success: "#8DCEA0"
+  dark-warning: "#E8B774"
+  dark-error: "#FFA5A0"
+  dark-error-wash: "#3B2523"
 typography:
   display-num:
     fontFamily: 'Figtree, "PingFang SC", "Noto Sans SC", sans-serif'
@@ -53,8 +76,9 @@ typography:
     letterSpacing: 0
 rounded:
   image: 12px
-  well: 16px
-  sheet: 20px
+  well: 12px
+  panel: 16px
+  floating: 16px
   pill: 999px
 spacing:
   min: 8px
@@ -65,55 +89,54 @@ spacing:
   xxl: 48px
 material:
   field-angle: 160deg
-  sheet-blur: 20px
-  sheet-blur-min: 16px
-  sheet-blur-max: 24px
-  sheet-saturate: 1.15
-  blob-blur: 80px
-  blob-opacity: 0.55
-  blob-max: 3
-  backdrop-max: 6
+  field-alpha-native: 0.88
+  dark-field-alpha-native: 0.82
+  layer-alpha-native: 0.66
+  dark-layer-alpha-native: 0.74
   solid-breakpoint: 960px
 elevation:
-  sheet-shadow: "0 20px 48px rgba(70, 90, 120, 0.08)"
+  floating-shadow: "0 12px 32px rgba(31, 27, 23, 0.12)"
+  dark-floating-shadow: "0 12px 32px rgba(0, 0, 0, 0.40)"
 motion:
-  press-scale: 0.98
-  press-duration: 120ms
+  press-offset: 1px
 ---
 <!-- design-atlas: entry=style:airy-glass; source=first-party; license=MIT -->
+<!-- customized: color system replaced by warm neutrals and one warm-orange accent; light and dark variants; material mapped to native GPUI window blur (no per-element backdrop-filter, no whole-window sheet); buttons bounded by fill, not outline -->
 
 ## Overview
 
-轻盈毛玻璃 is airy frosted glass for a workbench. The field is bright, low-chroma, cool air. White paper floats on a mint-to-lavender gradient. Read status, then the number, then the action. There is no marketing hero.
+暖橙毛玻璃 keeps the airy-glass material: a bright field, translucent layers of the same hue, large radii, and fill instead of outline. It replaces the color system with warm neutrals (ivory, sand, warm charcoal) and a single warm-orange accent.
 
-绿与紫是两个语义色. `{colors.input}` means input or completion. `{colors.output}` means output. Text sits on paper or on a solid well, never on the field.
+Read status, then the number, then the action. There is no marketing hero.
 
-Glass is not the default card skin. Only the paper uses `backdrop-filter`, and only once. This file does not define a component library. Do not import the glassmorphism palette, fonts, or radii.
+One accent hue only. Orange marks the primary action, focus, selection, the running-timer dot and links. Success, warning and error colors appear only in status text and status marks, never as a button or panel fill.
+
+Light is the default. Dark is a full variant with the same roles (`dark-*` tokens). The presenter's Light / Dark / System setting selects the variant; System follows the presenter window's observed appearance.
 
 ## Colors
 
-Field:
+Field: `{colors.field-top}` (`#F7F2EB`) to `{colors.field-bottom}` (`#EFE6DB`) at 160deg; dark `#1D1B19` to `#26221E`. The field covers the whole window, edge to edge. No blobs.
 
-- `{colors.canvas-mint}` (`#E7F6F1`) to `{colors.canvas-lavender}` (`#EDE7F8`), about 160deg.
-- At most 3 blobs. A blob keeps the hue of one field end and raises chroma slightly. Do not assign a new hex. Blur about 80px, opacity about 0.55. Keep blobs out from under text.
+Layers, in depth order:
 
-Paper is the only surface that may blur:
+- **Panel** `{colors.layer}`: white at 0.66 (dark `#2C2824` at 0.74) over the native blurred field; `{colors.layer-solid}` (`#FBF8F4`, dark `#2A2622`) for every solid fallback. No outline.
+- **Well** `{colors.well}` (`#F3EEE7`, dark `#221F1C`): inset area inside a panel, such as notes, inputs and grouped settings.
+- **Raised** `{colors.raised}` (`#FFFFFF`, dark `#38332E`): menus, dialogs and tooltips.
+- **Segment** `{colors.segment}` (`#FFFFFF`, dark `#524D48`): the selected option on a `control` track, always lighter than the track.
+- **Control** `{colors.control}` / `-hover` / `-pressed`: ink at 0.06 / 0.10 / 0.14 (dark: white at 0.08 / 0.12 / 0.16), precomposited over `layer-solid` as opaque values.
 
-- Fill `{colors.sheet}` (`rgba(255,255,255,0.78)`).
-- 模糊 20px, written `backdrop-filter: blur(20px) saturate(1.15)`. The allowed blur is 16px to 24px. The default is 20px. Saturation stays 1.15.
-- 1px edge `{colors.sheet-edge}` (`rgba(255,255,255,0.80)`). This is a light edge, not an opaque fence, and not a control boundary.
-- One shadow: `{elevation.sheet-shadow}`.
+Lines:
 
-Wells are solid and do not blur again. `{colors.input-wash}` (`#E7F7F0`) is the input and completion well. `{colors.output-wash}` (`#F3EEFC`) is the output well.
+- `{colors.hairline}` is a decorative separator. It is never a control boundary.
+- `{colors.border}` (`#8C847A`, dark `#8F877C`) is only for inputs and frames that need a visible edge; it is at least 3:1 on `well`, `layer-solid` and `raised`.
 
-Text:
+Text: `{colors.ink}` for titles and figures, `{colors.body}` for running text and control labels, `{colors.muted}` for 12px secondary text.
 
-- `{colors.ink}` (`#24303A`) for titles and body.
-- `{colors.muted}` (`#5C6B76`) for 12px secondary text.
-- `{colors.input}` (`#187A56`) for input, completion, links, and the focus ring.
-- `{colors.output}` (`#6D4BD6`) for output and secondary figures.
+Accent:
 
-窄屏、减少透明度时的不透明回退、以及没有 `backdrop-filter` 时,纸改为 `{colors.sheet-solid}` (`rgba(255,255,255,0.96)`),模糊为 none. 保持同一色相,只提高不透明度. 填充 0.78 是有意比水晶卡更实,好让低饱和字段上的文字稳定过 4.5:1. 轻来自字段的颜色、大圆角和淡阴影,不来自把纸做成全透明.
+- `{colors.primary}` (`#D97757`) fills the primary action in both variants. Its text is `{colors.on-primary}` (`#1F1712`). White text on this orange is about 3.1:1 and is not allowed.
+- `{colors.accent-text}` (`#A3492A`, dark `#EBA98C`) for orange text and links; `{colors.focus}` is the same value for the focus ring and selection marks.
+- `{colors.accent-wash}` (`#F7E6DC`, dark `#3A2A22`) fills a selected row or menu entry.
 
 ## Typography
 
@@ -134,76 +157,103 @@ Spacing is 8 / 12 / 16 / 24 / 32 / 48 (`{spacing.min}` through `{spacing.xxl}`).
 
 Order on the workbench is status, number, action. Do not add a marketing hero.
 
-When the paper padding is 8px, an inner image uses a 12px radius, because outer radius = inner radius + padding.
+The field fills the window. Insets are margins between panels (home 24px, workbench 8px, narrow windows 4px), not a band around a sheet. Home is the field plus one centered panel card around its 760px reading column.
+
+The workbench is a top bar panel, one panel per pane (Current, Next, Notes) and a bottom bar panel. Panes inset their picture 4px horizontally; captions and pictures carry the vertical inset, so saved split ratios still describe pane heights exactly. Notes are a well inside their panel. Statuses between panels (crop check, shell warnings, unsaved settings) are notice panels led by a status-colored dot. Settings, Displays and the crop check fill one full-height panel.
+
+With 4px panel padding, an inner rounded area uses a 12px radius, because outer radius = inner radius + padding.
 
 Icons are linear, about a 1.5px stroke, in `currentColor`. Do not add illustrated characters.
 
 ## Elevation & Depth
 
-Depth is the field showing past the paper, one soft shadow, and the large radius. Do not stack shadows or add a glow.
+```
+L0 field     full window, no inset, no outline; translucent only over native blur
+ └ L1 panel  header, notes, previews, footer, home card; 16px radius, no outline
+     └ well / control   inset areas and control fills of the same hue
+ L2 raised   menus, dialogs, tooltips, page jump, crop check; hairline + one shadow
+```
+
+Depth comes from opacity and lightness steps of one hue, not from outlines or a second hue. Only L2 has a shadow: `{elevation.floating-shadow}` (dark `{elevation.dark-floating-shadow}`). Panels have no shadow. Do not stack shadows or add a glow.
+
+Reference CSS for a web rendering of the same material:
 
 ```css
 .field {
-  background: linear-gradient(160deg, #E7F6F1, #EDE7F8);
+  background: linear-gradient(160deg, #F7F2EB, #EFE6DB);
 }
-.sheet {
-  background: rgba(255,255,255,0.78);
-  backdrop-filter: blur(20px) saturate(1.15);
-  border: 1px solid rgba(255,255,255,0.80);
-  box-shadow: 0 20px 48px rgba(70, 90, 120, 0.08);
-  border-radius: 20px;
+.panel {
+  background: rgba(255, 255, 255, 0.66);
+  border-radius: 16px;
 }
-.sheet.is-solid {
-  background: rgba(255,255,255,0.96);
-  backdrop-filter: none;
+.panel.is-solid {
+  background: #FBF8F4;
 }
-.sheet:active {
-  transform: scale(0.98);
-  transition: transform 120ms;
-}
-@media (prefers-reduced-motion: reduce) {
-  .sheet:active {
-    transform: none;
-  }
+.floating {
+  background: #FFFFFF;
+  border: 1px solid rgba(31, 27, 23, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(31, 27, 23, 0.12);
 }
 ```
 
-The 1px border is the light edge only. CSS `border-style: solid` here only paints the translucent color. It is not an opaque fence and it is not the control boundary.
-
-Pointer press uses `transform: scale(0.98)` for about 120ms, and animates `transform` only. Keyboard state changes do not animate. `prefers-reduced-motion: reduce` cancels the scale. Do not animate the blur radius.
-
-One viewport holds at most 6 `backdrop-filter` layers. Do not nest paper inside paper. Wells, list rows, and tables stay solid.
+The native presenter has no per-element `backdrop-filter`. Glass comes from the window-level system blur showing through the translucent field and panels.
 
 ## Shapes
 
 | Token | Radius | Use |
 | --- | --- | --- |
-| `{rounded.image}` | 12px | Image inside paper when padding is 8px |
-| `{rounded.well}` | 16px | Solid wells |
-| `{rounded.sheet}` | 20px | Paper |
-| `{rounded.pill}` | 999px | Buttons and tags |
+| `{rounded.image}` | 12px | Reserved for an image inside a panel with 4px padding; see Known Gaps |
+| `{rounded.well}` | 12px | Wells |
+| `{rounded.panel}` | 16px | Panels and the home card |
+| `{rounded.floating}` | 16px | Menus and dialogs |
+| `{rounded.pill}` | 999px | Buttons, segments and tags |
 
-Buttons and tags are pills. Paper is 20px. With 8px padding, the inner image is 12px so that outer = inner + padding.
+## Components
+
+Buttons are pills bounded by their fill. No default outline.
+
+| Kind | Rest | Hover / pressed | Text |
+| --- | --- | --- | --- |
+| Primary | `primary` | `primary-hover` / `primary-active` | `on-primary` |
+| Secondary, navigation, tool | `control` | `control-hover` / `control-pressed` | `body` |
+| Destructive | `control` | `control-hover` / `control-pressed` | `error` |
+| Session Stop | `error-wash` | ink at 0.03 / 0.06 over `error-wash` | `error` |
+| Quiet (header, timer, menu rows) | none | `control-hover` / `control-pressed` | `body` |
+| Selected segment | `segment` | ink at 0.03 / 0.06 over `segment` | `ink` |
+| Disabled | `control` | none | `muted` |
+
+Grouped choices (black/white cover, drawing tools, crop layouts, setting choices, page-browser numbering, view and grid density) use a segmented control: one `control` track, the selected option lifted to `segment`. Each option's 2px focus ring and 2px gap form the 4px inset between track and segment. Do not wrap a group in a colored shell.
+
+Selection never relies on color alone and never inserts a glyph that changes the label width. A choice that can be selected always reserves an 8px indicator slot; the selected option fills it with a `focus` dot (`on-primary` on an orange fill). The black/white swatch is its own slot and gains a 2px `focus` ring when selected. Menu rows keep one reserved check column with the same dot. Toggle buttons expose their state as accessible toggled state.
+
+Keyboard focus is a 2px `{colors.focus}` ring outside a 2px gap.
 
 ## Accessibility
 
-Meet WCAG 2.2 AA on the worst specified background, not on an average of the field. These ratios were measured for this palette. Do not replace them with a new calculation in this file.
+Meet WCAG 2.2 AA on the worst specified background. The native panel is measured as the panel layer over the field over a pure black and a pure white desktop; the table lists the lowest of those composites. Text is at least 4.5:1, the focus ring and selection marks at least 3:1. A labeled button is identified by its text, so it does not need a 3:1 outline.
 
-Controls show their boundary by fill, plus a 2px focus ring in `{colors.input}` (`#187A56`). On white that ring is 5.31:1. The white edge on the mint field is 1.11:1, which is below the 3:1 non-text boundary, so the edge cannot be the control boundary.
+These ratios are computed by `contrast_table.py`, kept in the research folder of the `11-07-presenter-warm-glass-restyle` Trellis task, from the `theme.rs` values and are checked by the unit tests in `crates/ferrostage-ui/src/theme.rs`. Regenerate them after any color change; do not edit them by hand.
 
-| 前景 | 背景 | 比值 | 用途 |
-| --- | --- | --- | --- |
-| `#24303A` | `#FFFFFF` | 13.47 | 正文,不透明回退 |
-| `#24303A` | 白 0.78 叠 `#E7F6F1` | 13.16 | 正文,最亮薄荷字段 |
-| `#5C6B76` | 白 0.78 叠 `#E7F6F1` | 5.37 | 次要文字 |
-| `#187A56` | `#E7F7F0` | 4.79 | 输入或完成,正文与大号数字 |
-| `#187A56` | `#FFFFFF` | 5.31 | 链接与焦点环 |
-| `#6D4BD6` | `#F3EEFC` | 5.08 | 输出,正文与大号数字 |
-| `#6D4BD6` | `#FFFFFF` | 5.79 | 输出色在白纸上 |
-| `#FFFFFF` | `#E7F6F1` | 1.11 | 白描边,不能当控件边界 |
-| `#1F8A62` | `#E7F7F0` | 3.89 | 更亮的绿,不够正文,不使用 |
-
-`#1F8A62` is not a token. On the input well it is 3.89:1, short of 4.5:1. Use `#187A56` (4.79:1) and keep the well light.
+| 前景 | 背景 | 浅色 | 深色 | 用途 |
+| --- | --- | --- | --- | --- |
+| `ink` | `layer_solid` | 16.16 (`#1F1B17` / `#FBF8F4`) | 13.34 (`#F5F1EB` / `#2A2622`) | 正文，实色面板 |
+| `ink` | 毛玻璃合成 | 14.67 (`#1F1B17` / `#F0EDEA`) | 11.46 (`#F5F1EB` / `#35312D`) | 正文，毛玻璃面板最差合成 |
+| `body` | `layer_solid` | 10.95 (`#3D3833` / `#FBF8F4`) | 10.94 (`#E2DBD2` / `#2A2622`) | 次级正文 |
+| `muted` | 毛玻璃合成 | 6.01 (`#5F5850` / `#F0EDEA`) | 6.87 (`#C4BCB2` / `#35312D`) | 次要文字，毛玻璃面板最差合成 |
+| `muted` | `control_pressed` | 4.98 (`#5F5850` / `#DCD9D5`) | 4.77 (`#C4BCB2` / `#4C4945`) | 按下的中性控件上的次要文字 |
+| `on_accent` | `accent` | 5.65 (`#1F1712` / `#D97757`) | 5.65 (`#1F1712` / `#D97757`) | 主按钮文字 |
+| `on_accent` | `accent_pressed` | 4.71 (`#1F1712` / `#C9694A`) | 4.71 (`#1F1712` / `#C9694A`) | 主按钮按下 |
+| #FFFFFF | `accent` | 3.12 (`#FFFFFF` / `#D97757`) | 3.12 (`#FFFFFF` / `#D97757`) | 白字压橙色，禁止 |
+| `accent_text` | `accent_wash` | 4.88 (`#A3492A` / `#F7E6DC`) | 6.90 (`#EBA98C` / `#3A2A22`) | 橙色文字压选中洗底 |
+| `accent_text` | `control` | 4.99 (`#A3492A` / `#EEEBE7`) | 5.94 (`#EBA98C` / `#3B3734`) | 橙色文字压中性控件 |
+| `focus` | 毛玻璃合成 | 5.08 (`#A3492A` / `#F0EDEA`) | 6.50 (`#EBA98C` / `#35312D`) | 焦点环与选中标记，毛玻璃面板最差合成 |
+| `focus` | `control_pressed` | 4.21 (`#A3492A` / `#DCD9D5`) | 4.51 (`#EBA98C` / `#4C4945`) | 焦点环压最深中性填充 |
+| `focus` | `segment` | 5.93 (`#A3492A` / `#FFFFFF`) | 4.21 (`#EBA98C` / `#524D48`) | 选中分段上的选中标记 |
+| `ink` | `segment` | 17.11 (`#1F1B17` / `#FFFFFF`) | 7.42 (`#F5F1EB` / `#524D48`) | 选中分段文字 |
+| `border` | `well` | 3.19 (`#8C847A` / `#F3EEE7`) | 4.63 (`#8F877C` / `#221F1C`) | 输入框边界 |
+| `error` | `error_wash` | 5.21 (`#A63A32` / `#F8E3DF`) | 7.55 (`#FFA5A0` / `#3B2523`) | 停止/危险文字 |
+| `warning` | `layer_solid` | 5.58 (`#8A5A12` / `#FBF8F4`) | 8.19 (`#E8B774` / `#2A2622`) | 警告文字 |
 
 ## Writing Tone
 
@@ -213,60 +263,56 @@ State the status, then the number, then the action. Keep labels short. No slogan
 
 ### Do
 
-- Put text only on paper or on a solid well.
-- Use `{colors.input}` for input, completion, links, and the 2px focus ring.
-- Use `{colors.output}` for output and secondary figures.
-- Blur only the paper, once, at 模糊 20px and saturate 1.15.
-- Use the 不透明回退, `{colors.sheet-solid}`, below 960px, for 减少透明度, and when `backdrop-filter` is missing.
+- Put text only on a panel, a well, a control or a raised surface.
+- Use `{colors.primary}` with `{colors.on-primary}` for the one primary action in a view.
+- Use `{colors.focus}` for the 2px focus ring and selection marks.
+- Separate layers by opacity and lightness of one warm hue.
+- Use the solid fallback below 960px, for reduced transparency, and when the platform cannot blur.
 - Set numbers in `tabular-nums`.
-- On pointer press, scale to 0.98 for about 120ms on `transform` only. Skip that motion for keyboard activation and for `prefers-reduced-motion`.
 
 ### Don't
 
-- Don't use glass as the default card skin. Wells, list rows, and tables are solid. Only paper on the field may use one `backdrop-filter`.
-- Don't use the 1px `rgba(255,255,255,0.80)` edge as a control boundary or as an opaque fence. On mint it is 1.11:1.
-- Don't nest paper, and don't put more than 6 `backdrop-filter` layers in one viewport.
-- Don't animate blur.
+- Don't put text directly on the field. Over native blur the field shows an arbitrary desktop.
+- Don't indent a whole-window sheet or draw an outer window stroke.
+- Don't outline every button. Use `border` only for inputs and frames that need a visible edge.
+- Don't add a second accent hue. No green or purple in presenter chrome; status colors only for status text and marks.
+- Don't put white text on `#D97757`.
+- Don't let more than about an eighth of the desktop (a fifth in dark) show through the field. A lower field opacity turns the warm neutrals gray over colored wallpapers.
+- Don't mark selection with a prefixed glyph that changes button width.
+- Don't wrap a group of buttons in a colored shell.
 - Don't use Inter, Plus Jakarta Sans, or DM Sans.
-- Don't set body text in `#1F8A62`. On `#E7F7F0` it is 3.89:1.
 - Don't apply negative letter-spacing to Chinese running text.
-- Don't add a second shadow, a neon glow, or a purple-to-blue neon gradient.
-- Don't put text on the field or on a blob.
-- Don't turn this field gradient off as decoration, and don't paste it onto another DESIGN.md. Choosing this style means the gradient is the material.
+- Don't add a second shadow, a glow, or a neon gradient.
 
 ## Responsive Behavior
 
-| Condition | Paper |
-| --- | --- |
-| 960px and above, transparency allowed, `backdrop-filter` supported | Fill 0.78, 模糊 20px, at most 6 papers |
-| Below 960px | `{colors.sheet-solid}`, blur none |
-| `prefers-reduced-transparency: reduce` | 减少透明度时的不透明回退, at every width |
-| No `backdrop-filter` | 不透明回退 |
+| Condition | Field | Panel |
+| --- | --- | --- |
+| 960px and above, glass on, system allows blur | Gradient at 0.88 (dark 0.82) over the system blur | `layer` at 0.66 (dark 0.74) |
+| Below 960px | Opaque gradient | `layer-solid` |
+| Reduced transparency, unsupported backend or glass off | Opaque gradient | `layer-solid` |
 
-Pills stay pills. The focus ring stays 2px `{colors.input}`. Keyboard focus does not scale.
+Pills stay pills. The focus ring stays 2px. Keyboard focus does not move or scale.
 
 ## Known Gaps
 
-- FerroStage supplies a dark variant of this design for low-light presentations. Its mint and lavender field, green input and violet output use the same roles as the light variant.
 - No chart palette.
-- Contrast ratios above are measured on static wells and on the white-paper mix (white 0.78 over `#E7F6F1`, or `#FFFFFF` for the opaque fallback). They are not measured on photographs.
+- Contrast is measured on the specified surfaces and on the native composites over black and white desktops, not on photographs behind the window.
 - If Figtree is unavailable, fall back to the system sans-serif and keep `"PingFang SC", "Noto Sans SC"` after the Latin family.
-- Title weight 650 needs the Figtree variable font. Static Figtree files step by 100. If only a static file is available, use 600 for that role and do not add a second token.
-- Line-height is specified for Chinese body text only (1.7). Other roles do not add a second line-height.
-- Blob paints raise chroma without a separate hex. Do not invent one.
+- Title weight 650 needs the Figtree variable font. If only a static file is available, use 600.
+- The OS-owned title bar keeps its own system color.
+- PDF previews are still painted with square corners. The paint path is the slide surface shared with the audience window, which this restyle does not change.
 
 ## FerroStage native presenter
 
-The presenter owns this theme. Its home, document header, timer, tools, settings, menus and dialogs use the same Rust token layer in `crates/ferrostage-ui/src/theme.rs`. PDF previews and private note images retain the document's colors and aspect ratio. The audience window paints only its public snapshot, including its original black and white covers.
+The presenter owns this theme. Its home, document header, timer, tools, settings, menus and dialogs use the single Rust token layer in `crates/ferrostage-ui/src/theme.rs`. PDF previews and private note images retain the document's colors and aspect ratio. The audience window paints only its public snapshot, including its original black and white covers, and never reads this theme.
 
-**Appearance.** General settings provide Light, Dark and System plus an independent glass preference. The initial appearance is light with glass enabled. An explicitly stored theme survives upgrade. Applying appearance settings updates the presenter in place and uses the existing settings transaction. System follows the window's observed appearance. Selecting a solid surface keeps the chosen color scheme. A narrow window below 960 logical pixels, a system reduced-transparency preference or an unsupported backend uses a solid sheet while keeping the saved glass choice.
+**Appearance.** General settings provide Light, Dark and System plus an independent glass preference. The initial appearance is light with glass enabled. An explicitly stored theme survives upgrade. Applying appearance settings updates the presenter in place through the existing settings transaction. Selecting a solid surface keeps the chosen color scheme. A window below 960 logical pixels, a system reduced-transparency preference or an unsupported backend uses the solid fallback while keeping the saved glass choice.
 
-**Material.** The outer presenter surface carries the mint-to-lavender field. A single sheet holds controls and text, and inner wells use solid fills. The native backend controls window blur. The catalog's CSS radius and saturation describe its visual target; native compositor parameters depend on the platform. A sheet's light edge is decorative. The focus indicator and control fill provide the interactive boundary. Font overrides and interface scaling apply to presenter controls.
+**Material.** Maintained GPUI has no per-element backdrop blur, only window-level `WindowBackgroundAppearance::Blurred`. On Windows and macOS with glass active, the field is drawn at 0.88 (dark 0.82) over the system blur, so an arbitrary desktop only tints its warm hue, and panels at the `layer` alpha above it. Otherwise the field is opaque and panels use `layer-solid`. Panels are not outlined; the focus indicator and control fill provide the interactive boundary. Font overrides and interface scaling apply to presenter controls.
 
-**Composition.** Home retains its 760 px reading column, one Open PDF action, Settings and Displays, and up to three recent documents. It scrolls on small windows. Ready and Presenting retain the filename, session controls and centered presentation timer. Standard layout keeps Current on the left and Next and Notes on the right. Notes-first keeps Notes on the left at widths of 800 logical pixels and above. Existing saved splitter ratios, keyboard targets and note scrolling apply in both themes. Changes of appearance preserve the current page, timer, annotations, media and window roles.
+**Composition.** Home keeps its 760 px reading column inside one centered panel card, one Open PDF action, Settings and Displays, and up to three recent documents. It scrolls on small windows. Ready and Presenting retain the filename, session controls and the centered presentation timer. Standard layout keeps Current on the left and Next and Notes on the right. Notes-first keeps Notes on the left at widths of 800 logical pixels and above. Saved splitter ratios, keyboard targets and note scrolling apply in both variants. Changes of appearance preserve the current page, timer, annotations, media and window roles.
 
-**Controls.** Primary actions use input green, selected and output states also carry a textual or positional cue. Preserve hover, pressed, disabled and focused states, a 2 px focus indicator and the existing minimum 44 px interactive target. Text and status icons stay legible throughout light and dark modes. Time digits keep a stable width. PDF and media are never assigned control fonts or tinted by the presenter.
-
-On Windows the native implementation uses 0.75 opacity for the field above the compositor and 0.78 for its sheet. The solid fallback combines an opaque field with a 0.96 sheet. The wide idle home exposes a 24 logical pixel field around the sheet on ordinary-height windows. In the document workbench a fine divider sits inside its wider drag target.
+**Controls.** Primary actions use the orange fill with dark text. Preserve hover, pressed, disabled, selected and focused states, the 2 px focus indicator and the minimum 44 px interactive target. Time digits keep a stable width. PDF and media are never assigned control fonts or tinted by the presenter.
 
 The presenter uses an installed interface-font override first, then installed Figtree, then the platform UI family. It reads the available family names once per session. The clock and timer request tabular digits on that same face, so a missing optional font does not trigger a new native font search when the first PDF opens.

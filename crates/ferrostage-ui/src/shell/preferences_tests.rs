@@ -837,9 +837,16 @@ fn settings_fonts_filter_apply_size_restore_and_history_through_real_input(
         }
     }
     assert!(reached_family, "font family must be reachable by Tab");
+    let family = gpui::VisualTestContext::from_window(handle, cx)
+        .debug_bounds("setting-font-family")
+        .unwrap();
     cx.simulate_keystrokes(handle, "enter");
     cx.run_until_parked();
     redraw(handle, cx);
+    // Opening the picker marks its trigger without changing the trigger's width.
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    assert!(visual.debug_bounds("setting-font-family-selected").is_some());
+    assert_eq!(visual.debug_bounds("setting-font-family").unwrap().size, family.size);
     handle.update(cx, |_, window, cx| {
         cx.write_to_clipboard(gpui::ClipboardItem::new_string("Arial".into()));
         window.dispatch_keystroke(gpui::Keystroke::parse("ctrl-v").unwrap(), cx);

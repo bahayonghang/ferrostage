@@ -605,7 +605,7 @@ impl Presenter {
             .items_center()
             .gap(px(8.))
             .rounded_full()
-            .bg(rgb(p.card))
+            .bg(rgb(p.control))
             .child(Self::timer_mark(data.phase, warning, p))
             .child(
                 // Fixed slot: label changes never move the digits.
@@ -636,37 +636,43 @@ impl Presenter {
                     .text_color(rgb(match (warning, data.phase) {
                         (2, _) => p.error,
                         (1, _) => p.warning,
-                        (_, TimerPhase::Running) => p.output,
+                        (_, TimerPhase::Running) => p.ink,
                         _ => p.body,
                     }))
                     .child(data.timer.clone()),
             )
             .when(presenting, |v| {
-                v.child(div().w(px(1.)).h(px(20.)).flex_shrink_0().bg(rgb(p.border)))
-                    .child(
-                        self.button(
-                            "timer-pause".into(),
-                            self.locale
-                                .text(if data.paused { "wb-resume" } else { "wb-pause" })
-                                .into(),
-                            true,
-                            false,
-                            Intent::Core(if data.paused {
-                                Command::ResumeTimer
-                            } else {
-                                Command::PauseTimer
-                            }),
-                            p,
-                        ),
-                    )
-                    .child(self.button(
-                        "timer-reset".into(),
-                        self.locale.text("wb-reset").into(),
+                v.child(
+                    div()
+                        .w(px(1.))
+                        .h(px(20.))
+                        .flex_shrink_0()
+                        .bg(gpui::rgba(p.hairline)),
+                )
+                .child(
+                    self.button(
+                        "timer-pause".into(),
+                        self.locale
+                            .text(if data.paused { "wb-resume" } else { "wb-pause" })
+                            .into(),
                         true,
                         false,
-                        Intent::Core(Command::ResetTimer),
+                        Intent::Core(if data.paused {
+                            Command::ResumeTimer
+                        } else {
+                            Command::PauseTimer
+                        }),
                         p,
-                    ))
+                    ),
+                )
+                .child(self.button(
+                    "timer-reset".into(),
+                    self.locale.text("wb-reset").into(),
+                    true,
+                    false,
+                    Intent::Core(Command::ResetTimer),
+                    p,
+                ))
             })
             .into_any_element()
     }
@@ -845,8 +851,6 @@ impl Presenter {
                 .relative()
                 .bg(rgb(style.fill))
                 .text_color(rgb(style.ink))
-                .border_1()
-                .border_color(rgb(style.border))
                 .when(resume, |view| view.rounded_tl(radius).rounded_bl(radius))
                 .when(!resume, |view| view.rounded_tr(radius).rounded_br(radius))
                 .child(if resume {
@@ -1006,13 +1010,11 @@ impl Presenter {
                         .gap(px(8.))
                         .relative()
                         .rounded_full()
-                        .border_1()
-                        .border_color(rgb(p.border))
-                        .bg(rgb(p.soft))
+                        .bg(rgb(p.control))
                         .text_size(px(self.data.typography.size(14.)))
                         .text_color(rgb(p.body))
-                        .hover(move |style| style.bg(rgb(p.card)))
-                        .active(move |style| style.bg(rgb(p.card)).top(px(1.)))
+                        .hover(move |style| style.bg(rgb(p.control_hover)))
+                        .active(move |style| style.bg(rgb(p.control_pressed)).top(px(1.)))
                         .child(self.data.workbench.progress_compact.clone())
                         .child(
                             div()
@@ -1068,11 +1070,10 @@ impl Presenter {
                 )
             });
         if has_steps {
-            let mut blanking = div()
-                .flex()
-                .items_center()
-                .rounded(px(theme::RADIUS))
-                .bg(rgb(p.soft));
+            let mut blanking = self
+                .segmented(p)
+                .id("blanking-group")
+                .debug_selector(|| "blanking-group".into());
             for (id, label, intent) in [
                 ("black", "wb-black", Intent::Black),
                 ("white", "wb-white", Intent::White),
@@ -1086,12 +1087,10 @@ impl Presenter {
                     p,
                 ));
             }
-            let mut tools = div()
-                .flex()
-                .items_center()
-                .flex_wrap()
-                .rounded(px(theme::RADIUS))
-                .bg(rgb(p.soft));
+            let mut tools = self
+                .segmented(p)
+                .id("tool-group")
+                .debug_selector(|| "tool-group".into());
             for (id, label, tool) in [
                 ("laser", "wb-laser", Tool::Laser),
                 ("pen", "wb-pen", Tool::Pen),
@@ -1138,10 +1137,13 @@ impl Presenter {
                     });
             strip = strip.child(blanking).child(tools).child(secondary);
         }
-        div()
+        self.material
+            .panel(p)
+            .id("presenter-bottom-bar")
+            .debug_selector(|| "presenter-bottom-bar".into())
             .relative()
             .px(px(12.))
-            .pb(px(8.))
+            .py(px(4.))
             .flex_shrink_0()
             .flex()
             .flex_col()
@@ -1169,7 +1171,7 @@ impl Presenter {
                 self.progress_focus.is_focused(window) && has_steps,
                 |view| {
                     view.child(
-                        div()
+                        super::material::floating(p)
                             .id("progress-detail")
                             .debug_selector(|| "progress-detail".into())
                             .absolute()
@@ -1177,10 +1179,6 @@ impl Presenter {
                             .left(px(16.))
                             .max_w_full()
                             .p(px(12.))
-                            .rounded(px(theme::RADIUS))
-                            .bg(rgb(p.card))
-                            .border_1()
-                            .border_color(rgb(p.border))
                             .text_size(px(self.data.typography.size(12.)))
                             .text_color(rgb(p.muted))
                             .child(self.data.workbench.progress.clone()),
@@ -1202,6 +1200,8 @@ impl Presenter {
     fn pane_caption(&self, key: &'static str, p: Palette) -> gpui::Div {
         div()
             .flex_shrink_0()
+            .px(px(8.))
+            .pt(px(4.))
             .pb(px(4.))
             .font_weight(gpui::FontWeight::MEDIUM)
             .text_size(px(self.data.typography.size(12.)))
@@ -1244,7 +1244,11 @@ impl Presenter {
                 div()
                     .when(column, |view| view.w(px(1.)).h_full())
                     .when(!column, |view| view.h(px(1.)).w_full())
-                    .bg(rgb(if dragging { p.focus } else { p.border }))
+                    .bg(if dragging {
+                        gpui::Hsla::from(rgb(p.focus))
+                    } else {
+                        gpui::rgba(p.hairline).into()
+                    })
                     .when(can_drag, |view| {
                         view.group_hover(id, move |style| style.bg(rgb(p.focus)))
                     }),
@@ -1289,9 +1293,10 @@ impl Presenter {
             .flex()
             .flex_col()
             .gap(px(4.))
-            .p(px(12.))
-            .rounded(px(theme::RADIUS))
-            .bg(rgb(p.card))
+            .my(px(4.))
+            .p(px(8.))
+            .rounded(px(theme::WELL_RADIUS))
+            .bg(rgb(p.well))
             .child(self.pane_caption("wb-notes", p));
         if self.data.workbench.note_aspects.is_empty() {
             let has_notes = self.data.workbench.has_current_notes;
@@ -1437,8 +1442,9 @@ impl Presenter {
                         .overflow_y_scroll()
                         .flex()
                         .flex_col()
-                        .rounded(px(theme::RADIUS))
-                        .bg(rgb(p.card))
+                        .rounded(px(theme::PANEL_RADIUS))
+                        .bg(self.material.layer(p))
+                        .px(px(4.))
                         .child(note_panel),
                 )
                 .child(self.hairline_split(
@@ -1472,6 +1478,9 @@ impl Presenter {
                             div()
                                 .id("current-pane")
                                 .debug_selector(|| "current-pane".into())
+                                .bg(self.material.layer(p))
+                                .rounded(px(theme::PANEL_RADIUS))
+                                .px(px(4.))
                                 .on_click(cx.listener(|this, event: &gpui::ClickEvent, _, cx| {
                                     this.advance_on_click(event, cx);
                                 }))
@@ -1487,6 +1496,7 @@ impl Presenter {
                                     div()
                                         .flex_1()
                                         .min_h_0()
+                                        .mb(px(4.))
                                         .child(self.picture(Surface::Current, true)),
                                 ),
                         )
@@ -1502,6 +1512,9 @@ impl Presenter {
                             div()
                                 .id("next-pane")
                                 .debug_selector(|| "next-pane".into())
+                                .bg(self.material.layer(p))
+                                .rounded(px(theme::PANEL_RADIUS))
+                                .px(px(4.))
                                 .on_click(cx.listener(|this, event: &gpui::ClickEvent, _, cx| {
                                     this.advance_on_click(event, cx);
                                 }))
@@ -1517,6 +1530,7 @@ impl Presenter {
                                     div()
                                         .flex_1()
                                         .min_h_0()
+                                        .mb(px(4.))
                                         .child(self.picture(Surface::Next, false)),
                                 ),
                         ),
@@ -1527,6 +1541,9 @@ impl Presenter {
                     div()
                         .id("current-pane")
                         .debug_selector(|| "current-pane".into())
+                        .bg(self.material.layer(p))
+                        .rounded(px(theme::PANEL_RADIUS))
+                        .px(px(4.))
                         .on_click(cx.listener(|this, event: &gpui::ClickEvent, _, cx| {
                             this.advance_on_click(event, cx);
                         }))
@@ -1540,6 +1557,7 @@ impl Presenter {
                                 .h_full()
                         })
                         .when(stacked, |view| view.w_full().flex_1().min_h_0())
+                        .when(!previews, |view| view.py(px(4.)))
                         .overflow_hidden()
                         .when(previews, |view| {
                             view.flex()
@@ -1551,6 +1569,7 @@ impl Presenter {
                                 div()
                                     .flex_1()
                                     .min_h_0()
+                                    .mb(px(4.))
                                     .child(self.picture(Surface::Current, true)),
                             )
                         })
@@ -1598,6 +1617,9 @@ impl Presenter {
                             div()
                                 .id("next-pane")
                                 .debug_selector(|| "next-pane".into())
+                                .bg(self.material.layer(p))
+                                .rounded(px(theme::PANEL_RADIUS))
+                                .px(px(4.))
                                 .on_click(cx.listener(|this, event: &gpui::ClickEvent, _, cx| {
                                     this.advance_on_click(event, cx);
                                 }))
@@ -1613,6 +1635,7 @@ impl Presenter {
                                     div()
                                         .flex_1()
                                         .min_h_0()
+                                        .mb(px(4.))
                                         .child(self.picture(Surface::Next, false)),
                                 ),
                         )
@@ -1638,8 +1661,9 @@ impl Presenter {
                                     .overflow_y_scroll()
                                     .flex()
                                     .flex_col()
-                                    .rounded(px(theme::RADIUS))
-                                    .bg(rgb(p.card))
+                                    .rounded(px(theme::PANEL_RADIUS))
+                                    .bg(self.material.layer(p))
+                                    .px(px(4.))
                                     .child(note_panel),
                             )
                         }),
@@ -1668,15 +1692,22 @@ impl Presenter {
                 slot.progress.0 / 1000,
                 slot.progress.1 / 1000
             );
-            let mut row = div().flex().items_center().gap(px(8.)).child(self.button(
-                format!("media-slot-{}", slot.id),
-                title,
-                self.data.stage == ferrostage_core::SessionStage::Presenting
-                    && self.data.workbench.overlay.blank_mode.is_none(),
-                slot.active,
-                Intent::Media(slot.id),
-                p,
-            ));
+            let mut row = self
+                .material
+                .panel(p)
+                .flex()
+                .items_center()
+                .gap(px(8.))
+                .pr(px(12.))
+                .child(self.button(
+                    format!("media-slot-{}", slot.id),
+                    title,
+                    self.data.stage == ferrostage_core::SessionStage::Presenting
+                        && self.data.workbench.overlay.blank_mode.is_none(),
+                    slot.active,
+                    Intent::Media(slot.id),
+                    p,
+                ));
             if let Some(error) = slot.error {
                 let key = match error {
                     ferrostage_media::MediaError::RuntimeUnavailable => "media-runtime-missing",
@@ -1689,11 +1720,11 @@ impl Presenter {
             view = view.child(row);
         }
         if let Some(debug) = &self.data.workbench.debug {
-            view = view.child(format!(
+            view = view.child(self.material.panel(p).px(px(12.)).py(px(4.)).child(format!(
                 "{debug} · GPU managed {} bytes · UI paint {:.2} ms",
                 self.textures.borrow().bytes(),
                 self.paint_ms.get()
-            ));
+            )));
         }
         view.into_any_element()
     }

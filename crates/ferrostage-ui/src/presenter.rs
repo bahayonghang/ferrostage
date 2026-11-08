@@ -232,8 +232,8 @@ pub(crate) fn letterbox(surface: crate::workbench::Surface) -> Option<u32> {
 pub(crate) fn stage_dot(stage: SessionStage, p: Palette) -> u32 {
     match stage {
         SessionStage::Idle => p.muted,
-        SessionStage::Ready => p.success,
-        SessionStage::Presenting => p.output,
+        SessionStage::Ready => p.ink,
+        SessionStage::Presenting => p.focus,
     }
 }
 
@@ -263,15 +263,11 @@ struct FilenameTooltip {
 
 impl Render for FilenameTooltip {
     fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
-        div()
+        material::floating(self.palette)
             .id("presenter-text-tooltip")
             .debug_selector(|| "presenter-text-tooltip".into())
             .max_w(px(560.))
             .p(px(12.))
-            .rounded(px(theme::RADIUS))
-            .border_1()
-            .border_color(rgb(self.palette.border))
-            .bg(rgb(self.palette.card))
             .text_color(rgb(self.palette.ink))
             .font(self.typography.font())
             .text_size(px(self.typography.size(14.)))
@@ -581,10 +577,24 @@ impl Presenter {
                 | Intent::BrowserMode { .. }
                 | Intent::BrowserView { .. }
         );
+        // Options that share a `segmented` track with their alternatives.
+        let segment = matches!(
+            &intent,
+            Intent::EditSetting(_, _)
+                | Intent::CropLayout { .. }
+                | Intent::GridDensity { .. }
+                | Intent::BrowserMode { .. }
+                | Intent::BrowserView { .. }
+        );
+        let menu_row = self.utility_row_index(&id).is_some();
         let kind = match &intent {
+            _ if segment => theme::ButtonKind::Segment,
             _ if preference_control => theme::ButtonKind::Utility,
+            // A menu entry has no track to lift from; selection uses the row wash.
+            Intent::Tool(_) if menu_row => theme::ButtonKind::Utility,
             Intent::Start | Intent::Resume => theme::ButtonKind::Primary,
-            Intent::Stop | Intent::Core(ferrostage_core::PresentationCommand::ClearStrokes) => {
+            Intent::Stop => theme::ButtonKind::Stop,
+            Intent::Core(ferrostage_core::PresentationCommand::ClearStrokes) => {
                 theme::ButtonKind::Destructive
             }
             Intent::Next
@@ -611,21 +621,38 @@ impl Presenter {
             _ if preference_control => primary,
             _ => false,
         };
-        let label = if selected {
-            format!("✓ {label}")
-        } else {
-            label
-        };
-        let mut style = palette.button(kind, enabled, selected);
-        if quiet_header && enabled {
-            // Timer controls share the ink and fill of the surrounding output well.
-            style.fill = if matches!(&intent, Intent::Core(_)) {
-                palette.card
-            } else {
-                palette.canvas
+        // Choices whose selection can change reserve a fixed indicator slot, so
+        // selecting never changes the width. Steppers and restore actions do not.
+        let indicator_slot = blank.is_none()
+            && match &intent {
+                Intent::EditSetting(_, _) => {
+                    !(id.ends_with("-minus") || id.ends_with("-plus") || id.ends_with("-default"))
+                }
+                Intent::ToggleAutoplay
+                | Intent::Tool(_)
+                | Intent::CropLayout { .. }
+                | Intent::GridDensity { .. }
+                | Intent::BrowserMode { .. }
+                | Intent::BrowserView { .. }
+                | Intent::ToggleFontPicker
+                | Intent::SettingsCategory(_) => true,
+                _ => false,
             };
-        }
+        let toggle = indicator_slot || blank.is_some();
+        // Header, timer and menu-row actions rest on their surface without a fill.
+        let quiet_face = quiet_header || menu_row;
+        let quiet = quiet_face && !selected;
+        let style = palette.button(kind, enabled, selected);
+        let indicator = style.indicator.filter(|_| selected);
+        let selected_id = id.clone();
         self.activation_target(id.clone(), label.clone(), enabled, intent, palette)
+            .when(toggle, |view| {
+                view.aria_toggled(if selected {
+                    gpui::Toggled::True
+                } else {
+                    gpui::Toggled::False
+                })
+            })
             .rounded(px(style.radius + theme::FOCUS_GAP))
             .child(
                 div()
@@ -635,7 +662,7 @@ impl Presenter {
                     } else {
                         theme::CONTROL
                     }))
-                    .px(px(if quiet_header {
+                    .px(px(if quiet_face {
                         8.
                     } else if session
                         || matches!(
@@ -656,10 +683,8 @@ impl Presenter {
                     .gap(px(8.))
                     .relative()
                     .rounded(px(style.radius))
-                    .bg(rgb(style.fill))
+                    .when(!quiet, |view| view.bg(rgb(style.fill)))
                     .text_color(rgb(style.ink))
-                    .border_1()
-                    .border_color(rgb(style.border))
                     .min_w_0()
                     .when(
                         session && self.data.stage != SessionStage::Presenting,
@@ -669,15 +694,33 @@ impl Presenter {
                     .when(session, |view| {
                         view.child(Self::session_icon(stop, style.ink))
                     })
+                    .when(indicator_slot, |view| {
+                        view.child(div().size(px(8.)).flex_shrink_0().rounded_full().when_some(
+                            indicator,
+                            |dot, color| {
+                                dot.debug_selector(move || format!("{selected_id}-selected"))
+                                    .bg(rgb(color))
+                            },
+                        ))
+                    })
                     .when_some(blank, |view, color| {
+                        // The swatch is this option's indicator slot; selection rings it.
+                        let selected_id = id.clone();
                         view.child(
                             div()
                                 .size(px(14.))
                                 .flex_shrink_0()
                                 .rounded(px(3.))
-                                .border_1()
-                                .border_color(rgb(palette.border))
-                                .bg(rgb(color)),
+                                .bg(rgb(color))
+                                .when(!selected, |swatch| {
+                                    swatch.border_1().border_color(rgb(palette.border))
+                                })
+                                .when(selected, |swatch| {
+                                    swatch
+                                        .debug_selector(move || format!("{selected_id}-selected"))
+                                        .border_2()
+                                        .border_color(rgb(palette.focus))
+                                }),
                         )
                     })
                     .child(div().when(!session, |view| view.truncate()).child(label))
@@ -834,6 +877,31 @@ impl Presenter {
             })
     }
 
+    /// Full-height panel that holds a modal page (settings, displays, crop check).
+    fn modal_surface(&self, p: Palette) -> Div {
+        self.material
+            .panel(p)
+            .size_full()
+            .min_h_0()
+            .min_w_0()
+            .overflow_hidden()
+            .flex()
+            .flex_col()
+    }
+
+    /// One `control` track holding the options of a segmented control. Each option's
+    /// 2px focus ring and gap give the 4px inset between track and selected segment.
+    fn segmented(&self, p: Palette) -> Div {
+        div()
+            .flex()
+            .items_center()
+            .flex_wrap()
+            .rounded(px(theme::CONTROL / 2.
+                + theme::FOCUS_WIDTH
+                + theme::FOCUS_GAP))
+            .bg(rgb(p.control))
+    }
+
     fn command_bar(&self, p: Palette, window: &Window) -> gpui::AnyElement {
         let l = self.locale;
         let stage = self.data.stage;
@@ -890,9 +958,9 @@ impl Presenter {
                     .gap(px(6.))
                     .rounded_full()
                     .bg(rgb(if stage == SessionStage::Presenting {
-                        p.card
+                        p.accent_wash
                     } else {
-                        p.soft
+                        p.control
                     }))
                     .font_weight(gpui::FontWeight::MEDIUM)
                     .text_size(px(self.data.typography.size(12.)))
@@ -941,7 +1009,7 @@ impl Presenter {
                         .w(px(1.))
                         .h(px(24.))
                         .flex_shrink_0()
-                        .bg(rgb(p.border)),
+                        .bg(gpui::rgba(p.hairline)),
                 )
             });
         if stage == SessionStage::Presenting {
@@ -1004,8 +1072,6 @@ impl Presenter {
             } else {
                 8.
             }))
-            .border_b_1()
-            .border_color(rgb(p.border))
             .flex()
             .items_center()
             .gap(px(12.));
@@ -1017,7 +1083,11 @@ impl Presenter {
         } else {
             bar = bar.child(identity).child(timer);
         }
-        div()
+        self.material
+            .panel(p)
+            .id("presenter-top-bar")
+            .debug_selector(|| "presenter-top-bar".into())
+            .flex_shrink_0()
             .flex()
             .flex_col()
             .child(bar.child(actions))
@@ -1300,9 +1370,12 @@ impl Render for Presenter {
         let stage_cache = self.textures.clone();
         let stage_shell = self.shell.clone();
         let viewport = window.viewport_size();
+        let home = stage == SessionStage::Idle && modal.is_none();
+        // Margin between the full-bleed field and its panels; the field itself has
+        // no inset band or outer stroke.
         let inset = if viewport.width < px(800.) {
             4.
-        } else if stage == SessionStage::Idle && modal.is_none() {
+        } else if home {
             if viewport.width >= px(960.) && viewport.height >= px(600.) {
                 24.
             } else {
@@ -1324,7 +1397,6 @@ impl Render for Presenter {
             .text_color(rgb(p.body))
             .font(self.data.typography.font())
             .text_size(px(self.data.typography.size(16.)))
-            .child(self.material.paper(p, inset))
             .child(
                 gpui::canvas(
                     |_, _, _| (),
@@ -1398,28 +1470,31 @@ impl Render for Presenter {
                 return root
                     .track_focus(&self.modal_focus)
                     .key_context("FerroStageCropDialog")
-                    .child(self.crop_panel(p, window, cx))
+                    .child(self.modal_surface(p).child(self.crop_panel(p, window, cx)))
                     .into_any_element();
             }
             if modal == Modal::Settings {
                 return root
                     .track_focus(&self.modal_focus)
                     .key_context("FerroStageModal")
-                    .child(self.settings_panel(p, window))
+                    .child(self.modal_surface(p).child(self.settings_panel(p, window)))
                     .into_any_element();
             }
             if let Some(panel) = &self.data.displays {
                 return root
                     .track_focus(&self.modal_focus)
                     .key_context("FerroStageModal")
-                    .child(crate::display_settings::view::panel(
-                        self,
-                        panel,
-                        l,
-                        p,
-                        false,
-                        f32::from(window.viewport_size().width) - 32.,
-                    ))
+                    .child(
+                        self.modal_surface(p)
+                            .child(crate::display_settings::view::panel(
+                                self,
+                                panel,
+                                l,
+                                p,
+                                false,
+                                f32::from(window.viewport_size().width) - 32.,
+                            )),
+                    )
                     .into_any_element();
             }
             unreachable!("all modal drawing branches handled above");
@@ -1450,13 +1525,23 @@ impl Render for Presenter {
                         .flex_col()
                         .child(self.workbench_panel(p, window, cx)),
                 );
-            if !self.data.document_warnings.is_empty() {
-                content = content.child(self.document_warning_flags(p));
-            }
+            let warnings = !self.data.document_warnings.is_empty();
             if self.data.needs_crop_confirmation && self.data.stage == SessionStage::Ready
                 || self.data.held_crop_reload
             {
-                content = content.child(self.crop_hint(p));
+                // The notice's wrapper anchors the floating warnings above it. The
+                // stack stays first in tree order so warning focus precedes the notice.
+                content = content.child(
+                    div()
+                        .relative()
+                        .flex_shrink_0()
+                        .when(warnings, |view| {
+                            view.child(self.document_warning_flags(p, true))
+                        })
+                        .child(self.crop_hint(p)),
+                );
+            } else if warnings {
+                content = content.child(self.document_warning_flags(p, false));
             }
             content
         } else {
@@ -1477,17 +1562,16 @@ impl Render for Presenter {
                     .pr(px(4.))
                     .py(px(4.))
                     .rounded(px(theme::RADIUS))
-                    .border_1()
                     .border_l_4()
                     .border_color(rgb(p.error))
-                    .bg(rgb(p.card))
+                    .bg(rgb(p.error_wash))
                     .child(
                         div()
                             .flex_shrink_0()
                             .size(px(20.))
                             .rounded_full()
                             .bg(rgb(p.error))
-                            .text_color(rgb(p.on_action))
+                            .text_color(rgb(p.layer_solid))
                             .text_size(px(self.ui_text_size(12.)))
                             .flex()
                             .items_center()
@@ -1518,9 +1602,18 @@ impl Render for Presenter {
                     }),
             );
         }
+        // Home statuses already sit on the home card; document statuses get their
+        // own notice panel because the workbench gaps show the bare field.
+        let status_line = |mark: u32| {
+            if document_open {
+                self.material.notice(p, mark)
+            } else {
+                div().flex_shrink_0()
+            }
+        };
         for (index, warning) in shell_warnings.into_iter().enumerate() {
             body = body.child(
-                div()
+                status_line(p.warning)
                     .id(SharedString::from(format!("shell-warning-{index}")))
                     .debug_selector(move || format!("shell-warning-{index}"))
                     .flex_shrink_0()
@@ -1529,22 +1622,29 @@ impl Render for Presenter {
             );
         }
         if dirty {
-            body = body
-                .child(
-                    div().flex_shrink_0().text_color(rgb(p.warning)).child(
-                        save_error
-                            .map(|error| l.error("save-error", error))
-                            .unwrap_or_else(|| l.text("unsaved").into()),
-                    ),
+            let message = div().flex_shrink_0().text_color(rgb(p.warning)).child(
+                save_error
+                    .map(|error| l.error("save-error", error))
+                    .unwrap_or_else(|| l.text("unsaved").into()),
+            );
+            let retry = div().flex_shrink_0().child(self.button(
+                "retry-save".into(),
+                l.text("retry-save").into(),
+                true,
+                false,
+                Intent::RetrySave,
+                p,
+            ));
+            body = if document_open {
+                body.child(
+                    status_line(p.warning)
+                        .flex_wrap()
+                        .child(message.flex_1().min_w_0())
+                        .child(retry),
                 )
-                .child(div().flex_shrink_0().child(self.button(
-                    "retry-save".into(),
-                    l.text("retry-save").into(),
-                    true,
-                    false,
-                    Intent::RetrySave,
-                    p,
-                )));
+            } else {
+                body.child(message).child(retry)
+            };
         }
         let body = if document_open {
             body.into_any_element()
@@ -1570,7 +1670,26 @@ impl Render for Presenter {
                     48.
                 }))
                 .pb(px(24.))
-                .child(body.flex_shrink_0())
+                .child({
+                    // Home is the field plus one centered panel card around the column.
+                    let pad = if window.viewport_size().width < px(800.) {
+                        16.
+                    } else {
+                        32.
+                    };
+                    self.material
+                        .panel(p)
+                        .id("home-card")
+                        .debug_selector(|| "home-card".into())
+                        .flex_shrink_0()
+                        .w_full()
+                        .max_w(px(theme::HOME_WIDTH + 2. * pad))
+                        .p(px(pad))
+                        .flex()
+                        .flex_col()
+                        .items_center()
+                        .child(body.flex_shrink_0())
+                })
                 .into_any_element()
         };
         root.track_focus(&self.focus)

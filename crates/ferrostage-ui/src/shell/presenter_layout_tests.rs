@@ -253,6 +253,12 @@ fn presentation_menus_preserve_keyboard_focus_and_escape_precedence(cx: &mut Tes
         s.contextual,
         Some(crate::page_browser::ContextualSurface::PresenterMenu { tools: true })
     )));
+    // The reopened menu marks the active tool without a text glyph.
+    redraw(handle, cx);
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    let row = visual.debug_bounds("pen").unwrap();
+    assert!(row.contains(&visual.debug_bounds("pen-selected").unwrap().center()));
+    assert!(visual.debug_bounds("eraser-selected").is_none());
 }
 
 #[gpui::test]
@@ -442,8 +448,8 @@ fn start_mode_menu_selects_notes_first_and_switches_the_ready_layout(cx: &mut Te
 fn airy_faces_keep_semantic_badge_and_pill_controls() {
     use crate::theme::{ButtonKind, DARK, LIGHT, PILL_RADIUS};
     for p in [LIGHT, DARK] {
-        assert_eq!(crate::presenter::stage_dot(SessionStage::Ready, p), p.success);
-        assert_eq!(crate::presenter::stage_dot(SessionStage::Presenting, p), p.output);
+        assert_eq!(crate::presenter::stage_dot(SessionStage::Ready, p), p.ink);
+        assert_eq!(crate::presenter::stage_dot(SessionStage::Presenting, p), p.focus);
         assert_eq!(crate::presenter::stage_dot(SessionStage::Idle, p), p.muted);
         for enabled in [false, true] {
             assert_eq!(p.button(ButtonKind::Destructive, enabled, false).radius, PILL_RADIUS);
@@ -798,4 +804,123 @@ fn narrow_notes_first_reset_restores_the_visible_standard_proportions(
         assert_eq!(settings.notes_first_current_ratio, current_share);
         assert!(s.contextual.is_none());
     });
+}
+
+#[gpui::test]
+fn segmented_tools_mark_selection_in_a_fixed_slot_without_width_change(
+    cx: &mut TestAppContext,
+) {
+    const TOOLS: [(&str, &str, crate::workbench::Tool); 4] = [
+        ("laser", "laser-selected", crate::workbench::Tool::Laser),
+        ("pen", "pen-selected", crate::workbench::Tool::Pen),
+        ("highlighter", "highlighter-selected", crate::workbench::Tool::Highlighter),
+        ("eraser", "eraser-selected", crate::workbench::Tool::Eraser),
+    ];
+    let (shell, handle) = workbench_fixture(cx);
+    redraw(handle, cx);
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    let group = visual.debug_bounds("tool-group").unwrap();
+    let before = TOOLS.map(|(id, _, _)| visual.debug_bounds(id).unwrap());
+    for (_, mark, _) in TOOLS {
+        assert!(visual.debug_bounds(mark).is_none(), "{mark} at rest");
+    }
+    for (control, mark, tool) in TOOLS {
+        click_control(handle, control, cx);
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let target = visual.debug_bounds(control).unwrap();
+        let dot = visual
+            .debug_bounds(mark)
+            .expect("selected tool shows its indicator");
+        assert!(target.contains(&dot.center()), "{control}: mark inside its button");
+        for ((other, other_mark, _), bounds) in TOOLS.iter().zip(&before) {
+            // Selection never inserts a glyph, so every option keeps its width.
+            assert_eq!(visual.debug_bounds(other).unwrap().size, bounds.size, "{other}");
+            if *other != control {
+                assert!(visual.debug_bounds(other_mark).is_none(), "{other_mark}");
+            }
+        }
+        assert_eq!(visual.debug_bounds("tool-group").unwrap().size, group.size);
+        shell.read_with(cx, |s, _| assert_eq!(s.workbench.tool, tool));
+    }
+}
+
+#[gpui::test]
+fn blank_options_ring_their_swatch_without_width_change(cx: &mut TestAppContext) {
+    let (shell, handle) = workbench_fixture(cx);
+    shell.update(cx, |s, cx| {
+        s.apply(
+            Command::StartPresentation {
+                audience_available: true,
+            },
+            cx,
+        );
+        cx.notify();
+    });
+    redraw(handle, cx);
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    let black = visual.debug_bounds("black").unwrap();
+    let white = visual.debug_bounds("white").unwrap();
+    assert!(visual.debug_bounds("black-selected").is_none());
+    click_control(handle, "black", cx);
+    redraw(handle, cx);
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    assert!(black.contains(&visual.debug_bounds("black-selected").unwrap().center()));
+    assert!(visual.debug_bounds("white-selected").is_none());
+    assert_eq!(visual.debug_bounds("black").unwrap().size, black.size);
+    assert_eq!(visual.debug_bounds("white").unwrap().size, white.size);
+    shell.read_with(cx, |s, _| {
+        assert_eq!(
+            s.state.audience_snapshot().blank_mode,
+            Some(ferrostage_core::BlankMode::Black)
+        );
+    });
+}
+
+#[gpui::test]
+fn document_warnings_float_above_the_crop_notice_without_overlap(cx: &mut TestAppContext) {
+    let (shell, handle) = crop_gate_fixture(cx, false);
+    shell.update(cx, |s, cx| {
+        let document = &mut s.workbench.document.as_mut().unwrap().document;
+        document
+            .warnings
+            .push(ferrostage_document::DocumentWarning::MixedGeometry);
+        document
+            .warnings
+            .push(ferrostage_document::DocumentWarning::AmbiguousLayout);
+        cx.notify();
+    });
+    // Wide, ordinary and narrow windows; the narrow one wraps the notice.
+    for (width, height) in [(1440., 900.), (1100., 760.), (520., 760.)] {
+        cx.test_window(handle)
+            .simulate_resize(size(px(width), px(height)));
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let hint = visual.debug_bounds("crop-hint").expect("crop notice shown");
+        let stack = visual
+            .debug_bounds("document-warning-stack")
+            .expect("warnings shown");
+        assert!(!stack.intersects(&hint), "{width}: {stack:?} overlaps {hint:?}");
+        assert!(
+            f32::from(hint.top() - stack.bottom()) >= 7.5,
+            "{width}: 8px gap {stack:?} {hint:?}"
+        );
+        assert!((f32::from(stack.left() - hint.left())).abs() <= 1., "{width}");
+        for flag in ["document-warning-0", "document-warning-1"] {
+            let flag = visual.debug_bounds(flag).unwrap();
+            assert!(flag.bottom() <= stack.bottom() && !flag.intersects(&hint));
+        }
+    }
+    // Without the notice, the stack keeps its bottom-left position in the content.
+    shell.update(cx, |s, cx| {
+        s.crop_confirmed = true;
+        cx.notify();
+    });
+    redraw(handle, cx);
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    assert!(visual.debug_bounds("crop-hint").is_none());
+    let content = visual.debug_bounds("presenter-content").unwrap();
+    let stack = visual.debug_bounds("document-warning-stack").unwrap();
+    assert!((f32::from(stack.left() - content.left()) - 12.).abs() <= 1.);
+    assert!((f32::from(content.bottom() - stack.bottom()) - 12.).abs() <= 1.);
 }

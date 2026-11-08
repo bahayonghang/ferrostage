@@ -1,8 +1,8 @@
 //! Native window backdrop for the presenter; slide and audience pixels are independent.
 use crate::theme::{self, Palette};
 use gpui::{
-    BoxShadow, Div, Window, WindowBackgroundAppearance, div, linear_color_stop, linear_gradient,
-    prelude::*, px, rgb,
+    BoxShadow, Div, Hsla, Window, WindowBackgroundAppearance, div, linear_color_stop,
+    linear_gradient, prelude::*, px, rgb, rgba,
 };
 use std::time::{Duration, Instant};
 
@@ -77,38 +77,65 @@ impl Material {
         }
     }
 
+    fn native(&self) -> bool {
+        self.surface == Surface::Native
+    }
+
+    /// Full-bleed window field. Only the native surface lets the blurred desktop through.
     pub(super) fn field(&self, p: Palette) -> gpui::Background {
-        let alpha = if self.surface == Surface::Native {
-            theme::FIELD_ALPHA
-        } else {
-            1.
-        };
+        let alpha = if self.native() { p.field_alpha } else { 1. };
         linear_gradient(
             160.,
-            linear_color_stop(rgb(p.field_mint).alpha(alpha), 0.),
-            linear_color_stop(rgb(p.field_lavender).alpha(alpha), 1.),
+            linear_color_stop(rgb(p.field_top).alpha(alpha), 0.),
+            linear_color_stop(rgb(p.field_bottom).alpha(alpha), 1.),
         )
     }
 
-    pub(super) fn paper(&self, p: Palette, inset: f32) -> Div {
-        let alpha = if self.surface == Surface::Native {
-            theme::SHEET_ALPHA
+    /// Panel layer color: translucent over the native field, otherwise solid.
+    pub(super) fn layer(&self, p: Palette) -> Hsla {
+        if self.native() {
+            Hsla::from(rgb(p.layer)).alpha(p.layer_alpha)
         } else {
-            theme::SOLID_SHEET_ALPHA
-        };
-        div()
-            .absolute()
-            .inset_0()
-            .m(px(inset))
-            .rounded(px(theme::PANEL_RADIUS))
-            .bg(rgb(p.sheet).alpha(alpha))
-            .border_1()
-            .border_color(rgb(p.sheet_edge).alpha(0.80))
-            .shadow(vec![
-                BoxShadow::new(px(0.), px(20.), gpui::rgba(theme::SHEET_SHADOW).into())
-                    .blur_radius(px(48.)),
-            ])
+            rgb(p.layer_solid).into()
+        }
     }
+
+    /// One L1 panel: same hue as the field, bounded by its fill, never stroked.
+    pub(super) fn panel(&self, p: Palette) -> Div {
+        div().rounded(px(theme::PANEL_RADIUS)).bg(self.layer(p))
+    }
+
+    /// A status line on its own panel, led by a status-colored mark so the meaning
+    /// never depends on the text color alone.
+    pub(super) fn notice(&self, p: Palette, mark: u32) -> Div {
+        self.panel(p)
+            .flex_shrink_0()
+            .min_h(px(theme::CONTROL))
+            .px(px(12.))
+            .py(px(4.))
+            .flex()
+            .items_center()
+            .gap(px(8.))
+            .child(
+                div()
+                    .size(px(8.))
+                    .flex_shrink_0()
+                    .rounded_full()
+                    .bg(rgb(mark)),
+            )
+    }
+}
+
+/// L2 floating surface: the only layer with a hairline and a shadow.
+pub(super) fn floating(p: Palette) -> Div {
+    div()
+        .rounded(px(theme::PANEL_RADIUS))
+        .bg(rgb(p.raised))
+        .border_1()
+        .border_color(rgba(p.hairline))
+        .shadow(vec![
+            BoxShadow::new(px(0.), px(12.), rgba(p.shadow).into()).blur_radius(px(32.)),
+        ])
 }
 
 #[cfg(target_os = "windows")]

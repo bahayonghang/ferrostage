@@ -103,6 +103,7 @@ impl Presenter {
                 })
                 .child(
                     div()
+                        .id(SharedString::from(format!("start-mode-row-{index}-face")))
                         .min_h(px(36.))
                         .px(px(8.))
                         .py(px(4.))
@@ -110,17 +111,20 @@ impl Presenter {
                         .flex()
                         .items_center()
                         .gap(px(8.))
-                        .bg(rgb(if checked { p.soft } else { p.canvas }))
+                        .bg(rgb(if checked { p.accent_wash } else { p.raised }))
                         .text_color(rgb(p.ink))
-                        .hover(|style| style.bg(rgb(p.soft)))
+                        .hover(|style| style.bg(rgb(p.control_hover)))
+                        .active(|style| style.bg(rgb(p.control_pressed)).top(px(1.)))
                         .child(
                             div()
                                 .w(px(16.))
                                 .flex_shrink_0()
+                                .flex()
+                                .justify_center()
                                 .when(checked, |view| {
                                     view.debug_selector(move || format!("start-mode-check-{index}"))
-                                })
-                                .child(if checked { "✓" } else { "" }),
+                                        .child(div().size(px(8.)).rounded_full().bg(rgb(p.focus)))
+                                }),
                         )
                         .child(
                             div()
@@ -139,7 +143,7 @@ impl Presenter {
                 ),
             );
         }
-        div()
+        super::material::floating(p)
             .id("start-mode-menu")
             .debug_selector(|| "start-mode-menu".into())
             .role(Role::Menu)
@@ -147,10 +151,6 @@ impl Presenter {
             .occlude()
             .w(px(width))
             .p(px(8.))
-            .rounded(px(theme::PANEL_RADIUS))
-            .border_1()
-            .border_color(rgb(p.border))
-            .bg(rgb(p.canvas))
             .on_mouse_down(gpui::MouseButton::Left, |_, _, cx| cx.stop_propagation())
             .child(body)
             .into_any_element()

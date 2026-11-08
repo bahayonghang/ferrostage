@@ -98,8 +98,8 @@ impl Presenter {
                         .px(px(12.))
                         .py(px(12.))
                         .mb(px(8.))
-                        .bg(rgb(p.soft))
-                        .rounded(px(theme::RADIUS))
+                        .bg(rgb(p.well))
+                        .rounded(px(theme::WELL_RADIUS))
                         .child(l.text("settings-font-preview"))
                         .child(
                             div()
@@ -166,7 +166,7 @@ impl Presenter {
                             .tab_index(0)
                             .tab_stop(true)
                             .border(px(theme::FOCUS_WIDTH))
-                            .border_color(rgb(p.canvas))
+                            .border_color(gpui::transparent_black())
                             .focus(|style| style.border_color(rgb(p.focus)))
                             .tooltip(move |_, cx| {
                                 cx.new(|_| FilenameTooltip {
@@ -231,7 +231,8 @@ impl Presenter {
                         .id("pointer-live-preview")
                         .h(px(64.))
                         .p(px(12.))
-                        .bg(rgb(p.card))
+                        .rounded(px(theme::WELL_RADIUS))
+                        .bg(rgb(p.well))
                         .flex()
                         .items_center()
                         .gap(px(20.))
@@ -264,7 +265,7 @@ impl Presenter {
                         .gap(px(4.))
                         .p(px(12.))
                         .border_b_1()
-                        .border_color(rgb(p.card));
+                        .border_color(gpui::rgba(p.hairline));
                     row = row.child(
                         div()
                             .text_color(rgb(p.ink))
@@ -342,7 +343,8 @@ impl Presenter {
                     .child(
                         div()
                             .p(px(12.))
-                            .bg(rgb(p.soft))
+                            .rounded(px(theme::WELL_RADIUS))
+                            .bg(rgb(p.well))
                             .child(l.text("settings-hot-reload-help")),
                     )
                     .child(
@@ -396,7 +398,7 @@ impl Presenter {
                                 .gap(px(4.))
                                 .py(px(12.))
                                 .border_b_1()
-                                .border_color(rgb(p.border))
+                                .border_color(gpui::rgba(p.hairline))
                                 .child(
                                     div()
                                         .text_size(px(self.ui_text_size(16.)))
@@ -436,8 +438,7 @@ impl Presenter {
                             div()
                                 .px(px(6.))
                                 .rounded(px(4.))
-                                .border_1()
-                                .border_color(rgb(p.border))
+                                .bg(rgb(p.control))
                                 .text_size(px(self.ui_text_size(12.)))
                                 .text_color(rgb(p.muted))
                                 .child(time.format("UTC%:z").to_string()),
@@ -457,7 +458,7 @@ impl Presenter {
                     .role(Role::Link)
                     .rounded(px(4.))
                     .text_size(px(self.ui_text_size(14.)))
-                    .text_color(rgb(p.focus))
+                    .text_color(rgb(p.accent_text))
                     .hover(|style| style.underline())
                     .child(repository)
                     .into_any_element();
@@ -482,7 +483,7 @@ impl Presenter {
                             .gap(px(12.))
                             .py(px(12.))
                             .border_b_1()
-                            .border_color(rgb(p.border))
+                            .border_color(gpui::rgba(p.hairline))
                             .child(
                                 div()
                                     .text_size(px(self.ui_text_size(16.)))
@@ -500,7 +501,7 @@ impl Presenter {
             .flex_col()
             .gap(px(4.))
             .border_t_1()
-            .border_color(rgb(p.border))
+            .border_color(gpui::rgba(p.hairline))
             .pt(px(8.));
         if !data.writable {
             footer = footer.child(
@@ -613,15 +614,7 @@ impl Presenter {
         let l = self.locale;
         let value = settings_panel::value(&data.settings, field);
         let label = l.text(&format!("settings-field-{}", field.id.replace('.', "-")));
-        let mut controls = div()
-            .flex()
-            .flex_wrap()
-            .items_center()
-            .gap(px(0.))
-            .bg(rgb(p.soft))
-            .rounded(px(theme::RADIUS))
-            .flex_shrink_0()
-            .max_w_full();
+        let mut controls = self.segmented(p).flex_shrink_0().max_w_full();
         match field.kind {
             Kind::FontFamily => {
                 controls = controls
@@ -793,7 +786,7 @@ impl Presenter {
             .flex_shrink_0()
             .py(px(4.))
             .border_b_1()
-            .border_color(rgb(p.card))
+            .border_color(gpui::rgba(p.hairline))
             .flex()
             .flex_wrap()
             .items_center()
@@ -835,10 +828,8 @@ impl Presenter {
         let mut list = div()
             .id("settings-font-picker")
             .p(px(8.))
-            .bg(rgb(p.soft))
-            .rounded(px(theme::RADIUS))
-            .border_1()
-            .border_color(rgb(p.border))
+            .bg(rgb(p.well))
+            .rounded(px(theme::WELL_RADIUS))
             .flex()
             .flex_col()
             .items_start()
@@ -974,7 +965,7 @@ impl Presenter {
             .border_color(rgb(p.border))
             .rounded(px(theme::RADIUS))
             .focus(|v| v.border_color(rgb(p.focus)))
-            .bg(rgb(p.card))
+            .bg(rgb(p.well))
             .child(
                 div()
                     .absolute()
@@ -982,6 +973,7 @@ impl Presenter {
                     .top(px(19.))
                     .h(px(6.))
                     .w(relative(((value - min) / (max - min)).clamp(0., 1.) as f32))
+                    // The only value mark on this control, so it needs 3:1 on the well.
                     .bg(rgb(p.focus)),
             )
             .child(

@@ -232,9 +232,10 @@ impl Presenter {
                         .items_center()
                         .gap(px(12.))
                         .rounded(px(theme::RADIUS))
-                        .bg(rgb(if current { p.soft } else { p.canvas }))
+                        .bg(rgb(if current { p.accent_wash } else { p.raised }))
                         .when(enabled, |view| {
-                            view.hover(|s| s.bg(rgb(p.soft))).active(|s| s.top(px(1.)))
+                            view.hover(|s| s.bg(rgb(p.control_hover)))
+                                .active(|s| s.top(px(1.)))
                         })
                         .child(
                             div()
@@ -269,7 +270,7 @@ impl Presenter {
                                     view.child(
                                         div()
                                             .text_size(px(self.ui_text_size(12.)))
-                                            .text_color(rgb(p.focus))
+                                            .text_color(rgb(p.accent_text))
                                             .child(l.text("pb-outline-current")),
                                     )
                                 }),
@@ -461,13 +462,14 @@ impl Presenter {
                     .text_size(px(self.ui_text_size(14.)))
                     .child(l.text(if column { "pb-columns" } else { "pb-rows" })),
             );
+            let mut track = self.segmented(p);
             for value in 1..=4 {
                 let selected = if column {
                     wb.settings.grid_columns == value
                 } else {
                     rectangular == Some(value)
                 };
-                density = density.child(self.button(
+                track = track.child(self.button(
                     format!("page-{}-{value}", if column { "columns" } else { "rows" }),
                     value.to_string(),
                     enabled && wb.writable,
@@ -476,6 +478,7 @@ impl Presenter {
                     p,
                 ));
             }
+            density = density.child(track);
             if column {
                 density = density.child("×");
             }
@@ -549,7 +552,7 @@ impl Presenter {
                             .rounded(px(12.))
                             .border_1()
                             .border_color(rgb(if target { p.focus } else { p.border }))
-                            .bg(rgb(p.soft))
+                            .bg(rgb(p.well))
                             .active(|s| s.top(px(1.)))
                             .overflow_hidden()
                             .child(
@@ -604,8 +607,8 @@ impl Presenter {
                                         .right(px(4.))
                                         .px(px(5.))
                                         .rounded(px(4.))
-                                        .bg(rgb(p.card))
-                                        .text_color(rgb(p.focus))
+                                        .bg(rgb(p.raised))
+                                        .text_color(rgb(p.accent_text))
                                         .text_size(px(self.ui_text_size(12.)))
                                         .child(l.text("pb-current")),
                                 )
@@ -647,7 +650,7 @@ impl Presenter {
             .error
             .map(|key| l.format(key, &[("pages", data.entries.len().to_string())]))
             .unwrap_or_else(|| data.target_context.clone());
-        div()
+        super::material::floating(p)
             .id("page-browser")
             .debug_selector(|| "page-browser".into())
             .role(Role::Group)
@@ -656,10 +659,6 @@ impl Presenter {
             .w(px(width))
             .h(px(height))
             .p(px(16.))
-            .rounded(px(theme::PANEL_RADIUS))
-            .border_1()
-            .border_color(rgb(p.border))
-            .bg(rgb(p.canvas))
             .flex()
             .flex_col()
             .gap(px(8.))
@@ -701,26 +700,28 @@ impl Presenter {
                     .flex_shrink_0()
                     .gap(px(8.))
                     .child(l.text("pb-number-mode"))
-                    .children(
-                        [
-                            (PageNumberMode::Content, "content", "pb-mode-content"),
-                            (PageNumberMode::Pdf, "pdf", "pb-mode-pdf"),
-                        ]
-                        .into_iter()
-                        .map(|(mode, id, label)| {
-                            self.button(
-                                format!("page-mode-{id}"),
-                                l.text(label).into(),
-                                enabled,
-                                data.mode == mode,
-                                Intent::BrowserMode {
-                                    id: data.browser.id,
-                                    mode,
-                                },
-                                p,
-                            )
-                            .aria_selected(data.mode == mode)
-                        }),
+                    .child(
+                        self.segmented(p).children(
+                            [
+                                (PageNumberMode::Content, "content", "pb-mode-content"),
+                                (PageNumberMode::Pdf, "pdf", "pb-mode-pdf"),
+                            ]
+                            .into_iter()
+                            .map(|(mode, id, label)| {
+                                self.button(
+                                    format!("page-mode-{id}"),
+                                    l.text(label).into(),
+                                    enabled,
+                                    data.mode == mode,
+                                    Intent::BrowserMode {
+                                        id: data.browser.id,
+                                        mode,
+                                    },
+                                    p,
+                                )
+                                .aria_selected(data.mode == mode)
+                            }),
+                        ),
                     ),
             )
             .child(
@@ -764,26 +765,28 @@ impl Presenter {
                     .child(helper),
             )
             .child(
-                div().flex().gap(px(8.)).flex_shrink_0().children(
-                    [
-                        (BrowserView::Thumbnails, "thumbnails", "pb-view-thumbnails"),
-                        (BrowserView::Outline, "outline", "pb-view-outline"),
-                    ]
-                    .into_iter()
-                    .map(|(view, id, label)| {
-                        self.button(
-                            format!("page-view-{id}"),
-                            l.text(label).into(),
-                            enabled,
-                            data.view == view,
-                            Intent::BrowserView {
-                                id: data.browser.id,
-                                view,
-                            },
-                            p,
-                        )
-                        .aria_selected(data.view == view)
-                    }),
+                div().flex().flex_shrink_0().child(
+                    self.segmented(p).children(
+                        [
+                            (BrowserView::Thumbnails, "thumbnails", "pb-view-thumbnails"),
+                            (BrowserView::Outline, "outline", "pb-view-outline"),
+                        ]
+                        .into_iter()
+                        .map(|(view, id, label)| {
+                            self.button(
+                                format!("page-view-{id}"),
+                                l.text(label).into(),
+                                enabled,
+                                data.view == view,
+                                Intent::BrowserView {
+                                    id: data.browser.id,
+                                    view,
+                                },
+                                p,
+                            )
+                            .aria_selected(data.view == view)
+                        }),
+                    ),
                 ),
             )
             .when(data.view == BrowserView::Thumbnails, |view| {

@@ -95,15 +95,11 @@ impl Presenter {
     }
 
     pub(super) fn utility_menu_panel(&self, p: Palette) -> gpui::AnyElement {
-        let mut panel = div()
+        let mut panel = super::material::floating(p)
             .id("presenter-utility-menu")
             .debug_selector(|| "presenter-utility-menu".into())
             .w(px(240.))
             .p(px(8.))
-            .rounded(px(theme::PANEL_RADIUS))
-            .border_1()
-            .border_color(rgb(p.border))
-            .bg(rgb(p.canvas))
             .flex()
             .flex_col()
             .occlude();

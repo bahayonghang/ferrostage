@@ -96,21 +96,18 @@ impl Presenter {
             (true, _) => "crop-update-ready",
             _ => "crop-suspected",
         };
-        div()
+        // An in-panel notice: warning mark, status text, then the check action.
+        self.material
+            .notice(p, p.warning)
             .id("crop-hint")
             .debug_selector(|| "crop-hint".into())
-            .flex()
             .flex_wrap()
-            .items_center()
-            .justify_between()
-            .gap(px(8.))
-            .px(px(12.))
-            .rounded(px(theme::RADIUS))
-            .bg(rgb(p.soft))
             .child(
                 div()
                     .id("crop-status")
                     .role(Role::Status)
+                    .flex_1()
+                    .min_w_0()
                     .text_color(rgb(p.ink))
                     .child(self.locale.text(key)),
             )
@@ -214,14 +211,10 @@ impl Presenter {
         };
         let choices =
             CHOICES.iter().enumerate().fold(
-                div()
+                self.segmented(p)
                     .id("crop-layouts")
                     .role(Role::RadioGroup)
-                    .aria_label(l.text("ln-layout-group"))
-                    .flex()
-                    .flex_wrap()
-                    .items_center()
-                    .gap(px(4.)),
+                    .aria_label(l.text("ln-layout-group")),
                 |view, (index, &(layout, name, label))| {
                     let selected = layout == crop.layout;
                     view.child(
@@ -307,8 +300,8 @@ impl Presenter {
                 .flex_1()
                 .min_w_0()
                 .p(px(8.))
-                .rounded(px(theme::RADIUS))
-                .bg(rgb(p.card))
+                .rounded(px(theme::WELL_RADIUS))
+                .bg(rgb(p.well))
                 .flex()
                 .flex_col()
                 .gap(px(8.))

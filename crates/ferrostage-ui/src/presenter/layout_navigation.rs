@@ -231,7 +231,13 @@ impl Presenter {
         for (index, focus) in self.layout_row_focus.iter().enumerate() {
             if index == LAYOUTS.len() {
                 body = body
-                    .child(div().my(px(6.)).h(px(1.)).bg(rgb(p.border)).flex_shrink_0())
+                    .child(
+                        div()
+                            .my(px(6.))
+                            .h(px(1.))
+                            .bg(gpui::rgba(p.hairline))
+                            .flex_shrink_0(),
+                    )
                     .child(self.layout_group_heading("ln-page-group", p));
             }
             let (label, checked, helper) = match index {
@@ -296,18 +302,20 @@ impl Presenter {
                         .flex()
                         .items_center()
                         .gap(px(8.))
-                        .bg(rgb(if checked { p.soft } else { p.canvas }))
+                        .bg(rgb(if checked { p.accent_wash } else { p.raised }))
                         .text_color(rgb(if enabled { p.ink } else { p.muted }))
-                        .hover(|style| style.bg(rgb(p.soft)))
-                        .active(|style| style.bg(rgb(p.soft)).top(px(1.)))
+                        .hover(|style| style.bg(rgb(p.control_hover)))
+                        .active(|style| style.bg(rgb(p.control_pressed)).top(px(1.)))
                         .child(
                             div()
                                 .w(px(16.))
                                 .flex_shrink_0()
+                                .flex()
+                                .justify_center()
                                 .when(checked, |view| {
                                     view.debug_selector(move || format!("layout-check-{index}"))
-                                })
-                                .child(if checked { "✓" } else { "" }),
+                                        .child(div().size(px(8.)).rounded_full().bg(rgb(p.focus)))
+                                }),
                         )
                         .child(
                             div()
@@ -327,7 +335,7 @@ impl Presenter {
                 ),
             );
         }
-        div()
+        super::material::floating(p)
             .id("layout-navigation-menu")
             .debug_selector(|| "layout-navigation-menu".into())
             .role(Role::Menu)
@@ -336,10 +344,6 @@ impl Presenter {
             .w(px(width))
             .max_h(px(available))
             .p(px(12.))
-            .rounded(px(theme::PANEL_RADIUS))
-            .border_1()
-            .border_color(rgb(p.border))
-            .bg(rgb(p.canvas))
             .flex()
             .flex_col()
             .gap(px(8.))
@@ -371,7 +375,13 @@ impl Presenter {
     }
 
     /// Document warnings float above the workbench. Shell warnings stay inline.
-    pub(super) fn document_warning_flags(&self, p: Palette) -> gpui::AnyElement {
+    /// With `above_notice`, the stack is anchored to the top edge of the crop
+    /// notice's wrapper so the two never overlap, whatever the notice's height.
+    pub(super) fn document_warning_flags(
+        &self,
+        p: Palette,
+        above_notice: bool,
+    ) -> gpui::AnyElement {
         let blocked = self.data.utility_menu.is_some()
             || self.data.browser.is_some()
             || self.data.layout_menu.is_some()
@@ -380,8 +390,10 @@ impl Presenter {
             .id("document-warning-stack")
             .debug_selector(|| "document-warning-stack".into())
             .absolute()
-            .left(px(12.))
-            .bottom(px(12.))
+            .when(above_notice, |view| {
+                view.left_0().bottom(gpui::relative(1.)).mb(px(8.))
+            })
+            .when(!above_notice, |view| view.left(px(12.)).bottom(px(12.)))
             .max_w(px(420.))
             .flex()
             .flex_col_reverse()
@@ -397,7 +409,7 @@ impl Presenter {
                 .tab_index(0)
                 .tab_stop(!blocked);
             stack = stack.child(
-                div()
+                super::material::floating(p)
                     .id(SharedString::from(id))
                     .debug_selector(move || selector)
                     .role(Role::Status)
@@ -406,10 +418,6 @@ impl Presenter {
                     .items_center()
                     .gap(px(8.))
                     .pl(px(12.))
-                    .rounded(px(theme::RADIUS))
-                    .border_1()
-                    .border_color(rgb(p.border))
-                    .bg(rgb(p.card))
                     .on_mouse_down(gpui::MouseButton::Left, |_, _, cx| cx.stop_propagation())
                     .child(
                         div()
@@ -448,7 +456,7 @@ impl Presenter {
                                 .rounded(px(crate::theme::RADIUS))
                                 .text_size(px(self.ui_text_size(16.)))
                                 .text_color(rgb(p.body))
-                                .hover(|style| style.bg(rgb(p.soft)))
+                                .hover(|style| style.bg(rgb(p.control_hover)))
                                 .active(|style| style.top(px(1.)))
                                 .child("×"),
                         ),

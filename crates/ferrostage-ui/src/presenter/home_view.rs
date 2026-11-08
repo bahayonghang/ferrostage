@@ -68,8 +68,6 @@ impl Presenter {
                     .rounded_full()
                     .bg(rgb(style.fill))
                     .text_color(rgb(style.ink))
-                    .border_1()
-                    .border_color(rgb(style.border))
                     .text_size(px(self.data.typography.size(14.)))
                     .line_height(px(self.data.typography.size(20.)))
                     .font_weight(gpui::FontWeight::MEDIUM)
@@ -84,11 +82,11 @@ impl Presenter {
             div()
                 .id("recent-header")
                 .debug_selector(|| "recent-header".into())
-                .px(px(theme::FOCUS_WIDTH + theme::FOCUS_GAP))
+                .px(px(theme::FOCUS_WIDTH + theme::FOCUS_GAP + 8.))
                 .pb(px(8.))
                 .mb(px(4.))
                 .border_b_1()
-                .border_color(rgb(p.border))
+                .border_color(gpui::rgba(p.hairline))
                 .flex()
                 .items_center()
                 .gap(px(16.))
@@ -160,7 +158,8 @@ impl Presenter {
                         .gap(px(16.))
                         .min_w_0()
                         .relative()
-                        .rounded(px(4.))
+                        .px(px(8.))
+                        .rounded(px(theme::WELL_RADIUS))
                         .text_size(px(self.data.typography.size(14.)))
                         .line_height(px(self.data.typography.size(20.)))
                         .text_color(rgb(if self.data.can_open { p.ink } else { p.muted }))
@@ -209,11 +208,16 @@ impl Presenter {
                                 .child(recent.last_opened.clone()),
                         )
                         .when(self.data.can_open, |view| {
-                            view.hover(move |state| state.bg(rgb(p.soft)))
-                                .active(move |state| state.bg(rgb(p.card)).top(px(1.)))
+                            view.hover(move |state| state.bg(rgb(p.control_hover)))
+                                .active(move |state| state.bg(rgb(p.control_pressed)).top(px(1.)))
                         }),
                 );
-            recents = recents.child(div().border_b_1().border_color(rgb(p.border)).child(row));
+            recents = recents.child(
+                div()
+                    .border_b_1()
+                    .border_color(gpui::rgba(p.hairline))
+                    .child(row),
+            );
         }
         // Keyboard users get the same complete path as the pointer tooltip.
         if let Some(path) = self
@@ -263,6 +267,7 @@ impl Presenter {
     }
 
     fn home_utility(&self, id: &str, label: &str, intent: Intent, p: Palette) -> Stateful<Div> {
+        let style = p.button(theme::ButtonKind::Utility, !self.data.busy, false);
         self.activation_target(id.into(), label.into(), !self.data.busy, intent, p)
             .rounded_full()
             .child(
@@ -277,14 +282,12 @@ impl Presenter {
                     .rounded_full()
                     .text_size(px(self.data.typography.size(14.)))
                     .line_height(px(self.data.typography.size(20.)))
-                    .border_1()
-                    .border_color(rgb(p.border))
-                    .bg(rgb(p.canvas))
-                    .text_color(rgb(if self.data.busy { p.muted } else { p.focus }))
+                    .bg(rgb(style.fill))
+                    .text_color(rgb(style.ink))
                     .child(label.to_string())
                     .when(!self.data.busy, |view| {
-                        view.hover(move |state| state.bg(rgb(p.soft)))
-                            .active(move |state| state.bg(rgb(p.card)).top(px(1.)))
+                        view.hover(move |state| state.bg(rgb(style.hover)))
+                            .active(move |state| state.bg(rgb(style.pressed)).top(px(1.)))
                     }),
             )
     }
