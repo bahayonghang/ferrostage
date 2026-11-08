@@ -800,3 +800,40 @@ Ready 与演示中的文档警告改为内容区左下可关闭小旗，关闭�
 ### Next Steps
 
 - 如需把原生截图纳入历史，改用 Git LFS 后再入库
+
+
+## Session 26: 修复显示器设置栈溢出并完成原生验收
+<!-- trellis-session: v=2 fp=819eaf1777a2e7ba -->
+
+**Date**: 2026-11-07
+**Task**: 修复显示器设置栈溢出并完成原生验收
+**Branch**: `dev`
+
+### Summary
+
+修复 Windows 调试版显示器设置入口栈溢出；完成本地提交与任务归档，不推送。
+
+### Main Changes
+
+- 拆分共享显示器视图与通用页最近文件构建，保留原有元素树及交互行为。
+- 新增 Windows 1 MiB 子进程回归，记录原始失败、编译栈帧、独立审查与原生双入口验收。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `e360b6779de0e68865eb5e9198f4c84795cae39b` | fix(ui): 🐛 修复显示器设置栈溢出 |
+
+### Testing
+
+- [OK] just ci: 253 default-feature tests passed; formatting, strict clippy and cargo deny passed.
+- [OK] GPUI suite: 275 passed; final Windows stack guard: 1 passed; strict GPUI/app clippy passed.
+- [OK] Native just dev: both display hosts, details, return General, Cancel and normal close passed; process exit 0 with clean logs.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- 本任务已完成并归档；按用户要求保留本地提交，不推送。
