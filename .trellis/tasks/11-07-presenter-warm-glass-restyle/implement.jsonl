@@ -1,0 +1,5 @@
+{"file":".trellis/spec/frontend/component-guidelines.md","reason":"讲者组件、按钮焦点与面板契约"}
+{"file":".trellis/spec/frontend/maintained-dependencies.md","reason":"维护版 GPUI 能力边界（无逐元素模糊）"}
+{"file":".trellis/spec/frontend/state-management.md","reason":"观众快照隔离与外观设置状态"}
+{"file":".trellis/tasks/11-07-presenter-warm-glass-restyle/research/diagnosis.md","reason":"现状偏离点、根因位置与橙色对比度实测"}
+{"file":".trellis/tasks/archive/2026-11/11-07-presenter-airy-glass/research/material-capabilities.md","reason":"窗口级毛玻璃的平台能力与回退"}
