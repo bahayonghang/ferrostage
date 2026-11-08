@@ -764,3 +764,39 @@ Ready 与演示中的文档警告改为内容区左下可关闭小旗，关闭�
 ### Status
 
 [OK] **Completed**
+
+
+## Session 25: 提交暖橙毛玻璃样式并归档任务
+<!-- trellis-session: v=2 fp=5ea189edd968e0dd -->
+
+**Date**: 2026-11-07
+**Task**: 提交暖橙毛玻璃样式并归档任务
+**Branch**: `dev`
+
+### Summary
+
+讲者界面改为暖橙毛玻璃并归档。原生截图按要求未入库，保存在仓库外。
+
+### Main Changes
+
+- 将讲者界面改为单一暖橙强调色和分层材质，并同步设计源与规范
+- 记录任务诊断与验收说明；22 张原生截图移出仓库，不纳入版本库
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `3c821a747c0d20e7c41628f42f0b9a77298b711a` | feat(ui): ✨ 将讲者界面改为暖橙毛玻璃 |
+| `b5c0ab67a6b081b217b91030226941e0a770242f` | docs(task): 📝 记录暖橙毛玻璃诊断与验收说明 |
+
+### Testing
+
+- [OK] 本次只拆分提交，未重跑 just ci
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- 如需把原生截图纳入历史，改用 Git LFS 后再入库
