@@ -43,3 +43,9 @@ cargo test -p ferrostage-ui --features test-support --lib --locked
 `VisualTestContext::debug_bounds` only returns elements that set `.debug_selector`. `.id()` alone records nothing. `window.draw` clears the next frame's debug map before paint.
 
 An explicit `track_focus` handle does not copy the div's `.tab_stop`. Call `.tab_index(0).tab_stop(...)` on that `FocusHandle` before `track_focus`. GPUI copies `tab_stop` onto an auto-created handle only when no handle is tracked.
+
+## Debug view stack budget
+
+Windows debug executables reserve a 1 MiB main-thread stack. Large by-value GPUI `Div` builder temporaries can exceed it without recursion, including temporaries belonging to inactive branches in a large settings function. Keep shared display construction in bounded detection/overview/monitor-row builders, and General-only recent-file construction outside `Presenter::settings_panel`. Helpers must return the original content element rather than introduce layout wrappers.
+
+Retain `shell::tests::display_settings_both_hosts_fit_windows_main_thread_stack`: it runs the actual shared-panel interaction test in a subprocess with `RUST_MIN_STACK=1048576`, checks successful exit and confirms one test executed. Both standalone and embedded hosts must render and retain existing draft/details/cancel behavior. A regular Rust test thread has a larger default stack and can miss this failure. For native stack failures, inspect compiled frame reservations and the executable's PE stack reserve; preserve the ordinary stack limit and debug profile. Keep native `just dev` click/exit acceptance separate from this headless regression.

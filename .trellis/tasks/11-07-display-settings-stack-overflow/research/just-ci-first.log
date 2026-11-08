@@ -1,0 +1,19 @@
+cargo fmt --all -- --check
+cargo clippy --workspace --all-targets -- -D warnings
+    Blocking waiting for file lock on build directory
+    Checking ferrostage-ui v1.3.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+   Compiling ferrostage-app v1.3.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 7.13s
+mbx[cache]: 0 hits, 6 misses; 0 B downloaded, 0 B uploaded, 300.6 KiB stored locally
+mbx[savings]: 14205 compilations, each compiled once and served warm ever since
+cargo test --workspace --all-targets
+   Compiling ferrostage-ui v1.3.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+   Compiling ferrostage-app v1.3.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app)
+error: failed to remove file `D:\Documents\Code\Rust\Exp\ferrostage\target\debug\ferrostage.exe`
+
+Caused by:
+  Access is denied. (os error 5)
+warning: build failed, waiting for other jobs to finish...
+mbx[cache]: 0 hits, 4 misses, 2 bypassed; 0 B downloaded, 0 B uploaded, 83.9 MiB stored locally
+mbx[savings]: cleaned up 873.4 GiB logical after checkouts that left without saying goodbye.
+error: recipe `test` failed on line 23 with exit code 1

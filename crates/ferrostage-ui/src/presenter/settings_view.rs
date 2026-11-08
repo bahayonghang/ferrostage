@@ -113,92 +113,7 @@ impl Presenter {
         }
         match category {
             Category::General => {
-                let files = &data.settings.general.recent_files;
-                content = content.child(
-                    div()
-                        .flex()
-                        .items_center()
-                        .justify_between()
-                        .gap(px(12.))
-                        .py(px(4.))
-                        .child(
-                            div()
-                                .text_size(px(self.ui_text_size(12.)))
-                                .text_color(rgb(p.muted))
-                                .child(l.format(
-                                    "settings-recent-count",
-                                    &[
-                                        ("count", files.len().to_string()),
-                                        (
-                                            "limit",
-                                            data.settings.general.recent_files_limit.to_string(),
-                                        ),
-                                    ],
-                                )),
-                        )
-                        .child(self.button(
-                            "settings-clear-recent".into(),
-                            l.text("settings-clear-recent").into(),
-                            enabled && !files.is_empty(),
-                            false,
-                            Intent::ClearRecent,
-                            p,
-                        )),
-                );
-                if files.is_empty() {
-                    content = content.child(
-                        div()
-                            .py(px(16.))
-                            .text_color(rgb(p.muted))
-                            .child(l.text("recent-empty")),
-                    );
-                }
-                for (index, path) in files.iter().enumerate() {
-                    let (name, parent) = settings_panel::recent_copy(path);
-                    let tooltip_path = path.clone();
-                    let typography = self.data.typography.clone();
-                    content = content.child(
-                        div()
-                            .id(SharedString::from(format!("settings-recent-{index}")))
-                            .debug_selector(move || format!("settings-recent-{index}"))
-                            .role(Role::ListItem)
-                            .aria_label(path.clone())
-                            .tab_index(0)
-                            .tab_stop(true)
-                            .border(px(theme::FOCUS_WIDTH))
-                            .border_color(gpui::transparent_black())
-                            .focus(|style| style.border_color(rgb(p.focus)))
-                            .tooltip(move |_, cx| {
-                                cx.new(|_| FilenameTooltip {
-                                    filename: tooltip_path.clone(),
-                                    palette: p,
-                                    typography: typography.clone(),
-                                })
-                                .into()
-                            })
-                            .min_h(px(theme::SETTINGS_ROW))
-                            .flex_shrink_0()
-                            .py(px(8.))
-                            .px(px(8.))
-                            .flex()
-                            .flex_col()
-                            .gap(px(4.))
-                            .child(div().text_color(rgb(p.ink)).child(name))
-                            .child(
-                                div()
-                                    .id(SharedString::from(format!(
-                                        "settings-recent-parent-{index}"
-                                    )))
-                                    .debug_selector(move || {
-                                        format!("settings-recent-parent-{index}")
-                                    })
-                                    .text_size(px(self.ui_text_size(12.)))
-                                    .text_color(rgb(p.muted))
-                                    .whitespace_normal()
-                                    .child(parent),
-                            ),
-                    );
-                }
+                content = self.settings_recent_files(content, enabled, p);
             }
             Category::Displays => {
                 if let Some(panel) = &self.data.displays {
@@ -608,6 +523,100 @@ impl Presenter {
                     .max_w(px(theme::SETTINGS_WIDTH))
                     .child(footer),
             )
+    }
+    fn settings_recent_files(
+        &self,
+        mut content: gpui::Stateful<gpui::Div>,
+        enabled: bool,
+        p: Palette,
+    ) -> gpui::Stateful<gpui::Div> {
+        let data = &self.data.preferences;
+        let l = self.locale;
+        let files = &data.settings.general.recent_files;
+        content = content.child(
+            div()
+                .flex()
+                .items_center()
+                .justify_between()
+                .gap(px(12.))
+                .py(px(4.))
+                .child(
+                    div()
+                        .text_size(px(self.ui_text_size(12.)))
+                        .text_color(rgb(p.muted))
+                        .child(l.format(
+                            "settings-recent-count",
+                            &[
+                                ("count", files.len().to_string()),
+                                (
+                                    "limit",
+                                    data.settings.general.recent_files_limit.to_string(),
+                                ),
+                            ],
+                        )),
+                )
+                .child(self.button(
+                    "settings-clear-recent".into(),
+                    l.text("settings-clear-recent").into(),
+                    enabled && !files.is_empty(),
+                    false,
+                    Intent::ClearRecent,
+                    p,
+                )),
+        );
+        if files.is_empty() {
+            content = content.child(
+                div()
+                    .py(px(16.))
+                    .text_color(rgb(p.muted))
+                    .child(l.text("recent-empty")),
+            );
+        }
+        for (index, path) in files.iter().enumerate() {
+            let (name, parent) = settings_panel::recent_copy(path);
+            let tooltip_path = path.clone();
+            let typography = self.data.typography.clone();
+            content = content.child(
+                div()
+                    .id(SharedString::from(format!("settings-recent-{index}")))
+                    .debug_selector(move || format!("settings-recent-{index}"))
+                    .role(Role::ListItem)
+                    .aria_label(path.clone())
+                    .tab_index(0)
+                    .tab_stop(true)
+                    .border(px(theme::FOCUS_WIDTH))
+                    .border_color(gpui::transparent_black())
+                    .focus(|style| style.border_color(rgb(p.focus)))
+                    .tooltip(move |_, cx| {
+                        cx.new(|_| FilenameTooltip {
+                            filename: tooltip_path.clone(),
+                            palette: p,
+                            typography: typography.clone(),
+                        })
+                        .into()
+                    })
+                    .min_h(px(theme::SETTINGS_ROW))
+                    .flex_shrink_0()
+                    .py(px(8.))
+                    .px(px(8.))
+                    .flex()
+                    .flex_col()
+                    .gap(px(4.))
+                    .child(div().text_color(rgb(p.ink)).child(name))
+                    .child(
+                        div()
+                            .id(SharedString::from(format!(
+                                "settings-recent-parent-{index}"
+                            )))
+                            .debug_selector(move || format!("settings-recent-parent-{index}"))
+                            .text_size(px(self.ui_text_size(12.)))
+                            .text_color(rgb(p.muted))
+                            .whitespace_normal()
+                            .child(parent),
+                    ),
+            );
+        }
+        content
     }
     fn setting_row(&self, field: Field, enabled: bool, p: Palette) -> impl IntoElement {
         let data = &self.data.preferences;

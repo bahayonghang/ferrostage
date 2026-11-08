@@ -322,6 +322,29 @@ fn settings_v09_numeric_editor_and_slider_use_real_keyboard_events(cx: &mut Test
     );
 }
 
+#[cfg(target_os = "windows")]
+#[test]
+fn display_settings_both_hosts_fit_windows_main_thread_stack() {
+    // Rust's default test threads have 2 MiB, while the Windows executable has
+    // a 1 MiB main stack. Isolate overflow (which aborts) from the test suite.
+    let output = std::process::Command::new(std::env::current_exe().unwrap())
+        .args([
+            "--exact",
+            "shell::tests::displays_design_both_hosts_fit_three_rows_and_cancel_only_allocation",
+            "--nocapture",
+        ])
+        .env("RUST_MIN_STACK", "1048576")
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "display hosts exceeded the native stack budget:\n{}\n{}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr),
+    );
+    assert!(String::from_utf8_lossy(&output.stdout).contains("1 passed"));
+}
+
 #[gpui::test]
 fn settings_v09_all_categories_render_and_footer_stays_reachable(cx: &mut TestAppContext) {
     let (shell, handle) = input_presenter(cx);

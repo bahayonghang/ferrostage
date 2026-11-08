@@ -489,13 +489,9 @@ pub(crate) mod view {
         }
         line
     }
-    fn body(
-        view: &Presenter,
-        panel: &DisplayPanel,
-        l: Locale,
-        p: Palette,
-        width: f32,
-    ) -> gpui::Div {
+    // Keep section builders separate: unoptimized by-value Div temporaries
+    // otherwise accumulate beyond the native Windows main-thread stack.
+    fn detection(view: &Presenter, panel: &DisplayPanel, l: Locale, p: Palette) -> gpui::Div {
         let mut content = div().flex().flex_col().gap(px(8.)).min_w_0();
         content = content
             .child(
@@ -575,6 +571,330 @@ pub(crate) mod view {
             }
             content = content.child(recovery);
         }
+        content
+    }
+    fn overview(
+        view: &Presenter,
+        panel: &DisplayPanel,
+        l: Locale,
+        p: Palette,
+        width: f32,
+        side_by_side: bool,
+    ) -> gpui::Div {
+        let preview_width = if side_by_side {
+            (width * 0.4).min(theme::DISPLAY_PREVIEW_WIDTH)
+        } else {
+            width.clamp(1., 720.)
+        };
+        let preview_height = theme::DISPLAY_PREVIEW_HEIGHT;
+        let aspect = topology_aspect(&panel.monitors);
+        let fit_width = (preview_width - 16.)
+            .min((preview_height - 16.) * aspect)
+            .max(1.);
+        let fit_height = fit_width / aspect;
+        let mut diagram = div()
+            .id("display-topology")
+            .debug_selector(|| "display-topology".into())
+            .relative()
+            .w(px(preview_width))
+            .h(px(preview_height))
+            .flex_shrink_0()
+            .bg(rgb(p.well))
+            .rounded(px(theme::WELL_RADIUS));
+        let mut callouts = Vec::new();
+        for (number, x, y, w, h) in topology_rectangles(&panel.monitors) {
+            let monitor = numbered(&panel.monitors)[number - 1].1;
+            let rect_w = fit_width * w;
+            let rect_h = fit_height * h;
+            let roles = panel.roles.markers(&monitor.id, &panel.draft);
+            let actual = roles.iter().any(|(_, actual)| *actual);
+            let mut screen = div()
+                .id(gpui::SharedString::from(format!(
+                    "display-diagram-{number}"
+                )))
+                .absolute()
+                .left(px((preview_width - fit_width) / 2. + fit_width * x))
+                .top(px((preview_height - fit_height) / 2. + fit_height * y))
+                .w(px(rect_w))
+                .h(px(rect_h))
+                .border_1()
+                .border_color(rgb(if actual { p.focus } else { p.border }))
+                .bg(rgb(p.raised))
+                .flex()
+                .flex_col()
+                .items_center()
+                .justify_center()
+                .gap(px(2.))
+                .text_color(rgb(p.ink))
+                .text_size(px(view.ui_text_size(16.)))
+                .aria_label(format!(
+                    "{number}: {}",
+                    roles
+                        .iter()
+                        .map(|(key, _)| l.text(key))
+                        .collect::<Vec<_>>()
+                        .join(", ")
+                ))
+                .child(number.to_string());
+            // Small physical rectangles use the number-linked callouts below.
+            if rect_w >= view.ui_text_size(100.)
+                && rect_h >= view.ui_text_size(30. + roles.len() as f32 * 18.)
+            {
+                for (key, _) in &roles {
+                    let key = match *key {
+                        "displays-actual-app" => "displays-diagram-app",
+                        "displays-actual-pdf" => "displays-diagram-pdf",
+                        "displays-configured-app" => "displays-diagram-app-target",
+                        "displays-configured-pdf" | "displays-configured-pdf-idle" => {
+                            "displays-diagram-pdf-target"
+                        }
+                        "displays-pending-app" => "displays-diagram-app-pending",
+                        "displays-pending-pdf" => "displays-diagram-pdf-pending",
+                        _ => "displays-unused",
+                    };
+                    screen = screen.child(
+                        div()
+                            .text_size(px(view.ui_text_size(12.)))
+                            .child(l.text(key)),
+                    );
+                }
+            } else {
+                callouts.push(number);
+            }
+            diagram = diagram.child(screen);
+        }
+        let mut overview = div()
+            .flex()
+            .flex_col()
+            .gap(px(8.))
+            .flex_shrink_0()
+            .when(side_by_side, |v| v.w(px(preview_width)))
+            .child(diagram);
+        for (number, monitor) in numbered(&panel.monitors) {
+            if !callouts.contains(&number) {
+                continue;
+            }
+            overview = overview.child(
+                div()
+                    .id(gpui::SharedString::from(format!(
+                        "display-callout-{number}"
+                    )))
+                    .flex()
+                    .items_center()
+                    .gap(px(8.))
+                    .child(number.to_string())
+                    .child(markers(view, panel, &monitor.id, l, p)),
+            );
+        }
+        overview = overview.child(
+            div()
+                .id("display-role-summary")
+                .debug_selector(|| "display-role-summary".into())
+                .flex()
+                .flex_col()
+                .gap(px(4.))
+                .text_size(px(view.ui_text_size(12.)))
+                .text_color(rgb(p.muted))
+                .child(format!(
+                    "{}: {}",
+                    l.text("displays-role-app"),
+                    location_text(&panel.roles.app, &panel.monitors, l)
+                ))
+                .child(format!(
+                    "{}: {}",
+                    l.text("displays-role-pdf"),
+                    if panel.roles.pdf == WindowLocation::NotRunning
+                        && panel.roles.configured.pdf == PdfTarget::None
+                    {
+                        l.text("displays-disabled").into()
+                    } else {
+                        location_text(&panel.roles.pdf, &panel.monitors, l)
+                    }
+                )),
+        );
+        overview
+    }
+    fn monitor_rows(view: &Presenter, panel: &DisplayPanel, l: Locale, p: Palette) -> gpui::Div {
+        let mut rows = div().flex().flex_col().min_w_0().flex_1();
+        for (number, monitor) in numbered(&panel.monitors) {
+            let copy = screen_copy(l, &panel.monitors, monitor);
+            let app_selected = panel.draft.presenter.as_ref() == Some(&monitor.id);
+            let pdf_choices = if panel.monitors.len() == 1 {
+                vec![
+                    (
+                        "display-pdf-fullscreen".to_owned(),
+                        "displays-role-fullscreen",
+                        PdfTarget::SameScreenFullscreen,
+                    ),
+                    (
+                        "display-pdf-windowed".to_owned(),
+                        "displays-role-windowed",
+                        PdfTarget::Windowed,
+                    ),
+                ]
+            } else {
+                vec![(
+                    format!("display-pdf-{number}"),
+                    "displays-role-pdf",
+                    PdfTarget::Display(monitor.id.clone()),
+                )]
+            };
+            let picked = |key, active| {
+                if active {
+                    l.format("displays-role-picked", &[("label", l.text(key).into())])
+                } else {
+                    l.text(key).into()
+                }
+            };
+            let details = panel.details.contains(&monitor.id);
+            let mut row = div()
+                .id(gpui::SharedString::from(format!("display-card-{number}")))
+                .debug_selector(move || format!("display-card-{number}"))
+                .min_w_0()
+                .border_b_1()
+                .border_color(gpui::rgba(p.hairline))
+                .py(px(8.))
+                .flex()
+                .flex_col()
+                .gap(px(4.))
+                .child(
+                    div()
+                        .flex()
+                        .items_center()
+                        .gap(px(8.))
+                        .child(
+                            div()
+                                .id(gpui::SharedString::from(format!("display-index-{number}")))
+                                .w(px(theme::CONTROL))
+                                .h(px(theme::CONTROL))
+                                .flex_shrink_0()
+                                .rounded(px(theme::RADIUS))
+                                .bg(rgb(p.control))
+                                .flex()
+                                .items_center()
+                                .justify_center()
+                                .child(number.to_string()),
+                        )
+                        .child(
+                            div()
+                                .flex_1()
+                                .min_w_0()
+                                .flex()
+                                .flex_col()
+                                .gap(px(2.))
+                                .child(
+                                    div()
+                                        .text_size(px(view.ui_text_size(14.)))
+                                        .whitespace_normal()
+                                        .child(copy.title),
+                                )
+                                .child(
+                                    div()
+                                        .text_size(px(view.ui_text_size(12.)))
+                                        .text_color(rgb(p.muted))
+                                        .whitespace_normal()
+                                        .child(copy.meta),
+                                ),
+                        )
+                        .child(
+                            view.button(
+                                format!("display-details-{number}"),
+                                l.text(if details {
+                                    "displays-details-hide"
+                                } else {
+                                    "displays-details"
+                                })
+                                .into(),
+                                true,
+                                false,
+                                Intent::ToggleDisplayDetails(monitor.id.clone()),
+                                p,
+                            ),
+                        ),
+                )
+                .child(
+                    div()
+                        .flex()
+                        .flex_wrap()
+                        .items_center()
+                        .justify_between()
+                        .gap(px(4.))
+                        .child(markers(view, panel, &monitor.id, l, p))
+                        .child(
+                            div()
+                                .flex()
+                                .flex_wrap()
+                                .gap(px(4.))
+                                .child(view.button(
+                                    format!("display-app-{number}"),
+                                    picked("displays-role-app", app_selected),
+                                    panel.editable,
+                                    false,
+                                    Intent::SelectPresenter(monitor.id.clone()),
+                                    p,
+                                ))
+                                .children(pdf_choices.into_iter().map(
+                                    |(pdf_id, pdf_label, target)| {
+                                        view.button(
+                                            pdf_id,
+                                            picked(pdf_label, panel.draft.pdf == target),
+                                            panel.editable,
+                                            false,
+                                            Intent::SelectPdf(target),
+                                            p,
+                                        )
+                                    },
+                                )),
+                        ),
+                );
+            if monitor.identity_confidence == ferrostage_platform::IdentityConfidence::Degraded {
+                row = row.child(
+                    div()
+                        .id(gpui::SharedString::from(format!(
+                            "display-degraded-{number}"
+                        )))
+                        .role(gpui::Role::Alert)
+                        .text_size(px(view.ui_text_size(12.)))
+                        .text_color(rgb(p.warning))
+                        .child(l.text("displays-id-degraded")),
+                );
+            }
+            if details {
+                row = row.child(
+                    div()
+                        .id(gpui::SharedString::from(format!(
+                            "display-diagnostics-{number}"
+                        )))
+                        .debug_selector(move || format!("display-diagnostics-{number}"))
+                        .text_size(px(view.ui_text_size(12.)))
+                        .text_color(rgb(p.muted))
+                        .whitespace_normal()
+                        .child(l.text(match monitor.identity_source {
+                            ferrostage_platform::IdentitySource::DeviceInterfacePath => {
+                                "displays-id-interface"
+                            }
+                            ferrostage_platform::IdentitySource::NameAndResolution => {
+                                "displays-id-name"
+                            }
+                        }))
+                        .child(l.format(
+                            "displays-scale-source",
+                            &[("ratio", format!("{:.2}", monitor.scale_factor))],
+                        )),
+                );
+            }
+            rows = rows.child(row);
+        }
+        rows
+    }
+    fn body(
+        view: &Presenter,
+        panel: &DisplayPanel,
+        l: Locale,
+        p: Palette,
+        width: f32,
+    ) -> gpui::Div {
+        let mut content = detection(view, panel, l, p);
         if panel.topology_valid {
             for (index, warning) in policy::roles(&panel.monitors, &panel.effective)
                 .warnings
@@ -602,316 +922,14 @@ pub(crate) mod view {
                 );
             }
             let side_by_side = width >= 760.;
-            let preview_width = if side_by_side {
-                (width * 0.4).min(theme::DISPLAY_PREVIEW_WIDTH)
-            } else {
-                width.clamp(1., 720.)
-            };
-            let preview_height = theme::DISPLAY_PREVIEW_HEIGHT;
-            let aspect = topology_aspect(&panel.monitors);
-            let fit_width = (preview_width - 16.)
-                .min((preview_height - 16.) * aspect)
-                .max(1.);
-            let fit_height = fit_width / aspect;
-            let mut diagram = div()
-                .id("display-topology")
-                .debug_selector(|| "display-topology".into())
-                .relative()
-                .w(px(preview_width))
-                .h(px(preview_height))
-                .flex_shrink_0()
-                .bg(rgb(p.well))
-                .rounded(px(theme::WELL_RADIUS));
-            let mut callouts = Vec::new();
-            for (number, x, y, w, h) in topology_rectangles(&panel.monitors) {
-                let monitor = numbered(&panel.monitors)[number - 1].1;
-                let rect_w = fit_width * w;
-                let rect_h = fit_height * h;
-                let roles = panel.roles.markers(&monitor.id, &panel.draft);
-                let actual = roles.iter().any(|(_, actual)| *actual);
-                let mut screen = div()
-                    .id(gpui::SharedString::from(format!(
-                        "display-diagram-{number}"
-                    )))
-                    .absolute()
-                    .left(px((preview_width - fit_width) / 2. + fit_width * x))
-                    .top(px((preview_height - fit_height) / 2. + fit_height * y))
-                    .w(px(rect_w))
-                    .h(px(rect_h))
-                    .border_1()
-                    .border_color(rgb(if actual { p.focus } else { p.border }))
-                    .bg(rgb(p.raised))
-                    .flex()
-                    .flex_col()
-                    .items_center()
-                    .justify_center()
-                    .gap(px(2.))
-                    .text_color(rgb(p.ink))
-                    .text_size(px(view.ui_text_size(16.)))
-                    .aria_label(format!(
-                        "{number}: {}",
-                        roles
-                            .iter()
-                            .map(|(key, _)| l.text(key))
-                            .collect::<Vec<_>>()
-                            .join(", ")
-                    ))
-                    .child(number.to_string());
-                // Small physical rectangles use the number-linked callouts below.
-                if rect_w >= view.ui_text_size(100.)
-                    && rect_h >= view.ui_text_size(30. + roles.len() as f32 * 18.)
-                {
-                    for (key, _) in &roles {
-                        let key = match *key {
-                            "displays-actual-app" => "displays-diagram-app",
-                            "displays-actual-pdf" => "displays-diagram-pdf",
-                            "displays-configured-app" => "displays-diagram-app-target",
-                            "displays-configured-pdf" | "displays-configured-pdf-idle" => {
-                                "displays-diagram-pdf-target"
-                            }
-                            "displays-pending-app" => "displays-diagram-app-pending",
-                            "displays-pending-pdf" => "displays-diagram-pdf-pending",
-                            _ => "displays-unused",
-                        };
-                        screen = screen.child(
-                            div()
-                                .text_size(px(view.ui_text_size(12.)))
-                                .child(l.text(key)),
-                        );
-                    }
-                } else {
-                    callouts.push(number);
-                }
-                diagram = diagram.child(screen);
-            }
-            let mut overview = div()
-                .flex()
-                .flex_col()
-                .gap(px(8.))
-                .flex_shrink_0()
-                .when(side_by_side, |v| v.w(px(preview_width)))
-                .child(diagram);
-            for (number, monitor) in numbered(&panel.monitors) {
-                if !callouts.contains(&number) {
-                    continue;
-                }
-                overview = overview.child(
-                    div()
-                        .id(gpui::SharedString::from(format!(
-                            "display-callout-{number}"
-                        )))
-                        .flex()
-                        .items_center()
-                        .gap(px(8.))
-                        .child(number.to_string())
-                        .child(markers(view, panel, &monitor.id, l, p)),
-                );
-            }
-            overview = overview.child(
-                div()
-                    .id("display-role-summary")
-                    .debug_selector(|| "display-role-summary".into())
-                    .flex()
-                    .flex_col()
-                    .gap(px(4.))
-                    .text_size(px(view.ui_text_size(12.)))
-                    .text_color(rgb(p.muted))
-                    .child(format!(
-                        "{}: {}",
-                        l.text("displays-role-app"),
-                        location_text(&panel.roles.app, &panel.monitors, l)
-                    ))
-                    .child(format!(
-                        "{}: {}",
-                        l.text("displays-role-pdf"),
-                        if panel.roles.pdf == WindowLocation::NotRunning
-                            && panel.roles.configured.pdf == PdfTarget::None
-                        {
-                            l.text("displays-disabled").into()
-                        } else {
-                            location_text(&panel.roles.pdf, &panel.monitors, l)
-                        }
-                    )),
-            );
-            let mut rows = div().flex().flex_col().min_w_0().flex_1();
-            for (number, monitor) in numbered(&panel.monitors) {
-                let copy = screen_copy(l, &panel.monitors, monitor);
-                let app_selected = panel.draft.presenter.as_ref() == Some(&monitor.id);
-                let pdf_choices = if panel.monitors.len() == 1 {
-                    vec![
-                        (
-                            "display-pdf-fullscreen".to_owned(),
-                            "displays-role-fullscreen",
-                            PdfTarget::SameScreenFullscreen,
-                        ),
-                        (
-                            "display-pdf-windowed".to_owned(),
-                            "displays-role-windowed",
-                            PdfTarget::Windowed,
-                        ),
-                    ]
-                } else {
-                    vec![(
-                        format!("display-pdf-{number}"),
-                        "displays-role-pdf",
-                        PdfTarget::Display(monitor.id.clone()),
-                    )]
-                };
-                let picked = |key, active| {
-                    if active {
-                        l.format("displays-role-picked", &[("label", l.text(key).into())])
-                    } else {
-                        l.text(key).into()
-                    }
-                };
-                let details = panel.details.contains(&monitor.id);
-                let mut row = div()
-                    .id(gpui::SharedString::from(format!("display-card-{number}")))
-                    .debug_selector(move || format!("display-card-{number}"))
-                    .min_w_0()
-                    .border_b_1()
-                    .border_color(gpui::rgba(p.hairline))
-                    .py(px(8.))
-                    .flex()
-                    .flex_col()
-                    .gap(px(4.))
-                    .child(
-                        div()
-                            .flex()
-                            .items_center()
-                            .gap(px(8.))
-                            .child(
-                                div()
-                                    .id(gpui::SharedString::from(format!("display-index-{number}")))
-                                    .w(px(theme::CONTROL))
-                                    .h(px(theme::CONTROL))
-                                    .flex_shrink_0()
-                                    .rounded(px(theme::RADIUS))
-                                    .bg(rgb(p.control))
-                                    .flex()
-                                    .items_center()
-                                    .justify_center()
-                                    .child(number.to_string()),
-                            )
-                            .child(
-                                div()
-                                    .flex_1()
-                                    .min_w_0()
-                                    .flex()
-                                    .flex_col()
-                                    .gap(px(2.))
-                                    .child(
-                                        div()
-                                            .text_size(px(view.ui_text_size(14.)))
-                                            .whitespace_normal()
-                                            .child(copy.title),
-                                    )
-                                    .child(
-                                        div()
-                                            .text_size(px(view.ui_text_size(12.)))
-                                            .text_color(rgb(p.muted))
-                                            .whitespace_normal()
-                                            .child(copy.meta),
-                                    ),
-                            )
-                            .child(
-                                view.button(
-                                    format!("display-details-{number}"),
-                                    l.text(if details {
-                                        "displays-details-hide"
-                                    } else {
-                                        "displays-details"
-                                    })
-                                    .into(),
-                                    true,
-                                    false,
-                                    Intent::ToggleDisplayDetails(monitor.id.clone()),
-                                    p,
-                                ),
-                            ),
-                    )
-                    .child(
-                        div()
-                            .flex()
-                            .flex_wrap()
-                            .items_center()
-                            .justify_between()
-                            .gap(px(4.))
-                            .child(markers(view, panel, &monitor.id, l, p))
-                            .child(
-                                div()
-                                    .flex()
-                                    .flex_wrap()
-                                    .gap(px(4.))
-                                    .child(view.button(
-                                        format!("display-app-{number}"),
-                                        picked("displays-role-app", app_selected),
-                                        panel.editable,
-                                        false,
-                                        Intent::SelectPresenter(monitor.id.clone()),
-                                        p,
-                                    ))
-                                    .children(pdf_choices.into_iter().map(
-                                        |(pdf_id, pdf_label, target)| {
-                                            view.button(
-                                                pdf_id,
-                                                picked(pdf_label, panel.draft.pdf == target),
-                                                panel.editable,
-                                                false,
-                                                Intent::SelectPdf(target),
-                                                p,
-                                            )
-                                        },
-                                    )),
-                            ),
-                    );
-                if monitor.identity_confidence == ferrostage_platform::IdentityConfidence::Degraded
-                {
-                    row = row.child(
-                        div()
-                            .id(gpui::SharedString::from(format!(
-                                "display-degraded-{number}"
-                            )))
-                            .role(gpui::Role::Alert)
-                            .text_size(px(view.ui_text_size(12.)))
-                            .text_color(rgb(p.warning))
-                            .child(l.text("displays-id-degraded")),
-                    );
-                }
-                if details {
-                    row = row.child(
-                        div()
-                            .id(gpui::SharedString::from(format!(
-                                "display-diagnostics-{number}"
-                            )))
-                            .debug_selector(move || format!("display-diagnostics-{number}"))
-                            .text_size(px(view.ui_text_size(12.)))
-                            .text_color(rgb(p.muted))
-                            .whitespace_normal()
-                            .child(l.text(match monitor.identity_source {
-                                ferrostage_platform::IdentitySource::DeviceInterfacePath => {
-                                    "displays-id-interface"
-                                }
-                                ferrostage_platform::IdentitySource::NameAndResolution => {
-                                    "displays-id-name"
-                                }
-                            }))
-                            .child(l.format(
-                                "displays-scale-source",
-                                &[("ratio", format!("{:.2}", monitor.scale_factor))],
-                            )),
-                    );
-                }
-                rows = rows.child(row);
-            }
             content = content.child(
                 div()
                     .flex()
                     .gap(px(16.))
                     .min_w_0()
                     .when(!side_by_side, |v| v.flex_col())
-                    .child(overview)
-                    .child(rows),
+                    .child(overview(view, panel, l, p, width, side_by_side))
+                    .child(monitor_rows(view, panel, l, p)),
             );
         }
         if let Some(problem) = &panel.problem {
