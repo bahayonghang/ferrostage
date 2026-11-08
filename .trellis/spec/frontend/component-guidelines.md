@@ -254,7 +254,7 @@ GPUI paints parent listeners before children and bubbles children first. `stop_p
 
 `PanelState.changelog_open` is panel UI state, not a settings key. The About button id is `about-changelog`, label key `about-changelog` (更新日志 / Changelog), and it is the first About child. The same button toggles the log. Entries render only while the flag is true, one block per `CHANGELOG` row, debug id `changelog-{version}`, heading equal to the version string, paragraph `locale.text(key)`. The five existing About rows and `about-repository-link` stay after the log. Opening is offline. Category changes and `dismiss_preferences` clear the flag. The toggle applies only when `modal == Some(Modal::Settings)` and the category is About.
 
-Product version lives only in `[workspace.package].version`. `CHANGELOG[0].0` must equal `VERSION`. Headings are exactly `1.2.1`, `1.2.0`, `1.1.1`, `1.1.0`, `1.0.0`. Paragraphs live in `about-changelog-1-2-1` through `about-changelog-1-0-0` in both `zh-CN` and `en-US`, with identical keys. Do not add a second version constant or fetch the log.
+Product version lives only in `[workspace.package].version`. `CHANGELOG[0].0` must equal `VERSION`. Headings are exactly `1.3.0`, `1.2.1`, `1.2.0`, `1.1.1`, `1.1.0`, `1.0.0`. Paragraphs live in `about-changelog-1-3-0` through `about-changelog-1-0-0` in both `zh-CN` and `en-US`, with identical keys. Do not add a second version constant or fetch the log.
 
 ### 4. Validation & Error Matrix
 
@@ -281,7 +281,7 @@ Good: Standard and Notes-first each advance from current, next, and notes, and t
 
 `presenter_preview_and_notes_clicks_advance_one_step` drives GPUI mouse down/up on `surface-Current`, `next-pane`, and `notes-content`: outside release, right click, pen, full-rect media, contextual `PresenterMenu`, pending `RecoverPresenter`, Settings plus direct `Intent::Next`, blank, and `StartMode::DualNotes`. Assert the audience toggle stays false.
 
-The About test clicks `about-changelog`, asserts static ids `changelog-1.2.1` through `changelog-1.0.0`, asserts no opened URL, toggles the log closed, then shows that `settings-category-general` clears the flag and removes the About button. Assert `VERSION == CHANGELOG[0].0` and the `1.2.1` / `1.0.0` strings in both locales. `catalogs_have_identical_keys` must keep passing.
+The About test clicks `about-changelog`, asserts static ids `changelog-1.3.0` through `changelog-1.0.0`, asserts no opened URL, toggles the log closed, then shows that `settings-category-general` clears the flag and removes the About button. Assert `VERSION == CHANGELOG[0].0` and the `1.3.0` / `1.0.0` strings in both locales. `catalogs_have_identical_keys` must keep passing.
 
 ### 7. Wrong vs Correct
 
