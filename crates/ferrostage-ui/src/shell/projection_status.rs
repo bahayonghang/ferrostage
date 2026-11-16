@@ -65,6 +65,26 @@ impl Shell {
             .unwrap_or_else(|| self.locale.text("displays-location-unknown").into())
     }
 
+    /// Planned output, not an observation of an audience window.
+    pub(crate) fn configured_projection_target(&self) -> String {
+        let l = self.locale;
+        policy::start_target(&self.monitors, &self.settings.settings.display)
+            .map(|target| {
+                let monitor = self.projection_monitor(&target.monitor);
+                let mode = if target.shared {
+                    l.text(if target.fullscreen {
+                        "projection-shared-fullscreen"
+                    } else {
+                        "projection-shared-windowed"
+                    })
+                } else {
+                    l.text("projection-separate")
+                };
+                format!("{monitor} · {mode}")
+            })
+            .unwrap_or_else(|_| l.text("projection-target-unavailable").into())
+    }
+
     pub(crate) fn projection_status(&self) -> Option<ProjectionStatus> {
         if self.state.stage() == SessionStage::Idle {
             return None;
@@ -75,21 +95,7 @@ impl Shell {
                 .pending
                 .as_ref()
                 .is_some_and(|pending| matches!(pending.kind, TransactionKind::Start(_)));
-            let target = policy::start_target(&self.monitors, &self.settings.settings.display)
-                .map(|target| {
-                    let monitor = self.projection_monitor(&target.monitor);
-                    let mode = if target.shared {
-                        l.text(if target.fullscreen {
-                            "projection-shared-fullscreen"
-                        } else {
-                            "projection-shared-windowed"
-                        })
-                    } else {
-                        l.text("projection-separate")
-                    };
-                    format!("{monitor} · {mode}")
-                })
-                .unwrap_or_else(|_| l.text("projection-target-unavailable").into());
+            let target = self.configured_projection_target();
             return Some(ProjectionStatus {
                 summary: l
                     .text(if preparing {

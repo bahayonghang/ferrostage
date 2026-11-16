@@ -1,4 +1,5 @@
 pub(crate) mod crop;
+pub(crate) mod home_preview;
 mod layout_navigation;
 mod page_browser;
 mod preferences;
@@ -209,6 +210,9 @@ pub(crate) struct Shell {
     poll_task: Option<gpui::Task<()>>,
     render_wake_task: Option<gpui::Task<()>>,
     import_read_task: Option<gpui::Task<()>>,
+    pub(crate) home_preview: home_preview::HomePreview,
+    home_preview_task: Option<gpui::Task<()>>,
+    home_preview_pending: Option<home_preview::PendingPreview>,
     path_prompt_task: Option<gpui::Task<()>>,
 }
 
@@ -302,6 +306,7 @@ impl Shell {
     }
 
     fn stop_tasks(&mut self, reason: &'static str) {
+        self.cancel_home_preview();
         self.media.shutdown();
         self.shutdown_reload();
         // WeakEntity is checked only after a foreground wake. Cancel while the
@@ -408,6 +413,9 @@ impl Shell {
             poll_task: None,
             render_wake_task: None,
             import_read_task: None,
+            home_preview: Default::default(),
+            home_preview_task: None,
+            home_preview_pending: None,
             path_prompt_task: None,
         }
     }
@@ -853,6 +861,7 @@ impl Shell {
             }
             Intent::Identify => self.identify_displays(cx),
             Intent::Import(path) => self.begin_import(path, cx),
+            Intent::HomePreview(path) => self.select_home_preview(path, cx),
             Intent::RetrySave => {
                 if !self.busy() {
                     self.save(cx);
@@ -926,6 +935,7 @@ impl Shell {
             self.error = Some(self.locale.text("import-unavailable").into());
             return;
         }
+        self.cancel_home_preview();
         self.import_token += 1;
         let token = self.import_token;
         crate::perf::mark!("perf_open", token);
@@ -2201,6 +2211,7 @@ impl Shell {
             self.close_identify(cx);
         }
         self.poll_preferences(cx);
+        self.poll_home_preview(cx);
         self.poll_import(cx);
         self.poll_transaction(cx);
         self.poll_presenter_restore(cx);
@@ -4173,6 +4184,7 @@ mod tests {
     include!("shell/presenter_layout_tests.rs");
     include!("shell/timed_playback_tests.rs");
     include!("shell/projection_status_tests.rs");
+    include!("shell/home_preview_tests.rs");
     include!("shell/return_position_tests.rs");
     include!("shell/session_resume_tests.rs");
     include!("shell/crop_gate_tests.rs");
@@ -7474,6 +7486,14 @@ mod tests {
         let (shell, handle) = workbench_fixture(cx);
         let mut visual = gpui::VisualTestContext::from_window(handle, cx);
         let progress = visual.debug_bounds("workbench-progress").unwrap();
+        let previous = visual.debug_bounds("previous").unwrap();
+        let next = visual.debug_bounds("next").unwrap();
+        let current = visual.debug_bounds("progress-current").unwrap();
+        assert!(previous.right() <= progress.left());
+        assert!(progress.right() <= next.left());
+        assert!(current.size.height >= px(32.));
+        assert!(progress.contains(&current.origin) && current.right() <= progress.right());
+        assert!(visual.debug_bounds("projection-status").is_none());
         visual.simulate_mouse_move(progress.center(), None, gpui::Modifiers::default());
         redraw(handle, cx);
         cx.run_until_parked();
@@ -7834,8 +7854,8 @@ mod tests {
             })
             .unwrap();
         let mut visual = gpui::VisualTestContext::from_window(handle, cx);
-        let header = visual.debug_bounds("recent-time-header").unwrap();
-        let mut previous_bottom = header.bottom();
+        let history_bounds = visual.debug_bounds("home-history").unwrap();
+        let mut previous_bottom = history_bounds.top();
         for index in 0..3 {
             let row = visual
                 .debug_bounds(["recent-0", "recent-1", "recent-2"][index])
@@ -7846,18 +7866,17 @@ mod tests {
             let time = visual
                 .debug_bounds(["recent-0-time", "recent-1-time", "recent-2-time"][index])
                 .unwrap();
-            assert_eq!(time.origin.x, header.origin.x);
-            assert_eq!(time.right(), header.right());
-            assert!(name.right() <= time.origin.x - px(16.));
+            assert!(time.left() >= row.left() && time.right() <= row.right());
+            assert!(name.bottom() <= time.top());
             assert!(time.top() >= row.top() && time.bottom() <= row.bottom());
             assert!(row.top() >= previous_bottom);
             assert!(
-                time.size.height <= px(21.),
+                time.size.height <= px(26.),
                 "normal-window timestamp must fit one line: {time:?}"
             );
             previous_bottom = row.bottom();
             println!(
-                "HOME_HISTORY_GEOMETRY client=1100x760 font_size=18 index={index} header={header:?} row={row:?} name={name:?} time={time:?}"
+                "HOME_HISTORY_GEOMETRY client=1100x760 font_size=18 index={index} history={history_bounds:?} row={row:?} name={name:?} time={time:?}"
             );
         }
         assert!(visual.debug_bounds("recent-3").is_none());
@@ -7871,13 +7890,26 @@ mod tests {
             redraw(handle, cx);
             cx.simulate_keystrokes(handle, key);
             shell.read_with(cx, |shell, _| {
+                assert!(shell.error.is_none());
                 assert_eq!(
-                    shell.error.as_deref(),
-                    Some(shell.locale.text("import-unavailable"))
+                    shell.home_preview.path.as_ref().unwrap(),
+                    &PathBuf::from(&history.recent_files[0])
                 );
+                assert_eq!(shell.home_preview.error, Some("import-unavailable"));
+                assert_eq!(shell.state.stage(), SessionStage::Idle);
+                assert!(shell.path.is_none());
                 assert_eq!(shell.settings.settings.general, history);
             });
         }
+        cx.simulate_window_resize(handle, size(px(1600.), px(1200.)));
+        redraw(handle, cx);
+        click_control(handle, "home-open-selected", cx);
+        shell.read_with(cx, |shell, _| {
+            assert_eq!(
+                shell.error.as_deref(),
+                Some(shell.locale.text("import-unavailable"))
+            )
+        });
     }
 
     #[gpui::test]
@@ -7926,12 +7958,22 @@ mod tests {
                         let brand = visual.debug_bounds("home-brand").unwrap();
                         let utilities = visual.debug_bounds("home-utilities").unwrap();
                         let open = visual.debug_bounds("welcome-open").unwrap();
-                        let face = visual.debug_bounds("welcome-open-face").unwrap();
-                        assert!(column.size.width <= px(760.));
+                        let face = open;
+                        let preview = visual.debug_bounds("home-preview").unwrap();
+                        let preparation = visual.debug_bounds("home-preparation").unwrap();
+                        let history = visual.debug_bounds("home-history").unwrap();
+                        if width >= 1000. {
+                            assert!(history.right() + px(32.) <= preview.left());
+                            assert_eq!(history.top(), preview.top());
+                        } else {
+                            assert!(preview.top() >= history.bottom() + px(32.));
+                        }
+                        assert!(preparation.top() >= preview.bottom());
+                        assert!(visual.debug_bounds("home-configured-target").is_some());
                         assert!(column.origin.x >= px(16.) && column.right() <= px(width - 16.));
-                        assert!(face.size.width >= px(120.) && face.size.width <= px(200.));
+                        assert!(face.size.width >= px(60.) && face.size.width <= px(200.));
                         assert!(face.size.height >= px(44.));
-                        assert!((open.origin.x - column.origin.x).abs() <= px(2.));
+                        assert!(open.left() >= column.left() && open.right() <= column.right());
                         assert!((brand.origin.x - column.origin.x).abs() <= px(2.));
                         if width < 600. {
                             assert!(utilities.origin.y >= brand.bottom());
@@ -7942,10 +7984,10 @@ mod tests {
                                 .debug_bounds(["recent-0", "recent-1", "recent-2"][index])
                                 .unwrap();
                             assert!(
-                                (48. ..=56.).contains(&f32::from(row.size.height)),
+                                (88. ..=112.).contains(&f32::from(row.size.height)),
                                 "{row:?}"
                             );
-                            assert!((row.origin.x - column.origin.x).abs() <= px(2.));
+                            assert!((row.origin.x - history.origin.x).abs() <= px(2.));
                             assert!(row.right() <= column.right());
                             if let Some(bottom) = previous_bottom {
                                 assert!(row.origin.y - bottom <= px(8.));

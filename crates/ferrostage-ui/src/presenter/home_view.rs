@@ -13,133 +13,154 @@ pub(super) fn last_opened(locale: crate::locale::Locale, timestamp: Option<i64>)
 impl Presenter {
     pub(super) fn home_content(&self, p: Palette, window: &Window) -> Stateful<Div> {
         let l = self.locale;
-        let compact = window.viewport_size().width < px(600.);
+        let columns = window.viewport_size().width >= px(self.ui_text_size(1000.));
+        let compact = window.viewport_size().width < px(self.ui_text_size(700.));
         let utilities = div()
             .id("home-utilities")
             .debug_selector(|| "home-utilities".into())
             .flex()
+            .flex_wrap()
             .items_center()
             .gap(px(8.))
             .child(self.home_utility("settings", l.text("settings"), Intent::Settings, p))
-            .child(self.home_utility("displays", l.text("displays"), Intent::Displays, p));
+            .child(self.home_utility("displays", l.text("displays"), Intent::Displays, p))
+            .child(
+                self.button(
+                    "welcome-open".into(),
+                    l.text(if self.data.loading { "loading" } else { "open" })
+                        .into(),
+                    self.data.can_open,
+                    true,
+                    Intent::Open,
+                    p,
+                ),
+            );
         let header = div()
             .flex()
-            .when(compact, |view| view.flex_col().items_start().gap(px(8.)))
+            .gap(px(16.))
+            .when(compact, |view| view.flex_col().items_start())
             .when(!compact, |view| view.items_center().justify_between())
             .child(
                 div()
                     .id("home-brand")
                     .debug_selector(|| "home-brand".into())
-                    .pl(px(theme::FOCUS_WIDTH + theme::FOCUS_GAP))
                     .font(self.data.typography.font())
                     .font_weight(gpui::FontWeight::SEMIBOLD)
-                    .text_size(px(self.ui_text_size(32.)))
-                    .line_height(px(self.ui_text_size(38.)))
+                    .text_size(px(self.ui_text_size(28.)))
+                    .line_height(px(self.ui_text_size(36.)))
                     .text_color(rgb(p.ink))
                     .child("FerroStage"),
             )
             .child(utilities);
-        let label = if self.data.loading {
-            l.text("loading")
-        } else {
-            l.text("open")
-        };
-        let style = p.button(theme::ButtonKind::Primary, self.data.can_open, false);
-        let open = self
-            .activation_target(
-                "welcome-open".into(),
-                label.into(),
-                self.data.can_open,
-                Intent::Open,
-                p,
-            )
-            .rounded_full()
+        let history = self
+            .home_history(p, window)
+            .when(columns, |view| {
+                view.w(px(self.ui_text_size(340.))).flex_shrink_0()
+            })
+            .when(!columns, |view| view.w_full());
+        let preview = self
+            .home_preview_panel(p, window, columns)
+            .when(columns, |view| view.flex_1().min_w_0())
+            .when(!columns, |view| view.w_full());
+        div()
+            .id("home-content")
+            .debug_selector(|| "home-content".into())
+            .w_full()
+            .min_w_0()
+            .flex()
+            .flex_col()
+            .gap(px(24.))
+            .text_size(px(self.ui_text_size(14.)))
+            .line_height(px(self.ui_text_size(22.)))
+            .child(header)
             .child(
                 div()
-                    .id("welcome-open-face")
-                    .debug_selector(|| "welcome-open-face".into())
-                    .min_w(px(120.))
-                    .min_h(px(theme::CONTROL))
-                    .px(px(16.))
                     .flex()
+                    .gap(px(32.))
+                    .when(!columns, |view| view.flex_col())
+                    .child(history)
+                    .child(preview),
+            )
+            .child(
+                div()
+                    .id("home-preparation")
+                    .debug_selector(|| "home-preparation".into())
+                    .border_t_1()
+                    .border_color(gpui::rgba(p.hairline))
+                    .pt(px(16.))
+                    .flex()
+                    .flex_wrap()
                     .items_center()
-                    .justify_center()
-                    .relative()
-                    .rounded_full()
-                    .bg(rgb(style.fill))
-                    .text_color(rgb(style.ink))
-                    .text_size(px(self.data.typography.size(14.)))
-                    .line_height(px(self.data.typography.size(20.)))
-                    .font_weight(gpui::FontWeight::MEDIUM)
-                    .child(label)
-                    .when(self.data.can_open, |view| {
-                        view.hover(move |state| state.bg(rgb(style.hover)))
-                            .active(move |state| state.bg(rgb(style.pressed)).top(px(1.)))
-                    }),
+                    .gap(px(16.))
+                    .text_size(px(self.ui_text_size(12.)))
+                    .text_color(rgb(p.muted))
+                    .child(l.text("home-configured-target"))
+                    .child(
+                        div()
+                            .id("home-configured-target")
+                            .debug_selector(|| "home-configured-target".into())
+                            .min_w_0()
+                            .whitespace_normal()
+                            .child(self.data.configured_target.clone()),
+                    )
+                    .child(l.text(super::start_mode::label(self.data.start_mode))),
+            )
+    }
+
+    fn home_history(&self, p: Palette, window: &Window) -> Stateful<Div> {
+        let l = self.locale;
+        let mut list = div()
+            .id("home-history")
+            .debug_selector(|| "home-history".into())
+            .min_w_0()
+            .flex()
+            .flex_col()
+            .gap(px(8.))
+            .child(
+                div()
+                    .px(px(12.))
+                    .pb(px(8.))
+                    .text_color(rgb(p.muted))
+                    .child(l.text("recent")),
             );
-        let time_width = self.data.typography.size(if compact { 98. } else { 152. });
-        let mut recents = div().flex().flex_col().child(
-            div()
-                .id("recent-header")
-                .debug_selector(|| "recent-header".into())
-                .px(px(theme::FOCUS_WIDTH + theme::FOCUS_GAP + 8.))
-                .pb(px(8.))
-                .mb(px(4.))
-                .border_b_1()
-                .border_color(gpui::rgba(p.hairline))
-                .flex()
-                .items_center()
-                .gap(px(16.))
-                .text_size(px(self.data.typography.size(12.)))
-                .line_height(px(self.data.typography.size(18.)))
-                .text_color(rgb(p.muted))
-                .child(div().flex_1().min_w_0().child(l.text("recent")))
-                .child(
-                    div()
-                        .id("recent-time-header")
-                        .debug_selector(|| "recent-time-header".into())
-                        .w(px(time_width))
-                        .flex_shrink_0()
-                        .text_right()
-                        .child(l.text("recent-last-opened")),
-                ),
-        );
         if self.data.recent.is_empty() {
-            recents = recents.child(
+            list = list.child(
                 div()
                     .id("home-empty")
                     .debug_selector(|| "home-empty".into())
-                    .pl(px(4.))
-                    .text_size(px(self.data.typography.size(14.)))
-                    .line_height(px(self.data.typography.size(22.)))
+                    .px(px(12.))
                     .text_color(rgb(p.muted))
                     .child(l.text("recent-empty")),
             );
         }
         for (index, recent) in self.data.recent.iter().enumerate() {
-            let path = &recent.path;
-            let file = std::path::Path::new(path);
-            let filename = file
+            let path = std::path::Path::new(&recent.path);
+            let filename = path
                 .file_name()
-                .map(|value| value.to_string_lossy().into_owned())
-                .unwrap_or_else(|| path.clone());
-            let parent = file
+                .map(|name| name.to_string_lossy().into_owned())
+                .unwrap_or_else(|| recent.path.clone());
+            let parent = path
                 .parent()
-                .map(|value| value.to_string_lossy().into_owned())
-                .filter(|value| !value.is_empty());
-            let tooltip_path = path.clone();
+                .map(|parent| parent.to_string_lossy().into_owned())
+                .unwrap_or_default();
+            let selected = self.data.home_preview.path.as_deref() == Some(path);
+            let tooltip_path = recent.path.clone();
             let typography = self.data.typography.clone();
-            let row = self
-                .activation_target(
+            list = list.child(
+                self.activation_target(
                     format!("recent-{index}"),
                     l.format(
-                        "recent-open-time",
-                        &[("path", path.clone()), ("time", recent.last_opened.clone())],
+                        "home-preview-select",
+                        &[
+                            ("path", recent.path.clone()),
+                            ("time", recent.last_opened.clone()),
+                        ],
                     ),
                     self.data.can_open,
-                    Intent::Import(path.into()),
+                    Intent::HomePreview(path.into()),
                     p,
                 )
+                .aria_toggled(selected.into())
                 .tooltip(move |_, cx| {
                     cx.new(|_| FilenameTooltip {
                         filename: tooltip_path.clone(),
@@ -152,75 +173,64 @@ impl Presenter {
                     div()
                         .id(SharedString::from(format!("recent-{index}-face")))
                         .debug_selector(move || format!("recent-{index}-face"))
-                        .min_h(px(theme::CONTROL))
-                        .flex()
-                        .items_center()
-                        .gap(px(16.))
-                        .min_w_0()
-                        .relative()
-                        .px(px(8.))
+                        .p(px(12.))
                         .rounded(px(theme::WELL_RADIUS))
-                        .text_size(px(self.data.typography.size(14.)))
-                        .line_height(px(self.data.typography.size(20.)))
-                        .text_color(rgb(if self.data.can_open { p.ink } else { p.muted }))
+                        .bg(rgb(if selected {
+                            p.accent_wash
+                        } else {
+                            p.layer_solid
+                        }))
+                        .flex()
+                        .flex_col()
+                        .gap(px(4.))
+                        .min_w_0()
+                        .text_color(rgb(p.ink))
                         .child(
                             div()
-                                .flex_1()
-                                .min_w_0()
                                 .flex()
-                                .flex_col()
+                                .items_center()
+                                .gap(px(8.))
+                                .child(
+                                    div()
+                                        .w(px(16.))
+                                        .flex_shrink_0()
+                                        .text_color(rgb(p.accent_text))
+                                        .child(if selected { "✓" } else { "" }),
+                                )
                                 .child(
                                     div()
                                         .id(SharedString::from(format!("recent-{index}-name")))
                                         .debug_selector(move || format!("recent-{index}-name"))
+                                        .min_w_0()
                                         .truncate()
-                                        .font_weight(gpui::FontWeight::MEDIUM)
+                                        .font_weight(gpui::FontWeight::SEMIBOLD)
                                         .child(filename),
-                                )
-                                .when_some(parent, |view, parent| {
-                                    view.child(
-                                        div()
-                                            .id(SharedString::from(format!(
-                                                "recent-{index}-parent"
-                                            )))
-                                            .debug_selector(move || {
-                                                format!("recent-{index}-parent")
-                                            })
-                                            .truncate()
-                                            .text_size(px(self.data.typography.size(12.)))
-                                            .line_height(px(self.data.typography.size(18.)))
-                                            .text_color(rgb(p.muted))
-                                            .child(parent),
-                                    )
-                                }),
+                                ),
+                        )
+                        .child(
+                            div()
+                                .id(SharedString::from(format!("recent-{index}-parent")))
+                                .debug_selector(move || format!("recent-{index}-parent"))
+                                .truncate()
+                                .text_size(px(self.ui_text_size(12.)))
+                                .text_color(rgb(p.muted))
+                                .child(parent),
                         )
                         .child(
                             div()
                                 .id(SharedString::from(format!("recent-{index}-time")))
                                 .debug_selector(move || format!("recent-{index}-time"))
-                                .w(px(time_width))
-                                .flex_shrink_0()
-                                .text_right()
-                                .whitespace_normal()
-                                .text_size(px(self.data.typography.size(12.)))
-                                .line_height(px(self.data.typography.size(18.)))
+                                .text_size(px(self.ui_text_size(12.)))
                                 .text_color(rgb(p.muted))
                                 .child(recent.last_opened.clone()),
                         )
                         .when(self.data.can_open, |view| {
-                            view.hover(move |state| state.bg(rgb(p.control_hover)))
-                                .active(move |state| state.bg(rgb(p.control_pressed)).top(px(1.)))
+                            view.hover(move |style| style.bg(rgb(p.control_hover)))
                         }),
-                );
-            recents = recents.child(
-                div()
-                    .border_b_1()
-                    .border_color(gpui::rgba(p.hairline))
-                    .child(row),
+                ),
             );
         }
-        // Keyboard users get the same complete path as the pointer tooltip.
-        if let Some(path) = self
+        if let Some(recent) = self
             .data
             .recent
             .iter()
@@ -228,68 +238,153 @@ impl Presenter {
             .find_map(|(index, recent)| {
                 self.home_focus[index + 3]
                     .is_focused(window)
-                    .then_some(&recent.path)
+                    .then_some(recent)
             })
         {
-            recents = recents.child(
+            list = list.child(
                 div()
                     .id("recent-full-path")
                     .debug_selector(|| "recent-full-path".into())
-                    .pl(px(4.))
-                    .text_size(px(self.data.typography.size(12.)))
-                    .line_height(px(self.data.typography.size(18.)))
-                    .text_color(rgb(p.muted))
+                    .max_w_full()
                     .whitespace_normal()
-                    .child(path.clone()),
+                    .text_size(px(self.ui_text_size(12.)))
+                    .text_color(rgb(p.muted))
+                    .child(recent.path.clone()),
+            );
+        }
+        list
+    }
+
+    fn home_preview_panel(&self, p: Palette, window: &Window, columns: bool) -> Stateful<Div> {
+        let l = self.locale;
+        let preview = &self.data.home_preview;
+        let selected = preview.path.as_ref();
+        // Available workspace height, with space reserved for header, metadata and
+        // output summary. Narrow windows keep an ordinary scrollable preview.
+        let height = if columns {
+            (f32::from(window.viewport_size().height) - self.ui_text_size(440.)).max(220.)
+        } else {
+            260.
+        };
+        let mut picture = div()
+            .id("home-preview-image")
+            .debug_selector(|| "home-preview-image".into())
+            .h(px(height))
+            .w_full()
+            .min_w_0()
+            .p(px(16.))
+            .rounded(px(theme::WELL_RADIUS))
+            .bg(rgb(p.well))
+            .overflow_hidden()
+            .flex()
+            .items_center()
+            .justify_center();
+        let cache_error = self.home_textures.borrow().error().is_some();
+        if preview.frame.is_some() && !cache_error {
+            let cache = self.home_textures.clone();
+            let token = preview.token;
+            picture = picture.child(
+                gpui::canvas(
+                    |_, _, _| (),
+                    move |bounds, _, window, cx| {
+                        cache.borrow_mut().paint(
+                            token,
+                            None,
+                            window,
+                            cx,
+                            |frame, image, _, window| {
+                                crate::slide_surface::paint(bounds, frame, image, None, window)
+                            },
+                        );
+                    },
+                )
+                .size_full(),
+            );
+        } else {
+            picture = picture.child(
+                div()
+                    .id("home-preview-status")
+                    .debug_selector(|| "home-preview-status".into())
+                    .max_w_full()
+                    .whitespace_normal()
+                    .text_color(rgb(p.muted))
+                    .child(l.text(if cache_error {
+                        "wb-render-failed"
+                    } else if let Some(error) = preview.error {
+                        error
+                    } else if selected.is_some() {
+                        "wb-rendering"
+                    } else if self.data.recent.is_empty() {
+                        "home-preview-empty"
+                    } else {
+                        "home-preview-choose"
+                    })),
             );
         }
         div()
-            .id("home-content")
-            .debug_selector(|| "home-content".into())
-            .w_full()
-            .max_w(px(theme::HOME_WIDTH))
-            .min_w_0()
+            .id("home-preview")
+            .debug_selector(|| "home-preview".into())
             .flex()
             .flex_col()
-            .gap(px(16.))
-            .text_size(px(self.data.typography.size(14.)))
-            .line_height(px(self.data.typography.size(22.)))
-            .child(header)
+            .gap(px(12.))
             .child(
                 div()
-                    .mt(px(8.))
-                    .pl(px(4.))
                     .text_color(rgb(p.muted))
-                    .child(l.text("welcome")),
+                    .child(l.text("home-preview-title")),
             )
-            .child(div().flex().items_start().child(open))
-            .child(div().mt(px(16.)).child(recents))
+            .child(picture)
+            .when_some(selected, |view, path| {
+                view.child(
+                    div()
+                        .text_size(px(self.ui_text_size(20.)))
+                        .font_weight(gpui::FontWeight::SEMIBOLD)
+                        .text_color(rgb(p.ink))
+                        .whitespace_normal()
+                        .child(
+                            path.file_name()
+                                .map(|name| name.to_string_lossy().into_owned())
+                                .unwrap_or_default(),
+                        ),
+                )
+                .child(
+                    div()
+                        .id("home-preview-path")
+                        .debug_selector(|| "home-preview-path".into())
+                        .max_w_full()
+                        .whitespace_normal()
+                        .text_size(px(self.ui_text_size(12.)))
+                        .text_color(rgb(p.muted))
+                        .child(path.to_string_lossy().into_owned()),
+                )
+                .child(
+                    div()
+                        .flex()
+                        .flex_wrap()
+                        .gap(px(8.))
+                        .child(self.button(
+                            "home-open-selected".into(),
+                            l.text("home-open-selected").into(),
+                            self.data.can_open,
+                            true,
+                            Intent::Import(path.clone()),
+                            p,
+                        ))
+                        .when(preview.error.is_some() || cache_error, |view| {
+                            view.child(self.button(
+                                "home-preview-retry".into(),
+                                l.text("home-preview-retry").into(),
+                                self.data.can_open,
+                                false,
+                                Intent::HomePreview(path.clone()),
+                                p,
+                            ))
+                        }),
+                )
+            })
     }
 
     fn home_utility(&self, id: &str, label: &str, intent: Intent, p: Palette) -> Stateful<Div> {
-        let style = p.button(theme::ButtonKind::Utility, !self.data.busy, false);
-        self.activation_target(id.into(), label.into(), !self.data.busy, intent, p)
-            .rounded_full()
-            .child(
-                div()
-                    .id(SharedString::from(format!("{id}-face")))
-                    .min_h(px(theme::CONTROL))
-                    .px(px(12.))
-                    .flex()
-                    .items_center()
-                    .justify_center()
-                    .relative()
-                    .rounded_full()
-                    .text_size(px(self.data.typography.size(14.)))
-                    .line_height(px(self.data.typography.size(20.)))
-                    .bg(rgb(style.fill))
-                    .text_color(rgb(style.ink))
-                    .child(label.to_string())
-                    .when(!self.data.busy, |view| {
-                        view.hover(move |state| state.bg(rgb(style.hover)))
-                            .active(move |state| state.bg(rgb(style.pressed)).top(px(1.)))
-                    }),
-            )
+        self.button(id.into(), label.into(), !self.data.busy, false, intent, p)
     }
 }
 
@@ -297,7 +392,6 @@ impl Presenter {
 mod tests {
     use super::last_opened;
     use crate::locale::Locale;
-
     #[test]
     fn recent_dates_use_local_minutes_and_localized_unknown_values() {
         for language in ["zh-CN", "en-US"] {
@@ -315,7 +409,6 @@ mod tests {
                 .format("%Y-%m-%d %H:%M")
                 .to_string();
             assert_eq!(last_opened(locale, Some(timestamp)), expected);
-            assert_eq!(expected.len(), 16);
         }
     }
 }

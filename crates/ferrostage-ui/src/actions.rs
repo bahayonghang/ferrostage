@@ -26,6 +26,7 @@ actions!(
 
 #[derive(Clone, Debug)]
 pub(crate) enum Intent {
+    HomePreview(PathBuf),
     ToggleAutoplay,
     RestoreProjection,
     ReturnPosition,

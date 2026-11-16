@@ -46,6 +46,8 @@ pub(crate) struct PresenterData {
     document_warnings: Vec<String>,
     start_reason: Option<String>,
     projection: Option<crate::shell::projection_status::ProjectionStatus>,
+    configured_target: String,
+    home_preview: crate::shell::home_preview::HomePreview,
     return_attempt: Option<std::rc::Rc<()>>,
     start_mode: ferrostage_settings::StartMode,
     start_menu: bool,
@@ -120,6 +122,8 @@ impl PresenterData {
             },
             start_reason: shell.start_reason(),
             projection: shell.projection_status(),
+            configured_target: shell.configured_projection_target(),
+            home_preview: shell.home_preview.clone(),
             return_attempt: shell.return_attempt_token(),
             start_mode: shell.settings.settings.display.start_mode,
             start_menu: matches!(
@@ -198,9 +202,10 @@ pub(crate) struct Presenter {
     progress_focus: FocusHandle,
     font_picker_focus: FocusHandle,
     had_font_picker: bool,
-    home_focus: [FocusHandle; 7],
+    home_focus: [FocusHandle; 9],
     home_scroll: gpui::ScrollHandle,
-    home_anchors: [gpui::ScrollAnchor; 7],
+    home_anchors: [gpui::ScrollAnchor; 9],
+    home_textures: std::rc::Rc<std::cell::RefCell<crate::texture_cache::TextureCache<u64>>>,
     return_focus: Option<FocusHandle>,
     had_modal: bool,
     textures: std::rc::Rc<
@@ -439,8 +444,11 @@ impl Presenter {
             })
             .detach();
         }
-        cx.on_release(|presenter, cx| presenter.textures.borrow_mut().release(cx))
-            .detach();
+        cx.on_release(|presenter, cx| {
+            presenter.textures.borrow_mut().release(cx);
+            presenter.home_textures.borrow_mut().release(cx);
+        })
+        .detach();
         let focus = cx.focus_handle();
         window.focus(&focus, cx);
         let home_scroll = gpui::ScrollHandle::new();
@@ -519,6 +527,7 @@ impl Presenter {
             had_font_picker: false,
             home_focus,
             home_scroll,
+            home_textures: Default::default(),
             home_anchors,
             return_focus: None,
             had_modal: false,
@@ -782,6 +791,8 @@ impl Presenter {
                     "recent-1",
                     "recent-2",
                     "retry-save",
+                    "home-open-selected",
+                    "home-preview-retry",
                 ]
                 .iter()
                 .position(|candidate| *candidate == id)
@@ -1098,6 +1109,21 @@ impl Presenter {
 
 impl Render for Presenter {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        let preview = &self.data.home_preview;
+        let home_frames = preview
+            .frame
+            .as_ref()
+            .filter(|_| self.data.stage == SessionStage::Idle)
+            .map(|frame| vec![(preview.token, frame.clone())])
+            .unwrap_or_default();
+        let home_active = home_frames.iter().map(|(key, _)| *key).collect::<Vec<_>>();
+        self.home_textures.borrow_mut().sync(
+            &home_frames,
+            &home_active,
+            self.data.workbench.budget.min(16 * 1024 * 1024),
+            window,
+            cx,
+        );
         let picker_open = self.data.preferences.panel.font_picker.is_some();
         if self.had_font_picker && !picker_open && self.data.modal == Some(Modal::Settings) {
             window.focus(&self.font_picker_focus, cx);
@@ -1659,19 +1685,10 @@ impl Render for Presenter {
                 .flex()
                 .flex_col()
                 .items_center()
-                .px(px(if window.viewport_size().width < px(800.) {
-                    16.
-                } else {
-                    32.
-                }))
-                .pt(px(if window.viewport_size().height < px(600.) {
-                    24.
-                } else {
-                    48.
-                }))
-                .pb(px(24.))
+                .p(px(8.))
                 .child({
-                    // Home is the field plus one centered panel card around the column.
+                    // The workspace fills the available client area, not a
+                    // height-matched welcome card floating above empty background.
                     let pad = if window.viewport_size().width < px(800.) {
                         16.
                     } else {
@@ -1683,7 +1700,10 @@ impl Render for Presenter {
                         .debug_selector(|| "home-card".into())
                         .flex_shrink_0()
                         .w_full()
-                        .max_w(px(theme::HOME_WIDTH + 2. * pad))
+                        .min_h(px((f32::from(window.viewport_size().height)
+                            - 2. * inset
+                            - 16.)
+                            .max(0.)))
                         .p(px(pad))
                         .flex()
                         .flex_col()

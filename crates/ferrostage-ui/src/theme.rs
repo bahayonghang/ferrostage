@@ -12,7 +12,6 @@ pub const PANEL_RADIUS: f32 = 16.0;
 pub const WELL_RADIUS: f32 = 12.0;
 pub const PILL_RADIUS: f32 = 999.0;
 pub const SPACING: f32 = 16.0;
-pub const HOME_WIDTH: f32 = 760.0;
 pub const SESSION_CONTROL: f32 = 56.;
 pub const SESSION_ICON: f32 = 26.;
 pub const SESSION_WIDTH: f32 = 208.;
