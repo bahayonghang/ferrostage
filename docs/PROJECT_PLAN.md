@@ -6,7 +6,7 @@
 
 状态：01/02/04/05/06技术交付已独立验证；03自动与静态检查通过，物理验收待验；Gate A已通过。07已采用原获批五包维护源及三个精确许可证例外；2026-10-15另获明确授权接入第六包accesskit_windows0.34.0的已审四文件F14修复，验证以当前恢复索引为准。历史v6产品自动检查通过（49 GPUI/145默认测试、严格lint、native build），焦点恢复与保存重试反馈已修复并通过独立检查和原生复测；原生A/B/C、主题/语言、错误导入、选择器与保存角色重启已部分验证。物理拓扑、完整原生矩阵与Gate B仍未完成；08–11、Gate C/D、M1/M2未完成。上游HarfRust六项既存直接lint失败保留，无lint/安全通告豁免。当前恢复索引见 `.trellis/tasks/10-14-presenter-v0.3/execution-state.md`。本文件是 v0.2 方案（`ref/implement_plan.md`，未入库）的修订版，也是 Trellis 父任务 `10-14-presenter-v0.3` 的来源需求。
 
-FerroStage 是一个 clean-room 的 PDF / Beamer 双屏演示器。目标行为：讲者端看到当前页、下一页、备注、计时器；观众端只看到幻灯片与激光笔/批注图层。Pympress 源码不是输入。许可证 MIT OR Apache-2.0。
+FerroStage 是一个 clean-room 的 PDF / Beamer 双屏演示器。目标行为：讲者端看到当前页、下一页、备注、计时器；观众端只看到幻灯片与激光笔/批注图层。Pympress 源码不是输入。许可证 MIT。
 
 ## 0. v0.2 → v0.3 修订摘要
 

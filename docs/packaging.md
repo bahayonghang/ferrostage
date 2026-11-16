@@ -20,7 +20,7 @@ Reinstalling the same version and upgrading preserve settings. Older versions ar
 
 The portable ZIP contains the same verified application/runtime files. Extract the complete archive and open `ferrostage.exe`; do not move only the executable away from its DLL and notices. The portable variant does not register shortcuts or an uninstall entry.
 
-The application license declaration and full MIT/Apache texts are packaged separately from the original PDFium root `LICENSE` and `licenses/`. The NSIS notice is also retained. Do not overwrite runtime notices with the application license or omit notices from installed copies.
+The application license declaration and full MIT text are packaged separately from the original PDFium root `LICENSE` and `licenses/`. The NSIS notice is also retained. Do not overwrite runtime notices with the application license or omit notices from installed copies.
 
 ## Packaging toolchain and prerequisites
 

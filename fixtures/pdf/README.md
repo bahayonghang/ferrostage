@@ -3,7 +3,7 @@
 `generate.py` is a deterministic, standalone developer fixture writer. It uses
 only Python's standard library and writes files in this directory. No user PDF,
 external presentation source, TeX compiler, or product writer is involved.
-The PDF and original embedded Type3 geometric glyphs are MIT OR Apache-2.0.
+The PDF and original embedded Type3 geometric glyphs are MIT.
 
 `raster.pdf` has nine pages: red sentinel, 32:9 color/text/formula composition,
 8:9 vertical composition, intrinsic 90-degree rotation, offset CropBox, transparent

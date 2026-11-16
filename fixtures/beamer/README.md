@@ -1,6 +1,6 @@
 # Beamer and document-model fixtures
 
-All TeX sources and synthetic PDF content here are authored for FerroStage (MIT OR Apache-2.0). No Pympress or other viewer code, assets, or sample PDFs were used.
+All TeX sources and synthetic PDF content here are authored for FerroStage (MIT). No Pympress or other viewer code, assets, or sample PDFs were used.
 
 | Fixture | Provenance and expected model |
 | --- | --- |

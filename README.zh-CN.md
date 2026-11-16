@@ -63,7 +63,7 @@ GPUI 使用基于 Zed 标签 `v1.23.3` 的已审维护源（ADR-008），不使�
 
 ## 许可
 
-MIT OR Apache-2.0。这是对演示行为的净室实现，不移植 Pympress 源码。`cargo deny` 拒绝 GPL / AGPL。
+MIT。这是对演示行为的净室实现，不移植 Pympress 源码。`cargo deny` 拒绝 GPL / AGPL。
 
 ## 相关文档
 

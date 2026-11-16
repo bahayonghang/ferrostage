@@ -97,7 +97,7 @@ function Reset-DistributionDirectory([string]$Path, [string]$Root) {
 function Get-DistributionFiles {
     $runtime = Get-Content -LiteralPath (Join-Path $script:DistributionRepo 'docs/pdfium-runtime.json') -Raw | ConvertFrom-Json
     $toolchain = Get-Content -LiteralPath (Join-Path $script:DistributionRepo 'packaging/windows/nsis-toolchain.json') -Raw | ConvertFrom-Json
-    $files = @('ferrostage.exe', 'pdfium.dll', 'FERROSTAGE-LICENSE.txt', 'FERROSTAGE-LICENSE-MIT.txt', 'FERROSTAGE-LICENSE-APACHE.txt')
+    $files = @('ferrostage.exe', 'pdfium.dll', 'FERROSTAGE-LICENSE.txt', 'FERROSTAGE-LICENSE-MIT.txt')
     $files += @($runtime.notices.PSObject.Properties.Name)
     $files += @($toolchain.notices.PSObject.Properties | ForEach-Object { 'installer-licenses/' + [IO.Path]::GetFileName($_.Name) })
     return @($files | Sort-Object -Unique)
@@ -124,7 +124,7 @@ function Test-DistributionPayload([string]$Path, [switch]$Installed) {
     foreach ($entry in $runtime.notices.PSObject.Properties) {
         if ((Get-DistributionHash (Join-Path $Path $entry.Name)) -ne $entry.Value.sha256) { throw "Pinned PDFium notice mismatch: $($entry.Name)" }
     }
-    foreach ($name in @('LICENSE', 'LICENSE-MIT', 'LICENSE-APACHE')) {
+    foreach ($name in @('LICENSE', 'LICENSE-MIT')) {
         if ((Get-DistributionHash (Join-Path $Path "FERROSTAGE-$name.txt")) -ne (Get-DistributionHash (Join-Path $script:DistributionRepo $name))) { throw "Application license mismatch: $name" }
     }
     $toolchain = Get-Content -LiteralPath (Join-Path $script:DistributionRepo 'packaging/windows/nsis-toolchain.json') -Raw | ConvertFrom-Json

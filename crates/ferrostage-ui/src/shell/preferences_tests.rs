@@ -1033,7 +1033,7 @@ fn about_tab_shows_version_author_build_time_license_and_repository(cx: &mut Tes
         }
         assert!(visual.debug_bounds("about-commit").is_none());
         assert!(visual.debug_bounds("about-changelog").is_some());
-        assert!(visual.debug_bounds("changelog-1.3.0").is_none());
+        assert!(visual.debug_bounds("changelog-1.3.1").is_none());
     }
     click_control(handle, "about-changelog", cx);
     cx.run_until_parked();
@@ -1041,6 +1041,7 @@ fn about_tab_shows_version_author_build_time_license_and_repository(cx: &mut Tes
     {
         let mut visual = gpui::VisualTestContext::from_window(handle, cx);
         for id in [
+            "changelog-1.3.1",
             "changelog-1.3.0",
             "changelog-1.2.1",
             "changelog-1.2.0",
@@ -1057,7 +1058,7 @@ fn about_tab_shows_version_author_build_time_license_and_repository(cx: &mut Tes
     redraw(handle, cx);
     assert!(
         gpui::VisualTestContext::from_window(handle, cx)
-            .debug_bounds("changelog-1.3.0")
+            .debug_bounds("changelog-1.3.1")
             .is_none()
     );
     click_control(handle, "about-changelog", cx);
@@ -1067,28 +1068,32 @@ fn about_tab_shows_version_author_build_time_license_and_repository(cx: &mut Tes
     redraw(handle, cx);
     {
         let mut visual = gpui::VisualTestContext::from_window(handle, cx);
-        assert!(visual.debug_bounds("changelog-1.3.0").is_none());
+        assert!(visual.debug_bounds("changelog-1.3.1").is_none());
         assert!(visual.debug_bounds("about-changelog").is_none());
     }
     shell.read_with(cx, |shell, _| assert!(!shell.preferences.changelog_open));
     click_control(handle, "settings-category-about", cx);
     cx.run_until_parked();
     redraw(handle, cx);
-    assert_eq!(crate::about::VERSION, "1.3.0");
+    assert_eq!(crate::about::VERSION, "1.3.1");
+    assert_eq!(crate::about::LICENSE, "MIT");
     assert_eq!(crate::about::CHANGELOG[0].0, crate::about::VERSION);
-    for (language, v130, v100) in [
+    for (language, v131, v130, v100) in [
         (
             "zh-CN",
+            "软件许可证改为 MIT。",
             "讲者界面改为可关闭的暖橙毛玻璃。翻页笔方向键可以翻页，旧的默认绑定会自动升级。放映前可以预览并确认备注裁切。没有备注的文稿使用稳定的双预览布局。讲者可以看到真实绘制进度和观众窗口位置。答疑跳转后可以精确返回原来的讲述位置。PDF 首张预览和 Beamer 翻页更快。",
             "首次发布：双窗口 PDF / Beamer 演讲、演讲者备注、批注，以及外部 PDF 热重载。",
         ),
         (
             "en-US",
+            "The software license is MIT.",
             "The presenter uses warm-orange frosted glass, which can be turned off. Clicker arrow keys turn pages, and old default bindings upgrade automatically. Before a talk, notes cropping can be previewed and confirmed. Decks without notes use a stable dual-preview layout. The presenter shows real paint progress and the audience window position. After a Q&A jump, you can return to the exact previous speaking position. The first PDF preview and Beamer page turns are faster.",
             "First release: dual-window PDF and Beamer presentation, speaker notes, annotations, and external PDF hot reload.",
         ),
     ] {
         let locale = crate::locale::Locale::new(language);
+        assert_eq!(locale.text("about-changelog-1-3-1"), v131);
         assert_eq!(locale.text("about-changelog-1-3-0"), v130);
         assert_eq!(locale.text("about-changelog-1-0-0"), v100);
     }

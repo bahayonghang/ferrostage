@@ -61,7 +61,7 @@ For a developer build, double-click `target\release\ferrostage.exe` after `just 
 
 ## License
 
-MIT OR Apache-2.0. See [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).
 
 Pympress is GPL-2.0-or-later. FerroStage does not copy or translate that source. `cargo deny` rejects GPL and AGPL, which also rules out MuPDF.
 

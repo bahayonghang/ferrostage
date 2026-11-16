@@ -6,7 +6,7 @@ Accepted.
 
 ## Decision
 
-The project license is MIT OR Apache-2.0 (`LICENSE`, `LICENSE-MIT`, `LICENSE-APACHE`).
+The project license is MIT (`LICENSE`, `LICENSE-MIT`). From 1.3.1, FerroStage's own code is offered under MIT only. Third-party notices stay with their components.
 
 `deny.toml` allows a short permissive list and does not allow GPL or AGPL. `mupdf` is denied by name. `just ci` runs `cargo deny check`.
 
