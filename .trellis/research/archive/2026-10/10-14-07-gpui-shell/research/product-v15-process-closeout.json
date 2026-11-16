@@ -1,0 +1,6 @@
+{
+  "captured_utc": "2026-10-15T08:39:39.5771247Z",
+  "scope": "Host-wide read; no process launched or stopped",
+  "processes": [],
+  "no_running_cargo_rustc_ferrostage_or_research_tests": true
+}

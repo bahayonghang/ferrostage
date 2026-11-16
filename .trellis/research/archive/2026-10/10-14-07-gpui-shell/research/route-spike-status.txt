@@ -1,0 +1,17 @@
+RUNNING: cargo build --manifest-path cache/gpui-route-spike/Cargo.toml (exact tagged dependency route spike; does not launch windows)
+EXIT: 101
+RUNNING: approved retry cargo build --manifest-path cache/gpui-route-spike/Cargo.toml
+EXIT: 0
+RUNNING: cargo deny --manifest-path cache/gpui-route-spike/Cargo.toml check --config deny.toml
+DENY EXIT: 2
+RUNNING: cargo deny --manifest-path cache/gpui-route-spike/Cargo.toml --config deny.toml --locked check
+DENY CORRECTED EXIT: 5
+RUNNING: exact tagged route policy recheck after spike license metadata correction (no policy changes)
+DENY FINAL EXIT: 5
+RUNNING: cargo build --manifest-path cache/gpui-kit-route-spike/Cargo.toml (allowed alternative only; no launch)
+RUNNING: cargo deny --manifest-path cache/gpui-kit-route-spike/Cargo.toml --config deny.toml --locked check
+KIT DENY EXIT: 5
+KIT BUILD EXIT: 0
+RUNNING: cargo deny --manifest-path cache/gpui-pre-minimal-route/Cargo.toml --config deny.toml check (minimal engine/platform family; no component)
+PRE MINIMAL DENY EXIT: 5
+Windows diagnostic trees and route metadata completed exit0

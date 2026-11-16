@@ -1,0 +1,12 @@
+{
+  "started": "2026-10-17T17:49:10.1153657Z",
+  "pid": 90924,
+  "arguments": [
+    "--config",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-17-presenter-notes-manual\\research\\native\\final.toml",
+    "--pdfium-library",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\pdfium.dll",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\pdf\\perf-100.pdf"
+  ],
+  "exe_sha256": "96216B74862C5A52E6C71256D9050FA752712B4AC58C61FD72612AEDFAD20829"
+}

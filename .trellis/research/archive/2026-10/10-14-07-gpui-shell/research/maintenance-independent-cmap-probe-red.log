@@ -1,0 +1,36 @@
+     Locking 11 packages to highest Rust 1.99.0 compatible versions
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.27
+   Compiling quote v1.0.47
+   Compiling once_cell v1.21.4
+   Compiling ttf-parser v0.25.1
+   Compiling syn v3.0.9
+   Compiling bytemuck_derive v1.12.1
+   Compiling bytemuck v1.25.2
+   Compiling font-types v0.12.6
+   Compiling read-fonts v0.41.0
+   Compiling skrifa v0.44.0
+   Compiling ferrostage-maintenance-cmap-proof v0.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-cmap-proof)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 10.22s
+     Running unittests src\main.rs (cache\gpui-maintenance-cmap-proof\target\debug\deps\ferrostage_maintenance_cmap_proof-7a7d054e4075b7b4.exe)
+
+running 1 test
+format13: old=true, candidate=false
+format2: old=true, candidate=false
+multiple_unicode: old=true, candidate=true
+symbol_priority: old=true, candidate=false
+symbol_only: old=false, candidate=true
+
+thread 'candidate_lookup_preserves_old_unicode_coverage' (53396) panicked at src\main.rs:71:5:
+behavior changed for ["format13", "format2", "symbol_priority", "symbol_only"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test candidate_lookup_preserves_old_unicode_coverage ... FAILED
+
+failures:
+
+failures:
+    candidate_lookup_preserves_old_unicode_coverage
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--bin ferrostage-maintenance-cmap-proof`

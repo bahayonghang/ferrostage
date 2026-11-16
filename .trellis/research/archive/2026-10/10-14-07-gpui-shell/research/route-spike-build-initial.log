@@ -1,0 +1,14 @@
+    Updating git repository `https://github.com/zed-industries/zed`
+error: failed to get `gpui` as a dependency of package `ferrostage-gpui-route-spike v0.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-route-spike)`
+
+Caused by:
+  failed to load source for dependency `gpui`
+
+Caused by:
+  unable to update https://github.com/zed-industries/zed?tag=v1.23.3
+
+Caused by:
+  failed to create directory `C:\Users\lyh\.cargo\git\db\zed-a70e2ad075855582`
+
+Caused by:
+  Access is denied. (os error 5)

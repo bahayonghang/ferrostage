@@ -1,0 +1,37 @@
+{
+  "task07-context": {
+    "exit": 0
+  },
+  "diff": {
+    "exit": 0
+  },
+  "current": {
+    "exit": 0,
+    "value": ".trellis/tasks/10-14-07-gpui-shell"
+  },
+  "status": {
+    "exit": 0,
+    "path_lines": 299
+  },
+  "diff-stat": {
+    "exit": 0
+  },
+  "branch": {
+    "exit": 0,
+    "value": "main"
+  },
+  "head": {
+    "exit": 0,
+    "value": "ab78a84d96c7cf4a0bbc8dfd4f8e45da180bafb3"
+  },
+  "doc-links": {
+    "count": 7,
+    "missing": []
+  },
+  "new-doc-whitespace": {
+    "findings": []
+  },
+  "task07-audit-sha256": "7ab294c93f0beb5ddcb9b6b8d80a6f214a5d30f927b483d5e333587dc4801262",
+  "all_pass": true,
+  "captured_utc": "2026-10-14T17:46:22.904594+00:00"
+}

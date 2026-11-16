@@ -1,0 +1,23 @@
+{
+  "started_utc": "2026-10-15T08:41:06.434201+00:00",
+  "argv": [
+    "cargo",
+    "test",
+    "--manifest-path",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-v15-accesskit-candidate\\Cargo.toml",
+    "--locked",
+    "--lib",
+    "--offline",
+    "--features",
+    "root-native-window",
+    "v15_research_tests::root_only_owned_hidden_hwnd_destroy_with_retained_context",
+    "--",
+    "--exact",
+    "--test-threads=1",
+    "--nocapture"
+  ],
+  "status": "RETURNED",
+  "scope": "ROOT ONLY: sixteen owned hidden-window destroy cycles, no product dependency change",
+  "exit_code": 0,
+  "ended_utc": "2026-10-15T08:41:06.876833+00:00"
+}

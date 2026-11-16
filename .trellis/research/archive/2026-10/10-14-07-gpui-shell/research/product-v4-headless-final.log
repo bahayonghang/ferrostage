@@ -1,0 +1,43 @@
+warning: function `shape` is never used
+   --> vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `harfrust` (lib) generated 1 warning
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.52s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-f6f69bc716fb3e17.exe)
+
+running 26 tests
+test policy::tests::fullscreen_request_without_native_bounds_evidence_is_not_confirmation ... ok
+test tests::gpui_pin_is_the_zed_tag_not_crates_io ... ok
+test policy::tests::swap_prepares_authority_without_mutating_old_settings ... ok
+test policy::tests::single_monitor_requires_explicit_windowed_mode ... ok
+test transactions::tests::invalid_jump_text_cannot_commit_a_previous_valid_preview ... ok
+test theme::tests::used_text_and_focus_pairs_meet_design_contrast ... ok
+test policy::tests::uuid_includes_terminator_and_full_utf16_buffer ... ok
+test transactions::tests::failed_second_replacement_returns_only_new_resources_for_cleanup ... ok
+test transactions::tests::retiring_old_windows_cannot_stop_replacements ... ok
+test transactions::tests::settings_escape_does_not_send_cancel_jump_into_idle_core ... ok
+test transactions::tests::invalid_import_preserves_document_state_and_presenter_path ... ok
+test transactions::tests::focus_waits_for_both_observations_and_rejects_retired_owners ... ok
+test policy::tests::mapping_rejects_partial_duplicate_and_unknown_sets ... ok
+test transactions::tests::startup_import_survives_presenter_confirmation_only ... ok
+test transactions::tests::shutdown_never_publishes_live_between_curtain_and_close ... ok
+test locale::tests::catalogs_have_identical_keys_and_interpolation_fields ... ok
+test policy::tests::conflicts_are_disabled_after_normalization ... ok
+test policy::tests::configured_bindings_cannot_collide_with_shell_shortcuts ... ok
+test shell::tests::unsupported_shortcuts_use_user_visible_feature_names ... ok
+test shell::tests::close_hook_topology_cancels_pending_under_controller_lease ... ok
+test shell::tests::close_hook_timeout_preserves_ready_and_current_presenter ... ok
+test shell::tests::close_hook_replacement_keeps_live_session_and_user_close_stops ... ok
+test shell::tests::presenter_creation_draws_while_controller_is_leased ... ok
+test shell::tests::input_route_open_button_releases_window_before_activation ... ok
+test shell::tests::input_route_ctrl_o_releases_window_before_activation ... ok
+test shell::tests::input_route_audience_open_activates_presenter_and_escape_cancels ... ok
+
+test result: ok. 26 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+

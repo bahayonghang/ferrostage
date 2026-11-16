@@ -1,0 +1,19 @@
+{
+  "started_utc": "2026-10-15T05:05:41.844379+00:00",
+  "argv": [
+    "cargo",
+    "check",
+    "-p",
+    "ferrostage-app",
+    "-p",
+    "ferrostage-ui",
+    "--all-features",
+    "--all-targets",
+    "--locked",
+    "--offline"
+  ],
+  "status": "RETURNED",
+  "log": "product-independent-v11-types.log",
+  "exit_code": 0,
+  "ended_utc": "2026-10-15T05:05:44.043526+00:00"
+}

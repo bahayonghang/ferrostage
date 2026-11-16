@@ -1,0 +1,218 @@
+{
+  "checked_utc": "2026-10-15T03:36:06.742307+00:00",
+  "scope": "Independent V7 diagnostic review; no Cargo, UI or native execution",
+  "head": "3ac1ec2e19d15e40c94e14a875b57698ed445798",
+  "freeze_sha256": "167fc7e478f8e45293cd4cbb24374b0a3e5d04f36a12e7784c3d1dc027f6ad54",
+  "source_count": 602,
+  "source_mismatches": [],
+  "source_inventory_difference": [],
+  "source_snapshot_sha256": "20456d033d3f4b826a2c0e0756ec4e724e602ab1a2b925b813a947e29935982e",
+  "source_aggregate_matches": true,
+  "source_delta_from_v6": [
+    "crates/ferrostage-app/src/main.rs",
+    "crates/ferrostage-ui/src/shell.rs",
+    "DESIGN.md"
+  ],
+  "v6_before_copies_match": {
+    "crates/ferrostage-app/src/main.rs": true,
+    "crates/ferrostage-ui/src/shell.rs": true
+  },
+  "vendor_count": 498,
+  "vendor_changed_from_v6": [],
+  "records": {
+    "binary": {
+      "sha256": "14dfd1f97b35df5611d94a034e7cd474a4d0556f9f5481ff2b76002f5839b309",
+      "bytes": 36992000,
+      "matches": true,
+      "resolved_path_matches": true
+    },
+    "pdfium": {
+      "sha256": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118",
+      "bytes": 7211520,
+      "matches": true,
+      "resolved_path_matches": true
+    },
+    "cargo_lock": {
+      "sha256": "2557e10b37fa5cfe63e78ce19965b8bbbd83438bdd540eed50405fbbc3dbc23e",
+      "bytes": 186387,
+      "matches": true,
+      "resolved_path_matches": true
+    },
+    "fixture": {
+      "sha256": "25a7932f46ee8fcd4866011921c574b4f5b343af05b793bc397b7e93ed0df013",
+      "bytes": 8853,
+      "matches": true,
+      "resolved_path_matches": true
+    },
+    "final_build_log": {
+      "sha256": "68bd6085bfd330ed9b046f441902e2448c273e734b0e9b11e72d9254a9f9b554",
+      "bytes": 521,
+      "matches": true,
+      "resolved_path_matches": true
+    },
+    "final_native_clippy_log": {
+      "sha256": "64041d396ef90b4ddddeafaf15fa287e0fed558460ce91b563e025a72413e643",
+      "bytes": 521,
+      "matches": true,
+      "resolved_path_matches": true
+    }
+  },
+  "manifests": {
+    "product-v7-evidence-manifest.json": {
+      "sha256": "51fca0ad014c1d4dc3469caf90cc7acd9aab1afd057e308b223a9f2cb8b49fbe",
+      "entries": 22,
+      "mismatches": []
+    },
+    "native-v6-independent-manifest.json": {
+      "sha256": "0aec8d0e6f68591adcc695f3cd89fdfc29efb601f0bcda575b0e47c66910fb5e",
+      "entries": 213,
+      "mismatches": []
+    },
+    "native-v6-evidence-manifest.json": {
+      "sha256": "6c7551fa9c38890252c0500951c90597500b2f7a690d1e52aefe89986a6ac1a0",
+      "entries": 54,
+      "mismatches": []
+    },
+    "native-v5-evidence-manifest.json": {
+      "sha256": "ddfec0154c3dfe6731eb08b2c5dcf4b9b27c2a49ccfd54589a05f2ed295d73d0",
+      "entries": 108,
+      "mismatches": []
+    },
+    "product-v6-evidence-manifest.json": {
+      "sha256": "dac5512c8887bbb3278e0b9c68fc8a622731fbc40eea187aa7dfef090a40912c",
+      "entries": 26,
+      "mismatches": []
+    }
+  },
+  "receipts": {
+    "fmt": {
+      "started_utc": "2026-10-15T03:28:46.675536+00:00",
+      "argv": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "status": "RETURNED",
+      "log": "product-v7-fmt.log",
+      "exit_code": 0,
+      "ended_utc": "2026-10-15T03:28:48.448252+00:00",
+      "receipt_sha256": "b0122b0a639f0c3e63213b00df39149d825d44984262dd723230e8cafc83736e",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "test_totals": null
+    },
+    "just-ci": {
+      "started_utc": "2026-10-15T03:28:54.467337+00:00",
+      "argv": [
+        "just",
+        "ci"
+      ],
+      "status": "RETURNED",
+      "log": "product-v7-just-ci.log",
+      "exit_code": 1,
+      "ended_utc": "2026-10-15T03:28:58.251000+00:00",
+      "receipt_sha256": "67b8460d8c85c2632c075a2bda2a7b109c82b68845c05cc033f9e32f10b86490",
+      "log_sha256": "7f3ec0b47897fdf30d3317acbaa4c9bae10c395766ec01207d2c3a2aa63f2065",
+      "test_totals": null
+    },
+    "just-ci-retry": {
+      "started_utc": "2026-10-15T03:29:09.059039+00:00",
+      "argv": [
+        "just",
+        "ci"
+      ],
+      "status": "RETURNED",
+      "log": "product-v7-just-ci-retry.log",
+      "exit_code": 0,
+      "ended_utc": "2026-10-15T03:29:30.145436+00:00",
+      "receipt_sha256": "bd4b9819cbbe797d9aeeaf7ed172f1a4c9c8d7b8eaea84ad4b64fccf5e0b72e0",
+      "log_sha256": "c399fb0aab906777012d7dc500bc077eb2dadb47cd4cdc9704b5f31382f6bd35",
+      "test_totals": [
+        145,
+        0,
+        0
+      ]
+    },
+    "clippy": {
+      "started_utc": "2026-10-15T03:29:55.750797+00:00",
+      "argv": [
+        "cargo",
+        "clippy",
+        "-p",
+        "ferrostage-app",
+        "-p",
+        "ferrostage-ui",
+        "--all-features",
+        "--all-targets",
+        "--locked",
+        "--offline",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "status": "RETURNED",
+      "log": "product-v7-clippy.log",
+      "exit_code": 0,
+      "ended_utc": "2026-10-15T03:29:58.394077+00:00",
+      "receipt_sha256": "17d567e98a1d59c97bfc5e22ef93197625fcf623760d9079978e5e784955bd5b",
+      "log_sha256": "64041d396ef90b4ddddeafaf15fa287e0fed558460ce91b563e025a72413e643",
+      "test_totals": null
+    },
+    "headless": {
+      "started_utc": "2026-10-15T03:30:06.088647+00:00",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "ferrostage-ui",
+        "--features",
+        "test-support",
+        "--lib",
+        "--locked",
+        "--offline"
+      ],
+      "status": "RETURNED",
+      "log": "product-v7-headless.log",
+      "exit_code": 0,
+      "ended_utc": "2026-10-15T03:30:13.962672+00:00",
+      "receipt_sha256": "18e690482b1120f766dae8500e3df603b2eed1b1ce0a069b15e8c9f3a6f44588",
+      "log_sha256": "fd83e9ea9b786a75d8d7ca40d6f8e1ac43446a7bee1a15ff1335c3888e254a0a",
+      "test_totals": [
+        49,
+        0,
+        0
+      ]
+    },
+    "build": {
+      "started_utc": "2026-10-15T03:30:21.316555+00:00",
+      "argv": [
+        "cargo",
+        "build",
+        "-p",
+        "ferrostage-app",
+        "--features",
+        "gpui,pdfium",
+        "--locked",
+        "--offline"
+      ],
+      "status": "RETURNED",
+      "log": "product-v7-build.log",
+      "exit_code": 0,
+      "ended_utc": "2026-10-15T03:30:27.768787+00:00",
+      "receipt_sha256": "8f29cfa5717f9a340df995e186135ce41fa4343168ccb7739891c9a01e0253d9",
+      "log_sha256": "68bd6085bfd330ed9b046f441902e2448c273e734b0e9b11e72d9254a9f9b554",
+      "test_totals": null
+    }
+  },
+  "product_diff_check_exit": 0,
+  "whole_tree_diff_check_observation": "Initial exit2 on concurrent Root-owned gate-b.md CRCRLF/trailing whitespace; Root fixed its own lines. Independent final whole-tree check exit0.",
+  "native_runtime": "NOT_RUN by reviewer",
+  "physical_acceptance": "NOT_RUN",
+  "gate_b": "INCOMPLETE",
+  "disposition": "SUITABLE_FOR_ROOT_NATIVE_DIAGNOSTIC_ATTRIBUTION",
+  "whole_tree_diff_check_final": {
+    "checked_utc": "2026-10-15T03:36:57.614655+00:00",
+    "exit_code": 0
+  }
+}

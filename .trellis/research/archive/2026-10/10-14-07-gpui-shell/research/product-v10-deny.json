@@ -1,0 +1,15 @@
+{
+  "started_utc": "2026-10-15T04:48:26.019417+00:00",
+  "argv": [
+    "cargo",
+    "deny",
+    "--all-features",
+    "--locked",
+    "--offline",
+    "check"
+  ],
+  "status": "RETURNED",
+  "log": "product-v10-deny.log",
+  "exit_code": 0,
+  "ended_utc": "2026-10-15T04:48:29.520894+00:00"
+}

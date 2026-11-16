@@ -1,0 +1,12 @@
+{
+  "captured_utc": "2026-10-15T10:03:40.759960+00:00",
+  "source_verified": 648,
+  "binary_pdfium_fixture_lock_verified": true,
+  "harness_product_source_equivalence": "All production source byte-identical except lib.rs test-only module redirection; narrow harness source matches frozen test file.",
+  "config_inputs_verified": 1,
+  "diff_check": {
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "warning: in the working copy of '.trellis/tasks/10-14-07-gpui-shell/design.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-07-gpui-shell/implement.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/design.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/execution-state.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'Cargo.lock', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'Cargo.toml', LF will be replaced by CRLF the next time Git touches it\n"
+  }
+}

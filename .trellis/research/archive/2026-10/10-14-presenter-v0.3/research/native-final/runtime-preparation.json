@@ -1,0 +1,9 @@
+{
+  "status": "PREPARED_NOT_LAUNCHED",
+  "full_verified_files": 47,
+  "partial_omitted": "bin/gstapp-1.0-0.dll",
+  "partial_runtime_files": 46,
+  "absent_runtime": true,
+  "executable_copies": "pending independent review",
+  "scope": "owned cached fixtures only; product startup not yet observed"
+}

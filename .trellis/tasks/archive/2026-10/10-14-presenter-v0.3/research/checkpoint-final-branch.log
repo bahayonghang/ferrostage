@@ -1,4 +1,0 @@
-COMMAND git branch --show-current
-main
-
-EXIT 0

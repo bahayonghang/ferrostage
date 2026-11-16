@@ -1,0 +1,8 @@
+{
+  "config": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-18-home-design-refactor\\research\\native\\baseline.toml",
+  "pid": 52548,
+  "exe_sha256": "297814B67C8DB87F8C3F89065E14CB910B6C52940E854955F52453530159C07E",
+  "exe": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe",
+  "source_binding": "Pre-existing executable, baseline visual reference only",
+  "utc": "2026-10-18T08:03:08.7625696Z"
+}

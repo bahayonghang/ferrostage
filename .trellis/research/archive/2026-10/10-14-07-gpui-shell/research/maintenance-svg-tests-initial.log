@@ -1,0 +1,10 @@
+error: failed to get `proptest` as a dependency of package `gpui v0.2.2 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\vendor\gpui)`
+
+Caused by:
+  failed to load source for dependency `proptest`
+
+Caused by:
+  unable to update https://github.com/proptest-rs/proptest?rev=3dca198a8fef1b32e3a66f1e1897c955b4dc5b5b
+
+Caused by:
+  can't checkout from 'https://github.com/proptest-rs/proptest': you are in the offline mode (--offline)

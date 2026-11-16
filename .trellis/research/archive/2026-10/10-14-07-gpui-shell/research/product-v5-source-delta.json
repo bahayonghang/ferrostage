@@ -1,0 +1,25 @@
+{
+  "source_changes": {
+    "crates/ferrostage-ui/src/actions.rs": {
+      "v4": "131dbde13166d6588a9b5baf2c7ca2ee87ed463c09f282ab17b28d4a1dfb0222",
+      "v5": "0c2a2d940b1fe1f2e84994b767e7e91fe98955d05d1ba13b5f3d8611c52b414b"
+    },
+    "crates/ferrostage-ui/src/presenter.rs": {
+      "v4": "a07a0e76f0d0c064fcb8763a8c065ad31196d95819367b14e76beaf99be97f5a",
+      "v5": "a42c0cbe5ed6ec594354d30f42ecaec0058be57cbce6c1a7e54e3ffd569eb6f9"
+    },
+    "crates/ferrostage-ui/src/shell.rs": {
+      "v4": "e7a1bb4e0a394b02d0a13a024010ce5d8bf431fe1927c03490736134f642d8a1",
+      "v5": "3ef506a2ebf70b62f4589c711ebf8a429e4e15c746233bb5e3fa6b7d57857099"
+    },
+    "DESIGN.md": {
+      "v4": "f95556feab7feb81e80b6742b8218df18a43a30cc18ec92f5e3c49789cf59c1f",
+      "v5": "1b13bda5cc6460a8f320a637e047c836813f817231315533d200ed873d31f4d6"
+    }
+  },
+  "unchanged_count": 598,
+  "new_or_removed": [],
+  "lock_unchanged": true,
+  "all_core_vendor_inputs_unchanged": true,
+  "patch_sha256": "7a10ccdfced02e42b842427a129cb3b298d07494299ac932bb29ee8f4e0d04c0"
+}

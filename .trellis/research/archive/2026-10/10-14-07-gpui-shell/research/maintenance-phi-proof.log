@@ -1,0 +1,18 @@
+error[E0425]: cannot find value `PHI` in module `std::f32::consts`
+ --> .trellis/tasks/10-14-07-gpui-shell/research/maintenance-phi-proof.rs:4:38
+  |
+4 |     let constant = std::f32::consts::PHI.to_bits();
+  |                                      ^^^
+  |
+ --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\num\f32.rs:325:4
+  |
+  = note: similarly named constant `PI` defined here
+help: a constant with a similar name exists
+  |
+4 -     let constant = std::f32::consts::PHI.to_bits();
+4 +     let constant = std::f32::consts::PI.to_bits();
+  |
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0425`.

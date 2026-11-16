@@ -1,0 +1,15 @@
+{
+  "changes": {
+    ".trellis/spec/frontend/state-management.md": {
+      "v10": "91900459df2a0a40596aee62a7f9e081e6a11db0d4b1bc788e879e6322c71fb8",
+      "v11": "e442ab01283a19b7ac8586105ac67daa286f181f1e030b8f01b82cd8835ec4ef"
+    },
+    "crates/ferrostage-ui/src/shell.rs": {
+      "v10": "6f0c38927177beda30b96ce3f034cf523a07f0a76b7ded246a5339aa2290a8d3",
+      "v11": "e29f2e5c765784e46ec03fc8017039620eb7fd433b3897fe845690b1a372df71"
+    }
+  },
+  "added": {},
+  "source_count": 609,
+  "unchanged_count": 607
+}

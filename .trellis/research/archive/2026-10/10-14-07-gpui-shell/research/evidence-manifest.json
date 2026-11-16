@@ -1,0 +1,548 @@
+{
+  "captured_utc": "2026-10-14T17:32:42.0526254Z",
+  "result": "BLOCKED at I-2; isolated A/B native compile PASS; A/B/C unchanged policy FAIL; no product/UI delivery",
+  "tagged_revision": "96a1b1b5389efff473fc2306f7f8c690f2e1a417",
+  "pre_upstream_revision": "93d745668805029476e6d7fbb19652116fed51de",
+  "advisory_db_revision": "caee11f41fab07d676c0a4655a2a5dd1f94da97c",
+  "routes": [
+    {
+      "name": "gpui-route-spike",
+      "files": [
+        {
+          "original": {
+            "path": "D:/Documents/Code/Rust/Exp/ferrostage/cache/gpui-route-spike/Cargo.toml",
+            "bytes": 366,
+            "sha256": "218085859f6a05e5cd82770e9bd05556cce60c6804d2c0dedcb1b5cdcafd9621"
+          },
+          "retained": {
+            "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-route-spike/Cargo.toml",
+            "bytes": 366,
+            "sha256": "218085859f6a05e5cd82770e9bd05556cce60c6804d2c0dedcb1b5cdcafd9621"
+          }
+        },
+        {
+          "original": {
+            "path": "D:/Documents/Code/Rust/Exp/ferrostage/cache/gpui-route-spike/Cargo.lock",
+            "bytes": 150616,
+            "sha256": "e6ae09275632341dca62ed4aa6b45c0d779ae69d1c5095c4407928765e4f8980"
+          },
+          "retained": {
+            "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-route-spike/Cargo.lock",
+            "bytes": 150616,
+            "sha256": "e6ae09275632341dca62ed4aa6b45c0d779ae69d1c5095c4407928765e4f8980"
+          }
+        },
+        {
+          "original": {
+            "path": "D:/Documents/Code/Rust/Exp/ferrostage/cache/gpui-route-spike/src/main.rs",
+            "bytes": 67,
+            "sha256": "e6232bb23a04e51786e3719d5084a6de74db91b48c00cc5e224426852e8df47d"
+          },
+          "retained": {
+            "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-route-spike/src/main.rs",
+            "bytes": 67,
+            "sha256": "e6232bb23a04e51786e3719d5084a6de74db91b48c00cc5e224426852e8df47d"
+          }
+        }
+      ],
+      "binary": {
+        "path": "D:/Documents/Code/Rust/Exp/ferrostage/cache/gpui-route-spike/target/debug/ferrostage-gpui-route-spike.exe",
+        "bytes": 21325824,
+        "sha256": "20e7d6ef1412bdf36f5c46a88d7d29f0a4505f52dbba1687e4c2d6badb75bda1"
+      },
+      "binary_executed": false,
+      "compiled": true
+    },
+    {
+      "name": "gpui-kit-route-spike",
+      "files": [
+        {
+          "original": {
+            "path": "D:/Documents/Code/Rust/Exp/ferrostage/cache/gpui-kit-route-spike/Cargo.toml",
+            "bytes": 487,
+            "sha256": "84724da757470da6ea1e2365e9f1e91af9912155db8606a355197b352c654db4"
+          },
+          "retained": {
+            "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-kit-route-spike/Cargo.toml",
+            "bytes": 487,
+            "sha256": "84724da757470da6ea1e2365e9f1e91af9912155db8606a355197b352c654db4"
+          }
+        },
+        {
+          "original": {
+            "path": "D:/Documents/Code/Rust/Exp/ferrostage/cache/gpui-kit-route-spike/Cargo.lock",
+            "bytes": 206448,
+            "sha256": "0aabf18a4013715a4897c5ee096059e8799647d8e6c99373a7c3df8a54f6a5d9"
+          },
+          "retained": {
+            "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-kit-route-spike/Cargo.lock",
+            "bytes": 206448,
+            "sha256": "0aabf18a4013715a4897c5ee096059e8799647d8e6c99373a7c3df8a54f6a5d9"
+          }
+        },
+        {
+          "original": {
+            "path": "D:/Documents/Code/Rust/Exp/ferrostage/cache/gpui-kit-route-spike/src/main.rs",
+            "bytes": 62,
+            "sha256": "f77d86f95709856956c71a452059c453d0f7b6945c63bcc099a808b7ed6c1277"
+          },
+          "retained": {
+            "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-kit-route-spike/src/main.rs",
+            "bytes": 62,
+            "sha256": "f77d86f95709856956c71a452059c453d0f7b6945c63bcc099a808b7ed6c1277"
+          }
+        }
+      ],
+      "binary": {
+        "path": "D:/Documents/Code/Rust/Exp/ferrostage/cache/gpui-kit-route-spike/target/debug/ferrostage-gpui-kit-route-spike.exe",
+        "bytes": 21596160,
+        "sha256": "f5d82a03648048895c6f8b84cbfb8c160892d2a536f1bf62619068f30d1eba72"
+      },
+      "binary_executed": false,
+      "compiled": true
+    },
+    {
+      "name": "gpui-pre-minimal-route",
+      "files": [
+        {
+          "original": {
+            "path": "D:/Documents/Code/Rust/Exp/ferrostage/cache/gpui-pre-minimal-route/Cargo.toml",
+            "bytes": 337,
+            "sha256": "44ec09eb346ff7d56dd283d44a6964f9f040e178c80ded2f815a8af8f8f91fd8"
+          },
+          "retained": {
+            "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-pre-minimal-route/Cargo.toml",
+            "bytes": 337,
+            "sha256": "44ec09eb346ff7d56dd283d44a6964f9f040e178c80ded2f815a8af8f8f91fd8"
+          }
+        },
+        {
+          "original": {
+            "path": "D:/Documents/Code/Rust/Exp/ferrostage/cache/gpui-pre-minimal-route/Cargo.lock",
+            "bytes": 132843,
+            "sha256": "f18d0877093401f879bcf028950e5fddbb4cfdae9b8c8988501b6f7f688c0a1e"
+          },
+          "retained": {
+            "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-pre-minimal-route/Cargo.lock",
+            "bytes": 132843,
+            "sha256": "f18d0877093401f879bcf028950e5fddbb4cfdae9b8c8988501b6f7f688c0a1e"
+          }
+        },
+        {
+          "original": {
+            "path": "D:/Documents/Code/Rust/Exp/ferrostage/cache/gpui-pre-minimal-route/src/main.rs",
+            "bytes": 67,
+            "sha256": "e6232bb23a04e51786e3719d5084a6de74db91b48c00cc5e224426852e8df47d"
+          },
+          "retained": {
+            "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-pre-minimal-route/src/main.rs",
+            "bytes": 67,
+            "sha256": "e6232bb23a04e51786e3719d5084a6de74db91b48c00cc5e224426852e8df47d"
+          }
+        }
+      ],
+      "binary": null,
+      "binary_executed": false,
+      "compiled": false
+    }
+  ],
+  "sources": [
+    {
+      "path": "C:/Users/lyh/.cargo/advisory-dbs/advisory-db-3157b0e258782691/crates/instant/RUSTSEC-2024-0384.md",
+      "bytes": 472,
+      "sha256": "6d24b557066a90742ddd58b453fc7ffef5b4acb118f76f7fb97816b4cc489ef1"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/advisory-dbs/advisory-db-3157b0e258782691/crates/paste/RUSTSEC-2024-0436.md",
+      "bytes": 964,
+      "sha256": "895f8edea8566fab521dd4eb74a4743076034463f634735ddd17b8d9c969f65c"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/advisory-dbs/advisory-db-3157b0e258782691/crates/rustls-pemfile/RUSTSEC-2025-0134.md",
+      "bytes": 892,
+      "sha256": "15ece81828b6a6189f77f4bcc67468edcaa476d10c42b17898b99e6949607210"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/advisory-dbs/advisory-db-3157b0e258782691/crates/rustybuzz/RUSTSEC-2026-0206.md",
+      "bytes": 568,
+      "sha256": "a4ecc09007acd7cdbacf683ed44da12b814d367792d644701f6953fa726280e5"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/advisory-dbs/advisory-db-3157b0e258782691/crates/ttf-parser/RUSTSEC-2026-0192.md",
+      "bytes": 580,
+      "sha256": "6c41eecb54c888b99e093f9539ad4d14acbdb517f35263dd4e846dd3a95aec76"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/Cargo.toml",
+      "bytes": 41278,
+      "sha256": "f674d17ebc1c96c9a11e9d2c0e6daa8bdafece791e8168809a55c53c04a063b8"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui_apple/Cargo.toml",
+      "bytes": 958,
+      "sha256": "7c41488a75e56f650421c7a7fac5b157b5a417cb73357dd78795caf0d9d24c1c"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui_platform/Cargo.toml",
+      "bytes": 1621,
+      "sha256": "231e89c58137df7fd2d625cbaf058a3c2a23c69d137af4dffa5840dc403365df"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui_platform/src/gpui_platform.rs",
+      "bytes": 7565,
+      "sha256": "2e0fd713d979a4e9aff62da79b0e5f9cec6339352c7e3b8329712fa48d959825"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui_windows/Cargo.toml",
+      "bytes": 1183,
+      "sha256": "9b1c23b463781d0d8620e8f06b4211bd071e20a59f3573443f11345f523c1606"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui_windows/src/display.rs",
+      "bytes": 6446,
+      "sha256": "763040fe7a9c29d78c46e42dd8c4ffaa8eb703d7cdba0748b709a8e76787f614"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui_windows/src/window.rs",
+      "bytes": 61476,
+      "sha256": "35ca36a271ca0f3be6b8bcd9619d16763704abeab10d825c85a234c2cb208058"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui/Cargo.toml",
+      "bytes": 6896,
+      "sha256": "bda94183e8ee63e71e6958fcd1836146997d1ae8a95594dd006fe065f514df9e"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui/examples/a11y.rs",
+      "bytes": 10681,
+      "sha256": "136308b44a36f7a0dbee5269b2434d8476cec42beb7f8b46e4e38e864d4cc805"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui/examples/tab_stop.rs",
+      "bytes": 7349,
+      "sha256": "be187a56c091ee0b609fa396cae4a13b49dcf98ff9e602d8caed3126de3f6a8e"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui/src/app.rs",
+      "bytes": 129293,
+      "sha256": "09920cb50857041e0ec3e0063e60f95f165da975f53b53a7f933919b8c3f11bb"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui/src/keymap.rs",
+      "bytes": 34828,
+      "sha256": "7b007c96f748b0593ce56f9ea1520422b3b9401919cc442f2ef4a2b374e203be"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui/src/platform.rs",
+      "bytes": 119336,
+      "sha256": "9de7e0b0f29c51b149263b9bc9b4061bfbe41849e296b75df9cf259d9bbbdc4c"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui/src/platform/keystroke.rs",
+      "bytes": 23052,
+      "sha256": "35515a9d079060667e99851f09227d0ff2204b2d0d951bd96d8297f3bc3f9115"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui/src/svg_renderer.rs",
+      "bytes": 18565,
+      "sha256": "fb12dae87c0cd4c5f5a1fbbd2f9548d52fde9440c21e3d576dfeb0233eda88a6"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui/src/window.rs",
+      "bytes": 361682,
+      "sha256": "75ebfde34c284ed6afce96989bfc8794dcd7fb79b3b228d36e87a930688cf86b"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/arrayref-0.3.9/Cargo.toml",
+      "bytes": 819,
+      "sha256": "517b570f4136de5b5a07e1c41a84d6876227b09aab84e69e578bfa8be2e67546"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cbindgen-0.28.0/Cargo.toml",
+      "bytes": 2228,
+      "sha256": "92a25024ad538070143176d3b022fe87750c10dcbd94429c82c929d1e2d1439c"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/dwrote-0.11.5/Cargo.toml",
+      "bytes": 1485,
+      "sha256": "f5f002712c93e06fe939d826188415c75532d52d1b84520f1530f21052cb1d28"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/enum-iterator-2.3.0/Cargo.toml",
+      "bytes": 1249,
+      "sha256": "8daa1a3432e37595a5b0da743ed256de4aa96c09b362156b9138b9fc5154df45"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/enum-iterator-derive-1.5.0/Cargo.toml",
+      "bytes": 1292,
+      "sha256": "38fa3d3286ffbbde6465d34deb60d0c8e17e8ea04cc4523192c064447ce624bf"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/exr-1.74.2/Cargo.toml",
+      "bytes": 5128,
+      "sha256": "930ac47fea52fadd658e324af2f2a7b54cdca69f673ed59ec130424b4768cd59"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gpui-base-0.7.3/Cargo.toml",
+      "bytes": 5367,
+      "sha256": "b6fa9bb529c7e049df902890f12f5e15b298aebea6a46bb8e5101d6cade298cb"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gpui-component-0.7.3/Cargo.toml",
+      "bytes": 14607,
+      "sha256": "bc3d39631970412dd2abbe1d5e34b0a0dbc65e6e995f13f3809895cda0ecc3c8"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gpui-kit-0.7.3/Cargo.toml",
+      "bytes": 9458,
+      "sha256": "db46494df6ea58f69ca68f9cf664aad1cf38443e7076a31195ce8fcce8d8823f"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gpui-kit-assets-0.7.3/Cargo.toml",
+      "bytes": 2591,
+      "sha256": "66e080b91f8aaf96aac6684f1c226bf185154e2ffd7fb1c5e9730cdf32ffc474"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gpui-pre-0.3.9/Cargo.toml",
+      "bytes": 11859,
+      "sha256": "43ac0a636d1283313dbb48810ff32c0f6b55737824a886bd9fad37735ec0c56c"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gpui-pre-0.3.9/src/svg_renderer.rs",
+      "bytes": 18565,
+      "sha256": "fb12dae87c0cd4c5f5a1fbbd2f9548d52fde9440c21e3d576dfeb0233eda88a6"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gpui-pre-apple-0.3.9/Cargo.toml",
+      "bytes": 6988,
+      "sha256": "5aee222ccbf8ee64c9e36e55e5c1c9e487ec2806b0761ef4394a419340c148f0"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gpui-pre-platform-0.3.9/Cargo.toml",
+      "bytes": 3465,
+      "sha256": "cd0dc488fc16df8c701f7765d2ed4043e5aa9e65a19d2b399826f0f06f935812"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gpui-pre-reqwest-0.12.15/Cargo.toml",
+      "bytes": 13484,
+      "sha256": "cdfa4fd6cd772defd5f5e2900e6baeedb91595d179874782b412c904be9c5969"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gpui-pre-wgpu-0.3.9/Cargo.toml",
+      "bytes": 3645,
+      "sha256": "45ca5c6ab2d9dc42aba5f72b800b69f5980779c511a8f829ebce9c47ef253d5c"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gpui-pre-windows-0.3.9/Cargo.toml",
+      "bytes": 5447,
+      "sha256": "862b0f8b291e0b9aac659f15bc1bfeae965a4c548e9ffbc7329f29b61e4ef41b"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gpui-pre-windows-0.3.9/src/display.rs",
+      "bytes": 7569,
+      "sha256": "466c0c2a4e3e9b001f26681f9f992d7dcc4a930954749942b980f228c5c0b83f"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/image-0.25.10/Cargo.toml",
+      "bytes": 4189,
+      "sha256": "b45592b42e4f065d5258379bac78e2a00ab6e50bbeec265fcceeea9cf5829c26"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libbz2-rs-sys-0.2.5/Cargo.toml",
+      "bytes": 1332,
+      "sha256": "710d50ea93fc5979f7d9428537067b39bd617bc4427ba1f209b12e86aa799e10"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/option-ext-0.2.0/Cargo.toml",
+      "bytes": 866,
+      "sha256": "ecd67cb17a0586f1406b7d494ef93191ed8ebf149db46667a7778052d94e1e6c"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pulp-0.22.3/Cargo.toml",
+      "bytes": 2660,
+      "sha256": "b9d9fe17a5a2188b06a704d5810b4b68b82474816d238f2442501495abb1e4df"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/resvg-0.46.0/Cargo.toml",
+      "bytes": 2091,
+      "sha256": "55a03ca71677af9853ef682a9e63eb5f29083328985e5453d5f52c40cabe2ab8"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/usvg-0.46.0/Cargo.toml",
+      "bytes": 2420,
+      "sha256": "50f737ff2e041f09e142df38e0bea44f2f2216f107c764f4848af3e06fe6b08f"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zed-font-kit-0.14.1-zed/Cargo.toml",
+      "bytes": 3455,
+      "sha256": "6e6fc4e0ce218fbe32891efb7905bfbe34633b52537f96c122167a37d7dea1cc"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/arrayref-0.3.9/LICENSE",
+      "bytes": 1336,
+      "sha256": "1bc7e6f475b3ec99b7e2643411950ae2368c250dd4c5c325f80f9811362a94a1"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cbindgen-0.28.0/LICENSE",
+      "bytes": 16725,
+      "sha256": "1f256ecad192880510e84ad60474eab7589218784b9a50bc7ceee34c2b91f1d5"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/enum-iterator-2.3.0/LICENSE",
+      "bytes": 666,
+      "sha256": "9b166edfb0b4b70f1e8b2fdaae320b0acd977c520e0fb95fa881f54f68e724e3"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/enum-iterator-derive-1.5.0/LICENSE",
+      "bytes": 666,
+      "sha256": "9b166edfb0b4b70f1e8b2fdaae320b0acd977c520e0fb95fa881f54f68e724e3"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libbz2-rs-sys-0.2.5/LICENSE",
+      "bytes": 2123,
+      "sha256": "54e1fd7bd53273e601c9599eb162a004dacddee031ae297ee7109a7beb93b1c2"
+    },
+    {
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/option-ext-0.2.0/LICENSE.txt",
+      "bytes": 16727,
+      "sha256": "66a3107d5ad6a058aab753eaac2047ccb2ed0e39465dd0fe5844da3e300d5172"
+    }
+  ],
+  "product_policy": {
+    "path": "D:/Documents/Code/Rust/Exp/ferrostage/deny.toml",
+    "bytes": 642,
+    "sha256": "1cf48641ae1451010587ad06ab197867e8f9ba5b012b585c9880f860443f85e4"
+  },
+  "task_checkpoint": {
+    "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/implement.md",
+    "bytes": 7759,
+    "sha256": "34fff9efbabb9c2d29d39597c07d2c3f861bd685ac0d3fef54dbfa8a6842ec0b"
+  },
+  "evidence_files": [
+    {
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/.gitignore",
+      "bytes": 78,
+      "sha256": "7dc0cc136f59bea1afdf698abf258958e639ff789e9f20e7cb76aa343968fd61"
+    },
+    {
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/capture-evidence.ps1",
+      "bytes": 6833,
+      "sha256": "4b5b83fcc3712cd2a949de1ba6e42826aee03c865f9f06ae007173ef4f2fda3f"
+    },
+    {
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/dependency-gate.md",
+      "bytes": 13224,
+      "sha256": "b634771878a7fe89220fdfc364d6abb1676be0458437457a564a2663c53559bd"
+    },
+    {
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/gpui-display-api.md",
+      "bytes": 9617,
+      "sha256": "85f7e9f469881daefc727f4bfad7a0ab2424f5ba249f0d99e7c74971b0aa8833"
+    },
+    {
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/handoff-checks.txt",
+      "bytes": 1027,
+      "sha256": "de709eba611be27b7133fe02e51868881aa4cfa73641d36cdcc0077df93d64cc"
+    },
+    {
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/kit-bootstrap-info.log",
+      "bytes": 683,
+      "sha256": "14c618fae0296fa1e60152c6e4f54c7f0ec8930324ba463bdef3827951507459"
+    },
+    {
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/kit-metadata.json",
+      "bytes": 2402,
+      "sha256": "9253220ddf05284ffc26ad9589f3dbc02affcc01cefd761608c4834b0d188ae1"
+    },
+    {
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/kit-route-build.log",
+      "bytes": 15614,
+      "sha256": "22e9657df03abaa7b65c6becfd07e1aad2eb5a542a8f21d1d57421df0431d150"
+    },
+    {
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/kit-route-deny.log",
+      "bytes": 364212,
+      "sha256": "e810ce771bb1948e4c3b3cc476d30db361ae0b4ea6244108acbe2d53be702ede"
+    },
+    {
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/kit-route-info.log",
+      "bytes": 528,
+      "sha256": "8fbafa446ff370254487893c63912542f3bc6b24a2c0c615207eeb5c06017e84"
+    },
+    {
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/kit-windows-tree.log",
+      "bytes": 21414,
+      "sha256": "9856c2ae424f30f7e1c8b6c3eabd931a5e7be725183be1b4e687d5e479cdb58b"
+    },
+    {
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/pre-minimal-deny.log",
+      "bytes": 116922,
+      "sha256": "37a28d1bb090d9009ce3a221c6f8f71dfaf36cdfb44a3ac1d26c74e0ab69977e"
+    },
+    {
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/pre-minimal-metadata.json",
+      "bytes": 1977,
+      "sha256": "09bc3c25a0c812b1e630e0f3c3375e5d51ccd670b887fe363683e3e10eb683db"
+    },
+    {
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/pre-minimal-windows-tree.log",
+      "bytes": 12532,
+      "sha256": "2657d1b2d407f91e742a3861b86650de860fccf5d7c6d1f0598aef7c8d71e02f"
+    },
+    {
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/pre-route-info.log",
+      "bytes": 1210,
+      "sha256": "d35eaabd80a8f184a2f67b1562795b1f7f945ef49b7a7820b1ac9bf5bd84e061"
+    },
+    {
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/product-input-comparison.json",
+      "bytes": 37784,
+      "sha256": "14b59d7efa6a98b5a0393771a8df0176114008b6996d52efb9e77d2c3b2311a0"
+    },
+    {
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-spike-build-initial.log",
+      "bytes": 512,
+      "sha256": "fab465524660fcffc2d14db78cdb28143daa0f819b5cf3796303b1e7e931ac92"
+    },
+    {
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-spike-build.log",
+      "bytes": 13433,
+      "sha256": "5dc66ea28d27fc3eacb8751d82c9ce9342f959c1a29536c7cb606fc14eb3e810"
+    },
+    {
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-spike-deny-corrected.log",
+      "bytes": 180045,
+      "sha256": "a36deb8bb32546f699819d3c507892f8680b310af49877ac39d86fde2cafc9d1"
+    },
+    {
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-spike-deny-final.log",
+      "bytes": 179332,
+      "sha256": "f280b374abc41cd2c3037b4af96ecfa5ede214f572daa6bdd1751122eeb8c8b7"
+    },
+    {
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-spike-deny.log",
+      "bytes": 195,
+      "sha256": "8244ec449b3182efb68d611c593fee72e61fed32fe54bbabd494c49fd6ce0df2"
+    },
+    {
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-spike-status.txt",
+      "bytes": 1101,
+      "sha256": "51c51b2a2ea069419e231f69fc105321337bb1e52e7d7c861a61e444d56552ae"
+    },
+    {
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/tagged-metadata.json",
+      "bytes": 1868,
+      "sha256": "0fba1dbf3758f5f4aab744737d30bbc2bdbc088485bb6596838bf17448e32dd4"
+    },
+    {
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/tagged-windows-tree.log",
+      "bytes": 15731,
+      "sha256": "ea4a003bfe6a192af584f3fed8499046c3956134cb636b3663cf36de50923579"
+    },
+    {
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/toolchain.log",
+      "bytes": 248,
+      "sha256": "a4b22aa44c7878a1f439ffecd00375cafd14c301fd98ee51ad4abbaa161dc2ca"
+    }
+  ]
+}

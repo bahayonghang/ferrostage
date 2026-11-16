@@ -1,0 +1,3 @@
+Isolated MIT harfrust0.12.0 compatibility evaluation. Original license retained.
+Two internal files add checked format2 cmap selection/mapping to both constructors.
+No feature, shaping algorithm, public API, or encoding-priority change.

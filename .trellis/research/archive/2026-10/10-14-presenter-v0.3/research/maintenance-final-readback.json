@@ -1,0 +1,7 @@
+{
+  "captured_utc": "2026-10-15T00:20:59.865741+00:00",
+  "review_manifest_sha256": "4cc87ec3a4f2fe7bbad8757eefd78869be8ae62d7f73e3a6e027e3201ea23bba",
+  "record_count": 753,
+  "mismatches": [],
+  "meaning": "Root read-back of independent candidate/evidence hashes; no product adoption or UI acceptance."
+}

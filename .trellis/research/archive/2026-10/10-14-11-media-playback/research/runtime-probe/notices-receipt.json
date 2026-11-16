@@ -1,0 +1,109 @@
+[
+  {
+    "name": "gstreamer-COPYING",
+    "url": "https://raw.githubusercontent.com/GStreamer/gstreamer/1.28.8/subprojects/gstreamer/COPYING",
+    "sha256": "ad2eec519ebd4b5df86ea84dff24ae3bfa2edea846a703b58902dd221ae375db",
+    "status": "downloaded"
+  },
+  {
+    "name": "gst-plugins-base-COPYING",
+    "url": "https://raw.githubusercontent.com/GStreamer/gstreamer/1.28.8/subprojects/gst-plugins-base/COPYING",
+    "sha256": "ad2eec519ebd4b5df86ea84dff24ae3bfa2edea846a703b58902dd221ae375db",
+    "status": "downloaded"
+  },
+  {
+    "name": "gst-plugins-good-COPYING",
+    "url": "https://raw.githubusercontent.com/GStreamer/gstreamer/1.28.8/subprojects/gst-plugins-good/COPYING",
+    "sha256": "6095e9ffa777dd22839f7801aa845b31c9ed07f3d6bf8a26dc5d2dec8ccc0ef3",
+    "status": "downloaded"
+  },
+  {
+    "name": "gst-plugins-bad-COPYING",
+    "url": "https://raw.githubusercontent.com/GStreamer/gstreamer/1.28.8/subprojects/gst-plugins-bad/COPYING",
+    "sha256": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551",
+    "status": "downloaded"
+  },
+  {
+    "name": "glib-COPYING",
+    "url": "https://raw.githubusercontent.com/GNOME/glib/2.82.4/COPYING",
+    "sha256": "65986a89240f59896ce42a3779bbe5ed486a0bca7df636a8eef030fd2e1a0984",
+    "status": "downloaded"
+  },
+  {
+    "name": "proxy-libintl-COPYING",
+    "url": "https://raw.githubusercontent.com/frida/proxy-libintl/0.5/COPYING",
+    "sha256": "d245807f90032872d1438d741ed21e2490e1175dc8aa3afa5ddb6c8e529b58e5",
+    "status": "downloaded"
+  },
+  {
+    "name": "libvpx-LICENSE",
+    "url": "https://raw.githubusercontent.com/webmproject/libvpx/v1.14.1/LICENSE",
+    "sha256": "8267348d5af1262c11d1a08de2f5afc77457755f1ac658627dd9acf71011d615",
+    "status": "downloaded"
+  },
+  {
+    "name": "libvpx-PATENTS",
+    "url": "https://raw.githubusercontent.com/webmproject/libvpx/v1.14.1/PATENTS",
+    "sha256": "cc3273e0694ea5896145e0677699b53471b03ea43021ddc50e7923fbb9f5023c",
+    "status": "downloaded"
+  },
+  {
+    "name": "libogg-COPYING",
+    "url": "https://raw.githubusercontent.com/xiph/ogg/v1.3.5/COPYING",
+    "sha256": "d2ab5758336489da61c12cc5bb757da5339c4ae9001f9bb0562b4370249af814",
+    "status": "downloaded"
+  },
+  {
+    "name": "libvorbis-COPYING",
+    "url": "https://raw.githubusercontent.com/xiph/vorbis/v1.3.7/COPYING",
+    "sha256": "ec1815db59fcd302846df949d7424876cb2e2dc5ed1606c5fb0b36787b1cf43a",
+    "status": "downloaded"
+  },
+  {
+    "name": "zlib-README",
+    "url": "https://raw.githubusercontent.com/madler/zlib/v1.3.1/README",
+    "sha256": "d106dcdb2a0b3087cb3a2380b9f00a0bbadc7eb835cd80408f94a2d78d69727d",
+    "status": "downloaded"
+  },
+  {
+    "name": "pcre2-LICENCE",
+    "url": "https://raw.githubusercontent.com/PCRE2Project/pcre2/pcre2-10.42/LICENCE",
+    "sha256": "87d884eceb7fc54611470ce9f74280d28612b0c877adfc767e9676892a638987",
+    "status": "downloaded"
+  },
+  {
+    "name": "glib-LGPL-2.1-or-later.txt",
+    "url": "https://raw.githubusercontent.com/GNOME/glib/2.82.4/LICENSES/LGPL-2.1-or-later.txt",
+    "sha256": "fa6f36630bb1e0c571d34b2bbdf188d08495c9dbf58f28cac112f303fc1f58fb",
+    "status": "downloaded"
+  },
+  {
+    "name": "orc-COPYING",
+    "url": "https://raw.githubusercontent.com/GStreamer/orc/0.4.42/COPYING",
+    "sha256": "4f5dabb1b44bb6fc5cd53820b1f103147ad61b395a57903991325bd1b85d97bf",
+    "status": "downloaded"
+  },
+  {
+    "name": "libffi-LICENSE",
+    "url": "https://gitlab.freedesktop.org/gstreamer/meson-ports/libffi/-/raw/meson-3.2.9999.5/LICENSE",
+    "sha256": "1bdc304cfd53fafa84b4bd7ba2f0813d692778c025fd8dd5b88943567c9d3037",
+    "status": "invalid-html-challenge",
+    "error": "HTTP success returned an anti-bot HTML page, not the original license."
+  },
+  {
+    "name": "bzip2-LICENSE",
+    "url": "https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz",
+    "source_sha256": "ab5a03176ee106d3f0fa90e381da478ddae405918153cca248e682cd0c4a2269",
+    "entry": "bzip2-1.0.8/LICENSE",
+    "sha256": "9102b70091e84168c468d57dcca64ec1f60c76cefbc83b66e1754725b9dd90cf",
+    "status": "extracted-after-source-hash-verification"
+  },
+  {
+    "name": "libffi-LICENSE-verified",
+    "url": "https://gstreamer.freedesktop.org/src/mirror/libffi/libffi-meson-3.2.9999.5.tar.bz2",
+    "source_sha256": "b4d403932a8860589e571300e807e40bb4f7d9d2630c8ec19c29fb9e7b0fd227",
+    "entry": "libffi-meson-3.2.9999.5/LICENSE",
+    "sha256": "f02e8e7361fa83bbe845f029571bbd1248bed85320f6dad0541db8ec66d90178",
+    "status": "extracted-after-source-hash-verification"
+  }
+]

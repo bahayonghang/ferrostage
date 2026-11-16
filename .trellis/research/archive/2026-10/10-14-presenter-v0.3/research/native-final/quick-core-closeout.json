@@ -1,0 +1,68 @@
+{
+  "recorded_utc": "2026-10-16T01:05:08.287484+00:00",
+  "inputs": [
+    {
+      "path": "fixtures/notes-functional/pympress-notes.pdf",
+      "sha256": "e939e35f931c184fd93b2e9b95e560db73ba6a6f6dfccbb0963262f0b359dfeb",
+      "bytes": 129701
+    },
+    {
+      "path": "fixtures/media/media-smoke.pdf",
+      "sha256": "cd41d260eba950649552346e5aa95d7e05b2e81e7d3d790879a97cbff2808185",
+      "bytes": 566185
+    },
+    {
+      "path": "cache/pdfium-7881-win-x64/bin/pdfium.dll",
+      "sha256": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118",
+      "bytes": 7211520
+    },
+    {
+      "path": "target/debug/ferrostage.exe",
+      "sha256": "4bebefa5810f93ccb2e9fda3e8134aacb6ebc24b55e46d0a0d06308387d9ce55",
+      "bytes": 42889216
+    },
+    {
+      "path": "target/debug/ferrostage-media-helper.exe",
+      "sha256": "312752079a67c00c03f7fcf6c843d57d9e19996fc1445ad82026b56a51b96641",
+      "bytes": 799232
+    }
+  ],
+  "exits": [
+    {
+      "finished_utc": "2026-10-16T00:54:46.6337416Z",
+      "pid": 91764,
+      "exit_code": 0,
+      "exe_sha256": "4bebefa5810f93ccb2e9fda3e8134aacb6ebc24b55e46d0a0d06308387d9ce55",
+      "pdf_sha256": "e939e35f931c184fd93b2e9b95e560db73ba6a6f6dfccbb0963262f0b359dfeb",
+      "config_sha256": "2f7dec61df2ee21b743797dadff03f6a201c8193e74e896a42bdb6cd8ca1f848"
+    },
+    {
+      "finished_utc": "2026-10-16T00:58:56.0073498Z",
+      "pid": 53268,
+      "exit_code": 0,
+      "exe_sha256": "4bebefa5810f93ccb2e9fda3e8134aacb6ebc24b55e46d0a0d06308387d9ce55",
+      "pdf_sha256": "3db25c68d519f731d866cace4b91075c530422efd9d82659944f41a0476d5781",
+      "config_sha256": "217d241719027e8341d0a9765cfa387432c6a3dcc9ab876c666684211298b978"
+    },
+    {
+      "finished_utc": "2026-10-16T01:00:38.1890388Z",
+      "pid": 91336,
+      "exit_code": 0,
+      "exe_sha256": "4bebefa5810f93ccb2e9fda3e8134aacb6ebc24b55e46d0a0d06308387d9ce55",
+      "pdf_sha256": "cd41d260eba950649552346e5aa95d7e05b2e81e7d3d790879a97cbff2808185",
+      "config_sha256": "a7607eecc07a60439d2c92a262501e713851c066aad8b21632ef15237b4a02ff"
+    },
+    {
+      "finished_utc": "2026-10-16T01:01:58.9402675Z",
+      "pid": 66280,
+      "exit_code": 0,
+      "exe_sha256": "4bebefa5810f93ccb2e9fda3e8134aacb6ebc24b55e46d0a0d06308387d9ce55",
+      "pdf_sha256": "cd41d260eba950649552346e5aa95d7e05b2e81e7d3d790879a97cbff2808185",
+      "config_sha256": "a7607eecc07a60439d2c92a262501e713851c066aad8b21632ef15237b4a02ff"
+    }
+  ],
+  "get_process_after_last_exit": "No ferrostage, ferrostage-media-helper or owned producer80576 returned",
+  "desktop_scope": "quick core by user; no further input",
+  "delivery": "uncommitted_unpushed_unarchived",
+  "review_source_inputs_matched": 169
+}

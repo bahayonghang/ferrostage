@@ -1,0 +1,24 @@
+   Compiling lopdf v0.45.0
+   Compiling tracing-subscriber v0.3.23
+   Compiling ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+   Compiling ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+   Compiling ferrostage-settings v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-settings)
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+   Compiling ferrostage-app v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-app)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.44s
+     Running unittests src\main.rs (target\debug\deps\ferrostage-a2d520a35b7b2371.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\check_config.rs (target\debug\deps\check_config-d7881a99c6929d9d.exe)
+
+running 4 tests
+test missing_config_exits_one ... ok
+test startup_config_fills_missing_sections ... ok
+test check_config_syntax_error_exits_one_without_backup ... ok
+test check_config_leaf_fallback_exits_zero_and_does_not_write ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+

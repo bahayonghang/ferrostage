@@ -1,0 +1,5 @@
+Command: python .trellis/scripts/task.py validate .trellis/tasks/10-14-03-monitor-topology
+Observed exit: 0
+implement.jsonl: 17 entries valid
+check.jsonl: 13 entries valid
+Context validity is not product acceptance.

@@ -1,0 +1,17 @@
+[package]
+name = "ferrostage-maintenance-cmap-proof"
+version = "0.0.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+[workspace]
+[dependencies]
+skrifa = "=0.44.0"
+ttf-parser = "=0.25.1"
+
+fontdb = "=0.24.0"
+
+resvg_old = { package = "resvg", version = "=0.46.0", default-features = false, features = ["text"] }
+resvg_new = { package = "resvg", version = "=0.48.1", default-features = false, features = ["text"] }
+
+[patch.crates-io]
+harfrust = { path = "../gpui-maintenance-candidate/vendor/harfrust" }

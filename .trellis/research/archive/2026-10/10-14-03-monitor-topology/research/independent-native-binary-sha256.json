@@ -1,0 +1,8 @@
+{
+  "recorded_at_utc": "2026-10-14T15:26:15.9125559+00:00",
+  "path": "target/debug/examples/monitor_probe.exe",
+  "sha256": "0979d716f4c06c81efa1e56e55885c5839f991f863cf8ea175b66415a74d2b01",
+  "profile": "dev",
+  "target": "x86_64-pc-windows-msvc",
+  "evidence": "independent-native-static-probe.log"
+}

@@ -1,0 +1,19 @@
+{
+  "captured_utc": "2026-10-15T00:22:23.838193+00:00",
+  "status": "Review-ready proposal syntax, exact evidence hashes and local links checked; no policy approval or passing deny claimed.",
+  "proposed_exact_packages": {
+    "arrayref@0.3.9": [
+      "BSD-2-Clause"
+    ],
+    "libbz2-rs-sys@0.2.5": [
+      "bzip2-1.0.6"
+    ],
+    "cbindgen@0.28.0": [
+      "MPL-2.0"
+    ]
+  },
+  "local_links_valid": 7,
+  "missing_links": [],
+  "product_policy_exceptions": [],
+  "policy_sha256": "1cf48641ae1451010587ad06ab197867e8f9ba5b012b585c9880f860443f85e4"
+}

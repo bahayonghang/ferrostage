@@ -1,0 +1,11 @@
+{
+  "changes": {
+    "crates/ferrostage-ui/src/shell.rs": {
+      "v8": "66102b44735ca308ec32fbdf323842bbd37c69c5864b95460849821f21b7fc79",
+      "v9": "efdfb790d5b0a13f417fb356a6b33444cfff6d12fe3944ace210609807b2a59b"
+    }
+  },
+  "unchanged_count": 608,
+  "removed_test_block_restores_exact_v8_bytes": true,
+  "test_block_bytes": 3469
+}

@@ -1,0 +1,14 @@
+{
+  "started_utc": "2026-10-15T03:28:46.675536+00:00",
+  "argv": [
+    "cargo",
+    "fmt",
+    "--all",
+    "--",
+    "--check"
+  ],
+  "status": "RETURNED",
+  "log": "product-v7-fmt.log",
+  "exit_code": 0,
+  "ended_utc": "2026-10-15T03:28:48.448252+00:00"
+}

@@ -1,0 +1,152 @@
+RUNNING: cargo build -p ferrostage-app --features gpui,pdfium --offline (product I-2)
+PRODUCT I-2 BUILD INITIAL EXIT: 101
+RUNNING: approved cargo build -p ferrostage-app --features gpui,pdfium --locked --offline (product I-2)
+PRODUCT I-2 BUILD EXIT: 0
+RUNNING: cargo deny --all-features --locked --offline check (product I-2)
+PRODUCT I-2 DENY INITIAL EXIT: 1
+RUNNING: approved cargo deny --all-features --locked --offline check (product I-2)
+PRODUCT I-2 DENY EXIT: 0
+RUNNING: cargo check -p ferrostage-app --features gpui,pdfium --locked --offline (shell first integration)
+SHELL CHECK INITIAL EXIT: 101
+RUNNING: approved cargo check -p ferrostage-app --features gpui,pdfium --locked --offline (shell integration)
+SHELL CHECK EXIT: 101
+RUNNING: approved cargo check -p ferrostage-app --features gpui,pdfium --locked --offline (API corrections)
+SHELL CHECK 2 EXIT: 101
+RUNNING: approved cargo check -p ferrostage-app --features gpui,pdfium --locked --offline (tracing name correction)
+SHELL CHECK 3 EXIT: 0
+RUNNING: cargo test -p ferrostage-ui --lib --locked --offline (red shell regressions)
+SHELL RED EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --lib --locked --offline (reserved-binding red regression)
+SHELL RED 2 EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --lib --locked --offline (corrected coordinator decisions)
+SHELL TESTS EXIT: 0
+RUNNING: cargo clippy -p ferrostage-app -p ferrostage-ui --features gpui,pdfium --all-targets --locked --offline -- -D warnings
+SHELL CLIPPY EXIT: 101
+RUNNING: cargo clippy -p ferrostage-app -p ferrostage-ui --features gpui,pdfium --all-targets --locked --offline -- -D warnings (lint fixes)
+SHELL CLIPPY 2 EXIT: 101
+RUNNING: cargo clippy -p ferrostage-app -p ferrostage-ui --features gpui,pdfium --all-targets --locked --offline -- -D warnings (final)
+SHELL CLIPPY 3 EXIT: 0
+RUNNING: just ci (default workspace gate)
+JUST CI EXIT: 0
+RUNNING: cargo test --manifest-path vendor/gpui/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --no-default-features --lib svg_renderer --locked --offline (actual adopted source)
+PRODUCT VENDOR GPUI TESTS EXIT: 0
+RUNNING: cargo test --manifest-path vendor/harfrust/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --lib --locked --offline (actual adopted source)
+PRODUCT VENDOR HARFRUST TESTS EXIT: 0
+RUNNING: cargo clippy -p ferrostage-app -p ferrostage-ui --features gpui,pdfium --all-targets --offline -- -D warnings (locale dependency lock update)
+LOCALE CLIPPY EXIT: 101
+NOTE: locale preparation Python default GBK read failed before constructor edit; explicit UTF-8/apply_patch corrected it. Initial locale lint retains missing-constructor diagnostics.
+RUNNING: cargo clippy -p ferrostage-app -p ferrostage-ui --features gpui,pdfium --all-targets --locked --offline -- -D warnings (locale correction)
+LOCALE CLIPPY 2 EXIT: 0
+RUNNING: cargo test --manifest-path cache/gpui-product-proof/Cargo.toml --target-dir cache/gpui-maintenance-cmap-proof/target --locked --offline -- --nocapture
+PRODUCT STRICT SVG PROBE EXIT: 0
+RUNNING: just ci (after locale integration)
+JUST CI LOCALE EXIT: 0
+FINAL FMT EXIT: 0
+RUNNING: cargo test -p ferrostage-app -p ferrostage-ui --features gpui,pdfium --all-targets --locked --offline
+PRODUCT NATIVE TESTS EXIT: 101
+RUNNING: cargo test -p ferrostage-app -p ferrostage-ui --features gpui,pdfium --all-targets --locked (missing locked test dependency retry)
+PRODUCT NATIVE TESTS RETRY EXIT: 0
+RUNNING: cargo test -p ferrostage-app --all-targets --locked --offline
+final-default-app-tests EXIT: 0
+RUNNING: cargo clippy -p ferrostage-app -p ferrostage-ui --features gpui,pdfium --all-targets --locked --offline -- -D warnings
+final-native-clippy EXIT: 0
+RUNNING: cargo deny --all-features --locked --offline check
+final-full-deny EXIT: 1
+RUNNING: cargo deny --all-features --locked check (complete target graph cache retry)
+FINAL FULL DENY RETRY EXIT: 0
+RUNNING: cargo tree -p ferrostage-core --locked --offline
+FINAL CORE TREE EXIT: 0
+RUNNING: cargo build -p ferrostage-app --features gpui,pdfium --locked --offline (final source)
+FINAL NATIVE BUILD EXIT: 0
+FINAL FMT EXIT: 0
+RUNNING: cargo clippy -p ferrostage-app -p ferrostage-ui --features gpui,pdfium --all-targets --locked --offline -- -D warnings (required topology warning log)
+FREEZE CLIPPY EXIT: 0
+RUNNING: cargo build -p ferrostage-app --features gpui,pdfium --locked --offline (freeze)
+FREEZE BUILD EXIT: 0
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib presenter_creation_draws_while_controller_is_leased --offline (native startup red reproduction on TestPlatform)
+STARTUP HEADLESS RED EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib presenter_creation_draws_while_controller_is_leased --locked (headless red, missing test-support cache retry)
+STARTUP HEADLESS RED RETRY EXIT: 101
+RUNNING: cargo deny --all-features --locked check (GPUI test-support complete graph)
+TEST SUPPORT FULL DENY EXIT: 0
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib --locked --offline (startup repair)
+STARTUP HEADLESS GREEN EXIT: 0
+RUNNING: just ci (startup fix)
+V2 JUST CI EXIT: 0
+RUNNING: cargo clippy -p ferrostage-app -p ferrostage-ui --all-features --all-targets --locked --offline -- -D warnings
+V2 ALL FEATURES CLIPPY EXIT: 0
+RUNNING: cargo build -p ferrostage-app --features gpui,pdfium --locked --offline (startup repair freeze)
+V2 NATIVE BUILD EXIT: 0
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib close_hook --locked --offline (actual synchronous removal callback red)
+V3 CLOSE RED EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib close_hook --locked --offline (approved shared target retry)
+V3 CLOSE RED RETRY EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib --locked --offline (v3 deferred close)
+V3 CLOSE GREEN EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib --locked --offline (v3 trace identifier repair)
+V3 CLOSE GREEN 2 EXIT: 0
+RUNNING: just ci (v3 deferred close repair)
+V3 JUST CI EXIT: 0
+RUNNING: cargo clippy -p ferrostage-app -p ferrostage-ui --all-features --all-targets --locked --offline -- -D warnings (v3)
+V3 CLIPPY EXIT: 0
+RUNNING: cargo build -p ferrostage-app --features gpui,pdfium --locked --offline (v3 freeze)
+V3 NATIVE BUILD EXIT: 0
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib input_route --locked --offline (v4 real input red)
+V4 INPUT RED EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib --locked --offline (v4 deferred input)
+V4 INPUT GREEN EXIT: 0
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib --locked --offline (v4 input plus font/filename UI)
+V4 HEADLESS FINAL EXIT: 0
+RUNNING: just ci (v4 input, fallback, filename, labels)
+V4 JUST CI EXIT: 0
+RUNNING: cargo clippy -p ferrostage-app -p ferrostage-ui --all-features --all-targets --locked --offline -- -D warnings (v4)
+V4 CLIPPY EXIT: 0
+RUNNING: cargo build -p ferrostage-app --features gpui,pdfium --locked --offline (v4 freeze)
+V4 NATIVE BUILD EXIT: 0
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib v5_ --locked --offline (focused-control/import/Idle red)
+V5 RED EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib v5_ --locked --offline (input green plus topology recovery red)
+V5 TOPOLOGY RED EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib v5_ --locked --offline (topology green plus Jump precedence red)
+V5 JUMP RED EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib v5_jump_numeric --locked --offline (configured numeric conflict red)
+V5 JUMP NUMERIC RED EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib --locked --offline (v5 complete repair)
+V5 GREEN EXIT: 0
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib discards --locked --offline (abandoned Jump preview red)
+V5 PREVIEW RED EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib --locked --offline (v5 F1-F6 complete green)
+V5 GREEN FINAL EXIT: 0
+RUNNING: just ci (v5 F1-F6)
+V5 JUST CI EXIT: 0
+RUNNING: cargo clippy -p ferrostage-app -p ferrostage-ui --all-features --all-targets --locked --offline -- -D warnings (v5)
+V5 CLIPPY EXIT: 0
+RUNNING: cargo build -p ferrostage-app --features gpui,pdfium --locked --offline (v5 freeze)
+V5 NATIVE BUILD EXIT: 0
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib v6_ --locked --offline (F7/F8 actual input/save red)
+V6 RED EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib v6_ --locked --offline (approved shared target red retry)
+V6 RED RETRY EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib v6_ --locked --offline (complete MonitorBinding test fixture)
+V6 RED 2 EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib v6_ --locked --offline (correct String friendly_name test fixture)
+V6 RED 3 EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib v6_ --locked --offline (F8 green, Retry removal F7 red)
+V6 FOCUS RED EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib --locked --offline (v6 deferred actual-tree focus recovery)
+V6 GREEN EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib v6_ --locked --offline (v5 Presenter, focus contract red with valid-return traversal assertion)
+V6 FOCUS RED FINAL EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib --locked --offline (v6 complete F7/F8 green)
+V6 GREEN FINAL EXIT: 101
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib --locked --offline (v6 retain modal return handle through validation)
+V6 GREEN 2 EXIT: 0
+RUNNING: cargo test -p ferrostage-ui --features test-support --lib --locked --offline (v6 final input plus import/replacement/save coverage)
+V6 HEADLESS FINAL EXIT: 0
+RUNNING: just ci (v6 F7/F8)
+V6 JUST CI EXIT: 0
+RUNNING: cargo clippy -p ferrostage-app -p ferrostage-ui --all-features --all-targets --locked --offline -- -D warnings (v6)
+V6 CLIPPY EXIT: 0
+RUNNING: cargo build -p ferrostage-app --features gpui,pdfium --locked --offline (v6 freeze)
+V6 NATIVE BUILD EXIT: 0
+V6 DIFF CHECK EXIT: 0

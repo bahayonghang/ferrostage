@@ -1,0 +1,710 @@
+{
+  "started_utc": "2026-10-15T11:06:52.829804+00:00",
+  "status": "PASS",
+  "branch": {
+    "command": [
+      "git",
+      "branch",
+      "--show-current"
+    ],
+    "exit_code": 0,
+    "stdout": "main\n",
+    "stderr": ""
+  },
+  "head": {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit_code": 0,
+    "stdout": "8ae980ced5ccb83b7804b698d3cceef474b80633\n",
+    "stderr": ""
+  },
+  "current": {
+    "command": [
+      "C:\\Program Files\\Python314\\python.exe",
+      ".trellis/scripts/task.py",
+      "current"
+    ],
+    "exit_code": 0,
+    "stdout": ".trellis/tasks/10-14-07-gpui-shell\n",
+    "stderr": ""
+  },
+  "worktree": {
+    "command": [
+      "git",
+      "status",
+      "--short"
+    ],
+    "exit_code": 0,
+    "stdout": " M .trellis/spec/frontend/maintained-dependencies.md\n M .trellis/tasks/10-14-07-gpui-shell/design.md\n M .trellis/tasks/10-14-07-gpui-shell/implement.md\n M .trellis/tasks/10-14-presenter-v0.3/design.md\n M .trellis/tasks/10-14-presenter-v0.3/execution-state.md\n M .trellis/tasks/10-14-presenter-v0.3/implement.md\n M .trellis/tasks/10-14-presenter-v0.3/next-session-prompt.md\n M .trellis/tasks/10-14-presenter-v0.3/research/gate-b.md\n M .trellis/tasks/10-14-presenter-v0.3/traceability.md\n M AGENTS.md\n M Cargo.lock\n M Cargo.toml\n M docs/PROJECT_PLAN.md\n M docs/adr/ADR-001-gpui-from-zed-tag.md\n M docs/adr/ADR-008-gpui-dependency-gate.md\n M docs/feature-parity.md\n M vendor/README.md\n?? .trellis/tasks/10-14-07-gpui-shell/research/native-v16-audit.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native-v16-core-results.md\n?? .trellis/tasks/10-14-07-gpui-shell/research/native-v16-evidence-manifest.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native-v16-independent-evidence-manifest.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native-v16-independent-review.md\n?? .trellis/tasks/10-14-07-gpui-shell/research/native-v16-plan.md\n?? .trellis/tasks/10-14-07-gpui-shell/research/native-v16-process-closeout.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/run-native-v16.ps1\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-after-audience-close-ready-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-after-audience-close-ready.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-after-audience-close-windows.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-after-stop-windows.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-app3-pdf1-draft-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-app3-pdf1-draft.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-apply-app2-confirmed-draft.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-apply-app2-draft.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-audience-a-migrated-white-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-audience-a-migrated-white.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-audience-b-page1-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-audience-b-page1.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-audience-c-started-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-audience-c-started.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-audience-jump-routed-to-presenter-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-audience-jump-routed-to-presenter.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-audience-page2-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-audience-page2.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-audience-page3-back-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-audience-page3-back.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-audience-page3-overlay-a-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-audience-page3-overlay-a.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-audience-page4-overlay-b-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-audience-page4-overlay-b.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-audience-white-before-migrate-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-audience-white-before-migrate.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-before-audience-close.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-before-cancel.toml\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-before-draft.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-before-presenting-owner-close-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-before-presenting-owner-close.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-before-start.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-before-stop-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-before-stop.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-cancel-config-readback.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-cancel-ready-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-cancel-ready.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-conflict-scroll-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-conflict-scroll.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-conflicting-app3-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-conflicting-app3.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-core-displays-initial-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-core-displays-initial.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-core-main-post-exit-windows.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-core-main.config-after.toml\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-core-main.config-before.toml\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-core-main.exit.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-core-main.launch.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-core-main.stderr.log\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-core-main.stdout.log\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-core-ready-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-core-ready.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-core-relaunch-post-exit-windows.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-core-relaunch.config-after.toml\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-core-relaunch.config-before.toml\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-core-relaunch.exit.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-core-relaunch.launch.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-core-relaunch.stderr.log\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-core-relaunch.stdout.log\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-core.toml\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-displays-after-cancel.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-displays-on2.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-displays-on3.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-draft-app2-settled-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-draft-app2-settled.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-draft-app2.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-identify-on2-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-identify-on2-1.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-identify-on2.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-identify-on3-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-identify-on3-1.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-identify-on3.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-identify-presenter-capture-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-identify-presenter-capture-1.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-identify-presenter-capture.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-identify-return.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-identify-windows.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-jump-cancel-still-presenting-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-jump-cancel-still-presenting.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-no-play-applied-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-no-play-applied-windows.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-no-play-applied.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-no-play-draft-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-no-play-draft.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-no-play-frozen-time-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-no-play-frozen-time.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-no-play-options-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-no-play-options.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-no-play-panel-recovered-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-no-play-panel-recovered.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-no-play-panel-reobserve-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-no-play-panel-reobserve.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-no-play-saved.toml\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-prelaunch-windows.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-presenter-after-migration.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-presenter-on2-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-presenter-on2-windows.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-presenter-on2.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-presenter-on3-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-presenter-on3-windows.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-presenter-on3.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-presenting-app1-draft-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-presenting-app1-draft.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-presenting-app1-pdf2-draft-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-presenting-app1-pdf2-draft.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-presenting-migrated-ba-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-presenting-migrated-ba-windows.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-presenting-migrated-ba.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-presenting-migration-panel-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-presenting-migration-panel.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-presenting-targets-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-presenting-targets.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-relaunch-bc-ready-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-relaunch-bc-ready-windows.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-relaunch-bc-ready.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-relaunch-displays-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-relaunch-displays.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-relaunch-no-play-ready-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-relaunch-no-play-ready.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-relaunch-pdf-options-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-relaunch-pdf-options.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-relaunch-pdf3-draft-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-relaunch-pdf3-draft.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-relaunch-start-bc-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-relaunch-start-bc.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-restart-for-audience-close.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-start-cb-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-start-cb.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-stop-ready-0.jpg\n?? .trellis/tasks/10-14-07-gpui-shell/research/native/v16-stop-ready.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-check.py\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-evidence-manifest.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-evidence-manifest.sha256\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-fmt.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-fmt.log\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-lint-cache-access.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-lint-cache-access.log\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-lint.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-lint.log\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-process-closeout.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-readback.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-reconstruction.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-reconstruction.log\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-review.md\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-typecheck.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-typecheck.log\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-verify.py\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-native-freeze-v16.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-LICENSE-APACHE\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-LICENSE-MIT\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-a11y-cache-access.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-a11y-cache-access.log\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-a11y-tests.rs\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-a11y.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-a11y.log\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-accesskit-harness/\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-accesskit-provenance.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-accesskit.py\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-baseline-and-lock.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-build.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-build.log\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-check.py\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-clippy.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-clippy.log\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-config-inputs.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-deny.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-deny.log\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-evidence-manifest.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-evidence-manifest.sha256\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-freeze.py\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-headless-final-lock.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-headless-final-lock.log\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-headless.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-headless.log\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-hidden-compile.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-hidden-compile.log\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-implementation.md\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-just-ci.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-just-ci.log\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-lock-before-tightening.txt\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-lock.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-lock.log\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-manifest.py\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-process-closeout.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-readback.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-reconstruction.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-reconstruction.log\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-root-hidden-cache-access.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-root-hidden-cache-access.log\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-root-hidden.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-root-hidden.log\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-source-delta.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-typecheck.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/product-v16-typecheck.log\n?? .trellis/tasks/10-14-07-gpui-shell/research/resume-2026-10-15-v16-audit.json\n?? .trellis/tasks/10-14-07-gpui-shell/research/resume-2026-10-15-v16-audit.py\n?? .trellis/tasks/10-14-07-gpui-shell/research/seal-native-v16.py\n?? .trellis/tasks/10-14-presenter-v0.3/research/resume-2026-10-15-context-audit.json\n?? .trellis/tasks/10-14-presenter-v0.3/research/resume-2026-10-15-context-audit.py\n?? vendor/accesskit_windows/\n",
+    "stderr": ""
+  },
+  "diff_stat": {
+    "command": [
+      "git",
+      "diff",
+      "--stat"
+    ],
+    "exit_code": 0,
+    "stdout": " .trellis/spec/frontend/maintained-dependencies.md  |  9 ++-\n .trellis/tasks/10-14-07-gpui-shell/design.md       |  5 ++\n .trellis/tasks/10-14-07-gpui-shell/implement.md    | 12 ++++\n .trellis/tasks/10-14-presenter-v0.3/design.md      |  5 ++\n .../tasks/10-14-presenter-v0.3/execution-state.md  | 20 +++++++\n .trellis/tasks/10-14-presenter-v0.3/implement.md   |  4 +-\n .../10-14-presenter-v0.3/next-session-prompt.md    | 64 +++++++++++-----------\n .../tasks/10-14-presenter-v0.3/research/gate-b.md  |  4 +-\n .../tasks/10-14-presenter-v0.3/traceability.md     |  2 +-\n AGENTS.md                                          |  2 +-\n Cargo.lock                                         |  2 -\n Cargo.toml                                         |  3 +-\n docs/PROJECT_PLAN.md                               |  2 +-\n docs/adr/ADR-001-gpui-from-zed-tag.md              |  2 +\n docs/adr/ADR-008-gpui-dependency-gate.md           | 10 ++++\n docs/feature-parity.md                             | 10 ++--\n vendor/README.md                                   | 14 ++++-\n 17 files changed, 122 insertions(+), 48 deletions(-)\n",
+    "stderr": "warning: in the working copy of '.trellis/tasks/10-14-07-gpui-shell/design.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-07-gpui-shell/implement.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/design.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/execution-state.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/implement.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/next-session-prompt.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/traceability.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'Cargo.lock', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'Cargo.toml', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'docs/feature-parity.md', LF will be replaced by CRLF the next time Git touches it\n"
+  },
+  "tasks": [
+    {
+      "path": ".trellis/tasks/10-14-presenter-v0.3",
+      "id": "presenter-v0.3",
+      "status": "planning",
+      "artifacts": {
+        "task.json": {
+          "sha256": "3f79f68b015451c176af0363f9230397a1c964f51298c9d72d1387a3e45db1dd",
+          "bytes": 1170,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "prd.md": {
+          "sha256": "3b9989dc20d062fa8e6c671c93d404e44a4708da23861a3526158abe53960b2e",
+          "bytes": 11026,
+          "checked": 0,
+          "unchecked": 10
+        },
+        "design.md": {
+          "sha256": "e2b3e1bbdbb28fe5d436cda311acd881811952ae48256cc570e45d917d2010f8",
+          "bytes": 33608,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "implement.md": {
+          "sha256": "35c5357de6893bcf76a295e40c49f840e3b011bf70b8680083af0c2143e9ff8c",
+          "bytes": 11055,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "implement.jsonl": {
+          "sha256": "cafd9117cf13debcb51e5fa459dbd05c9f7207b2b7ec4f080c85b34f9914c90b",
+          "bytes": 2496,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "check.jsonl": {
+          "sha256": "ae2e3f0e7bd1f2f90cc118e6f92a760c7b090eb310446ac86f6c1633969e7c30",
+          "bytes": 2781,
+          "checked": 0,
+          "unchecked": 0
+        }
+      },
+      "validation": {
+        "command": [
+          "C:\\Program Files\\Python314\\python.exe",
+          ".trellis/scripts/task.py",
+          "validate",
+          ".trellis/tasks/10-14-presenter-v0.3"
+        ],
+        "exit_code": 0,
+        "stdout": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-presenter-v0.3\n\n  \u001b[1;33mimplement.jsonl:6: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33608 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (19 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:4: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33608 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (20 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n",
+        "stderr": ""
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-01-docs-sync",
+      "id": "01-docs-sync",
+      "status": "completed",
+      "artifacts": {
+        "task.json": {
+          "sha256": "c2bc3cb53c9922c70aca2aa3367389b19b7e0f37d7393bfaf558be21cc87734e",
+          "bytes": 798,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "prd.md": {
+          "sha256": "326a9e6f72c2b054dd041a272dec36dc7b4a38253f211c5861a6b43f8156e7b3",
+          "bytes": 4824,
+          "checked": 5,
+          "unchecked": 0
+        },
+        "design.md": {
+          "absent": true
+        },
+        "implement.md": {
+          "absent": true
+        },
+        "implement.jsonl": {
+          "sha256": "5dfbeed237adc5779e79267cf9817f3e4bfc21cfe4a3336bdad2b01592f76822",
+          "bytes": 1173,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "check.jsonl": {
+          "sha256": "5dfbeed237adc5779e79267cf9817f3e4bfc21cfe4a3336bdad2b01592f76822",
+          "bytes": 1173,
+          "checked": 0,
+          "unchecked": 0
+        }
+      },
+      "validation": {
+        "command": [
+          "C:\\Program Files\\Python314\\python.exe",
+          ".trellis/scripts/task.py",
+          "validate",
+          ".trellis/tasks/archive/2026-10/10-14-01-docs-sync"
+        ],
+        "exit_code": 0,
+        "stdout": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-01-docs-sync\n\n  \u001b[1;33mimplement.jsonl:4: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33608 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (9 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:4: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33608 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (9 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n",
+        "stderr": ""
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-02-settings-schema",
+      "id": "02-settings-schema",
+      "status": "completed",
+      "artifacts": {
+        "task.json": {
+          "sha256": "40eb5b9aefd13d7b01972d862b682f4ba60f7df86b4176f9b7fe8745057eaf5c",
+          "bytes": 804,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "prd.md": {
+          "sha256": "45c52381f51e36e1c075fd619ee93e150a845f91e388cd77bf3aec9574e7d3c2",
+          "bytes": 5485,
+          "checked": 9,
+          "unchecked": 0
+        },
+        "design.md": {
+          "sha256": "bb50b0ac0e23dbe45a7d98f07951b836e31dbd82fcb6da8bdecb9a7422e578a0",
+          "bytes": 3107,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "implement.md": {
+          "sha256": "3597e0320444a636a0ef49161b4799134c5ff504bf11c05f45500a8eabaef105",
+          "bytes": 4894,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "implement.jsonl": {
+          "sha256": "f17eb13d35f975b4b15ccba5227464816eea5be0bb656ad17016422f9c696064",
+          "bytes": 1988,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "check.jsonl": {
+          "sha256": "e1f6db08a40f7a508df63d7c567b0ff6676ef418b88bff8d4bc8290f82e04bde",
+          "bytes": 1677,
+          "checked": 0,
+          "unchecked": 0
+        }
+      },
+      "validation": {
+        "command": [
+          "C:\\Program Files\\Python314\\python.exe",
+          ".trellis/scripts/task.py",
+          "validate",
+          ".trellis/tasks/archive/2026-10/10-14-02-settings-schema"
+        ],
+        "exit_code": 0,
+        "stdout": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-02-settings-schema\n\n  \u001b[1;33mimplement.jsonl:9: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33608 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (16 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:6: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33608 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (13 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n",
+        "stderr": ""
+      }
+    },
+    {
+      "path": ".trellis/tasks/10-14-03-monitor-topology",
+      "id": "03-monitor-topology",
+      "status": "in_progress",
+      "artifacts": {
+        "task.json": {
+          "sha256": "4d43b85cbed04e7af587f46ab1cdf9e0b748499dc671ac4aac6d6042b6026d3b",
+          "bytes": 803,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "prd.md": {
+          "sha256": "33f1930304e3417afcb7bbe9471fd7ca58a9346ec278f8777f7c2c4973ed0d47",
+          "bytes": 4634,
+          "checked": 4,
+          "unchecked": 2
+        },
+        "design.md": {
+          "sha256": "1efc1392b6589b7f90d5115287093632af3157ce7ad684b33df1bf80169961e0",
+          "bytes": 5843,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "implement.md": {
+          "sha256": "f39a643cde9fe0c665a048795de07e7dbfdfa27ed5d52994ec106f27e9e79868",
+          "bytes": 10606,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "implement.jsonl": {
+          "sha256": "e71f45392b4dc55b17ae00d6f4e7e18e4bb37e7945b08e7452dbce7fe3ac63d8",
+          "bytes": 2431,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "check.jsonl": {
+          "sha256": "c67d9885b8e05144a423b83c1bcab7aaa9daf881aa27c8810e7a678e5fc24e81",
+          "bytes": 2152,
+          "checked": 0,
+          "unchecked": 0
+        }
+      },
+      "validation": {
+        "command": [
+          "C:\\Program Files\\Python314\\python.exe",
+          ".trellis/scripts/task.py",
+          "validate",
+          ".trellis/tasks/10-14-03-monitor-topology"
+        ],
+        "exit_code": 0,
+        "stdout": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-03-monitor-topology\n\n  \u001b[1;33mimplement.jsonl:9: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33608 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (18 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:6: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33608 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (15 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n",
+        "stderr": ""
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-04-session-lifecycle",
+      "id": "04-session-lifecycle",
+      "status": "completed",
+      "artifacts": {
+        "task.json": {
+          "sha256": "4218cbf8629b86692d56be81e34479be027378855ad9743d81da0d891d8d205d",
+          "bytes": 830,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "prd.md": {
+          "sha256": "01f9831fa108547cc32002bdd2bb2455b5ecfb800f26e8f3afdebbb96ff19394",
+          "bytes": 4683,
+          "checked": 8,
+          "unchecked": 0
+        },
+        "design.md": {
+          "sha256": "8030fe7c63b9e2939580aa51f1d4b31581f242a7a5e9a10f3521f208a9bf678a",
+          "bytes": 4448,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "implement.md": {
+          "sha256": "1a769cdfbbc625beffbc9ff8e3c014103dcb8c523f79c085d7db396f725d88fc",
+          "bytes": 4333,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "implement.jsonl": {
+          "sha256": "d9eab4764eedd0cb0ea02b8b669589f90a3d8237eeaa38f540a885307a31f150",
+          "bytes": 2205,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "check.jsonl": {
+          "sha256": "90d7c4db5fbb43f8ed74e1f62a1e8fb38a9203d9cff231ae7e02276875f9a76d",
+          "bytes": 1773,
+          "checked": 0,
+          "unchecked": 0
+        }
+      },
+      "validation": {
+        "command": [
+          "C:\\Program Files\\Python314\\python.exe",
+          ".trellis/scripts/task.py",
+          "validate",
+          ".trellis/tasks/archive/2026-10/10-14-04-session-lifecycle"
+        ],
+        "exit_code": 0,
+        "stdout": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-04-session-lifecycle\n\n  \u001b[1;33mimplement.jsonl:11: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33608 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (18 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:7: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33608 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (14 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n",
+        "stderr": ""
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster",
+      "id": "05-pdf-raster",
+      "status": "completed",
+      "artifacts": {
+        "task.json": {
+          "sha256": "190d3fe5025830bc4603d562aee25ba37543efe0f1922f1a0c09882051a63efa",
+          "bytes": 789,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "prd.md": {
+          "sha256": "d99e1d4a8c36f32f651c0262f5126f8f7cd4e4d8d93307adf614c7b25470d1e8",
+          "bytes": 5202,
+          "checked": 8,
+          "unchecked": 0
+        },
+        "design.md": {
+          "sha256": "77185e948fd8a111a531eff6daef60a0f2ede9630ad95532d5e612beb2e4cf69",
+          "bytes": 5362,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "implement.md": {
+          "sha256": "bb86feda775283ada15f5db8b830197956bbbccf7f9e8e43c574626b289fd6a5",
+          "bytes": 13276,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "implement.jsonl": {
+          "sha256": "87e0fa224134afe305cbb57848a38f638241c47569f5e05544d8fb7a439305a2",
+          "bytes": 2069,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "check.jsonl": {
+          "sha256": "e07365e4111a73d2b7282f2e89bfe98d32cef8bbc4fc56780897f8abdcc3e1f4",
+          "bytes": 1758,
+          "checked": 0,
+          "unchecked": 0
+        }
+      },
+      "validation": {
+        "command": [
+          "C:\\Program Files\\Python314\\python.exe",
+          ".trellis/scripts/task.py",
+          "validate",
+          ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster"
+        ],
+        "exit_code": 0,
+        "stdout": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-05-pdf-raster\n\n  \u001b[1;33mimplement.jsonl:8: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33608 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (16 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:5: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33608 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (13 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n",
+        "stderr": ""
+      }
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model",
+      "id": "06-beamer-document-model",
+      "status": "completed",
+      "artifacts": {
+        "task.json": {
+          "sha256": "58af6f1ffbd479e33fbabda7ba256040d4c4cd09343b096a22dae4a6e9b074d7",
+          "bytes": 836,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "prd.md": {
+          "sha256": "130e3ea5355dc9b159f0c5f53276e02b0699932735b39b653537b86de9fe3e2e",
+          "bytes": 5322,
+          "checked": 8,
+          "unchecked": 0
+        },
+        "design.md": {
+          "sha256": "fd1b558e1842723f771a3234c78e0ae052441c986b335f26275175cd9c922f65",
+          "bytes": 6336,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "implement.md": {
+          "sha256": "d81d272b27f52f787ac63078075d9e06ec33071790866586801d7886723c1b64",
+          "bytes": 9200,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "implement.jsonl": {
+          "sha256": "9368b029a4cb6a92a34a5a00594141e93e0402d53f0315cc499c2b1746ad9886",
+          "bytes": 2723,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "check.jsonl": {
+          "sha256": "124cf11783aa678096e49931e055132e31ef3ba5c27fc068ea17a6801c19152e",
+          "bytes": 2291,
+          "checked": 0,
+          "unchecked": 0
+        }
+      },
+      "validation": {
+        "command": [
+          "C:\\Program Files\\Python314\\python.exe",
+          ".trellis/scripts/task.py",
+          "validate",
+          ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model"
+        ],
+        "exit_code": 0,
+        "stdout": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-06-beamer-document-model\n\n  \u001b[1;33mimplement.jsonl:10: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33608 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (20 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:6: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33608 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (16 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n",
+        "stderr": ""
+      }
+    },
+    {
+      "path": ".trellis/tasks/10-14-07-gpui-shell",
+      "id": "07-gpui-shell",
+      "status": "in_progress",
+      "artifacts": {
+        "task.json": {
+          "sha256": "9640de70e003d0b4935b9b16f72ead61a2c5ab1d7f5d9aac33aa02e823667341",
+          "bytes": 817,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "prd.md": {
+          "sha256": "4044e1649856a0add2c2da87da1f503f4deed62cee3af20365b28aef01d59780",
+          "bytes": 10173,
+          "checked": 5,
+          "unchecked": 7
+        },
+        "design.md": {
+          "sha256": "56b72b8c5005f0ec692424abfc4e83396c25204b97bb31c4705ab7619f0bd449",
+          "bytes": 18037,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "implement.md": {
+          "sha256": "9d46a44ac4db0cca98657bf4a6432aa0b287ac33a12b0eeaf4ef772ab406e51e",
+          "bytes": 70113,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "implement.jsonl": {
+          "sha256": "656009da723cf0685dd694e4cdf49c4c34ea56c8894bae03cc8078eacdd42e0e",
+          "bytes": 5606,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "check.jsonl": {
+          "sha256": "876b5f728f3b82256d70de633b1e6c5eeff3b4e84d980a6260100f18e6806c9e",
+          "bytes": 6196,
+          "checked": 0,
+          "unchecked": 0
+        }
+      },
+      "validation": {
+        "command": [
+          "C:\\Program Files\\Python314\\python.exe",
+          ".trellis/scripts/task.py",
+          "validate",
+          ".trellis/tasks/10-14-07-gpui-shell"
+        ],
+        "exit_code": 0,
+        "stdout": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\n\n  \u001b[1;33mimplement.jsonl:11: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33608 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[1;33mimplement.jsonl:17: Warning: .trellis/tasks/10-14-07-gpui-shell/implement.md is 70113 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (37 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:5: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33608 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[1;33mcheck.jsonl:11: Warning: .trellis/tasks/10-14-07-gpui-shell/implement.md is 70113 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (39 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n",
+        "stderr": ""
+      }
+    },
+    {
+      "path": ".trellis/tasks/10-14-08-presenter-workbench",
+      "id": "08-presenter-workbench",
+      "status": "planning",
+      "artifacts": {
+        "task.json": {
+          "sha256": "9beac59e3e261c9d26e4203f44ea75505da1e0192165be27e26f7af0057e345a",
+          "bytes": 832,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "prd.md": {
+          "sha256": "8af5e1abe8aee7a76c2ad5160f1509ce3c723720d030a7ac1c0aea0dce9fa15f",
+          "bytes": 5687,
+          "checked": 0,
+          "unchecked": 8
+        },
+        "design.md": {
+          "sha256": "68bd2f2b58ede7ea18b1078f0fe3d78ab623da0cc9094f42def11f9dce30ac3d",
+          "bytes": 8211,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "implement.md": {
+          "sha256": "c6e32640f27a994a367b382e19fd858d7907a94e92f38cfa86408c8f6ac9f84e",
+          "bytes": 2968,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "implement.jsonl": {
+          "sha256": "b9e1b24c823353937e0c4c7f4eeed00ab0b440876b6e61391d3006bec771b6cd",
+          "bytes": 2676,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "check.jsonl": {
+          "sha256": "3ec0886b4d543025722e2884836f96961373627ba4d05fdf666340bce83b9021",
+          "bytes": 2280,
+          "checked": 0,
+          "unchecked": 0
+        }
+      },
+      "validation": {
+        "command": [
+          "C:\\Program Files\\Python314\\python.exe",
+          ".trellis/scripts/task.py",
+          "validate",
+          ".trellis/tasks/10-14-08-presenter-workbench"
+        ],
+        "exit_code": 0,
+        "stdout": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-08-presenter-workbench\n\n  \u001b[1;33mimplement.jsonl:10: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33608 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (21 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:5: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33608 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (17 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n",
+        "stderr": ""
+      }
+    },
+    {
+      "path": ".trellis/tasks/10-14-09-settings-ui",
+      "id": "09-settings-ui",
+      "status": "planning",
+      "artifacts": {
+        "task.json": {
+          "sha256": "f68d5d797455a77aad6a01c1e10f9061de2295a6ffb8cb9b7c15c246c4054a14",
+          "bytes": 864,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "prd.md": {
+          "sha256": "6ae2f98321c4ca6b79048b2ed5d333e87542adf2fd30a485b490182ed1674bb2",
+          "bytes": 5486,
+          "checked": 0,
+          "unchecked": 9
+        },
+        "design.md": {
+          "sha256": "a92ed51ded33874ff23fbf108d3351762689f22d803fedf25dea368f2bf8a4c3",
+          "bytes": 4997,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "implement.md": {
+          "sha256": "e4508fcb7782f23dc84421d5b243080114a903a1f5db84b72899668d7f8ad5ac",
+          "bytes": 2424,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "implement.jsonl": {
+          "sha256": "bbde3947bd8b2cce40ea730bb4bbf0c8f3c03aeb01a5bb2bc954384a0878b703",
+          "bytes": 2929,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "check.jsonl": {
+          "sha256": "cad1109592c57d7e1806a5f35cdd62af31c115f788cc7c193ce7851bd280ceb3",
+          "bytes": 2428,
+          "checked": 0,
+          "unchecked": 0
+        }
+      },
+      "validation": {
+        "command": [
+          "C:\\Program Files\\Python314\\python.exe",
+          ".trellis/scripts/task.py",
+          "validate",
+          ".trellis/tasks/10-14-09-settings-ui"
+        ],
+        "exit_code": 0,
+        "stdout": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-09-settings-ui\n\n  \u001b[1;33mimplement.jsonl:11: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33608 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (23 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:5: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33608 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (18 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n",
+        "stderr": ""
+      }
+    },
+    {
+      "path": ".trellis/tasks/10-14-10-hot-reload",
+      "id": "10-hot-reload",
+      "status": "planning",
+      "artifacts": {
+        "task.json": {
+          "sha256": "5518173baf680101fd0f3636ccf4f37be0a2ef4477b5f443fa26d642866cd3d3",
+          "bytes": 789,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "prd.md": {
+          "sha256": "9ee8d45ffacdefd3e174b87e17c8e5b2290c9b85927e5d753a70e14fb47ba69f",
+          "bytes": 3822,
+          "checked": 0,
+          "unchecked": 6
+        },
+        "design.md": {
+          "sha256": "46a2b37c78071a31f850c77fa72f95727ff7bb9004191c9d618121da9f5495d0",
+          "bytes": 5170,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "implement.md": {
+          "sha256": "086e33d9ac5441178526633cfd80c30d987e12e62a52f3cb6c62baa995000126",
+          "bytes": 2375,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "implement.jsonl": {
+          "sha256": "9320fc4e9776940256c57b113f65168647a8737e833d0d0b590f7459576fc69e",
+          "bytes": 2866,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "check.jsonl": {
+          "sha256": "a3cc02c0b5c04651cfa2ed5aa3feea54c61440fd57ae728e021ee0d00e66f432",
+          "bytes": 2434,
+          "checked": 0,
+          "unchecked": 0
+        }
+      },
+      "validation": {
+        "command": [
+          "C:\\Program Files\\Python314\\python.exe",
+          ".trellis/scripts/task.py",
+          "validate",
+          ".trellis/tasks/10-14-10-hot-reload"
+        ],
+        "exit_code": 0,
+        "stdout": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-10-hot-reload\n\n  \u001b[1;33mimplement.jsonl:9: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33608 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (22 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:5: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33608 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (18 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n",
+        "stderr": ""
+      }
+    },
+    {
+      "path": ".trellis/tasks/10-14-11-media-playback",
+      "id": "11-media-playback",
+      "status": "planning",
+      "artifacts": {
+        "task.json": {
+          "sha256": "a3d7735de3a12df29a86478f6506de742a10eaafea1342b271058252d872eb83",
+          "bytes": 745,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "prd.md": {
+          "sha256": "5bcf3b423ac608d854d9ec613ae562426ac4c351b68309aa5093f2acc89ff126",
+          "bytes": 3712,
+          "checked": 0,
+          "unchecked": 6
+        },
+        "design.md": {
+          "sha256": "0db4f8e362ea66db88183210d5ea4065143c403823e0d4c28761bf3515b2e09b",
+          "bytes": 4043,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "implement.md": {
+          "sha256": "7f5d5ba5ff127c223dfc02a2b77f034b61a53b7be9e2581ab02b9d851faf93c5",
+          "bytes": 2516,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "implement.jsonl": {
+          "sha256": "04977da5a47c5d7be0e11f598f41d05ca304d70edeb620d2d8fb0af6df73be63",
+          "bytes": 2579,
+          "checked": 0,
+          "unchecked": 0
+        },
+        "check.jsonl": {
+          "sha256": "b8d7ed09607c4b3cd0f3cccdbb3c5b17265eed6ae51237192bab1d5112fbcb88",
+          "bytes": 2147,
+          "checked": 0,
+          "unchecked": 0
+        }
+      },
+      "validation": {
+        "command": [
+          "C:\\Program Files\\Python314\\python.exe",
+          ".trellis/scripts/task.py",
+          "validate",
+          ".trellis/tasks/10-14-11-media-playback"
+        ],
+        "exit_code": 0,
+        "stdout": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-11-media-playback\n\n  \u001b[1;33mimplement.jsonl:11: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33608 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mimplement.jsonl: ✓ (21 entries)\u001b[0m\n  \u001b[1;33mcheck.jsonl:7: Warning: .trellis/tasks/10-14-presenter-v0.3/design.md is 33608 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\n  \u001b[0;32mcheck.jsonl: ✓ (17 entries)\u001b[0m\n\n\u001b[0;32m✓ All validations passed\u001b[0m\n",
+        "stderr": ""
+      }
+    }
+  ],
+  "diff_check": {
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "warning: in the working copy of '.trellis/tasks/10-14-07-gpui-shell/design.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-07-gpui-shell/implement.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/design.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/execution-state.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/implement.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/next-session-prompt.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/traceability.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'Cargo.lock', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'Cargo.toml', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'docs/feature-parity.md', LF will be replaced by CRLF the next time Git touches it\n"
+  },
+  "finished_utc": "2026-10-15T11:06:55.068738+00:00",
+  "boundary": "Context validity and diff whitespace only; not product/native acceptance."
+}

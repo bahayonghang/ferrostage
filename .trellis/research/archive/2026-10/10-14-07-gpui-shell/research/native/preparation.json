@@ -1,0 +1,61 @@
+{
+  "status": "PREPARED / NOT_RUN; IDs are from prior03 snapshot and must be revalidated in actual GPUI context before native claims. No app or user settings changed.",
+  "source": ".trellis/tasks/10-14-03-monitor-topology/research/independent-native-static-probe.log",
+  "profiles": [
+    {
+      "profile": ".trellis/tasks/10-14-07-gpui-shell/research/native/a-light.toml",
+      "sha256": "4422af8a99c3e607ae39b1275c34db4581d3ebb5f6d8c4dc58c45a82498088d5",
+      "theme": "light",
+      "audience": "A",
+      "conflicting_keys": false
+    },
+    {
+      "profile": ".trellis/tasks/10-14-07-gpui-shell/research/native/a-dark.toml",
+      "sha256": "c8dacfddb5fc0172b71a376eb00b28b926177d2fcc609b2ef97c9b17ed98ef37",
+      "theme": "dark",
+      "audience": "A",
+      "conflicting_keys": false
+    },
+    {
+      "profile": ".trellis/tasks/10-14-07-gpui-shell/research/native/a-system.toml",
+      "sha256": "9cf02a5dc816669d27f71203639e167e2831ef29ba46f14fe05811af3fb43cf7",
+      "theme": "system",
+      "audience": "A",
+      "conflicting_keys": false
+    },
+    {
+      "profile": ".trellis/tasks/10-14-07-gpui-shell/research/native/c-light.toml",
+      "sha256": "1d6aba17cc25237dfb92ba863e086d037b06335ae79d579c2efeae946bf55128",
+      "theme": "light",
+      "audience": "C",
+      "conflicting_keys": false
+    },
+    {
+      "profile": ".trellis/tasks/10-14-07-gpui-shell/research/native/a-conflicting-keys.toml",
+      "sha256": "e2b8d2d0dacc8aacf42d3705865e6df951b6efc7f820a6f7d5db300f1c3eadd6",
+      "theme": "light",
+      "audience": "A",
+      "conflicting_keys": true
+    },
+    {
+      "profile": ".trellis/tasks/10-14-07-gpui-shell/research/native/no-audience.toml",
+      "sha256": "45d42ece38f0e83f3132b5fc817b7b0a413a27f3644eee0ff74373bda6ba7687",
+      "theme": "light",
+      "audience": null,
+      "conflicting_keys": false
+    },
+    {
+      "profile": ".trellis/tasks/10-14-07-gpui-shell/research/native/a-en-US.toml",
+      "sha256": "b93248707140731f31b36d3a0acc58b2a7a60381f5a18a8536440e29fffc538e",
+      "theme": "light",
+      "audience": "A",
+      "language": "en-US",
+      "conflicting_keys": false
+    }
+  ],
+  "physical_screen_mapping": {
+    "A": "\\\\.\\DISPLAY1",
+    "B": "\\\\.\\DISPLAY2",
+    "C": "\\\\.\\DISPLAY5"
+  }
+}

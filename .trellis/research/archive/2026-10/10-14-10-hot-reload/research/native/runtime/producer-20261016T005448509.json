@@ -1,0 +1,11 @@
+{
+  "mode": "Initialize",
+  "startedUtc": "2026-10-16T00:54:48.4964262Z",
+  "completedUtc": "2026-10-16T00:54:48.5013364Z",
+  "target": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-10-hot-reload\\research\\native\\runtime\\watched.pdf",
+  "source": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-10-hot-reload\\research\\native\\inputs\\reload-blue.pdf",
+  "bytes": 162941,
+  "chunk_delay_ms": null,
+  "targetSha256": "666F03A9D24E1022056D35BED22F46CE596073494139176C33F9EED92914AC5C",
+  "scope": "External fixture producer only; no application acceptance inferred."
+}

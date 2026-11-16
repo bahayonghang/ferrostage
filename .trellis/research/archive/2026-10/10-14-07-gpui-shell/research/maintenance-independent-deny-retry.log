@@ -1,0 +1,3008 @@
+warning[source-not-allowed]: detected 'git' source not explicitly allowed
+   ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:70:19
+   │
+70 │ collections 0.1.0 git+https://github.com/zed-industries/zed?tag=v1.23.3
+   │                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ source
+   │
+   ├ collections v0.1.0
+     ├── gpui v0.2.2
+     │   ├── ferrostage-gpui-maintenance-candidate v0.0.0
+     │   ├── gpui_apple v0.1.0
+     │   │   └── gpui_macos v0.1.0
+     │   │       └── gpui_platform v0.1.0
+     │   │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+     │   ├── gpui_linux v0.1.0
+     │   │   └── gpui_platform v0.1.0 (*)
+     │   ├── gpui_macos v0.1.0 (*)
+     │   ├── gpui_platform v0.1.0 (*)
+     │   ├── gpui_web v0.1.0
+     │   │   └── gpui_platform v0.1.0 (*)
+     │   ├── gpui_wgpu v0.1.0
+     │   │   └── gpui_web v0.1.0 (*)
+     │   └── gpui_windows v0.1.0
+     │       └── gpui_platform v0.1.0 (*)
+     ├── gpui_linux v0.1.0 (*)
+     ├── gpui_macos v0.1.0 (*)
+     ├── gpui_wgpu v0.1.0 (*)
+     ├── gpui_windows v0.1.0 (*)
+     ├── perf v0.1.0
+     │   └── util_macros v0.1.0
+     │       └── gpui v0.2.2 (*)
+     └── zlog v0.1.0
+         └── ztracing v0.1.0
+             └── sum_tree v0.1.0
+                 └── gpui v0.2.2 (*)
+
+warning[source-not-allowed]: detected 'git' source not explicitly allowed
+   ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:99:25
+   │
+99 │ derive_refineable 0.1.0 git+https://github.com/zed-industries/zed?tag=v1.23.3
+   │                         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ source
+   │
+   ├ derive_refineable v0.1.0
+     └── refineable v0.1.0
+         └── gpui v0.2.2
+             ├── ferrostage-gpui-maintenance-candidate v0.0.0
+             ├── gpui_apple v0.1.0
+             │   └── gpui_macos v0.1.0
+             │       └── gpui_platform v0.1.0
+             │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+             ├── gpui_linux v0.1.0
+             │   └── gpui_platform v0.1.0 (*)
+             ├── gpui_macos v0.1.0 (*)
+             ├── gpui_platform v0.1.0 (*)
+             ├── gpui_web v0.1.0
+             │   └── gpui_platform v0.1.0 (*)
+             ├── gpui_wgpu v0.1.0
+             │   └── gpui_web v0.1.0 (*)
+             └── gpui_windows v0.1.0
+                 └── gpui_platform v0.1.0 (*)
+
+warning[source-not-allowed]: detected 'git' source not explicitly allowed
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:165:18
+    │
+165 │ gpui_apple 0.1.0 git+https://github.com/zed-industries/zed?tag=v1.23.3
+    │                  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ source
+    │
+    ├ gpui_apple v0.1.0
+      └── gpui_macos v0.1.0
+          └── gpui_platform v0.1.0
+              └── ferrostage-gpui-maintenance-candidate v0.0.0
+
+warning[source-not-allowed]: detected 'git' source not explicitly allowed
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:166:18
+    │
+166 │ gpui_linux 0.1.0 git+https://github.com/zed-industries/zed?tag=v1.23.3
+    │                  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ source
+    │
+    ├ gpui_linux v0.1.0
+      └── gpui_platform v0.1.0
+          └── ferrostage-gpui-maintenance-candidate v0.0.0
+
+warning[source-not-allowed]: detected 'git' source not explicitly allowed
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:167:18
+    │
+167 │ gpui_macos 0.1.0 git+https://github.com/zed-industries/zed?tag=v1.23.3
+    │                  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ source
+    │
+    ├ gpui_macos v0.1.0
+      └── gpui_platform v0.1.0
+          └── ferrostage-gpui-maintenance-candidate v0.0.0
+
+warning[source-not-allowed]: detected 'git' source not explicitly allowed
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:168:19
+    │
+168 │ gpui_macros 0.1.0 git+https://github.com/zed-industries/zed?tag=v1.23.3
+    │                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ source
+    │
+    ├ gpui_macros v0.1.0
+      └── gpui v0.2.2
+          ├── ferrostage-gpui-maintenance-candidate v0.0.0
+          ├── gpui_apple v0.1.0
+          │   └── gpui_macos v0.1.0
+          │       └── gpui_platform v0.1.0
+          │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+          ├── gpui_linux v0.1.0
+          │   └── gpui_platform v0.1.0 (*)
+          ├── gpui_macos v0.1.0 (*)
+          ├── gpui_platform v0.1.0 (*)
+          ├── gpui_web v0.1.0
+          │   └── gpui_platform v0.1.0 (*)
+          ├── gpui_wgpu v0.1.0
+          │   └── gpui_web v0.1.0 (*)
+          └── gpui_windows v0.1.0
+              └── gpui_platform v0.1.0 (*)
+
+warning[source-not-allowed]: detected 'git' source not explicitly allowed
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:169:21
+    │
+169 │ gpui_platform 0.1.0 git+https://github.com/zed-industries/zed?tag=v1.23.3
+    │                     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ source
+    │
+    ├ gpui_platform v0.1.0
+      └── ferrostage-gpui-maintenance-candidate v0.0.0
+
+warning[source-not-allowed]: detected 'git' source not explicitly allowed
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:170:26
+    │
+170 │ gpui_shared_string 0.1.0 git+https://github.com/zed-industries/zed?tag=v1.23.3
+    │                          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ source
+    │
+    ├ gpui_shared_string v0.1.0
+      └── gpui v0.2.2
+          ├── ferrostage-gpui-maintenance-candidate v0.0.0
+          ├── gpui_apple v0.1.0
+          │   └── gpui_macos v0.1.0
+          │       └── gpui_platform v0.1.0
+          │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+          ├── gpui_linux v0.1.0
+          │   └── gpui_platform v0.1.0 (*)
+          ├── gpui_macos v0.1.0 (*)
+          ├── gpui_platform v0.1.0 (*)
+          ├── gpui_web v0.1.0
+          │   └── gpui_platform v0.1.0 (*)
+          ├── gpui_wgpu v0.1.0
+          │   └── gpui_web v0.1.0 (*)
+          └── gpui_windows v0.1.0
+              └── gpui_platform v0.1.0 (*)
+
+warning[source-not-allowed]: detected 'git' source not explicitly allowed
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:171:17
+    │
+171 │ gpui_util 0.1.0 git+https://github.com/zed-industries/zed?tag=v1.23.3
+    │                 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ source
+    │
+    ├ gpui_util v0.1.0
+      ├── collections v0.1.0
+      │   ├── gpui v0.2.2
+      │   │   ├── ferrostage-gpui-maintenance-candidate v0.0.0
+      │   │   ├── gpui_apple v0.1.0
+      │   │   │   └── gpui_macos v0.1.0
+      │   │   │       └── gpui_platform v0.1.0
+      │   │   │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      │   │   ├── gpui_linux v0.1.0
+      │   │   │   └── gpui_platform v0.1.0 (*)
+      │   │   ├── gpui_macos v0.1.0 (*)
+      │   │   ├── gpui_platform v0.1.0 (*)
+      │   │   ├── gpui_web v0.1.0
+      │   │   │   └── gpui_platform v0.1.0 (*)
+      │   │   ├── gpui_wgpu v0.1.0
+      │   │   │   └── gpui_web v0.1.0 (*)
+      │   │   └── gpui_windows v0.1.0
+      │   │       └── gpui_platform v0.1.0 (*)
+      │   ├── gpui_linux v0.1.0 (*)
+      │   ├── gpui_macos v0.1.0 (*)
+      │   ├── gpui_wgpu v0.1.0 (*)
+      │   ├── gpui_windows v0.1.0 (*)
+      │   ├── perf v0.1.0
+      │   │   └── util_macros v0.1.0
+      │   │       └── gpui v0.2.2 (*)
+      │   └── zlog v0.1.0
+      │       └── ztracing v0.1.0
+      │           └── sum_tree v0.1.0
+      │               └── gpui v0.2.2 (*)
+      ├── gpui v0.2.2 (*)
+      ├── gpui_linux v0.1.0 (*)
+      ├── gpui_macos v0.1.0 (*)
+      ├── gpui_wgpu v0.1.0 (*)
+      └── gpui_windows v0.1.0 (*)
+
+warning[source-not-allowed]: detected 'git' source not explicitly allowed
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:172:16
+    │
+172 │ gpui_web 0.1.0 git+https://github.com/zed-industries/zed?tag=v1.23.3
+    │                ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ source
+    │
+    ├ gpui_web v0.1.0
+      └── gpui_platform v0.1.0
+          └── ferrostage-gpui-maintenance-candidate v0.0.0
+
+warning[source-not-allowed]: detected 'git' source not explicitly allowed
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:173:17
+    │
+173 │ gpui_wgpu 0.1.0 git+https://github.com/zed-industries/zed?tag=v1.23.3
+    │                 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ source
+    │
+    ├ gpui_wgpu v0.1.0
+      └── gpui_web v0.1.0
+          └── gpui_platform v0.1.0
+              └── ferrostage-gpui-maintenance-candidate v0.0.0
+
+warning[source-not-allowed]: detected 'git' source not explicitly allowed
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:174:20
+    │
+174 │ gpui_windows 0.1.0 git+https://github.com/zed-industries/zed?tag=v1.23.3
+    │                    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ source
+    │
+    ├ gpui_windows v0.1.0
+      └── gpui_platform v0.1.0
+          └── ferrostage-gpui-maintenance-candidate v0.0.0
+
+warning[source-not-allowed]: detected 'git' source not explicitly allowed
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:192:19
+    │
+192 │ http_client 0.1.0 git+https://github.com/zed-industries/zed?tag=v1.23.3
+    │                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ source
+    │
+    ├ http_client v0.1.0
+      ├── gpui v0.2.2
+      │   ├── ferrostage-gpui-maintenance-candidate v0.0.0
+      │   ├── gpui_apple v0.1.0
+      │   │   └── gpui_macos v0.1.0
+      │   │       └── gpui_platform v0.1.0
+      │   │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      │   ├── gpui_linux v0.1.0
+      │   │   └── gpui_platform v0.1.0 (*)
+      │   ├── gpui_macos v0.1.0 (*)
+      │   ├── gpui_platform v0.1.0 (*)
+      │   ├── gpui_web v0.1.0
+      │   │   └── gpui_platform v0.1.0 (*)
+      │   ├── gpui_wgpu v0.1.0
+      │   │   └── gpui_web v0.1.0 (*)
+      │   └── gpui_windows v0.1.0
+      │       └── gpui_platform v0.1.0 (*)
+      ├── gpui_linux v0.1.0 (*)
+      └── gpui_web v0.1.0 (*)
+
+error[rejected]: failed to satisfy license requirements
+   ┌─ C:\Users\lyh\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\arrayref-0.3.9\Cargo.toml:19:12
+   │
+19 │ license = "BSD-2-Clause"
+   │            ━━━━━━━━━━━━
+   │            │
+   │            rejected: license is not explicitly allowed
+   │
+   ├ BSD-2-Clause - BSD 2-Clause "Simplified" License:
+   ├   - OSI approved
+   ├   - FSF Free/Libre
+   ├ arrayref v0.3.9
+     ├── tiny-skia v0.12.0
+     │   └── resvg v0.48.1
+     │       └── gpui v0.2.2
+     │           ├── ferrostage-gpui-maintenance-candidate v0.0.0
+     │           ├── gpui_apple v0.1.0
+     │           │   └── gpui_macos v0.1.0
+     │           │       └── gpui_platform v0.1.0
+     │           │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+     │           ├── gpui_linux v0.1.0
+     │           │   └── gpui_platform v0.1.0 (*)
+     │           ├── gpui_macos v0.1.0 (*)
+     │           ├── gpui_platform v0.1.0 (*)
+     │           ├── gpui_web v0.1.0
+     │           │   └── gpui_platform v0.1.0 (*)
+     │           ├── gpui_wgpu v0.1.0
+     │           │   └── gpui_web v0.1.0 (*)
+     │           └── gpui_windows v0.1.0
+     │               └── gpui_platform v0.1.0 (*)
+     └── tiny-skia-path v0.12.0
+         ├── tiny-skia v0.12.0 (*)
+         └── usvg v0.48.1
+             ├── gpui v0.2.2 (*)
+             └── resvg v0.48.1 (*)
+
+warning[source-not-allowed]: detected 'git' source not explicitly allowed
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:300:12
+    │
+300 │ perf 0.1.0 git+https://github.com/zed-industries/zed?tag=v1.23.3
+    │            ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ source
+    │
+    ├ perf v0.1.0
+      └── util_macros v0.1.0
+          └── gpui v0.2.2
+              ├── ferrostage-gpui-maintenance-candidate v0.0.0
+              ├── gpui_apple v0.1.0
+              │   └── gpui_macos v0.1.0
+              │       └── gpui_platform v0.1.0
+              │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+              ├── gpui_linux v0.1.0
+              │   └── gpui_platform v0.1.0 (*)
+              ├── gpui_macos v0.1.0 (*)
+              ├── gpui_platform v0.1.0 (*)
+              ├── gpui_web v0.1.0
+              │   └── gpui_platform v0.1.0 (*)
+              ├── gpui_wgpu v0.1.0
+              │   └── gpui_web v0.1.0 (*)
+              └── gpui_windows v0.1.0
+                  └── gpui_platform v0.1.0 (*)
+
+warning[source-not-allowed]: detected 'git' source not explicitly allowed
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:352:18
+    │
+352 │ refineable 0.1.0 git+https://github.com/zed-industries/zed?tag=v1.23.3
+    │                  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ source
+    │
+    ├ refineable v0.1.0
+      └── gpui v0.2.2
+          ├── ferrostage-gpui-maintenance-candidate v0.0.0
+          ├── gpui_apple v0.1.0
+          │   └── gpui_macos v0.1.0
+          │       └── gpui_platform v0.1.0
+          │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+          ├── gpui_linux v0.1.0
+          │   └── gpui_platform v0.1.0 (*)
+          ├── gpui_macos v0.1.0 (*)
+          ├── gpui_platform v0.1.0 (*)
+          ├── gpui_web v0.1.0
+          │   └── gpui_platform v0.1.0 (*)
+          ├── gpui_wgpu v0.1.0
+          │   └── gpui_web v0.1.0 (*)
+          └── gpui_windows v0.1.0
+              └── gpui_platform v0.1.0 (*)
+
+warning[source-not-allowed]: detected 'git' source not explicitly allowed
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:368:17
+    │
+368 │ scheduler 0.1.0 git+https://github.com/zed-industries/zed?tag=v1.23.3
+    │                 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ source
+    │
+    ├ scheduler v0.1.0
+      ├── gpui v0.2.2
+      │   ├── ferrostage-gpui-maintenance-candidate v0.0.0
+      │   ├── gpui_apple v0.1.0
+      │   │   └── gpui_macos v0.1.0
+      │   │       └── gpui_platform v0.1.0
+      │   │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      │   ├── gpui_linux v0.1.0
+      │   │   └── gpui_platform v0.1.0 (*)
+      │   ├── gpui_macos v0.1.0 (*)
+      │   ├── gpui_platform v0.1.0 (*)
+      │   ├── gpui_web v0.1.0
+      │   │   └── gpui_platform v0.1.0 (*)
+      │   ├── gpui_wgpu v0.1.0
+      │   │   └── gpui_web v0.1.0 (*)
+      │   └── gpui_windows v0.1.0
+      │       └── gpui_platform v0.1.0 (*)
+      └── gpui_web v0.1.0 (*)
+
+warning[source-not-allowed]: detected 'git' source not explicitly allowed
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:411:16
+    │
+411 │ sum_tree 0.1.0 git+https://github.com/zed-industries/zed?tag=v1.23.3
+    │                ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ source
+    │
+    ├ sum_tree v0.1.0
+      └── gpui v0.2.2
+          ├── ferrostage-gpui-maintenance-candidate v0.0.0
+          ├── gpui_apple v0.1.0
+          │   └── gpui_macos v0.1.0
+          │       └── gpui_platform v0.1.0
+          │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+          ├── gpui_linux v0.1.0
+          │   └── gpui_platform v0.1.0 (*)
+          ├── gpui_macos v0.1.0 (*)
+          ├── gpui_platform v0.1.0 (*)
+          ├── gpui_web v0.1.0
+          │   └── gpui_platform v0.1.0 (*)
+          ├── gpui_wgpu v0.1.0
+          │   └── gpui_web v0.1.0 (*)
+          └── gpui_windows v0.1.0
+              └── gpui_platform v0.1.0 (*)
+
+warning[source-not-allowed]: detected 'git' source not explicitly allowed
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:464:19
+    │
+464 │ util_macros 0.1.0 git+https://github.com/zed-industries/zed?tag=v1.23.3
+    │                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ source
+    │
+    ├ util_macros v0.1.0
+      └── gpui v0.2.2
+          ├── ferrostage-gpui-maintenance-candidate v0.0.0
+          ├── gpui_apple v0.1.0
+          │   └── gpui_macos v0.1.0
+          │       └── gpui_platform v0.1.0
+          │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+          ├── gpui_linux v0.1.0
+          │   └── gpui_platform v0.1.0 (*)
+          ├── gpui_macos v0.1.0 (*)
+          ├── gpui_platform v0.1.0 (*)
+          ├── gpui_web v0.1.0
+          │   └── gpui_platform v0.1.0 (*)
+          ├── gpui_wgpu v0.1.0
+          │   └── gpui_web v0.1.0 (*)
+          └── gpui_windows v0.1.0
+              └── gpui_platform v0.1.0 (*)
+
+warning[source-not-allowed]: detected 'git' source not explicitly allowed
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:478:19
+    │
+478 │ wasm_thread 0.3.3 git+https://github.com/zed-industries/wasm_thread?rev=0cf96c7708dfb97ccf3da50347e25edcf75d6937
+    │                   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ source
+    │
+    ├ wasm_thread v0.3.3
+      ├── gpui_web v0.1.0
+      │   └── gpui_platform v0.1.0
+      │       └── ferrostage-gpui-maintenance-candidate v0.0.0
+      └── scheduler v0.1.0
+          ├── gpui v0.2.2
+          │   ├── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+          │   ├── gpui_apple v0.1.0
+          │   │   └── gpui_macos v0.1.0
+          │   │       └── gpui_platform v0.1.0 (*)
+          │   ├── gpui_linux v0.1.0
+          │   │   └── gpui_platform v0.1.0 (*)
+          │   ├── gpui_macos v0.1.0 (*)
+          │   ├── gpui_platform v0.1.0 (*)
+          │   ├── gpui_web v0.1.0 (*)
+          │   ├── gpui_wgpu v0.1.0
+          │   │   └── gpui_web v0.1.0 (*)
+          │   └── gpui_windows v0.1.0
+          │       └── gpui_platform v0.1.0 (*)
+          └── gpui_web v0.1.0 (*)
+
+warning[source-not-allowed]: detected 'git' source not explicitly allowed
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:534:12
+    │
+534 │ zlog 0.1.0 git+https://github.com/zed-industries/zed?tag=v1.23.3
+    │            ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ source
+    │
+    ├ zlog v0.1.0
+      └── ztracing v0.1.0
+          └── sum_tree v0.1.0
+              └── gpui v0.2.2
+                  ├── ferrostage-gpui-maintenance-candidate v0.0.0
+                  ├── gpui_apple v0.1.0
+                  │   └── gpui_macos v0.1.0
+                  │       └── gpui_platform v0.1.0
+                  │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+                  ├── gpui_linux v0.1.0
+                  │   └── gpui_platform v0.1.0 (*)
+                  ├── gpui_macos v0.1.0 (*)
+                  ├── gpui_platform v0.1.0 (*)
+                  ├── gpui_web v0.1.0
+                  │   └── gpui_platform v0.1.0 (*)
+                  ├── gpui_wgpu v0.1.0
+                  │   └── gpui_web v0.1.0 (*)
+                  └── gpui_windows v0.1.0
+                      └── gpui_platform v0.1.0 (*)
+
+warning[source-not-allowed]: detected 'git' source not explicitly allowed
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:536:16
+    │
+536 │ ztracing 0.1.0 git+https://github.com/zed-industries/zed?tag=v1.23.3
+    │                ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ source
+    │
+    ├ ztracing v0.1.0
+      └── sum_tree v0.1.0
+          └── gpui v0.2.2
+              ├── ferrostage-gpui-maintenance-candidate v0.0.0
+              ├── gpui_apple v0.1.0
+              │   └── gpui_macos v0.1.0
+              │       └── gpui_platform v0.1.0
+              │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+              ├── gpui_linux v0.1.0
+              │   └── gpui_platform v0.1.0 (*)
+              ├── gpui_macos v0.1.0 (*)
+              ├── gpui_platform v0.1.0 (*)
+              ├── gpui_web v0.1.0
+              │   └── gpui_platform v0.1.0 (*)
+              ├── gpui_wgpu v0.1.0
+              │   └── gpui_web v0.1.0 (*)
+              └── gpui_windows v0.1.0
+                  └── gpui_platform v0.1.0 (*)
+
+warning[source-not-allowed]: detected 'git' source not explicitly allowed
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:537:22
+    │
+537 │ ztracing_macro 0.1.0 git+https://github.com/zed-industries/zed?tag=v1.23.3
+    │                      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ source
+    │
+    ├ ztracing_macro v0.1.0
+      └── ztracing v0.1.0
+          └── sum_tree v0.1.0
+              └── gpui v0.2.2
+                  ├── ferrostage-gpui-maintenance-candidate v0.0.0
+                  ├── gpui_apple v0.1.0
+                  │   └── gpui_macos v0.1.0
+                  │       └── gpui_platform v0.1.0
+                  │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+                  ├── gpui_linux v0.1.0
+                  │   └── gpui_platform v0.1.0 (*)
+                  ├── gpui_macos v0.1.0 (*)
+                  ├── gpui_platform v0.1.0 (*)
+                  ├── gpui_web v0.1.0
+                  │   └── gpui_platform v0.1.0 (*)
+                  ├── gpui_wgpu v0.1.0
+                  │   └── gpui_web v0.1.0 (*)
+                  └── gpui_windows v0.1.0
+                      └── gpui_platform v0.1.0 (*)
+
+error[rejected]: failed to satisfy license requirements
+   ┌─ C:\Users\lyh\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cbindgen-0.28.0\Cargo.toml:41:12
+   │
+41 │ license = "MPL-2.0"
+   │            ━━━━━━━
+   │            │
+   │            rejected: license is not explicitly allowed
+   │
+   ├ MPL-2.0 - Mozilla Public License 2.0:
+   ├   - OSI approved
+   ├   - FSF Free/Libre
+   ├   - Copyleft
+   ├ cbindgen v0.28.0
+     └── (build) gpui_apple v0.1.0
+         └── gpui_macos v0.1.0
+             └── gpui_platform v0.1.0
+                 └── ferrostage-gpui-maintenance-candidate v0.0.0
+
+error[rejected]: failed to satisfy license requirements
+   ┌─ C:\Users\lyh\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\libbz2-rs-sys-0.2.5\Cargo.toml:27:12
+   │
+27 │ license = "bzip2-1.0.6"
+   │            ━━━━━━━━━━━
+   │            │
+   │            rejected: license is not explicitly allowed
+   │
+   ├ bzip2-1.0.6 - bzip2 and libbzip2 License v1.0.6:
+   ├   - No additional metadata available for license
+   ├ libbz2-rs-sys v0.2.5
+     └── bzip2 v0.6.1
+         └── compression-codecs v0.4.45
+             └── async-compression v0.4.50
+                 └── http_client v0.1.0
+                     ├── gpui v0.2.2
+                     │   ├── ferrostage-gpui-maintenance-candidate v0.0.0
+                     │   ├── gpui_apple v0.1.0
+                     │   │   └── gpui_macos v0.1.0
+                     │   │       └── gpui_platform v0.1.0
+                     │   │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+                     │   ├── gpui_linux v0.1.0
+                     │   │   └── gpui_platform v0.1.0 (*)
+                     │   ├── gpui_macos v0.1.0 (*)
+                     │   ├── gpui_platform v0.1.0 (*)
+                     │   ├── gpui_web v0.1.0
+                     │   │   └── gpui_platform v0.1.0 (*)
+                     │   ├── gpui_wgpu v0.1.0
+                     │   │   └── gpui_web v0.1.0 (*)
+                     │   └── gpui_windows v0.1.0
+                     │       └── gpui_platform v0.1.0 (*)
+                     ├── gpui_linux v0.1.0 (*)
+                     └── gpui_web v0.1.0 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'foldhash'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:131:1
+    │  
+131 │ ╭ foldhash 0.1.5 registry+https://github.com/rust-lang/crates.io-index
+132 │ │ foldhash 0.2.0 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰────────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ foldhash v0.1.5
+      └── hashbrown v0.15.5
+          └── gpu-descriptor v0.3.2
+              └── wgpu-hal v29.0.4
+                  ├── wgpu v29.0.4
+                  │   └── gpui_wgpu v0.1.0
+                  │       └── gpui_web v0.1.0
+                  │           └── gpui_platform v0.1.0
+                  │               └── ferrostage-gpui-maintenance-candidate v0.0.0
+                  ├── wgpu-core v29.0.4
+                  │   └── wgpu v29.0.4 (*)
+                  ├── wgpu-core-deps-apple v29.0.4
+                  │   └── wgpu-core v29.0.4 (*)
+                  ├── wgpu-core-deps-emscripten v29.0.4
+                  │   └── wgpu-core v29.0.4 (*)
+                  ├── wgpu-core-deps-wasm v29.0.4
+                  │   └── wgpu-core v29.0.4 (*)
+                  └── wgpu-core-deps-windows-linux-android v29.0.4
+                      └── wgpu-core v29.0.4 (*)
+    ├ foldhash v0.2.0
+      ├── hashbrown v0.16.1
+      │   ├── accesskit_consumer v0.38.0
+      │   │   ├── accesskit_atspi_common v0.19.1
+      │   │   │   └── accesskit_unix v0.22.1
+      │   │   │       └── gpui_linux v0.1.0
+      │   │   │           └── gpui_platform v0.1.0
+      │   │   │               └── ferrostage-gpui-maintenance-candidate v0.0.0
+      │   │   ├── accesskit_macos v0.26.3
+      │   │   │   └── gpui_macos v0.1.0
+      │   │   │       └── gpui_platform v0.1.0 (*)
+      │   │   └── accesskit_windows v0.34.0
+      │   │       └── gpui_windows v0.1.0
+      │   │           └── gpui_platform v0.1.0 (*)
+      │   ├── accesskit_macos v0.26.3 (*)
+      │   ├── accesskit_windows v0.34.0 (*)
+      │   ├── gpu-allocator v0.28.0
+      │   │   └── wgpu-hal v29.0.4
+      │   │       ├── wgpu v29.0.4
+      │   │       │   └── gpui_wgpu v0.1.0
+      │   │       │       └── gpui_web v0.1.0
+      │   │       │           └── gpui_platform v0.1.0 (*)
+      │   │       ├── wgpu-core v29.0.4
+      │   │       │   └── wgpu v29.0.4 (*)
+      │   │       ├── wgpu-core-deps-apple v29.0.4
+      │   │       │   └── wgpu-core v29.0.4 (*)
+      │   │       ├── wgpu-core-deps-emscripten v29.0.4
+      │   │       │   └── wgpu-core v29.0.4 (*)
+      │   │       ├── wgpu-core-deps-wasm v29.0.4
+      │   │       │   └── wgpu-core v29.0.4 (*)
+      │   │       └── wgpu-core-deps-windows-linux-android v29.0.4
+      │   │           └── wgpu-core v29.0.4 (*)
+      │   ├── naga v29.0.4
+      │   │   ├── wgpu-core v29.0.4 (*)
+      │   │   ├── wgpu-hal v29.0.4 (*)
+      │   │   └── wgpu-naga-bridge v29.0.4
+      │   │       ├── wgpu-core v29.0.4 (*)
+      │   │       └── wgpu-hal v29.0.4 (*)
+      │   ├── wgpu v29.0.4 (*)
+      │   ├── wgpu-core v29.0.4 (*)
+      │   └── wgpu-hal v29.0.4 (*)
+      └── serde_json v1.0.154
+          ├── cbindgen v0.28.0
+          │   └── (build) gpui_apple v0.1.0
+          │       └── gpui_macos v0.1.0 (*)
+          ├── gpui v0.2.2
+          │   ├── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+          │   ├── gpui_apple v0.1.0 (*)
+          │   ├── gpui_linux v0.1.0 (*)
+          │   ├── gpui_macos v0.1.0 (*)
+          │   ├── gpui_platform v0.1.0 (*)
+          │   ├── gpui_web v0.1.0 (*)
+          │   ├── gpui_wgpu v0.1.0 (*)
+          │   └── gpui_windows v0.1.0 (*)
+          ├── http_client v0.1.0
+          │   ├── gpui v0.2.2 (*)
+          │   ├── gpui_linux v0.1.0 (*)
+          │   └── gpui_web v0.1.0 (*)
+          ├── perf v0.1.0
+          │   └── util_macros v0.1.0
+          │       └── gpui v0.2.2 (*)
+          └── schemars v1.2.3
+              ├── gpui v0.2.2 (*)
+              └── gpui_shared_string v0.1.0
+                  └── gpui v0.2.2 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'font-types'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:133:1
+    │  
+133 │ ╭ font-types 0.11.3 registry+https://github.com/rust-lang/crates.io-index
+134 │ │ font-types 0.12.6 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰───────────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ font-types v0.11.3
+      └── read-fonts v0.37.0
+          ├── harfrust v0.5.2
+          │   └── cosmic-text v0.19.0
+          │       ├── (dev) ferrostage-gpui-maintenance-candidate v0.0.0
+          │       └── gpui_wgpu v0.1.0
+          │           └── gpui_web v0.1.0
+          │               └── gpui_platform v0.1.0
+          │                   └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+          └── skrifa v0.40.0
+              └── cosmic-text v0.19.0 (*)
+    ├ font-types v0.12.6
+      └── read-fonts v0.41.0
+          ├── harfrust v0.12.0
+          │   └── usvg v0.48.1
+          │       ├── gpui v0.2.2
+          │       │   ├── ferrostage-gpui-maintenance-candidate v0.0.0
+          │       │   ├── gpui_apple v0.1.0
+          │       │   │   └── gpui_macos v0.1.0
+          │       │   │       └── gpui_platform v0.1.0
+          │       │   │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+          │       │   ├── gpui_linux v0.1.0
+          │       │   │   └── gpui_platform v0.1.0 (*)
+          │       │   ├── gpui_macos v0.1.0 (*)
+          │       │   ├── gpui_platform v0.1.0 (*)
+          │       │   ├── gpui_web v0.1.0
+          │       │   │   └── gpui_platform v0.1.0 (*)
+          │       │   ├── gpui_wgpu v0.1.0
+          │       │   │   └── gpui_web v0.1.0 (*)
+          │       │   └── gpui_windows v0.1.0
+          │       │       └── gpui_platform v0.1.0 (*)
+          │       └── resvg v0.48.1
+          │           └── gpui v0.2.2 (*)
+          └── skrifa v0.44.0
+              ├── gpui v0.2.2 (*)
+              ├── swash v0.2.10
+              │   ├── cosmic-text v0.19.0
+              │   │   ├── (dev) ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+              │   │   └── gpui_wgpu v0.1.0 (*)
+              │   └── gpui_wgpu v0.1.0 (*)
+              └── usvg v0.48.1 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'getrandom'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:153:1
+    │  
+153 │ ╭ getrandom 0.3.4 registry+https://github.com/rust-lang/crates.io-index
+154 │ │ getrandom 0.4.3 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰─────────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ getrandom v0.3.4
+      ├── gpui v0.2.2
+      │   ├── ferrostage-gpui-maintenance-candidate v0.0.0
+      │   ├── gpui_apple v0.1.0
+      │   │   └── gpui_macos v0.1.0
+      │   │       └── gpui_platform v0.1.0
+      │   │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      │   ├── gpui_linux v0.1.0
+      │   │   └── gpui_platform v0.1.0 (*)
+      │   ├── gpui_macos v0.1.0 (*)
+      │   ├── gpui_platform v0.1.0 (*)
+      │   ├── gpui_web v0.1.0
+      │   │   └── gpui_platform v0.1.0 (*)
+      │   ├── gpui_wgpu v0.1.0
+      │   │   └── gpui_web v0.1.0 (*)
+      │   └── gpui_windows v0.1.0
+      │       └── gpui_platform v0.1.0 (*)
+      └── rand_core v0.9.5
+          ├── rand v0.9.5
+          │   ├── gpui v0.2.2 (*)
+          │   ├── gpui_windows v0.1.0 (*)
+          │   ├── num-bigint-dig v0.9.1
+          │   │   └── oo7 v0.6.0
+          │   │       └── gpui_linux v0.1.0 (*)
+          │   └── scheduler v0.1.0
+          │       ├── gpui v0.2.2 (*)
+          │       └── gpui_web v0.1.0 (*)
+          └── rand_chacha v0.9.0
+              └── rand v0.9.5 (*)
+    ├ getrandom v0.4.3
+      ├── ashpd v0.13.13
+      │   └── oo7 v0.6.0
+      │       └── gpui_linux v0.1.0
+      │           └── gpui_platform v0.1.0
+      │               └── ferrostage-gpui-maintenance-candidate v0.0.0
+      ├── fastrand v2.5.0
+      │   ├── async-executor v1.14.0
+      │   │   ├── accesskit_unix v0.22.1
+      │   │   │   └── gpui_linux v0.1.0 (*)
+      │   │   ├── smol v2.0.2
+      │   │   │   └── gpui_linux v0.1.0 (*)
+      │   │   └── zbus v5.19.0
+      │   │       ├── accesskit_unix v0.22.1 (*)
+      │   │       ├── ashpd v0.13.13 (*)
+      │   │       ├── atspi-common v0.13.0
+      │   │       │   ├── accesskit_atspi_common v0.19.1
+      │   │       │   │   └── accesskit_unix v0.22.1 (*)
+      │   │       │   ├── atspi v0.29.0
+      │   │       │   │   └── accesskit_unix v0.22.1 (*)
+      │   │       │   └── atspi-proxies v0.13.0
+      │   │       │       └── atspi v0.29.0 (*)
+      │   │       ├── atspi-proxies v0.13.0 (*)
+      │   │       ├── notify-rust v4.18.2
+      │   │       │   └── gpui_linux v0.1.0 (*)
+      │   │       └── oo7 v0.6.0 (*)
+      │   ├── flume v0.12.0
+      │   │   └── scheduler v0.1.0
+      │   │       ├── gpui v0.2.2
+      │   │       │   ├── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      │   │       │   ├── gpui_apple v0.1.0
+      │   │       │   │   └── gpui_macos v0.1.0
+      │   │       │   │       └── gpui_platform v0.1.0 (*)
+      │   │       │   ├── gpui_linux v0.1.0 (*)
+      │   │       │   ├── gpui_macos v0.1.0 (*)
+      │   │       │   ├── gpui_platform v0.1.0 (*)
+      │   │       │   ├── gpui_web v0.1.0
+      │   │       │   │   └── gpui_platform v0.1.0 (*)
+      │   │       │   ├── gpui_wgpu v0.1.0
+      │   │       │   │   └── gpui_web v0.1.0 (*)
+      │   │       │   └── gpui_windows v0.1.0
+      │   │       │       └── gpui_platform v0.1.0 (*)
+      │   │       └── gpui_web v0.1.0 (*)
+      │   ├── futures-lite v2.6.1
+      │   │   ├── accesskit_unix v0.22.1 (*)
+      │   │   ├── async-executor v1.14.0 (*)
+      │   │   ├── async-fs v2.2.0
+      │   │   │   ├── oo7 v0.6.0 (*)
+      │   │   │   └── smol v2.0.2 (*)
+      │   │   ├── async-io v2.6.0
+      │   │   │   ├── async-net v2.0.0
+      │   │   │   │   └── smol v2.0.2 (*)
+      │   │   │   ├── async-process v2.5.0
+      │   │   │   │   ├── smol v2.0.2 (*)
+      │   │   │   │   └── zbus v5.19.0 (*)
+      │   │   │   ├── async-signal v0.2.14
+      │   │   │   │   └── async-process v2.5.0 (*)
+      │   │   │   ├── oo7 v0.6.0 (*)
+      │   │   │   ├── smol v2.0.2 (*)
+      │   │   │   └── zbus v5.19.0 (*)
+      │   │   ├── async-net v2.0.0 (*)
+      │   │   ├── async-process v2.5.0 (*)
+      │   │   ├── blocking v1.7.0
+      │   │   │   ├── async-fs v2.2.0 (*)
+      │   │   │   ├── async-net v2.0.0 (*)
+      │   │   │   ├── async-process v2.5.0 (*)
+      │   │   │   ├── oo7 v0.6.0 (*)
+      │   │   │   ├── smol v2.0.2 (*)
+      │   │   │   └── zbus v5.19.0 (*)
+      │   │   ├── futures-concurrency v7.7.1
+      │   │   │   └── gpui v0.2.2 (*)
+      │   │   ├── notify-rust v4.18.2 (*)
+      │   │   ├── oo7 v0.6.0 (*)
+      │   │   ├── smol v2.0.2 (*)
+      │   │   └── zbus v5.19.0 (*)
+      │   ├── phf_generator v0.13.1
+      │   │   └── phf_macros v0.13.1
+      │   │       └── phf v0.13.1
+      │   │           └── accesskit_atspi_common v0.19.1 (*)
+      │   ├── piper v0.2.5
+      │   │   └── blocking v1.7.0 (*)
+      │   └── tempfile v3.27.0
+      │       ├── cbindgen v0.28.0
+      │       │   └── (build) gpui_apple v0.1.0 (*)
+      │       └── uds_windows v1.2.1
+      │           └── zbus v5.19.0 (*)
+      ├── oo7 v0.6.0 (*)
+      ├── tempfile v3.27.0 (*)
+      └── uuid v1.28.0
+          ├── accesskit v0.24.1
+          │   ├── accesskit_atspi_common v0.19.1 (*)
+          │   ├── accesskit_consumer v0.38.0
+          │   │   ├── accesskit_atspi_common v0.19.1 (*)
+          │   │   ├── accesskit_macos v0.26.3
+          │   │   │   └── gpui_macos v0.1.0 (*)
+          │   │   └── accesskit_windows v0.34.0
+          │   │       └── gpui_windows v0.1.0 (*)
+          │   ├── accesskit_macos v0.26.3 (*)
+          │   ├── accesskit_unix v0.22.1 (*)
+          │   ├── accesskit_windows v0.34.0 (*)
+          │   ├── gpui v0.2.2 (*)
+          │   ├── gpui_linux v0.1.0 (*)
+          │   ├── gpui_macos v0.1.0 (*)
+          │   └── gpui_windows v0.1.0 (*)
+          ├── gpui v0.2.2 (*)
+          ├── gpui_linux v0.1.0 (*)
+          ├── gpui_macos v0.1.0 (*)
+          ├── gpui_web v0.1.0 (*)
+          ├── gpui_windows v0.1.0 (*)
+          ├── mac-notification-sys v0.6.15
+          │   └── notify-rust v4.18.2 (*)
+          └── zbus v5.19.0 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'harfrust'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:176:1
+    │  
+176 │ ╭ harfrust 0.5.2 registry+https://github.com/rust-lang/crates.io-index
+177 │ │ harfrust 0.12.0 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰─────────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ harfrust v0.5.2
+      └── cosmic-text v0.19.0
+          ├── (dev) ferrostage-gpui-maintenance-candidate v0.0.0
+          └── gpui_wgpu v0.1.0
+              └── gpui_web v0.1.0
+                  └── gpui_platform v0.1.0
+                      └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+    ├ harfrust v0.12.0
+      └── usvg v0.48.1
+          ├── gpui v0.2.2
+          │   ├── ferrostage-gpui-maintenance-candidate v0.0.0
+          │   ├── gpui_apple v0.1.0
+          │   │   └── gpui_macos v0.1.0
+          │   │       └── gpui_platform v0.1.0
+          │   │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+          │   ├── gpui_linux v0.1.0
+          │   │   └── gpui_platform v0.1.0 (*)
+          │   ├── gpui_macos v0.1.0 (*)
+          │   ├── gpui_platform v0.1.0 (*)
+          │   ├── gpui_web v0.1.0
+          │   │   └── gpui_platform v0.1.0 (*)
+          │   ├── gpui_wgpu v0.1.0
+          │   │   └── gpui_web v0.1.0 (*)
+          │   └── gpui_windows v0.1.0
+          │       └── gpui_platform v0.1.0 (*)
+          └── resvg v0.48.1
+              └── gpui v0.2.2 (*)
+
+warning[duplicate]: found 3 duplicate entries for crate 'hashbrown'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:179:1
+    │  
+179 │ ╭ hashbrown 0.15.5 registry+https://github.com/rust-lang/crates.io-index
+180 │ │ hashbrown 0.16.1 registry+https://github.com/rust-lang/crates.io-index
+181 │ │ hashbrown 0.17.1 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰──────────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ hashbrown v0.15.5
+      └── gpu-descriptor v0.3.2
+          └── wgpu-hal v29.0.4
+              ├── wgpu v29.0.4
+              │   └── gpui_wgpu v0.1.0
+              │       └── gpui_web v0.1.0
+              │           └── gpui_platform v0.1.0
+              │               └── ferrostage-gpui-maintenance-candidate v0.0.0
+              ├── wgpu-core v29.0.4
+              │   └── wgpu v29.0.4 (*)
+              ├── wgpu-core-deps-apple v29.0.4
+              │   └── wgpu-core v29.0.4 (*)
+              ├── wgpu-core-deps-emscripten v29.0.4
+              │   └── wgpu-core v29.0.4 (*)
+              ├── wgpu-core-deps-wasm v29.0.4
+              │   └── wgpu-core v29.0.4 (*)
+              └── wgpu-core-deps-windows-linux-android v29.0.4
+                  └── wgpu-core v29.0.4 (*)
+    ├ hashbrown v0.16.1
+      ├── accesskit_consumer v0.38.0
+      │   ├── accesskit_atspi_common v0.19.1
+      │   │   └── accesskit_unix v0.22.1
+      │   │       └── gpui_linux v0.1.0
+      │   │           └── gpui_platform v0.1.0
+      │   │               └── ferrostage-gpui-maintenance-candidate v0.0.0
+      │   ├── accesskit_macos v0.26.3
+      │   │   └── gpui_macos v0.1.0
+      │   │       └── gpui_platform v0.1.0 (*)
+      │   └── accesskit_windows v0.34.0
+      │       └── gpui_windows v0.1.0
+      │           └── gpui_platform v0.1.0 (*)
+      ├── accesskit_macos v0.26.3 (*)
+      ├── accesskit_windows v0.34.0 (*)
+      ├── gpu-allocator v0.28.0
+      │   └── wgpu-hal v29.0.4
+      │       ├── wgpu v29.0.4
+      │       │   └── gpui_wgpu v0.1.0
+      │       │       └── gpui_web v0.1.0
+      │       │           └── gpui_platform v0.1.0 (*)
+      │       ├── wgpu-core v29.0.4
+      │       │   └── wgpu v29.0.4 (*)
+      │       ├── wgpu-core-deps-apple v29.0.4
+      │       │   └── wgpu-core v29.0.4 (*)
+      │       ├── wgpu-core-deps-emscripten v29.0.4
+      │       │   └── wgpu-core v29.0.4 (*)
+      │       ├── wgpu-core-deps-wasm v29.0.4
+      │       │   └── wgpu-core v29.0.4 (*)
+      │       └── wgpu-core-deps-windows-linux-android v29.0.4
+      │           └── wgpu-core v29.0.4 (*)
+      ├── naga v29.0.4
+      │   ├── wgpu-core v29.0.4 (*)
+      │   ├── wgpu-hal v29.0.4 (*)
+      │   └── wgpu-naga-bridge v29.0.4
+      │       ├── wgpu-core v29.0.4 (*)
+      │       └── wgpu-hal v29.0.4 (*)
+      ├── wgpu v29.0.4 (*)
+      ├── wgpu-core v29.0.4 (*)
+      └── wgpu-hal v29.0.4 (*)
+    ├ hashbrown v0.17.1
+      └── indexmap v2.14.2
+          ├── cbindgen v0.28.0
+          │   └── (build) gpui_apple v0.1.0
+          │       └── gpui_macos v0.1.0
+          │           └── gpui_platform v0.1.0
+          │               └── ferrostage-gpui-maintenance-candidate v0.0.0
+          ├── collections v0.1.0
+          │   ├── gpui v0.2.2
+          │   │   ├── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+          │   │   ├── gpui_apple v0.1.0 (*)
+          │   │   ├── gpui_linux v0.1.0
+          │   │   │   └── gpui_platform v0.1.0 (*)
+          │   │   ├── gpui_macos v0.1.0 (*)
+          │   │   ├── gpui_platform v0.1.0 (*)
+          │   │   ├── gpui_web v0.1.0
+          │   │   │   └── gpui_platform v0.1.0 (*)
+          │   │   ├── gpui_wgpu v0.1.0
+          │   │   │   └── gpui_web v0.1.0 (*)
+          │   │   └── gpui_windows v0.1.0
+          │   │       └── gpui_platform v0.1.0 (*)
+          │   ├── gpui_linux v0.1.0 (*)
+          │   ├── gpui_macos v0.1.0 (*)
+          │   ├── gpui_wgpu v0.1.0 (*)
+          │   ├── gpui_windows v0.1.0 (*)
+          │   ├── perf v0.1.0
+          │   │   └── util_macros v0.1.0
+          │   │       └── gpui v0.2.2 (*)
+          │   └── zlog v0.1.0
+          │       └── ztracing v0.1.0
+          │           └── sum_tree v0.1.0
+          │               └── gpui v0.2.2 (*)
+          ├── naga v29.0.4
+          │   ├── wgpu-core v29.0.4
+          │   │   └── wgpu v29.0.4
+          │   │       └── gpui_wgpu v0.1.0 (*)
+          │   ├── wgpu-hal v29.0.4
+          │   │   ├── wgpu v29.0.4 (*)
+          │   │   ├── wgpu-core v29.0.4 (*)
+          │   │   ├── wgpu-core-deps-apple v29.0.4
+          │   │   │   └── wgpu-core v29.0.4 (*)
+          │   │   ├── wgpu-core-deps-emscripten v29.0.4
+          │   │   │   └── wgpu-core v29.0.4 (*)
+          │   │   ├── wgpu-core-deps-wasm v29.0.4
+          │   │   │   └── wgpu-core v29.0.4 (*)
+          │   │   └── wgpu-core-deps-windows-linux-android v29.0.4
+          │   │       └── wgpu-core v29.0.4 (*)
+          │   └── wgpu-naga-bridge v29.0.4
+          │       ├── wgpu-core v29.0.4 (*)
+          │       └── wgpu-hal v29.0.4 (*)
+          ├── schemars v1.2.3
+          │   ├── gpui v0.2.2 (*)
+          │   └── gpui_shared_string v0.1.0
+          │       └── gpui v0.2.2 (*)
+          ├── serde_json v1.0.154
+          │   ├── cbindgen v0.28.0 (*)
+          │   ├── gpui v0.2.2 (*)
+          │   ├── http_client v0.1.0
+          │   │   ├── gpui v0.2.2 (*)
+          │   │   ├── gpui_linux v0.1.0 (*)
+          │   │   └── gpui_web v0.1.0 (*)
+          │   ├── perf v0.1.0 (*)
+          │   └── schemars v1.2.3 (*)
+          ├── toml_edit v0.22.27
+          │   └── toml v0.8.23
+          │       └── cbindgen v0.28.0 (*)
+          ├── toml_edit v0.25.17+spec-1.1.0
+          │   └── proc-macro-crate v3.5.0
+          │       ├── zbus_macros v5.19.0
+          │       │   ├── oo7 v0.6.0
+          │       │   │   └── gpui_linux v0.1.0 (*)
+          │       │   └── zbus v5.19.0
+          │       │       ├── accesskit_unix v0.22.1
+          │       │       │   └── gpui_linux v0.1.0 (*)
+          │       │       ├── ashpd v0.13.13
+          │       │       │   └── oo7 v0.6.0 (*)
+          │       │       ├── atspi-common v0.13.0
+          │       │       │   ├── accesskit_atspi_common v0.19.1
+          │       │       │   │   └── accesskit_unix v0.22.1 (*)
+          │       │       │   ├── atspi v0.29.0
+          │       │       │   │   └── accesskit_unix v0.22.1 (*)
+          │       │       │   └── atspi-proxies v0.13.0
+          │       │       │       └── atspi v0.29.0 (*)
+          │       │       ├── atspi-proxies v0.13.0 (*)
+          │       │       ├── notify-rust v4.18.2
+          │       │       │   └── gpui_linux v0.1.0 (*)
+          │       │       └── oo7 v0.6.0 (*)
+          │       └── zvariant_derive v5.15.0
+          │           └── zvariant v5.15.0
+          │               ├── accesskit_atspi_common v0.19.1 (*)
+          │               ├── atspi-common v0.13.0 (*)
+          │               ├── oo7 v0.6.0 (*)
+          │               ├── zbus v5.19.0 (*)
+          │               ├── zbus-lockstep v0.5.2
+          │               │   ├── atspi-common v0.13.0 (*)
+          │               │   └── zbus-lockstep-macros v0.5.2
+          │               │       └── atspi-common v0.13.0 (*)
+          │               ├── zbus-lockstep-macros v0.5.2 (*)
+          │               ├── zbus_macros v5.19.0 (*)
+          │               ├── zbus_names v4.3.4
+          │               │   ├── atspi-common v0.13.0 (*)
+          │               │   ├── zbus v5.19.0 (*)
+          │               │   ├── zbus_macros v5.19.0 (*)
+          │               │   └── zbus_xml v5.2.1
+          │               │       ├── zbus-lockstep v0.5.2 (*)
+          │               │       └── zbus-lockstep-macros v0.5.2 (*)
+          │               └── zbus_xml v5.2.1 (*)
+          └── wgpu-core v29.0.4 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'heck'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:183:1
+    │  
+183 │ ╭ heck 0.4.1 registry+https://github.com/rust-lang/crates.io-index
+184 │ │ heck 0.5.0 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ heck v0.4.1
+      └── cbindgen v0.28.0
+          └── (build) gpui_apple v0.1.0
+              └── gpui_macos v0.1.0
+                  └── gpui_platform v0.1.0
+                      └── ferrostage-gpui-maintenance-candidate v0.0.0
+    ├ heck v0.5.0
+      ├── gpui_macros v0.1.0
+      │   └── gpui v0.2.2
+      │       ├── ferrostage-gpui-maintenance-candidate v0.0.0
+      │       ├── gpui_apple v0.1.0
+      │       │   └── gpui_macos v0.1.0
+      │       │       └── gpui_platform v0.1.0
+      │       │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      │       ├── gpui_linux v0.1.0
+      │       │   └── gpui_platform v0.1.0 (*)
+      │       ├── gpui_macos v0.1.0 (*)
+      │       ├── gpui_platform v0.1.0 (*)
+      │       ├── gpui_web v0.1.0
+      │       │   └── gpui_platform v0.1.0 (*)
+      │       ├── gpui_wgpu v0.1.0
+      │       │   └── gpui_web v0.1.0 (*)
+      │       └── gpui_windows v0.1.0
+      │           └── gpui_platform v0.1.0 (*)
+      └── strum_macros v0.28.0
+          └── strum v0.28.0
+              ├── gpui v0.2.2 (*)
+              ├── gpui_linux v0.1.0 (*)
+              └── gpui_macos v0.1.0 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'itertools'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:211:1
+    │  
+211 │ ╭ itertools 0.13.0 registry+https://github.com/rust-lang/crates.io-index
+212 │ │ itertools 0.14.0 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰──────────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ itertools v0.13.0
+      └── bindgen v0.72.1
+          └── (build) gpui v0.2.2
+              ├── ferrostage-gpui-maintenance-candidate v0.0.0
+              ├── gpui_apple v0.1.0
+              │   └── gpui_macos v0.1.0
+              │       └── gpui_platform v0.1.0
+              │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+              ├── gpui_linux v0.1.0
+              │   └── gpui_platform v0.1.0 (*)
+              ├── gpui_macos v0.1.0 (*)
+              ├── gpui_platform v0.1.0 (*)
+              ├── gpui_web v0.1.0
+              │   └── gpui_platform v0.1.0 (*)
+              ├── gpui_wgpu v0.1.0
+              │   └── gpui_web v0.1.0 (*)
+              └── gpui_windows v0.1.0
+                  └── gpui_platform v0.1.0 (*)
+    ├ itertools v0.14.0
+      ├── gpui v0.2.2
+      │   ├── ferrostage-gpui-maintenance-candidate v0.0.0
+      │   ├── gpui_apple v0.1.0
+      │   │   └── gpui_macos v0.1.0
+      │   │       └── gpui_platform v0.1.0
+      │   │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      │   ├── gpui_linux v0.1.0
+      │   │   └── gpui_platform v0.1.0 (*)
+      │   ├── gpui_macos v0.1.0 (*)
+      │   ├── gpui_platform v0.1.0 (*)
+      │   ├── gpui_web v0.1.0
+      │   │   └── gpui_platform v0.1.0 (*)
+      │   ├── gpui_wgpu v0.1.0
+      │   │   └── gpui_web v0.1.0 (*)
+      │   └── gpui_windows v0.1.0
+      │       └── gpui_platform v0.1.0 (*)
+      ├── gpui_macos v0.1.0 (*)
+      ├── gpui_wgpu v0.1.0 (*)
+      └── gpui_windows v0.1.0 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'miniz_oxide'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:251:1
+    │  
+251 │ ╭ miniz_oxide 0.8.9 registry+https://github.com/rust-lang/crates.io-index
+252 │ │ miniz_oxide 0.9.1 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰───────────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ miniz_oxide v0.8.9
+      ├── backtrace v0.3.76
+      │   └── scheduler v0.1.0
+      │       ├── gpui v0.2.2
+      │       │   ├── ferrostage-gpui-maintenance-candidate v0.0.0
+      │       │   ├── gpui_apple v0.1.0
+      │       │   │   └── gpui_macos v0.1.0
+      │       │   │       └── gpui_platform v0.1.0
+      │       │   │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      │       │   ├── gpui_linux v0.1.0
+      │       │   │   └── gpui_platform v0.1.0 (*)
+      │       │   ├── gpui_macos v0.1.0 (*)
+      │       │   ├── gpui_platform v0.1.0 (*)
+      │       │   ├── gpui_web v0.1.0
+      │       │   │   └── gpui_platform v0.1.0 (*)
+      │       │   ├── gpui_wgpu v0.1.0
+      │       │   │   └── gpui_web v0.1.0 (*)
+      │       │   └── gpui_windows v0.1.0
+      │       │       └── gpui_platform v0.1.0 (*)
+      │       └── gpui_web v0.1.0 (*)
+      ├── exr v1.74.2
+      │   ├── (dev) ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      │   └── image v0.25.10
+      │       ├── (dev) ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      │       ├── gpui v0.2.2 (*)
+      │       ├── gpui_apple v0.1.0 (*)
+      │       ├── gpui_macos v0.1.0 (*)
+      │       └── gpui_windows v0.1.0 (*)
+      └── png v0.18.1
+          ├── image v0.25.10 (*)
+          └── tiny-skia v0.12.0
+              └── resvg v0.48.1
+                  └── gpui v0.2.2 (*)
+    ├ miniz_oxide v0.9.1
+      └── flate2 v1.1.10
+          ├── compression-codecs v0.4.45
+          │   └── async-compression v0.4.50
+          │       └── http_client v0.1.0
+          │           ├── gpui v0.2.2
+          │           │   ├── ferrostage-gpui-maintenance-candidate v0.0.0
+          │           │   ├── gpui_apple v0.1.0
+          │           │   │   └── gpui_macos v0.1.0
+          │           │   │       └── gpui_platform v0.1.0
+          │           │   │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+          │           │   ├── gpui_linux v0.1.0
+          │           │   │   └── gpui_platform v0.1.0 (*)
+          │           │   ├── gpui_macos v0.1.0 (*)
+          │           │   ├── gpui_platform v0.1.0 (*)
+          │           │   ├── gpui_web v0.1.0
+          │           │   │   └── gpui_platform v0.1.0 (*)
+          │           │   ├── gpui_wgpu v0.1.0
+          │           │   │   └── gpui_web v0.1.0 (*)
+          │           │   └── gpui_windows v0.1.0
+          │           │       └── gpui_platform v0.1.0 (*)
+          │           ├── gpui_linux v0.1.0 (*)
+          │           └── gpui_web v0.1.0 (*)
+          ├── png v0.18.1
+          │   ├── image v0.25.10
+          │   │   ├── (dev) ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+          │   │   ├── gpui v0.2.2 (*)
+          │   │   ├── gpui_apple v0.1.0 (*)
+          │   │   ├── gpui_macos v0.1.0 (*)
+          │   │   └── gpui_windows v0.1.0 (*)
+          │   └── tiny-skia v0.12.0
+          │       └── resvg v0.48.1
+          │           └── gpui v0.2.2 (*)
+          ├── tiff v0.11.3
+          │   └── image v0.25.10 (*)
+          └── usvg v0.48.1
+              ├── gpui v0.2.2 (*)
+              └── resvg v0.48.1 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'objc2'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:271:1
+    │  
+271 │ ╭ objc2 0.5.3 registry+https://github.com/rust-lang/crates.io-index
+272 │ │ objc2 0.6.5 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰─────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ objc2 v0.5.3
+      ├── accesskit_macos v0.26.3
+      │   └── gpui_macos v0.1.0
+      │       └── gpui_platform v0.1.0
+      │           └── ferrostage-gpui-maintenance-candidate v0.0.0
+      ├── objc2-app-kit v0.2.2
+      │   └── accesskit_macos v0.26.3 (*)
+      └── objc2-foundation v0.2.2
+          ├── accesskit_macos v0.26.3 (*)
+          └── objc2-app-kit v0.2.2 (*)
+    ├ objc2 v0.6.5
+      ├── block2 v0.6.2
+      │   ├── dispatch2 v0.3.1
+      │   │   ├── gpui_macos v0.1.0
+      │   │   │   └── gpui_platform v0.1.0
+      │   │   │       └── ferrostage-gpui-maintenance-candidate v0.0.0
+      │   │   └── objc2-screen-capture-kit v0.3.2
+      │   │       └── gpui_macos v0.1.0 (*)
+      │   ├── gpui_apple v0.1.0
+      │   │   └── gpui_macos v0.1.0 (*)
+      │   ├── gpui_macos v0.1.0 (*)
+      │   ├── objc2-app-kit v0.3.2
+      │   │   └── gpui_macos v0.1.0 (*)
+      │   ├── objc2-foundation v0.3.2
+      │   │   ├── gpui_macos v0.1.0 (*)
+      │   │   ├── mac-notification-sys v0.6.15
+      │   │   │   └── notify-rust v4.18.2
+      │   │   │       └── gpui_linux v0.1.0
+      │   │   │           └── gpui_platform v0.1.0 (*)
+      │   │   ├── objc2-app-kit v0.3.2 (*)
+      │   │   ├── objc2-core-location v0.3.2
+      │   │   │   └── objc2-user-notifications v0.3.2
+      │   │   │       └── gpui_macos v0.1.0 (*)
+      │   │   ├── objc2-metal v0.3.2
+      │   │   │   ├── objc2-quartz-core v0.3.2
+      │   │   │   │   ├── raw-window-metal v1.1.0
+      │   │   │   │   │   └── wgpu-hal v29.0.4
+      │   │   │   │   │       ├── wgpu v29.0.4
+      │   │   │   │   │       │   └── gpui_wgpu v0.1.0
+      │   │   │   │   │       │       └── gpui_web v0.1.0
+      │   │   │   │   │       │           └── gpui_platform v0.1.0 (*)
+      │   │   │   │   │       ├── wgpu-core v29.0.4
+      │   │   │   │   │       │   └── wgpu v29.0.4 (*)
+      │   │   │   │   │       ├── wgpu-core-deps-apple v29.0.4
+      │   │   │   │   │       │   └── wgpu-core v29.0.4 (*)
+      │   │   │   │   │       ├── wgpu-core-deps-emscripten v29.0.4
+      │   │   │   │   │       │   └── wgpu-core v29.0.4 (*)
+      │   │   │   │   │       ├── wgpu-core-deps-wasm v29.0.4
+      │   │   │   │   │       │   └── wgpu-core v29.0.4 (*)
+      │   │   │   │   │       └── wgpu-core-deps-windows-linux-android v29.0.4
+      │   │   │   │   │           └── wgpu-core v29.0.4 (*)
+      │   │   │   │   └── wgpu-hal v29.0.4 (*)
+      │   │   │   └── wgpu-hal v29.0.4 (*)
+      │   │   ├── objc2-quartz-core v0.3.2 (*)
+      │   │   ├── objc2-screen-capture-kit v0.3.2 (*)
+      │   │   ├── objc2-user-notifications v0.3.2 (*)
+      │   │   ├── raw-window-metal v1.1.0 (*)
+      │   │   └── wgpu-hal v29.0.4 (*)
+      │   ├── objc2-metal v0.3.2 (*)
+      │   ├── objc2-screen-capture-kit v0.3.2 (*)
+      │   ├── objc2-user-notifications v0.3.2 (*)
+      │   └── wgpu-hal v29.0.4 (*)
+      ├── dispatch2 v0.3.1 (*)
+      ├── gpui_apple v0.1.0 (*)
+      ├── gpui_macos v0.1.0 (*)
+      ├── mac-notification-sys v0.6.15 (*)
+      ├── objc2-app-kit v0.3.2 (*)
+      ├── objc2-core-foundation v0.3.2
+      │   ├── gpui v0.2.2
+      │   │   ├── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      │   │   ├── gpui_apple v0.1.0 (*)
+      │   │   ├── gpui_linux v0.1.0 (*)
+      │   │   ├── gpui_macos v0.1.0 (*)
+      │   │   ├── gpui_platform v0.1.0 (*)
+      │   │   ├── gpui_web v0.1.0 (*)
+      │   │   ├── gpui_wgpu v0.1.0 (*)
+      │   │   └── gpui_windows v0.1.0
+      │   │       └── gpui_platform v0.1.0 (*)
+      │   ├── objc2-app-kit v0.3.2 (*)
+      │   ├── objc2-core-graphics v0.3.2
+      │   │   ├── gpui_macos v0.1.0 (*)
+      │   │   └── objc2-screen-capture-kit v0.3.2 (*)
+      │   ├── objc2-core-media v0.3.2
+      │   │   ├── gpui_macos v0.1.0 (*)
+      │   │   └── objc2-screen-capture-kit v0.3.2 (*)
+      │   ├── objc2-core-video v0.3.2
+      │   │   ├── gpui v0.2.2 (*)
+      │   │   └── objc2-core-media v0.3.2 (*)
+      │   ├── objc2-foundation v0.3.2 (*)
+      │   ├── objc2-quartz-core v0.3.2 (*)
+      │   ├── raw-window-metal v1.1.0 (*)
+      │   └── wgpu-hal v29.0.4 (*)
+      ├── objc2-core-graphics v0.3.2 (*)
+      ├── objc2-core-location v0.3.2 (*)
+      ├── objc2-core-media v0.3.2 (*)
+      ├── objc2-core-video v0.3.2 (*)
+      ├── objc2-foundation v0.3.2 (*)
+      ├── objc2-metal v0.3.2 (*)
+      ├── objc2-quartz-core v0.3.2 (*)
+      ├── objc2-screen-capture-kit v0.3.2 (*)
+      ├── objc2-user-notifications v0.3.2 (*)
+      ├── raw-window-metal v1.1.0 (*)
+      └── wgpu-hal v29.0.4 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'objc2-app-kit'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:273:1
+    │  
+273 │ ╭ objc2-app-kit 0.2.2 registry+https://github.com/rust-lang/crates.io-index
+274 │ │ objc2-app-kit 0.3.2 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰─────────────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ objc2-app-kit v0.2.2
+      └── accesskit_macos v0.26.3
+          └── gpui_macos v0.1.0
+              └── gpui_platform v0.1.0
+                  └── ferrostage-gpui-maintenance-candidate v0.0.0
+    ├ objc2-app-kit v0.3.2
+      └── gpui_macos v0.1.0
+          └── gpui_platform v0.1.0
+              └── ferrostage-gpui-maintenance-candidate v0.0.0
+
+warning[duplicate]: found 2 duplicate entries for crate 'objc2-foundation'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:281:1
+    │  
+281 │ ╭ objc2-foundation 0.2.2 registry+https://github.com/rust-lang/crates.io-index
+282 │ │ objc2-foundation 0.3.2 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰────────────────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ objc2-foundation v0.2.2
+      ├── accesskit_macos v0.26.3
+      │   └── gpui_macos v0.1.0
+      │       └── gpui_platform v0.1.0
+      │           └── ferrostage-gpui-maintenance-candidate v0.0.0
+      └── objc2-app-kit v0.2.2
+          └── accesskit_macos v0.26.3 (*)
+    ├ objc2-foundation v0.3.2
+      ├── gpui_macos v0.1.0
+      │   └── gpui_platform v0.1.0
+      │       └── ferrostage-gpui-maintenance-candidate v0.0.0
+      ├── mac-notification-sys v0.6.15
+      │   └── notify-rust v4.18.2
+      │       └── gpui_linux v0.1.0
+      │           └── gpui_platform v0.1.0 (*)
+      ├── objc2-app-kit v0.3.2
+      │   └── gpui_macos v0.1.0 (*)
+      ├── objc2-core-location v0.3.2
+      │   └── objc2-user-notifications v0.3.2
+      │       └── gpui_macos v0.1.0 (*)
+      ├── objc2-metal v0.3.2
+      │   ├── objc2-quartz-core v0.3.2
+      │   │   ├── raw-window-metal v1.1.0
+      │   │   │   └── wgpu-hal v29.0.4
+      │   │   │       ├── wgpu v29.0.4
+      │   │   │       │   └── gpui_wgpu v0.1.0
+      │   │   │       │       └── gpui_web v0.1.0
+      │   │   │       │           └── gpui_platform v0.1.0 (*)
+      │   │   │       ├── wgpu-core v29.0.4
+      │   │   │       │   └── wgpu v29.0.4 (*)
+      │   │   │       ├── wgpu-core-deps-apple v29.0.4
+      │   │   │       │   └── wgpu-core v29.0.4 (*)
+      │   │   │       ├── wgpu-core-deps-emscripten v29.0.4
+      │   │   │       │   └── wgpu-core v29.0.4 (*)
+      │   │   │       ├── wgpu-core-deps-wasm v29.0.4
+      │   │   │       │   └── wgpu-core v29.0.4 (*)
+      │   │   │       └── wgpu-core-deps-windows-linux-android v29.0.4
+      │   │   │           └── wgpu-core v29.0.4 (*)
+      │   │   └── wgpu-hal v29.0.4 (*)
+      │   └── wgpu-hal v29.0.4 (*)
+      ├── objc2-quartz-core v0.3.2 (*)
+      ├── objc2-screen-capture-kit v0.3.2
+      │   └── gpui_macos v0.1.0 (*)
+      ├── objc2-user-notifications v0.3.2 (*)
+      ├── raw-window-metal v1.1.0 (*)
+      └── wgpu-hal v29.0.4 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'pollster'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:313:1
+    │  
+313 │ ╭ pollster 0.2.5 registry+https://github.com/rust-lang/crates.io-index
+314 │ │ pollster 0.4.0 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰────────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ pollster v0.2.5
+      └── postage v0.5.0
+          └── gpui v0.2.2
+              ├── ferrostage-gpui-maintenance-candidate v0.0.0
+              ├── gpui_apple v0.1.0
+              │   └── gpui_macos v0.1.0
+              │       └── gpui_platform v0.1.0
+              │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+              ├── gpui_linux v0.1.0
+              │   └── gpui_platform v0.1.0 (*)
+              ├── gpui_macos v0.1.0 (*)
+              ├── gpui_platform v0.1.0 (*)
+              ├── gpui_web v0.1.0
+              │   └── gpui_platform v0.1.0 (*)
+              ├── gpui_wgpu v0.1.0
+              │   └── gpui_web v0.1.0 (*)
+              └── gpui_windows v0.1.0
+                  └── gpui_platform v0.1.0 (*)
+    ├ pollster v0.4.0
+      └── gpui v0.2.2
+          ├── ferrostage-gpui-maintenance-candidate v0.0.0
+          ├── gpui_apple v0.1.0
+          │   └── gpui_macos v0.1.0
+          │       └── gpui_platform v0.1.0
+          │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+          ├── gpui_linux v0.1.0
+          │   └── gpui_platform v0.1.0 (*)
+          ├── gpui_macos v0.1.0 (*)
+          ├── gpui_platform v0.1.0 (*)
+          ├── gpui_web v0.1.0
+          │   └── gpui_platform v0.1.0 (*)
+          ├── gpui_wgpu v0.1.0
+          │   └── gpui_web v0.1.0 (*)
+          └── gpui_windows v0.1.0
+              └── gpui_platform v0.1.0 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'r-efi'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:334:1
+    │  
+334 │ ╭ r-efi 5.3.0 registry+https://github.com/rust-lang/crates.io-index
+335 │ │ r-efi 6.0.0 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰─────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ r-efi v5.3.0
+      └── getrandom v0.3.4
+          ├── gpui v0.2.2
+          │   ├── ferrostage-gpui-maintenance-candidate v0.0.0
+          │   ├── gpui_apple v0.1.0
+          │   │   └── gpui_macos v0.1.0
+          │   │       └── gpui_platform v0.1.0
+          │   │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+          │   ├── gpui_linux v0.1.0
+          │   │   └── gpui_platform v0.1.0 (*)
+          │   ├── gpui_macos v0.1.0 (*)
+          │   ├── gpui_platform v0.1.0 (*)
+          │   ├── gpui_web v0.1.0
+          │   │   └── gpui_platform v0.1.0 (*)
+          │   ├── gpui_wgpu v0.1.0
+          │   │   └── gpui_web v0.1.0 (*)
+          │   └── gpui_windows v0.1.0
+          │       └── gpui_platform v0.1.0 (*)
+          └── rand_core v0.9.5
+              ├── rand v0.9.5
+              │   ├── gpui v0.2.2 (*)
+              │   ├── gpui_windows v0.1.0 (*)
+              │   ├── num-bigint-dig v0.9.1
+              │   │   └── oo7 v0.6.0
+              │   │       └── gpui_linux v0.1.0 (*)
+              │   └── scheduler v0.1.0
+              │       ├── gpui v0.2.2 (*)
+              │       └── gpui_web v0.1.0 (*)
+              └── rand_chacha v0.9.0
+                  └── rand v0.9.5 (*)
+    ├ r-efi v6.0.0
+      └── getrandom v0.4.3
+          ├── ashpd v0.13.13
+          │   └── oo7 v0.6.0
+          │       └── gpui_linux v0.1.0
+          │           └── gpui_platform v0.1.0
+          │               └── ferrostage-gpui-maintenance-candidate v0.0.0
+          ├── fastrand v2.5.0
+          │   ├── async-executor v1.14.0
+          │   │   ├── accesskit_unix v0.22.1
+          │   │   │   └── gpui_linux v0.1.0 (*)
+          │   │   ├── smol v2.0.2
+          │   │   │   └── gpui_linux v0.1.0 (*)
+          │   │   └── zbus v5.19.0
+          │   │       ├── accesskit_unix v0.22.1 (*)
+          │   │       ├── ashpd v0.13.13 (*)
+          │   │       ├── atspi-common v0.13.0
+          │   │       │   ├── accesskit_atspi_common v0.19.1
+          │   │       │   │   └── accesskit_unix v0.22.1 (*)
+          │   │       │   ├── atspi v0.29.0
+          │   │       │   │   └── accesskit_unix v0.22.1 (*)
+          │   │       │   └── atspi-proxies v0.13.0
+          │   │       │       └── atspi v0.29.0 (*)
+          │   │       ├── atspi-proxies v0.13.0 (*)
+          │   │       ├── notify-rust v4.18.2
+          │   │       │   └── gpui_linux v0.1.0 (*)
+          │   │       └── oo7 v0.6.0 (*)
+          │   ├── flume v0.12.0
+          │   │   └── scheduler v0.1.0
+          │   │       ├── gpui v0.2.2
+          │   │       │   ├── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+          │   │       │   ├── gpui_apple v0.1.0
+          │   │       │   │   └── gpui_macos v0.1.0
+          │   │       │   │       └── gpui_platform v0.1.0 (*)
+          │   │       │   ├── gpui_linux v0.1.0 (*)
+          │   │       │   ├── gpui_macos v0.1.0 (*)
+          │   │       │   ├── gpui_platform v0.1.0 (*)
+          │   │       │   ├── gpui_web v0.1.0
+          │   │       │   │   └── gpui_platform v0.1.0 (*)
+          │   │       │   ├── gpui_wgpu v0.1.0
+          │   │       │   │   └── gpui_web v0.1.0 (*)
+          │   │       │   └── gpui_windows v0.1.0
+          │   │       │       └── gpui_platform v0.1.0 (*)
+          │   │       └── gpui_web v0.1.0 (*)
+          │   ├── futures-lite v2.6.1
+          │   │   ├── accesskit_unix v0.22.1 (*)
+          │   │   ├── async-executor v1.14.0 (*)
+          │   │   ├── async-fs v2.2.0
+          │   │   │   ├── oo7 v0.6.0 (*)
+          │   │   │   └── smol v2.0.2 (*)
+          │   │   ├── async-io v2.6.0
+          │   │   │   ├── async-net v2.0.0
+          │   │   │   │   └── smol v2.0.2 (*)
+          │   │   │   ├── async-process v2.5.0
+          │   │   │   │   ├── smol v2.0.2 (*)
+          │   │   │   │   └── zbus v5.19.0 (*)
+          │   │   │   ├── async-signal v0.2.14
+          │   │   │   │   └── async-process v2.5.0 (*)
+          │   │   │   ├── oo7 v0.6.0 (*)
+          │   │   │   ├── smol v2.0.2 (*)
+          │   │   │   └── zbus v5.19.0 (*)
+          │   │   ├── async-net v2.0.0 (*)
+          │   │   ├── async-process v2.5.0 (*)
+          │   │   ├── blocking v1.7.0
+          │   │   │   ├── async-fs v2.2.0 (*)
+          │   │   │   ├── async-net v2.0.0 (*)
+          │   │   │   ├── async-process v2.5.0 (*)
+          │   │   │   ├── oo7 v0.6.0 (*)
+          │   │   │   ├── smol v2.0.2 (*)
+          │   │   │   └── zbus v5.19.0 (*)
+          │   │   ├── futures-concurrency v7.7.1
+          │   │   │   └── gpui v0.2.2 (*)
+          │   │   ├── notify-rust v4.18.2 (*)
+          │   │   ├── oo7 v0.6.0 (*)
+          │   │   ├── smol v2.0.2 (*)
+          │   │   └── zbus v5.19.0 (*)
+          │   ├── phf_generator v0.13.1
+          │   │   └── phf_macros v0.13.1
+          │   │       └── phf v0.13.1
+          │   │           └── accesskit_atspi_common v0.19.1 (*)
+          │   ├── piper v0.2.5
+          │   │   └── blocking v1.7.0 (*)
+          │   └── tempfile v3.27.0
+          │       ├── cbindgen v0.28.0
+          │       │   └── (build) gpui_apple v0.1.0 (*)
+          │       └── uds_windows v1.2.1
+          │           └── zbus v5.19.0 (*)
+          ├── oo7 v0.6.0 (*)
+          ├── tempfile v3.27.0 (*)
+          └── uuid v1.28.0
+              ├── accesskit v0.24.1
+              │   ├── accesskit_atspi_common v0.19.1 (*)
+              │   ├── accesskit_consumer v0.38.0
+              │   │   ├── accesskit_atspi_common v0.19.1 (*)
+              │   │   ├── accesskit_macos v0.26.3
+              │   │   │   └── gpui_macos v0.1.0 (*)
+              │   │   └── accesskit_windows v0.34.0
+              │   │       └── gpui_windows v0.1.0 (*)
+              │   ├── accesskit_macos v0.26.3 (*)
+              │   ├── accesskit_unix v0.22.1 (*)
+              │   ├── accesskit_windows v0.34.0 (*)
+              │   ├── gpui v0.2.2 (*)
+              │   ├── gpui_linux v0.1.0 (*)
+              │   ├── gpui_macos v0.1.0 (*)
+              │   └── gpui_windows v0.1.0 (*)
+              ├── gpui v0.2.2 (*)
+              ├── gpui_linux v0.1.0 (*)
+              ├── gpui_macos v0.1.0 (*)
+              ├── gpui_web v0.1.0 (*)
+              ├── gpui_windows v0.1.0 (*)
+              ├── mac-notification-sys v0.6.15
+              │   └── notify-rust v4.18.2 (*)
+              └── zbus v5.19.0 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'read-fonts'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:346:1
+    │  
+346 │ ╭ read-fonts 0.37.0 registry+https://github.com/rust-lang/crates.io-index
+347 │ │ read-fonts 0.41.0 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰───────────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ read-fonts v0.37.0
+      ├── harfrust v0.5.2
+      │   └── cosmic-text v0.19.0
+      │       ├── (dev) ferrostage-gpui-maintenance-candidate v0.0.0
+      │       └── gpui_wgpu v0.1.0
+      │           └── gpui_web v0.1.0
+      │               └── gpui_platform v0.1.0
+      │                   └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      └── skrifa v0.40.0
+          └── cosmic-text v0.19.0 (*)
+    ├ read-fonts v0.41.0
+      ├── harfrust v0.12.0
+      │   └── usvg v0.48.1
+      │       ├── gpui v0.2.2
+      │       │   ├── ferrostage-gpui-maintenance-candidate v0.0.0
+      │       │   ├── gpui_apple v0.1.0
+      │       │   │   └── gpui_macos v0.1.0
+      │       │   │       └── gpui_platform v0.1.0
+      │       │   │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      │       │   ├── gpui_linux v0.1.0
+      │       │   │   └── gpui_platform v0.1.0 (*)
+      │       │   ├── gpui_macos v0.1.0 (*)
+      │       │   ├── gpui_platform v0.1.0 (*)
+      │       │   ├── gpui_web v0.1.0
+      │       │   │   └── gpui_platform v0.1.0 (*)
+      │       │   ├── gpui_wgpu v0.1.0
+      │       │   │   └── gpui_web v0.1.0 (*)
+      │       │   └── gpui_windows v0.1.0
+      │       │       └── gpui_platform v0.1.0 (*)
+      │       └── resvg v0.48.1
+      │           └── gpui v0.2.2 (*)
+      └── skrifa v0.44.0
+          ├── gpui v0.2.2 (*)
+          ├── swash v0.2.10
+          │   ├── cosmic-text v0.19.0
+          │   │   ├── (dev) ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+          │   │   └── gpui_wgpu v0.1.0 (*)
+          │   └── gpui_wgpu v0.1.0 (*)
+          └── usvg v0.48.1 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'roxmltree'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:359:1
+    │  
+359 │ ╭ roxmltree 0.20.0 registry+https://github.com/rust-lang/crates.io-index
+360 │ │ roxmltree 0.21.1 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰──────────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ roxmltree v0.20.0
+      └── fontconfig-parser v0.5.8
+          └── fontdb v0.24.0
+              ├── cosmic-text v0.19.0
+              │   ├── (dev) ferrostage-gpui-maintenance-candidate v0.0.0
+              │   └── gpui_wgpu v0.1.0
+              │       └── gpui_web v0.1.0
+              │           └── gpui_platform v0.1.0
+              │               └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+              └── usvg v0.48.1
+                  ├── gpui v0.2.2
+                  │   ├── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+                  │   ├── gpui_apple v0.1.0
+                  │   │   └── gpui_macos v0.1.0
+                  │   │       └── gpui_platform v0.1.0 (*)
+                  │   ├── gpui_linux v0.1.0
+                  │   │   └── gpui_platform v0.1.0 (*)
+                  │   ├── gpui_macos v0.1.0 (*)
+                  │   ├── gpui_platform v0.1.0 (*)
+                  │   ├── gpui_web v0.1.0 (*)
+                  │   ├── gpui_wgpu v0.1.0 (*)
+                  │   └── gpui_windows v0.1.0
+                  │       └── gpui_platform v0.1.0 (*)
+                  └── resvg v0.48.1
+                      └── gpui v0.2.2 (*)
+    ├ roxmltree v0.21.1
+      └── usvg v0.48.1
+          ├── gpui v0.2.2
+          │   ├── ferrostage-gpui-maintenance-candidate v0.0.0
+          │   ├── gpui_apple v0.1.0
+          │   │   └── gpui_macos v0.1.0
+          │   │       └── gpui_platform v0.1.0
+          │   │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+          │   ├── gpui_linux v0.1.0
+          │   │   └── gpui_platform v0.1.0 (*)
+          │   ├── gpui_macos v0.1.0 (*)
+          │   ├── gpui_platform v0.1.0 (*)
+          │   ├── gpui_web v0.1.0
+          │   │   └── gpui_platform v0.1.0 (*)
+          │   ├── gpui_wgpu v0.1.0
+          │   │   └── gpui_web v0.1.0 (*)
+          │   └── gpui_windows v0.1.0
+          │       └── gpui_platform v0.1.0 (*)
+          └── resvg v0.48.1
+              └── gpui v0.2.2 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'rustc-hash'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:362:1
+    │  
+362 │ ╭ rustc-hash 1.1.0 registry+https://github.com/rust-lang/crates.io-index
+363 │ │ rustc-hash 2.1.3 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰──────────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ rustc-hash v1.1.0
+      ├── naga v29.0.4
+      │   ├── wgpu-core v29.0.4
+      │   │   └── wgpu v29.0.4
+      │   │       └── gpui_wgpu v0.1.0
+      │   │           └── gpui_web v0.1.0
+      │   │               └── gpui_platform v0.1.0
+      │   │                   └── ferrostage-gpui-maintenance-candidate v0.0.0
+      │   ├── wgpu-hal v29.0.4
+      │   │   ├── wgpu v29.0.4 (*)
+      │   │   ├── wgpu-core v29.0.4 (*)
+      │   │   ├── wgpu-core-deps-apple v29.0.4
+      │   │   │   └── wgpu-core v29.0.4 (*)
+      │   │   ├── wgpu-core-deps-emscripten v29.0.4
+      │   │   │   └── wgpu-core v29.0.4 (*)
+      │   │   ├── wgpu-core-deps-wasm v29.0.4
+      │   │   │   └── wgpu-core v29.0.4 (*)
+      │   │   └── wgpu-core-deps-windows-linux-android v29.0.4
+      │   │       └── wgpu-core v29.0.4 (*)
+      │   └── wgpu-naga-bridge v29.0.4
+      │       ├── wgpu-core v29.0.4 (*)
+      │       └── wgpu-hal v29.0.4 (*)
+      └── wgpu-core v29.0.4 (*)
+    ├ rustc-hash v2.1.3
+      ├── bindgen v0.72.1
+      │   └── (build) gpui v0.2.2
+      │       ├── ferrostage-gpui-maintenance-candidate v0.0.0
+      │       ├── gpui_apple v0.1.0
+      │       │   └── gpui_macos v0.1.0
+      │       │       └── gpui_platform v0.1.0
+      │       │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      │       ├── gpui_linux v0.1.0
+      │       │   └── gpui_platform v0.1.0 (*)
+      │       ├── gpui_macos v0.1.0 (*)
+      │       ├── gpui_platform v0.1.0 (*)
+      │       ├── gpui_web v0.1.0
+      │       │   └── gpui_platform v0.1.0 (*)
+      │       ├── gpui_wgpu v0.1.0
+      │       │   └── gpui_web v0.1.0 (*)
+      │       └── gpui_windows v0.1.0
+      │           └── gpui_platform v0.1.0 (*)
+      ├── collections v0.1.0
+      │   ├── gpui v0.2.2 (*)
+      │   ├── gpui_linux v0.1.0 (*)
+      │   ├── gpui_macos v0.1.0 (*)
+      │   ├── gpui_wgpu v0.1.0 (*)
+      │   ├── gpui_windows v0.1.0 (*)
+      │   ├── perf v0.1.0
+      │   │   └── util_macros v0.1.0
+      │   │       └── gpui v0.2.2 (*)
+      │   └── zlog v0.1.0
+      │       └── ztracing v0.1.0
+      │           └── sum_tree v0.1.0
+      │               └── gpui v0.2.2 (*)
+      └── cosmic-text v0.19.0
+          ├── (dev) ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+          └── gpui_wgpu v0.1.0 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'serde_spanned'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:383:1
+    │  
+383 │ ╭ serde_spanned 0.6.9 registry+https://github.com/rust-lang/crates.io-index
+384 │ │ serde_spanned 1.1.2 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰─────────────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ serde_spanned v0.6.9
+      ├── toml v0.8.23
+      │   └── cbindgen v0.28.0
+      │       └── (build) gpui_apple v0.1.0
+      │           └── gpui_macos v0.1.0
+      │               └── gpui_platform v0.1.0
+      │                   └── ferrostage-gpui-maintenance-candidate v0.0.0
+      └── toml_edit v0.22.27
+          └── toml v0.8.23 (*)
+    ├ serde_spanned v1.1.2
+      └── toml v1.1.8+spec-1.1.0
+          └── embed-resource v3.0.12
+              └── (build) gpui v0.2.2
+                  ├── ferrostage-gpui-maintenance-candidate v0.0.0
+                  ├── gpui_apple v0.1.0
+                  │   └── gpui_macos v0.1.0
+                  │       └── gpui_platform v0.1.0
+                  │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+                  ├── gpui_linux v0.1.0
+                  │   └── gpui_platform v0.1.0 (*)
+                  ├── gpui_macos v0.1.0 (*)
+                  ├── gpui_platform v0.1.0 (*)
+                  ├── gpui_web v0.1.0
+                  │   └── gpui_platform v0.1.0 (*)
+                  ├── gpui_wgpu v0.1.0
+                  │   └── gpui_web v0.1.0 (*)
+                  └── gpui_windows v0.1.0
+                      └── gpui_platform v0.1.0 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'shlex'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:389:1
+    │  
+389 │ ╭ shlex 1.3.0 registry+https://github.com/rust-lang/crates.io-index
+390 │ │ shlex 2.0.1 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰─────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ shlex v1.3.0
+      └── bindgen v0.72.1
+          └── (build) gpui v0.2.2
+              ├── ferrostage-gpui-maintenance-candidate v0.0.0
+              ├── gpui_apple v0.1.0
+              │   └── gpui_macos v0.1.0
+              │       └── gpui_platform v0.1.0
+              │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+              ├── gpui_linux v0.1.0
+              │   └── gpui_platform v0.1.0 (*)
+              ├── gpui_macos v0.1.0 (*)
+              ├── gpui_platform v0.1.0 (*)
+              ├── gpui_web v0.1.0
+              │   └── gpui_platform v0.1.0 (*)
+              ├── gpui_wgpu v0.1.0
+              │   └── gpui_web v0.1.0 (*)
+              └── gpui_windows v0.1.0
+                  └── gpui_platform v0.1.0 (*)
+    ├ shlex v2.0.1
+      └── cc v1.8.0
+          ├── embed-resource v3.0.12
+          │   └── (build) gpui v0.2.2
+          │       ├── ferrostage-gpui-maintenance-candidate v0.0.0
+          │       ├── gpui_apple v0.1.0
+          │       │   └── gpui_macos v0.1.0
+          │       │       └── gpui_platform v0.1.0
+          │       │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+          │       ├── gpui_linux v0.1.0
+          │       │   └── gpui_platform v0.1.0 (*)
+          │       ├── gpui_macos v0.1.0 (*)
+          │       ├── gpui_platform v0.1.0 (*)
+          │       ├── gpui_web v0.1.0
+          │       │   └── gpui_platform v0.1.0 (*)
+          │       ├── gpui_wgpu v0.1.0
+          │       │   └── gpui_web v0.1.0 (*)
+          │       └── gpui_windows v0.1.0
+          │           └── gpui_platform v0.1.0 (*)
+          ├── (build) iana-time-zone-haiku v0.1.2
+          │   └── iana-time-zone v0.1.65
+          │       └── chrono v0.4.45
+          │           ├── gpui v0.2.2 (*)
+          │           ├── scheduler v0.1.0
+          │           │   ├── gpui v0.2.2 (*)
+          │           │   └── gpui_web v0.1.0 (*)
+          │           └── zlog v0.1.0
+          │               └── ztracing v0.1.0
+          │                   └── sum_tree v0.1.0
+          │                       └── gpui v0.2.2 (*)
+          ├── (build) mac-notification-sys v0.6.15
+          │   └── notify-rust v4.18.2
+          │       └── gpui_linux v0.1.0 (*)
+          └── (build) vswhom-sys v0.1.3
+              └── vswhom v0.1.0
+                  └── embed-resource v3.0.12 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'skrifa'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:395:1
+    │  
+395 │ ╭ skrifa 0.40.0 registry+https://github.com/rust-lang/crates.io-index
+396 │ │ skrifa 0.44.0 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰───────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ skrifa v0.40.0
+      └── cosmic-text v0.19.0
+          ├── (dev) ferrostage-gpui-maintenance-candidate v0.0.0
+          └── gpui_wgpu v0.1.0
+              └── gpui_web v0.1.0
+                  └── gpui_platform v0.1.0
+                      └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+    ├ skrifa v0.44.0
+      ├── gpui v0.2.2
+      │   ├── ferrostage-gpui-maintenance-candidate v0.0.0
+      │   ├── gpui_apple v0.1.0
+      │   │   └── gpui_macos v0.1.0
+      │   │       └── gpui_platform v0.1.0
+      │   │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      │   ├── gpui_linux v0.1.0
+      │   │   └── gpui_platform v0.1.0 (*)
+      │   ├── gpui_macos v0.1.0 (*)
+      │   ├── gpui_platform v0.1.0 (*)
+      │   ├── gpui_web v0.1.0
+      │   │   └── gpui_platform v0.1.0 (*)
+      │   ├── gpui_wgpu v0.1.0
+      │   │   └── gpui_web v0.1.0 (*)
+      │   └── gpui_windows v0.1.0
+      │       └── gpui_platform v0.1.0 (*)
+      ├── swash v0.2.10
+      │   ├── cosmic-text v0.19.0
+      │   │   ├── (dev) ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      │   │   └── gpui_wgpu v0.1.0 (*)
+      │   └── gpui_wgpu v0.1.0 (*)
+      └── usvg v0.48.1
+          ├── gpui v0.2.2 (*)
+          └── resvg v0.48.1
+              └── gpui v0.2.2 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'spin'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:402:1
+    │  
+402 │ ╭ spin 0.9.9 registry+https://github.com/rust-lang/crates.io-index
+403 │ │ spin 0.10.1 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰─────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ spin v0.9.9
+      └── flume v0.12.0
+          └── scheduler v0.1.0
+              ├── gpui v0.2.2
+              │   ├── ferrostage-gpui-maintenance-candidate v0.0.0
+              │   ├── gpui_apple v0.1.0
+              │   │   └── gpui_macos v0.1.0
+              │   │       └── gpui_platform v0.1.0
+              │   │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+              │   ├── gpui_linux v0.1.0
+              │   │   └── gpui_platform v0.1.0 (*)
+              │   ├── gpui_macos v0.1.0 (*)
+              │   ├── gpui_platform v0.1.0 (*)
+              │   ├── gpui_web v0.1.0
+              │   │   └── gpui_platform v0.1.0 (*)
+              │   ├── gpui_wgpu v0.1.0
+              │   │   └── gpui_web v0.1.0 (*)
+              │   └── gpui_windows v0.1.0
+              │       └── gpui_platform v0.1.0 (*)
+              └── gpui_web v0.1.0 (*)
+    ├ spin v0.10.1
+      └── gpui v0.2.2
+          ├── ferrostage-gpui-maintenance-candidate v0.0.0
+          ├── gpui_apple v0.1.0
+          │   └── gpui_macos v0.1.0
+          │       └── gpui_platform v0.1.0
+          │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+          ├── gpui_linux v0.1.0
+          │   └── gpui_platform v0.1.0 (*)
+          ├── gpui_macos v0.1.0 (*)
+          ├── gpui_platform v0.1.0 (*)
+          ├── gpui_web v0.1.0
+          │   └── gpui_platform v0.1.0 (*)
+          ├── gpui_wgpu v0.1.0
+          │   └── gpui_web v0.1.0 (*)
+          └── gpui_windows v0.1.0
+              └── gpui_platform v0.1.0 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'syn'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:415:1
+    │  
+415 │ ╭ syn 2.0.119 registry+https://github.com/rust-lang/crates.io-index
+416 │ │ syn 3.0.9 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰───────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ syn v2.0.119
+      ├── bindgen v0.72.1
+      │   └── (build) gpui v0.2.2
+      │       ├── ferrostage-gpui-maintenance-candidate v0.0.0
+      │       ├── gpui_apple v0.1.0
+      │       │   └── gpui_macos v0.1.0
+      │       │       └── gpui_platform v0.1.0
+      │       │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      │       ├── gpui_linux v0.1.0
+      │       │   └── gpui_platform v0.1.0 (*)
+      │       ├── gpui_macos v0.1.0 (*)
+      │       ├── gpui_platform v0.1.0 (*)
+      │       ├── gpui_web v0.1.0
+      │       │   └── gpui_platform v0.1.0 (*)
+      │       ├── gpui_wgpu v0.1.0
+      │       │   └── gpui_web v0.1.0 (*)
+      │       └── gpui_windows v0.1.0
+      │           └── gpui_platform v0.1.0 (*)
+      ├── cbindgen v0.28.0
+      │   └── (build) gpui_apple v0.1.0 (*)
+      ├── derive_more-impl v2.1.1
+      │   └── derive_more v2.1.1
+      │       ├── gpui v0.2.2 (*)
+      │       ├── gpui_apple v0.1.0 (*)
+      │       └── http_client v0.1.0
+      │           ├── gpui v0.2.2 (*)
+      │           ├── gpui_linux v0.1.0 (*)
+      │           └── gpui_web v0.1.0 (*)
+      ├── derive_refineable v0.1.0
+      │   └── refineable v0.1.0
+      │       └── gpui v0.2.2 (*)
+      ├── enumflags2_derive v0.7.12
+      │   └── enumflags2 v0.7.12
+      │       ├── ashpd v0.13.13
+      │       │   └── oo7 v0.6.0
+      │       │       └── gpui_linux v0.1.0 (*)
+      │       ├── atspi-common v0.13.0
+      │       │   ├── accesskit_atspi_common v0.19.1
+      │       │   │   └── accesskit_unix v0.22.1
+      │       │   │       └── gpui_linux v0.1.0 (*)
+      │       │   ├── atspi v0.29.0
+      │       │   │   └── accesskit_unix v0.22.1 (*)
+      │       │   └── atspi-proxies v0.13.0
+      │       │       └── atspi v0.29.0 (*)
+      │       ├── zbus v5.19.0
+      │       │   ├── accesskit_unix v0.22.1 (*)
+      │       │   ├── ashpd v0.13.13 (*)
+      │       │   ├── atspi-common v0.13.0 (*)
+      │       │   ├── atspi-proxies v0.13.0 (*)
+      │       │   ├── notify-rust v4.18.2
+      │       │   │   └── gpui_linux v0.1.0 (*)
+      │       │   └── oo7 v0.6.0 (*)
+      │       └── zvariant v5.15.0
+      │           ├── accesskit_atspi_common v0.19.1 (*)
+      │           ├── atspi-common v0.13.0 (*)
+      │           ├── oo7 v0.6.0 (*)
+      │           ├── zbus v5.19.0 (*)
+      │           ├── zbus-lockstep v0.5.2
+      │           │   ├── atspi-common v0.13.0 (*)
+      │           │   └── zbus-lockstep-macros v0.5.2
+      │           │       └── atspi-common v0.13.0 (*)
+      │           ├── zbus-lockstep-macros v0.5.2 (*)
+      │           ├── zbus_macros v5.19.0
+      │           │   ├── oo7 v0.6.0 (*)
+      │           │   └── zbus v5.19.0 (*)
+      │           ├── zbus_names v4.3.4
+      │           │   ├── atspi-common v0.13.0 (*)
+      │           │   ├── zbus v5.19.0 (*)
+      │           │   ├── zbus_macros v5.19.0 (*)
+      │           │   └── zbus_xml v5.2.1
+      │           │       ├── zbus-lockstep v0.5.2 (*)
+      │           │       └── zbus-lockstep-macros v0.5.2 (*)
+      │           └── zbus_xml v5.2.1 (*)
+      ├── enumn v0.1.14
+      │   └── accesskit v0.24.1
+      │       ├── accesskit_atspi_common v0.19.1 (*)
+      │       ├── accesskit_consumer v0.38.0
+      │       │   ├── accesskit_atspi_common v0.19.1 (*)
+      │       │   ├── accesskit_macos v0.26.3
+      │       │   │   └── gpui_macos v0.1.0 (*)
+      │       │   └── accesskit_windows v0.34.0
+      │       │       └── gpui_windows v0.1.0 (*)
+      │       ├── accesskit_macos v0.26.3 (*)
+      │       ├── accesskit_unix v0.22.1 (*)
+      │       ├── accesskit_windows v0.34.0 (*)
+      │       ├── gpui v0.2.2 (*)
+      │       ├── gpui_linux v0.1.0 (*)
+      │       ├── gpui_macos v0.1.0 (*)
+      │       └── gpui_windows v0.1.0 (*)
+      ├── gpui_macros v0.1.0
+      │   └── gpui v0.2.2 (*)
+      ├── jni-sys-macros v0.4.1
+      │   └── jni-sys v0.4.1
+      │       └── jni-sys v0.3.1
+      │           └── ndk-sys v0.6.0+11769913
+      │               └── wgpu-hal v29.0.4
+      │                   ├── wgpu v29.0.4
+      │                   │   └── gpui_wgpu v0.1.0 (*)
+      │                   ├── wgpu-core v29.0.4
+      │                   │   └── wgpu v29.0.4 (*)
+      │                   ├── wgpu-core-deps-apple v29.0.4
+      │                   │   └── wgpu-core v29.0.4 (*)
+      │                   ├── wgpu-core-deps-emscripten v29.0.4
+      │                   │   └── wgpu-core v29.0.4 (*)
+      │                   ├── wgpu-core-deps-wasm v29.0.4
+      │                   │   └── wgpu-core v29.0.4 (*)
+      │                   └── wgpu-core-deps-windows-linux-android v29.0.4
+      │                       └── wgpu-core v29.0.4 (*)
+      ├── phf_macros v0.13.1
+      │   └── phf v0.13.1
+      │       └── accesskit_atspi_common v0.19.1 (*)
+      ├── pin-project-internal v1.1.13
+      │   └── pin-project v1.1.13
+      │       ├── futures-concurrency v7.7.1
+      │       │   └── gpui v0.2.2 (*)
+      │       ├── gpui v0.2.2 (*)
+      │       └── postage v0.5.0
+      │           └── gpui v0.2.2 (*)
+      ├── prettyplease v0.2.37
+      │   └── bindgen v0.72.1 (*)
+      ├── profiling-procmacros v1.0.18
+      │   └── profiling v1.0.18
+      │       ├── gpui v0.2.2 (*)
+      │       ├── gpui_wgpu v0.1.0 (*)
+      │       ├── wgpu v29.0.4 (*)
+      │       ├── wgpu-core v29.0.4 (*)
+      │       └── wgpu-hal v29.0.4 (*)
+      ├── strum_macros v0.28.0
+      │   └── strum v0.28.0
+      │       ├── gpui v0.2.2 (*)
+      │       ├── gpui_linux v0.1.0 (*)
+      │       └── gpui_macos v0.1.0 (*)
+      ├── thiserror-impl v1.0.69
+      │   └── thiserror v1.0.69
+      │       └── postage v0.5.0 (*)
+      ├── tracing-attributes v0.1.31
+      │   └── tracing v0.1.44
+      │       ├── calloop v0.14.5
+      │       │   └── gpui_linux v0.1.0 (*)
+      │       ├── sum_tree v0.1.0
+      │       │   └── gpui v0.2.2 (*)
+      │       ├── zbus v5.19.0 (*)
+      │       └── ztracing v0.1.0
+      │           └── sum_tree v0.1.0 (*)
+      ├── util_macros v0.1.0
+      │   └── gpui v0.2.2 (*)
+      ├── windows-implement v0.60.2
+      │   └── windows-core v0.62.2
+      │       ├── accesskit_windows v0.34.0 (*)
+      │       ├── gpui_windows v0.1.0 (*)
+      │       ├── iana-time-zone v0.1.65
+      │       │   └── chrono v0.4.45
+      │       │       ├── gpui v0.2.2 (*)
+      │       │       ├── scheduler v0.1.0
+      │       │       │   ├── gpui v0.2.2 (*)
+      │       │       │   └── gpui_web v0.1.0 (*)
+      │       │       └── zlog v0.1.0
+      │       │           └── ztracing v0.1.0 (*)
+      │       ├── wgpu-hal v29.0.4 (*)
+      │       ├── windows v0.62.2
+      │       │   ├── accesskit_windows v0.34.0 (*)
+      │       │   ├── gpu-allocator v0.28.0
+      │       │   │   └── wgpu-hal v29.0.4 (*)
+      │       │   ├── gpui v0.2.2 (*)
+      │       │   ├── gpui_windows v0.1.0 (*)
+      │       │   ├── tauri-winrt-notification v0.8.1
+      │       │   │   └── notify-rust v4.18.2 (*)
+      │       │   └── wgpu-hal v29.0.4 (*)
+      │       ├── windows-collections v0.3.2
+      │       │   └── windows v0.62.2 (*)
+      │       ├── windows-future v0.3.2
+      │       │   └── windows v0.62.2 (*)
+      │       └── windows-numerics v0.3.1
+      │           ├── gpui_windows v0.1.0 (*)
+      │           └── windows v0.62.2 (*)
+      ├── windows-interface v0.59.3
+      │   └── windows-core v0.62.2 (*)
+      ├── zbus-lockstep-macros v0.5.2 (*)
+      ├── zerocopy-derive v0.8.63
+      │   └── zerocopy v0.8.63
+      │       ├── half v2.7.1
+      │       │   ├── exr v1.74.2
+      │       │   │   ├── (dev) ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      │       │   │   └── image v0.25.10
+      │       │   │       ├── (dev) ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      │       │   │       ├── gpui v0.2.2 (*)
+      │       │   │       ├── gpui_apple v0.1.0 (*)
+      │       │   │       ├── gpui_macos v0.1.0 (*)
+      │       │   │       └── gpui_windows v0.1.0 (*)
+      │       │   ├── naga v29.0.4
+      │       │   │   ├── wgpu-core v29.0.4 (*)
+      │       │   │   ├── wgpu-hal v29.0.4 (*)
+      │       │   │   └── wgpu-naga-bridge v29.0.4
+      │       │   │       ├── wgpu-core v29.0.4 (*)
+      │       │   │       └── wgpu-hal v29.0.4 (*)
+      │       │   └── tiff v0.11.3
+      │       │       └── image v0.25.10 (*)
+      │       └── ppv-lite86 v0.2.21
+      │           └── rand_chacha v0.9.0
+      │               └── rand v0.9.5
+      │                   ├── gpui v0.2.2 (*)
+      │                   ├── gpui_windows v0.1.0 (*)
+      │                   ├── num-bigint-dig v0.9.1
+      │                   │   └── oo7 v0.6.0 (*)
+      │                   └── scheduler v0.1.0 (*)
+      └── zeroize_derive v1.5.0
+          └── zeroize v1.9.1
+              ├── aes v0.8.4
+              │   └── oo7 v0.6.0 (*)
+              ├── cipher v0.4.4
+              │   ├── aes v0.8.4 (*)
+              │   ├── cbc v0.1.2
+              │   │   └── oo7 v0.6.0 (*)
+              │   └── oo7 v0.6.0 (*)
+              ├── num-bigint-dig v0.9.1 (*)
+              └── oo7 v0.6.0 (*)
+    ├ syn v3.0.9
+      ├── async-recursion v1.2.0
+      │   └── zbus v5.19.0
+      │       ├── accesskit_unix v0.22.1
+      │       │   └── gpui_linux v0.1.0
+      │       │       └── gpui_platform v0.1.0
+      │       │           └── ferrostage-gpui-maintenance-candidate v0.0.0
+      │       ├── ashpd v0.13.13
+      │       │   └── oo7 v0.6.0
+      │       │       └── gpui_linux v0.1.0 (*)
+      │       ├── atspi-common v0.13.0
+      │       │   ├── accesskit_atspi_common v0.19.1
+      │       │   │   └── accesskit_unix v0.22.1 (*)
+      │       │   ├── atspi v0.29.0
+      │       │   │   └── accesskit_unix v0.22.1 (*)
+      │       │   └── atspi-proxies v0.13.0
+      │       │       └── atspi v0.29.0 (*)
+      │       ├── atspi-proxies v0.13.0 (*)
+      │       ├── notify-rust v4.18.2
+      │       │   └── gpui_linux v0.1.0 (*)
+      │       └── oo7 v0.6.0 (*)
+      ├── async-trait v0.1.92
+      │   └── zbus v5.19.0 (*)
+      ├── bytemuck_derive v1.12.1
+      │   └── bytemuck v1.25.2
+      │       ├── font-types v0.11.3
+      │       │   └── read-fonts v0.37.0
+      │       │       ├── harfrust v0.5.2
+      │       │       │   └── cosmic-text v0.19.0
+      │       │       │       ├── (dev) ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      │       │       │       └── gpui_wgpu v0.1.0
+      │       │       │           └── gpui_web v0.1.0
+      │       │       │               └── gpui_platform v0.1.0 (*)
+      │       │       └── skrifa v0.40.0
+      │       │           └── cosmic-text v0.19.0 (*)
+      │       ├── font-types v0.12.6
+      │       │   └── read-fonts v0.41.0
+      │       │       ├── harfrust v0.12.0
+      │       │       │   └── usvg v0.48.1
+      │       │       │       ├── gpui v0.2.2
+      │       │       │       │   ├── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      │       │       │       │   ├── gpui_apple v0.1.0
+      │       │       │       │   │   └── gpui_macos v0.1.0
+      │       │       │       │   │       └── gpui_platform v0.1.0 (*)
+      │       │       │       │   ├── gpui_linux v0.1.0 (*)
+      │       │       │       │   ├── gpui_macos v0.1.0 (*)
+      │       │       │       │   ├── gpui_platform v0.1.0 (*)
+      │       │       │       │   ├── gpui_web v0.1.0 (*)
+      │       │       │       │   ├── gpui_wgpu v0.1.0 (*)
+      │       │       │       │   └── gpui_windows v0.1.0
+      │       │       │       │       └── gpui_platform v0.1.0 (*)
+      │       │       │       └── resvg v0.48.1
+      │       │       │           └── gpui v0.2.2 (*)
+      │       │       └── skrifa v0.44.0
+      │       │           ├── gpui v0.2.2 (*)
+      │       │           ├── swash v0.2.10
+      │       │           │   ├── cosmic-text v0.19.0 (*)
+      │       │           │   └── gpui_wgpu v0.1.0 (*)
+      │       │           └── usvg v0.48.1 (*)
+      │       ├── gpui_linux v0.1.0 (*)
+      │       ├── gpui_wgpu v0.1.0 (*)
+      │       ├── harfrust v0.12.0 (*)
+      │       ├── harfrust v0.5.2 (*)
+      │       ├── image v0.25.10
+      │       │   ├── (dev) ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      │       │   ├── gpui v0.2.2 (*)
+      │       │   ├── gpui_apple v0.1.0 (*)
+      │       │   ├── gpui_macos v0.1.0 (*)
+      │       │   └── gpui_windows v0.1.0 (*)
+      │       ├── num-complex v0.4.6
+      │       │   ├── exr v1.74.2
+      │       │   │   ├── (dev) ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      │       │   │   └── image v0.25.10 (*)
+      │       │   ├── num v0.4.3
+      │       │   │   └── oo7 v0.6.0 (*)
+      │       │   └── pulp v0.22.3
+      │       │       └── exr v1.74.2 (*)
+      │       ├── pulp v0.22.3 (*)
+      │       ├── qoi v0.4.1
+      │       │   └── image v0.25.10 (*)
+      │       ├── read-fonts v0.37.0 (*)
+      │       ├── read-fonts v0.41.0 (*)
+      │       ├── resvg v0.48.1 (*)
+      │       ├── rgb v0.8.53
+      │       │   └── resvg v0.48.1 (*)
+      │       ├── skrifa v0.40.0 (*)
+      │       ├── skrifa v0.44.0 (*)
+      │       ├── tiny-skia v0.12.0
+      │       │   └── resvg v0.48.1 (*)
+      │       ├── tiny-skia-path v0.12.0
+      │       │   ├── tiny-skia v0.12.0 (*)
+      │       │   └── usvg v0.48.1 (*)
+      │       ├── wgpu v29.0.4
+      │       │   └── gpui_wgpu v0.1.0 (*)
+      │       ├── wgpu-core v29.0.4
+      │       │   └── wgpu v29.0.4 (*)
+      │       ├── wgpu-hal v29.0.4
+      │       │   ├── wgpu v29.0.4 (*)
+      │       │   ├── wgpu-core v29.0.4 (*)
+      │       │   ├── wgpu-core-deps-apple v29.0.4
+      │       │   │   └── wgpu-core v29.0.4 (*)
+      │       │   ├── wgpu-core-deps-emscripten v29.0.4
+      │       │   │   └── wgpu-core v29.0.4 (*)
+      │       │   ├── wgpu-core-deps-wasm v29.0.4
+      │       │   │   └── wgpu-core v29.0.4 (*)
+      │       │   └── wgpu-core-deps-windows-linux-android v29.0.4
+      │       │       └── wgpu-core v29.0.4 (*)
+      │       └── wgpu-types v29.0.4
+      │           ├── wgpu v29.0.4 (*)
+      │           ├── wgpu-core v29.0.4 (*)
+      │           ├── wgpu-hal v29.0.4 (*)
+      │           └── wgpu-naga-bridge v29.0.4
+      │               ├── wgpu-core v29.0.4 (*)
+      │               └── wgpu-hal v29.0.4 (*)
+      ├── displaydoc v0.2.7
+      │   ├── icu_collections v2.3.0
+      │   │   ├── icu_normalizer v2.3.0
+      │   │   │   └── idna_adapter v1.2.2
+      │   │   │       └── idna v1.1.0
+      │   │   │           └── url v2.5.8
+      │   │   │               ├── gpui v0.2.2 (*)
+      │   │   │               ├── gpui_linux v0.1.0 (*)
+      │   │   │               └── http_client v0.1.0
+      │   │   │                   ├── gpui v0.2.2 (*)
+      │   │   │                   ├── gpui_linux v0.1.0 (*)
+      │   │   │                   └── gpui_web v0.1.0 (*)
+      │   │   └── icu_properties v2.3.0
+      │   │       └── idna_adapter v1.2.2 (*)
+      │   ├── icu_locale_core v2.3.0
+      │   │   ├── icu_properties v2.3.0 (*)
+      │   │   └── icu_provider v2.3.1
+      │   │       ├── icu_normalizer v2.3.0 (*)
+      │   │       └── icu_properties v2.3.0 (*)
+      │   ├── icu_properties v2.3.0 (*)
+      │   ├── icu_provider v2.3.1 (*)
+      │   ├── tinystr v0.8.4
+      │   │   └── icu_locale_core v2.3.0 (*)
+      │   └── zerotrie v0.2.5
+      │       ├── icu_properties v2.3.0 (*)
+      │       └── icu_provider v2.3.1 (*)
+      ├── foreign-types-macros v0.2.4
+      │   └── foreign-types v0.5.0
+      │       ├── cocoa v0.26.0
+      │       │   ├── gpui_apple v0.1.0 (*)
+      │       │   └── gpui_macos v0.1.0 (*)
+      │       ├── core-graphics v0.24.0
+      │       │   ├── cocoa v0.26.0 (*)
+      │       │   ├── core-text v21.0.0
+      │       │   │   └── gpui_macos v0.1.0 (*)
+      │       │   └── gpui_macos v0.1.0 (*)
+      │       ├── core-text v21.0.0 (*)
+      │       ├── gpui_apple v0.1.0 (*)
+      │       ├── gpui_macos v0.1.0 (*)
+      │       └── metal v0.33.0
+      │           ├── core-video v0.5.2
+      │           │   ├── gpui v0.2.2 (*)
+      │           │   └── gpui_apple v0.1.0 (*)
+      │           └── gpui_apple v0.1.0 (*)
+      ├── futures-macro v0.3.34
+      │   └── futures-util v0.3.34
+      │       ├── accesskit_unix v0.22.1 (*)
+      │       ├── ashpd v0.13.13 (*)
+      │       ├── futures v0.3.34
+      │       │   ├── gpui v0.2.2 (*)
+      │       │   ├── gpui_linux v0.1.0 (*)
+      │       │   ├── gpui_macos v0.1.0 (*)
+      │       │   ├── gpui_web v0.1.0 (*)
+      │       │   ├── gpui_windows v0.1.0 (*)
+      │       │   ├── http_client v0.1.0 (*)
+      │       │   ├── postage v0.5.0
+      │       │   │   └── gpui v0.2.2 (*)
+      │       │   ├── scheduler v0.1.0
+      │       │   │   ├── gpui v0.2.2 (*)
+      │       │   │   └── gpui_web v0.1.0 (*)
+      │       │   └── wasm_thread v0.3.3
+      │       │       ├── gpui_web v0.1.0 (*)
+      │       │       └── scheduler v0.1.0 (*)
+      │       ├── futures-executor v0.3.34
+      │       │   └── futures v0.3.34 (*)
+      │       ├── js-sys v0.3.106
+      │       │   ├── chrono v0.4.45
+      │       │   │   ├── gpui v0.2.2 (*)
+      │       │   │   ├── scheduler v0.1.0 (*)
+      │       │   │   └── zlog v0.1.0
+      │       │   │       └── ztracing v0.1.0
+      │       │   │           └── sum_tree v0.1.0
+      │       │   │               └── gpui v0.2.2 (*)
+      │       │   ├── getrandom v0.3.4
+      │       │   │   ├── gpui v0.2.2 (*)
+      │       │   │   └── rand_core v0.9.5
+      │       │   │       ├── rand v0.9.5
+      │       │   │       │   ├── gpui v0.2.2 (*)
+      │       │   │       │   ├── gpui_windows v0.1.0 (*)
+      │       │   │       │   ├── num-bigint-dig v0.9.1
+      │       │   │       │   │   └── oo7 v0.6.0 (*)
+      │       │   │       │   └── scheduler v0.1.0 (*)
+      │       │   │       └── rand_chacha v0.9.0
+      │       │   │           └── rand v0.9.5 (*)
+      │       │   ├── getrandom v0.4.3
+      │       │   │   ├── ashpd v0.13.13 (*)
+      │       │   │   ├── fastrand v2.5.0
+      │       │   │   │   ├── async-executor v1.14.0
+      │       │   │   │   │   ├── accesskit_unix v0.22.1 (*)
+      │       │   │   │   │   ├── smol v2.0.2
+      │       │   │   │   │   │   └── gpui_linux v0.1.0 (*)
+      │       │   │   │   │   └── zbus v5.19.0 (*)
+      │       │   │   │   ├── flume v0.12.0
+      │       │   │   │   │   └── scheduler v0.1.0 (*)
+      │       │   │   │   ├── futures-lite v2.6.1
+      │       │   │   │   │   ├── accesskit_unix v0.22.1 (*)
+      │       │   │   │   │   ├── async-executor v1.14.0 (*)
+      │       │   │   │   │   ├── async-fs v2.2.0
+      │       │   │   │   │   │   ├── oo7 v0.6.0 (*)
+      │       │   │   │   │   │   └── smol v2.0.2 (*)
+      │       │   │   │   │   ├── async-io v2.6.0
+      │       │   │   │   │   │   ├── async-net v2.0.0
+      │       │   │   │   │   │   │   └── smol v2.0.2 (*)
+      │       │   │   │   │   │   ├── async-process v2.5.0
+      │       │   │   │   │   │   │   ├── smol v2.0.2 (*)
+      │       │   │   │   │   │   │   └── zbus v5.19.0 (*)
+      │       │   │   │   │   │   ├── async-signal v0.2.14
+      │       │   │   │   │   │   │   └── async-process v2.5.0 (*)
+      │       │   │   │   │   │   ├── oo7 v0.6.0 (*)
+      │       │   │   │   │   │   ├── smol v2.0.2 (*)
+      │       │   │   │   │   │   └── zbus v5.19.0 (*)
+      │       │   │   │   │   ├── async-net v2.0.0 (*)
+      │       │   │   │   │   ├── async-process v2.5.0 (*)
+      │       │   │   │   │   ├── blocking v1.7.0
+      │       │   │   │   │   │   ├── async-fs v2.2.0 (*)
+      │       │   │   │   │   │   ├── async-net v2.0.0 (*)
+      │       │   │   │   │   │   ├── async-process v2.5.0 (*)
+      │       │   │   │   │   │   ├── oo7 v0.6.0 (*)
+      │       │   │   │   │   │   ├── smol v2.0.2 (*)
+      │       │   │   │   │   │   └── zbus v5.19.0 (*)
+      │       │   │   │   │   ├── futures-concurrency v7.7.1
+      │       │   │   │   │   │   └── gpui v0.2.2 (*)
+      │       │   │   │   │   ├── notify-rust v4.18.2 (*)
+      │       │   │   │   │   ├── oo7 v0.6.0 (*)
+      │       │   │   │   │   ├── smol v2.0.2 (*)
+      │       │   │   │   │   └── zbus v5.19.0 (*)
+      │       │   │   │   ├── phf_generator v0.13.1
+      │       │   │   │   │   └── phf_macros v0.13.1
+      │       │   │   │   │       └── phf v0.13.1
+      │       │   │   │   │           └── accesskit_atspi_common v0.19.1 (*)
+      │       │   │   │   ├── piper v0.2.5
+      │       │   │   │   │   └── blocking v1.7.0 (*)
+      │       │   │   │   └── tempfile v3.27.0
+      │       │   │   │       ├── cbindgen v0.28.0
+      │       │   │   │       │   └── (build) gpui_apple v0.1.0 (*)
+      │       │   │   │       └── uds_windows v1.2.1
+      │       │   │   │           └── zbus v5.19.0 (*)
+      │       │   │   ├── oo7 v0.6.0 (*)
+      │       │   │   ├── tempfile v3.27.0 (*)
+      │       │   │   └── uuid v1.28.0
+      │       │   │       ├── accesskit v0.24.1
+      │       │   │       │   ├── accesskit_atspi_common v0.19.1 (*)
+      │       │   │       │   ├── accesskit_consumer v0.38.0
+      │       │   │       │   │   ├── accesskit_atspi_common v0.19.1 (*)
+      │       │   │       │   │   ├── accesskit_macos v0.26.3
+      │       │   │       │   │   │   └── gpui_macos v0.1.0 (*)
+      │       │   │       │   │   └── accesskit_windows v0.34.0
+      │       │   │       │   │       └── gpui_windows v0.1.0 (*)
+      │       │   │       │   ├── accesskit_macos v0.26.3 (*)
+      │       │   │       │   ├── accesskit_unix v0.22.1 (*)
+      │       │   │       │   ├── accesskit_windows v0.34.0 (*)
+      │       │   │       │   ├── gpui v0.2.2 (*)
+      │       │   │       │   ├── gpui_linux v0.1.0 (*)
+      │       │   │       │   ├── gpui_macos v0.1.0 (*)
+      │       │   │       │   └── gpui_windows v0.1.0 (*)
+      │       │   │       ├── gpui v0.2.2 (*)
+      │       │   │       ├── gpui_linux v0.1.0 (*)
+      │       │   │       ├── gpui_macos v0.1.0 (*)
+      │       │   │       ├── gpui_web v0.1.0 (*)
+      │       │   │       ├── gpui_windows v0.1.0 (*)
+      │       │   │       ├── mac-notification-sys v0.6.15
+      │       │   │       │   └── notify-rust v4.18.2 (*)
+      │       │   │       └── zbus v5.19.0 (*)
+      │       │   ├── glow v0.17.0
+      │       │   │   └── wgpu-hal v29.0.4 (*)
+      │       │   ├── gpui_web v0.1.0 (*)
+      │       │   ├── iana-time-zone v0.1.65
+      │       │   │   └── chrono v0.4.45 (*)
+      │       │   ├── uuid v1.28.0 (*)
+      │       │   ├── wasm-bindgen-futures v0.4.79
+      │       │   │   ├── gpui_web v0.1.0 (*)
+      │       │   │   └── wgpu v29.0.4 (*)
+      │       │   ├── wasm_thread v0.3.3 (*)
+      │       │   ├── web-sys v0.3.106
+      │       │   │   ├── glow v0.17.0 (*)
+      │       │   │   ├── gpui_web v0.1.0 (*)
+      │       │   │   ├── gpui_wgpu v0.1.0 (*)
+      │       │   │   ├── wasm_thread v0.3.3 (*)
+      │       │   │   ├── wgpu v29.0.4 (*)
+      │       │   │   ├── wgpu-hal v29.0.4 (*)
+      │       │   │   └── wgpu-types v29.0.4 (*)
+      │       │   ├── web-time v1.1.0
+      │       │   │   ├── gpui v0.2.2 (*)
+      │       │   │   ├── gpui_web v0.1.0 (*)
+      │       │   │   └── scheduler v0.1.0 (*)
+      │       │   ├── wgpu v29.0.4 (*)
+      │       │   ├── wgpu-hal v29.0.4 (*)
+      │       │   └── wgpu-types v29.0.4 (*)
+      │       └── oo7 v0.6.0 (*)
+      ├── ref-cast-impl v1.0.27
+      │   └── ref-cast v1.0.27
+      │       └── schemars v1.2.3
+      │           ├── gpui v0.2.2 (*)
+      │           └── gpui_shared_string v0.1.0
+      │               └── gpui v0.2.2 (*)
+      ├── schemars_derive v1.2.3
+      │   └── schemars v1.2.3 (*)
+      ├── serde_derive v1.0.229
+      │   └── serde v1.0.229
+      │       ├── accesskit_atspi_common v0.19.1 (*)
+      │       ├── accesskit_unix v0.22.1 (*)
+      │       ├── ashpd v0.13.13 (*)
+      │       ├── atspi-common v0.13.0 (*)
+      │       ├── atspi-proxies v0.13.0 (*)
+      │       ├── cbindgen v0.28.0 (*)
+      │       ├── chrono v0.4.45 (*)
+      │       ├── enumflags2 v0.7.12
+      │       │   ├── ashpd v0.13.13 (*)
+      │       │   ├── atspi-common v0.13.0 (*)
+      │       │   ├── zbus v5.19.0 (*)
+      │       │   └── zvariant v5.15.0
+      │       │       ├── accesskit_atspi_common v0.19.1 (*)
+      │       │       ├── atspi-common v0.13.0 (*)
+      │       │       ├── oo7 v0.6.0 (*)
+      │       │       ├── zbus v5.19.0 (*)
+      │       │       ├── zbus-lockstep v0.5.2
+      │       │       │   ├── atspi-common v0.13.0 (*)
+      │       │       │   └── zbus-lockstep-macros v0.5.2
+      │       │       │       └── atspi-common v0.13.0 (*)
+      │       │       ├── zbus-lockstep-macros v0.5.2 (*)
+      │       │       ├── zbus_macros v5.19.0
+      │       │       │   ├── oo7 v0.6.0 (*)
+      │       │       │   └── zbus v5.19.0 (*)
+      │       │       ├── zbus_names v4.3.4
+      │       │       │   ├── atspi-common v0.13.0 (*)
+      │       │       │   ├── zbus v5.19.0 (*)
+      │       │       │   ├── zbus_macros v5.19.0 (*)
+      │       │       │   └── zbus_xml v5.2.1
+      │       │       │       ├── zbus-lockstep v0.5.2 (*)
+      │       │       │       └── zbus-lockstep-macros v0.5.2 (*)
+      │       │       └── zbus_xml v5.2.1 (*)
+      │       ├── gpui v0.2.2 (*)
+      │       ├── gpui_shared_string v0.1.0 (*)
+      │       ├── http_client v0.1.0 (*)
+      │       ├── notify-rust v4.18.2 (*)
+      │       ├── num-bigint-dig v0.9.1 (*)
+      │       ├── oo7 v0.6.0 (*)
+      │       ├── perf v0.1.0
+      │       │   └── util_macros v0.1.0
+      │       │       └── gpui v0.2.2 (*)
+      │       ├── schemars v1.2.3 (*)
+      │       ├── serde_spanned v0.6.9
+      │       │   ├── toml v0.8.23
+      │       │   │   └── cbindgen v0.28.0 (*)
+      │       │   └── toml_edit v0.22.27
+      │       │       └── toml v0.8.23 (*)
+      │       ├── serde_urlencoded v0.7.1
+      │       │   └── http_client v0.1.0 (*)
+      │       ├── toml v0.8.23 (*)
+      │       ├── toml_datetime v0.6.11
+      │       │   ├── toml v0.8.23 (*)
+      │       │   └── toml_edit v0.22.27 (*)
+      │       ├── toml_edit v0.22.27 (*)
+      │       ├── zbus v5.19.0 (*)
+      │       ├── zbus_names v4.3.4 (*)
+      │       ├── zbus_xml v5.2.1 (*)
+      │       ├── zcheapstr v1.1.0
+      │       │   └── zvariant v5.15.0 (*)
+      │       ├── zvariant v5.15.0 (*)
+      │       └── zvariant_utils v4.2.0
+      │           ├── zbus_macros v5.19.0 (*)
+      │           ├── zvariant v5.15.0 (*)
+      │           └── zvariant_derive v5.15.0
+      │               └── zvariant v5.15.0 (*)
+      ├── serde_derive_internals v0.30.0
+      │   └── schemars_derive v1.2.3 (*)
+      ├── serde_repr v0.1.21
+      │   └── zbus v5.19.0 (*)
+      ├── synstructure v0.14.0
+      │   ├── yoke-derive v0.8.4
+      │   │   └── yoke v0.8.3
+      │   │       ├── icu_collections v2.3.0 (*)
+      │   │       ├── icu_provider v2.3.1 (*)
+      │   │       ├── zerotrie v0.2.5 (*)
+      │   │       └── zerovec v0.11.8
+      │   │           ├── icu_collections v2.3.0 (*)
+      │   │           ├── icu_locale_core v2.3.0 (*)
+      │   │           ├── icu_normalizer v2.3.0 (*)
+      │   │           ├── icu_properties v2.3.0 (*)
+      │   │           ├── icu_provider v2.3.1 (*)
+      │   │           ├── potential_utf v0.1.6
+      │   │           │   └── icu_collections v2.3.0 (*)
+      │   │           └── tinystr v0.8.4 (*)
+      │   └── zerofrom-derive v0.1.8
+      │       └── zerofrom v0.1.8
+      │           ├── icu_collections v2.3.0 (*)
+      │           ├── icu_provider v2.3.1 (*)
+      │           ├── yoke v0.8.3 (*)
+      │           ├── zerotrie v0.2.5 (*)
+      │           └── zerovec v0.11.8 (*)
+      ├── thiserror-impl v2.0.21
+      │   └── thiserror v2.0.21
+      │       ├── gpu-allocator v0.28.0
+      │       │   └── wgpu-hal v29.0.4 (*)
+      │       ├── gpui v0.2.2 (*)
+      │       ├── naga v29.0.4
+      │       │   ├── wgpu-core v29.0.4 (*)
+      │       │   ├── wgpu-hal v29.0.4 (*)
+      │       │   └── wgpu-naga-bridge v29.0.4 (*)
+      │       ├── tauri-winrt-notification v0.8.1
+      │       │   └── notify-rust v4.18.2 (*)
+      │       ├── wgpu-core v29.0.4 (*)
+      │       └── wgpu-hal v29.0.4 (*)
+      ├── wasm-bindgen-macro-support v0.2.129
+      │   └── wasm-bindgen-macro v0.2.129
+      │       └── wasm-bindgen v0.2.129
+      │           ├── chrono v0.4.45 (*)
+      │           ├── console_error_panic_hook v0.1.7
+      │           │   ├── gpui_platform v0.1.0 (*)
+      │           │   └── gpui_web v0.1.0 (*)
+      │           ├── getrandom v0.3.4 (*)
+      │           ├── getrandom v0.4.3 (*)
+      │           ├── glow v0.17.0 (*)
+      │           ├── gpui_web v0.1.0 (*)
+      │           ├── iana-time-zone v0.1.65 (*)
+      │           ├── js-sys v0.3.106 (*)
+      │           ├── uuid v1.28.0 (*)
+      │           ├── wasm-bindgen-futures v0.4.79 (*)
+      │           ├── wasm_thread v0.3.3 (*)
+      │           ├── web-sys v0.3.106 (*)
+      │           ├── web-time v1.1.0 (*)
+      │           ├── wgpu v29.0.4 (*)
+      │           └── wgpu-hal v29.0.4 (*)
+      ├── yoke-derive v0.8.4 (*)
+      ├── zbus_macros v5.19.0 (*)
+      ├── zerofrom-derive v0.1.8 (*)
+      ├── zerovec-derive v0.11.6
+      │   └── zerovec v0.11.8 (*)
+      ├── zvariant_derive v5.15.0 (*)
+      └── zvariant_utils v4.2.0 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'thiserror'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:422:1
+    │  
+422 │ ╭ thiserror 1.0.69 registry+https://github.com/rust-lang/crates.io-index
+423 │ │ thiserror 2.0.21 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰──────────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ thiserror v1.0.69
+      └── postage v0.5.0
+          └── gpui v0.2.2
+              ├── ferrostage-gpui-maintenance-candidate v0.0.0
+              ├── gpui_apple v0.1.0
+              │   └── gpui_macos v0.1.0
+              │       └── gpui_platform v0.1.0
+              │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+              ├── gpui_linux v0.1.0
+              │   └── gpui_platform v0.1.0 (*)
+              ├── gpui_macos v0.1.0 (*)
+              ├── gpui_platform v0.1.0 (*)
+              ├── gpui_web v0.1.0
+              │   └── gpui_platform v0.1.0 (*)
+              ├── gpui_wgpu v0.1.0
+              │   └── gpui_web v0.1.0 (*)
+              └── gpui_windows v0.1.0
+                  └── gpui_platform v0.1.0 (*)
+    ├ thiserror v2.0.21
+      ├── gpu-allocator v0.28.0
+      │   └── wgpu-hal v29.0.4
+      │       ├── wgpu v29.0.4
+      │       │   └── gpui_wgpu v0.1.0
+      │       │       └── gpui_web v0.1.0
+      │       │           └── gpui_platform v0.1.0
+      │       │               └── ferrostage-gpui-maintenance-candidate v0.0.0
+      │       ├── wgpu-core v29.0.4
+      │       │   └── wgpu v29.0.4 (*)
+      │       ├── wgpu-core-deps-apple v29.0.4
+      │       │   └── wgpu-core v29.0.4 (*)
+      │       ├── wgpu-core-deps-emscripten v29.0.4
+      │       │   └── wgpu-core v29.0.4 (*)
+      │       ├── wgpu-core-deps-wasm v29.0.4
+      │       │   └── wgpu-core v29.0.4 (*)
+      │       └── wgpu-core-deps-windows-linux-android v29.0.4
+      │           └── wgpu-core v29.0.4 (*)
+      ├── gpui v0.2.2
+      │   ├── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      │   ├── gpui_apple v0.1.0
+      │   │   └── gpui_macos v0.1.0
+      │   │       └── gpui_platform v0.1.0 (*)
+      │   ├── gpui_linux v0.1.0
+      │   │   └── gpui_platform v0.1.0 (*)
+      │   ├── gpui_macos v0.1.0 (*)
+      │   ├── gpui_platform v0.1.0 (*)
+      │   ├── gpui_web v0.1.0 (*)
+      │   ├── gpui_wgpu v0.1.0 (*)
+      │   └── gpui_windows v0.1.0
+      │       └── gpui_platform v0.1.0 (*)
+      ├── naga v29.0.4
+      │   ├── wgpu-core v29.0.4 (*)
+      │   ├── wgpu-hal v29.0.4 (*)
+      │   └── wgpu-naga-bridge v29.0.4
+      │       ├── wgpu-core v29.0.4 (*)
+      │       └── wgpu-hal v29.0.4 (*)
+      ├── tauri-winrt-notification v0.8.1
+      │   └── notify-rust v4.18.2
+      │       └── gpui_linux v0.1.0 (*)
+      ├── wgpu-core v29.0.4 (*)
+      └── wgpu-hal v29.0.4 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'thiserror-impl'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:424:1
+    │  
+424 │ ╭ thiserror-impl 1.0.69 registry+https://github.com/rust-lang/crates.io-index
+425 │ │ thiserror-impl 2.0.21 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰───────────────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ thiserror-impl v1.0.69
+      └── thiserror v1.0.69
+          └── postage v0.5.0
+              └── gpui v0.2.2
+                  ├── ferrostage-gpui-maintenance-candidate v0.0.0
+                  ├── gpui_apple v0.1.0
+                  │   └── gpui_macos v0.1.0
+                  │       └── gpui_platform v0.1.0
+                  │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+                  ├── gpui_linux v0.1.0
+                  │   └── gpui_platform v0.1.0 (*)
+                  ├── gpui_macos v0.1.0 (*)
+                  ├── gpui_platform v0.1.0 (*)
+                  ├── gpui_web v0.1.0
+                  │   └── gpui_platform v0.1.0 (*)
+                  ├── gpui_wgpu v0.1.0
+                  │   └── gpui_web v0.1.0 (*)
+                  └── gpui_windows v0.1.0
+                      └── gpui_platform v0.1.0 (*)
+    ├ thiserror-impl v2.0.21
+      └── thiserror v2.0.21
+          ├── gpu-allocator v0.28.0
+          │   └── wgpu-hal v29.0.4
+          │       ├── wgpu v29.0.4
+          │       │   └── gpui_wgpu v0.1.0
+          │       │       └── gpui_web v0.1.0
+          │       │           └── gpui_platform v0.1.0
+          │       │               └── ferrostage-gpui-maintenance-candidate v0.0.0
+          │       ├── wgpu-core v29.0.4
+          │       │   └── wgpu v29.0.4 (*)
+          │       ├── wgpu-core-deps-apple v29.0.4
+          │       │   └── wgpu-core v29.0.4 (*)
+          │       ├── wgpu-core-deps-emscripten v29.0.4
+          │       │   └── wgpu-core v29.0.4 (*)
+          │       ├── wgpu-core-deps-wasm v29.0.4
+          │       │   └── wgpu-core v29.0.4 (*)
+          │       └── wgpu-core-deps-windows-linux-android v29.0.4
+          │           └── wgpu-core v29.0.4 (*)
+          ├── gpui v0.2.2
+          │   ├── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+          │   ├── gpui_apple v0.1.0
+          │   │   └── gpui_macos v0.1.0
+          │   │       └── gpui_platform v0.1.0 (*)
+          │   ├── gpui_linux v0.1.0
+          │   │   └── gpui_platform v0.1.0 (*)
+          │   ├── gpui_macos v0.1.0 (*)
+          │   ├── gpui_platform v0.1.0 (*)
+          │   ├── gpui_web v0.1.0 (*)
+          │   ├── gpui_wgpu v0.1.0 (*)
+          │   └── gpui_windows v0.1.0
+          │       └── gpui_platform v0.1.0 (*)
+          ├── naga v29.0.4
+          │   ├── wgpu-core v29.0.4 (*)
+          │   ├── wgpu-hal v29.0.4 (*)
+          │   └── wgpu-naga-bridge v29.0.4
+          │       ├── wgpu-core v29.0.4 (*)
+          │       └── wgpu-hal v29.0.4 (*)
+          ├── tauri-winrt-notification v0.8.1
+          │   └── notify-rust v4.18.2
+          │       └── gpui_linux v0.1.0 (*)
+          ├── wgpu-core v29.0.4 (*)
+          └── wgpu-hal v29.0.4 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'toml'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:435:1
+    │  
+435 │ ╭ toml 0.8.23 registry+https://github.com/rust-lang/crates.io-index
+436 │ │ toml 1.1.8+spec-1.1.0 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰───────────────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ toml v0.8.23
+      └── cbindgen v0.28.0
+          └── (build) gpui_apple v0.1.0
+              └── gpui_macos v0.1.0
+                  └── gpui_platform v0.1.0
+                      └── ferrostage-gpui-maintenance-candidate v0.0.0
+    ├ toml v1.1.8+spec-1.1.0
+      └── embed-resource v3.0.12
+          └── (build) gpui v0.2.2
+              ├── ferrostage-gpui-maintenance-candidate v0.0.0
+              ├── gpui_apple v0.1.0
+              │   └── gpui_macos v0.1.0
+              │       └── gpui_platform v0.1.0
+              │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+              ├── gpui_linux v0.1.0
+              │   └── gpui_platform v0.1.0 (*)
+              ├── gpui_macos v0.1.0 (*)
+              ├── gpui_platform v0.1.0 (*)
+              ├── gpui_web v0.1.0
+              │   └── gpui_platform v0.1.0 (*)
+              ├── gpui_wgpu v0.1.0
+              │   └── gpui_web v0.1.0 (*)
+              └── gpui_windows v0.1.0
+                  └── gpui_platform v0.1.0 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'toml_datetime'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:437:1
+    │  
+437 │ ╭ toml_datetime 0.6.11 registry+https://github.com/rust-lang/crates.io-index
+438 │ │ toml_datetime 1.1.2+spec-1.1.0 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰────────────────────────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ toml_datetime v0.6.11
+      ├── toml v0.8.23
+      │   └── cbindgen v0.28.0
+      │       └── (build) gpui_apple v0.1.0
+      │           └── gpui_macos v0.1.0
+      │               └── gpui_platform v0.1.0
+      │                   └── ferrostage-gpui-maintenance-candidate v0.0.0
+      └── toml_edit v0.22.27
+          └── toml v0.8.23 (*)
+    ├ toml_datetime v1.1.2+spec-1.1.0
+      ├── toml v1.1.8+spec-1.1.0
+      │   └── embed-resource v3.0.12
+      │       └── (build) gpui v0.2.2
+      │           ├── ferrostage-gpui-maintenance-candidate v0.0.0
+      │           ├── gpui_apple v0.1.0
+      │           │   └── gpui_macos v0.1.0
+      │           │       └── gpui_platform v0.1.0
+      │           │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      │           ├── gpui_linux v0.1.0
+      │           │   └── gpui_platform v0.1.0 (*)
+      │           ├── gpui_macos v0.1.0 (*)
+      │           ├── gpui_platform v0.1.0 (*)
+      │           ├── gpui_web v0.1.0
+      │           │   └── gpui_platform v0.1.0 (*)
+      │           ├── gpui_wgpu v0.1.0
+      │           │   └── gpui_web v0.1.0 (*)
+      │           └── gpui_windows v0.1.0
+      │               └── gpui_platform v0.1.0 (*)
+      └── toml_edit v0.25.17+spec-1.1.0
+          └── proc-macro-crate v3.5.0
+              ├── zbus_macros v5.19.0
+              │   ├── oo7 v0.6.0
+              │   │   └── gpui_linux v0.1.0 (*)
+              │   └── zbus v5.19.0
+              │       ├── accesskit_unix v0.22.1
+              │       │   └── gpui_linux v0.1.0 (*)
+              │       ├── ashpd v0.13.13
+              │       │   └── oo7 v0.6.0 (*)
+              │       ├── atspi-common v0.13.0
+              │       │   ├── accesskit_atspi_common v0.19.1
+              │       │   │   └── accesskit_unix v0.22.1 (*)
+              │       │   ├── atspi v0.29.0
+              │       │   │   └── accesskit_unix v0.22.1 (*)
+              │       │   └── atspi-proxies v0.13.0
+              │       │       └── atspi v0.29.0 (*)
+              │       ├── atspi-proxies v0.13.0 (*)
+              │       ├── notify-rust v4.18.2
+              │       │   └── gpui_linux v0.1.0 (*)
+              │       └── oo7 v0.6.0 (*)
+              └── zvariant_derive v5.15.0
+                  └── zvariant v5.15.0
+                      ├── accesskit_atspi_common v0.19.1 (*)
+                      ├── atspi-common v0.13.0 (*)
+                      ├── oo7 v0.6.0 (*)
+                      ├── zbus v5.19.0 (*)
+                      ├── zbus-lockstep v0.5.2
+                      │   ├── atspi-common v0.13.0 (*)
+                      │   └── zbus-lockstep-macros v0.5.2
+                      │       └── atspi-common v0.13.0 (*)
+                      ├── zbus-lockstep-macros v0.5.2 (*)
+                      ├── zbus_macros v5.19.0 (*)
+                      ├── zbus_names v4.3.4
+                      │   ├── atspi-common v0.13.0 (*)
+                      │   ├── zbus v5.19.0 (*)
+                      │   ├── zbus_macros v5.19.0 (*)
+                      │   └── zbus_xml v5.2.1
+                      │       ├── zbus-lockstep v0.5.2 (*)
+                      │       └── zbus-lockstep-macros v0.5.2 (*)
+                      └── zbus_xml v5.2.1 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'toml_edit'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:439:1
+    │  
+439 │ ╭ toml_edit 0.22.27 registry+https://github.com/rust-lang/crates.io-index
+440 │ │ toml_edit 0.25.17+spec-1.1.0 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰──────────────────────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ toml_edit v0.22.27
+      └── toml v0.8.23
+          └── cbindgen v0.28.0
+              └── (build) gpui_apple v0.1.0
+                  └── gpui_macos v0.1.0
+                      └── gpui_platform v0.1.0
+                          └── ferrostage-gpui-maintenance-candidate v0.0.0
+    ├ toml_edit v0.25.17+spec-1.1.0
+      └── proc-macro-crate v3.5.0
+          ├── zbus_macros v5.19.0
+          │   ├── oo7 v0.6.0
+          │   │   └── gpui_linux v0.1.0
+          │   │       └── gpui_platform v0.1.0
+          │   │           └── ferrostage-gpui-maintenance-candidate v0.0.0
+          │   └── zbus v5.19.0
+          │       ├── accesskit_unix v0.22.1
+          │       │   └── gpui_linux v0.1.0 (*)
+          │       ├── ashpd v0.13.13
+          │       │   └── oo7 v0.6.0 (*)
+          │       ├── atspi-common v0.13.0
+          │       │   ├── accesskit_atspi_common v0.19.1
+          │       │   │   └── accesskit_unix v0.22.1 (*)
+          │       │   ├── atspi v0.29.0
+          │       │   │   └── accesskit_unix v0.22.1 (*)
+          │       │   └── atspi-proxies v0.13.0
+          │       │       └── atspi v0.29.0 (*)
+          │       ├── atspi-proxies v0.13.0 (*)
+          │       ├── notify-rust v4.18.2
+          │       │   └── gpui_linux v0.1.0 (*)
+          │       └── oo7 v0.6.0 (*)
+          └── zvariant_derive v5.15.0
+              └── zvariant v5.15.0
+                  ├── accesskit_atspi_common v0.19.1 (*)
+                  ├── atspi-common v0.13.0 (*)
+                  ├── oo7 v0.6.0 (*)
+                  ├── zbus v5.19.0 (*)
+                  ├── zbus-lockstep v0.5.2
+                  │   ├── atspi-common v0.13.0 (*)
+                  │   └── zbus-lockstep-macros v0.5.2
+                  │       └── atspi-common v0.13.0 (*)
+                  ├── zbus-lockstep-macros v0.5.2 (*)
+                  ├── zbus_macros v5.19.0 (*)
+                  ├── zbus_names v4.3.4
+                  │   ├── atspi-common v0.13.0 (*)
+                  │   ├── zbus v5.19.0 (*)
+                  │   ├── zbus_macros v5.19.0 (*)
+                  │   └── zbus_xml v5.2.1
+                  │       ├── zbus-lockstep v0.5.2 (*)
+                  │       └── zbus-lockstep-macros v0.5.2 (*)
+                  └── zbus_xml v5.2.1 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'winnow'
+    ┌─ D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate/Cargo.lock:507:1
+    │  
+507 │ ╭ winnow 0.7.15 registry+https://github.com/rust-lang/crates.io-index
+508 │ │ winnow 1.0.4 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰──────────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ winnow v0.7.15
+      └── toml_edit v0.22.27
+          └── toml v0.8.23
+              └── cbindgen v0.28.0
+                  └── (build) gpui_apple v0.1.0
+                      └── gpui_macos v0.1.0
+                          └── gpui_platform v0.1.0
+                              └── ferrostage-gpui-maintenance-candidate v0.0.0
+    ├ winnow v1.0.4
+      ├── toml v1.1.8+spec-1.1.0
+      │   └── embed-resource v3.0.12
+      │       └── (build) gpui v0.2.2
+      │           ├── ferrostage-gpui-maintenance-candidate v0.0.0
+      │           ├── gpui_apple v0.1.0
+      │           │   └── gpui_macos v0.1.0
+      │           │       └── gpui_platform v0.1.0
+      │           │           └── ferrostage-gpui-maintenance-candidate v0.0.0 (*)
+      │           ├── gpui_linux v0.1.0
+      │           │   └── gpui_platform v0.1.0 (*)
+      │           ├── gpui_macos v0.1.0 (*)
+      │           ├── gpui_platform v0.1.0 (*)
+      │           ├── gpui_web v0.1.0
+      │           │   └── gpui_platform v0.1.0 (*)
+      │           ├── gpui_wgpu v0.1.0
+      │           │   └── gpui_web v0.1.0 (*)
+      │           └── gpui_windows v0.1.0
+      │               └── gpui_platform v0.1.0 (*)
+      ├── toml_edit v0.25.17+spec-1.1.0
+      │   └── proc-macro-crate v3.5.0
+      │       ├── zbus_macros v5.19.0
+      │       │   ├── oo7 v0.6.0
+      │       │   │   └── gpui_linux v0.1.0 (*)
+      │       │   └── zbus v5.19.0
+      │       │       ├── accesskit_unix v0.22.1
+      │       │       │   └── gpui_linux v0.1.0 (*)
+      │       │       ├── ashpd v0.13.13
+      │       │       │   └── oo7 v0.6.0 (*)
+      │       │       ├── atspi-common v0.13.0
+      │       │       │   ├── accesskit_atspi_common v0.19.1
+      │       │       │   │   └── accesskit_unix v0.22.1 (*)
+      │       │       │   ├── atspi v0.29.0
+      │       │       │   │   └── accesskit_unix v0.22.1 (*)
+      │       │       │   └── atspi-proxies v0.13.0
+      │       │       │       └── atspi v0.29.0 (*)
+      │       │       ├── atspi-proxies v0.13.0 (*)
+      │       │       ├── notify-rust v4.18.2
+      │       │       │   └── gpui_linux v0.1.0 (*)
+      │       │       └── oo7 v0.6.0 (*)
+      │       └── zvariant_derive v5.15.0
+      │           └── zvariant v5.15.0
+      │               ├── accesskit_atspi_common v0.19.1 (*)
+      │               ├── atspi-common v0.13.0 (*)
+      │               ├── oo7 v0.6.0 (*)
+      │               ├── zbus v5.19.0 (*)
+      │               ├── zbus-lockstep v0.5.2
+      │               │   ├── atspi-common v0.13.0 (*)
+      │               │   └── zbus-lockstep-macros v0.5.2
+      │               │       └── atspi-common v0.13.0 (*)
+      │               ├── zbus-lockstep-macros v0.5.2 (*)
+      │               ├── zbus_macros v5.19.0 (*)
+      │               ├── zbus_names v4.3.4
+      │               │   ├── atspi-common v0.13.0 (*)
+      │               │   ├── zbus v5.19.0 (*)
+      │               │   ├── zbus_macros v5.19.0 (*)
+      │               │   └── zbus_xml v5.2.1
+      │               │       ├── zbus-lockstep v0.5.2 (*)
+      │               │       └── zbus-lockstep-macros v0.5.2 (*)
+      │               └── zbus_xml v5.2.1 (*)
+      ├── toml_parser v1.1.5+spec-1.1.0
+      │   ├── toml v1.1.8+spec-1.1.0 (*)
+      │   └── toml_edit v0.25.17+spec-1.1.0 (*)
+      ├── zbus v5.19.0 (*)
+      ├── zbus_names v4.3.4 (*)
+      ├── zbus_xml v5.2.1 (*)
+      ├── zvariant v5.15.0 (*)
+      └── zvariant_utils v4.2.0
+          ├── zbus_macros v5.19.0 (*)
+          ├── zvariant v5.15.0 (*)
+          └── zvariant_derive v5.15.0 (*)
+
+advisories ok, bans ok, licenses FAILED, sources ok

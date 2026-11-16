@@ -1,0 +1,91 @@
+RUNNING: python -X utf8 .trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-audit.py initial
+INITIAL HASH AUDIT EXIT: 0
+RUNNING: cargo test --manifest-path cache/gpui-maintenance-cmap-proof/Cargo.toml --offline -- --nocapture
+CMAP PROBE EXIT: 101
+RUNNING: python -X utf8 .trellis/tasks/10-14-07-gpui-shell/research/maintenance-independent-reproduce.py
+REPRODUCTION EXIT: 1
+RUNNING: independent reproduction retry after reviewer omitted fixture copy
+REPRODUCTION RETRY EXIT: 0
+RUNNING: git exact revision diff and status of all 16 retained upstream input paths
+TAG DIFF EXIT: 128; TAG STATUS EXIT: 128
+HELPER REPAIR EXIT: 0
+REPAIR FORMAT EXIT: 0
+RUNNING: cargo test --manifest-path cache/gpui-maintenance-cmap-proof/Cargo.toml --offline -- --nocapture (repaired helper extracted from actual GPUI)
+REPAIRED PROBE EXIT: 0
+RUNNING: cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/gpui/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --no-default-features --lib svg_renderer --locked --offline
+GPUI SVG TEST EXIT: 0
+TAG RETRY DIFF EXIT: 0; TAG STATUS EXIT: 0
+RUNNING: cargo test --manifest-path cache/gpui-maintenance-cmap-proof/Cargo.toml --offline compare_real_svg_fallback -- --nocapture
+SVG TEXT STACK PROBE EXIT: 0
+RUNNING: cargo test --manifest-path cache/gpui-maintenance-cmap-proof/Cargo.toml --locked --offline compare_real_svg_fallback -- --nocapture (exact old/new pixels)
+SVG EXACT PIXEL PROBE EXIT: 101
+RUNNING 2026-10-14T20:07:10.8447030-04:00: cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/gpui/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --no-default-features --lib svg_renderer --locked --offline
+EXIT 0 2026-10-14T20:07:32.8098867-04:00: cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/gpui/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --no-default-features --lib svg_renderer --locked --offline
+RUNNING 2026-10-14T20:07:32.9074188-04:00: cargo test --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --tests --locked --offline
+EXIT 0 2026-10-14T20:07:50.1105424-04:00: cargo test --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --tests --locked --offline
+RUNNING 2026-10-14T20:07:50.1137007-04:00: cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/pulp/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --lib --locked --offline
+EXIT 0 2026-10-14T20:07:50.6128240-04:00: cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/pulp/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --lib --locked --offline
+RUNNING 2026-10-14T20:07:50.6153385-04:00: cargo test --manifest-path cache/gpui-maintenance-candidate/validation/fontdb/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --tests --locked --offline
+EXIT 0 2026-10-14T20:07:50.8026694-04:00: cargo test --manifest-path cache/gpui-maintenance-candidate/validation/fontdb/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --tests --locked --offline
+RUNNING 2026-10-14T20:07:50.8051299-04:00: cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/cosmic-text/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --lib --locked --offline
+EXIT 0 2026-10-14T20:07:51.3539426-04:00: cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/cosmic-text/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --lib --locked --offline
+RUNNING 2026-10-14T20:07:51.3559849-04:00: cargo clippy --manifest-path cache/gpui-maintenance-candidate/vendor/gpui/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --no-default-features --lib --locked --offline -- -D warnings
+EXIT 0 2026-10-14T20:07:57.8927964-04:00: cargo clippy --manifest-path cache/gpui-maintenance-candidate/vendor/gpui/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --no-default-features --lib --locked --offline -- -D warnings
+RUNNING 2026-10-14T20:07:57.8953063-04:00: cargo clippy --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --all-targets --locked --offline -- -D warnings
+EXIT 0 2026-10-14T20:08:03.8616582-04:00: cargo clippy --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --all-targets --locked --offline -- -D warnings
+RUNNING 2026-10-14T20:08:03.8641671-04:00: cargo check --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --all-targets --locked --offline
+EXIT 0 2026-10-14T20:08:06.0425793-04:00: cargo check --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --all-targets --locked --offline
+RUNNING 2026-10-14T20:08:06.0523216-04:00: cargo build --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --locked --offline
+EXIT 0 2026-10-14T20:08:18.3749907-04:00: cargo build --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --locked --offline
+RUNNING 2026-10-14T20:08:18.3775589-04:00: cargo deny --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --config deny.toml --locked --offline check
+EXIT 1 2026-10-14T20:08:21.4512705-04:00: cargo deny --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --config deny.toml --locked --offline check
+RUNNING: full unchanged cargo deny locked/offline retry with cache-lock permission
+DENY RETRY EXIT: 4
+RUNNING: approved isolated harfrust two-file repair preparer
+HARFRUST PREPARER EXIT: 0
+RUNNING: cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/harfrust/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --lib maintenance_cmap2 --offline
+HARFRUST TEST EXIT: 101
+RUNNING: cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/harfrust/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --lib maintenance_cmap2 --locked (fetch exact missing dev dependencies)
+HARFRUST TEST RETRY EXIT: 101
+RUNNING: cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/harfrust/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --lib maintenance_cmap2 --locked --offline (selector visibility repair)
+HARFRUST FINAL TEST EXIT: 0
+RUNNING: cargo test --manifest-path cache/gpui-maintenance-cmap-proof/Cargo.toml --offline -- --nocapture (patched HarfRust)
+FULL PROBE FINAL EXIT: 0
+RUNNING 2026-10-14T20:12:12.6469813-04:00: cargo update --manifest-path cache/gpui-maintenance-candidate/Cargo.toml -p harfrust@0.12.0 --offline
+EXIT 0 2026-10-14T20:12:15.2962720-04:00: cargo update --manifest-path cache/gpui-maintenance-candidate/Cargo.toml -p harfrust@0.12.0 --offline
+RUNNING 2026-10-14T20:12:15.3160109-04:00: cargo update --manifest-path cache/gpui-maintenance-candidate/vendor/gpui/Cargo.toml -p harfrust@0.12.0 --offline
+EXIT 0 2026-10-14T20:12:18.5427200-04:00: cargo update --manifest-path cache/gpui-maintenance-candidate/vendor/gpui/Cargo.toml -p harfrust@0.12.0 --offline
+RUNNING 2026-10-14T20:12:18.5452283-04:00: cargo update --manifest-path cache/gpui-maintenance-candidate/validation/wgpu-consumer/Cargo.toml -p harfrust@0.12.0 --offline
+EXIT 0 2026-10-14T20:12:20.6833714-04:00: cargo update --manifest-path cache/gpui-maintenance-candidate/validation/wgpu-consumer/Cargo.toml -p harfrust@0.12.0 --offline
+RUNNING 2026-10-14T20:12:20.6855484-04:00: cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/harfrust/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --lib --locked --offline
+EXIT 0 2026-10-14T20:12:21.0086400-04:00: cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/harfrust/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --lib --locked --offline
+RUNNING 2026-10-14T20:12:21.0110469-04:00: cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/gpui/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --no-default-features --lib svg_renderer --locked --offline
+EXIT 0 2026-10-14T20:13:08.1370981-04:00: cargo test --manifest-path cache/gpui-maintenance-candidate/vendor/gpui/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --no-default-features --lib svg_renderer --locked --offline
+RUNNING 2026-10-14T20:13:08.1396274-04:00: cargo test --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --tests --locked --offline
+EXIT 0 2026-10-14T20:13:31.9351117-04:00: cargo test --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --tests --locked --offline
+RUNNING 2026-10-14T20:13:31.9371220-04:00: cargo clippy --manifest-path cache/gpui-maintenance-candidate/vendor/harfrust/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --lib --locked --offline -- -D warnings
+EXIT 101 2026-10-14T20:13:39.1898773-04:00: cargo clippy --manifest-path cache/gpui-maintenance-candidate/vendor/harfrust/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --lib --locked --offline -- -D warnings
+RUNNING 2026-10-14T20:13:39.1916659-04:00: cargo clippy --manifest-path cache/gpui-maintenance-candidate/vendor/gpui/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --no-default-features --lib --locked --offline -- -D warnings
+EXIT 0 2026-10-14T20:13:51.3684573-04:00: cargo clippy --manifest-path cache/gpui-maintenance-candidate/vendor/gpui/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --no-default-features --lib --locked --offline -- -D warnings
+RUNNING 2026-10-14T20:13:51.3709730-04:00: cargo clippy --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --all-targets --locked --offline -- -D warnings
+EXIT 0 2026-10-14T20:14:03.8150959-04:00: cargo clippy --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --all-targets --locked --offline -- -D warnings
+RUNNING 2026-10-14T20:14:03.8171262-04:00: cargo check --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --all-targets --locked --offline
+EXIT 0 2026-10-14T20:14:05.6323214-04:00: cargo check --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --all-targets --locked --offline
+RUNNING 2026-10-14T20:14:05.6348435-04:00: cargo check --manifest-path cache/gpui-maintenance-candidate/validation/wgpu-consumer/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --locked --offline
+EXIT 0 2026-10-14T20:14:14.2020147-04:00: cargo check --manifest-path cache/gpui-maintenance-candidate/validation/wgpu-consumer/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --locked --offline
+RUNNING 2026-10-14T20:14:14.2046955-04:00: cargo build --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --locked --offline
+EXIT 0 2026-10-14T20:14:33.8187847-04:00: cargo build --manifest-path cache/gpui-maintenance-candidate/Cargo.toml --locked --offline
+RUNNING: cargo clippy --manifest-path cache/gpui-maintenance-harfrust-baseline/Cargo.toml --target-dir cache/gpui-maintenance-candidate/target --lib --locked --offline -- -D warnings
+BASELINE HARFRUST CLIPPY EXIT: 101
+RUNNING: final repaired candidate full unchanged cargo deny locked/offline (cache lock permission)
+FINAL DENY EXIT: 4
+FINAL SOURCE CAPTURE EXIT: 0
+RUNNING: authoritative maintenance-independent-prepare-final.py (fresh full source reproduction)
+FINAL REPRODUCTION EXIT: 0
+RUNNING: final frozen-input/product/archive/current-source audit
+FINAL INTEGRITY AUDIT EXIT: 1
+GPUI RUSTFMT CHECK EXIT: 0
+HARFRUST RUSTFMT CHECK EXIT: 0
+RUNNING: final integrity audit retry using frozen retained registry checksum lock (harfrust now a local patch)
+FINAL INTEGRITY AUDIT RETRY EXIT: 0
+COMPLETE: report and append-only checkpoint prepared; no active reviewer Cargo/rustc/rustfmt command; adoption/policy/native gates remain open

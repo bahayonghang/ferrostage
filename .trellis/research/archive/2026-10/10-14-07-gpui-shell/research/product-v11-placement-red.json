@@ -1,0 +1,21 @@
+{
+  "started_utc": "2026-10-15T04:57:53.664485+00:00",
+  "argv": [
+    "cargo",
+    "test",
+    "-p",
+    "ferrostage-ui",
+    "--features",
+    "test-support",
+    "--lib",
+    "--locked",
+    "--offline",
+    "placement_v11",
+    "--",
+    "--test-threads=1"
+  ],
+  "status": "RETURNED",
+  "log": "product-v11-placement-red.log",
+  "exit_code": 101,
+  "ended_utc": "2026-10-15T04:58:02.921650+00:00"
+}

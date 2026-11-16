@@ -1,0 +1,20 @@
+{
+  "started_utc": "2026-10-15T08:10:15.653979+00:00",
+  "argv": [
+    "cargo",
+    "test",
+    "-p",
+    "ferrostage-platform",
+    "--lib",
+    "--locked",
+    "--offline",
+    "getdc_v15",
+    "--",
+    "--test-threads=1",
+    "--nocapture"
+  ],
+  "status": "RETURNED",
+  "log": "product-v15-getdc-green.log",
+  "exit_code": 0,
+  "ended_utc": "2026-10-15T08:10:18.870221+00:00"
+}

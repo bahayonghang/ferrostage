@@ -1,0 +1,440 @@
+{
+  "started_utc": "2026-10-16T00:58:57.6422297Z",
+  "pid": 91336,
+  "exe": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\consolidated-smoke\\complete\\ferrostage.exe",
+  "arguments": [
+    "--config",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-presenter-v0.3\\research\\native-final\\settings.toml",
+    "--pdfium-library",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\media\\media-smoke.pdf"
+  ],
+  "inputs": [
+    {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\consolidated-smoke\\complete\\ferrostage.exe",
+      "bytes": 42889216,
+      "sha256": "4bebefa5810f93ccb2e9fda3e8134aacb6ebc24b55e46d0a0d06308387d9ce55"
+    },
+    {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\consolidated-smoke\\complete\\ferrostage-media-helper.exe",
+      "bytes": 799232,
+      "sha256": "312752079a67c00c03f7fcf6c843d57d9e19996fc1445ad82026b56a51b96641"
+    },
+    {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\media\\media-smoke.pdf",
+      "bytes": 566185,
+      "sha256": "cd41d260eba950649552346e5aa95d7e05b2e81e7d3d790879a97cbff2808185"
+    },
+    {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll",
+      "bytes": 7211520,
+      "sha256": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118"
+    },
+    {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-presenter-v0.3\\research\\native-final\\settings.toml",
+      "bytes": 1892,
+      "sha256": "217d241719027e8341d0a9765cfa387432c6a3dcc9ab876c666684211298b978"
+    }
+  ],
+  "runtime": "complete",
+  "runtime_files": [
+    {
+      "path": "media-runtime\\native-runtime-sources.md",
+      "bytes": 4294,
+      "sha256": "0c64e0dc2c3775a69c24376b6223eefeaee1c04c3a3f9198608109e46b866281"
+    },
+    {
+      "path": "media-runtime\\runtime.json",
+      "bytes": 39070,
+      "sha256": "5c8acc5097c19ee7e1f0e90f4989c0e48971956572d43fc18114b50e411bc364"
+    },
+    {
+      "path": "media-runtime\\bin\\bz2.dll",
+      "bytes": 80384,
+      "sha256": "029a459e51ba8956c4cfbe69a982789224c1fcce99706b5592b112ef26fa2245"
+    },
+    {
+      "path": "media-runtime\\bin\\ffi-7.dll",
+      "bytes": 31744,
+      "sha256": "f11c4da62fbee6ec72e8550be8f9a5f575b0011fece3c78998967abdb29d2777"
+    },
+    {
+      "path": "media-runtime\\bin\\gio-2.0-0.dll",
+      "bytes": 1909248,
+      "sha256": "a875107c180fb248236d1e96e14f362f117124df2fee1237fa2142b7b363941b"
+    },
+    {
+      "path": "media-runtime\\bin\\glib-2.0-0.dll",
+      "bytes": 1438720,
+      "sha256": "caf29cfc1467e3a3e5e91f0f649bd7a501107d9b3c32a2866b08e2ecfa209e3e"
+    },
+    {
+      "path": "media-runtime\\bin\\gmodule-2.0-0.dll",
+      "bytes": 26112,
+      "sha256": "86be81a7011ec07e1992ce7a742ad881a80ae38583bbcffbf973498d4748dac5"
+    },
+    {
+      "path": "media-runtime\\bin\\gobject-2.0-0.dll",
+      "bytes": 361472,
+      "sha256": "811dab4b420e520d91ac3fe5202975cc90caf2c53ef2f8f0fce8f8588a735c7a"
+    },
+    {
+      "path": "media-runtime\\bin\\gstapp-1.0-0.dll",
+      "bytes": 89600,
+      "sha256": "5215eb22914baabec9dc5c4750d9b09ea3175000eaf7a715ea8c35b60643dc48"
+    },
+    {
+      "path": "media-runtime\\bin\\gstaudio-1.0-0.dll",
+      "bytes": 578560,
+      "sha256": "96f0fe6ed46aeb9da0adf25cc4fe9736ad358910568e0a05f31de6121bdeb59d"
+    },
+    {
+      "path": "media-runtime\\bin\\gstbase-1.0-0.dll",
+      "bytes": 519680,
+      "sha256": "7a5c93554532e2b0cd282ffd356a12ad5e65a7424447048107ef221bffbeca6c"
+    },
+    {
+      "path": "media-runtime\\bin\\gstcodecparsers-1.0-0.dll",
+      "bytes": 975360,
+      "sha256": "4c59a8666635bd972e3eb92cea669366fd5f50b648c64fa43b88c7b15bc3c387"
+    },
+    {
+      "path": "media-runtime\\bin\\gstcodecs-1.0-0.dll",
+      "bytes": 254464,
+      "sha256": "c1ca313592b5b632e899ed0689b35ad32c241e54c262b1816d5e2585e8253f00"
+    },
+    {
+      "path": "media-runtime\\bin\\gstd3d11-1.0-0.dll",
+      "bytes": 311296,
+      "sha256": "cb5d091164c7fe66b146ea7a002116d01a7da6d3a3e4726f83d7f51ad4340df0"
+    },
+    {
+      "path": "media-runtime\\bin\\gstd3dshader-1.0-0.dll",
+      "bytes": 3885056,
+      "sha256": "ce250f227e6dfc72996b0265d294dcfda134836be5840ec049e4dab9a34f36fd"
+    },
+    {
+      "path": "media-runtime\\bin\\gstdxva-1.0-0.dll",
+      "bytes": 96768,
+      "sha256": "722f62010741c29003ac00171c5aa1f67addd72fa89c24ac8de18dfea3905098"
+    },
+    {
+      "path": "media-runtime\\bin\\gstpbutils-1.0-0.dll",
+      "bytes": 278016,
+      "sha256": "3ff570aa36ae2b26898b9908a124ea25cf2573235f3e6e6baf18cc0275f96373"
+    },
+    {
+      "path": "media-runtime\\bin\\gstreamer-1.0-0.dll",
+      "bytes": 1429504,
+      "sha256": "fc24ab572185d53d85d4e4e8dbab11d7d26e6e0c852fe6dc992c34e98edc4ea1"
+    },
+    {
+      "path": "media-runtime\\bin\\gstriff-1.0-0.dll",
+      "bytes": 59904,
+      "sha256": "8a60d8f801826c06af55d1904a2d0c718423555342bd745759232946a4dee475"
+    },
+    {
+      "path": "media-runtime\\bin\\gstrtp-1.0-0.dll",
+      "bytes": 160768,
+      "sha256": "9dee97ab1cd1db81a390167418a93fa73c90c5d07fbe20565f6b09ea5b2bd336"
+    },
+    {
+      "path": "media-runtime\\bin\\gsttag-1.0-0.dll",
+      "bytes": 268800,
+      "sha256": "97e0991574f51f4dddb9736d03454dc09e0c2dd5eed5ca18cfd970381efd38c5"
+    },
+    {
+      "path": "media-runtime\\bin\\gstvideo-1.0-0.dll",
+      "bytes": 909312,
+      "sha256": "840ea975226baf73898fd0f7c26b62b8ee6b556bf2142cb88f29da468ed397f6"
+    },
+    {
+      "path": "media-runtime\\bin\\gstwinrt-1.0-0.dll",
+      "bytes": 709120,
+      "sha256": "99c085e0dab19a80731e60ef661f7097f0cfef21782e64d8d01d27bcb2f26400"
+    },
+    {
+      "path": "media-runtime\\bin\\intl-8.dll",
+      "bytes": 13824,
+      "sha256": "2ef6a23f712fd7b9bf72b2fef1a1fd5cde27ba88f7d164e9e6de18936c1f51b0"
+    },
+    {
+      "path": "media-runtime\\bin\\ogg-0.dll",
+      "bytes": 34304,
+      "sha256": "e7157c90c5b6b268f5b8c8241190582a9aaa6f85dbd99697dd61970264d5e00f"
+    },
+    {
+      "path": "media-runtime\\bin\\orc-0.4-0.dll",
+      "bytes": 492544,
+      "sha256": "d2528c94165e7e1a05b57e8053bc328a79caa8e608c6126605fc778c0a1bec3f"
+    },
+    {
+      "path": "media-runtime\\bin\\pcre2-8-0.dll",
+      "bytes": 348672,
+      "sha256": "6e3a73868d2ace1cecd6bcd6f35051cac73259c3d852bd902ac4ea68bb97030a"
+    },
+    {
+      "path": "media-runtime\\bin\\vorbis-0.dll",
+      "bytes": 212992,
+      "sha256": "6e3d8f168494765bde0e8939448ddfca9e596ac2794edb53fcf599e0afcae34e"
+    },
+    {
+      "path": "media-runtime\\bin\\vorbisenc-2.dll",
+      "bytes": 568832,
+      "sha256": "ba399c9cef0c2513167de06219c7c98b68a667bb8d7de693c2783bcc3a541881"
+    },
+    {
+      "path": "media-runtime\\bin\\z-1.dll",
+      "bytes": 93696,
+      "sha256": "b84851f9084247f466c076ee993bd5a92f3462466c4877b5c4ecc4125743a060"
+    },
+    {
+      "path": "media-runtime\\lib\\gstreamer-1.0\\gstapp.dll",
+      "bytes": 13824,
+      "sha256": "16dd9a5782b35f1aebe88724cda5a69840590cbd6c5a71444e5e78d4aab5deca"
+    },
+    {
+      "path": "media-runtime\\lib\\gstreamer-1.0\\gstaudioconvert.dll",
+      "bytes": 37888,
+      "sha256": "d9157b4f4c939d161c547de76016c7f9cf36762900222ced1149d00f9db1a6ec"
+    },
+    {
+      "path": "media-runtime\\lib\\gstreamer-1.0\\gstaudioresample.dll",
+      "bytes": 35840,
+      "sha256": "faa9ac48b6f71ea18fb34cade5b987d9a1c15f961dc00af822d7f772d01a19ea"
+    },
+    {
+      "path": "media-runtime\\lib\\gstreamer-1.0\\gstautodetect.dll",
+      "bytes": 32256,
+      "sha256": "5d056d0b7f6d90fc97f0b6d8382585fe0f8d4eda53cad8dd99f00b3984ef3dbf"
+    },
+    {
+      "path": "media-runtime\\lib\\gstreamer-1.0\\gstcoreelements.dll",
+      "bytes": 434688,
+      "sha256": "0c0f41342d8a9fafeb89c0327e9951bb48efc343361af01807f86066d29cf36a"
+    },
+    {
+      "path": "media-runtime\\lib\\gstreamer-1.0\\gstd3d11.dll",
+      "bytes": 1745408,
+      "sha256": "694661d2e182d29a8f42772c56baddb1a58c187ce63afd5296b40b4b87178808"
+    },
+    {
+      "path": "media-runtime\\lib\\gstreamer-1.0\\gstisomp4.dll",
+      "bytes": 679936,
+      "sha256": "d3489687b888915206b1244361c4c6fd3a7847579e10adc4cab9d4869a1df2a3"
+    },
+    {
+      "path": "media-runtime\\lib\\gstreamer-1.0\\gstmatroska.dll",
+      "bytes": 344064,
+      "sha256": "c1bb979454b8a071bfad3cfeed40f8e36ef291b989194ef7fe89afb32d85b5a2"
+    },
+    {
+      "path": "media-runtime\\lib\\gstreamer-1.0\\gstmediafoundation.dll",
+      "bytes": 1217024,
+      "sha256": "fb6450e53c13f19483dd41b8b3100481b2a8cc52da4890975635a30fafb24ef0"
+    },
+    {
+      "path": "media-runtime\\lib\\gstreamer-1.0\\gstogg.dll",
+      "bytes": 229888,
+      "sha256": "0f684bad04645fd43f56b674932741b3c29c3477ddbaa501f51eeedff0405883"
+    },
+    {
+      "path": "media-runtime\\lib\\gstreamer-1.0\\gstplayback.dll",
+      "bytes": 633344,
+      "sha256": "a94d580773eb7cbe4c536e5956b5fd3bf327fbadb86b87992929f874f6d053a7"
+    },
+    {
+      "path": "media-runtime\\lib\\gstreamer-1.0\\gsttypefindfunctions.dll",
+      "bytes": 138240,
+      "sha256": "e7a28f148542ffabbe293bf10fa172d5d24863e0083843f72a1901897477015d"
+    },
+    {
+      "path": "media-runtime\\lib\\gstreamer-1.0\\gstvideoconvertscale.dll",
+      "bytes": 54784,
+      "sha256": "f09ef47ece05b570cf1af3e5dcb4fe6bc0815b43c28acb795caddceba5a78830"
+    },
+    {
+      "path": "media-runtime\\lib\\gstreamer-1.0\\gstvideoparsersbad.dll",
+      "bytes": 360960,
+      "sha256": "7d842f82613ac7f836889792f4a5dc0a98dab048fb0370a16af7930e2be8f9e4"
+    },
+    {
+      "path": "media-runtime\\lib\\gstreamer-1.0\\gstvorbis.dll",
+      "bytes": 60416,
+      "sha256": "8e0e395841b6fe5135e04a1b94af3fb4fa448c52169c527ec50285d0e0098cce"
+    },
+    {
+      "path": "media-runtime\\lib\\gstreamer-1.0\\gstvpx.dll",
+      "bytes": 3036672,
+      "sha256": "e027f3202e2563b1de39b22f1b3f7cc656783a9b8245e525fa49740ad0f86d5a"
+    },
+    {
+      "path": "media-runtime\\lib\\gstreamer-1.0\\gstwasapi.dll",
+      "bytes": 92160,
+      "sha256": "4254c636ad3c9a97346c5e4fd608782c16836a09a863d63f730bd94d497cfb53"
+    },
+    {
+      "path": "media-runtime\\lib\\gstreamer-1.0\\gstwasapi2.dll",
+      "bytes": 207872,
+      "sha256": "4f98fd226860e45eedc5f8db86aac0827efa1afd72ab76dad6c208a7422d1cab"
+    },
+    {
+      "path": "media-runtime\\libexec\\gst-plugin-scanner.exe",
+      "bytes": 13824,
+      "sha256": "cdbbe81447a84a27c49d3867d918bbdea2e5f1368976e0883169098211202fd5"
+    },
+    {
+      "path": "media-runtime\\notices\\bzip2-LICENSE",
+      "bytes": 1938,
+      "sha256": "9102b70091e84168c468d57dcca64ec1f60c76cefbc83b66e1754725b9dd90cf"
+    },
+    {
+      "path": "media-runtime\\notices\\glib-LGPL-2.1-or-later.txt",
+      "bytes": 25967,
+      "sha256": "fa6f36630bb1e0c571d34b2bbdf188d08495c9dbf58f28cac112f303fc1f58fb"
+    },
+    {
+      "path": "media-runtime\\notices\\gst-plugins-bad-COPYING",
+      "bytes": 26530,
+      "sha256": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551"
+    },
+    {
+      "path": "media-runtime\\notices\\gst-plugins-base-COPYING",
+      "bytes": 26431,
+      "sha256": "ad2eec519ebd4b5df86ea84dff24ae3bfa2edea846a703b58902dd221ae375db"
+    },
+    {
+      "path": "media-runtime\\notices\\gst-plugins-good-COPYING",
+      "bytes": 26432,
+      "sha256": "6095e9ffa777dd22839f7801aa845b31c9ed07f3d6bf8a26dc5d2dec8ccc0ef3"
+    },
+    {
+      "path": "media-runtime\\notices\\gstreamer-COPYING",
+      "bytes": 26431,
+      "sha256": "ad2eec519ebd4b5df86ea84dff24ae3bfa2edea846a703b58902dd221ae375db"
+    },
+    {
+      "path": "media-runtime\\notices\\libffi-LICENSE-verified",
+      "bytes": 1153,
+      "sha256": "f02e8e7361fa83bbe845f029571bbd1248bed85320f6dad0541db8ec66d90178"
+    },
+    {
+      "path": "media-runtime\\notices\\libogg-COPYING",
+      "bytes": 1466,
+      "sha256": "d2ab5758336489da61c12cc5bb757da5339c4ae9001f9bb0562b4370249af814"
+    },
+    {
+      "path": "media-runtime\\notices\\libvorbis-COPYING",
+      "bytes": 1470,
+      "sha256": "ec1815db59fcd302846df949d7424876cb2e2dc5ed1606c5fb0b36787b1cf43a"
+    },
+    {
+      "path": "media-runtime\\notices\\libvpx-LICENSE",
+      "bytes": 1537,
+      "sha256": "8267348d5af1262c11d1a08de2f5afc77457755f1ac658627dd9acf71011d615"
+    },
+    {
+      "path": "media-runtime\\notices\\libvpx-PATENTS",
+      "bytes": 1436,
+      "sha256": "cc3273e0694ea5896145e0677699b53471b03ea43021ddc50e7923fbb9f5023c"
+    },
+    {
+      "path": "media-runtime\\notices\\orc-COPYING",
+      "bytes": 3124,
+      "sha256": "4f5dabb1b44bb6fc5cd53820b1f103147ad61b395a57903991325bd1b85d97bf"
+    },
+    {
+      "path": "media-runtime\\notices\\pcre2-LICENCE",
+      "bytes": 3477,
+      "sha256": "87d884eceb7fc54611470ce9f74280d28612b0c877adfc767e9676892a638987"
+    },
+    {
+      "path": "media-runtime\\notices\\proxy-libintl-COPYING",
+      "bytes": 25292,
+      "sha256": "d245807f90032872d1438d741ed21e2490e1175dc8aa3afa5ddb6c8e529b58e5"
+    },
+    {
+      "path": "media-runtime\\notices\\zlib-README",
+      "bytes": 5317,
+      "sha256": "d106dcdb2a0b3087cb3a2380b9f00a0bbadc7eb835cd80408f94a2d78d69727d"
+    },
+    {
+      "path": "media-runtime\\recipes\\bzip2.recipe",
+      "bytes": 811,
+      "sha256": "db3c9a4a6aee33f7d09f13dab18bbd08bbe47bb37b9878033466bbdf9197ed34"
+    },
+    {
+      "path": "media-runtime\\recipes\\custom.py",
+      "bytes": 8352,
+      "sha256": "d65579ff67e9ae48c5f021b9cbdfb779137364bef0eeeecaf31987b7c4ec14bb"
+    },
+    {
+      "path": "media-runtime\\recipes\\glib.recipe",
+      "bytes": 13151,
+      "sha256": "7fc465d9370fd726e2331ad464c1b15f04dbc25a7700578491030d8de9d22ad0"
+    },
+    {
+      "path": "media-runtime\\recipes\\gst-plugins-bad-1.0.recipe",
+      "bytes": 35733,
+      "sha256": "82b8fe6cd7e5fec9651bd8f94225236945f81d60a98b5ee0847f921617cf9e1c"
+    },
+    {
+      "path": "media-runtime\\recipes\\gst-plugins-base-1.0.recipe",
+      "bytes": 8851,
+      "sha256": "fc8b6fa50500ffeffaf5b1505dcc6ae50f9a4d9698b583254145d250a3fc0f7e"
+    },
+    {
+      "path": "media-runtime\\recipes\\gst-plugins-good-1.0.recipe",
+      "bytes": 16568,
+      "sha256": "fe7e118f39ed02c306af28391e8086a236013350c203fd7a096eccdc1ad9a053"
+    },
+    {
+      "path": "media-runtime\\recipes\\gstreamer-1.0.recipe",
+      "bytes": 3128,
+      "sha256": "27af4c5ea5ce0c1ce49cafe677d172390aeef17e825022ca996604208f18f0e3"
+    },
+    {
+      "path": "media-runtime\\recipes\\libffi.recipe",
+      "bytes": 868,
+      "sha256": "dda01768646f7dc441850342eb0343f843d6ede78115e2e54e78113e00a19cc5"
+    },
+    {
+      "path": "media-runtime\\recipes\\libogg.recipe",
+      "bytes": 889,
+      "sha256": "87379a13d772fc1bd7cb763a410fcdcd702967e0989567b53c9d57399003ac5c"
+    },
+    {
+      "path": "media-runtime\\recipes\\libvorbis.recipe",
+      "bytes": 1651,
+      "sha256": "3a55edeaf66bbda56a71edb5a3033d47ec88b1d7abd0553854315967c9e58410"
+    },
+    {
+      "path": "media-runtime\\recipes\\libvpx.recipe",
+      "bytes": 2256,
+      "sha256": "8fbf73c7cb302c8d30f95106d602d905922f517554ff5cde54b06fa784e09905"
+    },
+    {
+      "path": "media-runtime\\recipes\\orc.recipe",
+      "bytes": 1970,
+      "sha256": "4ad51966e5855effda8220658b1d1923f7f525aadff39543d78cf143d4c3b261"
+    },
+    {
+      "path": "media-runtime\\recipes\\pcre2.recipe",
+      "bytes": 1325,
+      "sha256": "6889a7278809c99bd36a0ea04d725da66b443b6aa6d90b5e2a0c9dffa17e96f1"
+    },
+    {
+      "path": "media-runtime\\recipes\\proxy-libintl.recipe",
+      "bytes": 885,
+      "sha256": "123fd69100d658d1719aff4da4de0df46f8fc32dfda9334bd5efbb711050b208"
+    },
+    {
+      "path": "media-runtime\\recipes\\zlib.recipe",
+      "bytes": 975,
+      "sha256": "0d656e46af8adbfc997409d0530a0613adb498fb65832cedafc201e3b8903641"
+    }
+  ],
+  "plugin_registry": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\consolidated-smoke\\registries\\final03-media.bin",
+  "plugin_registry_initially_absent": true,
+  "audio_sink": "product default, no silent-test environment"
+}

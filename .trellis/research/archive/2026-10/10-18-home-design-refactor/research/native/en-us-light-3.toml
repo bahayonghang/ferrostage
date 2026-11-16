@@ -1,0 +1,9 @@
+schema_version = 1
+[general]
+language = "en-US"
+theme = "light"
+reopen_last_document = false
+recent_files = ['D:\Documents\Code\Rust\Exp\ferrostage\fixtures\pdf\perf-100.pdf', 'D:\Documents\Code\Rust\Exp\ferrostage\fixtures\pdf\raster.pdf', 'D:\Documents\Code\Rust\Exp\ferrostage\fixtures\media\media-smoke.pdf']
+[display]
+presenter_start_fullscreen = false
+single_monitor_mode = "presenter_only"

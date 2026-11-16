@@ -1,0 +1,19 @@
+{
+  "started_utc": "2026-10-15T08:24:24.069349+00:00",
+  "argv": [
+    "cargo",
+    "test",
+    "--manifest-path",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-v15-accesskit-candidate\\Cargo.toml",
+    "--lib",
+    "--offline",
+    "v15_research_tests",
+    "--",
+    "--test-threads=1",
+    "--nocapture"
+  ],
+  "status": "RETURNED",
+  "scope": "isolated upstream research only; no windows created, no GUI interaction, no product dependency changed",
+  "exit_code": 101,
+  "ended_utc": "2026-10-15T08:24:35.802037+00:00"
+}

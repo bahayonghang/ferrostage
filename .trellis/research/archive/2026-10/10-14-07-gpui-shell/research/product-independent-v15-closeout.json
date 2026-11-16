@@ -1,0 +1,57 @@
+{
+  "captured_utc": "2026-10-15T08:54:58.561360+00:00",
+  "status": "ALL_OWNED_COMMANDS_RETURNED",
+  "owned_checks": {
+    "clippy": {
+      "receipt": "product-independent-v15-clippy.json",
+      "returned": true,
+      "exit_code": 0,
+      "ended_utc": "2026-10-15T08:47:34.583523+00:00"
+    },
+    "typecheck": {
+      "receipt": "product-independent-v15-typecheck.json",
+      "returned": true,
+      "exit_code": 0,
+      "ended_utc": "2026-10-15T08:49:20.350007+00:00"
+    }
+  },
+  "reused_current_v15_receipts": {
+    "just-ci-final": {
+      "receipt": "product-v15-just-ci-final.json",
+      "sha256": "768464495ec59d05854842d9220f0cf49910d0fd1968adc7dfe5c0ae60cc9e2d",
+      "exit_code": 0
+    },
+    "headless": {
+      "receipt": "product-v15-headless.json",
+      "sha256": "777d4b450839ac7f72338b7e7088c59fc3f255c753d44e51d56097acee08bafc",
+      "exit_code": 0
+    },
+    "document-isolated": {
+      "receipt": "product-v15-document-isolated.json",
+      "sha256": "463bea514f5d01afa5446a4e234934e2188a46e03d39ba8357b3c40b58311ec7",
+      "exit_code": 0
+    },
+    "getdc-green": {
+      "receipt": "product-v15-getdc-green.json",
+      "sha256": "502c8e763be1d05449c4b239b31f81411033352fb78cd7428d6d31a8e49e20ca",
+      "exit_code": 0
+    },
+    "deny": {
+      "receipt": "product-v15-deny.json",
+      "sha256": "f234259386b0e012bc0fa18aa4212e18ac059dfede3fc903ec48bfc59f0da430",
+      "exit_code": 0
+    },
+    "build": {
+      "receipt": "product-v15-build.json",
+      "sha256": "ac73eab3807abe3e0624685df41fa6d76094abc303def4a9df4612b916baf837",
+      "exit_code": 0
+    }
+  },
+  "verified_default_tests": 151,
+  "native_application_launches_by_reviewer": 0,
+  "desktop_actions_by_reviewer": 0,
+  "native_v15_status": "NOT_RUN / user-stopped",
+  "pending_source_mutations": false,
+  "process_inventory_scope": "No reviewer-owned session remains. Host inventory belongs to Root; no sandbox-empty inference.",
+  "helper_correction": "Identity manifest parser initially assumed dict; corrected for V14 list records before successful identity receipt."
+}

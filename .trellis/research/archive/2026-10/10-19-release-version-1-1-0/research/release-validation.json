@@ -1,0 +1,97 @@
+{
+  "date": "2026-10-19",
+  "versions": {
+    "local_version_changes": [
+      "ferrostage-app",
+      "ferrostage-core",
+      "ferrostage-document",
+      "ferrostage-media",
+      "ferrostage-media-helper",
+      "ferrostage-pdf",
+      "ferrostage-platform",
+      "ferrostage-render",
+      "ferrostage-settings",
+      "ferrostage-ui"
+    ],
+    "external_dependency_changes": 0,
+    "packages": 765,
+    "target_directory": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target"
+  },
+  "checks": [
+    {
+      "command": "just ci",
+      "exit_code": 0,
+      "seconds": 28.8860852
+    },
+    {
+      "command": "just check-shell",
+      "exit_code": 0,
+      "seconds": 42.0787336
+    },
+    {
+      "command": "cargo deny --all-features --locked --offline check",
+      "exit_code": 0,
+      "seconds": 4.5373325
+    },
+    {
+      "command": "just release",
+      "exit_code": 0,
+      "seconds": 32.6473411
+    }
+  ],
+  "artifacts": {
+    "version": "1.1.0",
+    "resolved_dist": "D:\\mbx-cache\\targets\\v1\\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0\\dist",
+    "artifacts": {
+      "setup": {
+        "path": "D:\\mbx-cache\\targets\\v1\\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0\\dist\\FerroStage-1.1.0-windows-x64-Setup.exe",
+        "bytes": 10467073,
+        "sha256": "f0a5ed434f278ca2a24e5b6aeefb9245708f4190c1d82a8860202655237107ce"
+      },
+      "portable": {
+        "path": "D:\\mbx-cache\\targets\\v1\\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0\\dist\\FerroStage-1.1.0-windows-x64-portable.zip",
+        "bytes": 10358066,
+        "sha256": "0af218f23748ab8cce520a2a8eef17121e93847cf97726ddb30e1fe146b43c65"
+      },
+      "checksums": {
+        "path": "D:\\mbx-cache\\targets\\v1\\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0\\dist\\FerroStage-1.1.0-windows-x64-SHA256SUMS.txt",
+        "bytes": 215,
+        "sha256": "f583a60656c74834e6fa03dd8e8c9d8e99f6e68e85287eecc3835b53a766df02"
+      }
+    },
+    "payload_files_verified": 22,
+    "cli_stdout": "ferrostage 1.1.0",
+    "cli_exit": 0,
+    "executable_sha256": "0fcfd2a354afa743b806a059fbb4a2a8bcc37921e3d8db0c0d5a4feec9319ba0",
+    "payload_executable": "D:\\mbx-cache\\targets\\v1\\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0\\dist\\payload-1.1.0\\ferrostage.exe"
+  },
+  "windows_version_resources": [
+    {
+      "path": "D:\\mbx-cache\\targets\\v1\\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0\\dist\\FerroStage-1.1.0-windows-x64-Setup.exe",
+      "file_version_string": "1.1.0",
+      "product_version_string": "",
+      "fixed_file_version": "1.1.0.0",
+      "fixed_product_version": "1.1.0.0",
+      "product_name": "FerroStage Setup"
+    },
+    {
+      "path": "D:\\mbx-cache\\targets\\v1\\b228c6f37bcb27af7d1a2d6821dcfcb308164a0bd33ec7c00848c486151f07e0\\dist\\payload-1.1.0\\ferrostage.exe",
+      "file_version_string": null,
+      "product_version_string": null,
+      "fixed_file_version": "0.0.0.0",
+      "fixed_product_version": "0.0.0.0",
+      "product_name": null
+    }
+  ],
+  "log_directory": "C:\\Users\\lyh\\AppData\\Local\\Temp\\ferrostage-1.1.0-validation-20261019",
+  "not_run": [
+    "installation",
+    "installer lifecycle",
+    "signing",
+    "clean-machine qualification",
+    "hosted CI"
+  ],
+  "parent_owned": [
+    "final native UI acceptance"
+  ]
+}

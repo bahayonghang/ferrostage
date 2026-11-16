@@ -1,0 +1,41 @@
+warning: function `shape` is never used
+   --> vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `harfrust` (lib) generated 1 warning
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.90s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-f6f69bc716fb3e17.exe)
+
+running 9 tests
+test shell::tests::v5_recovery_replaces_stale_display_but_preserves_initial_fullscreen ... ok
+test shell::tests::v5_audience_loss_recovers_fullscreen_presenter_windowed ... ok
+test shell::tests::v5_presenting_open_refuses_chooser_after_presenter_activation ... ok
+test shell::tests::v5_topology_unavailable_recovers_windowed_without_restart ... ok
+test shell::tests::v5_open_rechecks_stage_when_activation_resolves ... ok
+test shell::tests::v5_idle_navigation_and_blank_actions_do_not_report_core_errors ... ok
+test shell::tests::v5_modal_close_button_has_priority_over_global_enter_and_space ... ok
+test shell::tests::v5_jump_editing_precedes_global_backspace_and_numeric_bindings ... FAILED
+test shell::tests::v5_tab_focused_open_consumes_enter_and_space_before_global_actions ... ok
+
+failures:
+
+---- shell::tests::v5_jump_editing_precedes_global_backspace_and_numeric_bindings stdout ----
+
+thread 'shell::tests::v5_jump_editing_precedes_global_backspace_and_numeric_bindings' (119732) panicked at crates\ferrostage-ui\src\shell.rs:1216:17:
+assertion `left == right` failed: numeric binding: false
+  left: Some(Jump("23"))
+ right: Some(Jump("2"))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    shell::tests::v5_jump_editing_precedes_global_backspace_and_numeric_bindings
+
+test result: FAILED. 8 passed; 1 failed; 0 ignored; 0 measured; 26 filtered out; finished in 0.04s
+
+error: test failed, to rerun pass `-p ferrostage-ui --lib`

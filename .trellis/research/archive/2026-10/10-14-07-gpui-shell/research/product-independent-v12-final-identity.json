@@ -1,0 +1,14 @@
+{
+  "at_utc": "2026-10-15T06:00:47.516078+00:00",
+  "version": "V13 after independent V12 self-fix",
+  "source_count": 609,
+  "source_sha256": "77aa180c7f60bcc39de7315554d9781d5f2f39effd211078a1da43cf7ed40d4a",
+  "binary_sha256": "d1164919dcdc09053df4fc6caae09be249329cccd0ad8bd482a67347561a6435",
+  "freeze_sha256": "d3689820edf788e4e55d485b644f58007c4616e6ca49262de9aa057d5e86fb91",
+  "product_manifest_records": 30,
+  "product_manifest_sha256": "25c6a6755efaebcdee36ffbc4d20a50e9ec4847d82780925d868984f4f4f108f",
+  "status": "PASS",
+  "mismatches": [],
+  "native_status": "NOT_RUN by reviewer; Root exclusively owns native acceptance",
+  "commands": "All reviewer commands returned; no pending sessions"
+}

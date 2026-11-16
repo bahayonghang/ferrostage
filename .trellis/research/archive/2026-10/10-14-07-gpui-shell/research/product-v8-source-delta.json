@@ -1,0 +1,60 @@
+{
+  "changes": {
+    "assets/locales/en-US/app.toml": {
+      "v7": "ba5e945dd1f58d206a287366bac10f4847bc1479eaea3d1aa3f1424b68f74245",
+      "v8": "8361abf600e677ed4b4f578e548d26a9132296be4884c08a53e4983d1612b9f7"
+    },
+    "assets/locales/zh-CN/app.toml": {
+      "v7": "58653c58818a01ea4c1aecce6ac3a9fda5fa5084556e58894bdd674107b1b215",
+      "v8": "12b8e5550977a5b002a92305d3d4157832b5341633307b80817117b29d78aaf6"
+    },
+    "Cargo.lock": {
+      "v7": "2557e10b37fa5cfe63e78ce19965b8bbbd83438bdd540eed50405fbbc3dbc23e",
+      "v8": "fa54d205b9e059f99df19eb76c63f2a8671318a89696edb7c8a5fe848c839107"
+    },
+    "crates/ferrostage-ui/Cargo.toml": {
+      "v7": "41a2beb45dd39f1262878667afc7f40d536bf4c78be89d3214fe0b7f12cee397",
+      "v8": "6e923a810292ca573b0babec17e298da1554622cc3765480c4dc7892c4cc5396"
+    },
+    "crates/ferrostage-ui/src/actions.rs": {
+      "v7": "0c2a2d940b1fe1f2e84994b767e7e91fe98955d05d1ba13b5f3d8611c52b414b",
+      "v8": "753339ca85ce92c298e607dfdb37f24f5227007a4d81fa06e83d5a08f608e0ff"
+    },
+    "crates/ferrostage-ui/src/lib.rs": {
+      "v7": "cea24b5fb579f6111428454884156945037d3772309835fa8f5093c82307f7a5",
+      "v8": "e2847166e2d1d3002da6c1b889fc7624c0c05c5bbf52be5a331ef10eb48ad96d"
+    },
+    "crates/ferrostage-ui/src/presenter.rs": {
+      "v7": "49e3662d3e59ed1eb29b01aff95b808b1d82febe34eea2d0624307af4375b6c0",
+      "v8": "c7be2873e04cad37f293559abffcda0076cb5047c31f87c5b0109e3cc58e83e2"
+    },
+    "crates/ferrostage-ui/src/shell.rs": {
+      "v7": "8e5c08a7b25130598ac6c63e534c996c4c10bbe180ef24f1a4ab8ce487dd9489",
+      "v8": "66102b44735ca308ec32fbdf323842bbd37c69c5864b95460849821f21b7fc79"
+    },
+    "DESIGN.md": {
+      "v7": "88a7a31303e10d3adfc0be373bf326d16751123b54a2b211984ba9bfd6fe99c9",
+      "v8": "15af5b4b9ebf9aa88df75b4fc1a10a1aae52ff48c04faa5bad0066a3810c9d92"
+    },
+    "vendor/gpui/src/window.rs": {
+      "v7": "75ebfde34c284ed6afce96989bfc8794dcd7fb79b3b228d36e87a930688cf86b",
+      "v8": "2855e6e478bda7170f222735ef80572c8bf9cb3884ac8c481f815b9aa81dba56"
+    },
+    "vendor/README.md": {
+      "v7": "c70854a8bd5fd0d1c36ace0b5bc68d38e7910225040e49deeba7c85351b27ab3",
+      "v8": "d119275c0856aa9dda3fc7d01940031973eb91ce5f92e4f24d901adf19997d93"
+    }
+  },
+  "added": {
+    ".trellis/spec/frontend/component-guidelines.md": "f9216f6d11d500f7b4fa976ecac72b503627355dda286b732af4c50d98e5d370",
+    ".trellis/spec/frontend/index.md": "3b57b2e1345cb48d9c77fb5c1aa9452046bb061fb069a336d792f5829d33fcc5",
+    ".trellis/spec/frontend/maintained-dependencies.md": "6eb3754570b5771935f5cb4781fcda2d7bf62746fa483eb07a564f751a8bfaf4",
+    ".trellis/spec/frontend/state-management.md": "ae03725fbc1ddb19ef87b6b7f03aaccfaac1335c35647d067e89ec492ffb7cf3",
+    "crates/ferrostage-ui/src/display_settings.rs": "cf1bbc798eac0af76be65183c17a6f6e091f208be0ba6fb76797f7928529f54b",
+    "crates/ferrostage-ui/src/identify.rs": "50de74ae02887526525916f7b417c883b57e99e784af9a437c199f3444335245",
+    "docs/adr/ADR-008-gpui-dependency-gate.md": "8602bcf8e3d005e175b456ce6cadb9c2d155c94ad154000eb5b2d468ae778e3f"
+  },
+  "previous_count": 602,
+  "current_count": 609,
+  "unchanged_count": 591
+}

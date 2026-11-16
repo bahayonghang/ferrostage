@@ -1,0 +1,75 @@
+{
+  "inventory": {
+    "recorded_at": "2026-10-14T14:56:24.5254679Z",
+    "os": "Microsoft Windows NT 10.0.26300.0",
+    "cpu": [
+      {
+        "Name": "Intel(R) Core(TM) Ultra 9 275HX",
+        "NumberOfCores": 24,
+        "NumberOfLogicalProcessors": 24
+      }
+    ],
+    "gpu": [
+      {
+        "Name": "OrayIddDriver Device",
+        "DriverVersion": "17.50.19.949",
+        "DriverDate": "2025-06-10T20:00:00-04:00",
+        "CurrentHorizontalResolution": null,
+        "CurrentVerticalResolution": null,
+        "CurrentRefreshRate": null,
+        "AdapterRAM": null
+      },
+      {
+        "Name": "GameViewer Virtual Display Adapter",
+        "DriverVersion": "15.6.5.199",
+        "DriverDate": "2026-02-27T19:00:00-05:00",
+        "CurrentHorizontalResolution": null,
+        "CurrentVerticalResolution": null,
+        "CurrentRefreshRate": null,
+        "AdapterRAM": null
+      },
+      {
+        "Name": "Todesk Virtual Display Adapter",
+        "DriverVersion": "16.44.2.509",
+        "DriverDate": "2023-04-23T20:00:00-04:00",
+        "CurrentHorizontalResolution": null,
+        "CurrentVerticalResolution": null,
+        "CurrentRefreshRate": null,
+        "AdapterRAM": null
+      },
+      {
+        "Name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+        "DriverVersion": "32.0.16.1714",
+        "DriverDate": "2026-09-16T20:00:00-04:00",
+        "CurrentHorizontalResolution": 2560,
+        "CurrentVerticalResolution": 1600,
+        "CurrentRefreshRate": 240,
+        "AdapterRAM": 4293918720
+      },
+      {
+        "Name": "Intel(R) Graphics",
+        "DriverVersion": "32.0.101.6733",
+        "DriverDate": "2025-04-01T20:00:00-04:00",
+        "CurrentHorizontalResolution": 2560,
+        "CurrentVerticalResolution": 1440,
+        "CurrentRefreshRate": 143,
+        "AdapterRAM": 2147479552
+      }
+    ]
+  },
+  "inventory_source": {
+    "path": ".trellis/tasks/10-14-presenter-v0.3/research/native-environment.json",
+    "sha256": "25dda9f316cd378124f1c707ed6ea312b3c7a3abbdb3929c8cd4a32952354db4",
+    "bytes": 1765,
+    "modified_utc": "2026-10-14T14:56:26.464799+00:00"
+  },
+  "raster": "CPU AGG; explicit target pixels; no window, queue, upload or DPI scaling",
+  "font_directories": [],
+  "font_fixture": {
+    "raster.pdf": "25a7932f46ee8fcd4866011921c574b4f5b343af05b793bc397b7e93ed0df013",
+    "embedded_type3_glyphs_sha256": "64377d9dffb51e281c02053c5e4c65c3c70c242478b939e3271a4e17ec536430",
+    "fonts": "original embedded Type3 geometric E=mc^2; no system font dependency"
+  },
+  "font_substitution_mapping": "UNVERIFIED; fixture embeds original Type3 glyphs",
+  "gpu_acceptance": "NOT_RUN; AdapterRAM is WMI inventory, not verified dedicated VRAM"
+}

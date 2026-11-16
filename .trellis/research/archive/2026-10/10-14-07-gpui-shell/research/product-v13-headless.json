@@ -1,0 +1,18 @@
+{
+  "started_utc": "2026-10-15T05:55:41.335768+00:00",
+  "argv": [
+    "cargo",
+    "test",
+    "-p",
+    "ferrostage-ui",
+    "--features",
+    "test-support",
+    "--lib",
+    "--locked",
+    "--offline"
+  ],
+  "status": "RETURNED",
+  "log": "product-v13-headless.log",
+  "exit_code": 0,
+  "ended_utc": "2026-10-15T05:55:48.665055+00:00"
+}

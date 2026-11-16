@@ -1,0 +1,191 @@
+{
+  "at_utc": "2026-10-15T03:56:41.813768+00:00",
+  "head": "3ac1ec2e19d15e40c94e14a875b57698ed445798",
+  "dirty": [
+    " M .trellis/tasks/10-14-03-monitor-topology/check.jsonl",
+    " M .trellis/tasks/10-14-03-monitor-topology/design.md",
+    " M .trellis/tasks/10-14-03-monitor-topology/implement.jsonl",
+    " M .trellis/tasks/10-14-03-monitor-topology/implement.md",
+    " M .trellis/tasks/10-14-03-monitor-topology/prd.md",
+    " M .trellis/tasks/10-14-07-gpui-shell/check.jsonl",
+    " M .trellis/tasks/10-14-07-gpui-shell/design.md",
+    " M .trellis/tasks/10-14-07-gpui-shell/implement.jsonl",
+    " M .trellis/tasks/10-14-07-gpui-shell/implement.md",
+    " M .trellis/tasks/10-14-07-gpui-shell/prd.md",
+    " M .trellis/tasks/10-14-08-presenter-workbench/check.jsonl",
+    " M .trellis/tasks/10-14-08-presenter-workbench/design.md",
+    " M .trellis/tasks/10-14-08-presenter-workbench/implement.jsonl",
+    " M .trellis/tasks/10-14-08-presenter-workbench/implement.md",
+    " M .trellis/tasks/10-14-08-presenter-workbench/prd.md",
+    " M .trellis/tasks/10-14-09-settings-ui/check.jsonl",
+    " M .trellis/tasks/10-14-09-settings-ui/design.md",
+    " M .trellis/tasks/10-14-09-settings-ui/implement.jsonl",
+    " M .trellis/tasks/10-14-09-settings-ui/implement.md",
+    " M .trellis/tasks/10-14-09-settings-ui/prd.md",
+    " M .trellis/tasks/10-14-presenter-v0.3/check.jsonl",
+    " M .trellis/tasks/10-14-presenter-v0.3/design.md",
+    " M .trellis/tasks/10-14-presenter-v0.3/execution-state.md",
+    " M .trellis/tasks/10-14-presenter-v0.3/implement.jsonl",
+    " M .trellis/tasks/10-14-presenter-v0.3/implement.md",
+    " M .trellis/tasks/10-14-presenter-v0.3/implementation-prompts.md",
+    " M .trellis/tasks/10-14-presenter-v0.3/next-session-prompt.md",
+    " M .trellis/tasks/10-14-presenter-v0.3/prd.md",
+    " M .trellis/tasks/10-14-presenter-v0.3/research/gate-b.md",
+    " M .trellis/tasks/10-14-presenter-v0.3/traceability.md",
+    " M DESIGN.md",
+    " M crates/ferrostage-app/src/main.rs",
+    " M crates/ferrostage-ui/src/shell.rs",
+    " M docs/PROJECT_PLAN.md",
+    " M docs/feature-parity.md",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-audience-black-0.jpg",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-audience-black-cursor-0.jpg",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-audience-black-cursor.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-audience-black.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-audience-click-0.jpg",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-audience-click.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-audience-escape-ready-0.jpg",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-audience-escape-ready.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-audience-live-0.jpg",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-audience-live.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-audience-next-0.jpg",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-audience-next.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-dark-after-close-windows.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-dark-ready-0.jpg",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-dark-ready.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-dark-resize-attempt-0.jpg",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-dark-resize-attempt.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-dark-start-0.jpg",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-dark-start.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-dark.config-after.toml",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-dark.config-before.toml",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-dark.exit.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-dark.launch.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-dark.stderr.log",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-dark.stdout.log",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-final-window-inventory.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-light-ready-0.jpg",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-light-ready.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-light.config-after.toml",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-light.config-before.toml",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-light.exit.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-light.launch.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-light.stderr.log",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v6-light.stdout.log",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-after-swap-0.jpg",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-after-swap-visible-0.jpg",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-after-swap-visible.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-after-swap.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-before-swap-0.jpg",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-before-swap.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-dark-ready-0.jpg",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-dark-ready.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-dark.config-after.toml",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-dark.config-before.toml",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-dark.exit.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-dark.launch.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-dark.stderr.log",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-dark.stdout.log",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/native/resume-v7-final-window-inventory.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/product-native-freeze-v7.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/product-v7-before-main.rs",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/product-v7-before-shell.rs",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/product-v7-build.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/product-v7-build.log",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/product-v7-check.py",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/product-v7-clippy.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/product-v7-clippy.log",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/product-v7-design-before-plan.md",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/product-v7-diagnostics.md",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/product-v7-diagnostics.patch",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/product-v7-evidence-manifest.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/product-v7-fmt.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/product-v7-fmt.log",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/product-v7-headless.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/product-v7-headless.log",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/product-v7-independent-audit.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/product-v7-independent-check.md",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/product-v7-just-ci-retry.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/product-v7-just-ci-retry.log",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/product-v7-just-ci.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/product-v7-just-ci.log",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/product-v7-source-delta.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/resume-v6-evidence-manifest.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/resume-v6-identity-20261015.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/resume-v6-native-checkpoint.md",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/resume-v7-evidence-manifest.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/resume-v7-native-checkpoint.md",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/resume-v7-native-plan.md",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/resume-v7-postplan-identity.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/retirement-v7-diagnosis.md",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/retirement-v7-evidence.json",
+    "?? .trellis/tasks/10-14-07-gpui-shell/research/retirement-v7-evidence.py",
+    "?? .trellis/tasks/10-14-presenter-v0.3/research/display-assignment-plan.md",
+    "?? .trellis/tasks/10-14-presenter-v0.3/research/display-assignment-review.md",
+    "?? .trellis/tasks/10-14-presenter-v0.3/research/display-assignment-validation.json"
+  ],
+  "source_count": 602,
+  "source_deltas": {
+    "DESIGN.md": {
+      "expected": "88a7a31303e10d3adfc0be373bf326d16751123b54a2b211984ba9bfd6fe99c9",
+      "actual": "15af5b4b9ebf9aa88df75b4fc1a10a1aae52ff48c04faa5bad0066a3810c9d92"
+    }
+  },
+  "artifacts": {
+    "binary": {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe",
+      "matches": true,
+      "actual": "14dfd1f97b35df5611d94a034e7cd474a4d0556f9f5481ff2b76002f5839b309"
+    },
+    "pdfium": {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll",
+      "matches": true,
+      "actual": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118"
+    },
+    "cargo_lock": {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\Cargo.lock",
+      "matches": true,
+      "actual": "2557e10b37fa5cfe63e78ce19965b8bbbd83438bdd540eed50405fbbc3dbc23e"
+    },
+    "fixture": {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\pdf\\raster.pdf",
+      "matches": true,
+      "actual": "25a7932f46ee8fcd4866011921c574b4f5b343af05b793bc397b7e93ed0df013"
+    },
+    "final_build_log": {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-v7-build.log",
+      "matches": true,
+      "actual": "68bd6085bfd330ed9b046f441902e2448c273e734b0e9b11e72d9254a9f9b554"
+    },
+    "final_native_clippy_log": {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-v7-clippy.log",
+      "matches": true,
+      "actual": "64041d396ef90b4ddddeafaf15fa287e0fed558460ce91b563e025a72413e643"
+    }
+  },
+  "manifests": {
+    "product-v7-evidence-manifest.json": {
+      "count": 22,
+      "mismatches": []
+    },
+    "native-v6-independent-manifest.json": {
+      "count": 213,
+      "mismatches": []
+    },
+    "native-v6-evidence-manifest.json": {
+      "count": 54,
+      "mismatches": []
+    },
+    "native-v5-evidence-manifest.json": {
+      "count": 108,
+      "mismatches": []
+    },
+    "product-v6-evidence-manifest.json": {
+      "count": 26,
+      "mismatches": []
+    },
+    "product-independent-v6-manifest.json": {
+      "count": 141,
+      "mismatches": []
+    }
+  }
+}

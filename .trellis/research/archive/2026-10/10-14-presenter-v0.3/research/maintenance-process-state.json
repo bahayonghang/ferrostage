@@ -1,0 +1,7 @@
+{
+  "captured_utc": "2026-10-15T00:24:39.3281171Z",
+  "process_count": 0,
+  "processes": [],
+  "previous_name_query_exit": 1,
+  "previous_name_query_reason": "Get-Process by absent names returned no matches; preceding Python link checks completed successfully."
+}

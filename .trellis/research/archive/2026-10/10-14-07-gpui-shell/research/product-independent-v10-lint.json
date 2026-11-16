@@ -1,0 +1,22 @@
+{
+  "started_utc": "2026-10-15T04:53:07.178441+00:00",
+  "argv": [
+    "cargo",
+    "clippy",
+    "-p",
+    "ferrostage-app",
+    "-p",
+    "ferrostage-ui",
+    "--all-features",
+    "--all-targets",
+    "--locked",
+    "--offline",
+    "--",
+    "-D",
+    "warnings"
+  ],
+  "status": "RETURNED",
+  "log": "product-independent-v10-lint.log",
+  "exit_code": 0,
+  "ended_utc": "2026-10-15T04:53:08.919874+00:00"
+}

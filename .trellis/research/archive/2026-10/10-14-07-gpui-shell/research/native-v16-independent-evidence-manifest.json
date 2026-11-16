@@ -1,0 +1,30 @@
+{
+  "captured_utc": "2026-10-15T10:27:12.334717+00:00",
+  "scope": "Independent read-only native evidence audit; all138 native records and648 source hashes verified; no native execution or product changes.",
+  "files": {
+    ".trellis/tasks/10-14-07-gpui-shell/research/native-v16-independent-review.md": {
+      "bytes": 5269,
+      "sha256": "636fb29f98816bbd71e0ea2d1b9bcd810ad1f399f5b9e6c3b2a4deeed4fdc59e"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/native-v16-evidence-manifest.json": {
+      "bytes": 27039,
+      "sha256": "cad5c4ee34a7573c774efed77edb10cb53895201736fed2afd390501b13f91dc"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/native-v16-audit.json": {
+      "bytes": 20104,
+      "sha256": "8e1862ba8c606a8073233a1dcea2efb2ad4f0f4acebaddf5591ce0aa72f08f96"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/native-v16-core-results.md": {
+      "bytes": 7325,
+      "sha256": "25901289941416a886416386ddf38102059a3d9791cd3779be82e9f66a6bce78"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-native-freeze-v16.json": {
+      "bytes": 102282,
+      "sha256": "0e2b1ed8ef9299676ba249e7600bd8ab6734f00c6ae17f677467405ad60402d3"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v16-review.md": {
+      "bytes": 6911,
+      "sha256": "9db30cb9d4c1a9e4580d5abc38d5faa0c41b984e2883ff8dd3dbe03a5c7a773c"
+    }
+  }
+}

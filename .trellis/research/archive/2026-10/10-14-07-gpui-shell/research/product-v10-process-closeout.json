@@ -1,0 +1,11 @@
+{
+  "processes": [],
+  "cargo_commands_returned": true,
+  "implementer_native_launches": 0,
+  "captured_utc": "2026-10-15T04:50:45.7350972Z",
+  "process_names": [
+    "cargo",
+    "rustc",
+    "ferrostage"
+  ]
+}

@@ -1,0 +1,514 @@
+{
+  "additional_source_files": [
+    {
+      "path": "C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\gpui\\src\\app\\context.rs",
+      "bytes": 32448,
+      "sha256": "af9c74ba63623cf4f107861e041cddb72cca5b5c65695ab6531bb44fbf7b3573"
+    },
+    {
+      "path": "C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\gpui\\src\\app.rs",
+      "bytes": 129293,
+      "sha256": "09920cb50857041e0ec3e0063e60f95f165da975f53b53a7f933919b8c3f11bb"
+    },
+    {
+      "path": "C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\gpui\\src\\window.rs",
+      "bytes": 361682,
+      "sha256": "75ebfde34c284ed6afce96989bfc8794dcd7fb79b3b228d36e87a930688cf86b"
+    },
+    {
+      "path": "C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\gpui_windows\\src\\window.rs",
+      "bytes": 61476,
+      "sha256": "35ca36a271ca0f3be6b8bcd9619d16763704abeab10d825c85a234c2cb208058"
+    },
+    {
+      "path": "C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\gpui_windows\\src\\events.rs",
+      "bytes": 65876,
+      "sha256": "7458a01f0b2c6569a251441054a8375cf3910e1d7399b3edad2ca80bc43b0f8c"
+    },
+    {
+      "path": "C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\gpui_windows\\src\\platform.rs",
+      "bytes": 62018,
+      "sha256": "192b2eb120d0fd2d5dd54a65a56d5a6af4a935d0cea0bf17f9157d9e092bf658"
+    },
+    {
+      "path": "C:\\Users\\lyh\\.cargo\\git\\checkouts\\zed-a70e2ad075855582\\96a1b1b\\crates\\gpui_windows\\src\\display.rs",
+      "bytes": 6446,
+      "sha256": "763040fe7a9c29d78c46e42dd8c4ffaa8eb703d7cdba0748b709a8e76787f614"
+    }
+  ],
+  "routes": {
+    "gpui-route-spike": {
+      "package": {
+        "name": "ferrostage-gpui-route-spike",
+        "version": "0.0.0",
+        "edition": "2024",
+        "publish": false,
+        "license": "MIT OR Apache-2.0"
+      },
+      "dependencies": {
+        "gpui": {
+          "git": "https://github.com/zed-industries/zed",
+          "tag": "v1.23.3",
+          "default-features": false
+        },
+        "gpui_platform": {
+          "git": "https://github.com/zed-industries/zed",
+          "tag": "v1.23.3",
+          "default-features": false
+        }
+      },
+      "gpui_lock_entries": [
+        {
+          "name": "gpui",
+          "version": "0.2.2",
+          "source": "git+https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5389efff473fc2306f7f8c690f2e1a417",
+          "dependencies": [
+            "accesskit",
+            "anyhow",
+            "async-channel",
+            "async-task",
+            "bindgen",
+            "bitflags 2.13.2",
+            "chrono",
+            "collections",
+            "core-video",
+            "ctor",
+            "derive_more",
+            "embed-resource",
+            "etagere",
+            "futures",
+            "futures-concurrency",
+            "getrandom 0.3.4",
+            "gpui_macros",
+            "gpui_shared_string",
+            "gpui_util",
+            "heapless",
+            "http_client",
+            "image",
+            "inventory",
+            "itertools 0.14.0",
+            "libc",
+            "log",
+            "lyon",
+            "num_cpus",
+            "objc2-core-foundation",
+            "objc2-core-video",
+            "parking",
+            "parking_lot",
+            "pin-project",
+            "pollster 0.4.0",
+            "postage",
+            "profiling",
+            "rand",
+            "raw-window-handle",
+            "refineable",
+            "regex",
+            "resvg",
+            "scheduler",
+            "schemars",
+            "seahash",
+            "serde",
+            "serde_json",
+            "slotmap",
+            "smallvec",
+            "spin 0.10.1",
+            "strum",
+            "sum_tree",
+            "taffy",
+            "thiserror 2.0.21",
+            "ttf-parser",
+            "url",
+            "usvg",
+            "util_macros",
+            "uuid",
+            "waker-fn",
+            "web-time",
+            "windows"
+          ]
+        },
+        {
+          "name": "gpui_platform",
+          "version": "0.1.0",
+          "source": "git+https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5389efff473fc2306f7f8c690f2e1a417",
+          "dependencies": [
+            "anyhow",
+            "console_error_panic_hook",
+            "gpui",
+            "gpui_linux",
+            "gpui_macos",
+            "gpui_web",
+            "gpui_windows"
+          ]
+        }
+      ]
+    },
+    "gpui-kit-route-spike": {
+      "package": {
+        "name": "ferrostage-gpui-kit-route-spike",
+        "version": "0.0.0",
+        "edition": "2024",
+        "publish": false,
+        "license": "MIT OR Apache-2.0"
+      },
+      "dependencies": {
+        "gpui": {
+          "package": "gpui-pre",
+          "version": "=0.3.9",
+          "default-features": false
+        },
+        "gpui_platform": {
+          "package": "gpui-pre-platform",
+          "version": "=0.3.9",
+          "default-features": false
+        },
+        "gpui-component": {
+          "version": "=0.7.3",
+          "default-features": false
+        },
+        "gpui-kit": {
+          "version": "=0.7.3",
+          "default-features": false,
+          "features": [
+            "component"
+          ]
+        }
+      },
+      "gpui_lock_entries": [
+        {
+          "name": "gpui-component",
+          "version": "0.7.3",
+          "source": "registry+https://github.com/rust-lang/crates.io-index",
+          "checksum": "465a363235cd4062ef5f0953fc096fc764ed6f53dfbd9f409f669f93ea3b1ff9",
+          "dependencies": [
+            "anyhow",
+            "chrono",
+            "core-text",
+            "enum-iterator",
+            "gpui-base",
+            "gpui-component-macros",
+            "gpui-kit-assets",
+            "gpui-pre",
+            "gpui-pre-macros",
+            "gpui-pre-sum-tree",
+            "instant",
+            "itertools 0.13.0",
+            "log",
+            "lsp-types",
+            "markdown",
+            "notify",
+            "num-traits",
+            "objc2 0.6.5",
+            "objc2-app-kit 0.3.2",
+            "objc2-foundation 0.3.2",
+            "once_cell",
+            "paste",
+            "raw-window-handle",
+            "regex",
+            "resvg 0.45.1",
+            "ropey",
+            "rust-i18n",
+            "schemars",
+            "serde",
+            "serde_json",
+            "serde_repr",
+            "similar",
+            "smallvec",
+            "smol",
+            "tracing",
+            "unicode-segmentation",
+            "unicode-width",
+            "uuid",
+            "windows 0.58.0"
+          ]
+        },
+        {
+          "name": "gpui-kit",
+          "version": "0.7.3",
+          "source": "registry+https://github.com/rust-lang/crates.io-index",
+          "checksum": "0fac401f6b149bf33794da0942510240afd29b7b18556574e4cf17196b647066",
+          "dependencies": [
+            "gpui-base",
+            "gpui-component",
+            "gpui-pre",
+            "gpui-pre-macros",
+            "gpui-pre-platform",
+            "gpui-pre-web"
+          ]
+        },
+        {
+          "name": "gpui-pre",
+          "version": "0.3.9",
+          "source": "registry+https://github.com/rust-lang/crates.io-index",
+          "checksum": "34f61c1cfd36fc9c436af09308c963822ae27a45a84feb21a77ba5c9e051f1c0",
+          "dependencies": [
+            "accesskit",
+            "anyhow",
+            "async-channel",
+            "async-task",
+            "backtrace",
+            "bitflags 2.13.2",
+            "chrono",
+            "ctor",
+            "derive_more",
+            "embed-resource",
+            "etagere",
+            "futures",
+            "getrandom 0.3.4",
+            "gpui-pre-collections",
+            "gpui-pre-http-client",
+            "gpui-pre-macros",
+            "gpui-pre-refineable",
+            "gpui-pre-scheduler",
+            "gpui-pre-shared-string",
+            "gpui-pre-sum-tree",
+            "gpui-pre-util",
+            "heapless",
+            "image",
+            "inventory",
+            "itertools 0.14.0",
+            "libc",
+            "log",
+            "lyon",
+            "num_cpus",
+            "objc2-core-foundation",
+            "objc2-core-video",
+            "parking",
+            "parking_lot",
+            "pin-project",
+            "pollster",
+            "profiling",
+            "rand 0.9.5",
+            "raw-window-handle",
+            "regex",
+            "resvg 0.46.0",
+            "schemars",
+            "seahash",
+            "serde",
+            "serde_json",
+            "slotmap",
+            "smallvec",
+            "spin 0.10.1",
+            "strum",
+            "taffy",
+            "thiserror 2.0.21",
+            "ttf-parser",
+            "url",
+            "usvg 0.46.0",
+            "uuid",
+            "waker-fn",
+            "windows 0.62.2",
+            "zed-scap"
+          ]
+        },
+        {
+          "name": "gpui-pre-platform",
+          "version": "0.3.9",
+          "source": "registry+https://github.com/rust-lang/crates.io-index",
+          "checksum": "bbdbdac421178313fed8929fe95b42634a266a735079fcf03ff231bc2ccb2c5e",
+          "dependencies": [
+            "anyhow",
+            "console_error_panic_hook",
+            "gpui-pre",
+            "gpui-pre-linux",
+            "gpui-pre-macos",
+            "gpui-pre-web",
+            "gpui-pre-windows"
+          ]
+        }
+      ]
+    },
+    "gpui-pre-minimal-route": {
+      "package": {
+        "name": "ferrostage-gpui-pre-minimal-route",
+        "version": "0.0.0",
+        "edition": "2024",
+        "publish": false,
+        "license": "MIT OR Apache-2.0"
+      },
+      "dependencies": {
+        "gpui": {
+          "package": "gpui-pre",
+          "version": "=0.3.9",
+          "default-features": false
+        },
+        "gpui_platform": {
+          "package": "gpui-pre-platform",
+          "version": "=0.3.9",
+          "default-features": false
+        }
+      },
+      "gpui_lock_entries": [
+        {
+          "name": "gpui-pre",
+          "version": "0.3.9",
+          "source": "registry+https://github.com/rust-lang/crates.io-index",
+          "checksum": "34f61c1cfd36fc9c436af09308c963822ae27a45a84feb21a77ba5c9e051f1c0",
+          "dependencies": [
+            "accesskit",
+            "anyhow",
+            "async-channel",
+            "async-task",
+            "backtrace",
+            "bitflags 2.13.2",
+            "chrono",
+            "ctor",
+            "derive_more",
+            "embed-resource",
+            "etagere",
+            "futures",
+            "getrandom 0.3.4",
+            "gpui-pre-collections",
+            "gpui-pre-http-client",
+            "gpui-pre-macros",
+            "gpui-pre-refineable",
+            "gpui-pre-scheduler",
+            "gpui-pre-shared-string",
+            "gpui-pre-sum-tree",
+            "gpui-pre-util",
+            "heapless",
+            "image",
+            "inventory",
+            "itertools",
+            "libc",
+            "log",
+            "lyon",
+            "num_cpus",
+            "objc2-core-foundation",
+            "objc2-core-video",
+            "parking",
+            "parking_lot",
+            "pin-project",
+            "pollster",
+            "profiling",
+            "rand",
+            "raw-window-handle",
+            "regex",
+            "resvg",
+            "schemars",
+            "seahash",
+            "serde",
+            "serde_json",
+            "slotmap",
+            "smallvec",
+            "spin 0.10.1",
+            "strum",
+            "taffy",
+            "thiserror",
+            "ttf-parser",
+            "url",
+            "usvg",
+            "uuid",
+            "waker-fn",
+            "windows"
+          ]
+        },
+        {
+          "name": "gpui-pre-platform",
+          "version": "0.3.9",
+          "source": "registry+https://github.com/rust-lang/crates.io-index",
+          "checksum": "bbdbdac421178313fed8929fe95b42634a266a735079fcf03ff231bc2ccb2c5e",
+          "dependencies": [
+            "anyhow",
+            "console_error_panic_hook",
+            "gpui-pre",
+            "gpui-pre-linux",
+            "gpui-pre-macos",
+            "gpui-pre-web",
+            "gpui-pre-windows"
+          ]
+        }
+      ]
+    }
+  },
+  "diagnostics": {
+    "route-spike-deny-final.log": {
+      "license_error_count": 3,
+      "unmaintained_error_count": 3,
+      "advisories": [
+        "RUSTSEC-2024-0436",
+        "RUSTSEC-2026-0192",
+        "RUSTSEC-2026-0206"
+      ],
+      "summary": "advisories FAILED, bans ok, licenses FAILED, sources ok"
+    },
+    "kit-route-deny.log": {
+      "license_error_count": 6,
+      "unmaintained_error_count": 5,
+      "advisories": [
+        "RUSTSEC-2024-0384",
+        "RUSTSEC-2024-0436",
+        "RUSTSEC-2025-0134",
+        "RUSTSEC-2026-0192",
+        "RUSTSEC-2026-0206"
+      ],
+      "summary": "advisories FAILED, bans ok, licenses FAILED, sources ok"
+    },
+    "pre-minimal-deny.log": {
+      "license_error_count": 2,
+      "unmaintained_error_count": 3,
+      "advisories": [
+        "RUSTSEC-2024-0436",
+        "RUSTSEC-2026-0192",
+        "RUSTSEC-2026-0206"
+      ],
+      "summary": "advisories FAILED, bans ok, licenses FAILED, sources ok"
+    },
+    "independent-minimal-deny.log": {
+      "license_error_count": 2,
+      "unmaintained_error_count": 3,
+      "advisories": [
+        "RUSTSEC-2024-0436",
+        "RUSTSEC-2026-0192",
+        "RUSTSEC-2026-0206"
+      ],
+      "summary": "advisories FAILED, bans ok, licenses FAILED, sources ok"
+    }
+  },
+  "official_sources": [
+    {
+      "url": "https://rustsec.org/advisories/RUSTSEC-2024-0436.html",
+      "observed": "INFO Unmaintained; no patched versions; paste alternatives"
+    },
+    {
+      "url": "https://rustsec.org/advisories/RUSTSEC-2026-0206.html",
+      "observed": "INFO Unmaintained; no patched versions; harfrust alternative"
+    },
+    {
+      "url": "https://rustsec.org/advisories/RUSTSEC-2026-0192.html",
+      "observed": "INFO Unmaintained; no patched versions; skrifa alternative"
+    },
+    {
+      "url": "https://github.com/linebender/resvg/blob/main/CHANGELOG.md",
+      "observed": "0.48.0 text migration to skrifa/harfrust; mutable main observed 2026-10-14"
+    },
+    {
+      "url": "https://www.mozilla.org/en-US/MPL/2.0/",
+      "observed": "Official MPL 2.0 text; distinct source/executable/larger-work obligations; no policy exception inferred"
+    }
+  ],
+  "minimal_windows_presence": {
+    "paste": true,
+    "rustybuzz": true,
+    "ttf-parser": true,
+    "arrayref": true,
+    "cbindgen": false,
+    "gpui-kit": false,
+    "gpui-base": false,
+    "gpui-component": false,
+    "dwrote": false,
+    "rustls-pemfile": false
+  },
+  "cbindgen_all_tree": "cbindgen v0.28.0\n[build-dependencies]\n\u2514\u2500\u2500 gpui-pre-apple v0.3.9\n    \u2514\u2500\u2500 gpui-pre-macos v0.3.9\n        \u2514\u2500\u2500 gpui-pre-platform v0.3.9\n            \u2514\u2500\u2500 ferrostage-gpui-pre-minimal-route v0.0.0 (D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\gpui-pre-minimal-route)\n",
+  "pre_metadata": {
+    "zed-crate": "gpui",
+    "zed-version": "0.2.2",
+    "zed-rev": "93d745668805029476e6d7fbb19652116fed51de"
+  },
+  "source_revision_read_command": "git -C <cached repository> rev-parse HEAD",
+  "source_revision_read_exits": {
+    "initial_sandbox": "Individual exits not captured; enclosing shell exit1, both git commands report Permission denied",
+    "approved_retry": 0
+  },
+  "tagged_revision": "96a1b1b5389efff473fc2306f7f8c690f2e1a417",
+  "advisory_db_revision": "caee11f41fab07d676c0a4655a2a5dd1f94da97c"
+}

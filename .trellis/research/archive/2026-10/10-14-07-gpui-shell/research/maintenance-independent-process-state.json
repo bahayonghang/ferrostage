@@ -1,0 +1,10 @@
+{
+  "version": "Microsoft Windows NT 10.0.26300.0",
+  "os": "Microsoft Windows 10.0.26300",
+  "python": "C:\\Program Files\\Python314\\python.exe",
+  "captured": "2026-10-14T20:17:59.2840224-04:00",
+  "active_cargo_rustc_rustfmt": [],
+  "reviewer_tool_sessions": "none",
+  "cargo": "C:\\Users\\lyh\\.cargo\\bin\\cargo.exe",
+  "cim_query": "Access denied; RuntimeInformation and Environment used for OS identity"
+}

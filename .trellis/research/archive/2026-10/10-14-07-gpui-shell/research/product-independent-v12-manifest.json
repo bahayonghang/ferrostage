@@ -1,0 +1,58 @@
+{
+  "at_utc": "2026-10-15T06:00:47.524828+00:00",
+  "scope": "V12 independent review, historical native applicability audit and authorized V13 self-fix handoff. V13 repair receipts have their own manifest.",
+  "files": {
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v12-check.py": {
+      "bytes": 4124,
+      "sha256": "4072cebae2f16ed6f85005d967ce5c15268df50233b225c52d277bdc6f8f64b2"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v12-diff.json": {
+      "bytes": 260,
+      "sha256": "409f9a76a573e6382f3bd6b9a1f286b36b53fc4578deee18ec89e67b1c086c87"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v12-diff.log": {
+      "bytes": 4557,
+      "sha256": "77fcd39d6f499d9d9aad54bd8fa115ac9acd22cd478b0a479d9c25cea1bdf292"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v12-final-identity.json": {
+      "bytes": 723,
+      "sha256": "991dec2d0a348337e5a080afcb7f308c720158a5263490fb64736c37389ef484"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v12-identity.json": {
+      "bytes": 1036,
+      "sha256": "2204df0d52318b4185d71fda95abf1a5429f5187ce49416d55c2bbed0f822382"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v12-lint.json": {
+      "bytes": 434,
+      "sha256": "8983d5a614478728396423c64d89600cf1d730a2348fc0c06bd9cbe9b0834383"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v12-lint.log": {
+      "bytes": 329,
+      "sha256": "42b84a0d4188485e28dc08623d681149f55cf8e04a777fcca65d2dfce87d5554"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v12-native-audit.json": {
+      "bytes": 2355,
+      "sha256": "3109d15ac8f99b86ad5e6cd7c1a51e37116febaf8fa0afd8138ed57faaf8410d"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v12-retirement.json": {
+      "bytes": 431,
+      "sha256": "225cbdbc097749875ab1f7a4ab58041078312d753149c44a8824ef724e9177d8"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v12-retirement.log": {
+      "bytes": 1042,
+      "sha256": "dfc58094a653d423510cbd16f3167420373b69dae707ed6f98d83a994aa29368"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v12-review.md": {
+      "bytes": 8979,
+      "sha256": "446862bd22727513cbe6c7309a7e4ee27a45bad867b03d7936e5244388514fe9"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v12-types.json": {
+      "bytes": 395,
+      "sha256": "3123141bb010c148246b38713805ce5eb3defeb6609f8aa9d860af1da064a779"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v12-types.log": {
+      "bytes": 521,
+      "sha256": "e83553c566a8bf6ad75d914c664b00ee37812ffbe01f5c5f4123e8149b0cc3c6"
+    }
+  }
+}

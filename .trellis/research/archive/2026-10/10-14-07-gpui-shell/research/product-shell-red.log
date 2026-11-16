@@ -1,0 +1,56 @@
+   Compiling uuid v1.28.0
+   Compiling lopdf v0.45.0
+   Compiling ferrostage-platform v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-platform)
+   Compiling ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+   Compiling ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+   Compiling ferrostage-settings v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-settings)
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.57s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-ee109a6616010885.exe)
+
+running 15 tests
+test tests::gpui_pin_is_the_zed_tag_not_crates_io ... ok
+test transactions::tests::focus_waits_for_both_observations_and_rejects_retired_owners ... ok
+test policy::tests::fullscreen_request_without_native_bounds_evidence_is_not_confirmation ... ok
+test theme::tests::used_text_and_focus_pairs_meet_design_contrast ... ok
+test transactions::tests::failed_second_replacement_returns_only_new_resources_for_cleanup ... ok
+test policy::tests::uuid_includes_terminator_and_full_utf16_buffer ... ok
+test transactions::tests::invalid_jump_text_cannot_commit_a_previous_valid_preview ... ok
+test transactions::tests::retiring_old_windows_cannot_stop_replacements ... ok
+test policy::tests::conflicts_are_disabled_after_normalization ... ok
+test policy::tests::mapping_rejects_partial_duplicate_and_unknown_sets ... ok
+test policy::tests::single_monitor_requires_explicit_windowed_mode ... ok
+test policy::tests::swap_prepares_authority_without_mutating_old_settings ... ok
+test transactions::tests::shutdown_never_publishes_live_between_curtain_and_close ... FAILED
+test transactions::tests::startup_import_survives_presenter_confirmation_only ... FAILED
+test transactions::tests::settings_escape_does_not_send_cancel_jump_into_idle_core ... FAILED
+
+failures:
+
+---- transactions::tests::shutdown_never_publishes_live_between_curtain_and_close stdout ----
+
+thread 'transactions::tests::shutdown_never_publishes_live_between_curtain_and_close' (163604) panicked at crates\ferrostage-ui\src\transactions.rs:95:9:
+[Curtain, Live, Curtain, Curtain]
+
+---- transactions::tests::startup_import_survives_presenter_confirmation_only stdout ----
+
+thread 'transactions::tests::startup_import_survives_presenter_confirmation_only' (96548) panicked at crates\ferrostage-ui\src\transactions.rs:66:9:
+assertion failed: import_allowed(SessionStage::Idle, Some(Operation::RecoverPresenter))
+
+---- transactions::tests::settings_escape_does_not_send_cancel_jump_into_idle_core stdout ----
+
+thread 'transactions::tests::settings_escape_does_not_send_cancel_jump_into_idle_core' (111340) panicked at crates\ferrostage-ui\src\transactions.rs:73:9:
+assertion `left == right` failed
+  left: CancelPreview
+ right: CloseModal
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    transactions::tests::settings_escape_does_not_send_cancel_jump_into_idle_core
+    transactions::tests::shutdown_never_publishes_live_between_curtain_and_close
+    transactions::tests::startup_import_survives_presenter_confirmation_only
+
+test result: FAILED. 12 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p ferrostage-ui --lib`

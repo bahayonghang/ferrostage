@@ -1,0 +1,125 @@
+     Locking 55 packages to highest Rust 1.99.0 compatible versions
+      Adding adler2 v2.0.1
+      Adding arrayref v0.3.9
+      Adding arrayvec v0.7.8
+      Adding autocfg v1.5.1
+      Adding base64 v0.22.1
+      Adding base64 v0.23.1
+      Adding bitflags v1.3.2
+      Adding bitflags v2.13.2
+      Adding cfg-if v1.0.5
+      Adding core_maths v0.1.1
+      Adding crc32fast v1.5.2
+      Adding data-url v0.3.2
+      Adding euclid v0.22.14
+      Adding fdeflate v0.3.7
+      Adding flate2 v1.1.10
+      Adding float-cmp v0.9.0
+      Adding fontdb v0.23.0
+      Adding harfrust v0.12.0
+      Adding imagesize v0.14.0
+      Adding imagesize v0.15.0
+      Adding kurbo v0.13.1
+      Adding libm v0.2.16
+      Adding memchr v2.8.3
+      Adding miniz_oxide v0.8.9
+      Adding miniz_oxide v0.9.1
+      Adding num-traits v0.2.19
+      Adding pico-args v0.5.0
+      Adding png v0.17.16
+      Adding png v0.18.1
+      Adding polycool v0.4.0
+      Adding resvg v0.46.0 (available: v0.48.1)
+      Adding resvg v0.48.1
+      Adding rgb v0.8.53
+      Adding roxmltree v0.21.1
+      Adding rustybuzz v0.20.1
+      Adding simd-adler32 v0.3.10
+      Adding simplecss v0.2.2
+      Adding siphasher v1.0.4
+      Adding smallvec v1.16.3
+      Adding strict-num v0.1.1
+      Adding svgtypes v0.16.1
+      Adding tiny-skia v0.11.4
+      Adding tiny-skia v0.12.0
+      Adding tiny-skia-path v0.11.4
+      Adding tiny-skia-path v0.12.0
+      Adding unicode-bidi v0.3.18
+      Adding unicode-bidi-mirroring v0.4.0
+      Adding unicode-ccc v0.4.0
+      Adding unicode-properties v0.1.4
+      Adding unicode-script v0.5.8
+      Adding unicode-vo v0.1.0
+      Adding usvg v0.46.0
+      Adding usvg v0.48.1
+      Adding xmlwriter v0.1.0
+      Adding zlib-rs v0.6.8
+   Compiling simd-adler32 v0.3.10
+   Compiling log v0.4.34
+   Compiling crc32fast v1.5.2
+   Compiling adler2 v2.0.1
+   Compiling arrayvec v0.7.8
+   Compiling float-cmp v0.9.0
+   Compiling cfg-if v1.0.5
+   Compiling bitflags v2.13.2
+   Compiling libm v0.2.16
+   Compiling smallvec v1.16.3
+   Compiling arrayref v0.3.9
+   Compiling memchr v2.8.3
+   Compiling unicode-script v0.5.8
+   Compiling siphasher v1.0.4
+   Compiling data-url v0.3.2
+   Compiling unicode-vo v0.1.0
+   Compiling unicode-bidi v0.3.18
+   Compiling pico-args v0.5.0
+   Compiling xmlwriter v0.1.0
+   Compiling unicode-properties v0.1.4
+   Compiling unicode-ccc v0.4.0
+   Compiling unicode-bidi-mirroring v0.4.0
+   Compiling bitflags v1.3.2
+   Compiling bytemuck v1.25.2
+   Compiling imagesize v0.14.0
+   Compiling strict-num v0.1.1
+   Compiling miniz_oxide v0.9.1
+   Compiling polycool v0.4.0
+   Compiling miniz_oxide v0.8.9
+   Compiling fdeflate v0.3.7
+   Compiling simplecss v0.2.2
+   Compiling fontdb v0.24.0
+   Compiling base64 v0.22.1
+   Compiling imagesize v0.15.0
+   Compiling base64 v0.23.1
+   Compiling font-types v0.12.6
+   Compiling tiny-skia-path v0.11.4
+   Compiling tiny-skia-path v0.12.0
+   Compiling rgb v0.8.53
+   Compiling kurbo v0.13.1
+   Compiling roxmltree v0.21.1
+   Compiling read-fonts v0.41.0
+   Compiling flate2 v1.1.10
+   Compiling png v0.17.16
+   Compiling png v0.18.1
+   Compiling svgtypes v0.16.1
+   Compiling core_maths v0.1.1
+   Compiling ttf-parser v0.25.1
+   Compiling tiny-skia v0.11.4
+   Compiling tiny-skia v0.12.0
+   Compiling rustybuzz v0.20.1
+   Compiling fontdb v0.23.0
+   Compiling usvg v0.46.0
+   Compiling harfrust v0.12.0
+   Compiling skrifa v0.44.0
+   Compiling resvg v0.46.0
+   Compiling usvg v0.48.1
+   Compiling resvg v0.48.1
+   Compiling ferrostage-maintenance-cmap-proof v0.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-cmap-proof)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 9.75s
+     Running unittests src\main.rs (cache\gpui-maintenance-cmap-proof\target\debug\deps\ferrostage_maintenance_cmap_proof-0519a06fa4d15eda.exe)
+
+running 1 test
+SVG fallback format13: old painted=268 calls=1; repaired painted=268 calls=1
+SVG fallback format2: old painted=268 calls=1; repaired painted=304 calls=2
+test compare_real_svg_fallback_across_text_stacks ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.01s
+

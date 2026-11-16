@@ -1,0 +1,51 @@
+{
+  "source": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\notes-functional\\pympress-notes.pdf",
+  "source_sha256_before": "e939e35f931c184fd93b2e9b95e560db73ba6a6f6dfccbb0963262f0b359dfeb",
+  "source_sha256_after": "e939e35f931c184fd93b2e9b95e560db73ba6a6f6dfccbb0963262f0b359dfeb",
+  "generator_reader": "pypdf 6.20.1",
+  "outputs": [
+    {
+      "name": "reload-blue.pdf",
+      "bytes": 162941,
+      "sha256": "666f03a9d24e1022056d35bed22f46ce596073494139176c33f9eed92914ac5c",
+      "labels": [
+        "1",
+        "2",
+        "3",
+        "3",
+        "4"
+      ],
+      "public_marker_bars": 1,
+      "public_marker_rgb": "0.05 0.35 0.95"
+    },
+    {
+      "name": "reload-green.pdf",
+      "bytes": 163026,
+      "sha256": "2d1571176a037b5ad526a4c91c742014aaf9fa3856986f8d810871b411110a50",
+      "labels": [
+        "1",
+        "2",
+        "3",
+        "3",
+        "4"
+      ],
+      "public_marker_bars": 2,
+      "public_marker_rgb": "0.05 0.65 0.25"
+    },
+    {
+      "name": "reload-orange.pdf",
+      "bytes": 163106,
+      "sha256": "3db25c68d519f731d866cace4b91075c530422efd9d82659944f41a0476d5781",
+      "labels": [
+        "1",
+        "2",
+        "3",
+        "3",
+        "4"
+      ],
+      "public_marker_bars": 3,
+      "public_marker_rgb": "0.95 0.4 0.05"
+    }
+  ],
+  "scope": "Owned fixture preparation only; actual product/native reload NOT_RUN."
+}

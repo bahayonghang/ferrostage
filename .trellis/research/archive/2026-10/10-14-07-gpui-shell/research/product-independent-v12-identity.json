@@ -1,0 +1,27 @@
+{
+  "at_utc": "2026-10-15T05:49:36.754064+00:00",
+  "source_count": 609,
+  "source_sha256": "fa6617505a045fe2aa4dce0a3185eff47c3ed70bb283d1e1c7030e4c04054e73",
+  "binary_sha256": "c8291c651a485ddff5cc00354dede2c67c25ea1080a4205e4d12fa0796789fda",
+  "freeze_sha256": "4544ec636dd193a23f59007896cc0aa7c39ac506298cf395504c6b2ac7b3d221",
+  "manifests": {
+    "product-v12-evidence-manifest.json": {
+      "count": 23,
+      "sha256": "30de36dbaa7dda96f69a284dfb6bbefdde7b76e16fd357bbadb0d16d9b2d7905"
+    },
+    "native-v11-evidence-manifest.json": {
+      "count": 115,
+      "sha256": "a5d41534ce86215aa364ef608c66e83b2aeeca47a00b7eca36e4a4760b1e61a5"
+    },
+    "product-independent-v11-manifest.json": {
+      "count": 13,
+      "sha256": "a29e8dc898e842a4485f09c392535187de7e07cb8c624a39b5b2066ca3fb777d"
+    },
+    "native-v9-evidence-manifest.json": {
+      "count": 37,
+      "sha256": "7e9d42e2894e5319770966bf2c602b62b5cbc13cb5771b85d19dbc96ff229822"
+    }
+  },
+  "mismatches": [],
+  "status": "PASS"
+}

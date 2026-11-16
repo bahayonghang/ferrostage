@@ -1,0 +1,35 @@
+{
+  "changes": {
+    ".trellis/spec/frontend/component-guidelines.md": {
+      "v13": "20b0366b7e816e9c2677c95df00ca98857f76e8ea85eec1130895d6c48c3174d",
+      "v14": "1e064f50ef2db56991fc7f8a32677dade4e44093639950da194455ce0bac771a"
+    },
+    ".trellis/spec/frontend/maintained-dependencies.md": {
+      "v13": "6eb3754570b5771935f5cb4781fcda2d7bf62746fa483eb07a564f751a8bfaf4",
+      "v14": "a049a217490484ed27e4b18ae1be9cd0e064debe41e48d4a4646700627363d98"
+    },
+    "crates/ferrostage-ui/src/shell.rs": {
+      "v13": "e65a3bcf3dba2e4d1fdb158b6a2d85e84c452dc774b173742408d2b098fb9b3b",
+      "v14": "b0c6501a972aaf672689d36bed975c34b894625d03b4cf32a103b874cb736f48"
+    },
+    "docs/adr/ADR-008-gpui-dependency-gate.md": {
+      "v13": "8602bcf8e3d005e175b456ce6cadb9c2d155c94ad154000eb5b2d468ae778e3f",
+      "v14": "9eb05252558ab7151e8bddae619064a2053927feb60b70ae0029dcb06616c490"
+    },
+    "vendor/gpui/src/app/test_context.rs": {
+      "v13": "b57dd9f67b1b6a344c9859bb5adf9b4405bcf7e21cf0a0bece3fda93b8afda56",
+      "v14": "37a67380e38f387d3e279585009b767d97678393cdbe8e0387fff8b8d50bd272"
+    },
+    "vendor/gpui/src/platform/test/window.rs": {
+      "v13": "e31520f95c8910c6e378a39a4fc59312ed02f157aa7f2aaf2ab59d04a29553b9",
+      "v14": "bd4432119f709deaa2c09626a3d05ee5592ac1cbbb1a134727dfc030a7cc1a7c"
+    },
+    "vendor/gpui/src/window.rs": {
+      "v13": "2855e6e478bda7170f222735ef80572c8bf9cb3884ac8c481f815b9aa81dba56",
+      "v14": "a123a399b90a9d9d73c77109e427061f9830fe3a841ecc71a7aeaadfc8343267"
+    }
+  },
+  "added": {},
+  "source_count": 609,
+  "unchanged_count": 602
+}

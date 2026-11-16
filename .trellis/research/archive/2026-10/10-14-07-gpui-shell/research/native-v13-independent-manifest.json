@@ -1,0 +1,14 @@
+{
+  "captured_utc": "2026-10-15T06:38:23.190760+00:00",
+  "scope": "Independent read-only V13 native closeout; F12 FAIL, historical identity, remaining validation gaps. Root native manifest remains unchanged.",
+  "files": {
+    ".trellis/tasks/10-14-07-gpui-shell/research/native-v13-independent-closeout.md": {
+      "sha256": "45fb664e75907b700afb2136ae4daaae505baacf986c6168572cb134d2981b19",
+      "bytes": 8761
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/native-v13-independent-audit.json": {
+      "sha256": "3abe0852933219e8fc3e6563333abef07866d71ee9f2a2b60750e3338c8d3822",
+      "bytes": 7071
+    }
+  }
+}

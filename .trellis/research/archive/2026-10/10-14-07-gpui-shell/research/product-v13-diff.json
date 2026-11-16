@@ -1,0 +1,12 @@
+{
+  "started_utc": "2026-10-15T05:56:36.672466+00:00",
+  "argv": [
+    "git",
+    "diff",
+    "--check"
+  ],
+  "status": "RETURNED",
+  "log": "product-v13-diff.log",
+  "exit_code": 0,
+  "ended_utc": "2026-10-15T05:56:36.796824+00:00"
+}

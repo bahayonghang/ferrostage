@@ -1,0 +1,8 @@
+{
+  "config_sha256": "2B6628B9605508E0F31A31D7BE7946D4F0D31A8574F9D8E08D6C9921770FF35B",
+  "freeze": "product-native-freeze-v2.json",
+  "sha256": "B96CB72EA54DDACACD9491090A5F92EF8950F7FDF720758C2D5F2DC6986BB396",
+  "pid": 168776,
+  "utc": "2026-10-15T01:13:11.2001886Z",
+  "exe": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe"
+}

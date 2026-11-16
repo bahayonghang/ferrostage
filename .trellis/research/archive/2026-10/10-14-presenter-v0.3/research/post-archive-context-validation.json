@@ -1,0 +1,78 @@
+{
+  "utc": "2026-10-15T03:14:40.723994+00:00",
+  "scope": "Post-archive context validation only; not product/native acceptance",
+  "results": [
+    {
+      "task": "10-14-presenter-v0.3",
+      "path": ".trellis/tasks/10-14-presenter-v0.3",
+      "exit_code": 0,
+      "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\r\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-presenter-v0.3\r\n\r\n  \u001b[0;32mimplement.jsonl: ✓ (18 entries)\u001b[0m\r\n  \u001b[0;32mcheck.jsonl: ✓ (18 entries)\u001b[0m\r\n\r\n\u001b[0;32m✓ All validations passed\u001b[0m\r\n"
+    },
+    {
+      "task": "10-14-01-docs-sync",
+      "path": ".trellis/tasks/archive/2026-10/10-14-01-docs-sync",
+      "exit_code": 0,
+      "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\r\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-01-docs-sync\r\n\r\n  \u001b[0;32mimplement.jsonl: ✓ (9 entries)\u001b[0m\r\n  \u001b[0;32mcheck.jsonl: ✓ (9 entries)\u001b[0m\r\n\r\n\u001b[0;32m✓ All validations passed\u001b[0m\r\n"
+    },
+    {
+      "task": "10-14-02-settings-schema",
+      "path": ".trellis/tasks/archive/2026-10/10-14-02-settings-schema",
+      "exit_code": 0,
+      "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\r\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-02-settings-schema\r\n\r\n  \u001b[0;32mimplement.jsonl: ✓ (16 entries)\u001b[0m\r\n  \u001b[0;32mcheck.jsonl: ✓ (13 entries)\u001b[0m\r\n\r\n\u001b[0;32m✓ All validations passed\u001b[0m\r\n"
+    },
+    {
+      "task": "10-14-03-monitor-topology",
+      "path": ".trellis/tasks/10-14-03-monitor-topology",
+      "exit_code": 0,
+      "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\r\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-03-monitor-topology\r\n\r\n  \u001b[0;32mimplement.jsonl: ✓ (17 entries)\u001b[0m\r\n  \u001b[0;32mcheck.jsonl: ✓ (14 entries)\u001b[0m\r\n\r\n\u001b[0;32m✓ All validations passed\u001b[0m\r\n"
+    },
+    {
+      "task": "10-14-04-session-lifecycle",
+      "path": ".trellis/tasks/archive/2026-10/10-14-04-session-lifecycle",
+      "exit_code": 0,
+      "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\r\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-04-session-lifecycle\r\n\r\n  \u001b[0;32mimplement.jsonl: ✓ (18 entries)\u001b[0m\r\n  \u001b[0;32mcheck.jsonl: ✓ (14 entries)\u001b[0m\r\n\r\n\u001b[0;32m✓ All validations passed\u001b[0m\r\n"
+    },
+    {
+      "task": "10-14-05-pdf-raster",
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster",
+      "exit_code": 0,
+      "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\r\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-05-pdf-raster\r\n\r\n  \u001b[0;32mimplement.jsonl: ✓ (16 entries)\u001b[0m\r\n  \u001b[0;32mcheck.jsonl: ✓ (13 entries)\u001b[0m\r\n\r\n\u001b[0;32m✓ All validations passed\u001b[0m\r\n"
+    },
+    {
+      "task": "10-14-06-beamer-document-model",
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model",
+      "exit_code": 0,
+      "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\r\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\archive\\2026-10\\10-14-06-beamer-document-model\r\n\r\n  \u001b[0;32mimplement.jsonl: ✓ (20 entries)\u001b[0m\r\n  \u001b[0;32mcheck.jsonl: ✓ (16 entries)\u001b[0m\r\n\r\n\u001b[0;32m✓ All validations passed\u001b[0m\r\n"
+    },
+    {
+      "task": "10-14-07-gpui-shell",
+      "path": ".trellis/tasks/10-14-07-gpui-shell",
+      "exit_code": 0,
+      "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\r\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\r\n\r\n  \u001b[1;33mimplement.jsonl:17: Warning: .trellis/tasks/10-14-07-gpui-shell/implement.md is 47519 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\r\n  \u001b[0;32mimplement.jsonl: ✓ (34 entries)\u001b[0m\r\n  \u001b[1;33mcheck.jsonl:11: Warning: .trellis/tasks/10-14-07-gpui-shell/implement.md is 47519 bytes, exceeds context_injection.max_file_bytes (32768); injection will truncate it\u001b[0m\r\n  \u001b[0;32mcheck.jsonl: ✓ (32 entries)\u001b[0m\r\n\r\n\u001b[0;32m✓ All validations passed\u001b[0m\r\n"
+    },
+    {
+      "task": "10-14-08-presenter-workbench",
+      "path": ".trellis/tasks/10-14-08-presenter-workbench",
+      "exit_code": 0,
+      "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\r\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-08-presenter-workbench\r\n\r\n  \u001b[0;32mimplement.jsonl: ✓ (20 entries)\u001b[0m\r\n  \u001b[0;32mcheck.jsonl: ✓ (16 entries)\u001b[0m\r\n\r\n\u001b[0;32m✓ All validations passed\u001b[0m\r\n"
+    },
+    {
+      "task": "10-14-09-settings-ui",
+      "path": ".trellis/tasks/10-14-09-settings-ui",
+      "exit_code": 0,
+      "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\r\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-09-settings-ui\r\n\r\n  \u001b[0;32mimplement.jsonl: ✓ (22 entries)\u001b[0m\r\n  \u001b[0;32mcheck.jsonl: ✓ (17 entries)\u001b[0m\r\n\r\n\u001b[0;32m✓ All validations passed\u001b[0m\r\n"
+    },
+    {
+      "task": "10-14-10-hot-reload",
+      "path": ".trellis/tasks/10-14-10-hot-reload",
+      "exit_code": 0,
+      "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\r\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-10-hot-reload\r\n\r\n  \u001b[0;32mimplement.jsonl: ✓ (22 entries)\u001b[0m\r\n  \u001b[0;32mcheck.jsonl: ✓ (18 entries)\u001b[0m\r\n\r\n\u001b[0;32m✓ All validations passed\u001b[0m\r\n"
+    },
+    {
+      "task": "10-14-11-media-playback",
+      "path": ".trellis/tasks/10-14-11-media-playback",
+      "exit_code": 0,
+      "output": "\u001b[0;34m=== Validating Context Files ===\u001b[0m\r\nTarget dir: D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-11-media-playback\r\n\r\n  \u001b[0;32mimplement.jsonl: ✓ (21 entries)\u001b[0m\r\n  \u001b[0;32mcheck.jsonl: ✓ (17 entries)\u001b[0m\r\n\r\n\u001b[0;32m✓ All validations passed\u001b[0m\r\n"
+    }
+  ]
+}

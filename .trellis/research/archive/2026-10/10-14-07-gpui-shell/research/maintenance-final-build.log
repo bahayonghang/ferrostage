@@ -1,0 +1,11 @@
+   Compiling gpui v0.2.2 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\vendor\gpui)
+warning: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\target\debug\incremental\gpui-3ki6ib6ke0v93\s-hn7v6oz213-0epvxz4-working`
+
+   Compiling gpui_windows v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+warning: `gpui` (lib) generated 1 warning
+   Compiling gpui_platform v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling ferrostage-gpui-maintenance-candidate v0.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate)
+warning: hard linking files in the incremental compilation cache failed. copying files instead. consider moving the cache directory to a file system which supports hard linking in session dir `\\?\D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\target\debug\incremental\ferrostage_gpui_maintenance_candidate-3o38aexl7r9ha\s-hn7v6tmch2-01f90sm-working`
+
+warning: `ferrostage-gpui-maintenance-candidate` (bin "ferrostage-gpui-maintenance-candidate") generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 12.31s

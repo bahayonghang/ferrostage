@@ -1,0 +1,10 @@
+{
+  "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe",
+  "bytes": 42210304,
+  "modifiedUtc": "2026-10-15T15:20:02.7607166Z",
+  "sha256": "C6588772E6E3EEBDD3D9597A2D8ADB6A2EFC94A5901DE0848CDDB9EA0450C051",
+  "buildCommand": "cargo build -p ferrostage-app --features gpui,pdfium --locked --offline",
+  "exitCode": 0,
+  "afterDefaultCi": true,
+  "launched": false
+}

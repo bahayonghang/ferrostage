@@ -1,0 +1,19 @@
+{
+  "changes": {
+    ".trellis/spec/frontend/state-management.md": {
+      "v9": "ae03725fbc1ddb19ef87b6b7f03aaccfaac1335c35647d067e89ec492ffb7cf3",
+      "v10": "91900459df2a0a40596aee62a7f9e081e6a11db0d4b1bc788e879e6322c71fb8"
+    },
+    "crates/ferrostage-ui/src/policy.rs": {
+      "v9": "00996d9b3ed395888e69b2213c84a0071effd0ccd057604cf3d2cbbc0be7e96b",
+      "v10": "fec9501afc336b9e4935dda3639ea099b0caa7ee19b69b79c03ade17835441c0"
+    },
+    "crates/ferrostage-ui/src/shell.rs": {
+      "v9": "efdfb790d5b0a13f417fb356a6b33444cfff6d12fe3944ace210609807b2a59b",
+      "v10": "6f0c38927177beda30b96ce3f034cf523a07f0a76b7ded246a5339aa2290a8d3"
+    }
+  },
+  "added": {},
+  "source_count": 609,
+  "unchanged_count": 606
+}

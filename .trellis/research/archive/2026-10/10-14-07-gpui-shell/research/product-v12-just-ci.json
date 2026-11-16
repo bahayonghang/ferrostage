@@ -1,0 +1,11 @@
+{
+  "started_utc": "2026-10-15T05:43:52.171422+00:00",
+  "argv": [
+    "just",
+    "ci"
+  ],
+  "status": "RETURNED",
+  "log": "product-v12-just-ci.log",
+  "exit_code": 0,
+  "ended_utc": "2026-10-15T05:44:11.383057+00:00"
+}

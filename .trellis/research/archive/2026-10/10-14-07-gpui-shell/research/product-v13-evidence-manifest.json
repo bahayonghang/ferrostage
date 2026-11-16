@@ -1,0 +1,128 @@
+{
+  "captured_utc": "2026-10-15T06:00:15.340176+00:00",
+  "scope": "V13 independent reviewer self-fix; immutable configuration inputs preserve current isolated config for Root relaunch. No native acceptance claimed.",
+  "freeze_sha256": "d3689820edf788e4e55d485b644f58007c4616e6ca49262de9aa057d5e86fb91",
+  "source_snapshot_sha256": "77aa180c7f60bcc39de7315554d9781d5f2f39effd211078a1da43cf7ed40d4a",
+  "files": {
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-native-freeze-v13.json": {
+      "bytes": 79472,
+      "sha256": "d3689820edf788e4e55d485b644f58007c4616e6ca49262de9aa057d5e86fb91"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-before-shell.rs": {
+      "bytes": 141753,
+      "sha256": "b97f78f5f4a02704e0ee80be15ad94d88716935689789584e2c7f9e8b0f1fd70"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-build.json": {
+      "bytes": 344,
+      "sha256": "e01acd5ad4bf5f65bd778d34344a4998059d1bf8588bd57465d6b2e7bf8c2692"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-build.log": {
+      "bytes": 521,
+      "sha256": "c1aae852624cd986725641e26de4f940d48b73c5c679bd276710b1c0d5b141d9"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-check.py": {
+      "bytes": 2334,
+      "sha256": "d5bac467fa62647e9c43a988456a33eea4828af4d901e0e61062e89be7ec6d28"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-clippy.json": {
+      "bytes": 424,
+      "sha256": "75b409eeb8659df61e42340da148c9141029258d6fc47b86e5e342066f9b8674"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-clippy.log": {
+      "bytes": 521,
+      "sha256": "5695c3478efd0dcc4aea6e7cd1a5eba002cd951267b5393be6c4ddda4f85bbad"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-config-inputs.json": {
+      "bytes": 11238,
+      "sha256": "0192c951fa225d24e51308b02be4a9d69ce86aa06a268faf1cedd91feb4b0327"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-diff.json": {
+      "bytes": 248,
+      "sha256": "afbe57bddbe4c9023a00d25056ab4ebf53c944e291c75d7a4da5d153f23d654b"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-diff.log": {
+      "bytes": 4557,
+      "sha256": "77fcd39d6f499d9d9aad54bd8fa115ac9acd22cd478b0a479d9c25cea1bdf292"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-fmt.json": {
+      "bytes": 273,
+      "sha256": "fb5d7af4574f49fcb087e3c95296d280c2fe700eb2ffc7be7b755cd581f15a2d"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-fmt.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-format.json": {
+      "bytes": 249,
+      "sha256": "9bae93b01f4514f88c06e51242dfddbdb185fa654026671dd9d06a0d59d0095e"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-format.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-freeze.py": {
+      "bytes": 3731,
+      "sha256": "ac8a9eea569136a5b0f6289779ced310cd28bfe26aa7ca37a190e0bdc7720666"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-headless.json": {
+      "bytes": 360,
+      "sha256": "2d9f9d9640aaf355e53b4c4457c060fe0c93f3094f344b74d342673e8df2d1af"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-headless.log": {
+      "bytes": 7200,
+      "sha256": "a382f51d1b5e412889ca3b75f395fe028a2bd9c871e7cf3406de8ee5f3d46abf"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-implementation.md": {
+      "bytes": 2930,
+      "sha256": "d766cf332ddd09cf5dac8cad101c49a0a9def7aa841f0c8c3454cfd36d61d487"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-manifest.py": {
+      "bytes": 2982,
+      "sha256": "3e9ac5a7f8426a4faba979f13b28025860afebf083ff60524c0855587bedfff9"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-process-closeout.json": {
+      "bytes": 205,
+      "sha256": "7182657083484240239402681f05803161b76b1bf1e76477aa4fc4ee340707de"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-readback.json": {
+      "bytes": 4841,
+      "sha256": "946d3befa35eadaab8a353348d4c7d91edb4f1e0c9fb2f1aa86d79b0d78657da"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-retirement-green.json": {
+      "bytes": 427,
+      "sha256": "4980b12cdae4623588cbb12f07843bc97cb4b23aee29de0ab76fbcc72f9335f1"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-retirement-green.log": {
+      "bytes": 962,
+      "sha256": "dd91aa9dc9e2d19c8d6b6c4b55558e7e0d4072e8b19528b637c4103f4942dd06"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-retirement-red.json": {
+      "bytes": 427,
+      "sha256": "a03939eaf792166954bf948a50c7b053a5d2201e0aa8556f62dfe01d40e33675"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-retirement-red.log": {
+      "bytes": 2257,
+      "sha256": "9102ebcb5f9edfe8d4e8c0e25e0b040355df8fccd206660719a0396cf9cf89aa"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-reused-checks.json": {
+      "bytes": 2843,
+      "sha256": "2dbd2b8d95d0701a55c174f7cf0e0ce5b7dd42e28db28424a62f222d0e4d153a"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-shell.patch": {
+      "bytes": 8532,
+      "sha256": "35a7994c263371dcbe0d65b593ebfeb1daf7db9925168052007f80cf6bca045c"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-source-delta.json": {
+      "bytes": 536,
+      "sha256": "a892f8e6780dfa9c5397e5ccaccfe1208ace5854712d43ab5c35d27aa25aca1a"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-types.json": {
+      "bytes": 383,
+      "sha256": "4584f274ebb32b8b544692d19b8867dfd0cb571696eede2d88bd3985421e1f40"
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-v13-types.log": {
+      "bytes": 521,
+      "sha256": "c7c491ca8282c62236e2ffb949cbef1db7ebdb7f7fddb992eb096cf28dae601f"
+    }
+  }
+}

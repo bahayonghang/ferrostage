@@ -1,0 +1,7 @@
+{
+  "status": "LOCK_HELD",
+  "utc": "2026-10-15T02:39:08.1377296Z",
+  "release_file": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\v6-dark-lock.release",
+  "config": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\a-dark.toml",
+  "sha256": "41798CB34079E64D46078604E4C382EC1698D1AD925977870CAF8C71E66FEFE3"
+}

@@ -1,0 +1,21 @@
+warning: function `shape` is never used
+   --> vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `harfrust` (lib) generated 1 warning
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+error[E0308]: mismatched types
+    --> crates\ferrostage-ui\src\shell.rs:1294:109
+     |
+1294 | ...re::MonitorRole::Presenter, friendly_name: None, source_occurrence: None,
+     |                                               ^^^^ expected `String`, found `Option<_>`
+     |
+     = note: expected struct `std::string::String`
+                  found enum `Option<_>`
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `ferrostage-ui` (lib test) due to 1 previous error

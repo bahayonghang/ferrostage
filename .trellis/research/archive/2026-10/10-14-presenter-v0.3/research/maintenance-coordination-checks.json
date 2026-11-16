@@ -1,0 +1,52 @@
+{
+  "captured_utc": "2026-10-15T00:24:24.003487+00:00",
+  "links_checked": 21,
+  "missing_links": [],
+  "commands": {
+    "branch": {
+      "command": [
+        "git",
+        "branch",
+        "--show-current"
+      ],
+      "exit": 0,
+      "output": "main\n"
+    },
+    "head": {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0,
+      "output": "ab78a84d96c7cf4a0bbc8dfd4f8e45da180bafb3\n"
+    },
+    "current": {
+      "command": [
+        "python",
+        ".trellis/scripts/task.py",
+        "current"
+      ],
+      "exit": 0,
+      "output": ".trellis/tasks/10-14-07-gpui-shell\n"
+    },
+    "dirty": {
+      "command": [
+        "git",
+        "status",
+        "--porcelain=v1"
+      ],
+      "exit": 0,
+      "output": " M .github/workflows/ci.yml\n M .trellis/spec/backend/database-guidelines.md\n M .trellis/spec/backend/directory-structure.md\n M .trellis/spec/backend/logging-guidelines.md\n M .trellis/spec/backend/quality-guidelines.md\n M .trellis/spec/frontend/component-guidelines.md\n M .trellis/spec/frontend/hook-guidelines.md\n M .trellis/spec/frontend/quality-guidelines.md\n M .trellis/spec/frontend/state-management.md\n M .trellis/spec/frontend/type-safety.md\n M .trellis/tasks/10-14-01-docs-sync/prd.md\n M .trellis/tasks/10-14-01-docs-sync/task.json\n M .trellis/tasks/10-14-02-settings-schema/design.md\n M .trellis/tasks/10-14-02-settings-schema/implement.md\n M .trellis/tasks/10-14-02-settings-schema/prd.md\n M .trellis/tasks/10-14-02-settings-schema/task.json\n M .trellis/tasks/10-14-03-monitor-topology/check.jsonl\n M .trellis/tasks/10-14-03-monitor-topology/design.md\n M .trellis/tasks/10-14-03-monitor-topology/implement.jsonl\n M .trellis/tasks/10-14-03-monitor-topology/implement.md\n M .trellis/tasks/10-14-03-monitor-topology/prd.md\n M .trellis/tasks/10-14-03-monitor-topology/task.json\n M .trellis/tasks/10-14-04-session-lifecycle/design.md\n M .trellis/tasks/10-14-04-session-lifecycle/implement.md\n M .trellis/tasks/10-14-04-session-lifecycle/prd.md\n M .trellis/tasks/10-14-04-session-lifecycle/task.json\n M .trellis/tasks/10-14-05-pdf-raster/check.jsonl\n M .trellis/tasks/10-14-05-pdf-raster/design.md\n M .trellis/tasks/10-14-05-pdf-raster/implement.jsonl\n M .trellis/tasks/10-14-05-pdf-raster/implement.md\n M .trellis/tasks/10-14-05-pdf-raster/prd.md\n M .trellis/tasks/10-14-05-pdf-raster/task.json\n M .trellis/tasks/10-14-06-beamer-document-model/check.jsonl\n M .trellis/tasks/10-14-06-beamer-document-model/design.md\n M .trellis/tasks/10-14-06-beamer-document-model/implement.jsonl\n M .trellis/tasks/10-14-06-beamer-document-model/implement.md\n M .trellis/tasks/10-14-06-beamer-document-model/prd.md\n M .trellis/tasks/10-14-06-beamer-document-model/task.json\n M .trellis/tasks/10-14-07-gpui-shell/check.jsonl\n M .trellis/tasks/10-14-07-gpui-shell/design.md\n M .trellis/tasks/10-14-07-gpui-shell/implement.jsonl\n M .trellis/tasks/10-14-07-gpui-shell/implement.md\n M .trellis/tasks/10-14-07-gpui-shell/prd.md\n M .trellis/tasks/10-14-07-gpui-shell/task.json\n M .trellis/tasks/10-14-08-presenter-workbench/check.jsonl\n M .trellis/tasks/10-14-08-presenter-workbench/design.md\n M .trellis/tasks/10-14-08-presenter-workbench/implement.jsonl\n M .trellis/tasks/10-14-08-presenter-workbench/implement.md\n M .trellis/tasks/10-14-08-presenter-workbench/prd.md\n M .trellis/tasks/10-14-09-settings-ui/check.jsonl\n M .trellis/tasks/10-14-09-settings-ui/design.md\n M .trellis/tasks/10-14-09-settings-ui/implement.jsonl\n M .trellis/tasks/10-14-09-settings-ui/implement.md\n M .trellis/tasks/10-14-09-settings-ui/prd.md\n M .trellis/tasks/10-14-10-hot-reload/check.jsonl\n M .trellis/tasks/10-14-10-hot-reload/design.md\n M .trellis/tasks/10-14-10-hot-reload/implement.jsonl\n M .trellis/tasks/10-14-10-hot-reload/implement.md\n M .trellis/tasks/10-14-11-media-playback/design.md\n M .trellis/tasks/10-14-11-media-playback/implement.md\n M .trellis/tasks/10-14-presenter-v0.3/check.jsonl\n M .trellis/tasks/10-14-presenter-v0.3/design.md\n M .trellis/tasks/10-14-presenter-v0.3/implement.jsonl\n M .trellis/tasks/10-14-presenter-v0.3/implement.md\n M .trellis/tasks/10-14-presenter-v0.3/prd.md\n M .trellis/tasks/10-14-presenter-v0.3/research/planning-review.md\n M .trellis/tasks/10-14-presenter-v0.3/traceability.md\n M AGENTS.md\n M Cargo.lock\n M Cargo.toml\n M README.md\n M README.zh-CN.md\n M crates/ferrostage-app/Cargo.toml\n M crates/ferrostage-app/src/main.rs\n M crates/ferrostage-core/src/command.rs\n M crates/ferrostage-core/src/error.rs\n M crates/ferrostage-core/src/geometry.rs\n M crates/ferrostage-core/src/ids.rs\n M crates/ferrostage-core/src/lib.rs\n M crates/ferrostage-core/src/snapshot.rs\n M crates/ferrostage-core/src/state.rs\n M crates/ferrostage-document/Cargo.toml\n M crates/ferrostage-document/src/lib.rs\n M crates/ferrostage-pdf/Cargo.toml\n M crates/ferrostage-pdf/src/lib.rs\n M crates/ferrostage-platform/Cargo.toml\n M crates/ferrostage-platform/src/lib.rs\n M crates/ferrostage-render/Cargo.toml\n M crates/ferrostage-render/src/lib.rs\n M crates/ferrostage-settings/Cargo.toml\n M crates/ferrostage-settings/src/lib.rs\n M docs/PROJECT_PLAN.md\n M docs/adr/ADR-001-gpui-from-zed-tag.md\n M docs/adr/ADR-002-pdf-backends.md\n M docs/adr/ADR-003-audience-snapshot.md\n M docs/adr/ADR-004-lock-free-reload.md\n M docs/architecture.md\n M docs/beamer-notes.md\n M docs/feature-parity.md\n M docs/packaging.md\n M fixtures/beamer/README.md\n M fixtures/pdf/README.md\n M justfile\n M tests/hot_reload/README.md\n?? .trellis/tasks/10-14-01-docs-sync/research/\n?? .trellis/tasks/10-14-02-settings-schema/research/\n?? .trellis/tasks/10-14-03-monitor-topology/research/\n?? .trellis/tasks/10-14-04-session-lifecycle/research/\n?? .trellis/tasks/10-14-05-pdf-raster/research/\n?? .trellis/tasks/10-14-06-beamer-document-model/research/\n?? .trellis/tasks/10-14-07-gpui-shell/research/\n?? .trellis/tasks/10-14-presenter-v0.3/execution-state.md\n?? .trellis/tasks/10-14-presenter-v0.3/research/checkpoint-context-validation.json\n?? .trellis/tasks/10-14-presenter-v0.3/research/checkpoint-doc-links.json\n?? .trellis/tasks/10-14-presenter-v0.3/research/checkpoint-final-checks.json\n?? .trellis/tasks/10-14-presenter-v0.3/research/design-contrast-2026-10-14.md\n?? .trellis/tasks/10-14-presenter-v0.3/research/gate-a.md\n?? .trellis/tasks/10-14-presenter-v0.3/research/gpui-license-proposal-check.json\n?? .trellis/tasks/10-14-presenter-v0.3/research/gpui-license-review.md\n?? .trellis/tasks/10-14-presenter-v0.3/research/integration-checkpoint-2026-10-14.md\n?? .trellis/tasks/10-14-presenter-v0.3/research/maintenance-context-validation.json\n?? .trellis/tasks/10-14-presenter-v0.3/research/maintenance-final-readback.json\n?? .trellis/tasks/10-14-presenter-v0.3/research/maintenance-resume-audit.json\n?? .trellis/tasks/10-14-presenter-v0.3/research/native-environment.json\n?? .trellis/tasks/10-14-presenter-v0.3/research/native-research-resume.md\n?? .trellis/tasks/10-14-presenter-v0.3/research/resume-audit-2026-10-14.md\n?? DESIGN.md\n?? crates/ferrostage-app/tests/\n?? crates/ferrostage-core/src/display.rs\n?? crates/ferrostage-core/src/frame.rs\n?? crates/ferrostage-core/src/session.rs\n?? crates/ferrostage-core/src/slide_map.rs\n?? crates/ferrostage-core/src/slide_map/\n?? crates/ferrostage-core/src/state/\n?? crates/ferrostage-core/src/timer.rs\n?? crates/ferrostage-document/src/builder.rs\n?? crates/ferrostage-document/src/builder/\n?? crates/ferrostage-document/src/layout.rs\n?? crates/ferrostage-document/src/media_slots.rs\n?? crates/ferrostage-document/src/notes.rs\n?? crates/ferrostage-document/tests/\n?? crates/ferrostage-pdf/src/metadata.rs\n?? crates/ferrostage-pdf/src/native.rs\n?? crates/ferrostage-pdf/src/raster.rs\n?? crates/ferrostage-pdf/src/structure.rs\n?? crates/ferrostage-pdf/src/structure/\n?? crates/ferrostage-platform/examples/\n?? crates/ferrostage-platform/src/monitor.rs\n?? crates/ferrostage-platform/src/topology.rs\n?? crates/ferrostage-platform/src/topology/\n?? crates/ferrostage-platform/src/watch.rs\n?? crates/ferrostage-platform/src/watch/\n?? crates/ferrostage-platform/src/windows.rs\n?? crates/ferrostage-platform/src/windows/\n?? crates/ferrostage-platform/tests/\n?? crates/ferrostage-render/examples/\n?? crates/ferrostage-render/src/cache.rs\n?? crates/ferrostage-render/src/protocol.rs\n?? crates/ferrostage-render/src/scheduler.rs\n?? crates/ferrostage-render/src/worker.rs\n?? crates/ferrostage-render/src/worker/\n?? crates/ferrostage-render/tests/\n?? crates/ferrostage-settings/src/error.rs\n?? crates/ferrostage-settings/src/keybindings.rs\n?? crates/ferrostage-settings/src/merge.rs\n?? crates/ferrostage-settings/src/parse.rs\n?? crates/ferrostage-settings/src/parse/\n?? crates/ferrostage-settings/src/schema.rs\n?? crates/ferrostage-settings/src/store.rs\n?? crates/ferrostage-settings/src/store/\n?? crates/ferrostage-settings/src/tests/\n?? docs/adr/ADR-006-session-lifecycle.md\n?? docs/adr/ADR-007-monitor-roles.md\n?? docs/adr/ADR-008-gpui-dependency-gate.md\n?? docs/pdfium-runtime.json\n?? fixtures/beamer/bottom-classic.pdf\n?? fixtures/beamer/bottom-wide.pdf\n?? fixtures/beamer/expected.json\n?? fixtures/beamer/generate.py\n?? fixtures/beamer/independent.pdf\n?? fixtures/beamer/media.pdf\n?? fixtures/beamer/mixed.pdf\n?? fixtures/beamer/movie.pdf\n?? fixtures/beamer/movie.tex\n?? fixtures/beamer/notes-right.pdf\n?? fixtures/beamer/notes-right.tex\n?? fixtures/beamer/ordinary.pdf\n?? fixtures/beamer/overlays.pdf\n?? fixtures/beamer/overlays.tex\n?? fixtures/beamer/portrait-counterexample.pdf\n?? fixtures/beamer/tall-ordinary.pdf\n?? fixtures/beamer/top-rotated.pdf\n?? fixtures/beamer/wide-counterexample.pdf\n?? fixtures/pdf/generate.py\n?? fixtures/pdf/manifest.json\n?? fixtures/pdf/raster.pdf\n?? scripts/\n"
+    }
+  },
+  "last_diff_check_exit": 0,
+  "last_diff_check_note": "Observed preceding direct tool call returned0; only preexisting line-ending warnings. No diff mutation since that check.",
+  "task07_context": {
+    "implement_entries": 33,
+    "check_entries": 30,
+    "validate_exit": 0
+  },
+  "policy_sha256": "1cf48641ae1451010587ad06ab197867e8f9ba5b012b585c9880f860443f85e4",
+  "approval": "pending concrete candidate/three exact exceptions; no elapsed-time consent"
+}

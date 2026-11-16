@@ -1,0 +1,16 @@
+{
+  "started_utc": "2026-10-15T06:48:05.727525+00:00",
+  "argv": [
+    "rustfmt",
+    "--edition",
+    "2024",
+    "--check",
+    "vendor/gpui/src/window.rs",
+    "vendor/gpui/src/platform/test/window.rs",
+    "vendor/gpui/src/app/test_context.rs"
+  ],
+  "status": "RETURNED",
+  "log": "product-v14-vendor-fmt.log",
+  "exit_code": 0,
+  "ended_utc": "2026-10-15T06:48:05.979070+00:00"
+}

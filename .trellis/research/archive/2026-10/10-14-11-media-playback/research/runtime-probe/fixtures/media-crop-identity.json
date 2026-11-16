@@ -1,0 +1,91 @@
+{
+  "inputs": [
+    {
+      "file": "media-crop-smoke.pdf",
+      "bytes": 2663,
+      "sha256": "79bfc24629fb38c22b055145e5d5e8a907aa02e69e3fda0489d2c35fc48680ec"
+    },
+    {
+      "file": "synthetic-public-private.gif",
+      "bytes": 937,
+      "sha256": "ae7a7ddccc70386e6e0e384ee102ef33f4b8ab45a0437c00e85f3a354974bedf"
+    }
+  ],
+  "pages": [
+    {
+      "page": 1,
+      "source": "synthetic-public-private.gif",
+      "rect": [
+        240,
+        30,
+        400,
+        130
+      ],
+      "source_crop_with_notes_right": [
+        0,
+        0,
+        0.5,
+        1
+      ]
+    },
+    {
+      "page": 2,
+      "source": "synthetic-ball-tone-12s.ogg",
+      "rect": [
+        350,
+        30,
+        600,
+        130
+      ],
+      "source_crop_with_notes_right": null
+    },
+    {
+      "page": 3,
+      "source": "synthetic-ball-tone-12s.ogg",
+      "rect": [
+        30,
+        30,
+        250,
+        130
+      ],
+      "source_crop_with_notes_right": [
+        0,
+        0,
+        1,
+        1
+      ]
+    }
+  ],
+  "animation_colors": [
+    {
+      "left": [
+        220,
+        35,
+        30
+      ],
+      "right": [
+        0,
+        220,
+        60
+      ]
+    },
+    {
+      "left": [
+        255,
+        130,
+        0
+      ],
+      "right": [
+        0,
+        220,
+        230
+      ]
+    }
+  ],
+  "pypdf": "6.20.1",
+  "pillow": "12.3.0",
+  "structure_readback": "PASS",
+  "product_parse_render_playback": "NOT_RUN",
+  "required_document_override": "Notes Right",
+  "limitations": "Authored research fixtures, not Beamer output or product acceptance."
+}

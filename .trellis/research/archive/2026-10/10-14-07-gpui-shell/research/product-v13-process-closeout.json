@@ -1,0 +1,7 @@
+{
+  "captured_utc": "2026-10-15T05:58:00.6594121Z",
+  "reviewer_commands_returned": true,
+  "reviewer_native_launches": 0,
+  "scope": "Full host read only; no process mutation",
+  "processes": []
+}

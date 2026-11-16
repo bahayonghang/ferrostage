@@ -1,0 +1,50 @@
+{
+  "reader": "pypdf",
+  "version": "6.20.1",
+  "pages": [
+    {
+      "page": 1,
+      "title": "GIF",
+      "source_kind": "external",
+      "source": "synthetic-three-frames.gif",
+      "autostart": true
+    },
+    {
+      "page": 2,
+      "title": "WebP",
+      "source_kind": "external",
+      "source": "synthetic-three-frames.webp",
+      "autostart": true
+    },
+    {
+      "page": 3,
+      "title": "MP4 start 2 duration 8 loop",
+      "source_kind": "external",
+      "source": "synthetic-ball-tone-12s.mp4",
+      "autostart": true
+    },
+    {
+      "page": 4,
+      "title": "Audio only",
+      "source_kind": "external",
+      "source": "synthetic-ball-tone-12s.ogg",
+      "autostart": true
+    },
+    {
+      "page": 5,
+      "title": "Embedded MP4 - click to play",
+      "source_kind": "embedded",
+      "source": "synthetic-ball-tone-12s.mp4",
+      "autostart": false
+    },
+    {
+      "page": 6,
+      "title": "Missing external media",
+      "source_kind": "external",
+      "source": "intentionally-missing.mp4",
+      "autostart": true
+    }
+  ],
+  "sha256": "cd41d260eba950649552346e5aa95d7e05b2e81e7d3d790879a97cbff2808185",
+  "scope": "syntax and source bytes only; no FerroStage or native rendering acceptance"
+}

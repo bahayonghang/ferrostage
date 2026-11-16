@@ -1,0 +1,275 @@
+--- startup-red/presenter.rs
++++ startup-fixed/presenter.rs
+@@ -9,8 +9,64 @@
+     Stateful, WeakEntity, Window, WindowAppearance, div, prelude::*, px, rgb,
+ };
+ 
++/// Drawing data, captured before open_window synchronously draws its first
++/// frame. Rendering never leases the controller that may be opening this view.
++pub(crate) struct PresenterData {
++    theme: ferrostage_settings::Theme,
++    stage: SessionStage,
++    filename: String,
++    modal: Option<Modal>,
++    error: Option<String>,
++    warnings: Vec<String>,
++    start_reason: Option<String>,
++    loading: bool,
++    busy: bool,
++    dirty: bool,
++    save_error: Option<String>,
++    pages: usize,
++    current: usize,
++    preview: Option<usize>,
++    recent: Vec<String>,
++}
++
++impl PresenterData {
++    pub(crate) fn from_shell(shell: &Shell) -> Self {
++        Self {
++            theme: shell.settings.settings.general.theme,
++            stage: shell.state.stage(),
++            filename: shell
++                .path
++                .as_ref()
++                .and_then(|path| path.file_name())
++                .map(|name| name.to_string_lossy().into_owned())
++                .unwrap_or_else(|| "FerroStage".into()),
++            modal: shell.modal.clone(),
++            error: shell.error.clone(),
++            warnings: shell.warnings.clone(),
++            start_reason: shell.start_reason(),
++            loading: shell.loading,
++            busy: shell.busy(),
++            dirty: shell.settings.dirty,
++            save_error: shell.settings.save_error.as_ref().map(ToString::to_string),
++            pages: shell.state.page_count(),
++            current: shell.state.current_page().0 + 1,
++            preview: shell.state.jump_preview().map(|page| page.0 + 1),
++            recent: shell
++                .settings
++                .settings
++                .general
++                .recent_files
++                .iter()
++                .take(3)
++                .cloned()
++                .collect(),
++        }
++    }
++}
++
+ pub(crate) struct Presenter {
+     shell: WeakEntity<Shell>,
++    data: PresenterData,
+     locale: crate::locale::Locale,
+     focus: FocusHandle,
+     modal_focus: FocusHandle,
+@@ -22,22 +78,35 @@
+     pub fn new(
+         shell: WeakEntity<Shell>,
+         locale: crate::locale::Locale,
++        data: PresenterData,
+         window: &mut Window,
+         cx: &mut Context<Self>,
+     ) -> Self {
+         if let Some(model) = shell.upgrade() {
+-            cx.observe(&model, |_, _, cx| cx.notify()).detach();
++            cx.observe(&model, |presenter, model, cx| {
++                // GPUI delivers entity notifications after the controller lease
++                // ends. Keep reads here, outside all synchronous draw paths.
++                presenter.data = PresenterData::from_shell(model.read(cx));
++                cx.notify();
++            })
++            .detach();
+         }
+         let focus = cx.focus_handle();
+         window.focus(&focus, cx);
+         Self {
+             shell,
++            data,
+             locale,
+             focus,
+             modal_focus: cx.focus_handle(),
+             return_focus: None,
+             had_modal: false,
+         }
++    }
++
++    #[cfg(all(test, feature = "test-support"))]
++    pub(crate) fn rendered_document(&self) -> (&str, usize, usize) {
++        (&self.data.filename, self.data.current, self.data.pages)
+     }
+ 
+     fn button(
+@@ -141,48 +210,31 @@
+ 
+ impl Render for Presenter {
+     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+-        let Some(entity) = self.shell.upgrade() else {
+-            return div().into_any_element();
+-        };
+-        let shell = entity.read(cx);
+         let l = self.locale;
+         let dark = matches!(
+             window.appearance(),
+             WindowAppearance::Dark | WindowAppearance::VibrantDark
+         );
+-        let p = theme::palette(shell.settings.settings.general.theme, dark);
+-        let stage = shell.state.stage();
++        let p = theme::palette(self.data.theme, dark);
++        let stage = self.data.stage;
+         let stage_label = match stage {
+             SessionStage::Idle => l.text("stage-idle"),
+             SessionStage::Ready => l.text("stage-ready"),
+             SessionStage::Presenting => l.text("stage-presenting"),
+         };
+-        let filename = shell
+-            .path
+-            .as_ref()
+-            .and_then(|path| path.file_name())
+-            .map(|name| name.to_string_lossy().into_owned())
+-            .unwrap_or_else(|| "FerroStage".into());
+-        let modal = shell.modal.clone();
+-        let error = shell.error.clone();
+-        let warnings = shell.warnings.clone();
+-        let reason = shell.start_reason();
+-        let loading = shell.loading;
+-        let busy = shell.busy();
+-        let dirty = shell.settings.dirty;
+-        let save_error = shell.settings.save_error.as_ref().map(ToString::to_string);
+-        let pages = shell.state.page_count();
+-        let current = shell.state.current_page().0 + 1;
+-        let preview = shell.state.jump_preview().map(|page| page.0 + 1);
+-        let recent = shell
+-            .settings
+-            .settings
+-            .general
+-            .recent_files
+-            .iter()
+-            .take(3)
+-            .cloned()
+-            .collect::<Vec<_>>();
++        let filename = self.data.filename.clone();
++        let modal = self.data.modal.clone();
++        let error = self.data.error.clone();
++        let warnings = self.data.warnings.clone();
++        let reason = self.data.start_reason.clone();
++        let loading = self.data.loading;
++        let busy = self.data.busy;
++        let dirty = self.data.dirty;
++        let save_error = self.data.save_error.clone();
++        let pages = self.data.pages;
++        let current = self.data.current;
++        let preview = self.data.preview;
++        let recent = self.data.recent.clone();
+         window.set_window_title(&format!("{filename} — {stage_label} — FerroStage"));
+         if modal.is_some() && !self.had_modal {
+             self.return_focus = window.focused(cx);
+--- startup-red/shell.rs
++++ startup-fixed/shell.rs
+@@ -2,7 +2,7 @@
+     actions::{self, Intent},
+     audience::Audience,
+     policy::{self, ShellError},
+-    presenter::Presenter,
++    presenter::{Presenter, PresenterData},
+     transactions::{self, Operation, Shutdown},
+ };
+ use ferrostage_core::{
+@@ -638,13 +638,14 @@
+         } else {
+             let shell = cx.weak_entity();
+             let locale = self.locale;
++            let data = PresenterData::from_shell(self);
+             cx.open_window(options, move |window, cx| {
+                 cx.new(|cx| {
+                     cx.observe_window_bounds(window, move |_, _, _| flag.set(true))
+                         .detach();
+                     cx.observe_window_appearance(window, |_, _, cx| cx.notify())
+                         .detach();
+-                    Presenter::new(shell, locale, window, cx)
++                    Presenter::new(shell, locale, data, window, cx)
+                 })
+             })
+             .map(Into::into)
+@@ -994,26 +995,62 @@
+ 
+     #[gpui::test]
+     fn presenter_creation_draws_while_controller_is_leased(cx: &mut TestAppContext) {
+-        let settings = SettingsSession::from_outcome(ferrostage_settings::from_toml("schema_version = 1").unwrap());
++        let settings = SettingsSession::from_outcome(
++            ferrostage_settings::from_toml("schema_version = 1").unwrap(),
++        );
+         let (_, topology) = std::sync::mpsc::channel();
+-        let shell = cx.new(|cx| Shell::new(ShellInputs {
+-            settings,
+-            // No test path is read or written; the test only constructs views.
+-            store: SettingsStore::at(PathBuf::from("unused-headless-settings.toml")),
+-            renderer: Err(RenderError::FeatureDisabled),
+-            topology,
+-            watcher: Err(ferrostage_platform::PlatformError::UnsupportedPlatform),
+-            initial_monitors: Ok(Vec::new()),
+-            initial_pdf: None,
+-        },cx));
+-        let handle = shell.update(cx, |shell,cx| {
++        let shell = cx.new(|cx| {
++            Shell::new(
++                ShellInputs {
++                    settings,
++                    // No test path is read or written; the test only constructs views.
++                    store: SettingsStore::at(PathBuf::from("unused-headless-settings.toml")),
++                    renderer: Err(RenderError::FeatureDisabled),
++                    topology,
++                    watcher: Err(ferrostage_platform::PlatformError::UnsupportedPlatform),
++                    initial_monitors: Ok(Vec::new()),
++                    initial_pdf: None,
++                },
++                cx,
++            )
++        });
++        let handle = shell.update(cx, |shell, cx| {
+             let id = MonitorId("headless-test-display".into());
+             let display = u64::from(cx.displays().first().unwrap().id());
+             // Identity mapping has separate tests. Exercise the actual native
+             // coordinator open path with GPUI's no-OS-window TestPlatform.
+-            shell.mapped = Ok([(id.clone(),display)].into());
+-            shell.open(id,false,false,cx).unwrap().handle
++            shell.mapped = Ok([(id.clone(), display)].into());
++            shell.open(id, false, false, cx).unwrap().handle
+         });
+-        assert!(handle.downcast::<Presenter>().is_some());
+-    }
+-}
++        let view = handle.downcast::<Presenter>().unwrap().root(cx).unwrap();
++        assert_eq!(view.read_with(cx, |view, _| view.rendered_document().2), 0);
++        shell.update(cx, |shell, cx| {
++            shell
++                .state
++                .apply_at(
++                    Command::LoadDocument {
++                        generation: ferrostage_core::DocumentGeneration(1),
++                        page_count: 3,
++                    },
++                    Instant::now(),
++                )
++                .unwrap();
++            shell.path = Some(PathBuf::from("loaded.pdf"));
++            cx.notify();
++        });
++        assert_eq!(
++            view.read_with(cx, |view, _| {
++                let (name, page, pages) = view.rendered_document();
++                (name.to_string(), page, pages)
++            }),
++            ("loaded.pdf".into(), 1, 3)
++        );
++        // Replacement windows draw under the same controller lease as startup.
++        shell.update(cx, |shell, cx| {
++            let replacement = shell
++                .open(MonitorId("headless-test-display".into()), false, false, cx)
++                .unwrap();
++            Shell::close(replacement, cx);
++        });
++    }
++}

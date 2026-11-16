@@ -1,0 +1,34 @@
+{
+  "started_utc": "2026-10-15T12:56:19.3763113Z",
+  "pid": 79480,
+  "exe": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe",
+  "arguments": [
+    "--config",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-08-presenter-workbench\\research\\native\\workbench-smoke.toml",
+    "--pdfium-library",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\notes-functional\\pympress-notes.pdf"
+  ],
+  "inputs": [
+    {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe",
+      "bytes": 41183232,
+      "sha256": "2e38e384dec3065ad01e41640a8a399ae7112d2dddc686f799b83d12dde27b1f"
+    },
+    {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\fixtures\\notes-functional\\pympress-notes.pdf",
+      "bytes": 129701,
+      "sha256": "e939e35f931c184fd93b2e9b95e560db73ba6a6f6dfccbb0963262f0b359dfeb"
+    },
+    {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll",
+      "bytes": 7211520,
+      "sha256": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118"
+    },
+    {
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-08-presenter-workbench\\research\\native\\workbench-smoke.toml",
+      "bytes": 1733,
+      "sha256": "d97a7e55c0ef19f93d3a815369603e9a2a903401df636355048d09db1efaa587"
+    }
+  ]
+}

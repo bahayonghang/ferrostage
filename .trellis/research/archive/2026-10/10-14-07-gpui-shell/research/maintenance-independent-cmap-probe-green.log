@@ -1,0 +1,60 @@
+     Locking 9 packages to highest Rust 1.99.0 compatible versions
+      Adding fontconfig-parser v0.5.8
+      Adding fontdb v0.24.0
+      Adding libc v0.2.190
+      Adding log v0.4.34
+      Adding memmap2 v0.9.11
+      Adding roxmltree v0.20.0
+      Adding slotmap v1.1.1
+      Adding tinyvec v1.13.3
+      Adding version_check v0.9.5
+   Compiling version_check v0.9.5
+   Compiling memmap2 v0.9.11
+   Compiling tinyvec v1.13.3
+   Compiling log v0.4.34
+   Compiling slotmap v1.1.1
+   Compiling fontdb v0.24.0
+   Compiling ferrostage-maintenance-cmap-proof v0.0.0 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-cmap-proof)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.03s
+     Running unittests src\main.rs (cache\gpui-maintenance-cmap-proof\target\debug\deps\ferrostage_maintenance_cmap_proof-3689648ebf9048e8.exe)
+
+running 3 tests
+format13: old=true, candidate=true
+format2: old=true, candidate=true
+multiple_unicode: old=true, candidate=true
+symbol_priority: old=true, candidate=true
+symbol_only: old=false, candidate=false
+test candidate_lookup_preserves_old_unicode_coverage ... ok
+format2_single: old=true, repaired=true, expected=true
+format2_double: old=true, repaired=true, expected=true
+format2_missing: old=false, repaired=false, expected=false
+format2_non_bmp: old=false, repaired=false, expected=false
+format2_zero_before_delta: old=false, repaired=false, expected=false
+format2_zero_after_delta: old=true, repaired=true, expected=true
+format2_negative_delta: old=false, repaired=false, expected=false
+format2_wrap_delta: old=true, repaired=true, expected=true
+format13: old=true, repaired=true, expected=true
+format12_non_bmp: old=true, repaired=true, expected=true
+second_unicode_record: old=true, repaired=true, expected=true
+symbol_priority: old=true, repaired=true, expected=true
+symbol_only: old=false, repaired=false, expected=false
+windows_unicode_bmp: old=true, repaired=true, expected=true
+windows_full_wrong_format: old=false, repaired=false, expected=false
+mac_only: old=false, repaired=false, expected=false
+format0: old=true, repaired=true, expected=true
+format4: old=true, repaired=true, expected=true
+format6: old=true, repaired=true, expected=true
+format10: old=true, repaired=true, expected=true
+format0_zero: old=false, repaired=false, expected=false
+format6_zero: old=true, repaired=true, expected=true
+format10_zero: old=true, repaired=true, expected=true
+format12_zero: old=true, repaired=true, expected=true
+format13_zero: old=true, repaired=true, expected=true
+test maintenance_cmap_tests::unicode_coverage_preserves_formats_records_and_legacy_edge_results ... ok
+format2_truncated: old=false, repaired=false, expected=false
+format2_bad_offset: old=false, repaired=false, expected=false
+zero_then_later_record: old=true, repaired=true, expected=true
+test maintenance_cmap_tests::compare_all_edges_with_original_parser ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+

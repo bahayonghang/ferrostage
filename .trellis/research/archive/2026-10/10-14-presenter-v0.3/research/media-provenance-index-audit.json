@@ -1,0 +1,125 @@
+{
+  "note": "Initial add did not refresh cached blobs after attributes; explicit renormalize now matches all upstream bytes. Earlier failed assertion retained as diagnostic, not PASS.",
+  "files": [
+    {
+      "path": "packaging/media/notices/bzip2-LICENSE",
+      "sha256": "9102b70091e84168c468d57dcca64ec1f60c76cefbc83b66e1754725b9dd90cf"
+    },
+    {
+      "path": "packaging/media/notices/glib-LGPL-2.1-or-later.txt",
+      "sha256": "fa6f36630bb1e0c571d34b2bbdf188d08495c9dbf58f28cac112f303fc1f58fb"
+    },
+    {
+      "path": "packaging/media/notices/gst-plugins-bad-COPYING",
+      "sha256": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551"
+    },
+    {
+      "path": "packaging/media/notices/gst-plugins-base-COPYING",
+      "sha256": "ad2eec519ebd4b5df86ea84dff24ae3bfa2edea846a703b58902dd221ae375db"
+    },
+    {
+      "path": "packaging/media/notices/gst-plugins-good-COPYING",
+      "sha256": "6095e9ffa777dd22839f7801aa845b31c9ed07f3d6bf8a26dc5d2dec8ccc0ef3"
+    },
+    {
+      "path": "packaging/media/notices/gstreamer-COPYING",
+      "sha256": "ad2eec519ebd4b5df86ea84dff24ae3bfa2edea846a703b58902dd221ae375db"
+    },
+    {
+      "path": "packaging/media/notices/libffi-LICENSE-verified",
+      "sha256": "f02e8e7361fa83bbe845f029571bbd1248bed85320f6dad0541db8ec66d90178"
+    },
+    {
+      "path": "packaging/media/notices/libogg-COPYING",
+      "sha256": "d2ab5758336489da61c12cc5bb757da5339c4ae9001f9bb0562b4370249af814"
+    },
+    {
+      "path": "packaging/media/notices/libvorbis-COPYING",
+      "sha256": "ec1815db59fcd302846df949d7424876cb2e2dc5ed1606c5fb0b36787b1cf43a"
+    },
+    {
+      "path": "packaging/media/notices/libvpx-LICENSE",
+      "sha256": "8267348d5af1262c11d1a08de2f5afc77457755f1ac658627dd9acf71011d615"
+    },
+    {
+      "path": "packaging/media/notices/libvpx-PATENTS",
+      "sha256": "cc3273e0694ea5896145e0677699b53471b03ea43021ddc50e7923fbb9f5023c"
+    },
+    {
+      "path": "packaging/media/notices/orc-COPYING",
+      "sha256": "4f5dabb1b44bb6fc5cd53820b1f103147ad61b395a57903991325bd1b85d97bf"
+    },
+    {
+      "path": "packaging/media/notices/pcre2-LICENCE",
+      "sha256": "87d884eceb7fc54611470ce9f74280d28612b0c877adfc767e9676892a638987"
+    },
+    {
+      "path": "packaging/media/notices/proxy-libintl-COPYING",
+      "sha256": "d245807f90032872d1438d741ed21e2490e1175dc8aa3afa5ddb6c8e529b58e5"
+    },
+    {
+      "path": "packaging/media/notices/zlib-README",
+      "sha256": "d106dcdb2a0b3087cb3a2380b9f00a0bbadc7eb835cd80408f94a2d78d69727d"
+    },
+    {
+      "path": "packaging/media/recipes/bzip2.recipe",
+      "sha256": "db3c9a4a6aee33f7d09f13dab18bbd08bbe47bb37b9878033466bbdf9197ed34"
+    },
+    {
+      "path": "packaging/media/recipes/custom.py",
+      "sha256": "d65579ff67e9ae48c5f021b9cbdfb779137364bef0eeeecaf31987b7c4ec14bb"
+    },
+    {
+      "path": "packaging/media/recipes/glib.recipe",
+      "sha256": "7fc465d9370fd726e2331ad464c1b15f04dbc25a7700578491030d8de9d22ad0"
+    },
+    {
+      "path": "packaging/media/recipes/gst-plugins-bad-1.0.recipe",
+      "sha256": "82b8fe6cd7e5fec9651bd8f94225236945f81d60a98b5ee0847f921617cf9e1c"
+    },
+    {
+      "path": "packaging/media/recipes/gst-plugins-base-1.0.recipe",
+      "sha256": "fc8b6fa50500ffeffaf5b1505dcc6ae50f9a4d9698b583254145d250a3fc0f7e"
+    },
+    {
+      "path": "packaging/media/recipes/gst-plugins-good-1.0.recipe",
+      "sha256": "fe7e118f39ed02c306af28391e8086a236013350c203fd7a096eccdc1ad9a053"
+    },
+    {
+      "path": "packaging/media/recipes/gstreamer-1.0.recipe",
+      "sha256": "27af4c5ea5ce0c1ce49cafe677d172390aeef17e825022ca996604208f18f0e3"
+    },
+    {
+      "path": "packaging/media/recipes/libffi.recipe",
+      "sha256": "dda01768646f7dc441850342eb0343f843d6ede78115e2e54e78113e00a19cc5"
+    },
+    {
+      "path": "packaging/media/recipes/libogg.recipe",
+      "sha256": "87379a13d772fc1bd7cb763a410fcdcd702967e0989567b53c9d57399003ac5c"
+    },
+    {
+      "path": "packaging/media/recipes/libvorbis.recipe",
+      "sha256": "3a55edeaf66bbda56a71edb5a3033d47ec88b1d7abd0553854315967c9e58410"
+    },
+    {
+      "path": "packaging/media/recipes/libvpx.recipe",
+      "sha256": "8fbf73c7cb302c8d30f95106d602d905922f517554ff5cde54b06fa784e09905"
+    },
+    {
+      "path": "packaging/media/recipes/orc.recipe",
+      "sha256": "4ad51966e5855effda8220658b1d1923f7f525aadff39543d78cf143d4c3b261"
+    },
+    {
+      "path": "packaging/media/recipes/pcre2.recipe",
+      "sha256": "6889a7278809c99bd36a0ea04d725da66b443b6aa6d90b5e2a0c9dffa17e96f1"
+    },
+    {
+      "path": "packaging/media/recipes/proxy-libintl.recipe",
+      "sha256": "123fd69100d658d1719aff4da4de0df46f8fc32dfda9334bd5efbb711050b208"
+    },
+    {
+      "path": "packaging/media/recipes/zlib.recipe",
+      "sha256": "0d656e46af8adbfc997409d0530a0613adb498fb65832cedafc201e3b8903641"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "source_sha256": "39907c8b4fdb0221ede20be1889b9ca20d6768a3794652479a7c451c4b1aa8f0",
+  "pid": 107776,
+  "config_sha256": "9DE264455E6E1348DC50FDBDDD68B32CBD84DD975F0A7F43A04766F6FB63C8A6",
+  "freeze": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\product-native-freeze-v5.json",
+  "utc": "2026-10-15T01:58:36.7878178Z",
+  "config": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\a-light.toml",
+  "argv": [
+    "--config",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\a-light.toml",
+    "--pdfium-library",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll",
+    "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\演示验收_Claude主题_中文字体回退_超长文件名不应覆盖开始演示按钮_2026.pdf"
+  ],
+  "window_style": "Normal",
+  "exe": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\target\\debug\\ferrostage.exe",
+  "exe_sha256": "3516cca7cf432cf1e4dace74f1a065c19509d10be1c4bb54f93a7b9e0c382fa8"
+}

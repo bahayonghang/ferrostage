@@ -1,0 +1,214 @@
+    Updating crates.io index
+    Updating git repository `https://github.com/zed-industries/zed`
+    Updating git repository `https://github.com/proptest-rs/proptest`
+    Updating git repository `https://github.com/zed-industries/scap`
+    Updating git repository `https://github.com/zed-industries/font-kit`
+    Updating git repository `https://github.com/zed-industries/reqwest.git`
+    Updating git repository `https://github.com/zed-industries/xim-rs.git`
+    Updating git repository `https://github.com/zed-industries/wasm_thread`
+     Locking 823 packages to highest Rust 1.99.0 compatible versions
+      Adding accesskit v0.24.1 (available: v0.25.1)
+      Adding bindgen v0.72.1 (available: v0.73.2)
+      Adding cocoa v0.26.0 (available: v0.26.1)
+      Adding core-video v0.5.2 (available: v0.6.1)
+      Adding etagere v0.2.15 (available: v0.3.0)
+      Adding generic-array v0.14.7 (available: v0.14.9)
+      Adding getrandom v0.3.4 (available: v0.4.3)
+      Adding itertools v0.14.0 (available: v0.15.0)
+      Adding pollster v0.4.0 (available: v1.0.1)
+      Adding rand v0.9.5 (available: v0.10.3)
+      Adding skrifa v0.44.0 (available: v0.48.0)
+      Adding spin v0.10.1 (available: v0.12.3)
+      Adding taffy v0.13.0 (available: v0.15.0)
+      Adding unicode-properties v0.1.3 (available: v0.1.4)
+ Downloading crates ...
+  Downloaded cast v0.3.0
+  Downloaded page_size v0.6.0
+  Downloaded ciborium-io v0.2.2
+  Downloaded plotters-svg v0.3.7
+  Downloaded alloca v0.4.0
+  Downloaded ciborium-ll v0.2.2
+  Downloaded plotters-backend v0.3.7
+  Downloaded lyon_extra v1.1.0
+  Downloaded anes v0.1.6
+  Downloaded tinytemplate v1.2.1
+  Downloaded criterion-plot v0.8.2
+  Downloaded oorandom v11.1.5
+  Downloaded ciborium v0.2.2
+  Downloaded criterion v0.8.2
+  Downloaded plotters v0.3.7
+  Downloaded aws-lc-rs v1.18.2
+  Downloaded aws-lc-sys v0.46.0
+   Compiling getrandom v0.4.3
+   Compiling futures-core v0.3.34
+   Compiling futures-sink v0.3.34
+   Compiling windows-sys v0.61.2
+   Compiling slab v0.4.12
+   Compiling either v1.19.0
+   Compiling fs_extra v1.3.0
+   Compiling libc v0.2.190
+   Compiling zeroize v1.9.1
+   Compiling aws-lc-rs v1.18.2
+   Compiling unicode-segmentation v1.13.3
+   Compiling getrandom v0.2.17
+   Compiling percent-encoding v2.3.2
+   Compiling untrusted v0.9.0
+   Compiling rustls v0.23.46
+   Compiling fnv v1.0.7
+   Compiling pulp v0.22.3 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\vendor\pulp)
+   Compiling rustversion v1.0.23
+   Compiling httparse v1.10.1
+   Compiling subtle v2.6.1
+   Compiling anstyle v1.0.14
+   Compiling collections v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling windows_x86_64_msvc v0.53.1
+   Compiling atomic-waker v1.1.2
+   Compiling futures-channel v0.3.34
+   Compiling try-lock v0.2.5
+   Compiling rustls-pki-types v1.15.1
+   Compiling form_urlencoded v1.2.2
+   Compiling rayon v1.12.0
+   Compiling tower-service v0.3.3
+   Compiling windows-link v0.1.3
+   Compiling winapi v0.3.9
+   Compiling unicase v2.10.0
+   Compiling flume v0.12.0
+   Compiling convert_case v0.10.0
+   Compiling want v0.3.2
+   Compiling zlog v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling perf v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling lyon_extra v1.1.0
+   Compiling futures-lite v2.6.1
+   Compiling serde_urlencoded v0.7.1
+   Compiling url v2.5.8
+   Compiling futures-util v0.3.34
+   Compiling clap_lex v1.1.1
+   Compiling ciborium-io v0.2.2
+   Compiling plotters-backend v0.3.7
+   Compiling async-channel v2.5.0
+   Compiling mime_guess v2.0.5
+   Compiling windows-result v0.3.4
+   Compiling derive_more-impl v2.1.1
+   Compiling clap_builder v4.6.7
+   Compiling ciborium-ll v0.2.2
+   Compiling jobserver v0.1.35
+   Compiling lyon v1.0.19
+   Compiling windows-strings v0.3.1
+   Compiling itertools v0.14.0
+   Compiling itertools v0.13.0
+   Compiling util_macros v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling plotters-svg v0.3.7
+   Compiling sync_wrapper v1.0.2
+   Compiling futures-concurrency v7.7.1
+   Compiling multiversion_no_op v1.0.0
+   Compiling utf8parse v0.2.2
+   Compiling tower-layer v0.3.3
+   Compiling cc v1.8.0
+   Compiling mime v0.3.17
+   Compiling core_detect v1.0.0
+   Compiling simdutf8 v0.1.5
+   Compiling windows-targets v0.53.5
+   Compiling cast v0.3.0
+   Compiling once_cell_polyfill v1.70.2
+   Compiling anstyle-parse v1.0.0
+   Compiling plotters v0.3.7
+   Compiling ciborium v0.2.2
+   Compiling windows-registry v0.4.0
+   Compiling webpki-roots v1.0.9
+   Compiling rustls-pemfile v2.2.0
+   Compiling convert_case v0.11.0
+   Compiling http-body-util v0.1.5
+   Compiling encoding_rs v0.8.42
+   Compiling tinytemplate v1.2.1
+   Compiling ipnet v2.12.2
+   Compiling base64 v0.22.1
+   Compiling bit-vec v0.8.0
+   Compiling is_terminal_polyfill v1.70.2
+   Compiling anes v0.1.6
+   Compiling quick-error v1.2.3
+   Compiling jiff-core v0.1.1
+   Compiling wait-timeout v0.2.1
+   Compiling oorandom v11.1.5
+   Compiling colorchoice v1.0.5
+   Compiling proptest-macro v0.5.0 (https://github.com/proptest-rs/proptest?rev=3dca198a8fef1b32e3a66f1e1897c955b4dc5b5b#3dca198a)
+   Compiling bit-set v0.8.0
+   Compiling page_size v0.6.0
+   Compiling rand_xorshift v0.4.0
+   Compiling env_filter v2.0.0
+   Compiling cmake v0.1.58
+   Compiling criterion-plot v0.8.2
+   Compiling unarray v0.1.4
+   Compiling futures-executor v0.3.34
+   Compiling clap v4.6.7
+   Compiling futures v0.3.34
+   Compiling scheduler v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling postage v0.5.0
+   Compiling aws-lc-sys v0.46.0
+   Compiling ring v0.17.14
+   Compiling vswhom-sys v0.1.3
+   Compiling alloca v0.4.0
+   Compiling jiff v0.2.38
+   Compiling derive_more v2.1.1
+   Compiling http_client v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling mio v1.2.4
+   Compiling socket2 v0.6.5
+   Compiling nu-ansi-term v0.50.3
+   Compiling schannel v0.1.29
+   Compiling winapi-util v0.1.11
+   Compiling anstyle-wincon v3.0.11
+   Compiling tempfile v3.27.0
+   Compiling anstyle-query v1.1.5
+   Compiling exr v1.74.2
+   Compiling vswhom v0.1.0
+   Compiling embed-resource v3.0.12
+   Compiling same-file v1.0.6
+   Compiling anstream v1.0.0
+   Compiling tracing-subscriber v0.3.23
+   Compiling rusty-fork v0.3.1
+   Compiling rustls-native-certs v0.8.5
+   Compiling walkdir v2.5.0
+   Compiling tokio v1.53.3
+   Compiling env_logger v0.11.11
+   Compiling gpui v0.2.2 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\vendor\gpui)
+   Compiling proptest v1.10.0 (https://github.com/proptest-rs/proptest?rev=3dca198a8fef1b32e3a66f1e1897c955b4dc5b5b#3dca198a)
+   Compiling criterion v0.8.2
+   Compiling ztracing v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling sum_tree v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling image v0.25.10
+   Compiling tokio-util v0.7.20
+   Compiling tower v0.5.3
+   Compiling h2 v0.4.20
+   Compiling tokio-socks v0.5.3
+   Compiling bench_metrics v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling hyper v1.12.0
+   Compiling hyper-util v0.1.21
+   Compiling gpui_windows v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling gpui_platform v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling rustls-webpki v0.103.15
+   Compiling tokio-rustls v0.26.6
+   Compiling rustls-platform-verifier v0.7.1
+   Compiling http_client_tls v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling hyper-rustls v0.27.10
+   Compiling zed-reqwest v0.12.15-zed (https://github.com/zed-industries/reqwest.git?rev=33bc764aa15ff7b200bf7c93bd96e24878d53e14#33bc764a)
+   Compiling reqwest_client v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 32s
+     Running unittests src\gpui.rs (cache/gpui-maintenance-candidate/target\debug\deps\gpui-7c340ce83c080323.exe)
+
+running 14 tests
+test svg_renderer::tests::fix_generic_font_families_sets_all_families ... ok
+test svg_renderer::tests::fix_generic_font_families_monospace_resolves_to_lilex ... ok
+test svg_renderer::tests::test_select_emoji_font_skips_family_without_glyph ... ok
+test svg_renderer::maintenance_tests::glyph_lookup_checks_real_face_coverage_and_missing_id ... ok
+test svg_renderer::maintenance_tests::fallback_excludes_used_and_missing_glyph_faces ... ok
+test svg_renderer::maintenance_tests::collection_lookup_respects_both_face_indices ... ok
+test svg_renderer::tests::preserves_aspect_ratio_for_width_constrained_size ... ok
+test svg_renderer::tests::renders_parsed_svg_at_requested_size ... ok
+test svg_renderer::tests::test_is_emoji_presentation ... ok
+test svg_renderer::maintenance_tests::shape_keeps_bgra_alpha_and_requested_size ... ok
+test svg_renderer::maintenance_tests::svgz_decodes_to_identical_shape_pixels ... ok
+test svg_renderer::tests::text_with_split_glyph_clusters_in_mixed_fonts_does_not_panic ... ok
+test svg_renderer::maintenance_tests::text_fallback_renders_the_available_glyph ... ok
+test svg_renderer::maintenance_tests::ligature_combining_and_mixed_font_text_produces_visible_output ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 351 filtered out; finished in 0.01s
+

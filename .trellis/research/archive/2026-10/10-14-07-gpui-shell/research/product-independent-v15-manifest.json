@@ -1,0 +1,42 @@
+{
+  "captured_utc": "2026-10-15T08:54:58.576208+00:00",
+  "scope": "Independent V15 F13/notes source review PASS; limited F14 research candidate reviewed, not adopted; product native NOT_RUN/user-stopped; Gate B INCOMPLETE",
+  "files": {
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v15-check.py": {
+      "sha256": "7ec606545c53af0ba3b90d38900a4c004cc43e74013bf076ccc45df1ed23cc7e",
+      "bytes": 3057
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v15-clippy.json": {
+      "sha256": "f519af3d705381401f08f9f95e0459709123d58296534e5d71329b3ef6041544",
+      "bytes": 514
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v15-clippy.log": {
+      "sha256": "d7fb51bc0b138043355d48c83ffc33fe96eae27270a462921d991d4ed25e73b4",
+      "bytes": 574
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v15-closeout.json": {
+      "sha256": "7a59f998987bd692ae4dadfad83e28421b6074c9fe42d25bc532bb8512aa5924",
+      "bytes": 2132
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v15-identity.json": {
+      "sha256": "a8e4d5f8d7440c60ad9ba484c4e46134953bca9002712a26f6e2216d674ef2ba",
+      "bytes": 2032
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v15-identity.py": {
+      "sha256": "de092e931a90bf1d35481a8399293310a28ee295eb91ee2665d94922d5c87a90",
+      "bytes": 5048
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v15-review.md": {
+      "sha256": "5a9961ae4b70f396287d1934fbbf4221319f3a4ceba1a113e66b67112e448e94",
+      "bytes": 13990
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v15-typecheck.json": {
+      "sha256": "f4a92e84e68295fadc2fe9493e03b16e03e6a38780b4c29160500be893daed55",
+      "bytes": 477
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v15-typecheck.log": {
+      "sha256": "0620e15a7640155ea08ffa04e248227286ec790605f305d9236aeb09cefc0b46",
+      "bytes": 544
+    }
+  }
+}

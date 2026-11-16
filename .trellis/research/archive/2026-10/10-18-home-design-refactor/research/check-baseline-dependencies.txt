@@ -1,0 +1,33 @@
+BASELINE_HEAD=595910cc41d6259a3e87766c2aceb2c505d28359
+BASELINE_MANIFEST_DIFF_EXIT=0
+
+> name = "accesskit_atspi_common"
+  version = "0.19.1"
+  source = "registry+https://github.com/rust-lang/crates.io-index"
+  checksum = "023da0e5097f46df7092d5280b02efb9bbf8d93298daeced42652463e357d636"
+> name = "accesskit_unix"
+  version = "0.22.1"
+  source = "registry+https://github.com/rust-lang/crates.io-index"
+  checksum = "03e156ed3802e35eefe894ef2671bc6c889303d8a7e110b5e1b48f504b91362f"
+> name = "gpui_linux"
+  version = "0.1.0"
+  source = "git+https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5389efff473fc2306f7f8c690f2e1a417"
+  dependencies = [
+> name = "gpui_platform"
+  version = "0.1.0"
+  source = "git+https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5389efff473fc2306f7f8c690f2e1a417"
+  dependencies = [
+> name = "zbus_names"
+  version = "4.3.4"
+  source = "registry+https://github.com/rust-lang/crates.io-index"
+  checksum = "d8bf88b4a3ff53e883001e0e0115b297a9d53c31b9c1edd2bfdd853e3428624e"
+> name = "zvariant"
+  version = "5.15.0"
+  source = "registry+https://github.com/rust-lang/crates.io-index"
+  checksum = "c1d34c27cc6cdd1f458427519dd6b8612f7b7e3f7b9a0b2355d041dda9869147"
+> name = "zvariant_derive"
+  version = "5.15.0"
+  source = "registry+https://github.com/rust-lang/crates.io-index"
+  checksum = "864155e69b4352db0c7f374917bf45d1e0c8d17659c8b3dbf9795f3673f8c497"
+
+

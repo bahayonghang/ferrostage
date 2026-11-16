@@ -1,0 +1,60 @@
+warning: function `shape` is never used
+   --> vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `harfrust` (lib) generated 1 warning
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.92s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-f6f69bc716fb3e17.exe)
+
+running 6 tests
+test shell::tests::v6_save_failure_has_one_owner_and_keeps_unrelated_error ... FAILED
+test shell::tests::v6_notify_preserves_valid_control_and_audience_activation ... ok
+test shell::tests::v6_removed_stop_restores_keyboard_traversal ... FAILED
+test shell::tests::v6_removed_modal_button_restores_keyboard_traversal ... FAILED
+test shell::tests::v6_removed_jump_commit_restores_keyboard_traversal ... ok
+test shell::tests::v6_retry_success_clears_save_feedback_and_restores_keyboard ... FAILED
+
+failures:
+
+---- shell::tests::v6_save_failure_has_one_owner_and_keeps_unrelated_error stdout ----
+
+thread 'shell::tests::v6_save_failure_has_one_owner_and_keeps_unrelated_error' (113248) panicked at crates\ferrostage-ui\src\shell.rs:1274:17:
+assertion `left == right` failed: save feedback must not duplicate/overwrite the general error
+  left: Some("设置未保存：cannot create settings directory: C:\\Users\\lyh\\AppData\\Local\\Temp\\ferrostage-ui-save-82784-0\\blocked: Cannot create a file when that file already exists. (os error 183)")
+ right: None
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- shell::tests::v6_removed_stop_restores_keyboard_traversal stdout ----
+
+thread 'shell::tests::v6_removed_stop_restores_keyboard_traversal' (133780) panicked at crates\ferrostage-ui\src\shell.rs:1144:13:
+assertion `left == right` failed
+  left: None
+ right: Some(WindowId(1v1))
+
+---- shell::tests::v6_removed_modal_button_restores_keyboard_traversal stdout ----
+
+thread 'shell::tests::v6_removed_modal_button_restores_keyboard_traversal' (173400) panicked at crates\ferrostage-ui\src\shell.rs:1144:13:
+assertion `left == right` failed
+  left: None
+ right: Some(WindowId(1v1))
+
+---- shell::tests::v6_retry_success_clears_save_feedback_and_restores_keyboard stdout ----
+
+thread 'shell::tests::v6_retry_success_clears_save_feedback_and_restores_keyboard' (13328) panicked at crates\ferrostage-ui\src\shell.rs:1305:13:
+successful Retry left stale save error: Some("设置未保存：cannot create settings directory: C:\\Users\\lyh\\AppData\\Local\\Temp\\ferrostage-ui-save-82784-1\\blocked: Cannot create a file when that file already exists. (os error 183)")
+
+
+failures:
+    shell::tests::v6_removed_modal_button_restores_keyboard_traversal
+    shell::tests::v6_removed_stop_restores_keyboard_traversal
+    shell::tests::v6_retry_success_clears_save_feedback_and_restores_keyboard
+    shell::tests::v6_save_failure_has_one_owner_and_keeps_unrelated_error
+
+test result: FAILED. 2 passed; 4 failed; 0 ignored; 0 measured; 41 filtered out; finished in 0.03s
+
+error: test failed, to rerun pass `-p ferrostage-ui --lib`

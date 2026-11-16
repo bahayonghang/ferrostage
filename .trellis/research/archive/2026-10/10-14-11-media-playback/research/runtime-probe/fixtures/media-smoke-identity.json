@@ -1,0 +1,72 @@
+{
+  "file": "media-smoke.pdf",
+  "bytes": 566185,
+  "sha256": "cd41d260eba950649552346e5aa95d7e05b2e81e7d3d790879a97cbff2808185",
+  "pages": [
+    {
+      "page": 1,
+      "title": "GIF",
+      "source": "synthetic-three-frames.gif",
+      "embedded": false,
+      "autostart": true,
+      "start_seconds": 0,
+      "duration_seconds": null,
+      "repeat": true
+    },
+    {
+      "page": 2,
+      "title": "WebP",
+      "source": "synthetic-three-frames.webp",
+      "embedded": false,
+      "autostart": true,
+      "start_seconds": 0,
+      "duration_seconds": null,
+      "repeat": true
+    },
+    {
+      "page": 3,
+      "title": "MP4 start 2 duration 8 loop",
+      "source": "synthetic-ball-tone-12s.mp4",
+      "embedded": false,
+      "autostart": true,
+      "start_seconds": 2,
+      "duration_seconds": 8,
+      "repeat": true
+    },
+    {
+      "page": 4,
+      "title": "Audio only",
+      "source": "synthetic-ball-tone-12s.ogg",
+      "embedded": false,
+      "autostart": true,
+      "start_seconds": 0,
+      "duration_seconds": null,
+      "repeat": false
+    },
+    {
+      "page": 5,
+      "title": "Embedded MP4 - click to play",
+      "source": "synthetic-ball-tone-12s.mp4",
+      "embedded": true,
+      "autostart": false,
+      "start_seconds": 2,
+      "duration_seconds": 8,
+      "repeat": false
+    },
+    {
+      "page": 6,
+      "title": "Missing external media",
+      "source": "intentionally-missing.mp4",
+      "embedded": false,
+      "autostart": true,
+      "start_seconds": 0,
+      "duration_seconds": null,
+      "repeat": false
+    }
+  ],
+  "limitations": [
+    "Authored research input, not product acceptance or Beamer output.",
+    "Helvetica is a standard PDF font; rendering is checked separately.",
+    "Original user/repository PDFs were not modified."
+  ]
+}

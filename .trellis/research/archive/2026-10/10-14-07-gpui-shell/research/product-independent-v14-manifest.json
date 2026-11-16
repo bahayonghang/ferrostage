@@ -1,0 +1,68 @@
+{
+  "captured_utc": "2026-10-15T07:13:53.186668+00:00",
+  "scope": "Independent V14 source/check review only; native F12 retest pending Root. Initial process-closeout EMPTY is invalidated by correction; visible enumeration is not complete host proof.",
+  "source_snapshot_sha256": "9764bfa0d94764c314fd559d8df2b55e056fc8f6ef77882cdde89662fe5d4413",
+  "binary_sha256": "4be903dc34b4bb47163816cc88a67caf8c9f9806772f931b209bf27a9d3dbcd1",
+  "files": {
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v14-audit.json": {
+      "sha256": "c122fc1cbc36212821ce4f47ffaaf4a7725f94cefff75bc717a53856982ca7c4",
+      "bytes": 10402
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v14-check.py": {
+      "sha256": "92f803198966c4c45a08d75d02f00bf8695e78daf9fc1056178d7b9a9a8d16dd",
+      "bytes": 4405
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v14-diff.json": {
+      "sha256": "4099f87cbea061490318b7fe3fcc10e4f20b79775c8ce759e3e3b96001e06c1f",
+      "bytes": 260
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v14-diff.log": {
+      "sha256": "77fcd39d6f499d9d9aad54bd8fa115ac9acd22cd478b0a479d9c25cea1bdf292",
+      "bytes": 4557
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v14-identity-final.json": {
+      "sha256": "ee8999f9023cb89f98af3256f2ec99129a39d3a0f4e98f8242ac6980fc43f33a",
+      "bytes": 1190
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v14-identity.json": {
+      "sha256": "4ea2047f8f4eea040b83f53927eedff2f4e6a392f1a317499ff58be00d23ec62",
+      "bytes": 1190
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v14-lint.json": {
+      "sha256": "982cfa8393085b0d6586f92d255cc28ab2e027dbe569dcaeee289b5d1608a13b",
+      "bytes": 434
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v14-lint.log": {
+      "sha256": "3b8303833f144df4d9f15ab7a93aceaf57af8c12cd6389c941232c7e7fd643e2",
+      "bytes": 329
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v14-process-closeout-correction.json": {
+      "sha256": "28f7544e6d779751e3e3e506bc4db51816eddee95337074785b1baa04970f0cf",
+      "bytes": 342
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v14-process-closeout.json": {
+      "sha256": "f92d9e037dc2630ce99919e1d873a7ba8cdf19ae41b99334c512e8f13a706bc8",
+      "bytes": 184
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v14-retirement.json": {
+      "sha256": "112721aa4a21954bbf4244e4095dee4e107f3ec6cbc5e4eed81248e23669a029",
+      "bytes": 431
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v14-retirement.log": {
+      "sha256": "1ea094bdf4c1464e17d41b03aa6844bac712f295fd341b074575291ab74969a1",
+      "bytes": 1810
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v14-review.md": {
+      "sha256": "5e9420836bd0a217279854f56bd6eab5aa6b87abe8476b627c1b5579522439a0",
+      "bytes": 10279
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v14-types.json": {
+      "sha256": "8fc61f0681c70a84575e5870c4d48a8284becac526d3009e7b56aa6bad6be339",
+      "bytes": 395
+    },
+    ".trellis/tasks/10-14-07-gpui-shell/research/product-independent-v14-types.log": {
+      "sha256": "8bc10afeb872b7d262634fed8cee08046f1a985263d80090a8b3d9eab4ae6403",
+      "bytes": 329
+    }
+  }
+}

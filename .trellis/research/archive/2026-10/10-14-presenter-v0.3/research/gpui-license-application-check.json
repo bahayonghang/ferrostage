@@ -1,0 +1,8 @@
+{
+  "captured_utc": "2026-10-15T00:41:03.295521+00:00",
+  "approved_reply": "批准采纳及这三个精确例外（推荐）",
+  "exact_exceptions_match": true,
+  "all_other_policy_values_unchanged": true,
+  "policy_sha256": "b523fa9292860a95ba53572261d93161a5acfe9e6975f096a1eed2837dbadab0",
+  "actual_product_deny": "07 research/product-i2-deny.log: all-features locked offline exit0; future source changes still require applicable gates"
+}

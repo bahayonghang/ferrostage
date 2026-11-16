@@ -1,0 +1,83 @@
+ Downloading crates ...
+  Downloaded ntapi v0.4.3
+  Downloaded windows-capture v1.5.0
+  Downloaded windows-collections v0.2.0
+  Downloaded windows-numerics v0.2.0
+  Downloaded windows-result v0.1.2
+  Downloaded bit-set v0.8.0
+  Downloaded windows-link v0.1.3
+  Downloaded windows-targets v0.52.6
+  Downloaded windows-interface v0.57.0
+  Downloaded windows-threading v0.1.0
+  Downloaded rand_xorshift v0.4.0
+  Downloaded windows-result v0.3.4
+  Downloaded convert_case v0.11.0
+  Downloaded windows-future v0.2.1
+  Downloaded windows-implement v0.57.0
+  Downloaded windows-strings v0.4.2
+  Downloaded bit-vec v0.8.0
+  Downloaded windows-core v0.61.2
+  Downloaded windows-core v0.57.0
+  Downloaded sysinfo v0.31.4
+  Downloaded windows_x86_64_msvc v0.52.6
+  Downloaded winapi v0.3.9
+  Downloaded windows v0.61.3
+  Downloaded windows v0.57.0
+   Compiling collections v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling byteorder v1.5.0
+   Compiling tracing-subscriber v0.3.23
+warning: function `shape` is never used
+   --> vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `harfrust` (lib) generated 1 warning
+   Compiling tempfile v3.27.0
+   Compiling convert_case v0.11.0
+   Compiling bit-vec v0.8.0
+   Compiling regex-automata v0.4.18
+   Compiling gpui v0.2.2 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui)
+   Compiling rand_xorshift v0.4.0
+   Compiling http_client v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling ferrostage-pdf v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-pdf)
+   Compiling zlog v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling perf v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling hash32 v0.3.1
+   Compiling rusty-fork v0.3.1
+   Compiling proptest-macro v0.5.0 (https://github.com/proptest-rs/proptest?rev=3dca198a8fef1b32e3a66f1e1897c955b4dc5b5b#3dca198a)
+   Compiling bit-set v0.8.0
+   Compiling heapless v0.9.3
+   Compiling util_macros v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling ferrostage-render v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-render)
+   Compiling ztracing v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling proptest v1.10.0 (https://github.com/proptest-rs/proptest?rev=3dca198a8fef1b32e3a66f1e1897c955b4dc5b5b#3dca198a)
+   Compiling sum_tree v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling ferrostage-settings v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-settings)
+   Compiling regex v1.13.1
+   Compiling gpui_windows v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling gpui_platform v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling ferrostage-ui v0.1.0 (D:\Documents\Code\Rust\Exp\ferrostage\crates\ferrostage-ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 34.39s
+     Running unittests src\lib.rs (target\debug\deps\ferrostage_ui-f6f69bc716fb3e17.exe)
+
+running 1 test
+test shell::tests::presenter_creation_draws_while_controller_is_leased ... FAILED
+
+failures:
+
+---- shell::tests::presenter_creation_draws_while_controller_is_leased stdout ----
+
+thread 'shell::tests::presenter_creation_draws_while_controller_is_leased' (170984) panicked at vendor\gpui\src\app\entity_map.rs:156:32:
+cannot read ferrostage_ui::shell::Shell while it is already being updated
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    shell::tests::presenter_creation_draws_while_controller_is_leased
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 18 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p ferrostage-ui --lib`

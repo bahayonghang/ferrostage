@@ -1,0 +1,34 @@
+{
+  "changes": {
+    ".trellis/spec/frontend/maintained-dependencies.md": {
+      "v14": "a049a217490484ed27e4b18ae1be9cd0e064debe41e48d4a4646700627363d98",
+      "v15": "c555e877bab54baebc27a9aa25d3e26d9cb2ccb09680fd1aaef33b2f188bac0a"
+    },
+    "crates/ferrostage-platform/src/windows/tests.rs": {
+      "v14": "f829a96e5dc00d7736b80aa617762d9a538645cce8d676ecc80a597551751ba5",
+      "v15": "3519094ae2191da174a9a268bf48a8664ba67fcb289ae32077146ebcf46f1d74"
+    },
+    "crates/ferrostage-platform/src/windows.rs": {
+      "v14": "f267297572a0ca99aa99477fd1fccd4d790541a4355036dcc8108c1ea73529a5",
+      "v15": "0b9259574c09f476dcd9bd39205a2776a12f5827da5b0679fa97634db6be66f0"
+    }
+  },
+  "added": {
+    ".trellis/spec/backend/quality-guidelines.md": "f621e2a3c0d1d0056cf274139ad4cf2c53bd035ae5153e25e8ece7749b501716",
+    "crates/ferrostage-document/tests/notes_native.rs": "613166a2d5f6b9d28192c7994116e77d10b9e93aad559a09eb275b95c46b17ba",
+    "fixtures/notes-functional/.gitignore": "e1fc34b4f1767b2897a2bcd15dce80a7b3f24218022dd3cc2681b65a70bb83e6",
+    "fixtures/notes-functional/pympress-notes.pdf": "e939e35f931c184fd93b2e9b95e560db73ba6a6f6dfccbb0963262f0b359dfeb",
+    "fixtures/notes-functional/pympress-notes.tex": "9552dc97c6ac5216e488b448846773befc8cb7952fd0665197db25bec275bc34",
+    "fixtures/notes-functional/README.md": "6bcde0f5f0ab1580beb4209316a2517ce19b37156599bde6d9e0284499f0cc10",
+    "fixtures/notes-functional/verification.json": "fe1cbf3ea317f0ee6c9843b73dd83ddd4a8a9210c05d158a54b31b735ed63378",
+    "fixtures/notes-functional/verify_fixture.py": "76a1c0817fe4a9cb61bac7ac4d6b6754daf886a3227c1842fa0d9eb7763ea29e",
+    "fixtures/notes-functional/preview/page-1.png": "789c362a7163c920b2d3994ff5273cb24ed8729fcfcd31ff4b2b81967a67b847",
+    "fixtures/notes-functional/preview/page-2.png": "c853a088f3c62b0c96fa9508a98675b38ba3da45fb08186e12f4394d665d4900",
+    "fixtures/notes-functional/preview/page-3.png": "48043cb0ad518d0f452938b16ad11419c16bb67e3400d3a82ebd0c3beb83f14a",
+    "fixtures/notes-functional/preview/page-4.png": "d5c4a1beabadb076384b4a1bd19fb1e538399807bbfe4cce487d9362a2d3168f",
+    "fixtures/notes-functional/preview/page-5.png": "8bee582e9854e887132925896203ff8b34e90fe048a579ba89abd2785e27215d"
+  },
+  "source_count": 622,
+  "unchanged_count": 606,
+  "excluded": "research-only AccessKit candidate/proposal are not product sources or dependencies"
+}

@@ -1,0 +1,630 @@
+{
+  "reason": "Narrow ignore exceptions retain prior task acceptance logs that the generic *.log rule hid; no generated cache or default user files added",
+  "files": [
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/artifact-audit.log",
+      "bytes": 261,
+      "sha256": "c80b74aeee915eda2da1fcb6e9a8670ab077033a5e207408fd2b29427f4505c4"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/beamer-compile.log",
+      "bytes": 35403,
+      "sha256": "378460f28632e191de5f853dd0d8cc83233ccd8c992364ed3db9d7ac138eb159"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/beamer-movie-compile.log",
+      "bytes": 17347,
+      "sha256": "a7c7f7b325625c31c91f3b21984490e7b9538f1f09bc949cc70ae5a2344a474d"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/ci-final.log",
+      "bytes": 22241,
+      "sha256": "c788d148f6b9ebcb33ba2014f22f2ecc530b1123c450f8334cb5e936744b4ef8"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/clippy-final.log",
+      "bytes": 383,
+      "sha256": "f1807e7e61e23af32b8c7e4481d24e48ec9bd2b7b9813bf78a6172f1b5a1dbff"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/clippy-initial.log",
+      "bytes": 5409,
+      "sha256": "11a3e7dd86ea82056ae9d4494e0661d161d7e76d1c0446c3c4b6c9d059f83fa9"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/core-initial.log",
+      "bytes": 141,
+      "sha256": "af9e170b81f294c34be54258221289031f06ced403e067765ad55f396fa49bd7"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/core-map.log",
+      "bytes": 2650,
+      "sha256": "7bc78f394673ba99941f073e48ed5255389eec2418017a58b9221ec752609bf4"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/core-retry.log",
+      "bytes": 4963,
+      "sha256": "75013d4010b117b724a5900ea78663cc2bc0f11509e30da9663ddca151e8b2bb"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/core-tree.log",
+      "bytes": 2220,
+      "sha256": "00515c5c7e98506b30d43a5183dea891558cc03f9d64e9516c32949c996b6b16"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/diff-check-line-ending-override.log",
+      "bytes": 482503,
+      "sha256": "7fa500f33995d6f96958d9cde8f40d4f5a17358587b6e7496a1d0884670d301f"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/diff-check.log",
+      "bytes": 3926,
+      "sha256": "b78b81ec98101fa4c09053227012e52eb0d80f2d31f266a4ea4b992da15b8f99"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/independent-artifact-audit.log",
+      "bytes": 1204,
+      "sha256": "e769943cf19affbaedd4e75034adf0c6d4cad97d298f8f6e40cfe3e81f816e60"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/independent-ci-closeout.log",
+      "bytes": 22619,
+      "sha256": "17f0dcdf3e7aba052e3fd2179786d951ca22cabc6ef95376c2ed0ee8eaaa5d99"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/independent-ci.log",
+      "bytes": 22331,
+      "sha256": "00a6fbafa0cec442a39e738306a8a17ff6bf5d33695ed72b24a47c48b7f894bd"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/independent-core-tree.log",
+      "bytes": 2220,
+      "sha256": "00515c5c7e98506b30d43a5183dea891558cc03f9d64e9516c32949c996b6b16"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/independent-crop-green.log",
+      "bytes": 2696,
+      "sha256": "324eca83e6bdc761bff876e0a90202abdda85ed9bd4b4d4683797d113b500c2a"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/independent-crop-red.log",
+      "bytes": 2034,
+      "sha256": "ffeac0fccae01dd20c849d32b12ef7ed1627825e98443fce76004b388723d00c"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/independent-diff-check.log",
+      "bytes": 3774,
+      "sha256": "781b340b4e48853ef0315af7880d3802f14ccc8d4ec6b1f768ed0433b96bc724"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/independent-media-before.log",
+      "bytes": 141,
+      "sha256": "af9e170b81f294c34be54258221289031f06ced403e067765ad55f396fa49bd7"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/independent-media-green.log",
+      "bytes": 1081,
+      "sha256": "859b25d36c6aeb22d47f4ff1b68f75ea4fdd44f07ca08c42c879317c73095ff8"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/independent-media-red.log",
+      "bytes": 2223,
+      "sha256": "afec0bb6c8665c77823d919b38d76e1b603af96f261e2b0b8b76e25f24ee5789"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/independent-native-clippy-closeout.log",
+      "bytes": 483,
+      "sha256": "e8570e2fda41849c85a34085b5be3f6f3f028ee8b962660b4cc804773efccc2d"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/independent-native-clippy.log",
+      "bytes": 483,
+      "sha256": "fc39ae465c7a470c45b36d22427dafcd0f884c586fcc6f6171bb7fba1f9f9a81"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/independent-native-closeout.log",
+      "bytes": 7336,
+      "sha256": "b0468e2bcd568a81db7816de84d1c9b46c09adf8c8606178765637654a29a201"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/independent-native-missing.log",
+      "bytes": 1138,
+      "sha256": "c53adbe2af1b87ba08f2e1f023e10356d76b0249b6b74c2f90a1326441c426d2"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/independent-native.log",
+      "bytes": 7240,
+      "sha256": "afac7082ccde9103c643a074c9fac171ffc850c232a17837e44430e4e02c017a"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/independent-typecheck-closeout.log",
+      "bytes": 893,
+      "sha256": "5f7fe77aff192831a6088a25466e14eb0f140d66c835e4aa06c84cf06c02ab46"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/independent-typecheck.log",
+      "bytes": 797,
+      "sha256": "1abc6a33812326d3247d281a36e096259b911cba6869fd63ccd97a6a6d1673d8"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/model-expanded.log",
+      "bytes": 4640,
+      "sha256": "a9f29af03a62e56c1ec184cd00393e14b5612f461c65ab2790bceec3585991ea"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/model-initial.log",
+      "bytes": 3372,
+      "sha256": "7b24201463f6a5104a21145fccf7f54b856db272e1106c882e0df57bbacb6e66"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/model-tests.log",
+      "bytes": 4559,
+      "sha256": "34b0723a248161bb1f7aa6b7b92689a110f80a176ead1fb90b9ae9765b4958f1"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/native-final.log",
+      "bytes": 6958,
+      "sha256": "15191dbbf5c3f7f7dd4590c364bab0336abe3f66828dc0d461afca554b7254c2"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/native-initial.log",
+      "bytes": 7321,
+      "sha256": "f54266347902033c4835241ccdd239e9ff3e81459a142897cbfdfd73c77733ab"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/native-missing.log",
+      "bytes": 1137,
+      "sha256": "876eff2894b96ea6458ebf1207ce9fd4cbb55bff8573c1812a735cb2b7c1b997"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/native-movie.log",
+      "bytes": 8155,
+      "sha256": "4207a5a4d6dfe00570a0c388f6aae136adfa0a8681496155a7e3d5299e002415"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/producer-inspect.log",
+      "bytes": 980,
+      "sha256": "85808fe37aae253984c4370ebfc2655875dc99f4daf4f8646cbf473803635943"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model/research/typecheck.log",
+      "bytes": 893,
+      "sha256": "8d835b9c31296164acfda8ba7738b870c3f1ca019c53987e4dcfc5e7cc049c2b"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/app-feature-check.log",
+      "bytes": 896,
+      "sha256": "d5e1f0c73efa06f04c24de146912299850a289b70fcddab9a895a34704b75a0c"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/artifact-verification.log",
+      "bytes": 4304,
+      "sha256": "450b7f3c6816061c85377264ba3a80a7133a5a8a08f26de03fc43541c27e183d"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/boundary-before-fix.log",
+      "bytes": 2382,
+      "sha256": "427656231509d40246c02b0b94c3409b24c8646837e9b933653690ff3c9f44f9"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/deny-all-features.log",
+      "bytes": 8007,
+      "sha256": "8007624c562e13c8af85950c47dc29c4cf5bdf22f68618d3b4b1f5ec67fb085a"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/independent-artifact-audit.log",
+      "bytes": 975,
+      "sha256": "7ad6d2a2c2e084fdffc6698463165309f4bc2d73cbd1b6097abf056fe4ffe807"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/independent-ci-before.log",
+      "bytes": 1559,
+      "sha256": "9efad53b2bdb0b1a04aea9f17a1c41187f11cfcba8d696237c416ab8773dee4b"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/independent-ci-closeout.log",
+      "bytes": 18738,
+      "sha256": "d7b871a2525f483dfd62f188f1693576270239c0604e7e575a1a4fdf9158d7ec"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/independent-ci-final.log",
+      "bytes": 19322,
+      "sha256": "edb5bdc39154fa0a8d896ce82e45ae71c90523b788536030e23ea97e5747b899"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/independent-diff-check.log",
+      "bytes": 4378,
+      "sha256": "cc2bdf80d53734f495b766043f09b90594043f25db64c41648a5cf27c980e606"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/independent-native-clippy-closeout.log",
+      "bytes": 185,
+      "sha256": "62ecb27b53a97e08a24474259b31857c08e43ddc48642a4992983e8cfe3bacef"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/independent-native-clippy.log",
+      "bytes": 185,
+      "sha256": "54a63adf09de8e3ad8623f019df5a814a31147fd4e444481c18a0dfbd39d96a1"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/independent-native-closeout.log",
+      "bytes": 4788,
+      "sha256": "c0114ea0d842fe75d0df16aeb76d6ef2edc1589930b99e87abd92c700d9fc80c"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/independent-native-missing.log",
+      "bytes": 984,
+      "sha256": "38987ca97b239c88923f12f88c86b0129f5e8b693a34fdfa87901026c81bcc34"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/independent-native-tests.log",
+      "bytes": 4744,
+      "sha256": "f7dd0f04b6d907caee47a90cc3dbcf5ba7f24f64df1b223beec5a33ffc2b1698"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/independent-token-after.log",
+      "bytes": 901,
+      "sha256": "e5446814c3185d13757ed501d299abd78f8b09ee0a794cd050ca5849bbf108ba"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/independent-token-before.log",
+      "bytes": 1230,
+      "sha256": "6c7591b734e5618db3b6c1f3187202c5ac8b2fc49095d7a0c70291ca9cfda0cf"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/independent-typecheck-closeout.log",
+      "bytes": 185,
+      "sha256": "a8186f721b82276ae68e996945318c855a30a6ac006856646b37dc65da07c857"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/independent-typecheck.log",
+      "bytes": 964,
+      "sha256": "0ae75aa0aaba49334a805589dea342de1d91403341a41fe709ef3b9daa39d9ed"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/just-ci-final.log",
+      "bytes": 19769,
+      "sha256": "516004dabf53de669ed387feb801a75a4f7c3889722daeb0fa6f7cab92b476b7"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/just-ci.log",
+      "bytes": 19714,
+      "sha256": "3125fb19a7aa17912aeacef0e24b12608f6653ab5f4b61c763dd476296b57b68"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/native-clippy-final.log",
+      "bytes": 608,
+      "sha256": "f92f570902dd22248f8d8b018dc931fe0d849933bc65be897803fb493775ecbc"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/native-clippy-pass.log",
+      "bytes": 190,
+      "sha256": "79e94dd738090b7d149961f16b1cc48d49868a0e58f8c8551b5756fe256d0a5e"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/native-clippy.log",
+      "bytes": 1227,
+      "sha256": "269d121e75456bb8331f146b7f80ce37b6ce4440b0c9898631b8b1905daeb706"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/native-final-boundary.log",
+      "bytes": 4677,
+      "sha256": "51ba8150f07be416ff1dfe831bd83e4d30fada06fdfbf7388a868a5dfc7eee0c"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/native-final.log",
+      "bytes": 2436,
+      "sha256": "9d054a535851d521b1089b86671051196192bd59080e5d38bb791be8f6f92b5e"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/native-owned-buffer-retry.log",
+      "bytes": 429,
+      "sha256": "40e6ed5e252111fcc476c7538c4f1b6c41f9dfdceabd5f523dd8bbaf735c380d"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/native-owned-buffer.log",
+      "bytes": 1009,
+      "sha256": "360f60a800e2e84af74d27041aa16819d579a2232eb569cfb7874e01815b438e"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/native-scratch.log",
+      "bytes": 527,
+      "sha256": "8f493dccd48fb2098e4b63e7b86ae741731e382f2c0aa98b2d65c7dc613f9c9a"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/native-suite-missing.log",
+      "bytes": 792,
+      "sha256": "a230652320c8f76629239b6ad59fd2c1a5aef51e8f6cf813755b4e6d25e533a2"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/native-tests.log",
+      "bytes": 2373,
+      "sha256": "d5d2ed8e07afeb49d2d7c6efd029107591d4c005ee2354c0b9b7a88ddcaf3d07"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/native-vec-frame.log",
+      "bytes": 527,
+      "sha256": "4969ed2fc5f6fb214e0f4d5992efd67fe18c21b9e7bb5e81cc561965faaf2547"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/poc2-optimized.log",
+      "bytes": 675,
+      "sha256": "8e847c1d403f90862d3a628c537740c4f82d2a3f9015eebf9418da2af7db8922"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/poc2-retained.log",
+      "bytes": 734,
+      "sha256": "9a4f01583ac543aac874b28128ca8b1ac24c8db1265e8893cf6f8202c782b868"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/poc2-run-retry.log",
+      "bytes": 675,
+      "sha256": "97e34266cb6c0939fed8e2712d0fcda0832e95a0167133af88abe94d0aa620a2"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/poc2-run.log",
+      "bytes": 3396,
+      "sha256": "0b5408a280d975b1006ac59e9dab391c9650e4d66e0a02fd563e0a14753da2f2"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/poc2-scratch.log",
+      "bytes": 669,
+      "sha256": "1c1bca544f84420f2382c7dd4464ecfc4a8fe0631fa0e5d9fbb47fc69f9a0145"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/poc2-vec-frame.log",
+      "bytes": 840,
+      "sha256": "0e94c7fcde81b1bdcc993b38cc2ba14dbf805bd8e8f7a48dfbce9835ed39810c"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/pure-owned-frame.log",
+      "bytes": 4456,
+      "sha256": "3f01a9d1ce13e4cb02e56c029cfbff8504bd3b2600d27509e98e6f15b6026c85"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster/research/runtime-acquisition.log",
+      "bytes": 93,
+      "sha256": "65f1207c29708f38b576d6d4fdc7a1e0dece663577157e96af2a8c3f6d1a1f74"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-04-session-lifecycle/research/check-clippy.log",
+      "bytes": 93,
+      "sha256": "8deb68dccdc50ae7b2bd682b0768aec906b760b57bddccc0af8030e89f46913b"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-04-session-lifecycle/research/check-lint.log",
+      "bytes": 183,
+      "sha256": "77e907dd84e454bccd3cba2bf5febce8cb1e06b435dccfe3490cf8fe8db075ff"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-04-session-lifecycle/research/core-document-tests.log",
+      "bytes": 2738,
+      "sha256": "0a183958ea4076e62a55c1bbaa2815e18cff774696b06517cf10460f4b990349"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-04-session-lifecycle/research/core-tree.log",
+      "bytes": 2220,
+      "sha256": "00515c5c7e98506b30d43a5183dea891558cc03f9d64e9516c32949c996b6b16"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-04-session-lifecycle/research/just-ci.log",
+      "bytes": 14154,
+      "sha256": "71eacabcbd75a43887baab4a4b75e95b4c0efc9cced018fcff237cd4d06edfdb"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-04-session-lifecycle/research/preview-red.log",
+      "bytes": 1509,
+      "sha256": "1a1b0085f0494c1471cfc2e2244fa03725715b753263fff9557df4e30f77cb1c"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-02-settings-schema/research/baseline-tests.log",
+      "bytes": 5504,
+      "sha256": "1592e36f613477e80460b272ee6eb26af067c8876d48ed3da7a6704e26b0a4d9"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-02-settings-schema/research/check-ci.log",
+      "bytes": 12364,
+      "sha256": "b2a014765fb8238be292e715fe04ae12fe59be26395b9d728cb0523c942710a5"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-02-settings-schema/research/check-keybinding-regression.log",
+      "bytes": 1062,
+      "sha256": "d350915825b342f137e7e95481f9d8228a0151bd42db749b9b8daf7ca881c056"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-02-settings-schema/research/check-keybinding-tests.log",
+      "bytes": 631,
+      "sha256": "3dce4a41f3091ecbd103a815a611e2b72aad4234d2c2b4aad7370891c76dadc8"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-02-settings-schema/research/ci.log",
+      "bytes": 15812,
+      "sha256": "746a1230ba91a46bde31accf5ff0ddc08faf6d105e7b0008c6a30af88fd4b754"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-02-settings-schema/research/cli-probe.log",
+      "bytes": 2886,
+      "sha256": "ceccdc776dc396ef2a2e215c86e50ed72d4b0e2f04ecc16832404d3ce11e9245"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-02-settings-schema/research/core-tree.log",
+      "bytes": 973,
+      "sha256": "56d1f630481e90067099eeeb5aec58ba02395b97f8b5e8dc7d7d2bd60222371a"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-02-settings-schema/research/settings-tree.log",
+      "bytes": 2118,
+      "sha256": "a47838b810e0984043f5cdb3e4e89e3d611b11260271142e150c640828db8c44"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-02-settings-schema/research/targeted-tests.log",
+      "bytes": 4786,
+      "sha256": "78209d30f2c4c7e1308f7c5cc1e5ad381d3dcee09736fa016e0a8d77cc7722a8"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-02-settings-schema/research/toolchain.log",
+      "bytes": 251,
+      "sha256": "f2c7b5f4d9f13eda8298f0377ec474abfb2e8e2e11a6a277edae88f4679f9e43"
+    },
+    {
+      "path": ".trellis/tasks/archive/2026-10/10-14-02-settings-schema/research/windows-persistence.log",
+      "bytes": 1460,
+      "sha256": "2d05078cd27d96b26ce741240a550b92c0a60699ca6f53c6c1f95f615386b1c3"
+    },
+    {
+      "path": ".trellis/tasks/10-14-presenter-v0.3/research/checkpoint-context-validation.log",
+      "bytes": 4948,
+      "sha256": "3e3cedac4091268faf26871b3d3be11e2a5dfc68dda9133516ca024735591908"
+    },
+    {
+      "path": ".trellis/tasks/10-14-presenter-v0.3/research/checkpoint-final-branch.log",
+      "bytes": 51,
+      "sha256": "f69ad6db37a59d6b1e5dc0b95018523f1a17b0cce772fece12f362600f8583ff"
+    },
+    {
+      "path": ".trellis/tasks/10-14-presenter-v0.3/research/checkpoint-final-current.log",
+      "bytes": 128,
+      "sha256": "ed1bdfa55dcc37739521e3465eda0d32ae8dbf9bea7eeec016433a7c8d085d33"
+    },
+    {
+      "path": ".trellis/tasks/10-14-presenter-v0.3/research/checkpoint-final-diff-stat.log",
+      "bytes": 10470,
+      "sha256": "1281de8f74f2d258a77b65ffeaeac362846221a14f20785298d988b04da5e29e"
+    },
+    {
+      "path": ".trellis/tasks/10-14-presenter-v0.3/research/checkpoint-final-diff.log",
+      "bytes": 3941,
+      "sha256": "4f2c2fef52f2ccc47f4931db6c43f999fe08650d598b45758b4c4c847c19d308"
+    },
+    {
+      "path": ".trellis/tasks/10-14-presenter-v0.3/research/checkpoint-final-head.log",
+      "bytes": 80,
+      "sha256": "e7ae5395759dc80021c7d082cc0b4722a7eaf68c14e47069d76bc023e2e5147c"
+    },
+    {
+      "path": ".trellis/tasks/10-14-presenter-v0.3/research/checkpoint-final-status.log",
+      "bytes": 16902,
+      "sha256": "f96a80da939742798e9791de37d0f02d0630fefcc1e726b842bba107900d536c"
+    },
+    {
+      "path": ".trellis/tasks/10-14-presenter-v0.3/research/checkpoint-final-task07-context.log",
+      "bytes": 394,
+      "sha256": "fe18a47b7bfbdc1bcc0732be932f0eda7bb67e2d0f3bf35ae12786d63e9dff1f"
+    },
+    {
+      "path": ".trellis/tasks/10-14-presenter-v0.3/research/commit-lfs-fsck.log",
+      "bytes": 16,
+      "sha256": "81f6819612dfaf9af7854c05c501e2a69e3852e47f0bfb0a82dfce8f3f6c5db9"
+    },
+    {
+      "path": ".trellis/tasks/10-14-presenter-v0.3/research/commit-product-first_party-check.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".trellis/tasks/10-14-presenter-v0.3/research/commit-product-full-check.log",
+      "bytes": 38850,
+      "sha256": "70c8f0538663d3c2ad902222cb5a05b423487735b5ca42991155bdd493b7123b"
+    },
+    {
+      "path": ".trellis/tasks/10-14-presenter-v0.3/research/commit-staged-check-initial.log",
+      "bytes": 38015,
+      "sha256": "d49918e8432a684e5dc4b082c3a8d3a1e2bea47eae506c177b6fc914e2e7fde1"
+    },
+    {
+      "path": ".trellis/tasks/10-14-03-monitor-topology/research/core-tree.log",
+      "bytes": 973,
+      "sha256": "56d1f630481e90067099eeeb5aec58ba02395b97f8b5e8dc7d7d2bd60222371a"
+    },
+    {
+      "path": ".trellis/tasks/10-14-03-monitor-topology/research/gate-a-tests.log",
+      "bytes": 7812,
+      "sha256": "c7ed8257a9a8627b7a9172d97ca9488aad899e5eaaa173e492c782df51440f02"
+    },
+    {
+      "path": ".trellis/tasks/10-14-03-monitor-topology/research/independent-context-validation.log",
+      "bytes": 272,
+      "sha256": "3b7bd9b047b7b3d8664230e0ce6fbc726e5d150b316c6a45f511e7fa85300c3e"
+    },
+    {
+      "path": ".trellis/tasks/10-14-03-monitor-topology/research/independent-diff-check.log",
+      "bytes": 3381,
+      "sha256": "77df410803d269f7b6625f304ab7bd09510a189dec23aabf0de81d35e8f35bef"
+    },
+    {
+      "path": ".trellis/tasks/10-14-03-monitor-topology/research/independent-just-ci.log",
+      "bytes": 16337,
+      "sha256": "cc2257564bcd74532f25b3e17e6f3eff8670f806f908305c11db76e8837507ae"
+    },
+    {
+      "path": ".trellis/tasks/10-14-03-monitor-topology/research/independent-native-static-probe.log",
+      "bytes": 3423,
+      "sha256": "19c8ff242d6fc5e9c57d012b87644172bce48d7fbc79ce262223a94347c5eeba"
+    },
+    {
+      "path": ".trellis/tasks/10-14-03-monitor-topology/research/independent-regression-after.log",
+      "bytes": 527,
+      "sha256": "77977bbcc15636f5fbecd8012226984793a7f8e5f1e67ed4454a42e524971069"
+    },
+    {
+      "path": ".trellis/tasks/10-14-03-monitor-topology/research/independent-regression-before.log",
+      "bytes": 1006,
+      "sha256": "cea890e71247ca82191798433f48519abec4df6a9ece8d8ce8703bd3770f1c82"
+    },
+    {
+      "path": ".trellis/tasks/10-14-03-monitor-topology/research/independent-regression-sandbox.log",
+      "bytes": 141,
+      "sha256": "af9e170b81f294c34be54258221289031f06ced403e067765ad55f396fa49bd7"
+    },
+    {
+      "path": ".trellis/tasks/10-14-03-monitor-topology/research/independent-typecheck.log",
+      "bytes": 1101,
+      "sha256": "1032d8514fd7b09474a1840caeabe615724cd3c8fb843eb5ab2b0d4130c35c78"
+    },
+    {
+      "path": ".trellis/tasks/10-14-03-monitor-topology/research/just-ci-first-deny-failure.log",
+      "bytes": 21641,
+      "sha256": "95e7e3405bc1c5c8930fb2da2900207d4ace28f4d004a3618155c219e5c39d4e"
+    },
+    {
+      "path": ".trellis/tasks/10-14-03-monitor-topology/research/just-ci.log",
+      "bytes": 16997,
+      "sha256": "2c4c0955ef1ecdc0c8d74e1b4a5196d08817f9bff5edce7308721b6b5f92b2e9"
+    },
+    {
+      "path": ".trellis/tasks/10-14-03-monitor-topology/research/native-probe-compile-first.log",
+      "bytes": 1207,
+      "sha256": "439fcc6d2a9fe4602a75a5a169696fcc0fafe792df73ca015da14191f5a07f95"
+    },
+    {
+      "path": ".trellis/tasks/10-14-03-monitor-topology/research/native-static-probe.log",
+      "bytes": 3316,
+      "sha256": "ff0da02a4217ca0162f5ca88c4673b2bdf65c5bbb7721c590aecbdc2d260c6cd"
+    },
+    {
+      "path": ".trellis/tasks/10-14-03-monitor-topology/research/native-static-superseded-display-info.log",
+      "bytes": 3342,
+      "sha256": "1e62d7c0200372207726daec63ffbfef5972f1e036ce889dfdd369bdc9f48cfa"
+    },
+    {
+      "path": ".trellis/tasks/10-14-03-monitor-topology/research/native-winsafe-first-compile.log",
+      "bytes": 1326,
+      "sha256": "a6d0fd068a61b7c6fe4211e507f15f3e3395e4a3456bb7f3596a7758a39a04c8"
+    },
+    {
+      "path": ".trellis/tasks/10-14-03-monitor-topology/research/platform-clippy.log",
+      "bytes": 1374,
+      "sha256": "f8df31f1475005523c319c27f36846811a9115091b62e9bd8e3b7d682c9ab748"
+    },
+    {
+      "path": ".trellis/tasks/10-14-03-monitor-topology/research/targeted-sandbox.log",
+      "bytes": 4595,
+      "sha256": "2c702b46b41325c10515f1b32722580c92200f9380a821818b42e7e726f46d25"
+    },
+    {
+      "path": ".trellis/tasks/10-14-03-monitor-topology/research/targeted-tests.log",
+      "bytes": 7087,
+      "sha256": "1b0a1383d6e2e64adceb72916cc4d8952a061730d15a0e01fe4c63226e642bc1"
+    }
+  ]
+}

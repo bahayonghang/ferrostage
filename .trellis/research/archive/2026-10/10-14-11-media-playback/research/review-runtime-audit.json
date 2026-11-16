@@ -1,0 +1,21 @@
+{
+  "runtime_files": 47,
+  "plugins": 18,
+  "notices": 15,
+  "recipes": 15,
+  "manifest_and_source_list_exact": true,
+  "runtime_hashes_verified": true,
+  "original_notice_hashes_verified": true,
+  "reject_unselected_before_writes": true,
+  "expected_rejection_exit": 1,
+  "fresh_registry": {
+    "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\review-media-registry-bf9805b27ae649c6b1d3d538f6b0e0ff.bin",
+    "bytes": 189254,
+    "sha256": "e24a8deb49a411d9c66d272d824f11dd2ac595f610081e2ba26e0d58d36ac6da"
+  },
+  "final_fresh_registry": {
+    "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\review-final-media-registry-1704e45decf1490fb89a7e04cda4cfb8.bin",
+    "bytes": 189254,
+    "sha256": "E24A8DEB49A411D9C66D272D824F11DD2AC595F610081E2BA26E0D58D36AC6DA"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "v1_source": "b59abb29460b9232398e7bc7a9013c19f11a0c40428b47c4eb4096182d49f4bb",
+  "v2_source": "62595ac6b2fbaae3fe98053699a29cb33fabbfc44f45d86ef1dfbcce29f19f89",
+  "files": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "v1": "85eda9a3b06e2ee302c7ac1498aa2a4fe13a026ed3826a8e173aad0a6ee39f63",
+      "v2": "b9756f849ca5608402a30505b5e24a0021f47cd1c45460ab372060b5d4c142bb"
+    },
+    {
+      "path": "Cargo.lock",
+      "v1": "b22ab08e9e1615c721ffb02b953b0d65b37ad2552323582284d51d44847527f3",
+      "v2": "2557e10b37fa5cfe63e78ce19965b8bbbd83438bdd540eed50405fbbc3dbc23e"
+    },
+    {
+      "path": "crates/ferrostage-ui/Cargo.toml",
+      "v1": "3937404fd50c1fc829f53bc894f45dfbd5e079bc458bce6f11e05bcbb1157ad5",
+      "v2": "41a2beb45dd39f1262878667afc7f40d536bf4c78be89d3214fe0b7f12cee397"
+    },
+    {
+      "path": "crates/ferrostage-ui/src/presenter.rs",
+      "v1": "238d80123358c71438690704907fe514043524904afec79f73bfffc031043deb",
+      "v2": "2641142784e1bd9945a3f794a6a89440ea47047f1ff80f0f268f38ea88c655ed"
+    },
+    {
+      "path": "crates/ferrostage-ui/src/shell.rs",
+      "v1": "8a112064380ae1448d63ed05cb1b475e356aeee3e0273645802ec64b0ae4a369",
+      "v2": "3491c367a137cf06a47d3091bb582594698e8c33f441c8520f2184a65bb2d89d"
+    },
+    {
+      "path": "justfile",
+      "v1": "fd827fa24727eef1b092ee94111ff257f6642c520c8fc884adef02910516bc9b",
+      "v2": "f657ba38f2fbddcde9e41f9cf4ebf855a2281bcd08128a069242c2157e7242a5"
+    }
+  ],
+  "runtime_vendor_unchanged": true
+}

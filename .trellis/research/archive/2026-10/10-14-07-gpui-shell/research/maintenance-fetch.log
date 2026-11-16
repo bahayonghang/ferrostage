@@ -1,0 +1,12 @@
+    Updating crates.io index
+     Locking 69 packages to highest Rust 1.99.0 compatible versions
+      Adding resvg v0.48.0 (available: v0.48.1)
+      Adding skrifa v0.44.0 (available: v0.48.0)
+      Adding usvg v0.48.0 (available: v0.48.1)
+ Downloading crates ...
+  Downloaded imagesize v0.15.0
+  Downloaded strict-num v0.2.0
+  Downloaded tiny-skia v0.12.0
+  Downloaded tiny-skia-path v0.12.0
+  Downloaded resvg v0.48.0
+  Downloaded usvg v0.48.0

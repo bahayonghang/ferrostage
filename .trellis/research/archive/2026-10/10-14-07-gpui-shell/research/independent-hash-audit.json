@@ -1,0 +1,2233 @@
+{
+  "captured_utc": "2026-10-14T17:44:46.148854+00:00",
+  "command": "python .trellis/tasks/10-14-07-gpui-shell/research/independent-hash-audit.py",
+  "baseline_manifest_sha256": "6d00530903376138990099497bf797ee847aac6e6b233905a7da76dbfdcadf47",
+  "baseline_manifest_expected_sha256": "6d00530903376138990099497bf797ee847aac6e6b233905a7da76dbfdcadf47",
+  "checkpoint_manifest_sha256": "8f4c4fdb5a51979962ff683e85210aba067b02ce740515b5a74588003ca614c8",
+  "baseline_counts": {
+    "source_files": 117,
+    "evidence_files": 43,
+    "verified_external_inputs": 10
+  },
+  "product_input_count": 92,
+  "crate_file_count": 86,
+  "unlisted_crate_files": [],
+  "missing_crate_files": [],
+  "product_inputs_unchanged": true,
+  "source_snapshot_sha256": "e4bef9aaf6b86d859e6d79023b81ed13bf48d58de601af1bda4649dc49e7e46c",
+  "baseline_records": [
+    {
+      "category": "source_files",
+      "path": ".github/workflows/ci.yml",
+      "expected_sha256": "a7e6b04b7cf7ef3e0e80dcd30ef0b52a885ce5aff324e59ee3f85db043a6e0c5",
+      "actual_sha256": "a7e6b04b7cf7ef3e0e80dcd30ef0b52a885ce5aff324e59ee3f85db043a6e0c5",
+      "actual_bytes": 2319,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": ".trellis/spec/backend/directory-structure.md",
+      "expected_sha256": "ef9632f4ba49cb79d10b1b1901d1d87ccb4809a233746e5099a358d93c1bfaee",
+      "actual_sha256": "ef9632f4ba49cb79d10b1b1901d1d87ccb4809a233746e5099a358d93c1bfaee",
+      "actual_bytes": 5920,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": ".trellis/spec/frontend/type-safety.md",
+      "expected_sha256": "87b0a028d306ec0986bad0f8f1b7e07938f3b8be370e2605ba138ffbf3024e15",
+      "actual_sha256": "87b0a028d306ec0986bad0f8f1b7e07938f3b8be370e2605ba138ffbf3024e15",
+      "actual_bytes": 1051,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/design.md",
+      "expected_sha256": "fd1b558e1842723f771a3234c78e0ae052441c986b335f26275175cd9c922f65",
+      "actual_sha256": "fd1b558e1842723f771a3234c78e0ae052441c986b335f26275175cd9c922f65",
+      "actual_bytes": 6336,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/implement.md",
+      "expected_sha256": "d81d272b27f52f787ac63078075d9e06ec33071790866586801d7886723c1b64",
+      "actual_sha256": "d81d272b27f52f787ac63078075d9e06ec33071790866586801d7886723c1b64",
+      "actual_bytes": 9200,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/prd.md",
+      "expected_sha256": "130e3ea5355dc9b159f0c5f53276e02b0699932735b39b653537b86de9fe3e2e",
+      "actual_sha256": "130e3ea5355dc9b159f0c5f53276e02b0699932735b39b653537b86de9fe3e2e",
+      "actual_bytes": 5322,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "Cargo.lock",
+      "expected_sha256": "6d990381c2036775917c5b2b156e9273f8c24f7fac1fc3fa781ddb40631dbd04",
+      "actual_sha256": "6d990381c2036775917c5b2b156e9273f8c24f7fac1fc3fa781ddb40631dbd04",
+      "actual_bytes": 45965,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "Cargo.toml",
+      "expected_sha256": "fb19c4b84da4ef197afc2c858280f1d82cb1765dc5b57c61216cdd24750b78ac",
+      "actual_sha256": "fb19c4b84da4ef197afc2c858280f1d82cb1765dc5b57c61216cdd24750b78ac",
+      "actual_bytes": 2191,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-app/Cargo.toml",
+      "expected_sha256": "b263907e4f203e9a71527f7bf4bbd9ac040e44a118b68a9292fd597bd202f272",
+      "actual_sha256": "b263907e4f203e9a71527f7bf4bbd9ac040e44a118b68a9292fd597bd202f272",
+      "actual_bytes": 589,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-app/src/main.rs",
+      "expected_sha256": "d1814c722a6d433d81639ee32e0b8724023cd1351bedf1a325e31bc8ad8c8d8a",
+      "actual_sha256": "d1814c722a6d433d81639ee32e0b8724023cd1351bedf1a325e31bc8ad8c8d8a",
+      "actual_bytes": 3524,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-app/tests/check_config.rs",
+      "expected_sha256": "f25b03cab0bebd55c95fc8c4e2fc83ce66576a7ad622376a720a22e9a0f85d94",
+      "actual_sha256": "f25b03cab0bebd55c95fc8c4e2fc83ce66576a7ad622376a720a22e9a0f85d94",
+      "actual_bytes": 4055,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-core/Cargo.toml",
+      "expected_sha256": "1392f75352671e3b4bf8a055fe4c4b1e23f795a03b82bef0855ee4036d291caf",
+      "actual_sha256": "1392f75352671e3b4bf8a055fe4c4b1e23f795a03b82bef0855ee4036d291caf",
+      "actual_bytes": 385,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-core/src/command.rs",
+      "expected_sha256": "e07a781ccebf4ab90a71cff5a9339a7fb041ad6c3623b1a441c9f4702c4f057a",
+      "actual_sha256": "e07a781ccebf4ab90a71cff5a9339a7fb041ad6c3623b1a441c9f4702c4f057a",
+      "actual_bytes": 2825,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-core/src/display.rs",
+      "expected_sha256": "56305f8ec193c2cf7ea52c27e7a1980fbe1f8fad15282c3e75e92a592951b730",
+      "actual_sha256": "56305f8ec193c2cf7ea52c27e7a1980fbe1f8fad15282c3e75e92a592951b730",
+      "actual_bytes": 1656,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-core/src/error.rs",
+      "expected_sha256": "ccf5726a1fe95ec8bba2bb4f0cc7d478c4185818243608168ee25a53c202c1da",
+      "actual_sha256": "ccf5726a1fe95ec8bba2bb4f0cc7d478c4185818243608168ee25a53c202c1da",
+      "actual_bytes": 1818,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-core/src/frame.rs",
+      "expected_sha256": "e2eb5060144637bd1f2ed530d6431f70728addd3a8e2d071e175ee65755a5784",
+      "actual_sha256": "e2eb5060144637bd1f2ed530d6431f70728addd3a8e2d071e175ee65755a5784",
+      "actual_bytes": 3934,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-core/src/geometry.rs",
+      "expected_sha256": "5affe18c02d476229f6b70e8b801d4b8e5600c9969a56dcabad7bc276a500b9f",
+      "actual_sha256": "5affe18c02d476229f6b70e8b801d4b8e5600c9969a56dcabad7bc276a500b9f",
+      "actual_bytes": 1815,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-core/src/ids.rs",
+      "expected_sha256": "3d70a76bd0e39eb3761b3c979dd330eef2ee0af6a641a8dc4bf2ff85f4c4634b",
+      "actual_sha256": "3d70a76bd0e39eb3761b3c979dd330eef2ee0af6a641a8dc4bf2ff85f4c4634b",
+      "actual_bytes": 1066,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-core/src/lib.rs",
+      "expected_sha256": "d9d55044a26d9e6a5991c603f69d4417a331dcde5f27f2e7d3edc71a37deb047",
+      "actual_sha256": "d9d55044a26d9e6a5991c603f69d4417a331dcde5f27f2e7d3edc71a37deb047",
+      "actual_bytes": 921,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-core/src/session.rs",
+      "expected_sha256": "96e7d6492b35f93f0358638c9fffcbb39d7b853003d0833f1590a6788c50129a",
+      "actual_sha256": "96e7d6492b35f93f0358638c9fffcbb39d7b853003d0833f1590a6788c50129a",
+      "actual_bytes": 1597,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-core/src/slide_map/tests.rs",
+      "expected_sha256": "5bebd0e79ccf16ffc8039d38db710d6cbaff332b5953eddbde532f3c030de914",
+      "actual_sha256": "5bebd0e79ccf16ffc8039d38db710d6cbaff332b5953eddbde532f3c030de914",
+      "actual_bytes": 2483,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-core/src/slide_map.rs",
+      "expected_sha256": "c6b56ecece383653876ae3e57d6dda25763f8fc7a8740ff6f5a6999cbd86b590",
+      "actual_sha256": "c6b56ecece383653876ae3e57d6dda25763f8fc7a8740ff6f5a6999cbd86b590",
+      "actual_bytes": 3140,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-core/src/snapshot.rs",
+      "expected_sha256": "29c37b2c1f238e85b2d54193e3b2e3fe4f89e3e912b703c0a852b6176659213a",
+      "actual_sha256": "29c37b2c1f238e85b2d54193e3b2e3fe4f89e3e912b703c0a852b6176659213a",
+      "actual_bytes": 2287,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-core/src/state/lifecycle_tests.rs",
+      "expected_sha256": "c571a4669263f1d290591ff3723bd0364653ca55d08dce6176afaa4859238f98",
+      "actual_sha256": "c571a4669263f1d290591ff3723bd0364653ca55d08dce6176afaa4859238f98",
+      "actual_bytes": 9342,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-core/src/state/mapping_tests.rs",
+      "expected_sha256": "b997f1e51a69d77b15b6b1859ab6ec19625b29975a983dc48052efb2542ce81b",
+      "actual_sha256": "b997f1e51a69d77b15b6b1859ab6ec19625b29975a983dc48052efb2542ce81b",
+      "actual_bytes": 5713,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-core/src/state/property_tests.rs",
+      "expected_sha256": "fda94ccde8bf14e5c1816ed3b4b83347cd46db1a6a43794a773fe7b5e8c23cbd",
+      "actual_sha256": "fda94ccde8bf14e5c1816ed3b4b83347cd46db1a6a43794a773fe7b5e8c23cbd",
+      "actual_bytes": 2842,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-core/src/state/tests.rs",
+      "expected_sha256": "03a3681a7562e5954f224ec0d693844a50a16fc1d9d0a479e786526a65965343",
+      "actual_sha256": "03a3681a7562e5954f224ec0d693844a50a16fc1d9d0a479e786526a65965343",
+      "actual_bytes": 6192,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-core/src/state.rs",
+      "expected_sha256": "f536041a1aa4907d5b1d7743c5c4d8260e53e557845df035051bff43b0b76aa5",
+      "actual_sha256": "f536041a1aa4907d5b1d7743c5c4d8260e53e557845df035051bff43b0b76aa5",
+      "actual_bytes": 12681,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-core/src/timer.rs",
+      "expected_sha256": "7afe2e4a7ded53cc110e7b257e82f414814f4488bec0facd6013983a64ed421f",
+      "actual_sha256": "7afe2e4a7ded53cc110e7b257e82f414814f4488bec0facd6013983a64ed421f",
+      "actual_bytes": 1190,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-document/Cargo.toml",
+      "expected_sha256": "071cd47b156c4cb46e97d995f0689ac7ac95fd8b917443753ccf6ff105453231",
+      "actual_sha256": "071cd47b156c4cb46e97d995f0689ac7ac95fd8b917443753ccf6ff105453231",
+      "actual_bytes": 564,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-document/src/builder/tests.rs",
+      "expected_sha256": "702f74cda4614f4967b5ea2f455e7755d62c1d6a07cdb576d4eb84fadf86a1c5",
+      "actual_sha256": "702f74cda4614f4967b5ea2f455e7755d62c1d6a07cdb576d4eb84fadf86a1c5",
+      "actual_bytes": 7513,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-document/src/builder.rs",
+      "expected_sha256": "6e0524dbdaa10397ad27ae8b69dabc8950329572561f858dab2592cd46753831",
+      "actual_sha256": "6e0524dbdaa10397ad27ae8b69dabc8950329572561f858dab2592cd46753831",
+      "actual_bytes": 8636,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-document/src/layout.rs",
+      "expected_sha256": "a39bc9e36c410aba993a6cf4374ffc7994ab333d457d7fab21f6f93d56d81828",
+      "actual_sha256": "a39bc9e36c410aba993a6cf4374ffc7994ab333d457d7fab21f6f93d56d81828",
+      "actual_bytes": 1433,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-document/src/lib.rs",
+      "expected_sha256": "077579bab296961938a828103529792b3d190b9138640642caf50b9ab55cc756",
+      "actual_sha256": "077579bab296961938a828103529792b3d190b9138640642caf50b9ab55cc756",
+      "actual_bytes": 513,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-document/src/media_slots.rs",
+      "expected_sha256": "15086c36ddc40dcaacab192e02487dfc7cedff66d918278af83ccd9d570e7faf",
+      "actual_sha256": "15086c36ddc40dcaacab192e02487dfc7cedff66d918278af83ccd9d570e7faf",
+      "actual_bytes": 881,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-document/src/notes.rs",
+      "expected_sha256": "7343577b894ac8e3c53fe256a79d0a3757953e2503e7fc2d9aa81191be0d470f",
+      "actual_sha256": "7343577b894ac8e3c53fe256a79d0a3757953e2503e7fc2d9aa81191be0d470f",
+      "actual_bytes": 297,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-document/tests/native.rs",
+      "expected_sha256": "b273b3a2f0425f0b5936d0ae51260cf787363f659001254b66f24c1fc9e671ee",
+      "actual_sha256": "b273b3a2f0425f0b5936d0ae51260cf787363f659001254b66f24c1fc9e671ee",
+      "actual_bytes": 6541,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-media/Cargo.toml",
+      "expected_sha256": "2c242a554cbe369758e49c67951d14177f5124054ef7be14706795a976814745",
+      "actual_sha256": "2c242a554cbe369758e49c67951d14177f5124054ef7be14706795a976814745",
+      "actual_bytes": 287,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-media/src/lib.rs",
+      "expected_sha256": "47e387c63c53e390df4aed44f3fbc7ab4aacbf807380be8f34e6fae9602ddfaf",
+      "actual_sha256": "47e387c63c53e390df4aed44f3fbc7ab4aacbf807380be8f34e6fae9602ddfaf",
+      "actual_bytes": 1353,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-pdf/Cargo.toml",
+      "expected_sha256": "6ed337e37b03548d8371d480982c511e25dc150504d8f1af01a3cdc2f66c09ef",
+      "actual_sha256": "6ed337e37b03548d8371d480982c511e25dc150504d8f1af01a3cdc2f66c09ef",
+      "actual_bytes": 482,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-pdf/src/lib.rs",
+      "expected_sha256": "5526c3ff683886c3524d82c707d3b45de5723fe632104bac8db0ca22f8587307",
+      "actual_sha256": "5526c3ff683886c3524d82c707d3b45de5723fe632104bac8db0ca22f8587307",
+      "actual_bytes": 2295,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-pdf/src/metadata.rs",
+      "expected_sha256": "812fa4b48346556b4b50e22dfb91b72ea7ad9473793e85fb3bada0e0aac6520f",
+      "actual_sha256": "812fa4b48346556b4b50e22dfb91b72ea7ad9473793e85fb3bada0e0aac6520f",
+      "actual_bytes": 417,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-pdf/src/native.rs",
+      "expected_sha256": "dc3596f88594042369f545f451fe36f479e3057e4fa31c08e29f7ca824c4ff2c",
+      "actual_sha256": "dc3596f88594042369f545f451fe36f479e3057e4fa31c08e29f7ca824c4ff2c",
+      "actual_bytes": 7114,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-pdf/src/raster.rs",
+      "expected_sha256": "f75bd418377510b812fd288d2194988f5ac6e8e9ea7d3c8916d731a6ea0136bc",
+      "actual_sha256": "f75bd418377510b812fd288d2194988f5ac6e8e9ea7d3c8916d731a6ea0136bc",
+      "actual_bytes": 4606,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-pdf/src/structure/geometry.rs",
+      "expected_sha256": "3927e2297b88a46e9004296b03d743551afebf13eea4cdee3e8db1b7bb8ae9cb",
+      "actual_sha256": "3927e2297b88a46e9004296b03d743551afebf13eea4cdee3e8db1b7bb8ae9cb",
+      "actual_bytes": 4527,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-pdf/src/structure/media/rich.rs",
+      "expected_sha256": "79e524bc4d572746ab6d985690d317f38c0cff2961732c098085e17736550ce3",
+      "actual_sha256": "79e524bc4d572746ab6d985690d317f38c0cff2961732c098085e17736550ce3",
+      "actual_bytes": 3586,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-pdf/src/structure/media/screen.rs",
+      "expected_sha256": "c8e92403004d2b715bf9021626d01720246e8031d4c4f1b9b09c8c0588f39b6d",
+      "actual_sha256": "c8e92403004d2b715bf9021626d01720246e8031d4c4f1b9b09c8c0588f39b6d",
+      "actual_bytes": 3446,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-pdf/src/structure/media.rs",
+      "expected_sha256": "ee7858f0914f0ee92da95866205b4e7e1267196cd05d822a0cf2074c089a7b67",
+      "actual_sha256": "ee7858f0914f0ee92da95866205b4e7e1267196cd05d822a0cf2074c089a7b67",
+      "actual_bytes": 7071,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-pdf/src/structure/source.rs",
+      "expected_sha256": "030adb00dc68f78506e301a14bb09883b2a24fcf9e59231916b4d4df9ade69df",
+      "actual_sha256": "030adb00dc68f78506e301a14bb09883b2a24fcf9e59231916b4d4df9ade69df",
+      "actual_bytes": 1750,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-pdf/src/structure/tests.rs",
+      "expected_sha256": "dfd8945a856fcfd17a16472cd381b6a2160c63085512a56639ee2e2c1b138cba",
+      "actual_sha256": "dfd8945a856fcfd17a16472cd381b6a2160c63085512a56639ee2e2c1b138cba",
+      "actual_bytes": 9114,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-pdf/src/structure.rs",
+      "expected_sha256": "073b199019ad3c3018231ed0fdb63f2a62a830df1f0dd69201b00b145dfb0aa1",
+      "actual_sha256": "073b199019ad3c3018231ed0fdb63f2a62a830df1f0dd69201b00b145dfb0aa1",
+      "actual_bytes": 5257,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-platform/Cargo.toml",
+      "expected_sha256": "eb8fe4aaf18d59a6f611b4e070eb71b83c6b5fb3990c6accaba67504629c16ae",
+      "actual_sha256": "eb8fe4aaf18d59a6f611b4e070eb71b83c6b5fb3990c6accaba67504629c16ae",
+      "actual_bytes": 554,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-platform/examples/monitor_probe.rs",
+      "expected_sha256": "dc0429a43a885da89724dc4dc027e6a8a55f2b3960413fd0cba9b6c36b58aacd",
+      "actual_sha256": "dc0429a43a885da89724dc4dc027e6a8a55f2b3960413fd0cba9b6c36b58aacd",
+      "actual_bytes": 3266,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-platform/src/lib.rs",
+      "expected_sha256": "911288cfb115380bcda7faca958b43b0ccab99eca09cd627366cabc29b258076",
+      "actual_sha256": "911288cfb115380bcda7faca958b43b0ccab99eca09cd627366cabc29b258076",
+      "actual_bytes": 2403,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-platform/src/monitor.rs",
+      "expected_sha256": "b234982dbc4997949ad2f245214ff3a00c054b541c6696a346af787e70353508",
+      "actual_sha256": "b234982dbc4997949ad2f245214ff3a00c054b541c6696a346af787e70353508",
+      "actual_bytes": 3986,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-platform/src/topology/tests.rs",
+      "expected_sha256": "e49c127e63356db93527ffa42235c5e52057daeafa6af30d7b553bf821de3098",
+      "actual_sha256": "e49c127e63356db93527ffa42235c5e52057daeafa6af30d7b553bf821de3098",
+      "actual_bytes": 7955,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-platform/src/topology.rs",
+      "expected_sha256": "e6b8283b4487337d3158fd609b643b4a1b39b5e0bc878e3d2f31673d9a4e6285",
+      "actual_sha256": "e6b8283b4487337d3158fd609b643b4a1b39b5e0bc878e3d2f31673d9a4e6285",
+      "actual_bytes": 5719,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-platform/src/watch/tests.rs",
+      "expected_sha256": "cf47dffc41437d0e81f2c712a00b449c516e1f2ab0c48b71ee230352feb1957e",
+      "actual_sha256": "cf47dffc41437d0e81f2c712a00b449c516e1f2ab0c48b71ee230352feb1957e",
+      "actual_bytes": 2940,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-platform/src/watch.rs",
+      "expected_sha256": "71b501ed77d9f22ff99bc4734989e616bfaa4c059a6ef5c666f93a45086f1590",
+      "actual_sha256": "71b501ed77d9f22ff99bc4734989e616bfaa4c059a6ef5c666f93a45086f1590",
+      "actual_bytes": 5270,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-platform/src/windows/tests.rs",
+      "expected_sha256": "f829a96e5dc00d7736b80aa617762d9a538645cce8d676ecc80a597551751ba5",
+      "actual_sha256": "f829a96e5dc00d7736b80aa617762d9a538645cce8d676ecc80a597551751ba5",
+      "actual_bytes": 2934,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-platform/src/windows.rs",
+      "expected_sha256": "f267297572a0ca99aa99477fd1fccd4d790541a4355036dcc8108c1ea73529a5",
+      "actual_sha256": "f267297572a0ca99aa99477fd1fccd4d790541a4355036dcc8108c1ea73529a5",
+      "actual_bytes": 7767,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-platform/tests/settings_topology.rs",
+      "expected_sha256": "bd636f63f6a14d39a84b74eac43d073c538b1991c9e6c39d11bd53d518fd9afa",
+      "actual_sha256": "bd636f63f6a14d39a84b74eac43d073c538b1991c9e6c39d11bd53d518fd9afa",
+      "actual_bytes": 2818,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-render/Cargo.toml",
+      "expected_sha256": "f24ca1908fd2f64005607c047b454b2e4dd65fcc350541958dc8841060913b5a",
+      "actual_sha256": "f24ca1908fd2f64005607c047b454b2e4dd65fcc350541958dc8841060913b5a",
+      "actual_bytes": 515,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-render/examples/poc2.rs",
+      "expected_sha256": "ea7421cc134a942506231d44986dbe14864fad34585fe506cfce57ac6337784c",
+      "actual_sha256": "ea7421cc134a942506231d44986dbe14864fad34585fe506cfce57ac6337784c",
+      "actual_bytes": 4134,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-render/src/cache.rs",
+      "expected_sha256": "e9fcef41fd4468a6e01f8642fa1c3f075ab9cb66c1bbdf54488e64ed1ac1db64",
+      "actual_sha256": "e9fcef41fd4468a6e01f8642fa1c3f075ab9cb66c1bbdf54488e64ed1ac1db64",
+      "actual_bytes": 6371,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-render/src/lib.rs",
+      "expected_sha256": "2202821d6726618b402c33332e513801206d55263823001ff3e6c9c587ba4710",
+      "actual_sha256": "2202821d6726618b402c33332e513801206d55263823001ff3e6c9c587ba4710",
+      "actual_bytes": 448,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-render/src/protocol.rs",
+      "expected_sha256": "986cabb52fd80760cef19d4e5b10709bb0402867c854a94badc117e92042b0f7",
+      "actual_sha256": "986cabb52fd80760cef19d4e5b10709bb0402867c854a94badc117e92042b0f7",
+      "actual_bytes": 5087,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-render/src/scheduler.rs",
+      "expected_sha256": "68fe15351de35aba79fec9795329ba0ca683c70f4000c0e1047c6c3f7eef3453",
+      "actual_sha256": "68fe15351de35aba79fec9795329ba0ca683c70f4000c0e1047c6c3f7eef3453",
+      "actual_bytes": 2476,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-render/src/worker/engine.rs",
+      "expected_sha256": "4e38fbd54c1e4672583d00f2cd2b679a35ecf44532682e2864d7c94f1bcb3f75",
+      "actual_sha256": "4e38fbd54c1e4672583d00f2cd2b679a35ecf44532682e2864d7c94f1bcb3f75",
+      "actual_bytes": 12846,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-render/src/worker/tests/contracts.rs",
+      "expected_sha256": "2cc5a8a2fa09fe3559ef77b7e4cf556f18f4afeb5dd0dc097d10a193db786aae",
+      "actual_sha256": "2cc5a8a2fa09fe3559ef77b7e4cf556f18f4afeb5dd0dc097d10a193db786aae",
+      "actual_bytes": 5471,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-render/src/worker/tests.rs",
+      "expected_sha256": "e5c616fc6ed8b66d64a323ded2fc69b5f4685e0923fd1a3e3fde27d7bdd8f40a",
+      "actual_sha256": "e5c616fc6ed8b66d64a323ded2fc69b5f4685e0923fd1a3e3fde27d7bdd8f40a",
+      "actual_bytes": 11159,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-render/src/worker.rs",
+      "expected_sha256": "d9a0e5c529046af4fe6f993a3c91632497469e47186560adc8a36db747babc51",
+      "actual_sha256": "d9a0e5c529046af4fe6f993a3c91632497469e47186560adc8a36db747babc51",
+      "actual_bytes": 7252,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-render/tests/native.rs",
+      "expected_sha256": "6552a69828c7a555f546ddb720c4b635517218337181481c22b948c101c62204",
+      "actual_sha256": "6552a69828c7a555f546ddb720c4b635517218337181481c22b948c101c62204",
+      "actual_bytes": 9187,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-render/tests/native_missing.rs",
+      "expected_sha256": "8dc2bb50fda883424c72b2424c661f1c172f3ca164ae25460452a4eaa3ac04e3",
+      "actual_sha256": "8dc2bb50fda883424c72b2424c661f1c172f3ca164ae25460452a4eaa3ac04e3",
+      "actual_bytes": 1326,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-settings/Cargo.toml",
+      "expected_sha256": "86f452a3860d0361188cc119f32ea32ab17b1158e50d3b7824f1d40466b324d8",
+      "actual_sha256": "86f452a3860d0361188cc119f32ea32ab17b1158e50d3b7824f1d40466b324d8",
+      "actual_bytes": 433,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-settings/src/error.rs",
+      "expected_sha256": "ca2bc192fbd1b4b8aeb25f2abc1323f8b6e44421809c4afa9f88d977590acebc",
+      "actual_sha256": "ca2bc192fbd1b4b8aeb25f2abc1323f8b6e44421809c4afa9f88d977590acebc",
+      "actual_bytes": 2515,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-settings/src/keybindings.rs",
+      "expected_sha256": "7c3532fc324a376f43fd3bae4cf8583c6b925aa9f243809d047360f8ee8c4a86",
+      "actual_sha256": "7c3532fc324a376f43fd3bae4cf8583c6b925aa9f243809d047360f8ee8c4a86",
+      "actual_bytes": 4958,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-settings/src/lib.rs",
+      "expected_sha256": "87b54b8ef33ba1e4e3b6c6725100aa763c9208b70ae5f9a9edb4dec1bb9d74f4",
+      "actual_sha256": "87b54b8ef33ba1e4e3b6c6725100aa763c9208b70ae5f9a9edb4dec1bb9d74f4",
+      "actual_bytes": 890,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-settings/src/merge.rs",
+      "expected_sha256": "cf0358a67afd904dfd02bf1ba459bf66111f1d88ef9d23eb3c09976529bc8beb",
+      "actual_sha256": "cf0358a67afd904dfd02bf1ba459bf66111f1d88ef9d23eb3c09976529bc8beb",
+      "actual_bytes": 10294,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-settings/src/parse/controls.rs",
+      "expected_sha256": "1fca7b17c43cdc044279b5ed8ee593b415e1ab9fd59e9e00b186ce09ec828905",
+      "actual_sha256": "1fca7b17c43cdc044279b5ed8ee593b415e1ab9fd59e9e00b186ce09ec828905",
+      "actual_bytes": 7820,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-settings/src/parse/legacy.rs",
+      "expected_sha256": "d2cd67aebd276848ef28b6cf97eb21a32f9b956950f4b57984d234c279702ac9",
+      "actual_sha256": "d2cd67aebd276848ef28b6cf97eb21a32f9b956950f4b57984d234c279702ac9",
+      "actual_bytes": 5193,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-settings/src/parse/sections.rs",
+      "expected_sha256": "bb346c61ac6e4465e15809e1c8119f172a524e896c01642ba85b4237b6d87b8e",
+      "actual_sha256": "bb346c61ac6e4465e15809e1c8119f172a524e896c01642ba85b4237b6d87b8e",
+      "actual_bytes": 10116,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-settings/src/parse/value.rs",
+      "expected_sha256": "8df89ad9ab11623d025095143d6f9d5aa3e496b486e4f40b392ac3da85f2bf32",
+      "actual_sha256": "8df89ad9ab11623d025095143d6f9d5aa3e496b486e4f40b392ac3da85f2bf32",
+      "actual_bytes": 7844,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-settings/src/parse.rs",
+      "expected_sha256": "564bc0be1e31a500dc7e36ef754a99c388ff97e4d6ab010f413595e3a10e3a27",
+      "actual_sha256": "564bc0be1e31a500dc7e36ef754a99c388ff97e4d6ab010f413595e3a10e3a27",
+      "actual_bytes": 8156,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-settings/src/schema.rs",
+      "expected_sha256": "5ac8fd7973860b4ca232659a34611ee14e13abdc0806c78830b1072277fdb4e5",
+      "actual_sha256": "5ac8fd7973860b4ca232659a34611ee14e13abdc0806c78830b1072277fdb4e5",
+      "actual_bytes": 11216,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-settings/src/store/files.rs",
+      "expected_sha256": "f0ec28b00b57f0c5064cad491a481560ad58d464a6aced25524be626f9ded63e",
+      "actual_sha256": "f0ec28b00b57f0c5064cad491a481560ad58d464a6aced25524be626f9ded63e",
+      "actual_bytes": 7433,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-settings/src/store/paths.rs",
+      "expected_sha256": "dc77c36d0ba1b3840b56044476b8a23ad714f146b64efe9036bd0baf31740762",
+      "actual_sha256": "dc77c36d0ba1b3840b56044476b8a23ad714f146b64efe9036bd0baf31740762",
+      "actual_bytes": 2297,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-settings/src/store.rs",
+      "expected_sha256": "737e80bd6cb485935b25313ce1403dd16b126232d76da6060e22714864939859",
+      "actual_sha256": "737e80bd6cb485935b25313ce1403dd16b126232d76da6060e22714864939859",
+      "actual_bytes": 12418,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-settings/src/tests/mod.rs",
+      "expected_sha256": "520823ec485e8f6c535f989932a983324d9d402c9ac507886d06cbbed5779fb0",
+      "actual_sha256": "520823ec485e8f6c535f989932a983324d9d402c9ac507886d06cbbed5779fb0",
+      "actual_bytes": 1108,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-settings/src/tests/parse.rs",
+      "expected_sha256": "216b94814f9a11a3d8efc92a6be4504b9742ba83bfd70763b2ce14e3ce0811df",
+      "actual_sha256": "216b94814f9a11a3d8efc92a6be4504b9742ba83bfd70763b2ce14e3ce0811df",
+      "actual_bytes": 13293,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-settings/src/tests/store.rs",
+      "expected_sha256": "d2945ac77cfa5dad069cf9173bdee4235cd498e76474bde58eb14f69c906f84f",
+      "actual_sha256": "d2945ac77cfa5dad069cf9173bdee4235cd498e76474bde58eb14f69c906f84f",
+      "actual_bytes": 17239,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-settings/src/tests/windows.rs",
+      "expected_sha256": "04c1a5565e6456b00d0c36c40b010e5918f75201f9a024ce16eaf2550cf25247",
+      "actual_sha256": "04c1a5565e6456b00d0c36c40b010e5918f75201f9a024ce16eaf2550cf25247",
+      "actual_bytes": 5668,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-ui/Cargo.toml",
+      "expected_sha256": "3a059a71d4a44b371a670f5ffa9a5741fdde8b02a8f7899f820e847871b13752",
+      "actual_sha256": "3a059a71d4a44b371a670f5ffa9a5741fdde8b02a8f7899f820e847871b13752",
+      "actual_bytes": 343,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "crates/ferrostage-ui/src/lib.rs",
+      "expected_sha256": "296a0c88a66afc5c26f6c71f511743a547dc53492204f46262d58dbcc06d2a01",
+      "actual_sha256": "296a0c88a66afc5c26f6c71f511743a547dc53492204f46262d58dbcc06d2a01",
+      "actual_bytes": 1119,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "deny.toml",
+      "expected_sha256": "1cf48641ae1451010587ad06ab197867e8f9ba5b012b585c9880f860443f85e4",
+      "actual_sha256": "1cf48641ae1451010587ad06ab197867e8f9ba5b012b585c9880f860443f85e4",
+      "actual_bytes": 642,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "docs/beamer-notes.md",
+      "expected_sha256": "db189b0a5f4db5806d264690f166719063dae32085309a443b4b894a6a041c5c",
+      "actual_sha256": "db189b0a5f4db5806d264690f166719063dae32085309a443b4b894a6a041c5c",
+      "actual_bytes": 8240,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "fixtures/beamer/bottom-classic.pdf",
+      "expected_sha256": "aeda063a416a37d179de8bd658bbbd6c6b01ef360d331916106a4a615a166ac1",
+      "actual_sha256": "aeda063a416a37d179de8bd658bbbd6c6b01ef360d331916106a4a615a166ac1",
+      "actual_bytes": 782,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "fixtures/beamer/bottom-wide.pdf",
+      "expected_sha256": "aa97b1e490300d481549ffcca7210419cfae1b13029d8284e9c1991cbb7c20bb",
+      "actual_sha256": "aa97b1e490300d481549ffcca7210419cfae1b13029d8284e9c1991cbb7c20bb",
+      "actual_bytes": 782,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "fixtures/beamer/expected.json",
+      "expected_sha256": "d98196a1bac816a74f070635bf1d3da6d79ae3a821dc4594229ab60a9b254341",
+      "actual_sha256": "d98196a1bac816a74f070635bf1d3da6d79ae3a821dc4594229ab60a9b254341",
+      "actual_bytes": 2702,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "fixtures/beamer/generate.py",
+      "expected_sha256": "ce1385accebb9551040e7354e08489a2e74bd14b1684f56072de852f53b4ac4a",
+      "actual_sha256": "ce1385accebb9551040e7354e08489a2e74bd14b1684f56072de852f53b4ac4a",
+      "actual_bytes": 5850,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "fixtures/beamer/independent.pdf",
+      "expected_sha256": "c5f6204da4c5a7c2c7775c3484bb2327652c15509261e2add95d40ae8afc2568",
+      "actual_sha256": "c5f6204da4c5a7c2c7775c3484bb2327652c15509261e2add95d40ae8afc2568",
+      "actual_bytes": 3983,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "fixtures/beamer/media.pdf",
+      "expected_sha256": "a6174f5c6abe45bb3ea5f04cf1673372943f7d2bc76205bbf2f068cb9cdb403f",
+      "actual_sha256": "a6174f5c6abe45bb3ea5f04cf1673372943f7d2bc76205bbf2f068cb9cdb403f",
+      "actual_bytes": 2337,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "fixtures/beamer/mixed.pdf",
+      "expected_sha256": "4b0b65f62e4498962a77bed22ef46daa83cae0aefa8e3cd9342563e1ae8aca68",
+      "actual_sha256": "4b0b65f62e4498962a77bed22ef46daa83cae0aefa8e3cd9342563e1ae8aca68",
+      "actual_bytes": 782,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "fixtures/beamer/movie.pdf",
+      "expected_sha256": "18fcb84be915745801711f71f7acfbc4280a69f977896eada6970fd068f06a32",
+      "actual_sha256": "18fcb84be915745801711f71f7acfbc4280a69f977896eada6970fd068f06a32",
+      "actual_bytes": 20760,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "fixtures/beamer/movie.tex",
+      "expected_sha256": "092711bdc4a4f16f5f411ade1d0cd2dccd750b5458d51c65854028fd7ab00b22",
+      "actual_sha256": "092711bdc4a4f16f5f411ade1d0cd2dccd750b5458d51c65854028fd7ab00b22",
+      "actual_bytes": 277,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "fixtures/beamer/notes-right.pdf",
+      "expected_sha256": "a0b857f6fd1009db87b17317139c603518af2ad27a0be8ee9b67d009e29a94a7",
+      "actual_sha256": "a0b857f6fd1009db87b17317139c603518af2ad27a0be8ee9b67d009e29a94a7",
+      "actual_bytes": 32552,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "fixtures/beamer/notes-right.tex",
+      "expected_sha256": "3395081cd7bc9ecf728b688e62d21957de4009399ecaecf56000543e43fbbb52",
+      "actual_sha256": "3395081cd7bc9ecf728b688e62d21957de4009399ecaecf56000543e43fbbb52",
+      "actual_bytes": 372,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "fixtures/beamer/ordinary.pdf",
+      "expected_sha256": "8dee2795e4584edde264ec4c83f2e509b852bb27d3bd248918374af8411cb5eb",
+      "actual_sha256": "8dee2795e4584edde264ec4c83f2e509b852bb27d3bd248918374af8411cb5eb",
+      "actual_bytes": 782,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "fixtures/beamer/overlays.pdf",
+      "expected_sha256": "2547bcdbfd7be179dd4a9cf570f7078ae8a4562cfde07364a04ec070ff57c687",
+      "actual_sha256": "2547bcdbfd7be179dd4a9cf570f7078ae8a4562cfde07364a04ec070ff57c687",
+      "actual_bytes": 22768,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "fixtures/beamer/overlays.tex",
+      "expected_sha256": "ebc5cc12cc0676646b95fdbc669311a40a219e71e3774d86004926c9ea9832a3",
+      "actual_sha256": "ebc5cc12cc0676646b95fdbc669311a40a219e71e3774d86004926c9ea9832a3",
+      "actual_bytes": 271,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "fixtures/beamer/portrait-counterexample.pdf",
+      "expected_sha256": "aeda063a416a37d179de8bd658bbbd6c6b01ef360d331916106a4a615a166ac1",
+      "actual_sha256": "aeda063a416a37d179de8bd658bbbd6c6b01ef360d331916106a4a615a166ac1",
+      "actual_bytes": 782,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "fixtures/beamer/README.md",
+      "expected_sha256": "42dd6bbbd19b02ece9a5e8e0fea85672fc57aa87a0fd253b5b4f4df4c68f8546",
+      "actual_sha256": "42dd6bbbd19b02ece9a5e8e0fea85672fc57aa87a0fd253b5b4f4df4c68f8546",
+      "actual_bytes": 3477,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "fixtures/beamer/tall-ordinary.pdf",
+      "expected_sha256": "6e4756c48df00dbc135bd69e2bbee92413e3fc82083c2b722e2fcfa501bc4001",
+      "actual_sha256": "6e4756c48df00dbc135bd69e2bbee92413e3fc82083c2b722e2fcfa501bc4001",
+      "actual_bytes": 776,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "fixtures/beamer/top-rotated.pdf",
+      "expected_sha256": "2f170ebccfc2184b5a05bd1c0f498308f9a6fc88cb5fbce0bb953ddf26637f82",
+      "actual_sha256": "2f170ebccfc2184b5a05bd1c0f498308f9a6fc88cb5fbce0bb953ddf26637f82",
+      "actual_bytes": 783,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "fixtures/beamer/wide-counterexample.pdf",
+      "expected_sha256": "567456ee1e95986bccf15ec41e651084b6a263ff9133a3ba3228b6e38d551111",
+      "actual_sha256": "567456ee1e95986bccf15ec41e651084b6a263ff9133a3ba3228b6e38d551111",
+      "actual_bytes": 782,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "justfile",
+      "expected_sha256": "09a765874ff1fb5a222cd26cb70cf2433885712301cc45a3b98993c50813337a",
+      "actual_sha256": "09a765874ff1fb5a222cd26cb70cf2433885712301cc45a3b98993c50813337a",
+      "actual_bytes": 1348,
+      "match": true
+    },
+    {
+      "category": "source_files",
+      "path": "rust-toolchain.toml",
+      "expected_sha256": "72f7dd8c9fdf9c1fcd8eb8bf9326d4bc66833e4ebf4bc2932636e2b85efcb7af",
+      "actual_sha256": "72f7dd8c9fdf9c1fcd8eb8bf9326d4bc66833e4ebf4bc2932636e2b85efcb7af",
+      "actual_bytes": 86,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/artifact-audit.log",
+      "expected_sha256": "c80b74aeee915eda2da1fcb6e9a8670ab077033a5e207408fd2b29427f4505c4",
+      "actual_sha256": "c80b74aeee915eda2da1fcb6e9a8670ab077033a5e207408fd2b29427f4505c4",
+      "actual_bytes": 261,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/beamer-compile.log",
+      "expected_sha256": "378460f28632e191de5f853dd0d8cc83233ccd8c992364ed3db9d7ac138eb159",
+      "actual_sha256": "378460f28632e191de5f853dd0d8cc83233ccd8c992364ed3db9d7ac138eb159",
+      "actual_bytes": 35403,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/beamer-movie-compile.log",
+      "expected_sha256": "a7c7f7b325625c31c91f3b21984490e7b9538f1f09bc949cc70ae5a2344a474d",
+      "actual_sha256": "a7c7f7b325625c31c91f3b21984490e7b9538f1f09bc949cc70ae5a2344a474d",
+      "actual_bytes": 17347,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/ci-final.log",
+      "expected_sha256": "c788d148f6b9ebcb33ba2014f22f2ecc530b1123c450f8334cb5e936744b4ef8",
+      "actual_sha256": "c788d148f6b9ebcb33ba2014f22f2ecc530b1123c450f8334cb5e936744b4ef8",
+      "actual_bytes": 22241,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/clippy-final.log",
+      "expected_sha256": "f1807e7e61e23af32b8c7e4481d24e48ec9bd2b7b9813bf78a6172f1b5a1dbff",
+      "actual_sha256": "f1807e7e61e23af32b8c7e4481d24e48ec9bd2b7b9813bf78a6172f1b5a1dbff",
+      "actual_bytes": 383,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/clippy-initial.log",
+      "expected_sha256": "11a3e7dd86ea82056ae9d4494e0661d161d7e76d1c0446c3c4b6c9d059f83fa9",
+      "actual_sha256": "11a3e7dd86ea82056ae9d4494e0661d161d7e76d1c0446c3c4b6c9d059f83fa9",
+      "actual_bytes": 5409,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/core-initial.log",
+      "expected_sha256": "af9e170b81f294c34be54258221289031f06ced403e067765ad55f396fa49bd7",
+      "actual_sha256": "af9e170b81f294c34be54258221289031f06ced403e067765ad55f396fa49bd7",
+      "actual_bytes": 141,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/core-map.log",
+      "expected_sha256": "7bc78f394673ba99941f073e48ed5255389eec2418017a58b9221ec752609bf4",
+      "actual_sha256": "7bc78f394673ba99941f073e48ed5255389eec2418017a58b9221ec752609bf4",
+      "actual_bytes": 2650,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/core-retry.log",
+      "expected_sha256": "75013d4010b117b724a5900ea78663cc2bc0f11509e30da9663ddca151e8b2bb",
+      "actual_sha256": "75013d4010b117b724a5900ea78663cc2bc0f11509e30da9663ddca151e8b2bb",
+      "actual_bytes": 4963,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/core-tree.log",
+      "expected_sha256": "00515c5c7e98506b30d43a5183dea891558cc03f9d64e9516c32949c996b6b16",
+      "actual_sha256": "00515c5c7e98506b30d43a5183dea891558cc03f9d64e9516c32949c996b6b16",
+      "actual_bytes": 2220,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/diff-check-line-ending-override.log",
+      "expected_sha256": "7fa500f33995d6f96958d9cde8f40d4f5a17358587b6e7496a1d0884670d301f",
+      "actual_sha256": "7fa500f33995d6f96958d9cde8f40d4f5a17358587b6e7496a1d0884670d301f",
+      "actual_bytes": 482503,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/diff-check.log",
+      "expected_sha256": "b78b81ec98101fa4c09053227012e52eb0d80f2d31f266a4ea4b992da15b8f99",
+      "actual_sha256": "b78b81ec98101fa4c09053227012e52eb0d80f2d31f266a4ea4b992da15b8f99",
+      "actual_bytes": 3926,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/fixture-provenance.json",
+      "expected_sha256": "309eb5aaf0572f538cedb0c270294d562ef17f00788a136ab5abea0475b53f47",
+      "actual_sha256": "309eb5aaf0572f538cedb0c270294d562ef17f00788a136ab5abea0475b53f47",
+      "actual_bytes": 5072,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/independent-artifact-audit.log",
+      "expected_sha256": "e769943cf19affbaedd4e75034adf0c6d4cad97d298f8f6e40cfe3e81f816e60",
+      "actual_sha256": "e769943cf19affbaedd4e75034adf0c6d4cad97d298f8f6e40cfe3e81f816e60",
+      "actual_bytes": 1204,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/independent-check.md",
+      "expected_sha256": "6164b7147ff20ccc438193e4dad5ef2cd871822aafc0214511ac8485e9cde070",
+      "actual_sha256": "6164b7147ff20ccc438193e4dad5ef2cd871822aafc0214511ac8485e9cde070",
+      "actual_bytes": 7340,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/independent-ci-closeout.log",
+      "expected_sha256": "17f0dcdf3e7aba052e3fd2179786d951ca22cabc6ef95376c2ed0ee8eaaa5d99",
+      "actual_sha256": "17f0dcdf3e7aba052e3fd2179786d951ca22cabc6ef95376c2ed0ee8eaaa5d99",
+      "actual_bytes": 22619,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/independent-ci.log",
+      "expected_sha256": "00a6fbafa0cec442a39e738306a8a17ff6bf5d33695ed72b24a47c48b7f894bd",
+      "actual_sha256": "00a6fbafa0cec442a39e738306a8a17ff6bf5d33695ed72b24a47c48b7f894bd",
+      "actual_bytes": 22331,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/independent-core-tree.log",
+      "expected_sha256": "00515c5c7e98506b30d43a5183dea891558cc03f9d64e9516c32949c996b6b16",
+      "actual_sha256": "00515c5c7e98506b30d43a5183dea891558cc03f9d64e9516c32949c996b6b16",
+      "actual_bytes": 2220,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/independent-crop-green.log",
+      "expected_sha256": "324eca83e6bdc761bff876e0a90202abdda85ed9bd4b4d4683797d113b500c2a",
+      "actual_sha256": "324eca83e6bdc761bff876e0a90202abdda85ed9bd4b4d4683797d113b500c2a",
+      "actual_bytes": 2696,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/independent-crop-red.log",
+      "expected_sha256": "ffeac0fccae01dd20c849d32b12ef7ed1627825e98443fce76004b388723d00c",
+      "actual_sha256": "ffeac0fccae01dd20c849d32b12ef7ed1627825e98443fce76004b388723d00c",
+      "actual_bytes": 2034,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/independent-diff-check.log",
+      "expected_sha256": "781b340b4e48853ef0315af7880d3802f14ccc8d4ec6b1f768ed0433b96bc724",
+      "actual_sha256": "781b340b4e48853ef0315af7880d3802f14ccc8d4ec6b1f768ed0433b96bc724",
+      "actual_bytes": 3774,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/independent-media-before.log",
+      "expected_sha256": "af9e170b81f294c34be54258221289031f06ced403e067765ad55f396fa49bd7",
+      "actual_sha256": "af9e170b81f294c34be54258221289031f06ced403e067765ad55f396fa49bd7",
+      "actual_bytes": 141,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/independent-media-green.log",
+      "expected_sha256": "859b25d36c6aeb22d47f4ff1b68f75ea4fdd44f07ca08c42c879317c73095ff8",
+      "actual_sha256": "859b25d36c6aeb22d47f4ff1b68f75ea4fdd44f07ca08c42c879317c73095ff8",
+      "actual_bytes": 1081,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/independent-media-red.log",
+      "expected_sha256": "afec0bb6c8665c77823d919b38d76e1b603af96f261e2b0b8b76e25f24ee5789",
+      "actual_sha256": "afec0bb6c8665c77823d919b38d76e1b603af96f261e2b0b8b76e25f24ee5789",
+      "actual_bytes": 2223,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/independent-native-clippy-closeout.log",
+      "expected_sha256": "e8570e2fda41849c85a34085b5be3f6f3f028ee8b962660b4cc804773efccc2d",
+      "actual_sha256": "e8570e2fda41849c85a34085b5be3f6f3f028ee8b962660b4cc804773efccc2d",
+      "actual_bytes": 483,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/independent-native-clippy.log",
+      "expected_sha256": "fc39ae465c7a470c45b36d22427dafcd0f884c586fcc6f6171bb7fba1f9f9a81",
+      "actual_sha256": "fc39ae465c7a470c45b36d22427dafcd0f884c586fcc6f6171bb7fba1f9f9a81",
+      "actual_bytes": 483,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/independent-native-closeout.log",
+      "expected_sha256": "b0468e2bcd568a81db7816de84d1c9b46c09adf8c8606178765637654a29a201",
+      "actual_sha256": "b0468e2bcd568a81db7816de84d1c9b46c09adf8c8606178765637654a29a201",
+      "actual_bytes": 7336,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/independent-native-missing.log",
+      "expected_sha256": "c53adbe2af1b87ba08f2e1f023e10356d76b0249b6b74c2f90a1326441c426d2",
+      "actual_sha256": "c53adbe2af1b87ba08f2e1f023e10356d76b0249b6b74c2f90a1326441c426d2",
+      "actual_bytes": 1138,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/independent-native.log",
+      "expected_sha256": "afac7082ccde9103c643a074c9fac171ffc850c232a17837e44430e4e02c017a",
+      "actual_sha256": "afac7082ccde9103c643a074c9fac171ffc850c232a17837e44430e4e02c017a",
+      "actual_bytes": 7240,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/independent-typecheck-closeout.log",
+      "expected_sha256": "5f7fe77aff192831a6088a25466e14eb0f140d66c835e4aa06c84cf06c02ab46",
+      "actual_sha256": "5f7fe77aff192831a6088a25466e14eb0f140d66c835e4aa06c84cf06c02ab46",
+      "actual_bytes": 893,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/independent-typecheck.log",
+      "expected_sha256": "1abc6a33812326d3247d281a36e096259b911cba6869fd63ccd97a6a6d1673d8",
+      "actual_sha256": "1abc6a33812326d3247d281a36e096259b911cba6869fd63ccd97a6a6d1673d8",
+      "actual_bytes": 797,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/media-field-contract.md",
+      "expected_sha256": "ed7ceafcb0c2895bb1f3ba285f2618afde6daea3a090d6de32fc9bb5a2e39ddb",
+      "actual_sha256": "ed7ceafcb0c2895bb1f3ba285f2618afde6daea3a090d6de32fc9bb5a2e39ddb",
+      "actual_bytes": 5068,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/model-expanded.log",
+      "expected_sha256": "a9f29af03a62e56c1ec184cd00393e14b5612f461c65ab2790bceec3585991ea",
+      "actual_sha256": "a9f29af03a62e56c1ec184cd00393e14b5612f461c65ab2790bceec3585991ea",
+      "actual_bytes": 4640,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/model-initial.log",
+      "expected_sha256": "7b24201463f6a5104a21145fccf7f54b856db272e1106c882e0df57bbacb6e66",
+      "actual_sha256": "7b24201463f6a5104a21145fccf7f54b856db272e1106c882e0df57bbacb6e66",
+      "actual_bytes": 3372,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/model-tests.log",
+      "expected_sha256": "34b0723a248161bb1f7aa6b7b92689a110f80a176ead1fb90b9ae9765b4958f1",
+      "actual_sha256": "34b0723a248161bb1f7aa6b7b92689a110f80a176ead1fb90b9ae9765b4958f1",
+      "actual_bytes": 4559,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/native-final.log",
+      "expected_sha256": "15191dbbf5c3f7f7dd4590c364bab0336abe3f66828dc0d461afca554b7254c2",
+      "actual_sha256": "15191dbbf5c3f7f7dd4590c364bab0336abe3f66828dc0d461afca554b7254c2",
+      "actual_bytes": 6958,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/native-initial.log",
+      "expected_sha256": "f54266347902033c4835241ccdd239e9ff3e81459a142897cbfdfd73c77733ab",
+      "actual_sha256": "f54266347902033c4835241ccdd239e9ff3e81459a142897cbfdfd73c77733ab",
+      "actual_bytes": 7321,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/native-missing.log",
+      "expected_sha256": "876eff2894b96ea6458ebf1207ce9fd4cbb55bff8573c1812a735cb2b7c1b997",
+      "actual_sha256": "876eff2894b96ea6458ebf1207ce9fd4cbb55bff8573c1812a735cb2b7c1b997",
+      "actual_bytes": 1137,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/native-movie.log",
+      "expected_sha256": "4207a5a4d6dfe00570a0c388f6aae136adfa0a8681496155a7e3d5299e002415",
+      "actual_sha256": "4207a5a4d6dfe00570a0c388f6aae136adfa0a8681496155a7e3d5299e002415",
+      "actual_bytes": 8155,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/producer-inspect.log",
+      "expected_sha256": "85808fe37aae253984c4370ebfc2655875dc99f4daf4f8646cbf473803635943",
+      "actual_sha256": "85808fe37aae253984c4370ebfc2655875dc99f4daf4f8646cbf473803635943",
+      "actual_bytes": 980,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/typecheck.log",
+      "expected_sha256": "8d835b9c31296164acfda8ba7738b870c3f1ca019c53987e4dcfc5e7cc049c2b",
+      "actual_sha256": "8d835b9c31296164acfda8ba7738b870c3f1ca019c53987e4dcfc5e7cc049c2b",
+      "actual_bytes": 893,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/verification-manifest.json",
+      "expected_sha256": "ace3cfd20730468bd37b9d20d925abc4d2d9dfe2278200aa984ff70c76894222",
+      "actual_sha256": "ace3cfd20730468bd37b9d20d925abc4d2d9dfe2278200aa984ff70c76894222",
+      "actual_bytes": 17540,
+      "match": true
+    },
+    {
+      "category": "evidence_files",
+      "path": ".trellis/tasks/10-14-06-beamer-document-model/research/verification.md",
+      "expected_sha256": "97bbbae08a9e85deb0e65c2c18954f9709764e5638b6d4d1567b2805b7f478e7",
+      "actual_sha256": "97bbbae08a9e85deb0e65c2c18954f9709764e5638b6d4d1567b2805b7f478e7",
+      "actual_bytes": 7895,
+      "match": true
+    },
+    {
+      "category": "verified_external_inputs",
+      "path": "C:\\texlive\\2025\\bin\\windows\\pdflatex.exe",
+      "expected_sha256": "4b582d0be712b74ae5090aba2d7338f185082f6446cbee7b26115e8ab6e21184",
+      "actual_sha256": "4b582d0be712b74ae5090aba2d7338f185082f6446cbee7b26115e8ab6e21184",
+      "actual_bytes": 6144,
+      "match": true
+    },
+    {
+      "category": "verified_external_inputs",
+      "path": "C:\\texlive\\2025\\bin\\windows\\pdffonts.exe",
+      "expected_sha256": "3b12de9f1dc310ce672cd20500fb984c21a82206808452cfe0fabd1da6c97915",
+      "actual_sha256": "3b12de9f1dc310ce672cd20500fb984c21a82206808452cfe0fabd1da6c97915",
+      "actual_bytes": 3381760,
+      "match": true
+    },
+    {
+      "category": "verified_external_inputs",
+      "path": "C:\\texlive\\2025\\texmf-dist\\doc\\fonts\\amsfonts\\OFL.txt",
+      "expected_sha256": "aa783fdd47e92743bafe79277ac4067d20339344dc5b64a09c2d0f869b2999dc",
+      "actual_sha256": "aa783fdd47e92743bafe79277ac4067d20339344dc5b64a09c2d0f869b2999dc",
+      "actual_bytes": 12520,
+      "match": true
+    },
+    {
+      "category": "verified_external_inputs",
+      "path": "C:\\texlive\\2025\\texmf-dist\\doc\\fonts\\amsfonts\\README",
+      "expected_sha256": "2e2ced3494d3e5f04345804b85c1acb67c23bdd742f3e71f8772f768a59ed451",
+      "actual_sha256": "2e2ced3494d3e5f04345804b85c1acb67c23bdd742f3e71f8772f768a59ed451",
+      "actual_bytes": 14649,
+      "match": true
+    },
+    {
+      "category": "verified_external_inputs",
+      "path": "C:\\texlive\\2025\\texmf-dist\\fonts\\type1\\public\\amsfonts\\cm\\cmss9.pfb",
+      "expected_sha256": "abf756f5c0c4fd2edf9b3811e3a4182f5d2ba7723b6ffaeb98237e026661a2fc",
+      "actual_sha256": "abf756f5c0c4fd2edf9b3811e3a4182f5d2ba7723b6ffaeb98237e026661a2fc",
+      "actual_bytes": 24373,
+      "match": true
+    },
+    {
+      "category": "verified_external_inputs",
+      "path": "C:\\texlive\\2025\\texmf-dist\\fonts\\type1\\public\\amsfonts\\cm\\cmss10.pfb",
+      "expected_sha256": "c9071fd676395df32520c3d906f2829898ea735f66c40a40578dec3c0ac51738",
+      "actual_sha256": "c9071fd676395df32520c3d906f2829898ea735f66c40a40578dec3c0ac51738",
+      "actual_bytes": 24457,
+      "match": true
+    },
+    {
+      "category": "verified_external_inputs",
+      "path": "C:\\texlive\\2025\\texmf-dist\\fonts\\type1\\public\\amsfonts\\cm\\cmss12.pfb",
+      "expected_sha256": "f64255358fe4e6cd89066d08371a60efc33ae0c475854e87b8d0a49a47c29d41",
+      "actual_sha256": "f64255358fe4e6cd89066d08371a60efc33ae0c475854e87b8d0a49a47c29d41",
+      "actual_bytes": 24393,
+      "match": true
+    },
+    {
+      "category": "verified_external_inputs",
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdf-spec\\pdfreference1.7.pdf",
+      "expected_sha256": "4aa598e7e2cc88867565fae793db38c140a10ca2b5551dccdb45e2124282ce29",
+      "actual_sha256": "4aa598e7e2cc88867565fae793db38c140a10ca2b5551dccdb45e2124282ce29",
+      "actual_bytes": 32453129,
+      "match": true
+    },
+    {
+      "category": "verified_external_inputs",
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdf-spec\\adobe-supplement-extension3.pdf",
+      "expected_sha256": "638f531b57ceb50b4f0b86a6740a57438ccecb0e434e32f0209d9c8200ecc44b",
+      "actual_sha256": "638f531b57ceb50b4f0b86a6740a57438ccecb0e434e32f0209d9c8200ecc44b",
+      "actual_bytes": 1490032,
+      "match": true
+    },
+    {
+      "category": "verified_external_inputs",
+      "path": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\cache\\pdfium-7881-win-x64\\bin\\pdfium.dll",
+      "expected_sha256": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118",
+      "actual_sha256": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118",
+      "actual_bytes": 7211520,
+      "match": true
+    }
+  ],
+  "checkpoint_records": [
+    {
+      "category": "task07_checkpoint/routes/0/files/0/original",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/cache/gpui-route-spike/Cargo.toml",
+      "expected_sha256": "218085859f6a05e5cd82770e9bd05556cce60c6804d2c0dedcb1b5cdcafd9621",
+      "actual_sha256": "218085859f6a05e5cd82770e9bd05556cce60c6804d2c0dedcb1b5cdcafd9621",
+      "actual_bytes": 366,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/routes/0/files/0/retained",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-route-spike/Cargo.toml",
+      "expected_sha256": "218085859f6a05e5cd82770e9bd05556cce60c6804d2c0dedcb1b5cdcafd9621",
+      "actual_sha256": "218085859f6a05e5cd82770e9bd05556cce60c6804d2c0dedcb1b5cdcafd9621",
+      "actual_bytes": 366,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/routes/0/files/1/original",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/cache/gpui-route-spike/Cargo.lock",
+      "expected_sha256": "e6ae09275632341dca62ed4aa6b45c0d779ae69d1c5095c4407928765e4f8980",
+      "actual_sha256": "e6ae09275632341dca62ed4aa6b45c0d779ae69d1c5095c4407928765e4f8980",
+      "actual_bytes": 150616,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/routes/0/files/1/retained",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-route-spike/Cargo.lock",
+      "expected_sha256": "e6ae09275632341dca62ed4aa6b45c0d779ae69d1c5095c4407928765e4f8980",
+      "actual_sha256": "e6ae09275632341dca62ed4aa6b45c0d779ae69d1c5095c4407928765e4f8980",
+      "actual_bytes": 150616,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/routes/0/files/2/original",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/cache/gpui-route-spike/src/main.rs",
+      "expected_sha256": "e6232bb23a04e51786e3719d5084a6de74db91b48c00cc5e224426852e8df47d",
+      "actual_sha256": "e6232bb23a04e51786e3719d5084a6de74db91b48c00cc5e224426852e8df47d",
+      "actual_bytes": 67,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/routes/0/files/2/retained",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-route-spike/src/main.rs",
+      "expected_sha256": "e6232bb23a04e51786e3719d5084a6de74db91b48c00cc5e224426852e8df47d",
+      "actual_sha256": "e6232bb23a04e51786e3719d5084a6de74db91b48c00cc5e224426852e8df47d",
+      "actual_bytes": 67,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/routes/0/binary",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/cache/gpui-route-spike/target/debug/ferrostage-gpui-route-spike.exe",
+      "expected_sha256": "20e7d6ef1412bdf36f5c46a88d7d29f0a4505f52dbba1687e4c2d6badb75bda1",
+      "actual_sha256": "20e7d6ef1412bdf36f5c46a88d7d29f0a4505f52dbba1687e4c2d6badb75bda1",
+      "actual_bytes": 21325824,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/routes/1/files/0/original",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/cache/gpui-kit-route-spike/Cargo.toml",
+      "expected_sha256": "84724da757470da6ea1e2365e9f1e91af9912155db8606a355197b352c654db4",
+      "actual_sha256": "84724da757470da6ea1e2365e9f1e91af9912155db8606a355197b352c654db4",
+      "actual_bytes": 487,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/routes/1/files/0/retained",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-kit-route-spike/Cargo.toml",
+      "expected_sha256": "84724da757470da6ea1e2365e9f1e91af9912155db8606a355197b352c654db4",
+      "actual_sha256": "84724da757470da6ea1e2365e9f1e91af9912155db8606a355197b352c654db4",
+      "actual_bytes": 487,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/routes/1/files/1/original",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/cache/gpui-kit-route-spike/Cargo.lock",
+      "expected_sha256": "0aabf18a4013715a4897c5ee096059e8799647d8e6c99373a7c3df8a54f6a5d9",
+      "actual_sha256": "0aabf18a4013715a4897c5ee096059e8799647d8e6c99373a7c3df8a54f6a5d9",
+      "actual_bytes": 206448,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/routes/1/files/1/retained",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-kit-route-spike/Cargo.lock",
+      "expected_sha256": "0aabf18a4013715a4897c5ee096059e8799647d8e6c99373a7c3df8a54f6a5d9",
+      "actual_sha256": "0aabf18a4013715a4897c5ee096059e8799647d8e6c99373a7c3df8a54f6a5d9",
+      "actual_bytes": 206448,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/routes/1/files/2/original",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/cache/gpui-kit-route-spike/src/main.rs",
+      "expected_sha256": "f77d86f95709856956c71a452059c453d0f7b6945c63bcc099a808b7ed6c1277",
+      "actual_sha256": "f77d86f95709856956c71a452059c453d0f7b6945c63bcc099a808b7ed6c1277",
+      "actual_bytes": 62,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/routes/1/files/2/retained",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-kit-route-spike/src/main.rs",
+      "expected_sha256": "f77d86f95709856956c71a452059c453d0f7b6945c63bcc099a808b7ed6c1277",
+      "actual_sha256": "f77d86f95709856956c71a452059c453d0f7b6945c63bcc099a808b7ed6c1277",
+      "actual_bytes": 62,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/routes/1/binary",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/cache/gpui-kit-route-spike/target/debug/ferrostage-gpui-kit-route-spike.exe",
+      "expected_sha256": "f5d82a03648048895c6f8b84cbfb8c160892d2a536f1bf62619068f30d1eba72",
+      "actual_sha256": "f5d82a03648048895c6f8b84cbfb8c160892d2a536f1bf62619068f30d1eba72",
+      "actual_bytes": 21596160,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/routes/2/files/0/original",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/cache/gpui-pre-minimal-route/Cargo.toml",
+      "expected_sha256": "44ec09eb346ff7d56dd283d44a6964f9f040e178c80ded2f815a8af8f8f91fd8",
+      "actual_sha256": "44ec09eb346ff7d56dd283d44a6964f9f040e178c80ded2f815a8af8f8f91fd8",
+      "actual_bytes": 337,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/routes/2/files/0/retained",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-pre-minimal-route/Cargo.toml",
+      "expected_sha256": "44ec09eb346ff7d56dd283d44a6964f9f040e178c80ded2f815a8af8f8f91fd8",
+      "actual_sha256": "44ec09eb346ff7d56dd283d44a6964f9f040e178c80ded2f815a8af8f8f91fd8",
+      "actual_bytes": 337,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/routes/2/files/1/original",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/cache/gpui-pre-minimal-route/Cargo.lock",
+      "expected_sha256": "f18d0877093401f879bcf028950e5fddbb4cfdae9b8c8988501b6f7f688c0a1e",
+      "actual_sha256": "f18d0877093401f879bcf028950e5fddbb4cfdae9b8c8988501b6f7f688c0a1e",
+      "actual_bytes": 132843,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/routes/2/files/1/retained",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-pre-minimal-route/Cargo.lock",
+      "expected_sha256": "f18d0877093401f879bcf028950e5fddbb4cfdae9b8c8988501b6f7f688c0a1e",
+      "actual_sha256": "f18d0877093401f879bcf028950e5fddbb4cfdae9b8c8988501b6f7f688c0a1e",
+      "actual_bytes": 132843,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/routes/2/files/2/original",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/cache/gpui-pre-minimal-route/src/main.rs",
+      "expected_sha256": "e6232bb23a04e51786e3719d5084a6de74db91b48c00cc5e224426852e8df47d",
+      "actual_sha256": "e6232bb23a04e51786e3719d5084a6de74db91b48c00cc5e224426852e8df47d",
+      "actual_bytes": 67,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/routes/2/files/2/retained",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-fixtures/gpui-pre-minimal-route/src/main.rs",
+      "expected_sha256": "e6232bb23a04e51786e3719d5084a6de74db91b48c00cc5e224426852e8df47d",
+      "actual_sha256": "e6232bb23a04e51786e3719d5084a6de74db91b48c00cc5e224426852e8df47d",
+      "actual_bytes": 67,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/0",
+      "path": "C:/Users/lyh/.cargo/advisory-dbs/advisory-db-3157b0e258782691/crates/instant/RUSTSEC-2024-0384.md",
+      "expected_sha256": "6d24b557066a90742ddd58b453fc7ffef5b4acb118f76f7fb97816b4cc489ef1",
+      "actual_sha256": "6d24b557066a90742ddd58b453fc7ffef5b4acb118f76f7fb97816b4cc489ef1",
+      "actual_bytes": 472,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/1",
+      "path": "C:/Users/lyh/.cargo/advisory-dbs/advisory-db-3157b0e258782691/crates/paste/RUSTSEC-2024-0436.md",
+      "expected_sha256": "895f8edea8566fab521dd4eb74a4743076034463f634735ddd17b8d9c969f65c",
+      "actual_sha256": "895f8edea8566fab521dd4eb74a4743076034463f634735ddd17b8d9c969f65c",
+      "actual_bytes": 964,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/2",
+      "path": "C:/Users/lyh/.cargo/advisory-dbs/advisory-db-3157b0e258782691/crates/rustls-pemfile/RUSTSEC-2025-0134.md",
+      "expected_sha256": "15ece81828b6a6189f77f4bcc67468edcaa476d10c42b17898b99e6949607210",
+      "actual_sha256": "15ece81828b6a6189f77f4bcc67468edcaa476d10c42b17898b99e6949607210",
+      "actual_bytes": 892,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/3",
+      "path": "C:/Users/lyh/.cargo/advisory-dbs/advisory-db-3157b0e258782691/crates/rustybuzz/RUSTSEC-2026-0206.md",
+      "expected_sha256": "a4ecc09007acd7cdbacf683ed44da12b814d367792d644701f6953fa726280e5",
+      "actual_sha256": "a4ecc09007acd7cdbacf683ed44da12b814d367792d644701f6953fa726280e5",
+      "actual_bytes": 568,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/4",
+      "path": "C:/Users/lyh/.cargo/advisory-dbs/advisory-db-3157b0e258782691/crates/ttf-parser/RUSTSEC-2026-0192.md",
+      "expected_sha256": "6c41eecb54c888b99e093f9539ad4d14acbdb517f35263dd4e846dd3a95aec76",
+      "actual_sha256": "6c41eecb54c888b99e093f9539ad4d14acbdb517f35263dd4e846dd3a95aec76",
+      "actual_bytes": 580,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/5",
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/Cargo.toml",
+      "expected_sha256": "f674d17ebc1c96c9a11e9d2c0e6daa8bdafece791e8168809a55c53c04a063b8",
+      "actual_sha256": "f674d17ebc1c96c9a11e9d2c0e6daa8bdafece791e8168809a55c53c04a063b8",
+      "actual_bytes": 41278,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/6",
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui_apple/Cargo.toml",
+      "expected_sha256": "7c41488a75e56f650421c7a7fac5b157b5a417cb73357dd78795caf0d9d24c1c",
+      "actual_sha256": "7c41488a75e56f650421c7a7fac5b157b5a417cb73357dd78795caf0d9d24c1c",
+      "actual_bytes": 958,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/7",
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui_platform/Cargo.toml",
+      "expected_sha256": "231e89c58137df7fd2d625cbaf058a3c2a23c69d137af4dffa5840dc403365df",
+      "actual_sha256": "231e89c58137df7fd2d625cbaf058a3c2a23c69d137af4dffa5840dc403365df",
+      "actual_bytes": 1621,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/8",
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui_platform/src/gpui_platform.rs",
+      "expected_sha256": "2e0fd713d979a4e9aff62da79b0e5f9cec6339352c7e3b8329712fa48d959825",
+      "actual_sha256": "2e0fd713d979a4e9aff62da79b0e5f9cec6339352c7e3b8329712fa48d959825",
+      "actual_bytes": 7565,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/9",
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui_windows/Cargo.toml",
+      "expected_sha256": "9b1c23b463781d0d8620e8f06b4211bd071e20a59f3573443f11345f523c1606",
+      "actual_sha256": "9b1c23b463781d0d8620e8f06b4211bd071e20a59f3573443f11345f523c1606",
+      "actual_bytes": 1183,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/10",
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui_windows/src/display.rs",
+      "expected_sha256": "763040fe7a9c29d78c46e42dd8c4ffaa8eb703d7cdba0748b709a8e76787f614",
+      "actual_sha256": "763040fe7a9c29d78c46e42dd8c4ffaa8eb703d7cdba0748b709a8e76787f614",
+      "actual_bytes": 6446,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/11",
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui_windows/src/window.rs",
+      "expected_sha256": "35ca36a271ca0f3be6b8bcd9619d16763704abeab10d825c85a234c2cb208058",
+      "actual_sha256": "35ca36a271ca0f3be6b8bcd9619d16763704abeab10d825c85a234c2cb208058",
+      "actual_bytes": 61476,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/12",
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui/Cargo.toml",
+      "expected_sha256": "bda94183e8ee63e71e6958fcd1836146997d1ae8a95594dd006fe065f514df9e",
+      "actual_sha256": "bda94183e8ee63e71e6958fcd1836146997d1ae8a95594dd006fe065f514df9e",
+      "actual_bytes": 6896,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/13",
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui/examples/a11y.rs",
+      "expected_sha256": "136308b44a36f7a0dbee5269b2434d8476cec42beb7f8b46e4e38e864d4cc805",
+      "actual_sha256": "136308b44a36f7a0dbee5269b2434d8476cec42beb7f8b46e4e38e864d4cc805",
+      "actual_bytes": 10681,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/14",
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui/examples/tab_stop.rs",
+      "expected_sha256": "be187a56c091ee0b609fa396cae4a13b49dcf98ff9e602d8caed3126de3f6a8e",
+      "actual_sha256": "be187a56c091ee0b609fa396cae4a13b49dcf98ff9e602d8caed3126de3f6a8e",
+      "actual_bytes": 7349,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/15",
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui/src/app.rs",
+      "expected_sha256": "09920cb50857041e0ec3e0063e60f95f165da975f53b53a7f933919b8c3f11bb",
+      "actual_sha256": "09920cb50857041e0ec3e0063e60f95f165da975f53b53a7f933919b8c3f11bb",
+      "actual_bytes": 129293,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/16",
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui/src/keymap.rs",
+      "expected_sha256": "7b007c96f748b0593ce56f9ea1520422b3b9401919cc442f2ef4a2b374e203be",
+      "actual_sha256": "7b007c96f748b0593ce56f9ea1520422b3b9401919cc442f2ef4a2b374e203be",
+      "actual_bytes": 34828,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/17",
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui/src/platform.rs",
+      "expected_sha256": "9de7e0b0f29c51b149263b9bc9b4061bfbe41849e296b75df9cf259d9bbbdc4c",
+      "actual_sha256": "9de7e0b0f29c51b149263b9bc9b4061bfbe41849e296b75df9cf259d9bbbdc4c",
+      "actual_bytes": 119336,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/18",
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui/src/platform/keystroke.rs",
+      "expected_sha256": "35515a9d079060667e99851f09227d0ff2204b2d0d951bd96d8297f3bc3f9115",
+      "actual_sha256": "35515a9d079060667e99851f09227d0ff2204b2d0d951bd96d8297f3bc3f9115",
+      "actual_bytes": 23052,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/19",
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui/src/svg_renderer.rs",
+      "expected_sha256": "fb12dae87c0cd4c5f5a1fbbd2f9548d52fde9440c21e3d576dfeb0233eda88a6",
+      "actual_sha256": "fb12dae87c0cd4c5f5a1fbbd2f9548d52fde9440c21e3d576dfeb0233eda88a6",
+      "actual_bytes": 18565,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/20",
+      "path": "C:/Users/lyh/.cargo/git/checkouts/zed-a70e2ad075855582/96a1b1b/crates/gpui/src/window.rs",
+      "expected_sha256": "75ebfde34c284ed6afce96989bfc8794dcd7fb79b3b228d36e87a930688cf86b",
+      "actual_sha256": "75ebfde34c284ed6afce96989bfc8794dcd7fb79b3b228d36e87a930688cf86b",
+      "actual_bytes": 361682,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/21",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/arrayref-0.3.9/Cargo.toml",
+      "expected_sha256": "517b570f4136de5b5a07e1c41a84d6876227b09aab84e69e578bfa8be2e67546",
+      "actual_sha256": "517b570f4136de5b5a07e1c41a84d6876227b09aab84e69e578bfa8be2e67546",
+      "actual_bytes": 819,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/22",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cbindgen-0.28.0/Cargo.toml",
+      "expected_sha256": "92a25024ad538070143176d3b022fe87750c10dcbd94429c82c929d1e2d1439c",
+      "actual_sha256": "92a25024ad538070143176d3b022fe87750c10dcbd94429c82c929d1e2d1439c",
+      "actual_bytes": 2228,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/23",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/dwrote-0.11.5/Cargo.toml",
+      "expected_sha256": "f5f002712c93e06fe939d826188415c75532d52d1b84520f1530f21052cb1d28",
+      "actual_sha256": "f5f002712c93e06fe939d826188415c75532d52d1b84520f1530f21052cb1d28",
+      "actual_bytes": 1485,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/24",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/enum-iterator-2.3.0/Cargo.toml",
+      "expected_sha256": "8daa1a3432e37595a5b0da743ed256de4aa96c09b362156b9138b9fc5154df45",
+      "actual_sha256": "8daa1a3432e37595a5b0da743ed256de4aa96c09b362156b9138b9fc5154df45",
+      "actual_bytes": 1249,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/25",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/enum-iterator-derive-1.5.0/Cargo.toml",
+      "expected_sha256": "38fa3d3286ffbbde6465d34deb60d0c8e17e8ea04cc4523192c064447ce624bf",
+      "actual_sha256": "38fa3d3286ffbbde6465d34deb60d0c8e17e8ea04cc4523192c064447ce624bf",
+      "actual_bytes": 1292,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/26",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/exr-1.74.2/Cargo.toml",
+      "expected_sha256": "930ac47fea52fadd658e324af2f2a7b54cdca69f673ed59ec130424b4768cd59",
+      "actual_sha256": "930ac47fea52fadd658e324af2f2a7b54cdca69f673ed59ec130424b4768cd59",
+      "actual_bytes": 5128,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/27",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gpui-base-0.7.3/Cargo.toml",
+      "expected_sha256": "b6fa9bb529c7e049df902890f12f5e15b298aebea6a46bb8e5101d6cade298cb",
+      "actual_sha256": "b6fa9bb529c7e049df902890f12f5e15b298aebea6a46bb8e5101d6cade298cb",
+      "actual_bytes": 5367,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/28",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gpui-component-0.7.3/Cargo.toml",
+      "expected_sha256": "bc3d39631970412dd2abbe1d5e34b0a0dbc65e6e995f13f3809895cda0ecc3c8",
+      "actual_sha256": "bc3d39631970412dd2abbe1d5e34b0a0dbc65e6e995f13f3809895cda0ecc3c8",
+      "actual_bytes": 14607,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/29",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gpui-kit-0.7.3/Cargo.toml",
+      "expected_sha256": "db46494df6ea58f69ca68f9cf664aad1cf38443e7076a31195ce8fcce8d8823f",
+      "actual_sha256": "db46494df6ea58f69ca68f9cf664aad1cf38443e7076a31195ce8fcce8d8823f",
+      "actual_bytes": 9458,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/30",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gpui-kit-assets-0.7.3/Cargo.toml",
+      "expected_sha256": "66e080b91f8aaf96aac6684f1c226bf185154e2ffd7fb1c5e9730cdf32ffc474",
+      "actual_sha256": "66e080b91f8aaf96aac6684f1c226bf185154e2ffd7fb1c5e9730cdf32ffc474",
+      "actual_bytes": 2591,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/31",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gpui-pre-0.3.9/Cargo.toml",
+      "expected_sha256": "43ac0a636d1283313dbb48810ff32c0f6b55737824a886bd9fad37735ec0c56c",
+      "actual_sha256": "43ac0a636d1283313dbb48810ff32c0f6b55737824a886bd9fad37735ec0c56c",
+      "actual_bytes": 11859,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/32",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gpui-pre-0.3.9/src/svg_renderer.rs",
+      "expected_sha256": "fb12dae87c0cd4c5f5a1fbbd2f9548d52fde9440c21e3d576dfeb0233eda88a6",
+      "actual_sha256": "fb12dae87c0cd4c5f5a1fbbd2f9548d52fde9440c21e3d576dfeb0233eda88a6",
+      "actual_bytes": 18565,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/33",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gpui-pre-apple-0.3.9/Cargo.toml",
+      "expected_sha256": "5aee222ccbf8ee64c9e36e55e5c1c9e487ec2806b0761ef4394a419340c148f0",
+      "actual_sha256": "5aee222ccbf8ee64c9e36e55e5c1c9e487ec2806b0761ef4394a419340c148f0",
+      "actual_bytes": 6988,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/34",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gpui-pre-platform-0.3.9/Cargo.toml",
+      "expected_sha256": "cd0dc488fc16df8c701f7765d2ed4043e5aa9e65a19d2b399826f0f06f935812",
+      "actual_sha256": "cd0dc488fc16df8c701f7765d2ed4043e5aa9e65a19d2b399826f0f06f935812",
+      "actual_bytes": 3465,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/35",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gpui-pre-reqwest-0.12.15/Cargo.toml",
+      "expected_sha256": "cdfa4fd6cd772defd5f5e2900e6baeedb91595d179874782b412c904be9c5969",
+      "actual_sha256": "cdfa4fd6cd772defd5f5e2900e6baeedb91595d179874782b412c904be9c5969",
+      "actual_bytes": 13484,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/36",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gpui-pre-wgpu-0.3.9/Cargo.toml",
+      "expected_sha256": "45ca5c6ab2d9dc42aba5f72b800b69f5980779c511a8f829ebce9c47ef253d5c",
+      "actual_sha256": "45ca5c6ab2d9dc42aba5f72b800b69f5980779c511a8f829ebce9c47ef253d5c",
+      "actual_bytes": 3645,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/37",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gpui-pre-windows-0.3.9/Cargo.toml",
+      "expected_sha256": "862b0f8b291e0b9aac659f15bc1bfeae965a4c548e9ffbc7329f29b61e4ef41b",
+      "actual_sha256": "862b0f8b291e0b9aac659f15bc1bfeae965a4c548e9ffbc7329f29b61e4ef41b",
+      "actual_bytes": 5447,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/38",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/gpui-pre-windows-0.3.9/src/display.rs",
+      "expected_sha256": "466c0c2a4e3e9b001f26681f9f992d7dcc4a930954749942b980f228c5c0b83f",
+      "actual_sha256": "466c0c2a4e3e9b001f26681f9f992d7dcc4a930954749942b980f228c5c0b83f",
+      "actual_bytes": 7569,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/39",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/image-0.25.10/Cargo.toml",
+      "expected_sha256": "b45592b42e4f065d5258379bac78e2a00ab6e50bbeec265fcceeea9cf5829c26",
+      "actual_sha256": "b45592b42e4f065d5258379bac78e2a00ab6e50bbeec265fcceeea9cf5829c26",
+      "actual_bytes": 4189,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/40",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libbz2-rs-sys-0.2.5/Cargo.toml",
+      "expected_sha256": "710d50ea93fc5979f7d9428537067b39bd617bc4427ba1f209b12e86aa799e10",
+      "actual_sha256": "710d50ea93fc5979f7d9428537067b39bd617bc4427ba1f209b12e86aa799e10",
+      "actual_bytes": 1332,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/41",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/option-ext-0.2.0/Cargo.toml",
+      "expected_sha256": "ecd67cb17a0586f1406b7d494ef93191ed8ebf149db46667a7778052d94e1e6c",
+      "actual_sha256": "ecd67cb17a0586f1406b7d494ef93191ed8ebf149db46667a7778052d94e1e6c",
+      "actual_bytes": 866,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/42",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pulp-0.22.3/Cargo.toml",
+      "expected_sha256": "b9d9fe17a5a2188b06a704d5810b4b68b82474816d238f2442501495abb1e4df",
+      "actual_sha256": "b9d9fe17a5a2188b06a704d5810b4b68b82474816d238f2442501495abb1e4df",
+      "actual_bytes": 2660,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/43",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/resvg-0.46.0/Cargo.toml",
+      "expected_sha256": "55a03ca71677af9853ef682a9e63eb5f29083328985e5453d5f52c40cabe2ab8",
+      "actual_sha256": "55a03ca71677af9853ef682a9e63eb5f29083328985e5453d5f52c40cabe2ab8",
+      "actual_bytes": 2091,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/44",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/usvg-0.46.0/Cargo.toml",
+      "expected_sha256": "50f737ff2e041f09e142df38e0bea44f2f2216f107c764f4848af3e06fe6b08f",
+      "actual_sha256": "50f737ff2e041f09e142df38e0bea44f2f2216f107c764f4848af3e06fe6b08f",
+      "actual_bytes": 2420,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/45",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zed-font-kit-0.14.1-zed/Cargo.toml",
+      "expected_sha256": "6e6fc4e0ce218fbe32891efb7905bfbe34633b52537f96c122167a37d7dea1cc",
+      "actual_sha256": "6e6fc4e0ce218fbe32891efb7905bfbe34633b52537f96c122167a37d7dea1cc",
+      "actual_bytes": 3455,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/46",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/arrayref-0.3.9/LICENSE",
+      "expected_sha256": "1bc7e6f475b3ec99b7e2643411950ae2368c250dd4c5c325f80f9811362a94a1",
+      "actual_sha256": "1bc7e6f475b3ec99b7e2643411950ae2368c250dd4c5c325f80f9811362a94a1",
+      "actual_bytes": 1336,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/47",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cbindgen-0.28.0/LICENSE",
+      "expected_sha256": "1f256ecad192880510e84ad60474eab7589218784b9a50bc7ceee34c2b91f1d5",
+      "actual_sha256": "1f256ecad192880510e84ad60474eab7589218784b9a50bc7ceee34c2b91f1d5",
+      "actual_bytes": 16725,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/48",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/enum-iterator-2.3.0/LICENSE",
+      "expected_sha256": "9b166edfb0b4b70f1e8b2fdaae320b0acd977c520e0fb95fa881f54f68e724e3",
+      "actual_sha256": "9b166edfb0b4b70f1e8b2fdaae320b0acd977c520e0fb95fa881f54f68e724e3",
+      "actual_bytes": 666,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/49",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/enum-iterator-derive-1.5.0/LICENSE",
+      "expected_sha256": "9b166edfb0b4b70f1e8b2fdaae320b0acd977c520e0fb95fa881f54f68e724e3",
+      "actual_sha256": "9b166edfb0b4b70f1e8b2fdaae320b0acd977c520e0fb95fa881f54f68e724e3",
+      "actual_bytes": 666,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/50",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libbz2-rs-sys-0.2.5/LICENSE",
+      "expected_sha256": "54e1fd7bd53273e601c9599eb162a004dacddee031ae297ee7109a7beb93b1c2",
+      "actual_sha256": "54e1fd7bd53273e601c9599eb162a004dacddee031ae297ee7109a7beb93b1c2",
+      "actual_bytes": 2123,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/sources/51",
+      "path": "C:/Users/lyh/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/option-ext-0.2.0/LICENSE.txt",
+      "expected_sha256": "66a3107d5ad6a058aab753eaac2047ccb2ed0e39465dd0fe5844da3e300d5172",
+      "actual_sha256": "66a3107d5ad6a058aab753eaac2047ccb2ed0e39465dd0fe5844da3e300d5172",
+      "actual_bytes": 16727,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/product_policy",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/deny.toml",
+      "expected_sha256": "1cf48641ae1451010587ad06ab197867e8f9ba5b012b585c9880f860443f85e4",
+      "actual_sha256": "1cf48641ae1451010587ad06ab197867e8f9ba5b012b585c9880f860443f85e4",
+      "actual_bytes": 642,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/task_checkpoint",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/implement.md",
+      "expected_sha256": "34fff9efbabb9c2d29d39597c07d2c3f861bd685ac0d3fef54dbfa8a6842ec0b",
+      "actual_sha256": "3acc1ad9764ffdb10018549199929086818f080124cf81d881b2c1415322bdc1",
+      "actual_bytes": 9898,
+      "match": false,
+      "retained_original": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\independent-original-implement.md",
+      "retained_original_sha256": "34fff9efbabb9c2d29d39597c07d2c3f861bd685ac0d3fef54dbfa8a6842ec0b",
+      "review_change_with_original_preserved": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/0",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/.gitignore",
+      "expected_sha256": "7dc0cc136f59bea1afdf698abf258958e639ff789e9f20e7cb76aa343968fd61",
+      "actual_sha256": "7dc0cc136f59bea1afdf698abf258958e639ff789e9f20e7cb76aa343968fd61",
+      "actual_bytes": 78,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/1",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/capture-evidence.ps1",
+      "expected_sha256": "4b5b83fcc3712cd2a949de1ba6e42826aee03c865f9f06ae007173ef4f2fda3f",
+      "actual_sha256": "4b5b83fcc3712cd2a949de1ba6e42826aee03c865f9f06ae007173ef4f2fda3f",
+      "actual_bytes": 6833,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/2",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/dependency-gate.md",
+      "expected_sha256": "b634771878a7fe89220fdfc364d6abb1676be0458437457a564a2663c53559bd",
+      "actual_sha256": "b634771878a7fe89220fdfc364d6abb1676be0458437457a564a2663c53559bd",
+      "actual_bytes": 13224,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/3",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/gpui-display-api.md",
+      "expected_sha256": "85f7e9f469881daefc727f4bfad7a0ab2424f5ba249f0d99e7c74971b0aa8833",
+      "actual_sha256": "cbd8849acb76010767d62c3bc407a0774f4f1b8cf403a470642168631df3fe73",
+      "actual_bytes": 12767,
+      "match": false,
+      "retained_original": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\independent-original-gpui-display-api.md",
+      "retained_original_sha256": "85f7e9f469881daefc727f4bfad7a0ab2424f5ba249f0d99e7c74971b0aa8833",
+      "review_change_with_original_preserved": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/4",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/handoff-checks.txt",
+      "expected_sha256": "de709eba611be27b7133fe02e51868881aa4cfa73641d36cdcc0077df93d64cc",
+      "actual_sha256": "de709eba611be27b7133fe02e51868881aa4cfa73641d36cdcc0077df93d64cc",
+      "actual_bytes": 1027,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/5",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/kit-bootstrap-info.log",
+      "expected_sha256": "14c618fae0296fa1e60152c6e4f54c7f0ec8930324ba463bdef3827951507459",
+      "actual_sha256": "14c618fae0296fa1e60152c6e4f54c7f0ec8930324ba463bdef3827951507459",
+      "actual_bytes": 683,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/6",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/kit-metadata.json",
+      "expected_sha256": "9253220ddf05284ffc26ad9589f3dbc02affcc01cefd761608c4834b0d188ae1",
+      "actual_sha256": "9253220ddf05284ffc26ad9589f3dbc02affcc01cefd761608c4834b0d188ae1",
+      "actual_bytes": 2402,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/7",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/kit-route-build.log",
+      "expected_sha256": "22e9657df03abaa7b65c6becfd07e1aad2eb5a542a8f21d1d57421df0431d150",
+      "actual_sha256": "22e9657df03abaa7b65c6becfd07e1aad2eb5a542a8f21d1d57421df0431d150",
+      "actual_bytes": 15614,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/8",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/kit-route-deny.log",
+      "expected_sha256": "e810ce771bb1948e4c3b3cc476d30db361ae0b4ea6244108acbe2d53be702ede",
+      "actual_sha256": "e810ce771bb1948e4c3b3cc476d30db361ae0b4ea6244108acbe2d53be702ede",
+      "actual_bytes": 364212,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/9",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/kit-route-info.log",
+      "expected_sha256": "8fbafa446ff370254487893c63912542f3bc6b24a2c0c615207eeb5c06017e84",
+      "actual_sha256": "8fbafa446ff370254487893c63912542f3bc6b24a2c0c615207eeb5c06017e84",
+      "actual_bytes": 528,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/10",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/kit-windows-tree.log",
+      "expected_sha256": "9856c2ae424f30f7e1c8b6c3eabd931a5e7be725183be1b4e687d5e479cdb58b",
+      "actual_sha256": "9856c2ae424f30f7e1c8b6c3eabd931a5e7be725183be1b4e687d5e479cdb58b",
+      "actual_bytes": 21414,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/11",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/pre-minimal-deny.log",
+      "expected_sha256": "37a28d1bb090d9009ce3a221c6f8f71dfaf36cdfb44a3ac1d26c74e0ab69977e",
+      "actual_sha256": "37a28d1bb090d9009ce3a221c6f8f71dfaf36cdfb44a3ac1d26c74e0ab69977e",
+      "actual_bytes": 116922,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/12",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/pre-minimal-metadata.json",
+      "expected_sha256": "09bc3c25a0c812b1e630e0f3c3375e5d51ccd670b887fe363683e3e10eb683db",
+      "actual_sha256": "09bc3c25a0c812b1e630e0f3c3375e5d51ccd670b887fe363683e3e10eb683db",
+      "actual_bytes": 1977,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/13",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/pre-minimal-windows-tree.log",
+      "expected_sha256": "2657d1b2d407f91e742a3861b86650de860fccf5d7c6d1f0598aef7c8d71e02f",
+      "actual_sha256": "2657d1b2d407f91e742a3861b86650de860fccf5d7c6d1f0598aef7c8d71e02f",
+      "actual_bytes": 12532,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/14",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/pre-route-info.log",
+      "expected_sha256": "d35eaabd80a8f184a2f67b1562795b1f7f945ef49b7a7820b1ac9bf5bd84e061",
+      "actual_sha256": "d35eaabd80a8f184a2f67b1562795b1f7f945ef49b7a7820b1ac9bf5bd84e061",
+      "actual_bytes": 1210,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/15",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/product-input-comparison.json",
+      "expected_sha256": "14b59d7efa6a98b5a0393771a8df0176114008b6996d52efb9e77d2c3b2311a0",
+      "actual_sha256": "14b59d7efa6a98b5a0393771a8df0176114008b6996d52efb9e77d2c3b2311a0",
+      "actual_bytes": 37784,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/16",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-spike-build-initial.log",
+      "expected_sha256": "fab465524660fcffc2d14db78cdb28143daa0f819b5cf3796303b1e7e931ac92",
+      "actual_sha256": "fab465524660fcffc2d14db78cdb28143daa0f819b5cf3796303b1e7e931ac92",
+      "actual_bytes": 512,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/17",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-spike-build.log",
+      "expected_sha256": "5dc66ea28d27fc3eacb8751d82c9ce9342f959c1a29536c7cb606fc14eb3e810",
+      "actual_sha256": "5dc66ea28d27fc3eacb8751d82c9ce9342f959c1a29536c7cb606fc14eb3e810",
+      "actual_bytes": 13433,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/18",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-spike-deny-corrected.log",
+      "expected_sha256": "a36deb8bb32546f699819d3c507892f8680b310af49877ac39d86fde2cafc9d1",
+      "actual_sha256": "a36deb8bb32546f699819d3c507892f8680b310af49877ac39d86fde2cafc9d1",
+      "actual_bytes": 180045,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/19",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-spike-deny-final.log",
+      "expected_sha256": "f280b374abc41cd2c3037b4af96ecfa5ede214f572daa6bdd1751122eeb8c8b7",
+      "actual_sha256": "f280b374abc41cd2c3037b4af96ecfa5ede214f572daa6bdd1751122eeb8c8b7",
+      "actual_bytes": 179332,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/20",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-spike-deny.log",
+      "expected_sha256": "8244ec449b3182efb68d611c593fee72e61fed32fe54bbabd494c49fd6ce0df2",
+      "actual_sha256": "8244ec449b3182efb68d611c593fee72e61fed32fe54bbabd494c49fd6ce0df2",
+      "actual_bytes": 195,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/21",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/route-spike-status.txt",
+      "expected_sha256": "51c51b2a2ea069419e231f69fc105321337bb1e52e7d7c861a61e444d56552ae",
+      "actual_sha256": "51c51b2a2ea069419e231f69fc105321337bb1e52e7d7c861a61e444d56552ae",
+      "actual_bytes": 1101,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/22",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/tagged-metadata.json",
+      "expected_sha256": "0fba1dbf3758f5f4aab744737d30bbc2bdbc088485bb6596838bf17448e32dd4",
+      "actual_sha256": "0fba1dbf3758f5f4aab744737d30bbc2bdbc088485bb6596838bf17448e32dd4",
+      "actual_bytes": 1868,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/23",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/tagged-windows-tree.log",
+      "expected_sha256": "ea4a003bfe6a192af584f3fed8499046c3956134cb636b3663cf36de50923579",
+      "actual_sha256": "ea4a003bfe6a192af584f3fed8499046c3956134cb636b3663cf36de50923579",
+      "actual_bytes": 15731,
+      "match": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/24",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/toolchain.log",
+      "expected_sha256": "a4b22aa44c7878a1f439ffecd00375cafd14c301fd98ee51ad4abbaa161dc2ca",
+      "actual_sha256": "a4b22aa44c7878a1f439ffecd00375cafd14c301fd98ee51ad4abbaa161dc2ca",
+      "actual_bytes": 248,
+      "match": true
+    }
+  ],
+  "mismatches": [
+    {
+      "category": "task07_checkpoint/task_checkpoint",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/implement.md",
+      "expected_sha256": "34fff9efbabb9c2d29d39597c07d2c3f861bd685ac0d3fef54dbfa8a6842ec0b",
+      "actual_sha256": "3acc1ad9764ffdb10018549199929086818f080124cf81d881b2c1415322bdc1",
+      "actual_bytes": 9898,
+      "match": false,
+      "retained_original": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\independent-original-implement.md",
+      "retained_original_sha256": "34fff9efbabb9c2d29d39597c07d2c3f861bd685ac0d3fef54dbfa8a6842ec0b",
+      "review_change_with_original_preserved": true
+    },
+    {
+      "category": "task07_checkpoint/evidence_files/3",
+      "path": "D:/Documents/Code/Rust/Exp/ferrostage/.trellis/tasks/10-14-07-gpui-shell/research/gpui-display-api.md",
+      "expected_sha256": "85f7e9f469881daefc727f4bfad7a0ab2424f5ba249f0d99e7c74971b0aa8833",
+      "actual_sha256": "cbd8849acb76010767d62c3bc407a0774f4f1b8cf403a470642168631df3fe73",
+      "actual_bytes": 12767,
+      "match": false,
+      "retained_original": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\independent-original-gpui-display-api.md",
+      "retained_original_sha256": "85f7e9f469881daefc727f4bfad7a0ab2424f5ba249f0d99e7c74971b0aa8833",
+      "review_change_with_original_preserved": true
+    }
+  ],
+  "unexpected_mismatches": [],
+  "supplement_sha256": {
+    ".trellis/tasks/10-14-07-gpui-shell/research/independent-cbindgen-all-tree.log": "4c1b726f6822e754333808ec350bfde22501175a87c45051b12152b779e89b05",
+    ".trellis/tasks/10-14-07-gpui-shell/research/independent-check-exits-initial.json": "dfff7512de702ad468f60f6f41df225cad015cdd452e8141e6d7f5288457654c",
+    ".trellis/tasks/10-14-07-gpui-shell/research/independent-check-exits.json": "c24205f8ef872a1a71551dd0b43d0fdf28c9416f44200d2a07757af66382022b",
+    ".trellis/tasks/10-14-07-gpui-shell/research/independent-check.md": "b670b421340799423334fd21fd6385f8d89e8838f8f8aaeec69f820ea452c9de",
+    ".trellis/tasks/10-14-07-gpui-shell/research/independent-clippy-initial.log": "af9e170b81f294c34be54258221289031f06ced403e067765ad55f396fa49bd7",
+    ".trellis/tasks/10-14-07-gpui-shell/research/independent-clippy.log": "eefd0d30c9ec62b7542a3ccaaed377b554bad8df7ca8d5b103f1269ae1544750",
+    ".trellis/tasks/10-14-07-gpui-shell/research/independent-dependency-exits-initial.json": "98252a2d469b7a15024461a09a0b3001ba6cf54c522da6496e26fab317fe1469",
+    ".trellis/tasks/10-14-07-gpui-shell/research/independent-dependency-exits.json": "4e06dadc2305efcf0f6d4a8950c3df93461a446d652d6ccefe97a80f932829e9",
+    ".trellis/tasks/10-14-07-gpui-shell/research/independent-diff-check.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".trellis/tasks/10-14-07-gpui-shell/research/independent-fmt.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".trellis/tasks/10-14-07-gpui-shell/research/independent-hash-audit.py": "e71cd0bb6172e24ea1e184578afd60b4099645ee6824f483df13ee5403ad2a92",
+    ".trellis/tasks/10-14-07-gpui-shell/research/independent-hash-before.json": "4d85450d642fa59a6dc51a0e322fd65f61567fe69eead6a51231a842bfbaec23",
+    ".trellis/tasks/10-14-07-gpui-shell/research/independent-minimal-deny-initial.log": "d6033013c58db5a82fac3865e0d549349c3a00592d94a31082577397f4beb3d5",
+    ".trellis/tasks/10-14-07-gpui-shell/research/independent-minimal-deny.log": "37a28d1bb090d9009ce3a221c6f8f71dfaf36cdfb44a3ac1d26c74e0ab69977e",
+    ".trellis/tasks/10-14-07-gpui-shell/research/independent-minimal-windows-tree.log": "7f7b961bc915df52d96dc20494a430904fbff5cbf159357183cb6a62118f77ed",
+    ".trellis/tasks/10-14-07-gpui-shell/research/independent-original-gpui-display-api.md": "85f7e9f469881daefc727f4bfad7a0ab2424f5ba249f0d99e7c74971b0aa8833",
+    ".trellis/tasks/10-14-07-gpui-shell/research/independent-original-implement.md": "34fff9efbabb9c2d29d39597c07d2c3f861bd685ac0d3fef54dbfa8a6842ec0b",
+    ".trellis/tasks/10-14-07-gpui-shell/research/independent-process-status.json": "f801b3d11dbb0a3e28f25743c1fb0eba18e3aea687bb079fc7f4a8138f2cff01",
+    ".trellis/tasks/10-14-07-gpui-shell/research/independent-source-review.json": "a683579c86beb2292094c42d5a8df59a3396039fe1ab7272534895fa838e9d70",
+    ".trellis/tasks/10-14-07-gpui-shell/research/independent-typecheck-initial.log": "af9e170b81f294c34be54258221289031f06ced403e067765ad55f396fa49bd7",
+    ".trellis/tasks/10-14-07-gpui-shell/research/independent-typecheck.log": "8568deb3ba4ae6bdcf04869d3d2619db39c69a248aa46c30ef138e3d2e9a7b83",
+    ".trellis/tasks/10-14-07-gpui-shell/research/dependency-gate.md": "b634771878a7fe89220fdfc364d6abb1676be0458437457a564a2663c53559bd",
+    ".trellis/tasks/10-14-07-gpui-shell/research/gpui-display-api.md": "cbd8849acb76010767d62c3bc407a0774f4f1b8cf403a470642168631df3fe73",
+    ".trellis/tasks/10-14-07-gpui-shell/implement.md": "3acc1ad9764ffdb10018549199929086818f080124cf81d881b2c1415322bdc1",
+    "docs/adr/ADR-001-gpui-from-zed-tag.md": "0f0cfef9074a661d99aad0dd65d9793999df010d4c665d01bf1be98c8dc7ce2b",
+    "docs/adr/ADR-008-gpui-dependency-gate.md": "f64ac70211086451a7aa093c970a9fd4186619fb348473afb021e4ee809486cd"
+  }
+}

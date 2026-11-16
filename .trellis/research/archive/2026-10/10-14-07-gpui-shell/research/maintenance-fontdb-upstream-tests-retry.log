@@ -1,0 +1,32 @@
+ Downloading crates ...
+  Downloaded env_logger v0.10.2
+   Compiling slotmap v1.1.1
+   Compiling log v0.4.33
+   Compiling tinyvec_macros v0.1.1
+   Compiling tinyvec v1.12.0
+   Compiling env_logger v0.10.2
+   Compiling fontdb v0.24.0 (D:\Documents\Code\Rust\Exp\ferrostage\cache\gpui-maintenance-candidate\validation\fontdb)
+warning: use of deprecated constant `std::u64::MAX`: replaced by the `MAX` associated constant on this type
+   --> src\lib.rs:108:66
+    |
+108 |         Self(InnerId::from(slotmap::KeyData::from_ffi(core::u64::MAX)))
+    |                                                                  ^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+
+warning: `fontdb` (lib test) generated 1 warning (1 duplicate)
+warning: `fontdb` (lib) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.15s
+     Running unittests src\lib.rs (cache/gpui-maintenance-candidate/target\debug\deps\fontdb-5da8e53ac98f98a9.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\add_fonts.rs (cache/gpui-maintenance-candidate/target\debug\deps\add_fonts-46cb770ae26a779f.exe)
+
+running 1 test
+test add_fonts_and_get_ids_back ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

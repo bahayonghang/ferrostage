@@ -1,0 +1,121 @@
+{
+  "version": {
+    "id": 2381461,
+    "crate": "gstreamer-video",
+    "num": "0.25.2",
+    "dl_path": "/api/v1/crates/gstreamer-video/0.25.2/download",
+    "readme_path": "/api/v1/crates/gstreamer-video/0.25.2/readme",
+    "updated_at": "2026-05-11T10:37:21.326479Z",
+    "created_at": "2026-05-11T10:37:21.326479Z",
+    "downloads": 54691,
+    "features": {
+      "default": [],
+      "serde": [
+        "dep:serde",
+        "gst/serde"
+      ],
+      "v1_16": [
+        "gst/v1_16",
+        "gst-base/v1_16",
+        "gstreamer-video-sys/v1_16"
+      ],
+      "v1_18": [
+        "gst/v1_18",
+        "gst-base/v1_18",
+        "gstreamer-video-sys/v1_18",
+        "v1_16"
+      ],
+      "v1_20": [
+        "gst/v1_20",
+        "gst-base/v1_20",
+        "gstreamer-video-sys/v1_20",
+        "v1_18"
+      ],
+      "v1_22": [
+        "gst/v1_22",
+        "gst-base/v1_22",
+        "gstreamer-video-sys/v1_22",
+        "v1_20"
+      ],
+      "v1_24": [
+        "gst/v1_24",
+        "gst-base/v1_24",
+        "gstreamer-video-sys/v1_24",
+        "v1_22"
+      ],
+      "v1_26": [
+        "gst/v1_26",
+        "gst-base/v1_26",
+        "gstreamer-video-sys/v1_26",
+        "v1_24"
+      ],
+      "v1_28": [
+        "gst/v1_28",
+        "gst-base/v1_28",
+        "gstreamer-video-sys/v1_28",
+        "v1_26"
+      ],
+      "v1_30": [
+        "gst/v1_30",
+        "gst-base/v1_30",
+        "gstreamer-video-sys/v1_30",
+        "v1_28"
+      ]
+    },
+    "yanked": false,
+    "yank_message": null,
+    "lib_links": null,
+    "license": "MIT OR Apache-2.0",
+    "links": {
+      "dependencies": "/api/v1/crates/gstreamer-video/0.25.2/dependencies",
+      "version_downloads": "/api/v1/crates/gstreamer-video/0.25.2/downloads",
+      "authors": "/api/v1/crates/gstreamer-video/0.25.2/authors"
+    },
+    "crate_size": 140447,
+    "published_by": {
+      "id": 3623,
+      "login": "sdroege",
+      "name": "Sebastian Dröge",
+      "avatar": "https://avatars.githubusercontent.com/u/301846?v=4",
+      "url": "https://github.com/sdroege",
+      "github_username_matches": true,
+      "created_at": "2010-06-10T13:22:04Z"
+    },
+    "audit_actions": [
+      {
+        "action": "publish",
+        "user": {
+          "id": 3623,
+          "login": "sdroege",
+          "name": "Sebastian Dröge",
+          "avatar": "https://avatars.githubusercontent.com/u/301846?v=4",
+          "url": "https://github.com/sdroege",
+          "github_username_matches": true,
+          "created_at": "2010-06-10T13:22:04Z"
+        },
+        "time": "2026-05-11T10:37:21.326479Z"
+      }
+    ],
+    "checksum": "2bf728cb21499561ea0d6ce584e550bf2b98b279cc7741067ee42f41f98b486e",
+    "rust_version": "1.92",
+    "has_lib": true,
+    "bin_names": [],
+    "edition": "2024",
+    "description": "Rust bindings for GStreamer Video library",
+    "homepage": "https://gstreamer.freedesktop.org",
+    "documentation": "https://gstreamer.freedesktop.org/documentation/rust/stable/latest/docs/gstreamer_video/",
+    "repository": "https://gitlab.freedesktop.org/gstreamer/gstreamer-rs",
+    "trustpub_data": null,
+    "linecounts": {
+      "languages": {
+        "Rust": {
+          "code_lines": 21316,
+          "comment_lines": 261,
+          "files": 63
+        }
+      },
+      "total_code_lines": 21316,
+      "total_comment_lines": 261
+    }
+  }
+}

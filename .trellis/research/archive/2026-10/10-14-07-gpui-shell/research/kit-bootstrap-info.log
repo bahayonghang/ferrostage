@@ -1,0 +1,17 @@
+    Updating crates.io index
+ Downloading crates ...
+  Downloaded gpui-kit v0.7.3
+gpui-kit #desktop #gpui #shadcn #ui #uikit
+GPUI Kit: one dependency for building desktop applications with GPUI, GPUI Base, GPUI Component and default assets.
+version: 0.7.3
+license: Apache-2.0
+rust-version: unknown
+documentation: https://docs.rs/gpui-kit
+homepage: https://gpui-kit.com
+repository: https://github.com/longbridge/gpui-kit
+crates.io: https://crates.io/crates/gpui-kit/0.7.3
+features:
+ +default                     = [component, assets]
+  assets                      = [dep:gpui-kit-assets]
+  component                   = [dep:gpui-component]
+  44 deactivated features

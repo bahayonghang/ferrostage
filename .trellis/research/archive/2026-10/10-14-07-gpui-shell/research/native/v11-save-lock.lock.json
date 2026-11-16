@@ -1,0 +1,7 @@
+{
+  "sha256": "EA08E183B29D094415781442DD5C60A6640AF7699B6ED0F71E6AECF93F215186",
+  "config": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\v8-light.toml",
+  "release_file": "D:\\Documents\\Code\\Rust\\Exp\\ferrostage\\.trellis\\tasks\\10-14-07-gpui-shell\\research\\native\\v11-save-lock.release",
+  "utc": "2026-10-15T05:14:52.2116874Z",
+  "status": "LOCK_HELD"
+}

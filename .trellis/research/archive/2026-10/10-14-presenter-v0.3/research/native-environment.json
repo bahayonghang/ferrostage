@@ -1,0 +1,58 @@
+{
+  "recorded_at": "2026-10-14T14:56:24.5254679Z",
+  "os": "Microsoft Windows NT 10.0.26300.0",
+  "cpu": [
+    {
+      "Name": "Intel(R) Core(TM) Ultra 9 275HX",
+      "NumberOfCores": 24,
+      "NumberOfLogicalProcessors": 24
+    }
+  ],
+  "gpu": [
+    {
+      "Name": "OrayIddDriver Device",
+      "DriverVersion": "17.50.19.949",
+      "DriverDate": "2025-06-10T20:00:00-04:00",
+      "CurrentHorizontalResolution": null,
+      "CurrentVerticalResolution": null,
+      "CurrentRefreshRate": null,
+      "AdapterRAM": null
+    },
+    {
+      "Name": "GameViewer Virtual Display Adapter",
+      "DriverVersion": "15.6.5.199",
+      "DriverDate": "2026-02-27T19:00:00-05:00",
+      "CurrentHorizontalResolution": null,
+      "CurrentVerticalResolution": null,
+      "CurrentRefreshRate": null,
+      "AdapterRAM": null
+    },
+    {
+      "Name": "Todesk Virtual Display Adapter",
+      "DriverVersion": "16.44.2.509",
+      "DriverDate": "2023-04-23T20:00:00-04:00",
+      "CurrentHorizontalResolution": null,
+      "CurrentVerticalResolution": null,
+      "CurrentRefreshRate": null,
+      "AdapterRAM": null
+    },
+    {
+      "Name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "DriverVersion": "32.0.16.1714",
+      "DriverDate": "2026-09-16T20:00:00-04:00",
+      "CurrentHorizontalResolution": 2560,
+      "CurrentVerticalResolution": 1600,
+      "CurrentRefreshRate": 240,
+      "AdapterRAM": 4293918720
+    },
+    {
+      "Name": "Intel(R) Graphics",
+      "DriverVersion": "32.0.101.6733",
+      "DriverDate": "2025-04-01T20:00:00-04:00",
+      "CurrentHorizontalResolution": 2560,
+      "CurrentVerticalResolution": 1440,
+      "CurrentRefreshRate": 143,
+      "AdapterRAM": 2147479552
+    }
+  ]
+}

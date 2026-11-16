@@ -1,0 +1,41 @@
+   Compiling pulp v0.22.3 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\pulp)
+   Compiling harfrust v0.12.0 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\harfrust)
+warning: function `shape` is never used
+   --> D:\Documents\Code\Rust\Exp\ferrostage\vendor\harfrust\src\hb\face.rs:439:8
+    |
+439 | pub fn shape(
+    |        ^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+   Compiling usvg v0.48.1
+   Compiling exr v1.74.2
+warning: `harfrust` (lib) generated 1 warning
+   Compiling resvg v0.48.1
+   Compiling image v0.25.10
+   Compiling gpui v0.2.2 (D:\Documents\Code\Rust\Exp\ferrostage\vendor\gpui)
+   Compiling gpui_windows v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+   Compiling gpui_platform v0.1.0 (https://github.com/zed-industries/zed?tag=v1.23.3#96a1b1b5)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 01s
+     Running unittests src\gpui.rs (cache/gpui-maintenance-candidate/target\debug\deps\gpui-39f8a1b79c45e0f8.exe)
+
+running 16 tests
+test svg_renderer::tests::fix_generic_font_families_monospace_resolves_to_lilex ... ok
+test svg_renderer::tests::fix_generic_font_families_sets_all_families ... ok
+test svg_renderer::maintenance_tests::glyph_lookup_checks_real_face_coverage_and_missing_id ... ok
+test svg_renderer::maintenance_tests::collection_lookup_respects_both_face_indices ... ok
+test svg_renderer::tests::test_select_emoji_font_skips_family_without_glyph ... ok
+test svg_renderer::maintenance_tests::fallback_excludes_used_and_missing_glyph_faces ... ok
+test svg_renderer::tests::renders_parsed_svg_at_requested_size ... ok
+test svg_renderer::tests::preserves_aspect_ratio_for_width_constrained_size ... ok
+test svg_renderer::tests::test_is_emoji_presentation ... ok
+test svg_renderer::maintenance_tests::shape_keeps_bgra_alpha_and_requested_size ... ok
+test svg_renderer::maintenance_tests::svgz_decodes_to_identical_shape_pixels ... ok
+test svg_renderer::maintenance_cmap_tests::unicode_coverage_preserves_formats_records_and_legacy_edge_results ... ok
+test svg_renderer::tests::text_with_split_glyph_clusters_in_mixed_fonts_does_not_panic ... ok
+test svg_renderer::maintenance_tests::text_fallback_renders_the_available_glyph ... ok
+test svg_renderer::maintenance_tests::ligature_combining_and_mixed_font_text_produces_visible_output ... ok
+test svg_renderer::maintenance_cmap_tests::legacy_cmap_emoji_fallback_produces_the_same_real_outline ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 351 filtered out; finished in 0.01s
+

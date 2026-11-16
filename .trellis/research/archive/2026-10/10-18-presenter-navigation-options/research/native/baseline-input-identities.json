@@ -1,0 +1,14 @@
+{
+  "fixtures/pdf/perf-100.pdf": {
+    "bytes": 312006,
+    "sha256": "395d8bb26ad5f8f7ca5245901abdcb8de1fccd2be5ff7e30482e54f776526cb6"
+  },
+  "fixtures/pdf/raster.pdf": {
+    "bytes": 8853,
+    "sha256": "25a7932f46ee8fcd4866011921c574b4f5b343af05b793bc397b7e93ed0df013"
+  },
+  "target/debug/pdfium.dll": {
+    "bytes": 7211520,
+    "sha256": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118"
+  }
+}

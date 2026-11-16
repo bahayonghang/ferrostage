@@ -1,0 +1,24 @@
+{
+  "diff_exit": 128,
+  "revision": "96a1b1b5389efff473fc2306f7f8c690f2e1a417",
+  "paths": [
+    "crates/gpui",
+    "Cargo.toml",
+    "assets/fonts/ibm-plex-sans",
+    "assets/fonts/lilex",
+    "crates/bench_metrics/Cargo.toml",
+    "crates/collections/Cargo.toml",
+    "crates/gpui_macros/Cargo.toml",
+    "crates/gpui_platform/Cargo.toml",
+    "crates/gpui_shared_string/Cargo.toml",
+    "crates/gpui_util/Cargo.toml",
+    "crates/http_client/Cargo.toml",
+    "crates/refineable/Cargo.toml",
+    "crates/reqwest_client/Cargo.toml",
+    "crates/scheduler/Cargo.toml",
+    "crates/sum_tree/Cargo.toml",
+    "crates/util_macros/Cargo.toml"
+  ],
+  "status_exit": 128,
+  "status_bytes": 109
+}

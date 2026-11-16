@@ -1,0 +1,127 @@
+{
+  "captured_utc": "2026-10-15T11:10:45.889605+00:00",
+  "source_count": 648,
+  "source_mismatches": [],
+  "artifacts_match": {
+    "binary": true,
+    "pdfium": true,
+    "fixture": true,
+    "cargo_lock": true
+  },
+  "links": [
+    {
+      "file": "docs/feature-parity.md",
+      "target": "PROJECT_PLAN.md",
+      "exists": true
+    },
+    {
+      "file": "docs/feature-parity.md",
+      "target": "adr/ADR-008-gpui-dependency-gate.md",
+      "exists": true
+    },
+    {
+      "file": ".trellis/tasks/10-14-presenter-v0.3/execution-state.md",
+      "target": "research/resume-2026-10-15.md",
+      "exists": true
+    },
+    {
+      "file": ".trellis/tasks/10-14-presenter-v0.3/research/gate-b.md",
+      "target": "../../10-14-07-gpui-shell/research/native-v6-checkpoint.md",
+      "exists": true
+    },
+    {
+      "file": ".trellis/tasks/10-14-presenter-v0.3/research/gate-b.md",
+      "target": "../../10-14-07-gpui-shell/research/native-v6-evidence-manifest.json",
+      "exists": true
+    },
+    {
+      "file": ".trellis/tasks/10-14-presenter-v0.3/research/gate-b.md",
+      "target": "../../10-14-07-gpui-shell/research/native-v5-checkpoint.md",
+      "exists": true
+    },
+    {
+      "file": ".trellis/tasks/10-14-presenter-v0.3/research/gate-b.md",
+      "target": "../../10-14-07-gpui-shell/research/poc-1-report.md",
+      "exists": true
+    },
+    {
+      "file": ".trellis/tasks/10-14-presenter-v0.3/research/gate-b.md",
+      "target": "../../10-14-07-gpui-shell/research/product-independent-v6-review.md",
+      "exists": true
+    },
+    {
+      "file": ".trellis/tasks/10-14-presenter-v0.3/research/gate-b.md",
+      "target": "../../10-14-07-gpui-shell/research/product-native-freeze-v6.json",
+      "exists": true
+    },
+    {
+      "file": ".trellis/tasks/10-14-presenter-v0.3/research/gate-b.md",
+      "target": "../../10-14-07-gpui-shell/research/native-v6-closeout-identity.json",
+      "exists": true
+    },
+    {
+      "file": ".trellis/tasks/10-14-07-gpui-shell/implement.md",
+      "target": "research/dependency-gate.md",
+      "exists": true
+    },
+    {
+      "file": ".trellis/tasks/10-14-07-gpui-shell/implement.md",
+      "target": "research/gpui-display-api.md",
+      "exists": true
+    },
+    {
+      "file": ".trellis/tasks/10-14-07-gpui-shell/implement.md",
+      "target": "research/independent-check.md",
+      "exists": true
+    },
+    {
+      "file": ".trellis/tasks/10-14-07-gpui-shell/implement.md",
+      "target": "research/maintenance-report.md",
+      "exists": true
+    },
+    {
+      "file": ".trellis/tasks/10-14-07-gpui-shell/implement.md",
+      "target": "research/maintenance-independent-report.md",
+      "exists": true
+    }
+  ],
+  "diff_check": {
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "warning: in the working copy of '.trellis/tasks/10-14-03-monitor-topology/implement.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-07-gpui-shell/design.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-07-gpui-shell/implement.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-08-presenter-workbench/implement.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-09-settings-ui/implement.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/design.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/execution-state.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/implement.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/next-session-prompt.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.trellis/tasks/10-14-presenter-v0.3/traceability.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'Cargo.lock', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'Cargo.toml', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'docs/feature-parity.md', LF will be replaced by CRLF the next time Git touches it\n"
+  },
+  "context_validation": "12/12 PASS; context JSONL unchanged since resume-2026-10-15-context-audit.json",
+  "documentation_hashes": {
+    "docs/feature-parity.md": "8a9d9eb51de022ce52e9ead60d82945de89cb5e5394bb0bdfdcac0ef3d046d56",
+    ".trellis/tasks/10-14-presenter-v0.3/execution-state.md": "2dfd0156c140f2fdeef8bcb3371b11808df41fa9d2ccd2a22eaf8e69f2db83d8",
+    ".trellis/tasks/10-14-presenter-v0.3/implement.md": "35c5357de6893bcf76a295e40c49f840e3b011bf70b8680083af0c2143e9ff8c",
+    ".trellis/tasks/10-14-presenter-v0.3/traceability.md": "25eed4e99bb21cd93f94451c49e2a4a0313f622f635999490947fac9c97b2c8e",
+    ".trellis/tasks/10-14-presenter-v0.3/research/gate-b.md": "5394508b9b4c04f9192a6bca7fa74c8f5d53d468b60947a194bcf7dcae736e7e",
+    ".trellis/tasks/10-14-presenter-v0.3/research/resume-2026-10-15.md": "e6b4cf27e32fac71d67042761f4d46914c82f31929e650db265330e011f661ff",
+    ".trellis/tasks/10-14-03-monitor-topology/implement.md": "d7b632ac3aa6f9dc4530b8b523450482c998ca72c2a7b1762044c68a6e376923",
+    ".trellis/tasks/10-14-07-gpui-shell/implement.md": "20cecf8ce0b32b266c710baa89610af28c253f0d911bed0fbb9588e47515abcf",
+    ".trellis/tasks/10-14-08-presenter-workbench/implement.md": "4a11a6843fad2a41179da70631c8173b3172f3875b63a2a650e957b93651e98e",
+    ".trellis/tasks/10-14-09-settings-ui/implement.md": "ec2e806c07acf49763255df9a398c08b81af0230a6bb99acde595152f46481ee",
+    ".trellis/tasks/10-14-10-hot-reload/implement.md": "ee8b070d8c289020e6b1880015f67b2767253b1f339588dcb3525db7a0eee27e",
+    ".trellis/tasks/10-14-11-media-playback/implement.md": "4550347f84974ee2b8fcf468d5d5fe00cfdc8ba3601eef3a5eb6fc9ba7447907"
+  },
+  "task_statuses": {
+    ".trellis/tasks/10-14-03-monitor-topology": "in_progress",
+    ".trellis/tasks/10-14-07-gpui-shell": "in_progress",
+    ".trellis/tasks/10-14-08-presenter-workbench": "planning",
+    ".trellis/tasks/10-14-09-settings-ui": "planning",
+    ".trellis/tasks/10-14-10-hot-reload": "planning",
+    ".trellis/tasks/10-14-11-media-playback": "planning",
+    ".trellis/tasks/10-14-presenter-v0.3": "planning",
+    ".trellis/tasks/archive/2026-10/10-14-01-docs-sync": "completed",
+    ".trellis/tasks/archive/2026-10/10-14-02-settings-schema": "completed",
+    ".trellis/tasks/archive/2026-10/10-14-04-session-lifecycle": "completed",
+    ".trellis/tasks/archive/2026-10/10-14-05-pdf-raster": "completed",
+    ".trellis/tasks/archive/2026-10/10-14-06-beamer-document-model": "completed"
+  },
+  "current": ".trellis/tasks/10-14-07-gpui-shell",
+  "product_checks": "VERIFIED_REUSE_NOT_RERUN",
+  "gate_b": "INCOMPLETE",
+  "gate_c_d": "NOT_RUN",
+  "status": "PASS"
+}

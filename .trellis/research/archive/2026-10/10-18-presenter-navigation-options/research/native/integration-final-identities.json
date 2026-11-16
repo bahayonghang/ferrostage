@@ -1,0 +1,90 @@
+{
+  "assets/locales/en-US/app.toml": {
+    "sha256": "a9a660ef6308074fd58e2aa330a7945ea8ddbbe7747d6b838dd12bf20b603671",
+    "bytes": 15632
+  },
+  "assets/locales/zh-CN/app.toml": {
+    "sha256": "23a633ffc36ff048da06cfa38b7125b1a4c3232db51a1aed987082d468f480fd",
+    "bytes": 15316
+  },
+  "crates/ferrostage-core/src/state.rs": {
+    "sha256": "5db6231ad50b166a2fc5e7482f16869ec62a70c69db07aad5678f5def604cbdf",
+    "bytes": 17185
+  },
+  "crates/ferrostage-core/src/state/annotation_tests.rs": {
+    "sha256": "5fa49ba7df4edddeb4244524a9725dc018303e336ee0d60a45bddcae05334336",
+    "bytes": 6916
+  },
+  "crates/ferrostage-ui/src/actions.rs": {
+    "sha256": "90eb6272085d797dd359cabf7cd9c2e503cbe1f62922965598fa2b72a5797440",
+    "bytes": 7835
+  },
+  "crates/ferrostage-ui/src/lib.rs": {
+    "sha256": "3421ef7c3aeedba8f47391a38f2cafe1fe1632d058ca5546e8d67667afa06baf",
+    "bytes": 1703
+  },
+  "crates/ferrostage-ui/src/page_browser.rs": {
+    "sha256": "b30e61b125246bd6aa9311c665a4643afd0bcf1735e4397d386e21f80a293f6a",
+    "bytes": 3863
+  },
+  "crates/ferrostage-ui/src/presenter.rs": {
+    "sha256": "e96d0519960cc18a3d42103309c9dbd2f32a651fa097ee1ba46561a935e65f53",
+    "bytes": 41887
+  },
+  "crates/ferrostage-ui/src/presenter/layout_navigation.rs": {
+    "sha256": "759f4636f5d383c522493f4f4cd1ea06259cb9e2d7c9a1b5e4ecda1d877e79d7",
+    "bytes": 12483
+  },
+  "crates/ferrostage-ui/src/presenter/number_input.rs": {
+    "sha256": "245cad6a9b592e471e75be781d3b3651833d0fc002a6c34298b37963ca9df5a3",
+    "bytes": 14666
+  },
+  "crates/ferrostage-ui/src/presenter/page_browser.rs": {
+    "sha256": "3d77b28eef9570211ed2e95c513712c7037ada9a7be59acf73d4aaa3d8ea0bda",
+    "bytes": 20496
+  },
+  "crates/ferrostage-ui/src/presenter/workbench_view.rs": {
+    "sha256": "06747f7899930c682f17049ce23eb1315195d71d153bf8264ce57723fb5cb881",
+    "bytes": 40360
+  },
+  "crates/ferrostage-ui/src/shell.rs": {
+    "sha256": "56591606cdcaef44d6a4d8d3719447d512a552d849d9e749af1fdc6ae09dc698",
+    "bytes": 263495
+  },
+  "crates/ferrostage-ui/src/shell/layout_navigation.rs": {
+    "sha256": "d2fecdfa984e5cf667f58aced972e359a0eac6dc1a44fa1cffb8255bb353b5a5",
+    "bytes": 1908
+  },
+  "crates/ferrostage-ui/src/shell/page_browser.rs": {
+    "sha256": "0baedd2ef945349598bdd225ef11de0351e9694e7a5d190dbab76409a4520c5b",
+    "bytes": 4864
+  },
+  "crates/ferrostage-ui/src/shell/reload.rs": {
+    "sha256": "4a489dc4de60c328770bcb1932212874ccccc0caf05d3158d72d58f85f365170",
+    "bytes": 33120
+  },
+  "crates/ferrostage-ui/src/workbench.rs": {
+    "sha256": "812604bb987a93acd2174e553a32be738da3f3b9d5bbfecb6a55afbbb39a65d4",
+    "bytes": 13225
+  },
+  "crates/ferrostage-ui/src/workbench/tests.rs": {
+    "sha256": "c132531ed45b3f96fd5c004a24bfdfde41b28877c77cdcbaaea00b3087129350",
+    "bytes": 15414
+  },
+  "fixtures/pdf/perf-100.pdf": {
+    "sha256": "395d8bb26ad5f8f7ca5245901abdcb8de1fccd2be5ff7e30482e54f776526cb6",
+    "bytes": 312006
+  },
+  "fixtures/pdf/raster.pdf": {
+    "sha256": "25a7932f46ee8fcd4866011921c574b4f5b343af05b793bc397b7e93ed0df013",
+    "bytes": 8853
+  },
+  "target/debug/ferrostage.exe": {
+    "sha256": "35d8c54e16509067fbda1aa2e3fa75d670583c85276d9b4280304c47a4e738e0",
+    "bytes": 43604992
+  },
+  "target/debug/pdfium.dll": {
+    "sha256": "79d4676b656cfb1abcea88f9ade3b4b0826c5200382db5f4ec72a636c598c118",
+    "bytes": 7211520
+  }
+}
