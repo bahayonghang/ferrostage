@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 26
-- **Last Active**: 2026-11-07
+- **Total Sessions**: 29
+- **Last Active**: 2026-11-16
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~839 | Active |
+| `journal-1.md` | ~902 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,9 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 29 | 2026-11-16 | 首页 B：最近文稿与真实 PDF 预览 | - | `dev` |
+| 28 | 2026-11-15 | 修复 Windows PowerShell 归档模块混用并添加 just help | - | `dev` |
+| 27 | 2026-11-15 | 首页准备工作区与页码层级优化 | - | `dev` |
 | 26 | 2026-11-07 | 修复显示器设置栈溢出并完成原生验收 | `e360b6779de0e68865eb5e9198f4c84795cae39b` | `dev` |
 | 25 | 2026-11-07 | 提交暖橙毛玻璃样式并归档任务 | `3c821a747c0d20e7c41628f42f0b9a77298b711a`, `b5c0ab67a6b081b217b91030226941e0a770242f` | `dev` |
 | 24 | 2026-11-07 | 完成放映优化六项任务与父任务归档 | `5dfb995`, `1c2f3d5`, `85ba283`, `b9c8383` | `dev` |

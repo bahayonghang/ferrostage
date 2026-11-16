@@ -837,3 +837,66 @@ Ready 与演示中的文档警告改为内容区左下可关闭小旗，关闭�
 ### Next Steps
 
 - 本任务已完成并归档；按用户要求保留本地提交，不推送。
+
+
+## Session 27: 首页准备工作区与页码层级优化
+<!-- trellis-session: v=2 fp=dd28e87aba80a487 -->
+
+**Date**: 2026-11-15
+**Task**: 首页准备工作区与页码层级优化
+**Branch**: `dev`
+
+### Summary
+
+按用户确认方案拓宽首页为双栏准备工作区，显示真实配置摘要并保留三条历史与用户字体；正常投影状态零占位，失败及黑白屏恢复保留；页码位于上一页与下一页之间，当前逻辑页使用大号橙色等宽数字。just ci、275 个 GPUI 测试、严格 Clippy、gpui/pdfium 构建通过。原生首页与 Ready 截图已检查，完整双屏 Presenting 人工验收未执行。
+Topics: [.trellis/spec/frontend/component-guidelines.md](../../spec/frontend/component-guidelines.md)
+
+### Git Commits
+
+(No commits - planning session)
+
+### Status
+
+[OK] **Completed**
+
+
+## Session 28: 修复 Windows PowerShell 归档模块混用并添加 just help
+<!-- trellis-session: v=2 fp=cee37a171b342970 -->
+
+**Date**: 2026-11-15
+**Task**: 修复 Windows PowerShell 归档模块混用并添加 just help
+**Branch**: `dev`
+
+### Summary
+
+复现 Get-DistributionNsis 在 Windows PowerShell 5.1 自动加载 PowerShell 7 Archive 1.2.7 时的 ExtractToDirectory 三参数重载错误；通过当前 PSHOME 显式导入主机自带模块覆盖两处解压和一处压缩，不修改用户全局 PSModulePath。新增 ArchiveOnly 回归并实际执行红绿验证，5.1/7 与 7 父进程路径污染场景均通过；Windows CI 加入该场景。just help 和命令注释已添加，裸 just 仍运行 ci。just ci、完整非 Lifecycle 打包回归和实际 just install 全部通过，已安装含本轮工作区 UI 改动的 1.3.1；未执行额外卸载/升降级生命周期测试，未提交。
+Topics: [.trellis/spec/backend/windows-distribution.md](../../spec/backend/windows-distribution.md)
+
+### Git Commits
+
+(No commits - planning session)
+
+### Status
+
+[OK] **Completed**
+
+
+## Session 29: 首页 B：最近文稿与真实 PDF 预览
+<!-- trellis-session: v=2 fp=b0d40ffc04209f20 -->
+
+**Date**: 2026-11-16
+**Task**: 首页 B：最近文稿与真实 PDF 预览
+**Branch**: `dev`
+
+### Summary
+
+用户确认 B。首页替换为窗口填充的最近文稿列表、独立只读预览和紧凑配置页脚；保留暖橙主题、字体、前三条历史和演示行为。预览复用单 PDF worker 的候选 prepare/preview/abort，不提交；选择与打开分离，切换立即清旧图，取消读任务与候选。278 项 GPUI 测试、严格 Clippy、just ci、gpui/pdfium 原生构建通过。检查 2582x1550 最大化及普通/窄/矮窗原生截图，修正页脚挤出屏幕；320x240 键盘 Open/Retry 自动滚动测试通过。截图位于 C:/Users/lyh/AppData/Local/Temp/ferrostage-home-b。未重新安装，未提交或推送；原有安装脚本修复保留。LSP 不完整，编译器与测试为验证依据。未追加物理双屏演示验收。
+Topics: [.trellis/spec/frontend/component-guidelines.md](../../spec/frontend/component-guidelines.md)
+
+### Git Commits
+
+(No commits - planning session)
+
+### Status
+
+[OK] **Completed**
