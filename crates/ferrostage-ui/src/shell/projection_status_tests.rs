@@ -1,28 +1,51 @@
-fn projection_fixture(cx: &mut TestAppContext) -> (Entity<Shell>, AnyWindowHandle, AnyWindowHandle) {
+fn projection_fixture(
+    cx: &mut TestAppContext,
+) -> (Entity<Shell>, AnyWindowHandle, AnyWindowHandle) {
     let (shell, presenter) = workbench_fixture(cx);
     let audience = shell.update(cx, |s, cx| {
         s.monitors = vec![test_monitor()];
         let audience = test_window(s, true, cx);
         let handle = audience.handle;
         s.audience = Some(audience);
-        s.apply(Command::StartPresentation { audience_available: true }, cx);
+        s.apply(
+            Command::StartPresentation {
+                audience_available: true,
+            },
+            cx,
+        );
         handle
     });
     (shell, presenter, audience)
 }
 
-fn projection_ack(s: &mut Shell, source: WindowId, phase: crate::audience::PlaybackPhase, cx: &mut Context<Shell>) {
-    s.playback_event(source, crate::audience::PlaybackEvent {
-        identity: s.selected_playback().unwrap(), phase, at: Instant::now(),
-    }, cx);
+fn projection_ack(
+    s: &mut Shell,
+    source: WindowId,
+    phase: crate::audience::PlaybackPhase,
+    cx: &mut Context<Shell>,
+) {
+    s.playback_event(
+        source,
+        crate::audience::PlaybackEvent {
+            identity: s.selected_playback().unwrap(),
+            phase,
+            at: Instant::now(),
+        },
+        cx,
+    );
 }
 
 #[gpui::test]
-fn projection_waits_for_settled_and_retains_last_draw_during_pending_or_failure(cx: &mut TestAppContext) {
+fn projection_waits_for_settled_and_retains_last_draw_during_pending_or_failure(
+    cx: &mut TestAppContext,
+) {
     use crate::audience::PlaybackPhase;
     let (shell, _, audience) = projection_fixture(cx);
     shell.update(cx, |s, cx| {
-        assert!(!s.has_authored_timing(), "ordinary pages also receive paint identities");
+        assert!(
+            !s.has_authored_timing(),
+            "ordinary pages also receive paint identities"
+        );
         timed_frame(s, cx);
         projection_ack(s, audience.window_id(), PlaybackPhase::FirstVisible, cx);
         assert!(s.settled_playback().is_none());
@@ -31,8 +54,20 @@ fn projection_waits_for_settled_and_retains_last_draw_during_pending_or_failure(
         s.apply(Command::JumpTo(PhysicalPage(2)), cx);
         assert!(!s.public_frame_ready());
         let pending = s.projection_status().unwrap();
-        assert!(pending.summary.contains(s.locale.text("projection-drawn").split('{').next().unwrap()));
-        assert!(pending.summary.contains(s.locale.text("projection-pending").split('{').next().unwrap()));
+        assert!(
+            pending
+                .summary
+                .contains(s.locale.text("projection-drawn").split('{').next().unwrap())
+        );
+        assert!(
+            pending.summary.contains(
+                s.locale
+                    .text("projection-pending")
+                    .split('{')
+                    .next()
+                    .unwrap()
+            )
+        );
         assert_eq!(s.settled_playback(), Some(old));
         s.graphics_error = Some("failed upload".into());
         let failed = s.projection_status().unwrap();
@@ -42,13 +77,29 @@ fn projection_waits_for_settled_and_retains_last_draw_during_pending_or_failure(
         s.graphics_error = None;
         timed_frame(s, cx);
         let current = s.selected_playback().unwrap();
-        s.playback_event(audience.window_id(), crate::audience::PlaybackEvent { identity: old, phase: PlaybackPhase::Settled, at: Instant::now() }, cx);
+        s.playback_event(
+            audience.window_id(),
+            crate::audience::PlaybackEvent {
+                identity: old,
+                phase: PlaybackPhase::Settled,
+                at: Instant::now(),
+            },
+            cx,
+        );
         assert_eq!(s.settled_playback(), Some(old));
         projection_ack(s, audience.window_id(), PlaybackPhase::FirstVisible, cx);
         assert_eq!(s.settled_playback(), Some(old));
         projection_ack(s, audience.window_id(), PlaybackPhase::Settled, cx);
         assert_eq!(s.settled_playback(), Some(current));
-        assert!(!s.projection_status().unwrap().summary.contains(s.locale.text("projection-pending").split('{').next().unwrap()));
+        assert!(
+            !s.projection_status().unwrap().summary.contains(
+                s.locale
+                    .text("projection-pending")
+                    .split('{')
+                    .next()
+                    .unwrap()
+            )
+        );
     });
 }
 
@@ -65,7 +116,9 @@ fn projection_real_audience_draw_emits_ordinary_page_receipt(cx: &mut TestAppCon
 }
 
 #[gpui::test]
-fn projection_blank_restore_preserves_timer_pause_and_public_state_through_real_input(cx: &mut TestAppContext) {
+fn projection_blank_restore_preserves_timer_pause_and_public_state_through_real_input(
+    cx: &mut TestAppContext,
+) {
     use crate::audience::PlaybackPhase;
     let (shell, presenter, audience) = projection_fixture(cx);
     for blank in [BlankMode::Black, BlankMode::White] {
@@ -75,9 +128,19 @@ fn projection_blank_restore_preserves_timer_pause_and_public_state_through_real_
             s.timed.clock.pause(true, Instant::now());
             s.apply(Command::PauseTimer, cx);
             s.apply(Command::ToggleBlank(blank), cx);
-            assert!(s.public_frame_ready(), "covered pixels remain ready, without a visible receipt");
+            assert!(
+                s.public_frame_ready(),
+                "covered pixels remain ready, without a visible receipt"
+            );
             let old = s.settled_playback();
-            s.apply(Command::JumpTo(if s.state.current_page() == PhysicalPage(0) { PhysicalPage(2) } else { PhysicalPage(0) }), cx);
+            s.apply(
+                Command::JumpTo(if s.state.current_page() == PhysicalPage(0) {
+                    PhysicalPage(2)
+                } else {
+                    PhysicalPage(0)
+                }),
+                cx,
+            );
             timed_frame(s, cx);
             let mut before = s.state.audience_snapshot();
             before.blank_mode = None;
@@ -85,7 +148,11 @@ fn projection_blank_restore_preserves_timer_pause_and_public_state_through_real_
         });
         redraw(audience, cx);
         shell.read_with(cx, |s, _| {
-            assert_eq!(s.settled_playback(), before.3, "a covered paint must not claim visible output");
+            assert_eq!(
+                s.settled_playback(),
+                before.3,
+                "a covered paint must not claim visible output"
+            );
         });
         redraw(presenter, cx);
         click_control(presenter, "projection-restore", cx);
@@ -116,43 +183,87 @@ fn projection_rejects_retired_window_and_generation_receipts(cx: &mut TestAppCon
         assert!(s.settled_playback().is_none());
         let mut wrong_generation = s.selected_playback().unwrap();
         wrong_generation.generation.0 += 1;
-        s.playback_event(current_window, crate::audience::PlaybackEvent { identity: wrong_generation, phase: PlaybackPhase::Settled, at: Instant::now() }, cx);
+        s.playback_event(
+            current_window,
+            crate::audience::PlaybackEvent {
+                identity: wrong_generation,
+                phase: PlaybackPhase::Settled,
+                at: Instant::now(),
+            },
+            cx,
+        );
         assert!(s.settled_playback().is_none());
         projection_ack(s, current_window, PlaybackPhase::Settled, cx);
         assert_ne!(s.settled_playback(), Some(old));
         Shell::close(retired, cx);
         s.stop(cx);
         assert!(s.settled_playback().is_none());
-        assert_eq!(s.projection_status().unwrap().summary, s.locale.text("projection-not-started"));
+        assert_eq!(
+            s.projection_status().unwrap().summary,
+            s.locale.text("projection-not-started")
+        );
     });
 }
 
 #[gpui::test]
-fn projection_reports_observation_unknown_and_configured_target_separately(cx: &mut TestAppContext) {
+fn projection_reports_observation_unknown_and_configured_target_separately(
+    cx: &mut TestAppContext,
+) {
     let (shell, presenter, _) = projection_fixture(cx);
     shell.update(cx, |s, cx| {
         let actual = s.projection_status().unwrap();
         assert!(actual.location.contains("Headless display"));
         s.audience.as_ref().unwrap().observed_display.set(None);
         let unknown = s.projection_status().unwrap();
-        assert!(unknown.location.contains(s.locale.text("displays-location-unknown")));
+        assert!(
+            unknown
+                .location
+                .contains(s.locale.text("displays-location-unknown"))
+        );
         assert!(!unknown.location.contains("Headless display"));
         s.stop(cx);
         let ready = s.projection_status().unwrap();
         assert!(ready.location.contains("Headless display"));
-        assert!(ready.location.contains(s.locale.text("projection-configured").split('{').next().unwrap()));
+        assert!(
+            ready.location.contains(
+                s.locale
+                    .text("projection-configured")
+                    .split('{')
+                    .next()
+                    .unwrap()
+            )
+        );
         s.pending = Some(Transaction {
             kind: TransactionKind::Start(StartTimer::Restart),
             presenter: None,
             audience: None,
             deadline: Instant::now() + CONFIRM_TIMEOUT,
         });
-        assert_eq!(s.projection_status().unwrap().summary, s.locale.text("projection-preparing"));
+        assert_eq!(
+            s.projection_status().unwrap().summary,
+            s.locale.text("projection-preparing")
+        );
+    });
+    redraw(presenter, cx);
+    let mut visual = gpui::VisualTestContext::from_window(presenter, cx);
+    assert!(visual.debug_bounds("projection-status").is_none());
+    assert!(visual.debug_bounds("projection-location").is_none());
+    shell.update(cx, |s, cx| {
+        s.pending = None;
+        s.apply(
+            Command::StartPresentation {
+                audience_available: true,
+            },
+            cx,
+        );
+        s.graphics_error = Some("failed upload".into());
+        cx.notify();
     });
     redraw(presenter, cx);
     let mut visual = gpui::VisualTestContext::from_window(presenter, cx);
     assert!(visual.debug_bounds("projection-status").is_some());
     assert!(visual.debug_bounds("projection-location").is_some());
+    assert!(visual.debug_bounds("projection-restore").is_none());
 }
 
 #[gpui::test]
@@ -172,7 +283,12 @@ fn projection_public_readiness_rejects_recovery_loading_and_placement(cx: &mut T
         s.graphics_error = Some("failed upload".into());
         assert!(!s.public_frame_ready());
         s.graphics_error = None;
-        s.pending = Some(Transaction { kind: TransactionKind::Assign(s.settings.settings.display.clone()), presenter: None, audience: None, deadline: Instant::now() + CONFIRM_TIMEOUT });
+        s.pending = Some(Transaction {
+            kind: TransactionKind::Assign(s.settings.settings.display.clone()),
+            presenter: None,
+            audience: None,
+            deadline: Instant::now() + CONFIRM_TIMEOUT,
+        });
         assert!(!s.public_frame_ready());
         s.pending = None;
         assert!(s.public_frame_ready());

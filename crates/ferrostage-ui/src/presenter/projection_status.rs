@@ -3,6 +3,11 @@ use super::*;
 impl Presenter {
     pub(super) fn projection_status(&self, p: Palette) -> Option<gpui::AnyElement> {
         let status = self.data.projection.as_ref()?;
+        // Normal output needs no extra row. Keep failures and covered-output
+        // recovery visible, including their live accessible summary.
+        if !status.failed && !status.restore {
+            return None;
+        }
         let mut row = div()
             .id("projection-status")
             .debug_selector(|| "projection-status".into())
