@@ -12,15 +12,16 @@ Applies to just recipes, `scripts/windows-distribution.ps1`, NSIS templates unde
 ./scripts/windows-distribution.ps1 -Action verify
 ./scripts/windows-distribution.ps1 -Action install [-Silent]
 ./scripts/windows-distribution.ps1 -Action uninstall [-Silent]
-./scripts/test-windows-distribution.ps1 [-Lifecycle]
+./scripts/test-windows-distribution.ps1 [-ArchiveOnly | -OsPolicyOnly | -Lifecycle]
 ```
 
-The public just recipes are `build`, `release`, `install`, and `uninstall`. `just install` always passes `-Silent` and requires no clicks; directly double-clicking Setup opens its wizard. Script install/uninstall actions support explicit silent mode. Lifecycle tests mutate the current user's installation and require coordination with other native validation.
+The desktop just recipes are `build`, `release`, `install`, and `uninstall`. `just help` lists documented recipes without building or installing; bare `just` still runs CI. `just test-distribution` forwards the focused test switches. `just install` always passes `-Silent` and requires no clicks; directly double-clicking Setup opens its wizard. Script install/uninstall actions support explicit silent mode. Lifecycle tests mutate the current user's installation and require coordination with other native validation.
 
 ## 3. Contracts
 
 - Minimum OS is Windows 10 version 1903 (build 18362), x64; Windows 11 passes the same lower-bound policy. Preserve the independent architecture and Visual C++ runtime preflights. Do not substitute `AtLeastWin10` alone for the version-plus-build requirement or treat synthetic OS-policy tests as real Windows 10 runtime acceptance.
 - Build the actual `ferrostage-app` graph with `--release --features gpui,pdfium --locked`. Resolve metadata version/target directory and compiler-artifact executable. Honor `CARGO_TARGET_DIR`; run Cargo before runtime staging through a cache-managed target symlink.
+- Bind the archive module explicitly to the running PowerShell host's `$PSHOME/Modules/Microsoft.PowerShell.Archive/Microsoft.PowerShell.Archive.psd1`. Windows PowerShell 5.1 must not auto-load PowerShell 7's archive module via inherited `PSModulePath`: `-NoProfile` does not isolate that path, and the Framework ZIP API lacks the Boolean-overwrite directory extraction overload. This binding covers both extraction sites and portable ZIP creation without changing the user's global environment. `-ArchiveOnly` verifies host provenance, nested/Unicode/space-path round trips and replacement of altered extracted bytes without Cargo, downloads or installation changes. Windows CI exercises it from a PowerShell 7 parent with that module path first.
 - `Invoke-DistributionTool` decodes redirected stdout and stderr as UTF-8 explicitly. Cargo metadata and compiler-artifact JSON must preserve non-ASCII authors and paths under a CP936 console; test the child-process capture with UTF-8 bytes rather than relying on the developer terminal's code page.
 - Share an explicit verified payload across Setup, portable ZIP and installation. Never zip the entire release directory. Keep the exact pinned DLL and sixteen original PDFium notices from `docs/pdfium-runtime.json`.
 - Preserve PDFium root `LICENSE` and `licenses/`. Package application declaration/MIT/Apache texts as `FERROSTAGE-LICENSE.txt`, `FERROSTAGE-LICENSE-MIT.txt`, and `FERROSTAGE-LICENSE-APACHE.txt`; installer notices live under `installer-licenses/`.

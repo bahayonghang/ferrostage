@@ -1,5 +1,5 @@
 # Focused artifact regressions. -Lifecycle explicitly exercises this user's installation.
-param([switch]$Lifecycle, [switch]$OsPolicyOnly)
+param([switch]$Lifecycle, [switch]$OsPolicyOnly, [switch]$ArchiveOnly)
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'windows-distribution.ps1') -LibraryOnly
 
@@ -12,6 +12,40 @@ function Assert-DistributionFailure([scriptblock]$Operation, [string]$Message) {
     try { & $Operation | Out-Null } catch { $failed = $true; Write-Host "[PASS] $Message ($($_.Exception.Message))" }
     Assert-Distribution $failed "Expected failure: $Message"
 }
+
+function Test-DistributionArchive {
+    # The script entry point must select this host's module even when a parent
+    # PowerShell 7 process put its Modules directory first in PSModulePath.
+    $expectedModule = Join-Path $PSHOME 'Modules/Microsoft.PowerShell.Archive/Microsoft.PowerShell.Archive.psd1'
+    foreach ($name in @('Expand-Archive', 'Compress-Archive')) {
+        $command = Get-Command $name
+        Assert-Distribution ($command.Module.Path -eq $expectedModule.Replace('/', '\')) "$name loaded an archive module from another PowerShell host: $($command.Module.Path)"
+    }
+    $work = Join-Path ([IO.Path]::GetTempPath()) ('FerroStage-archive-test-' + [guid]::NewGuid().ToString('N'))
+    New-Item -ItemType Directory -Path $work | Out-Null
+    try {
+        $source = Join-Path $work 'source with spaces'
+        $nested = Join-Path $source 'licenses'
+        New-Item -ItemType Directory -Path $nested -Force | Out-Null
+        $unicodeName = (-join @([char]0x6f14, [char]0x793a)) + '.txt'
+        [IO.File]::WriteAllText((Join-Path $source $unicodeName), 'archive fixture')
+        [IO.File]::WriteAllText((Join-Path $nested 'notice.txt'), 'complete notice')
+        $archive = Join-Path $work 'portable with spaces.zip'
+        Compress-Archive -Path (Join-Path $source '*') -DestinationPath $archive -CompressionLevel Optimal
+        $destination = Join-Path $work 'extracted'
+        Expand-Archive -LiteralPath $archive -DestinationPath $destination
+        foreach ($relative in @($unicodeName, 'licenses/notice.txt')) {
+            Assert-Distribution ((Get-DistributionHash (Join-Path $source $relative)) -eq (Get-DistributionHash (Join-Path $destination $relative))) "ZIP round trip changed $relative"
+        }
+        [IO.File]::WriteAllText((Join-Path $destination $unicodeName), 'altered cached tool')
+        Expand-Archive -LiteralPath $archive -DestinationPath $destination -Force
+        Assert-Distribution ((Get-DistributionHash (Join-Path $source $unicodeName)) -eq (Get-DistributionHash (Join-Path $destination $unicodeName))) 'Forced extraction did not replace altered cached bytes'
+        Write-Host '[PASS] Host archive module, ZIP round trip and forced cache extraction'
+    } finally { Remove-Item -LiteralPath $work -Recurse -Force }
+}
+
+Test-DistributionArchive
+if ($ArchiveOnly) { return }
 
 $savedEncoding = [Console]::OutputEncoding
 try {

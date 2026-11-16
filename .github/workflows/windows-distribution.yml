@@ -8,7 +8,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: windows-distribution-${{ github.event.pull_request.number || github.ref }}
+  group: >-
+    windows-distribution-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -18,13 +19,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@1.99.0
+      - name: Archive compatibility from a PowerShell 7 parent
+        shell: pwsh
+        run: |
+          # -NoProfile does not prevent an inherited module-path mix.
+          $env:PSModulePath = "$PSHOME\Modules;$env:PSModulePath"
+          & powershell.exe -NoProfile -ExecutionPolicy Bypass `
+            -File scripts/test-windows-distribution.ps1 -ArchiveOnly
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Build and package the actual desktop application
         shell: powershell
         run: ./scripts/windows-distribution.ps1 -Action release
       - name: Verify payload and release checksums
         shell: powershell
         run: ./scripts/windows-distribution.ps1 -Action verify
-      - name: Packaging regressions and native install lifecycle on disposable runner
+      - name: Packaging and install lifecycle on disposable runner
         shell: powershell
         run: ./scripts/test-windows-distribution.ps1 -Lifecycle
       - name: Upload reviewable distribution artifacts

@@ -8,6 +8,10 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
+# -NoProfile still inherits PSModulePath. A PowerShell 7 parent can put its
+# Archive module ahead of Windows PowerShell's, whose .NET Framework lacks
+# ExtractToDirectory(string, string, bool). Bind both ZIP commands to this host.
+Import-Module -Name (Join-Path $PSHOME 'Modules/Microsoft.PowerShell.Archive/Microsoft.PowerShell.Archive.psd1') -Force -Scope Local -ErrorAction Stop
 $script:DistributionRepo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $script:UninstallKey = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\FerroStage'
 
