@@ -35,7 +35,8 @@ pub(super) struct WorkbenchData {
     pub(super) grid_start: usize,
     pub steps: Vec<ferrostage_core::PhysicalPage>,
     pub progress: String,
-    progress_compact: String,
+    progress_pages: (usize, usize),
+    progress_step: String,
     timer: String,
     timer_label: &'static str,
     phase: TimerPhase,
@@ -70,7 +71,7 @@ impl WorkbenchData {
         };
         let session = shell.workbench.document.as_ref();
         let page = shell.state.current_page();
-        let (progress, progress_compact) = session
+        let (progress, progress_pages, progress_step) = session
             .map(|s| {
                 let map = &s.document.slide_map;
                 let logical = map.logical_for(page).map_or(0, |l| l.0);
@@ -89,23 +90,17 @@ impl WorkbenchData {
                         ("pages", s.document.page_count.to_string()),
                     ],
                 );
-                let mut compact = shell.locale.format(
-                    "wb-page-compact",
-                    &[
-                        ("slide", (logical + 1).to_string()),
-                        ("slides", map.groups().len().to_string()),
-                    ],
-                );
+                let mut overlay = String::new();
                 if group.is_some_and(|group| group.len() > 1) {
-                    compact.push_str(&shell.locale.format(
+                    overlay = shell.locale.format(
                         "wb-step-compact",
                         &[
                             ("step", (step + 1).to_string()),
                             ("steps", group.map_or(1, Vec::len).to_string()),
                         ],
-                    ));
+                    );
                 }
-                (full, compact)
+                (full, (logical + 1, map.groups().len()), overlay)
             })
             .unwrap_or_default();
         let overlay = shell.state.audience_snapshot();
@@ -173,7 +168,8 @@ impl WorkbenchData {
                 .map(|s| s.document.slide_map.steps().to_vec())
                 .unwrap_or_default(),
             progress,
-            progress_compact,
+            progress_pages,
+            progress_step,
             timer: format!(
                 "{}{:02}:{:02}",
                 if elapsed > target && timer.mode == ferrostage_settings::TimerMode::CountDown {
@@ -960,19 +956,14 @@ impl Presenter {
             );
         }
         if has_steps {
-            for (id, label, intent) in [
-                ("previous", "wb-previous", Intent::Previous),
-                ("next", "wb-next", Intent::Next),
-            ] {
-                navigation = navigation.child(self.button(
-                    id.into(),
-                    self.locale.text(label).into(),
-                    true,
-                    false,
-                    intent,
-                    p,
-                ));
-            }
+            navigation = navigation.child(self.button(
+                "previous".into(),
+                self.locale.text("wb-previous").into(),
+                true,
+                false,
+                Intent::Previous,
+                p,
+            ));
             let detail = self.data.workbench.progress.clone();
             let typography = self.data.typography.clone();
             navigation = navigation.child(
@@ -1015,14 +1006,46 @@ impl Presenter {
                         .text_color(rgb(p.body))
                         .hover(move |style| style.bg(rgb(p.control_hover)))
                         .active(move |style| style.bg(rgb(p.control_pressed)).top(px(1.)))
-                        .child(self.data.workbench.progress_compact.clone())
                         .child(
                             div()
+                                .id("progress-current")
+                                .debug_selector(|| "progress-current".into())
+                                .font(self.data.typography.numeric_font())
+                                .text_size(px(self.ui_text_size(26.)))
+                                .line_height(px(self.ui_text_size(32.)))
+                                .font_weight(gpui::FontWeight::SEMIBOLD)
+                                .text_color(rgb(p.accent_text))
+                                .min_w(px(self.ui_text_size(
+                                    self.data.workbench.progress_pages.1.to_string().len() as f32
+                                        * 18.,
+                                )))
+                                .text_right()
+                                .child(self.data.workbench.progress_pages.0.to_string()),
+                        )
+                        .child(
+                            div()
+                                .font(self.data.typography.numeric_font())
                                 .text_color(rgb(p.muted))
-                                .child(self.locale.text("wb-jump-action")),
-                        ),
+                                .child(format!("/ {}", self.data.workbench.progress_pages.1)),
+                        )
+                        .when(!self.data.workbench.progress_step.is_empty(), |view| {
+                            view.child(
+                                div()
+                                    .text_color(rgb(p.muted))
+                                    .child(self.data.workbench.progress_step.clone()),
+                            )
+                        })
+                        .child(Self::chevron(false, p.muted, "progress-chevron".into())),
                 ),
             );
+            navigation = navigation.child(self.button(
+                "next".into(),
+                self.locale.text("wb-next").into(),
+                true,
+                false,
+                Intent::Next,
+                p,
+            ));
         }
         if let Some(label) = &self.data.workbench.return_label {
             navigation = navigation
