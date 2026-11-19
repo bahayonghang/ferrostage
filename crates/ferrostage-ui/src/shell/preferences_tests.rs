@@ -346,6 +346,106 @@ fn display_settings_both_hosts_fit_windows_main_thread_stack() {
 }
 
 #[gpui::test]
+fn settings_centers_navigation_and_category_body_with_aligned_header_and_feedback(
+    cx: &mut TestAppContext,
+) {
+    let (shell, handle) = input_presenter(cx);
+    shell.update(cx, |shell, cx| {
+        shell.modal = Some(Modal::Settings);
+        cx.notify();
+    });
+    cx.simulate_window_resize(handle, size(px(1600.), px(900.)));
+    redraw(handle, cx);
+    for (category, body_width) in [
+        ("settings-category-general", 960.),
+        ("settings-category-displays", 1120.),
+    ] {
+        click_control(handle, category, cx);
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let rail = visual.debug_bounds(category).unwrap();
+        let body = visual.debug_bounds("settings-content").unwrap();
+        let left = rail.left();
+        let right = px(1600.) - body.right();
+        assert!(f32::from(left - right).abs() <= 1., "{category}: {left:?} vs {right:?}");
+        assert_eq!(body.size.width, px(body_width), "{category}");
+        assert_eq!(visual.debug_bounds("settings-title").unwrap().left(), rail.left());
+        assert_eq!(visual.debug_bounds("close-settings").unwrap().right(), body.right());
+        assert_eq!(visual.debug_bounds("settings-feedback").unwrap().left(), body.left());
+    }
+}
+
+#[gpui::test]
+fn narrow_settings_wraps_categories_and_scrolls_to_the_last_display_control(
+    cx: &mut TestAppContext,
+) {
+    let (shell, handle) = input_presenter(cx);
+    shell.update(cx, |shell, cx| {
+        shell.settings.settings.general.ui_font_size = 24;
+        shell.modal = Some(Modal::Settings);
+        cx.notify();
+    });
+    cx.simulate_window_resize(handle, size(px(390.), px(640.)));
+    redraw(handle, cx);
+    click_control(handle, "settings-category-displays", cx);
+    redraw(handle, cx);
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    let body = visual.debug_bounds("settings-content").unwrap();
+    let first = visual.debug_bounds("settings-category-general").unwrap();
+    let last = visual.debug_bounds("settings-category-about").unwrap();
+    assert!(first.bottom() <= last.top() && last.bottom() <= body.top());
+    assert!(body.size.height >= px(44.));
+    visual.simulate_event(gpui::ScrollWheelEvent {
+        position: body.center(),
+        delta: gpui::ScrollDelta::Lines(gpui::point(0., -100.)),
+        modifiers: gpui::Modifiers::default(),
+        touch_phase: gpui::TouchPhase::Moved,
+    });
+    redraw(handle, cx);
+    let toggle = visual.debug_bounds("setting-display.presenter_start_fullscreen").unwrap();
+    assert!(toggle.left() >= body.left() && toggle.right() <= body.right()
+        && toggle.top() >= body.top() && toggle.bottom() <= body.bottom(),
+        "bottom display control {toggle:?} must fit in the scrolling body {body:?}");
+    click_control(handle, "close-settings", cx);
+    assert!(shell.read_with(cx, |shell, _| shell.modal.is_none()));
+}
+
+#[gpui::test]
+fn switching_settings_category_opens_its_first_controls_after_scrolling(
+    cx: &mut TestAppContext,
+) {
+    let (shell, handle) = input_presenter(cx);
+    shell.update(cx, |shell, cx| {
+        shell.settings.settings.general.ui_font_size = 20;
+        shell.modal = Some(Modal::Settings);
+        cx.notify();
+    });
+    cx.simulate_window_resize(handle, size(px(710.), px(640.)));
+    redraw(handle, cx);
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    let body = visual.debug_bounds("settings-content").unwrap();
+    visual.simulate_event(gpui::ScrollWheelEvent {
+        position: body.center(),
+        delta: gpui::ScrollDelta::Lines(gpui::point(0., -100.)),
+        modifiers: gpui::Modifiers::default(),
+        touch_phase: gpui::TouchPhase::Moved,
+    });
+    redraw(handle, cx);
+    assert!(visual.debug_bounds("setting-row-general.language").unwrap().top() < body.top());
+    click_control(handle, "settings-category-displays", cx);
+    redraw(handle, cx);
+    let body = visual.debug_bounds("settings-content").unwrap();
+    let refresh = visual.debug_bounds("refresh-displays").unwrap();
+    assert!(refresh.top() >= body.top() && refresh.bottom() <= body.bottom(),
+        "refresh {refresh:?} must be visible on entering Displays, inside {body:?}");
+    click_control(handle, "settings-category-general", cx);
+    redraw(handle, cx);
+    let language = visual.debug_bounds("setting-row-general.language").unwrap();
+    let body = visual.debug_bounds("settings-content").unwrap();
+    assert!(language.top() >= body.top() && language.bottom() <= body.bottom());
+}
+
+#[gpui::test]
 fn settings_v09_all_categories_render_and_footer_stays_reachable(cx: &mut TestAppContext) {
     let (shell, handle) = input_presenter(cx);
     for category in crate::settings_panel::Category::ALL {
@@ -833,7 +933,7 @@ fn settings_fonts_filter_apply_size_restore_and_history_through_real_input(
     shell.update(cx, |shell, cx| {
         shell.store = fixture.store();
         load_ready(shell);
-        shell.ui_fonts = std::sync::Arc::new(vec!["Arial".into(), "Microsoft YaHei UI".into()]);
+        shell.ui_fonts = std::sync::Arc::new(vec!["Arial".into(), "Microsoft YaHei UI".into(), "微软雅黑".into()]);
         shell.settings.settings.general.recent_files =
             vec!["alpha/same.pdf".into(), "beta/same.pdf".into()];
         shell.settings.settings.general.recent_opened_at = BTreeMap::from([
@@ -870,6 +970,7 @@ fn settings_fonts_filter_apply_size_restore_and_history_through_real_input(
     let mut visual = gpui::VisualTestContext::from_window(handle, cx);
     assert!(visual.debug_bounds("setting-font-family-selected").is_some());
     assert_eq!(visual.debug_bounds("setting-font-family").unwrap().size, family.size);
+    assert!(visual.debug_bounds("settings-font-search").is_some(), "opening the picker shows the text input");
     handle.update(cx, |_, window, cx| {
         cx.write_to_clipboard(gpui::ClipboardItem::new_string("Arial".into()));
         window.dispatch_keystroke(gpui::Keystroke::parse("ctrl-v").unwrap(), cx);
@@ -890,10 +991,31 @@ fn settings_fonts_filter_apply_size_restore_and_history_through_real_input(
         "Arial",
         "a single-line font filter must reject pasted control characters"
     );
-    cx.simulate_keystrokes(handle, "ctrl-a ctrl-c alt-x ctrl-z");
+    cx.simulate_keystrokes(handle, "ctrl-a");
+    let mut platform = cx.test_window(handle);
+    let mut input = gpui::PlatformWindow::take_input_handler(&mut platform).expect("focused font search input");
+    assert_eq!(input.selected_text_range(false).unwrap().range, 0..5);
+    input.replace_and_mark_text_in_range(None, "雅黑", Some(2..2));
+    assert_eq!(input.marked_text_range(), Some(0..2));
+    gpui::PlatformWindow::set_input_handler(&mut platform, input);
+    cx.simulate_keystrokes(handle, "enter");
     cx.run_until_parked();
+    shell.read_with(cx, |shell, _| {
+        assert_eq!(shell.preferences.font_picker.as_ref().unwrap().filter, "雅黑");
+        assert!(shell.settings.settings.general.ui_font_family.is_empty());
+    });
+    let mut input = gpui::PlatformWindow::take_input_handler(&mut platform).unwrap();
+    input.replace_text_in_range(None, "雅黑");
+    assert_eq!(input.marked_text_range(), None);
+    gpui::PlatformWindow::set_input_handler(&mut platform, input);
+    cx.simulate_keystrokes(handle, "x");
+    redraw(handle, cx);
+    assert!(gpui::VisualTestContext::from_window(handle, cx).debug_bounds("settings-font-empty").is_some());
+    cx.simulate_keystrokes(handle, "down up enter");
+    assert!(shell.read_with(cx, |shell, _| shell.preferences.font_picker.is_some()));
+    cx.simulate_keystrokes(handle, "ctrl-a backspace");
     assert!(shell.read_with(cx, |shell, _| shell.preferences.font_picker.as_ref().unwrap().filter.is_empty()));
-    cx.simulate_keystrokes(handle, "y a h e i down enter");
+    cx.simulate_keystrokes(handle, "shift-y a shift-h e i enter");
     cx.run_until_parked();
     shell.read_with(cx, |shell, _| {
         assert_eq!(
@@ -948,6 +1070,7 @@ fn settings_fonts_filter_apply_size_restore_and_history_through_real_input(
             ["alpha/same.pdf", "beta/same.pdf"]
         );
     });
+    assert!(handle.downcast::<Presenter>().unwrap().update(cx, |view, window, _| view.font_picker_focused(window)).unwrap(), "Escape restores the trigger");
     // The existing history action still clears the source seen by both settings and home.
     shell.update(cx, |shell, cx| {
         shell.dispatch(Intent::ClearRecent, cx);
@@ -964,6 +1087,64 @@ fn settings_fonts_filter_apply_size_restore_and_history_through_real_input(
                 .recent_files
                 .is_empty()
         );
+    });
+}
+
+#[gpui::test]
+fn settings_fonts_scroll_click_and_tab_follow_the_displayed_order(cx: &mut TestAppContext) {
+    let fixture = SaveFixture::new();
+    fixture.unblock();
+    let (shell, handle) = input_presenter(cx);
+    let last = "Family Eight With A Long Display Name";
+    shell.update(cx, |shell, cx| {
+        shell.store = fixture.store();
+        let mut families = (0..8).map(|i| format!("Family {i}")).collect::<Vec<_>>();
+        families.push(last.into());
+        shell.ui_fonts = std::sync::Arc::new(families);
+        shell.modal = Some(Modal::Settings);
+        cx.notify();
+    });
+    redraw(handle, cx);
+    click_control(handle, "setting-font-family", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+    cx.simulate_keystrokes(handle, "pagedown down down");
+    redraw(handle, cx);
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    let viewport = visual.debug_bounds("settings-font-results").unwrap();
+    let last_row = visual.debug_bounds("font-choice-Family Eight With A Long Display Name").unwrap();
+    assert!(last_row.top() >= viewport.top() && last_row.bottom() <= viewport.bottom(),
+        "keyboard candidate must scroll into view: {last_row:?} in {viewport:?}");
+    assert!(shell.read_with(cx, |s, _| s.store.load().unwrap().settings.general.ui_font_family.is_empty()));
+    // Choose the preceding visible row with the mouse while the last one is highlighted.
+    click_control(handle, "font-choice-Family 7", cx);
+    cx.run_until_parked();
+    shell.read_with(cx, |s, _| {
+        assert_eq!(s.store.load().unwrap().settings.general.ui_font_family, "Family 7");
+        assert!(s.preferences.font_picker.is_none());
+    });
+    redraw(handle, cx);
+    click_control(handle, "setting-font-family", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+    assert_eq!(shell.read_with(cx, |s, _| s.preferences.font_picker.as_ref().unwrap().selected), 7);
+    cx.simulate_keystrokes(handle, "shift-tab enter");
+    cx.run_until_parked();
+    shell.read_with(cx, |s, _| {
+        assert!(s.preferences.font_picker.is_none());
+        // Shift+Tab left the search on the preceding explicit Use default control.
+        assert!(s.settings.settings.general.ui_font_family.is_empty());
+    });
+    redraw(handle, cx);
+    click_control(handle, "setting-font-family", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+    cx.simulate_keystrokes(handle, "tab enter");
+    cx.run_until_parked();
+    shell.read_with(cx, |s, _| {
+        // Tab left the search on the next setting, the interface-size minus button.
+        assert!(s.preferences.font_picker.is_none());
+        assert_eq!(s.settings.settings.general.ui_font_size, 15);
     });
 }
 

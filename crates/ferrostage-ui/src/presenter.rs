@@ -1,4 +1,5 @@
 mod crop;
+mod font_search;
 mod home_view;
 pub(crate) mod layout_navigation;
 mod material;
@@ -38,6 +39,7 @@ pub(crate) struct PresenterData {
     held_crop_reload: bool,
     utility_menu: Option<bool>,
     number_focus: FocusHandle,
+    font_search_focus: FocusHandle,
     displays: Option<crate::display_settings::DisplayPanel>,
     error: Option<String>,
     /// The shown error is an event message that `Intent::DismissError` clears.
@@ -101,6 +103,7 @@ impl PresenterData {
                 _ => None,
             },
             number_focus: shell.number_input_focus.clone(),
+            font_search_focus: shell.font_search_focus.clone(),
             displays: shell.display_panel(),
             error_dismissible: shell.graphics_error.is_some() || shell.error.is_some(),
             error: shell
@@ -201,7 +204,11 @@ pub(crate) struct Presenter {
     had_outline_focus: Option<usize>,
     progress_focus: FocusHandle,
     font_picker_focus: FocusHandle,
-    had_font_picker: bool,
+    font_search: Option<gpui::Entity<font_search::FontSearch>>,
+    font_results_scroll: gpui::ScrollHandle,
+    last_font_candidate: Option<(String, usize)>,
+    settings_scroll: gpui::ScrollHandle,
+    font_trigger_anchor: gpui::ScrollAnchor,
     home_focus: [FocusHandle; 9],
     home_scroll: gpui::ScrollHandle,
     home_anchors: [gpui::ScrollAnchor; 9],
@@ -485,6 +492,7 @@ impl Presenter {
         cx.on_focus_out(&progress_focus, window, |_, _, _, cx| cx.notify())
             .detach();
         let number_focus = data.number_focus.clone();
+        let settings_scroll = gpui::ScrollHandle::new();
         Self {
             shell,
             data,
@@ -524,7 +532,11 @@ impl Presenter {
             had_outline_focus: None,
             progress_focus,
             font_picker_focus: cx.focus_handle(),
-            had_font_picker: false,
+            font_search: None,
+            font_results_scroll: gpui::ScrollHandle::new(),
+            last_font_candidate: None,
+            font_trigger_anchor: gpui::ScrollAnchor::for_handle(settings_scroll.clone()),
+            settings_scroll,
             home_focus,
             home_scroll,
             home_textures: Default::default(),
@@ -1124,11 +1136,6 @@ impl Render for Presenter {
             window,
             cx,
         );
-        let picker_open = self.data.preferences.panel.font_picker.is_some();
-        if self.had_font_picker && !picker_open && self.data.modal == Some(Modal::Settings) {
-            window.focus(&self.font_picker_focus, cx);
-        }
-        self.had_font_picker = picker_open;
         let mut prioritized = self
             .data
             .workbench
@@ -1361,6 +1368,7 @@ impl Render for Presenter {
             window.focus(return_focus, cx);
         }
         self.had_modal = surface_open;
+        self.sync_font_picker(p, window, cx);
         if let Some(focused) = window.focused(cx) {
             let presenter = cx.weak_entity();
             // Auto-created button handles can outlive their removed element
@@ -1460,22 +1468,17 @@ impl Render for Presenter {
                     cx.stop_propagation();
                     return;
                 }
+                if this.font_search_key(event, window, cx) {
+                    return;
+                }
                 if this.data.modal == Some(Modal::Settings)
                     && (this.data.preferences.panel.recording.is_some()
-                        || this.data.preferences.panel.edit.is_some()
-                        || this.data.preferences.panel.font_picker.is_some())
+                        || this.data.preferences.panel.edit.is_some())
                 {
                     let key = event.keystroke.unparse();
-                    let text = if this.data.preferences.panel.font_picker.is_some()
-                        && matches!(key.as_str(), "ctrl-v" | "cmd-v" | "shift-insert")
-                    {
-                        // Paste providers may restore the clipboard before deferred dispatch.
-                        cx.read_from_clipboard().and_then(|item| item.text())
-                    } else {
-                        event.keystroke.key_char.clone().or_else(|| {
-                            (event.keystroke.key.len() == 1).then(|| event.keystroke.key.clone())
-                        })
-                    };
+                    let text = event.keystroke.key_char.clone().or_else(|| {
+                        (event.keystroke.key.len() == 1).then(|| event.keystroke.key.clone())
+                    });
                     actions::dispatch(&this.shell, Intent::SettingsKey { key, text }, cx);
                     cx.stop_propagation();
                 }
@@ -1503,7 +1506,11 @@ impl Render for Presenter {
                 return root
                     .track_focus(&self.modal_focus)
                     .key_context("FerroStageModal")
-                    .child(self.modal_surface(p).child(self.settings_panel(p, window)))
+                    .child(self.modal_surface(p).child(self.settings_panel(
+                        p,
+                        viewport.width.into(),
+                        inset,
+                    )))
                     .into_any_element();
             }
             if let Some(panel) = &self.data.displays {

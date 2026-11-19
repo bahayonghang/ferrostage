@@ -167,6 +167,8 @@ The workbench is a top bar panel, one panel per pane (Current, Next, Notes) and 
 
 With 4px panel padding, an inner rounded area uses a 12px radius, because outer radius = inner radius + padding.
 
+Inside the full-height Settings panel, the navigation and category body are centered together. The 176px navigation rail sits 16px from the body. The body is at most 960px wide, or 1120px for Displays. The title starts at the navigation edge, Close ends at the body edge, and save feedback starts under the body. Below 760 logical pixels the navigation wraps above the scrolling body.
+
 Icons are linear, about a 1.5px stroke, in `currentColor`. Do not add illustrated characters.
 
 ## Elevation & Depth
@@ -319,4 +321,4 @@ The presenter owns this theme. Its home, document header, timer, tools, settings
 
 **Controls.** Primary actions use the orange fill with dark text. Preserve hover, pressed, disabled, selected and focused states, the 2 px focus indicator and the minimum 44 px interactive target. Time digits keep a stable width. PDF and media are never assigned control fonts or tinted by the presenter.
 
-The presenter uses an installed interface-font override first, then installed Figtree, then the platform UI family. It reads the available family names once per session. The clock and timer request tabular digits on that same face, so a missing optional font does not trigger a new native font search when the first PDF opens.
+The presenter uses an installed interface-font override first, then installed Figtree, then the platform UI family. It reads the available family names once per session. The General settings font button opens a focused, single-line search field. Typing narrows installed family names, arrows browse the scrollable results, and Enter or a click applies the highlighted or clicked family. The panel shows the current font separately. Escape returns to the button, Tab leaves the search, and Use default restores the system choice. The clock and timer request tabular digits on that same face, so a missing optional font does not trigger a new native font search when the first PDF opens.

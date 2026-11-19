@@ -41,7 +41,7 @@ pub(crate) enum Intent {
     EditSetting(&'static str, String),
     BeginSettingEdit(&'static str),
     ToggleFontPicker,
-    FontPickerMove(isize),
+    FilterFonts(String),
     SettingsKey {
         key: String,
         text: Option<String>,
@@ -184,7 +184,7 @@ pub(crate) fn install(
     cx.intercept_keystrokes(move |event, window, cx| {
         if let Some(shell) = editing.upgrade() {
             let shell = shell.read(cx);
-            if shell.captures_preferences(window.window_handle().window_id())
+            if shell.captures_preferences(window)
                 || shell.modal == Some(crate::shell::Modal::Crop)
                     && window
                         .window_handle()

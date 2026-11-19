@@ -18,7 +18,7 @@ pub const SESSION_WIDTH: f32 = 208.;
 /// Minimum Restart segment width beside Resume at default text size.
 pub const RESTART_WIDTH: f32 = 144.;
 const PREFERRED_SANS: &str = "Figtree";
-const SYSTEM_SANS: &str = ".SystemUIFont";
+pub(crate) const SYSTEM_SANS: &str = ".SystemUIFont";
 pub const SETTINGS_WIDTH: f32 = 960.;
 pub const SETTINGS_DISPLAY_WIDTH: f32 = 1120.;
 pub const SETTINGS_ROW: f32 = 56.;
@@ -98,7 +98,7 @@ impl Typography {
 /// Presenter colors. Every value is opaque `0xRRGGBB` except the fields documented
 /// as RGBA (`hairline`, `shadow`); `layer` is drawn at `layer_alpha` only when the
 /// native window blur is active, otherwise panels use `layer_solid`.
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Palette {
     /// Window field gradient ends (160deg). Text never sits directly on the field.
     pub field_top: u32,

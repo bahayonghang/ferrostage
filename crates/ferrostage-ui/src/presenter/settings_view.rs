@@ -23,16 +23,30 @@ impl SettingsData {
     }
 }
 impl Presenter {
-    pub(super) fn settings_panel(&self, p: Palette, window: &Window) -> impl IntoElement {
+    pub(super) fn settings_panel(
+        &self,
+        p: Palette,
+        viewport_width: f32,
+        inset: f32,
+    ) -> impl IntoElement {
         let data = &self.data.preferences;
         let l = self.locale;
         let enabled = data.writable && !self.data.busy;
-        let narrow = window.viewport_size().width < px(760.);
+        let narrow = viewport_width < 760.;
+        let category = data.panel.category;
+        let rail_width = 176.;
+        let gap = theme::SPACING;
+        let body_offset = if narrow { 0. } else { rail_width + gap };
+        let body_cap = if category == Category::Displays {
+            theme::SETTINGS_DISPLAY_WIDTH
+        } else {
+            theme::SETTINGS_WIDTH
+        };
         let mut rail = div()
             .flex()
             .gap(px(4.))
             .when(narrow, |v| v.flex_wrap())
-            .when(!narrow, |v| v.flex_col().w(px(176.)).flex_shrink_0());
+            .when(!narrow, |v| v.flex_col().w(px(rail_width)).flex_shrink_0());
         for category in Category::ALL {
             rail = rail.child(
                 self.button(
@@ -46,18 +60,18 @@ impl Presenter {
                 ),
             );
         }
-        let category = data.panel.category;
         let mut content = div()
-            .id("settings-content")
+            .id(SharedString::from(format!(
+                "settings-content-{}",
+                category.id()
+            )))
             .debug_selector(|| "settings-content".into())
+            .when(category == Category::General, |v| {
+                v.track_scroll(&self.settings_scroll)
+            })
             .flex_1()
             .min_h_0()
             .min_w_0()
-            .max_w(px(if data.panel.category == Category::Displays {
-                theme::SETTINGS_DISPLAY_WIDTH
-            } else {
-                theme::SETTINGS_WIDTH
-            }))
             .overflow_y_scroll()
             .flex()
             .flex_col()
@@ -117,9 +131,8 @@ impl Presenter {
             }
             Category::Displays => {
                 if let Some(panel) = &self.data.displays {
-                    let width = (f32::from(window.viewport_size().width)
-                        - if narrow { 32. } else { 220. })
-                    .min(theme::SETTINGS_DISPLAY_WIDTH);
+                    let width = (viewport_width - 2. * (inset + theme::SPACING) - body_offset)
+                        .clamp(0., body_cap);
                     content = content.child(crate::display_settings::view::panel(
                         self, panel, l, p, true, width,
                     ));
@@ -412,6 +425,8 @@ impl Presenter {
             _ => {}
         }
         let mut footer = div()
+            .ml(px(body_offset))
+            .flex_shrink_0()
             .flex()
             .flex_col()
             .gap(px(4.))
@@ -453,6 +468,7 @@ impl Presenter {
                 .gap(px(8.))
                 .child(
                     div()
+                        .debug_selector(|| "settings-feedback".into())
                         .text_size(px(self.data.typography.size(14.)))
                         .text_color(rgb(p.muted))
                         .child(l.text(if self.data.busy {
@@ -485,12 +501,16 @@ impl Presenter {
         );
         div()
             .size_full()
-            .p(px(16.))
+            .max_w(px(body_cap + body_offset + 2. * theme::SPACING))
+            .self_center()
+            .p(px(theme::SPACING))
             .flex()
             .flex_col()
             .gap(px(12.))
             .child(
                 div()
+                    .debug_selector(|| "settings-title".into())
+                    .flex_shrink_0()
                     .text_size(px(self.data.typography.size(24.)))
                     .font_weight(gpui::FontWeight::SEMIBOLD)
                     .text_color(rgb(p.ink))
@@ -512,17 +532,12 @@ impl Presenter {
                     .flex_1()
                     .min_h_0()
                     .flex()
-                    .gap(px(16.))
+                    .gap(px(gap))
                     .when(narrow, |v| v.flex_col())
                     .child(rail)
                     .child(content),
             )
-            .child(
-                div()
-                    .when(!narrow, |v| v.ml(px(192.)))
-                    .max_w(px(theme::SETTINGS_WIDTH))
-                    .child(footer),
-            )
+            .child(footer)
     }
     fn settings_recent_files(
         &self,
@@ -791,6 +806,9 @@ impl Presenter {
         div()
             .id(SharedString::from(row_id.clone()))
             .debug_selector(move || row_id.clone())
+            .when(field.id == "general.ui_font_family", |row| {
+                row.anchor_scroll(Some(self.font_trigger_anchor.clone()))
+            })
             .min_h(px(theme::SETTINGS_ROW))
             .flex_shrink_0()
             .py(px(4.))
@@ -828,84 +846,194 @@ impl Presenter {
             .text_color(rgb(p.muted))
             .child(label.to_string())
     }
+    pub(super) fn sync_font_picker(
+        &mut self,
+        p: Palette,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        if self.data.modal != Some(Modal::Settings)
+            || self.data.preferences.panel.category != Category::General
+        {
+            self.settings_scroll.set_offset(gpui::Point::default());
+        }
+        let Some(picker) = self
+            .data
+            .preferences
+            .panel
+            .font_picker
+            .as_ref()
+            .filter(|_| self.data.modal == Some(Modal::Settings))
+        else {
+            if self.font_search.take().is_some()
+                && self.data.modal == Some(Modal::Settings)
+                && self.data.font_search_focus.is_focused(window)
+            {
+                window.focus(&self.font_picker_focus, cx);
+            }
+            self.last_font_candidate = None;
+            return;
+        };
+        let size = self.ui_text_size(16.);
+        if let Some(search) = &self.font_search {
+            search.update(cx, |field, cx| field.update_style(p, size, cx));
+        } else {
+            let focus = self.data.font_search_focus.clone();
+            self.font_search = Some(cx.new(|_| {
+                super::font_search::FontSearch::new(
+                    self.shell.clone(),
+                    focus.clone(),
+                    self.locale,
+                    p,
+                    size,
+                )
+            }));
+            window.focus(&focus, cx);
+            self.font_trigger_anchor.scroll_to(window, cx);
+        }
+        let candidate = (picker.filter.clone(), picker.selected);
+        if self.last_font_candidate.as_ref() != Some(&candidate) {
+            self.font_results_scroll.scroll_to_item(picker.selected);
+            self.last_font_candidate = Some(candidate);
+        }
+    }
+
+    pub(super) fn font_search_key(
+        &self,
+        event: &gpui::KeyDownEvent,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) -> bool {
+        let Some(search) = &self.font_search else {
+            return false;
+        };
+        if !self.data.font_search_focus.is_focused(window) {
+            return false;
+        }
+        // The global interceptor skipped presentation keybindings. Resume raw event
+        // propagation so the field and the platform can edit or compose text.
+        cx.propagate();
+        if search.read(cx).composing() {
+            return true;
+        }
+        let key = event.keystroke.unparse();
+        match key.as_str() {
+            "tab" => window.focus_next(cx),
+            "shift-tab" => window.focus_prev(cx),
+            "up" | "down" | "pageup" | "pagedown" | "enter" | "escape" => {}
+            _ => return true,
+        }
+        actions::dispatch(&self.shell, Intent::SettingsKey { key, text: None }, cx);
+        cx.stop_propagation();
+        true
+    }
+
     fn font_picker(&self, enabled: bool, p: Palette) -> impl IntoElement {
         let data = &self.data.preferences;
         let picker = data.panel.font_picker.as_ref().expect("open font picker");
         let matches = picker.matches(&data.fonts);
-        let selected = picker.selected.min(matches.len() - 1);
-        let start = selected / 6 * 6;
-        let mut list = div()
+        // Keep the caret stationary as filtering changes the number of rows,
+        // even when the outer settings pane is scrolled to its bottom edge.
+        let result_height = px(self.ui_text_size(132.));
+        let mut results = div()
+            .id("settings-font-results")
+            .debug_selector(|| "settings-font-results".into())
+            .role(Role::ListBox)
+            .track_scroll(&self.font_results_scroll)
+            .overflow_y_scroll()
+            .h(result_height)
+            .flex()
+            .flex_col();
+        let effective = &self.data.typography.family;
+        for (index, family) in matches.iter().copied().enumerate() {
+            let applied = family.eq_ignore_ascii_case(effective);
+            let candidate = picker.selected == index;
+            let id = format!("font-choice-{family}");
+            let intent = Intent::EditSetting("general.ui_font_family", family.into());
+            results = results.child(
+                self.activation_target(id, family.into(), enabled, intent, p)
+                    .role(Role::ListBoxOption)
+                    .aria_selected(candidate)
+                    .tab_stop(false)
+                    .on_mouse_down(MouseButton::Left, |_, window, _| window.prevent_default())
+                    .flex_shrink_0()
+                    .min_h(px(theme::CONTROL))
+                    .rounded(px(6.))
+                    .border_color(if candidate {
+                        rgb(p.focus).into()
+                    } else {
+                        gpui::transparent_black()
+                    })
+                    .when(candidate, |row| row.bg(rgb(p.accent_wash)))
+                    .hover(|row| row.bg(rgb(p.control_hover)))
+                    .px(px(10.))
+                    .flex()
+                    .items_center()
+                    .gap(px(8.))
+                    .child(
+                        div()
+                            .flex_1()
+                            .min_w_0()
+                            .whitespace_normal()
+                            .text_color(rgb(p.ink))
+                            .child(family.to_owned()),
+                    )
+                    .when(applied, |row| {
+                        row.child(
+                            div()
+                                .text_size(px(self.ui_text_size(12.)))
+                                .text_color(rgb(p.body))
+                                .child(self.locale.text("settings-font-applied")),
+                        )
+                    }),
+            );
+        }
+        let applied = if effective == theme::SYSTEM_SANS {
+            self.locale.text("settings-font-default")
+        } else {
+            effective
+        };
+        div()
             .id("settings-font-picker")
-            .p(px(8.))
-            .bg(rgb(p.well))
+            .w_full()
+            .flex_shrink_0()
             .rounded(px(theme::WELL_RADIUS))
+            .bg(rgb(p.well))
+            .p(px(8.))
             .flex()
             .flex_col()
-            .items_start()
-            .gap(px(0.))
+            .gap(px(4.))
+            .child(self.font_search.clone().expect("font search input"))
             .child(
-                div().px(px(12.)).py(px(8.)).child(
-                    self.locale
-                        .format("settings-font-filter", &[("filter", picker.filter.clone())]),
-                ),
-            );
-        for (index, family) in matches.iter().enumerate().skip(start).take(6) {
-            let family = family.unwrap_or("");
-            let label = if family.is_empty() {
-                self.locale.text("settings-font-default").to_string()
-            } else {
-                family.to_string()
-            };
-            list = list.child(self.button(
-                format!("font-choice-{index}"),
-                label,
-                enabled,
-                selected == index,
-                Intent::EditSetting("general.ui_font_family", family.into()),
-                p,
-            ));
-        }
-        list.child(
-            div()
-                .flex()
-                .items_center()
-                .gap(px(8.))
-                .child(self.button(
-                    "font-previous".into(),
-                    "↑".into(),
-                    enabled && start > 0,
-                    false,
-                    Intent::FontPickerMove(-6),
-                    p,
-                ))
-                .child(
+                div()
+                    .px(px(8.))
+                    .text_size(px(self.ui_text_size(12.)))
+                    .text_color(rgb(p.body))
+                    .child(
+                        self.locale
+                            .format("settings-font-current", &[("family", applied.to_owned())]),
+                    ),
+            )
+            .when(!matches.is_empty(), |panel| panel.child(results))
+            .when(matches.is_empty(), |panel| {
+                panel.child(
                     div()
-                        .text_size(px(self.ui_text_size(12.)))
-                        .text_color(rgb(p.muted))
-                        .child(format!(
-                            "{}–{} / {}",
-                            start + 1,
-                            (start + 6).min(matches.len()),
-                            matches.len()
-                        )),
+                        .id("settings-font-empty")
+                        .debug_selector(|| "settings-font-empty".into())
+                        .role(Role::Status)
+                        .h(result_height)
+                        .p(px(8.))
+                        .text_color(rgb(p.ink))
+                        .child(self.locale.text("settings-font-empty")),
                 )
-                .child(self.button(
-                    "font-next".into(),
-                    "↓".into(),
-                    enabled && start + 6 < matches.len(),
-                    false,
-                    Intent::FontPickerMove(6),
-                    p,
-                )),
-        )
-        .child(
-            div()
-                .px(px(12.))
-                .py(px(8.))
-                .text_size(px(self.ui_text_size(12.)))
-                .text_color(rgb(p.muted))
-                .child(self.locale.text("settings-font-key-help")),
-        )
+            })
+            .child(
+                div()
+                    .px(px(8.))
+                    .text_size(px(self.ui_text_size(12.)))
+                    .text_color(rgb(p.muted))
+                    .child(self.locale.text("settings-font-key-help")),
+            )
     }
     fn value_editor(
         &self,

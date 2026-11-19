@@ -284,17 +284,22 @@ pub struct FontPicker {
     pub selected: usize,
 }
 impl FontPicker {
-    // None represents the system-default sentinel, always available in the list.
-    pub fn matches<'a>(&self, families: &'a [String]) -> Vec<Option<&'a str>> {
+    pub fn matches<'a>(&self, families: &'a [String]) -> Vec<&'a str> {
         let filter = self.filter.to_lowercase();
-        std::iter::once(None)
-            .chain(
-                families
-                    .iter()
-                    .filter(|family| family.to_lowercase().contains(&filter))
-                    .map(|family| Some(family.as_str())),
-            )
+        families
+            .iter()
+            .filter(|family| filter.is_empty() || family.to_lowercase().contains(&filter))
+            .map(String::as_str)
             .collect()
+    }
+    pub fn open(families: &[String], current: &str) -> Self {
+        Self {
+            filter: String::new(),
+            selected: families
+                .iter()
+                .position(|family| family.eq_ignore_ascii_case(current))
+                .unwrap_or(0),
+        }
     }
 }
 
@@ -457,14 +462,11 @@ mod tests {
     #[test]
     fn font_filter_and_history_keep_real_values() {
         let picker = FontPicker {
-            filter: "yahei".into(),
+            filter: "YaHEi".into(),
             selected: 0,
         };
         let families = vec!["Arial".into(), "Microsoft YaHei UI".into()];
-        assert_eq!(
-            picker.matches(&families),
-            vec![None, Some("Microsoft YaHei UI")]
-        );
+        assert_eq!(picker.matches(&families), vec!["Microsoft YaHei UI"]);
         let (a, parent_a) = recent_copy("alpha/same.pdf");
         let (b, parent_b) = recent_copy("beta/same.pdf");
         assert_eq!(a, b);

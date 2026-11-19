@@ -18,15 +18,15 @@ fn budgets(settings: &Settings) -> CacheBudgets {
     }
 }
 impl Shell {
-    pub(crate) fn captures_preferences(&self, window: gpui::WindowId) -> bool {
+    pub(crate) fn captures_preferences(&self, window: &gpui::Window) -> bool {
         self.modal == Some(Modal::Settings)
-            && self
-                .presenter
-                .as_ref()
-                .is_some_and(|record| record.handle.window_id() == window)
+            && self.presenter.as_ref().is_some_and(|record| {
+                record.handle.window_id() == window.window_handle().window_id()
+            })
             && (self.preferences.edit.is_some()
                 || self.preferences.recording.is_some()
-                || self.preferences.font_picker.is_some())
+                || self.preferences.font_picker.is_some()
+                    && self.font_search_focus.is_focused(window))
     }
 
     pub(super) fn dismiss_preferences(&mut self) {
@@ -67,16 +67,28 @@ impl Shell {
                     self.preferences.font_picker = if self.preferences.font_picker.is_some() {
                         None
                     } else {
-                        Some(Default::default())
+                        Some(settings_panel::FontPicker::open(
+                            &self.ui_fonts,
+                            &self.settings.settings.general.ui_font_family,
+                        ))
                     };
                     self.preferences.edit = None;
                     self.preferences.recording = None;
                 }
             }
-            Intent::FontPickerMove(delta) => {
-                if let Some(picker) = &mut self.preferences.font_picker {
-                    let count = picker.matches(&self.ui_fonts).len();
-                    picker.selected = picker.selected.saturating_add_signed(*delta).min(count - 1);
+            Intent::FilterFonts(query) => {
+                if self.preferences_editable()
+                    && let Some(picker) = &mut self.preferences.font_picker
+                {
+                    if query.is_empty() {
+                        *picker = settings_panel::FontPicker::open(
+                            &self.ui_fonts,
+                            &self.settings.settings.general.ui_font_family,
+                        );
+                    } else {
+                        picker.filter.clone_from(query);
+                        picker.selected = 0;
+                    }
                 }
             }
             Intent::EditSetting(id, input) => {
@@ -183,13 +195,12 @@ impl Shell {
             let matches = picker.matches(&self.ui_fonts);
             match key {
                 "enter" => {
-                    let family = matches[picker.selected.min(matches.len() - 1)]
-                        .unwrap_or("")
-                        .to_string();
-                    self.dispatch_preference(
-                        &Intent::EditSetting("general.ui_font_family", family),
-                        cx,
-                    );
+                    if let Some(family) = matches.get(picker.selected) {
+                        self.dispatch_preference(
+                            &Intent::EditSetting("general.ui_font_family", (*family).to_string()),
+                            cx,
+                        );
+                    }
                 }
                 "up" | "down" | "pageup" | "pagedown" => {
                     let delta = match key {
@@ -201,38 +212,10 @@ impl Shell {
                     picker.selected = picker
                         .selected
                         .saturating_add_signed(delta)
-                        .min(matches.len() - 1);
+                        .min(matches.len().saturating_sub(1));
                 }
                 "tab" | "shift-tab" => self.preferences.font_picker = None,
-                "backspace" => {
-                    picker.filter.pop();
-                    picker.selected = 0;
-                }
-                "ctrl-a" | "cmd-a" => {
-                    picker.filter.clear();
-                    picker.selected = 0;
-                }
-                "ctrl-v" | "cmd-v" | "shift-insert" => {
-                    if let Some(text) = text
-                        && !text.chars().any(char::is_control)
-                        && picker.filter.len().saturating_add(text.len()) <= 128
-                    {
-                        picker.filter.push_str(text);
-                        picker.selected = 0;
-                    }
-                }
-                _ if key.split('-').any(|part| {
-                    matches!(part, "ctrl" | "cmd" | "alt" | "super" | "win" | "fn")
-                }) => {}
-                _ => {
-                    if let Some(text) = text
-                        && !text.chars().any(char::is_control)
-                        && picker.filter.len().saturating_add(text.len()) <= 128
-                    {
-                        picker.filter.push_str(text);
-                        picker.selected = 0;
-                    }
-                }
+                _ => {}
             }
             return;
         }
