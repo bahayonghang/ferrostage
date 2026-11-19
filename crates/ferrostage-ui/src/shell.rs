@@ -1081,7 +1081,7 @@ impl Shell {
                 if self.settings.write_policy == WritePolicy::Writable {
                     self.settings.settings.general.record_recent_file(
                         path.to_string_lossy().into_owned(),
-                        chrono::Utc::now().timestamp(),
+                        jiff::Timestamp::now().as_second(),
                     );
                     self.settings.note_edit();
                     self.save(cx);
@@ -5776,7 +5776,7 @@ mod tests {
             diagnostics: vec![],
         };
         let session = crate::workbench::DocumentSession::build(metadata, structure).unwrap();
-        let opened_after = chrono::Utc::now().timestamp();
+        let opened_after = jiff::Timestamp::now().as_second();
         shell.update(cx, |shell, cx| {
             shell.store = fixture.store();
             shell.error = Some("previous import failure".into());
@@ -5798,7 +5798,7 @@ mod tests {
             assert!(shell.error.is_none());
             assert!(shell.settings.dirty && shell.settings.save_error.is_some());
             let opened_at = shell.settings.settings.general.recent_opened_at["owned-metadata.pdf"];
-            assert!((opened_after..=chrono::Utc::now().timestamp()).contains(&opened_at));
+            assert!((opened_after..=jiff::Timestamp::now().as_second()).contains(&opened_at));
 
             let mut candidate = shell.settings.settings.display.clone();
             candidate
@@ -5861,7 +5861,7 @@ mod tests {
             shell.settings.settings.general.recent_opened_at =
                 BTreeMap::from([("other.pdf".into(), 123), ("reopen.pdf".into(), 456)]);
             let session = shell.workbench.document.clone().unwrap();
-            let opened_after = chrono::Utc::now().timestamp();
+            let opened_after = jiff::Timestamp::now().as_second();
             shell.finish_import(
                 "reopen.pdf".into(),
                 ferrostage_core::DocumentGeneration(3),
@@ -5877,7 +5877,7 @@ mod tests {
                 123
             );
             assert!(
-                (opened_after..=chrono::Utc::now().timestamp())
+                (opened_after..=jiff::Timestamp::now().as_second())
                     .contains(&shell.settings.settings.general.recent_opened_at["reopen.pdf"])
             );
             let saved_bytes = std::fs::read(shell.store.path()).unwrap();

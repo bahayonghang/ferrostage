@@ -1341,14 +1341,16 @@ fn about_tab_shows_version_author_build_time_license_and_repository(cx: &mut Tes
     }
     assert!(!crate::about::AUTHORS.is_empty());
     assert_eq!(crate::about::REPOSITORY, "https://github.com/bahayonghang/ferrostage");
-    let time = chrono::DateTime::from_timestamp(1_792_467_301, 0)
-        .unwrap()
-        .with_timezone(&chrono::FixedOffset::west_opt(4 * 3600).unwrap());
+    let zone = jiff::tz::TimeZone::get("America/New_York").unwrap();
+    for built_at in [0, -1, i64::MAX] {
+        assert!(crate::about::BuildInfo { built_at }.local_time(zone.clone()).is_none());
+    }
+    let time = crate::about::BuildInfo { built_at: 1_792_467_301 }.local_time(zone).unwrap();
     for (language, expected) in [("zh-CN", "2026年10月19日 23:35"), ("en-US", "2026-10-19 23:35")] {
         let format = crate::locale::Locale::new(language).text("about-build-time-format");
-        assert_eq!(time.format(format).to_string(), expected);
+        assert_eq!(time.strftime(format).to_string(), expected);
     }
-    assert_eq!(time.format("UTC%:z").to_string(), "UTC-04:00");
+    assert_eq!(time.strftime("UTC%:z").to_string(), "UTC-04:00");
     click_control(handle, "about-repository-link", cx);
     assert_eq!(cx.opened_url().as_deref(), Some(crate::about::REPOSITORY));
 }

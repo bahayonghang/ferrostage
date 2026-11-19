@@ -394,16 +394,14 @@ impl Presenter {
                         .into_any_element()
                 };
                 let built_at = crate::about::build_info()
-                    .and_then(|build| chrono::DateTime::from_timestamp(build.built_at, 0))
-                    .filter(|time| time.timestamp() > 0)
-                    .map(|time| time.with_timezone(&chrono::Local));
+                    .and_then(|build| build.local_time(jiff::tz::TimeZone::system()));
                 let built_at = match built_at {
                     Some(time) => div()
                         .flex()
                         .items_center()
                         .gap(px(8.))
                         .child(text(
-                            time.format(l.text("about-build-time-format")).to_string(),
+                            time.strftime(l.text("about-build-time-format")).to_string(),
                         ))
                         .child(
                             div()
@@ -412,7 +410,7 @@ impl Presenter {
                                 .bg(rgb(p.control))
                                 .text_size(px(self.ui_text_size(12.)))
                                 .text_color(rgb(p.muted))
-                                .child(time.format("UTC%:z").to_string()),
+                                .child(time.strftime("UTC%:z").to_string()),
                         )
                         .into_any_element(),
                     None => text(l.text("about-unknown").into()),

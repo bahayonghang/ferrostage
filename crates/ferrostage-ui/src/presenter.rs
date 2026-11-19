@@ -158,6 +158,7 @@ impl PresenterData {
                             .recent_opened_at
                             .get(path)
                             .copied(),
+                        jiff::tz::TimeZone::system(),
                     ),
                 })
                 .collect(),

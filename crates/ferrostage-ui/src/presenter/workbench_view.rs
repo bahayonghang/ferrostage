@@ -193,7 +193,7 @@ impl WorkbenchData {
                 .settings
                 .presenter
                 .show_clock
-                .then(|| chrono::Local::now().format("%H:%M:%S").to_string()),
+                .then(|| jiff::ZonedDateTime::now().strftime("%H:%M:%S").to_string()),
             warning: if remaining <= u64::from(timer.warn_red_remaining_min) * 60 {
                 2
             } else if remaining <= u64::from(timer.warn_yellow_remaining_min) * 60 {

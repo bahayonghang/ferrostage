@@ -1,12 +1,18 @@
 use super::*;
 
-pub(super) fn last_opened(locale: crate::locale::Locale, timestamp: Option<i64>) -> String {
-    timestamp
-        .filter(|timestamp| *timestamp >= 0)
-        .and_then(|timestamp| chrono::DateTime::from_timestamp(timestamp, 0))
-        .map(|date| date.with_timezone(&chrono::Local))
-        .and_then(|date| date.naive_utc().checked_add_offset(*date.offset()))
-        .map(|date| date.format("%Y-%m-%d %H:%M").to_string())
+pub(super) fn last_opened(
+    locale: crate::locale::Locale,
+    seconds: Option<i64>,
+    zone: jiff::tz::TimeZone,
+) -> String {
+    seconds
+        .filter(|&seconds| seconds >= 0)
+        .and_then(|seconds| jiff::Timestamp::from_second(seconds).ok())
+        .map(|time| {
+            time.to_zoned_datetime(zone)
+                .strftime("%Y-%m-%d %H:%M")
+                .to_string()
+        })
         .unwrap_or_else(|| locale.text("recent-time-unknown").into())
 }
 
@@ -394,21 +400,22 @@ mod tests {
     use crate::locale::Locale;
     #[test]
     fn recent_dates_use_local_minutes_and_localized_unknown_values() {
+        let zone = jiff::tz::TimeZone::get("America/New_York").unwrap();
         for language in ["zh-CN", "en-US"] {
             let locale = Locale::new(language);
             for timestamp in [None, Some(-1), Some(i64::MAX)] {
                 assert_eq!(
-                    last_opened(locale, timestamp),
+                    last_opened(locale, timestamp, zone.clone()),
                     locale.text("recent-time-unknown")
                 );
             }
-            let timestamp = 1_792_375_595;
-            let expected = chrono::DateTime::from_timestamp(timestamp, 0)
-                .unwrap()
-                .with_timezone(&chrono::Local)
-                .format("%Y-%m-%d %H:%M")
-                .to_string();
-            assert_eq!(last_opened(locale, Some(timestamp)), expected);
+            for (seconds, expected) in [
+                (0, "1969-12-31 19:00"),
+                (1_772_953_140, "2026-03-08 01:59"),
+                (1_772_953_200, "2026-03-08 03:00"),
+            ] {
+                assert_eq!(last_opened(locale, Some(seconds), zone.clone()), expected);
+            }
         }
     }
 }

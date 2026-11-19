@@ -23,6 +23,17 @@ pub struct BuildInfo {
     pub built_at: i64,
 }
 
+#[cfg(feature = "gpui")]
+impl BuildInfo {
+    pub(crate) fn local_time(self, zone: jiff::tz::TimeZone) -> Option<jiff::ZonedDateTime> {
+        if self.built_at <= 0 {
+            return None;
+        }
+        let timestamp = jiff::Timestamp::from_second(self.built_at).ok()?;
+        Some(timestamp.to_zoned_datetime(zone))
+    }
+}
+
 static BUILD: OnceLock<BuildInfo> = OnceLock::new();
 
 pub fn set_build_info(info: BuildInfo) {
