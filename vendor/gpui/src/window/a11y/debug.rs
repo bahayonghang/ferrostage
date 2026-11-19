@@ -81,7 +81,9 @@ impl A11yDebug {
         self.last_active_descendant = active_descendant;
         self.frame_number += 1;
         self.last_frame = Some(CapturedFrame {
-            rendered_at: chrono::Local::now().to_rfc3339_opts(chrono::SecondsFormat::Millis, false),
+            rendered_at: jiff::ZonedDateTime::now()
+                .strftime("%Y-%m-%dT%H:%M:%S%.3f%:z")
+                .to_string(),
             frame_number: self.frame_number,
             window_title: window_title.cloned(),
             node_count: update.nodes.len(),
@@ -327,4 +329,30 @@ fn ephemeral_id(mut index: usize) -> String {
     }
     bytes.reverse();
     String::from_utf8(bytes).unwrap_or_default()
+}
+
+#[cfg(test)]
+mod timestamp_tests {
+    use super::*;
+
+    #[test]
+    fn jiff_capture_serializes_milliseconds_and_numeric_local_offset() {
+        let mut debug = A11yDebug::default();
+        let root = NodeId(1);
+        let update = TreeUpdate {
+            nodes: vec![(root, accesskit::Node::new(accesskit::Role::Window))],
+            tree: Some(accesskit::Tree::new(root)),
+            tree_id: accesskit::TreeId::ROOT,
+            focus: root,
+        };
+        debug.capture(&update, None, None, None, FrameDebugInfo::default());
+        let json: serde_json::Value = serde_json::from_str(&debug.to_json().unwrap()).unwrap();
+        let text = json["frame"]["rendered_at"].as_str().unwrap();
+        let instant: jiff::Timestamp = text.parse().unwrap();
+        let local = instant.to_zoned_datetime(jiff::tz::TimeZone::system());
+        assert_eq!(text.len(), 29);
+        assert_eq!(&text[19..20], ".");
+        assert!(text[20..23].bytes().all(|b| b.is_ascii_digit()));
+        assert_eq!(&text[23..], local.strftime("%:z").to_string());
+    }
 }

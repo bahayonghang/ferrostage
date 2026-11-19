@@ -72,7 +72,7 @@ parking = "2.0.0"
 parking_lot.workspace = true
 postage.workspace = true
 proptest = { workspace = true, optional = true }
-chrono.workspace = true
+jiff = { workspace = true, features = ["default", "js"] }
 profiling.workspace = true
 rand.workspace = true
 raw-window-handle.workspace = true
@@ -270,6 +270,7 @@ name = "view_example"
 path = "examples/view_example/view_example_main.rs"
 
 [workspace]
+members = ["../scheduler", "../zlog"]
 
 [workspace.package]
 publish = false
@@ -283,7 +284,7 @@ edition = "2024"
 "backtrace" = "0.3"
 "bench_metrics" = { "git" = "https://github.com/zed-industries/zed", "tag" = "v1.23.3" }
 "bitflags" = "2.6.0"
-"chrono" = { "version" = "0.4", "features" = ["serde"] }
+"jiff" = { "version" = "=1.0.1", "default-features" = false }
 "collections" = { "version" = "0.1.0", "git" = "https://github.com/zed-industries/zed", "tag" = "v1.23.3" }
 "core-video" = { "version" = "0.5.2", "features" = ["metal"] }
 "criterion" = { "version" = "0.8.2", "features" = ["html_reports"] }
@@ -291,6 +292,7 @@ edition = "2024"
 "derive_more" = { "version" = "2.1.1", "features" = ["add", "add_assign", "deref", "deref_mut", "display", "from", "from_str", "mul", "mul_assign", "not"] }
 "env_logger" = "0.11"
 "etagere" = "0.2"
+"flume" = "0.12"
 "futures" = "0.3.34"
 "futures-concurrency" = "7.7.1"
 "gpui_macros" = { "git" = "https://github.com/zed-industries/zed", "tag" = "v1.23.3" }
@@ -329,6 +331,7 @@ edition = "2024"
 "stacksafe" = "1.0"
 "strum" = { "version" = "0.28", "features" = ["derive"] }
 "sum_tree" = { "git" = "https://github.com/zed-industries/zed", "tag" = "v1.23.3" }
+"tempfile" = "3.20.0"
 "thiserror" = "2.0.12"
 "unicode-segmentation" = "1.10"
 "url" = "2.2"
@@ -365,3 +368,5 @@ cosmic-text = { path = "../cosmic-text" }
 
 [patch."https://github.com/zed-industries/zed"]
 gpui = { path = "." }
+scheduler = { path = "../scheduler" }
+zlog = { path = "../zlog" }
