@@ -12,9 +12,11 @@ Rendering needs a BSD-licensed engine that can return BGRA8. Text extraction and
 
 | Crate | Version | Role in this tree |
 | --- | --- | --- |
-| `lopdf` | 0.45.0 | Linked. `parse_structure` loads a buffer. |
+| `lopdf` | 0.45.0 | Parallel structure parsing with `rayon`. The product does not use lopdf date conversions. |
 | `pdfium-render` | =0.9.4 | Optional, only `pdfium_7881`; memory load, BGRA8, one thread. |
 | `hayro-syntax` | 0.8.0 | Pinned, not linked. Future syntax reader. |
+
+The [maintained date patch](../../vendor/README.md#jiff-migration) uses Jiff for annotation timestamps.
 
 Versions are also constants in `ferrostage-pdf`.
 

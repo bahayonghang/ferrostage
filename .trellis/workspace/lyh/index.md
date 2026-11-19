@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 29
-- **Last Active**: 2026-11-16
+- **Total Sessions**: 30
+- **Last Active**: 2026-11-19
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~902 | Active |
+| `journal-1.md` | ~919 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 30 | 2026-11-19 | 批准 #10 的三项 Jiff 维护补丁 | - | `dev` |
 | 29 | 2026-11-16 | 首页 B：最近文稿与真实 PDF 预览 | - | `dev` |
 | 28 | 2026-11-15 | 修复 Windows PowerShell 归档模块混用并添加 just help | - | `dev` |
 | 27 | 2026-11-15 | 首页准备工作区与页码层级优化 | - | `dev` |

@@ -10,6 +10,8 @@ The workspace selects `gpui = { path = "vendor/gpui", default-features = false }
 
 On 2026-10-18 the user separately approved expanding maintenance to migrate the Linux D-Bus downstream chain rather than adding advisory exceptions. ADR-011 owns that bounded extension: keep the pinned GPUI and shared AccessKit versions, migrate consumers to maintained zbus 6 wire/name/derive APIs, and preserve persisted GVariant data through zgvariant. Root all-feature audit must exclude no platform and contain no retired zvariant/zbus_names/derive package or advisory waiver. Cross-target Rust type checks, actual Linux consumer compilation and data-format golden tests are separate proof obligations; Windows compilation alone proves none of those Linux runtime behaviors.
 
+On 2026-11-19 the user approved three additional maintained packages for [#10](https://github.com/bahayonghang/ferrostage/issues/10): `scheduler 0.1.0` and `zlog 0.1.0` from the same Zed revision, and `pdfium-render 0.9.4` from its registry release. Scope covers the shared UTC clock, local timestamp formatting, and PDF annotation dates. Preserve the monotonic clock, PDFium ABI and existing audit policy. See the [source and test inventory](../../../vendor/README.md#jiff-migration).
+
 Product gates:
 
 ```text

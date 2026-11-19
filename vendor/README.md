@@ -1,6 +1,6 @@
 # Reviewed GPUI maintenance source
 
-These six dependency copies are excluded from the FerroStage workspace. They
+The original six dependency copies are excluded from the FerroStage workspace. They
 retain upstream package licenses and upstream lint configuration; FerroStage
 crates retain `unsafe_code = forbid` and warnings-denied lint.
 
@@ -51,3 +51,24 @@ Fontdb0.24 retains an upstream-maintained minimal metadata subset derived from
 ttf-parser0.25.1. Package advisory absence is not removal of all parser ancestry.
 Direct HarfRust strict lint has six reproduced upstream diagnostics; no waiver
 or unrelated algorithm change was introduced. Apple native behavior is unverified.
+
+## Jiff migration
+
+FerroStage uses Jiff 1.0.1 for wall time. The [maintenance scope](../.trellis/spec/frontend/maintained-dependencies.md) records the approval for #10. The application stores recent-open times as Unix seconds. The GPUI feature enables system zone discovery and the platform time-zone database, including Windows.
+
+| Package and source | Local changes | Regression coverage |
+| --- | --- | --- |
+| GPUI 0.2.2, scheduler 0.1.0 and zlog 0.1.0, [Zed v1.23.3](https://github.com/zed-industries/zed/tree/96a1b1b5389efff473fc2306f7f8c690f2e1a417/crates), Apache-2.0 | GPUI's standalone workspace supplies the tagged dependencies and lint settings to both extracted packages. The application patches all Git references to those same sources. `platform_scheduler.rs` and scheduler's `clock.rs` share `jiff::Timestamp`. The scheduler still measures elapsed time with `Instant`. GPUI's `window/a11y/debug.rs` emits a numeric local offset and three fractional digits. All three zlog sinks use the same seconds-and-offset format in `sink.rs`. | Scheduler tests cross midnight at nanosecond precision and reset UTC independently of elapsed time. The zlog test checks its local timestamp prefix. GPUI tests the timestamp in the serialized accessibility frame. |
+| pdfium-render 0.9.4, [registry release](https://crates.io/crates/pdfium-render/0.9.4), MIT OR Apache-2.0 | Both manifests replace the date dependency and reflect Jiff's Rust 1.85 minimum. `src/utils.rs` formats PDF dates. Under `src/pdf/document/page/`, `annotation.rs`, `annotations.rs`, `annotation/private.rs` and `field/private.rs` use UTC timestamps for creation and modification. The public setters take `jiff::Timestamp` and the getters still return the PDF strings. | Format tests cover UTC, signed offsets, leap day, pre-epoch time and truncation to seconds. The application's native `annotation_dates` test writes and reads both fields on an in-memory PDF with the pinned DLL. |
+
+The PDF wrapper archive has SHA256 `8948a803616a9e936b15a6637af2cd48c5fb8ae0fcdeb3c32eac3a540e255a19` at upstream commit `6cee8b9a3951832ac0ff62ce4c32800278001cb8`. The copy retains its VCS metadata, license, headers and generated ABI bindings. Cargo resolves it through the application lockfile. The 0.9.5 release still requires chrono. The upstream proposal targets a different wrapper revision and Jiff 0.2. At the time of migration, Zed main also still required chrono in both packages. [PDFium upstream proposal](https://github.com/ajrcarey/pdfium-render/pull/287) · [Zed scheduler](https://github.com/zed-industries/zed/blob/b51ffab0153f3372b71d1bd565d48d5203fefe6a/crates/scheduler/Cargo.toml) · [Zed zlog](https://github.com/zed-industries/zed/blob/b51ffab0153f3372b71d1bd565d48d5203fefe6a/crates/zlog/Cargo.toml)
+
+Run the targeted checks from the repository root. The wrapper's upstream unit tests also compile image tests, so that invocation enables `image_025`. The product uses only `pdfium_7881`.
+
+```sh
+cargo test --manifest-path vendor/gpui/Cargo.toml --locked -p scheduler -p zlog --lib jiff_
+cargo test --manifest-path vendor/gpui/Cargo.toml --locked -p gpui --no-default-features --lib jiff_capture
+cargo test --manifest-path vendor/pdfium-render/Cargo.toml --no-default-features --features pdfium_7881,image_025 --lib test_date_time_to_pdf_date_string
+```
+
+Run `just test-native` with the verified PDFium library, `just check-shell` and `just ci`. Check all targets in the product graph with `cargo metadata --locked --all-features --format-version 1`, `cargo tree --locked --workspace --all-features --target all` and `cargo deny --all-features --locked check`.
