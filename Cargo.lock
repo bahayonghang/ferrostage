@@ -3252,10 +3252,12 @@ dependencies = [
  "jiff-core",
  "jiff-static",
  "jiff-tzdb-platform",
+ "js-sys",
  "log",
  "portable-atomic",
  "portable-atomic-util",
  "serde_core",
+ "wasm-bindgen",
  "windows-link 0.2.1",
 ]
 
@@ -4525,16 +4527,14 @@ dependencies = [
 [[package]]
 name = "pdfium-render"
 version = "0.9.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8948a803616a9e936b15a6637af2cd48c5fb8ae0fcdeb3c32eac3a540e255a19"
 dependencies = [
  "bitflags 2.13.2",
  "bytemuck",
  "bytes",
- "chrono",
  "console_error_panic_hook",
  "console_log",
  "itertools 0.15.0",
+ "jiff",
  "js-sys",
  "libloading 0.9.0",
  "log",

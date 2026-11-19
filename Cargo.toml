@@ -2,6 +2,7 @@
 resolver = "3"
 exclude = [
     "vendor/gpui",
+    "vendor/pdfium-render",
     "vendor/pulp",
     "vendor/metal",
     "vendor/cosmic-text",
@@ -95,6 +96,7 @@ all = { level = "warn", priority = -1 }
 gpui = { path = "vendor/gpui" }
 
 [patch.crates-io]
+pdfium-render = { path = "vendor/pdfium-render" }
 pulp = { path = "vendor/pulp" }
 metal = { path = "vendor/metal" }
 cosmic-text = { path = "vendor/cosmic-text" }
