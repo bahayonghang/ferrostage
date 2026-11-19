@@ -196,6 +196,7 @@ wb-timer-paused = "已暂停"
 wb-timer-stopped = "已停止"
 wb-timer-low = "时间不多"
 wb-timer-limit = "到时"
+wb-timer-near-limit = "即将到时"
 
 wb-upload-error = "图像更新失败，保留上一张完整画面。切换页面或重新打开文档可重试。{error}"
 

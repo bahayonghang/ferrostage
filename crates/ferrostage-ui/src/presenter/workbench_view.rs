@@ -4,7 +4,7 @@ use ferrostage_core::{AudienceProjectionSnapshot, PresentationCommand as Command
 use gpui::{MouseButton, canvas};
 use std::{cell::Cell, rc::Rc, time::Instant};
 
-/// Visible presentation-timer state; the capsule shows it with a mark and label.
+/// Visible presentation-timer state; the readout shows it with a mark and label.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TimerPhase {
     /// Ready with nothing to resume.
@@ -45,6 +45,7 @@ pub(super) struct WorkbenchData {
     pub(super) pending_start: Option<crate::shell::StartTimer>,
     clock: Option<String>,
     warning: u8,
+    limit_reached: bool,
     paused: bool,
     timed: bool,
     pub(super) autoplay_paused: bool,
@@ -55,7 +56,7 @@ pub(super) struct WorkbenchData {
 impl WorkbenchData {
     pub fn from_shell(shell: &Shell) -> Self {
         let mut data = Self::capture(shell);
-        // Resume continues the frozen value the capsule already shows.
+        // Resume continues the frozen value the readout already shows.
         data.resumable = (data.phase == TimerPhase::Stopped).then(|| data.timer.clone());
         data
     }
@@ -200,6 +201,7 @@ impl WorkbenchData {
             } else {
                 0
             },
+            limit_reached: elapsed >= target,
             paused: shell.state.is_timer_paused(),
             phase: match shell.state.stage() {
                 SessionStage::Presenting if shell.state.is_timer_paused() => TimerPhase::Paused,
@@ -507,28 +509,69 @@ impl Presenter {
             div()
                 .id("presenter-clock")
                 .debug_selector(|| "presenter-clock".into())
+                .accessibility_id("presenter-clock")
+                .role(Role::Time)
                 .aria_label(self.locale.format("wb-clock", &[("time", clock.clone())]))
                 .flex_shrink_0()
+                .flex()
+                .items_center()
+                .gap(px(6.))
+                .px(px(8.))
+                .py(px(3.))
+                .rounded(px(theme::READOUT_RADIUS))
+                .bg(rgb(p.well))
                 .font(self.data.typography.numeric_font())
                 .text_size(px(self.data.typography.size(14.)))
                 .text_color(rgb(p.muted))
+                .child(
+                    div()
+                        .relative()
+                        .size(px(self.ui_text_size(14.)))
+                        .rounded_full()
+                        .border(px(1.5))
+                        .border_color(rgb(p.muted))
+                        .child(
+                            div()
+                                .absolute()
+                                .left(gpui::relative(0.45))
+                                .top(gpui::relative(0.14))
+                                .w(px(1.5))
+                                .h(gpui::relative(0.40))
+                                .bg(rgb(p.muted)),
+                        )
+                        .child(
+                            div()
+                                .absolute()
+                                .left(gpui::relative(0.45))
+                                .top(gpui::relative(0.48))
+                                .w(gpui::relative(0.32))
+                                .h(px(1.5))
+                                .bg(rgb(p.muted)),
+                        ),
+                )
                 .child(clock.clone())
                 .into_any_element()
         })
     }
-    /// Label key the capsule shows; state labels outrank threshold labels.
-    fn capsule_label(data: &WorkbenchData) -> &'static str {
+    /// Label key the readout shows; state labels outrank threshold labels.
+    fn readout_label(data: &WorkbenchData) -> &'static str {
         let overtime = data.timer_label == "wb-overtime";
         match data.phase {
             TimerPhase::Paused => "wb-timer-paused",
             TimerPhase::Stopped => "wb-timer-stopped",
-            TimerPhase::Running if !overtime && data.warning == 2 => "wb-timer-limit",
+            TimerPhase::Running if !overtime && data.warning == 2 => {
+                if data.limit_reached {
+                    "wb-timer-limit"
+                } else {
+                    "wb-timer-near-limit"
+                }
+            }
             TimerPhase::Running if !overtime && data.warning == 1 => "wb-timer-low",
             _ => data.timer_label,
         }
     }
     #[cfg(all(test, feature = "test-support"))]
-    pub(crate) fn capsule_probe(
+    pub(crate) fn readout_probe(
         &self,
     ) -> (
         TimerPhase,
@@ -539,7 +582,7 @@ impl Presenter {
         let data = &self.data.workbench;
         (
             data.phase,
-            Self::capsule_label(data),
+            Self::readout_label(data),
             data.resumable.as_deref(),
             data.pending_start,
         )
@@ -570,7 +613,7 @@ impl Presenter {
         }
         .into_any_element()
     }
-    pub(super) fn timer_panel(&self, p: Palette) -> gpui::AnyElement {
+    pub(super) fn timer_panel(&self, p: Palette, window: &Window) -> gpui::AnyElement {
         let data = &self.data.workbench;
         let presenting = self.data.stage == SessionStage::Presenting;
         // A session that has not started cannot be running low.
@@ -579,7 +622,7 @@ impl Presenter {
         } else {
             data.warning
         };
-        let label = self.locale.text(Self::capsule_label(data));
+        let label = self.locale.text(Self::readout_label(data));
         let mut accessible = format!("{label} {}", data.timer);
         if warning > 0 {
             accessible.push_str(". ");
@@ -589,86 +632,114 @@ impl Presenter {
                 "wb-timer-yellow"
             }));
         }
-        div()
-            .id("presenter-timer")
-            .debug_selector(|| "presenter-timer".into())
+        let digit_size = px(self.ui_text_size(30.));
+        let font = gpui::Font {
+            weight: gpui::FontWeight::MEDIUM,
+            ..self.data.typography.numeric_font()
+        };
+        // Keep space for a sign and three minute digits in the actual presenter font.
+        let sample = "−888:88";
+        let run = gpui::TextRun {
+            len: sample.len(),
+            font: font.clone(),
+            color: rgb(p.ink).into(),
+            background_color: None,
+            underline: None,
+            strikethrough: None,
+        };
+        let digit_width = window
+            .text_system()
+            .shape_line(sample.into(), digit_size, &[run], None)
+            .width();
+        let digits_ink = match (warning, data.phase) {
+            (2, _) => p.error,
+            (1, _) => p.warning,
+            (_, TimerPhase::Running) => p.accent_text,
+            _ => p.ink,
+        };
+        let readout = div()
+            .id("timer-readout")
+            .accessibility_id("presenter-timer")
+            .role(Role::Timer)
             .aria_label(accessible)
             .flex_shrink_0()
-            .min_h(px(theme::CONTROL))
-            .pl(px(16.))
-            .pr(px(if presenting { 4. } else { 16. }))
+            .px(px(10.))
+            .py(px(2.))
             .flex()
             .items_center()
             .gap(px(8.))
-            .rounded_full()
-            .bg(rgb(p.control))
+            .rounded(px(theme::READOUT_RADIUS))
+            .bg(self.material.readout(p))
             .child(Self::timer_mark(data.phase, warning, p))
             .child(
-                // Fixed slot: label changes never move the digits.
                 div()
-                    .id("presenter-timer-label")
-                    .debug_selector(|| "presenter-timer-label".into())
-                    .flex_shrink_0()
-                    .min_w(px(self.ui_text_size(12.) * 6.5))
                     .flex()
-                    .justify_end()
-                    .font_weight(gpui::FontWeight::MEDIUM)
-                    .text_size(px(self.ui_text_size(12.)))
-                    .text_color(rgb(p.muted))
-                    .child(label),
-            )
-            .child(
-                div()
-                    .id("presenter-timer-digits")
-                    .debug_selector(|| "presenter-timer-digits".into())
-                    // Reserve seven tabular digits for the longest signed value, −000:00.
-                    .min_w(px(self.ui_text_size(30.) * 0.6 * 7.))
-                    .flex_shrink_0()
-                    .flex()
-                    .justify_end()
-                    .font(self.data.typography.numeric_font())
-                    .font_weight(gpui::FontWeight::MEDIUM)
-                    .text_size(px(self.data.typography.size(30.)))
-                    .text_color(rgb(match (warning, data.phase) {
-                        (2, _) => p.error,
-                        (1, _) => p.warning,
-                        (_, TimerPhase::Running) => p.ink,
-                        _ => p.body,
-                    }))
-                    .child(data.timer.clone()),
-            )
+                    .flex_col()
+                    .items_start()
+                    .min_w(digit_width)
+                    .child(
+                        div()
+                            .id("presenter-timer-label")
+                            .debug_selector(|| "presenter-timer-label".into())
+                            .font_weight(gpui::FontWeight::MEDIUM)
+                            .text_size(px(self.ui_text_size(12.)))
+                            .line_height(px(self.ui_text_size(15.)))
+                            .text_color(rgb(p.muted))
+                            .child(label),
+                    )
+                    .child(
+                        div()
+                            .id("presenter-timer-digits")
+                            .debug_selector(|| "presenter-timer-digits".into())
+                            .font(font)
+                            .text_size(digit_size)
+                            .line_height(px(self.ui_text_size(32.)))
+                            .text_color(rgb(digits_ink))
+                            .child(data.timer.clone()),
+                    ),
+            );
+        div()
+            .id("presenter-timer")
+            .debug_selector(|| "presenter-timer".into())
+            .max_w_full()
+            .min_w_0()
+            .flex()
+            .flex_wrap()
+            .justify_center()
+            .items_center()
+            .gap(px(4.))
+            .child(readout)
             .when(presenting, |v| {
                 v.child(
                     div()
-                        .w(px(1.))
-                        .h(px(20.))
-                        .flex_shrink_0()
-                        .bg(gpui::rgba(p.hairline)),
+                        .flex()
+                        .items_center()
+                        .child(
+                            self.button(
+                                "timer-pause".into(),
+                                self.locale
+                                    .text(if data.paused { "wb-resume" } else { "wb-pause" })
+                                    .into(),
+                                true,
+                                false,
+                                Intent::Core(if data.paused {
+                                    Command::ResumeTimer
+                                } else {
+                                    Command::PauseTimer
+                                }),
+                                p,
+                            )
+                            .min_w(px(self.ui_text_size(84.))),
+                        )
+                        .child(self.button(
+                            "timer-reset".into(),
+                            self.locale.text("wb-reset").into(),
+                            true,
+                            false,
+                            Intent::Core(Command::ResetTimer),
+                            p,
+                        )),
                 )
-                .child(
-                    self.button(
-                        "timer-pause".into(),
-                        self.locale
-                            .text(if data.paused { "wb-resume" } else { "wb-pause" })
-                            .into(),
-                        true,
-                        false,
-                        Intent::Core(if data.paused {
-                            Command::ResumeTimer
-                        } else {
-                            Command::PauseTimer
-                        }),
-                        p,
-                    ),
-                )
-                .child(self.button(
-                    "timer-reset".into(),
-                    self.locale.text("wb-reset").into(),
-                    true,
-                    false,
-                    Intent::Core(Command::ResetTimer),
-                    p,
-                ))
             })
             .into_any_element()
     }

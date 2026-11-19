@@ -10,6 +10,10 @@ pub const RADIUS: f32 = 16.0;
 pub const PANEL_RADIUS: f32 = 16.0;
 /// Inset wells and images inside a 4px-padded panel.
 pub const WELL_RADIUS: f32 = 12.0;
+/// Non-interactive wall clock and presentation time surfaces.
+pub const READOUT_RADIUS: f32 = 6.;
+pub const READOUT_TOP_ALPHA: f32 = 0.32;
+pub const READOUT_BASE_ALPHA: f32 = 0.04;
 pub const PILL_RADIUS: f32 = 999.0;
 pub const SPACING: f32 = 16.0;
 pub const SESSION_CONTROL: f32 = 56.;
@@ -97,7 +101,7 @@ impl Typography {
 
 /// Presenter colors. Every value is opaque `0xRRGGBB` except the fields documented
 /// as RGBA (`hairline`, `shadow`); `layer` is drawn at `layer_alpha` only when the
-/// native window blur is active, otherwise panels use `layer_solid`.
+/// native window blur is requested. Solid panels use their opaque gradient stops.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Palette {
     /// Window field gradient ends (160deg). Text never sits directly on the field.
@@ -108,9 +112,11 @@ pub struct Palette {
     pub field_alpha: f32,
     /// Panel layer over the native blurred field.
     pub layer: u32,
+    pub layer_top: u32,
     pub layer_alpha: f32,
     /// Panel color for every solid fallback surface.
     pub layer_solid: u32,
+    pub layer_solid_top: u32,
     /// Floating menus and dialogs.
     pub raised: u32,
     /// The selected option on a `control` track; always lighter than the track.
@@ -241,10 +247,12 @@ pub fn over(front: u32, back: u32, alpha: f32) -> u32 {
 pub const LIGHT: Palette = Palette {
     field_top: 0xF7F2EB,
     field_bottom: 0xEFE6DB,
-    field_alpha: 0.88,
-    layer: 0xFFFFFF,
-    layer_alpha: 0.66,
+    field_alpha: 0.72,
+    layer: 0xFFFAF4,
+    layer_top: 0xFFFFFF,
+    layer_alpha: 0.21,
     layer_solid: 0xFBF8F4,
+    layer_solid_top: 0xFFFDF9,
     raised: 0xFFFFFF,
     segment: 0xFFFFFF,
     well: 0xF3EEE7,
@@ -256,17 +264,17 @@ pub const LIGHT: Palette = Palette {
     border: 0x8C847A,
     ink: 0x1F1B17,
     body: 0x3D3833,
-    muted: 0x5F5850,
+    muted: 0x49433C,
     accent: 0xD97757,
     on_accent: 0x1F1712,
     accent_hover: 0xE0866A,
     accent_pressed: 0xC9694A,
-    accent_text: 0xA3492A,
-    focus: 0xA3492A,
+    accent_text: 0x76341C,
+    focus: 0x76341C,
     accent_wash: 0xF7E6DC,
-    success: 0x2F6B45,
-    warning: 0x8A5A12,
-    error: 0xA63A32,
+    success: 0x215132,
+    warning: 0x66400A,
+    error: 0x802821,
     error_wash: 0xF8E3DF,
     shadow: 0x1F1B171F,
 };
@@ -274,10 +282,12 @@ pub const LIGHT: Palette = Palette {
 pub const DARK: Palette = Palette {
     field_top: 0x1D1B19,
     field_bottom: 0x26221E,
-    field_alpha: 0.82,
-    layer: 0x2C2824,
-    layer_alpha: 0.74,
+    field_alpha: 0.86,
+    layer: 0x76695D,
+    layer_top: 0xB7A899,
+    layer_alpha: 0.07,
     layer_solid: 0x2A2622,
+    layer_solid_top: 0x322D29,
     raised: 0x38332E,
     segment: 0x524D48,
     well: 0x221F1C,
@@ -381,17 +391,55 @@ mod tests {
     /// Every opaque panel color text can land on, including the native composite of
     /// field and layer over the two desktop extremes behind the blurred window.
     fn panels(p: Palette) -> Vec<u32> {
-        let mut panels = vec![p.layer_solid];
+        let mut panels = vec![p.layer_solid, p.layer_solid_top];
         for edge in [p.field_top, p.field_bottom] {
             for desktop in [0, 0xFFFFFF] {
-                panels.push(over(
-                    p.layer,
-                    over(edge, desktop, p.field_alpha),
-                    p.layer_alpha,
-                ));
+                for layer in [p.layer_top, p.layer] {
+                    panels.push(over(
+                        layer,
+                        over(edge, desktop, p.field_alpha),
+                        p.layer_alpha,
+                    ));
+                    // GPUI's D3D11 quad blend accumulates destination alpha.
+                    // RGB uses source-over, but less desktop survives at composition.
+                    let premultiplied = over(layer, over(edge, 0, p.field_alpha), p.layer_alpha);
+                    let desktop_weight = (1. - p.field_alpha - p.layer_alpha).max(0.);
+                    let mut composite = 0;
+                    for shift in [0, 8, 16] {
+                        let channel = (premultiplied >> shift) & 255u32;
+                        let back = (desktop >> shift) & 255u32;
+                        composite |= (channel + (back as f32 * desktop_weight).round() as u32)
+                            .min(255)
+                            << shift;
+                    }
+                    panels.push(composite);
+                }
             }
         }
         panels
+    }
+
+    #[test]
+    fn glass_panel_transmits_more_backdrop_than_the_original_material() {
+        // Previous source-over spans were ceil(255 × 4.08%) and ceil(255 × 4.68%).
+        // Windows used to saturate alpha; preserve at least 4% desktop there too.
+        for (p, original_span) in [(LIGHT, 11), (DARK, 12)] {
+            assert!(
+                1. - p.field_alpha - p.layer_alpha > 0.04,
+                "native alpha budget"
+            );
+            for field in [p.field_top, p.field_bottom] {
+                let panel =
+                    |desktop| over(p.layer, over(field, desktop, p.field_alpha), p.layer_alpha);
+                let black = panel(0);
+                let white = panel(0xFFFFFF);
+                for shift in [0, 8, 16] {
+                    assert!(
+                        ((white >> shift) & 255u32) - ((black >> shift) & 255u32) > original_span
+                    );
+                }
+            }
+        }
     }
 
     #[test]
@@ -543,15 +591,22 @@ mod tests {
     }
 
     #[test]
-    fn timer_capsule_and_split_session_pairs_meet_design_contrast() {
+    fn timer_readouts_and_split_session_pairs_meet_design_contrast() {
         for p in [LIGHT, DARK] {
-            // Capsule label, digits and warnings on the neutral control pill.
-            for text in [p.muted, p.body, p.ink, p.warning, p.error] {
-                assert!(contrast(text, p.control) >= 4.5, "{text:x}/{:x}", p.control);
+            let mut surfaces = vec![p.well, p.raised, p.layer_solid_top];
+            for panel in panels(p) {
+                surfaces.extend([
+                    over(p.raised, panel, READOUT_TOP_ALPHA),
+                    over(p.layer_solid_top, panel, READOUT_BASE_ALPHA),
+                ]);
             }
-            // State marks are non-text UI: running dot, muted ring/square, warnings.
-            for mark in [p.focus, p.muted, p.warning, p.error] {
-                assert!(contrast(mark, p.control) >= 3.0, "{mark:x}");
+            for bg in surfaces {
+                for text in [p.muted, p.accent_text, p.ink, p.warning, p.error] {
+                    assert!(contrast(text, bg) >= 4.5, "{text:x}/{bg:x}");
+                }
+                for mark in [p.focus, p.muted, p.warning, p.error] {
+                    assert!(contrast(mark, bg) >= 3.0, "{mark:x}/{bg:x}");
+                }
             }
             // Restart segment: navigation face with a muted sublabel.
             let restart = p.button(ButtonKind::Navigation, true, false);

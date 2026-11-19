@@ -196,6 +196,7 @@ wb-timer-paused = "Paused"
 wb-timer-stopped = "Stopped"
 wb-timer-low = "Running low"
 wb-timer-limit = "Time up"
+wb-timer-near-limit = "Nearing limit"
 
 wb-upload-error = "Graphics update failed; the previous complete image is retained. Change page or reopen the document to retry. {error}"
 

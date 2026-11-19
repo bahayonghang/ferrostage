@@ -589,8 +589,7 @@ impl Presenter {
             && self.data.stage != SessionStage::Presenting;
         let preference_control = matches!(
             &intent,
-            Intent::SettingsCategory(_)
-                | Intent::EditSetting(_, _)
+            Intent::EditSetting(_, _)
                 | Intent::CropLayout { .. }
                 | Intent::BeginSettingEdit(_)
                 | Intent::ToggleFontPicker
@@ -655,8 +654,7 @@ impl Presenter {
                 | Intent::GridDensity { .. }
                 | Intent::BrowserMode { .. }
                 | Intent::BrowserView { .. }
-                | Intent::ToggleFontPicker
-                | Intent::SettingsCategory(_) => true,
+                | Intent::ToggleFontPicker => true,
                 _ => false,
             };
         let toggle = indicator_slot || blank.is_some();
@@ -943,14 +941,17 @@ impl Presenter {
             .flex()
             .items_center()
             .gap(px(12.))
-            .min_w_0()
+            // Keep the clock, stage and a visible filename target together when rows wrap.
+            .min_w(px(if narrow { 0. } else { self.ui_text_size(220.) }))
             .flex_1()
             .when_some(self.clock_readout(p), |view, clock| view.child(clock))
             .child(
                 div()
                     .id("document-title")
                     .debug_selector(|| "document-title".into())
-                    .aria_label(filename.clone())
+                    .accessibility_id("document-title")
+                    .role(Role::Label)
+                    .aria_value(filename.clone())
                     .tooltip(move |_, cx| {
                         cx.new(|_| FilenameTooltip {
                             filename: tooltip_filename.clone(),
@@ -960,7 +961,7 @@ impl Presenter {
                         .into()
                     })
                     .min_h(control)
-                    .min_w_0()
+                    .min_w(px(self.ui_text_size(24.)))
                     .flex()
                     .items_center()
                     .font_weight(gpui::FontWeight::MEDIUM)
@@ -1001,10 +1002,11 @@ impl Presenter {
             );
         let timer = div()
             .flex_shrink_0()
+            .max_w_full()
             .min_h(control)
             .flex()
             .items_center()
-            .child(self.timer_panel(p));
+            .child(self.timer_panel(p, window));
         // Equal flexible sides keep the timer centered on the window until one
         // side's content no longer fits; actions never shrink below content.
         let mut actions = div()
@@ -1096,6 +1098,7 @@ impl Presenter {
                 8.
             }))
             .flex()
+            .when(!narrow, |bar| bar.flex_wrap())
             .items_center()
             .gap(px(12.));
         if narrow {

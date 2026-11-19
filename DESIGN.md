@@ -5,7 +5,9 @@ description: "暖橙毛玻璃 is warm frosted glass for a presenter: an ivory fi
 colors:
   field-top: "#F7F2EB"
   field-bottom: "#EFE6DB"
-  layer: "rgba(255,255,255,0.66)"
+  layer: "rgba(255,250,244,0.21)"
+  layer-top: "#FFFFFF"
+  layer-solid-top: "#FFFDF9"
   layer-solid: "#FBF8F4"
   raised: "#FFFFFF"
   segment: "#FFFFFF"
@@ -17,21 +19,23 @@ colors:
   border: "#8C847A"
   ink: "#1F1B17"
   body: "#3D3833"
-  muted: "#5F5850"
+  muted: "#49433C"
   primary: "#D97757"
   primary-hover: "#E0866A"
   primary-active: "#C9694A"
   on-primary: "#1F1712"
-  accent-text: "#A3492A"
-  focus: "#A3492A"
+  accent-text: "#76341C"
+  focus: "#76341C"
   accent-wash: "#F7E6DC"
-  success: "#2F6B45"
-  warning: "#8A5A12"
-  error: "#A63A32"
+  success: "#215132"
+  warning: "#66400A"
+  error: "#802821"
   error-wash: "#F8E3DF"
   dark-field-top: "#1D1B19"
   dark-field-bottom: "#26221E"
-  dark-layer: "rgba(44,40,36,0.74)"
+  dark-layer: "rgba(118,105,93,0.07)"
+  dark-layer-top: "#B7A899"
+  dark-layer-solid-top: "#322D29"
   dark-layer-solid: "#2A2622"
   dark-raised: "#38332E"
   dark-segment: "#524D48"
@@ -76,6 +80,7 @@ typography:
     letterSpacing: 0
 rounded:
   image: 12px
+  readout: 6px
   well: 12px
   panel: 16px
   floating: 16px
@@ -89,10 +94,10 @@ spacing:
   xxl: 48px
 material:
   field-angle: 160deg
-  field-alpha-native: 0.88
-  dark-field-alpha-native: 0.82
-  layer-alpha-native: 0.66
-  dark-layer-alpha-native: 0.74
+  field-alpha-native: 0.72
+  dark-field-alpha-native: 0.86
+  layer-alpha-native: 0.21
+  dark-layer-alpha-native: 0.07
   solid-breakpoint: 960px
 elevation:
   floating-shadow: "0 12px 32px rgba(31, 27, 23, 0.12)"
@@ -119,7 +124,7 @@ Field: `{colors.field-top}` (`#F7F2EB`) to `{colors.field-bottom}` (`#EFE6DB`) a
 
 Layers, in depth order:
 
-- **Panel** `{colors.layer}`: white at 0.66 (dark `#2C2824` at 0.74) over the native blurred field; `{colors.layer-solid}` (`#FBF8F4`, dark `#2A2622`) for every solid fallback. No outline.
+- **Panel** uses a vertical highlight that settles into its base at 55% height. Light blends white into warm ivory at 0.21 opacity. Dark blends warm sand into walnut at 0.07. The solid equivalents use the two opaque panel stops.
 - **Well** `{colors.well}` (`#F3EEE7`, dark `#221F1C`): inset area inside a panel, such as notes, inputs and grouped settings.
 - **Raised** `{colors.raised}` (`#FFFFFF`, dark `#38332E`): menus, dialogs and tooltips.
 - **Segment** `{colors.segment}` (`#FFFFFF`, dark `#524D48`): the selected option on a `control` track, always lighter than the track.
@@ -135,7 +140,7 @@ Text: `{colors.ink}` for titles and figures, `{colors.body}` for running text an
 Accent:
 
 - `{colors.primary}` (`#D97757`) fills the primary action in both variants. Its text is `{colors.on-primary}` (`#1F1712`). White text on this orange is about 3.1:1 and is not allowed.
-- `{colors.accent-text}` (`#A3492A`, dark `#EBA98C`) for orange text and links; `{colors.focus}` is the same value for the focus ring and selection marks.
+- `{colors.accent-text}` (`#76341C`, dark `#EBA98C`) for orange text and links; `{colors.focus}` is the same value for the focus ring and selection marks.
 - `{colors.accent-wash}` (`#F7E6DC`, dark `#3A2A22`) fills a selected row or menu entry.
 
 ## Typography
@@ -167,7 +172,7 @@ The workbench is a top bar panel, one panel per pane (Current, Next, Notes) and 
 
 With 4px panel padding, an inner rounded area uses a 12px radius, because outer radius = inner radius + padding.
 
-Inside the full-height Settings panel, the navigation and category body are centered together. The 176px navigation rail sits 16px from the body. The body is at most 960px wide, or 1120px for Displays. The title starts at the navigation edge, Close ends at the body edge, and save feedback starts under the body. Below 760 logical pixels the navigation wraps above the scrolling body.
+Inside the full-height Settings panel, the navigation and category body are centered together. Each category has a square-cornered full-row target. Its text box is centered on both axes. The selected row has an accent wash and an absolutely positioned short left bar. Resting rows expose the panel, hover and press use control fills, and the focus ring follows the rectangle. The 176px navigation rail sits 16px from the body. The body is at most 960px wide, or 1120px for Displays. The title starts at the navigation edge, Close ends at the body edge, and save feedback starts under the body. Below 760 logical pixels the navigation wraps above the scrolling body.
 
 Icons are linear, about a 1.5px stroke, in `currentColor`. Do not add illustrated characters.
 
@@ -189,11 +194,11 @@ Reference CSS for a web rendering of the same material:
   background: linear-gradient(160deg, #F7F2EB, #EFE6DB);
 }
 .panel {
-  background: rgba(255, 255, 255, 0.66);
+  background: linear-gradient(180deg, rgba(255,255,255,0.21), rgba(255,250,244,0.21) 55%);
   border-radius: 16px;
 }
 .panel.is-solid {
-  background: #FBF8F4;
+  background: linear-gradient(180deg, #FFFDF9, #FBF8F4 55%);
 }
 .floating {
   background: #FFFFFF;
@@ -210,6 +215,7 @@ The native presenter has no per-element `backdrop-filter`. Glass comes from the 
 | Token | Radius | Use |
 | --- | --- | --- |
 | `{rounded.image}` | 12px | Reserved for an image inside a panel with 4px padding; see Known Gaps |
+| `{rounded.readout}` | 6px | Wall clock and presentation timer |
 | `{rounded.well}` | 12px | Wells |
 | `{rounded.panel}` | 16px | Panels and the home card |
 | `{rounded.floating}` | 16px | Menus and dialogs |
@@ -217,7 +223,7 @@ The native presenter has no per-element `backdrop-filter`. Glass comes from the 
 
 ## Components
 
-Buttons are pills bounded by their fill. No default outline.
+General-purpose buttons are pills bounded by their fill. Settings categories use the rectangular navigation rows described above. No default outline.
 
 | Kind | Rest | Hover / pressed | Text |
 | --- | --- | --- | --- |
@@ -231,7 +237,7 @@ Buttons are pills bounded by their fill. No default outline.
 
 Grouped choices (black/white cover, drawing tools, crop layouts, setting choices, page-browser numbering, view and grid density) use a segmented control: one `control` track, the selected option lifted to `segment`. Each option's 2px focus ring and 2px gap form the 4px inset between track and segment. Do not wrap a group in a colored shell.
 
-Selection never relies on color alone and never inserts a glyph that changes the label width. A choice that can be selected always reserves an 8px indicator slot; the selected option fills it with a `focus` dot (`on-primary` on an orange fill). The black/white swatch is its own slot and gains a 2px `focus` ring when selected. Menu rows keep one reserved check column with the same dot. Toggle buttons expose their state as accessible toggled state.
+Selection never relies on color alone and never inserts a glyph that changes the label width. Apart from settings category rows, a choice that can be selected reserves an 8px indicator slot; the selected option fills it with a `focus` dot (`on-primary` on an orange fill). The black/white swatch is its own slot and gains a 2px `focus` ring when selected. Menu rows keep one reserved check column with the same dot. Toggle buttons expose their state as accessible toggled state.
 
 Keyboard focus is a 2px `{colors.focus}` ring outside a 2px gap.
 
@@ -239,27 +245,32 @@ Keyboard focus is a 2px `{colors.focus}` ring outside a 2px gap.
 
 Meet WCAG 2.2 AA on the worst specified background. The native panel is measured as the panel layer over the field over a pure black and a pure white desktop; the table lists the lowest of those composites. Text is at least 4.5:1, the focus ring and selection marks at least 3:1. A labeled button is identified by its text, so it does not need a 3:1 outline.
 
-These ratios are computed by `contrast_table.py`, kept in the research folder of the `11-07-presenter-warm-glass-restyle` Trellis task, from the `theme.rs` values and are checked by the unit tests in `crates/ferrostage-ui/src/theme.rs`. Regenerate them after any color change; do not edit them by hand.
+The table uses the rounded 8-bit composites checked by the theme tests. It includes both field and panel gradient ends, black and white desktops, opaque fallback stops, standard source-over and Windows Direct3D additive quad alpha.
 
 | 前景 | 背景 | 浅色 | 深色 | 用途 |
 | --- | --- | --- | --- | --- |
 | `ink` | `layer_solid` | 16.16 (`#1F1B17` / `#FBF8F4`) | 13.34 (`#F5F1EB` / `#2A2622`) | 正文，实色面板 |
-| `ink` | 毛玻璃合成 | 14.67 (`#1F1B17` / `#F0EDEA`) | 11.46 (`#F5F1EB` / `#35312D`) | 正文，毛玻璃面板最差合成 |
+| `ink` | 毛玻璃合成 | 8.67 (`#1F1B17` / `#BDB8B0`) | 8.05 (`#F5F1EB` / `#4C4844`) | 正文，毛玻璃面板最差合成 |
 | `body` | `layer_solid` | 10.95 (`#3D3833` / `#FBF8F4`) | 10.94 (`#E2DBD2` / `#2A2622`) | 次级正文 |
-| `muted` | 毛玻璃合成 | 6.01 (`#5F5850` / `#F0EDEA`) | 6.87 (`#C4BCB2` / `#35312D`) | 次要文字，毛玻璃面板最差合成 |
-| `muted` | `control_pressed` | 4.98 (`#5F5850` / `#DCD9D5`) | 4.77 (`#C4BCB2` / `#4C4945`) | 按下的中性控件上的次要文字 |
+| `muted` | 毛玻璃合成 | 4.95 (`#49433C` / `#BDB8B0`) | 4.83 (`#C4BCB2` / `#4C4844`) | 次要文字，毛玻璃面板最差合成 |
+| `body` | 毛玻璃合成 | 5.88 (`#3D3833` / `#BDB8B0`) | 6.60 (`#E2DBD2` / `#4C4844`) | 文字或状态标记，最差合成 |
+| `accent_text` | 毛玻璃合成 | 4.67 (`#76341C` / `#BDB8B0`) | 4.57 (`#EBA98C` / `#4C4844`) | 文字或状态标记，最差合成 |
+| `success` | 毛玻璃合成 | 4.65 (`#215132` / `#BDB8B0`) | 4.95 (`#8DCEA0` / `#4C4844`) | 文字或状态标记，最差合成 |
+| `warning` | 毛玻璃合成 | 4.62 (`#66400A` / `#BDB8B0`) | 4.94 (`#E8B774` / `#4C4844`) | 文字或状态标记，最差合成 |
+| `error` | 毛玻璃合成 | 4.75 (`#802821` / `#BDB8B0`) | 4.81 (`#FFA5A0` / `#4C4844`) | 文字或状态标记，最差合成 |
+| `muted` | `control_pressed` | 6.94 (`#49433C` / `#DCD9D5`) | 4.77 (`#C4BCB2` / `#4C4945`) | 按下的中性控件上的次要文字 |
 | `on_accent` | `accent` | 5.65 (`#1F1712` / `#D97757`) | 5.65 (`#1F1712` / `#D97757`) | 主按钮文字 |
 | `on_accent` | `accent_pressed` | 4.71 (`#1F1712` / `#C9694A`) | 4.71 (`#1F1712` / `#C9694A`) | 主按钮按下 |
 | #FFFFFF | `accent` | 3.12 (`#FFFFFF` / `#D97757`) | 3.12 (`#FFFFFF` / `#D97757`) | 白字压橙色，禁止 |
-| `accent_text` | `accent_wash` | 4.88 (`#A3492A` / `#F7E6DC`) | 6.90 (`#EBA98C` / `#3A2A22`) | 橙色文字压选中洗底 |
-| `accent_text` | `control` | 4.99 (`#A3492A` / `#EEEBE7`) | 5.94 (`#EBA98C` / `#3B3734`) | 橙色文字压中性控件 |
-| `focus` | 毛玻璃合成 | 5.08 (`#A3492A` / `#F0EDEA`) | 6.50 (`#EBA98C` / `#35312D`) | 焦点环与选中标记，毛玻璃面板最差合成 |
-| `focus` | `control_pressed` | 4.21 (`#A3492A` / `#DCD9D5`) | 4.51 (`#EBA98C` / `#4C4945`) | 焦点环压最深中性填充 |
-| `focus` | `segment` | 5.93 (`#A3492A` / `#FFFFFF`) | 4.21 (`#EBA98C` / `#524D48`) | 选中分段上的选中标记 |
+| `accent_text` | `accent_wash` | 7.60 (`#76341C` / `#F7E6DC`) | 6.90 (`#EBA98C` / `#3A2A22`) | 橙色文字压选中洗底 |
+| `accent_text` | `control` | 7.76 (`#76341C` / `#EEEBE7`) | 5.94 (`#EBA98C` / `#3B3734`) | 橙色文字压中性控件 |
+| `focus` | 毛玻璃合成 | 4.67 (`#76341C` / `#BDB8B0`) | 4.57 (`#EBA98C` / `#4C4844`) | 焦点环与选中标记，毛玻璃面板最差合成 |
+| `focus` | `control_pressed` | 6.55 (`#76341C` / `#DCD9D5`) | 4.51 (`#EBA98C` / `#4C4945`) | 焦点环压最深中性填充 |
+| `focus` | `segment` | 9.22 (`#76341C` / `#FFFFFF`) | 4.21 (`#EBA98C` / `#524D48`) | 选中分段上的选中标记 |
 | `ink` | `segment` | 17.11 (`#1F1B17` / `#FFFFFF`) | 7.42 (`#F5F1EB` / `#524D48`) | 选中分段文字 |
 | `border` | `well` | 3.19 (`#8C847A` / `#F3EEE7`) | 4.63 (`#8F877C` / `#221F1C`) | 输入框边界 |
-| `error` | `error_wash` | 5.21 (`#A63A32` / `#F8E3DF`) | 7.55 (`#FFA5A0` / `#3B2523`) | 停止/危险文字 |
-| `warning` | `layer_solid` | 5.58 (`#8A5A12` / `#FBF8F4`) | 8.19 (`#E8B774` / `#2A2622`) | 警告文字 |
+| `error` | `error_wash` | 7.60 (`#802821` / `#F8E3DF`) | 7.55 (`#FFA5A0` / `#3B2523`) | 停止/危险文字 |
+| `warning` | `layer_solid` | 8.61 (`#66400A` / `#FBF8F4`) | 8.19 (`#E8B774` / `#2A2622`) | 警告文字 |
 
 ## Writing Tone
 
@@ -283,7 +294,7 @@ State the status, then the number, then the action. Keep labels short. No slogan
 - Don't outline every button. Use `border` only for inputs and frames that need a visible edge.
 - Don't add a second accent hue. No green or purple in presenter chrome; status colors only for status text and marks.
 - Don't put white text on `#D97757`.
-- Don't let more than about an eighth of the desktop (a fifth in dark) show through the field. A lower field opacity turns the warm neutrals gray over colored wallpapers.
+- Keep the window field warm. At the specified opacity the desktop contributes 28% to the light field and 14% to the dark field before applying a panel.
 - Don't mark selection with a prefixed glyph that changes button width.
 - Don't wrap a group of buttons in a colored shell.
 - Don't use Inter, Plus Jakarta Sans, or DM Sans.
@@ -294,9 +305,9 @@ State the status, then the number, then the action. Keep labels short. No slogan
 
 | Condition | Field | Panel |
 | --- | --- | --- |
-| 960px and above, glass on, system allows blur | Gradient at 0.88 (dark 0.82) over the system blur | `layer` at 0.66 (dark 0.74) |
-| Below 960px | Opaque gradient | `layer-solid` |
-| Reduced transparency, unsupported backend or glass off | Opaque gradient | `layer-solid` |
+| 960px and above, glass on, system allows blur | Gradient at 0.72 (dark 0.86) over requested blur | Highlight to base at 0.21 (dark 0.07) |
+| Below 960px | Opaque gradient | `layer-solid-top` to `layer-solid` |
+| Reduced transparency, unsupported backend or glass off | Opaque gradient | `layer-solid-top` to `layer-solid` |
 
 Pills stay pills. The focus ring stays 2px. Keyboard focus does not move or scale.
 
@@ -315,9 +326,9 @@ The presenter owns this theme. Its home, document header, timer, tools, settings
 
 **Appearance.** General settings provide Light, Dark and System plus an independent glass preference. The initial appearance is light with glass enabled. An explicitly stored theme survives upgrade. Applying appearance settings updates the presenter in place through the existing settings transaction. Selecting a solid surface keeps the chosen color scheme. A window below 960 logical pixels, a system reduced-transparency preference or an unsupported backend uses the solid fallback while keeping the saved glass choice.
 
-**Material.** Maintained GPUI has no per-element backdrop blur, only window-level `WindowBackgroundAppearance::Blurred`. On Windows and macOS with glass active, the field is drawn at 0.88 (dark 0.82) over the system blur, so an arbitrary desktop only tints its warm hue, and panels at the `layer` alpha above it. Otherwise the field is opaque and panels use `layer-solid`. Panels are not outlined; the focus indicator and control fill provide the interactive boundary. Font overrides and interface scaling apply to presenter controls.
+**Material.** Maintained GPUI has no per-element backdrop blur, only window-level `WindowBackgroundAppearance::Blurred`. When glass is available, the field and panel share an opacity budget. At a blank panel point the theoretical desktop weight is 22.12% in light and 13.02% in dark with source-over, or 7% in both themes with the maintained Windows quad blend. The system controls the blur. Settings reports the request. Opaque fallback fills preserve the upper highlight. Panels are not outlined; the focus indicator and control fill provide the interactive boundary. Font overrides and interface scaling apply to presenter controls.
 
-**Composition.** Home uses the window-filling recent-list/selected-preview workspace described above, with Open PDF, Settings/Displays and a compact output summary. It scrolls on small windows. Ready and Presenting retain the filename, session controls and the centered presentation timer. Standard layout keeps Current on the left and Next and Notes on the right. Notes-first keeps Notes on the left at widths of 800 logical pixels and above. Saved splitter ratios, keyboard targets and note scrolling apply in both variants. Changes of appearance preserve the current page, timer, annotations, media and window roles.
+**Composition.** Home uses the window-filling recent-list/selected-preview workspace described above, with Open PDF, Settings/Displays and a compact output summary. It scrolls on small windows. Ready and Presenting group the optional local HH:MM:SS clock and small dial on a 6px-radius inset before the filename. The centered presentation group stacks a short status above 30px tabular digits, aligned left on a shallow glass rectangle. Its upper highlight uses `raised` at 0.32 opacity and fades to `layer-solid-top` at 0.04 over the panel. Both stops become opaque in fallback mode. Its numeric column reserves a signed three-digit minute reading in the chosen font. Fresh digits use ink, running digits use accent text, and the configured thresholds use warning and error. A ring identifies pause and a square identifies a stopped session. Pause, Resume and Reset sit beside the readout. Under 800px the timer group occupies its own centered row; controls wrap when space runs out. Standard layout keeps Current on the left and Next and Notes on the right. Notes-first keeps Notes on the left at widths of 800 logical pixels and above. Saved splitter ratios, keyboard targets and note scrolling apply in both variants. Changes of appearance preserve the current page, timer, annotations, media and window roles.
 
 **Controls.** Primary actions use the orange fill with dark text. Preserve hover, pressed, disabled, selected and focused states, the 2 px focus indicator and the minimum 44 px interactive target. Time digits keep a stable width. PDF and media are never assigned control fonts or tinted by the presenter.
 

@@ -194,6 +194,11 @@ fn timing_header_uses_left_clock_and_stable_labeled_readout(cx: &mut TestAppCont
     let clock = visual.debug_bounds("presenter-clock").unwrap();
     let title = visual.debug_bounds("document-title").unwrap();
     let header = visual.debug_bounds("presenter-bar").unwrap();
+    let readout = visual.debug_bounds("presenter-timer").unwrap();
+    let status = visual.debug_bounds("presenter-timer-label").unwrap();
+    let digits = visual.debug_bounds("presenter-timer-digits").unwrap();
+    assert!(status.bottom() <= digits.top(), "status must be above the number");
+    assert!((status.left() - digits.left()).abs() <= px(1.));
     assert!(clock.right() <= title.left());
     assert!(clock.left() < visual.debug_bounds("presenter-timer").unwrap().left());
     shell.update(cx, |shell, cx| {
@@ -202,14 +207,25 @@ fn timing_header_uses_left_clock_and_stable_labeled_readout(cx: &mut TestAppCont
     });
     redraw(handle, cx);
     assert!(visual.debug_bounds("presenter-clock").is_none());
+    assert_eq!(visual.debug_bounds("presenter-timer").unwrap(), readout);
     assert!(visual.debug_bounds("document-title").unwrap().left() < title.left());
     assert_eq!(
         visual.debug_bounds("presenter-bar").unwrap().size.height,
         header.size.height
     );
     let mut timer_bounds = None;
-    for elapsed in [599, 600, 5999, 6000] {
+    use ferrostage_settings::TimerMode::{CountDown, CountUp};
+    for (elapsed, mode, text, label) in [
+        (599, CountUp, "09:59", "wb-elapsed"),
+        (600, CountUp, "10:00", "wb-elapsed"),
+        (5999, CountUp, "99:59", "wb-elapsed"),
+        (6000, CountUp, "100:00", "wb-elapsed"),
+        (59, CountDown, "00:01", "wb-remaining"),
+        (60, CountDown, "00:00", "wb-remaining"),
+        (61, CountDown, "−00:01", "wb-overtime"),
+    ] {
         shell.update(cx, |shell, cx| {
+            let now = Instant::now();
             shell.state = PresentationState::new(3).unwrap();
             shell
                 .state
@@ -217,15 +233,20 @@ fn timing_header_uses_left_clock_and_stable_labeled_readout(cx: &mut TestAppCont
                     Command::StartPresentation {
                         audience_available: true,
                     },
-                    Instant::now() - Duration::from_secs(elapsed),
+                    now - Duration::from_secs(elapsed),
                 )
                 .unwrap();
-            shell.settings.settings.timer.mode = ferrostage_settings::TimerMode::CountUp;
+            shell.state.apply_at(Command::PauseTimer, now).unwrap();
+            shell.settings.settings.timer.mode = mode;
+            shell.settings.settings.timer.target_minutes = 1;
             shell.settings.settings.presenter.show_clock = true;
             cx.notify();
         });
         redraw(handle, cx);
-        let actual = visual.debug_bounds("presenter-timer-digits").unwrap();
+        let actual = (
+            visual.debug_bounds("presenter-timer-digits").unwrap().origin,
+            visual.debug_bounds("presenter-timer").unwrap(),
+        );
         if let Some(expected) = timer_bounds {
             assert_eq!(actual, expected);
         } else {
@@ -235,25 +256,14 @@ fn timing_header_uses_left_clock_and_stable_labeled_readout(cx: &mut TestAppCont
             .downcast::<Presenter>()
             .unwrap()
             .update(cx, |view, _, _| {
-                assert_eq!(view.timing_probe().1, "wb-elapsed");
-                assert!(!view.timing_probe().0.contains('…'));
+                assert_eq!(view.timing_probe(), (text, label, true));
             })
             .unwrap();
+        click_control(handle, "timer-pause", cx);
+        redraw(handle, cx);
+        assert_eq!(visual.debug_bounds("presenter-timer-digits").unwrap().origin, actual.0);
+        assert_eq!(visual.debug_bounds("presenter-timer").unwrap(), actual.1);
     }
-    shell.update(cx, |shell, cx| {
-        shell.settings.settings.timer.mode = ferrostage_settings::TimerMode::CountDown;
-        shell.settings.settings.timer.target_minutes = 1;
-        cx.notify();
-    });
-    redraw(handle, cx);
-    handle
-        .downcast::<Presenter>()
-        .unwrap()
-        .update(cx, |view, _, _| {
-            assert_eq!(view.timing_probe().1, "wb-overtime");
-            assert!(view.timing_probe().0.starts_with('−'));
-        })
-        .unwrap();
     click_control(handle, "timer-pause", cx);
     redraw(handle, cx);
     handle

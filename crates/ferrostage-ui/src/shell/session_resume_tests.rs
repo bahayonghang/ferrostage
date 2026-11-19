@@ -35,7 +35,7 @@ fn interrupt(shell: &Entity<Shell>, seconds: u64, cx: &mut TestAppContext) {
     });
 }
 
-fn capsule(
+fn readout(
     handle: AnyWindowHandle,
     cx: &mut TestAppContext,
 ) -> (
@@ -48,7 +48,7 @@ fn capsule(
         .downcast::<Presenter>()
         .unwrap()
         .update(cx, |view, _, _| {
-            let (phase, label, resumable, pending) = view.capsule_probe();
+            let (phase, label, resumable, pending) = view.readout_probe();
             (phase, label, resumable.map(str::to_owned), pending)
         })
         .unwrap()
@@ -84,7 +84,7 @@ fn resumable_session_splits_start_and_dispatches_resume_or_restart(cx: &mut Test
         assert!(visual.debug_bounds("session-start-split").is_none());
         assert!(visual.debug_bounds("timer-mark-fresh").is_some());
     }
-    assert_eq!(capsule(handle, cx).0, TimerPhase::Fresh);
+    assert_eq!(readout(handle, cx).0, TimerPhase::Fresh);
     interrupt(&shell, 754, cx);
     redraw(handle, cx);
     let page = shell.read_with(cx, |shell, _| shell.state.current_page());
@@ -104,7 +104,7 @@ fn resumable_session_splits_start_and_dispatches_resume_or_restart(cx: &mut Test
         assert!(visual.debug_bounds("timer-mark-stopped").is_some());
     }
     assert_eq!(
-        capsule(handle, cx),
+        readout(handle, cx),
         (
             TimerPhase::Stopped,
             "wb-timer-stopped",
@@ -117,7 +117,7 @@ fn resumable_session_splits_start_and_dispatches_resume_or_restart(cx: &mut Test
     click_control(handle, "start-resume", cx);
     cx.run_until_parked();
     redraw(handle, cx);
-    assert_eq!(capsule(handle, cx).3, Some(StartTimer::Resume));
+    assert_eq!(readout(handle, cx).3, Some(StartTimer::Resume));
     click_control(handle, "start-restart", cx);
     cx.run_until_parked();
     shell.read_with(cx, |shell, _| {
@@ -141,11 +141,11 @@ fn resumable_session_splits_start_and_dispatches_resume_or_restart(cx: &mut Test
     // Stop again; Restart zeroes the timer through its own segment.
     shell.update(cx, |shell, cx| shell.dispatch(Intent::Stop, cx));
     redraw(handle, cx);
-    assert_eq!(capsule(handle, cx).0, TimerPhase::Stopped);
+    assert_eq!(readout(handle, cx).0, TimerPhase::Stopped);
     click_control(handle, "start-restart", cx);
     cx.run_until_parked();
     redraw(handle, cx);
-    assert_eq!(capsule(handle, cx).3, Some(StartTimer::Restart));
+    assert_eq!(readout(handle, cx).3, Some(StartTimer::Restart));
     commit_pending_start(&shell, cx);
     shell.read_with(cx, |shell, _| {
         assert!(shell.state.elapsed_at(Instant::now()) < Duration::from_secs(5));
@@ -281,10 +281,10 @@ fn presenting_header_hosts_layout_menu_and_timer_states(cx: &mut TestAppContext)
         assert!(visual.debug_bounds("timer-pause").is_some());
         assert!(visual.debug_bounds("timer-reset").is_some());
     }
-    assert_eq!(capsule(handle, cx).1, "wb-elapsed");
+    assert_eq!(readout(handle, cx).1, "wb-elapsed");
     click_control(handle, "timer-pause", cx);
     redraw(handle, cx);
-    let paused = capsule(handle, cx);
+    let paused = readout(handle, cx);
     assert_eq!((paused.0, paused.1), (TimerPhase::Paused, "wb-timer-paused"));
     {
         let mut visual = gpui::VisualTestContext::from_window(handle, cx);
@@ -359,7 +359,8 @@ fn header_timer_centers_and_ignores_filename_length(cx: &mut TestAppContext) {
             let title = visual.debug_bounds("document-title").unwrap();
             let actions = visual.debug_bounds("presenter-actions").unwrap();
             assert!(title.right() <= timer.left(), "{width}: title overlaps timer");
-            assert!(timer.right() <= actions.left(), "{width}: actions overlap timer");
+            assert!(timer.right() <= actions.left() || timer.bottom() <= actions.top(),
+                "{width}: actions overlap timer");
             assert!(actions.right() <= px(width), "{width}: actions overflow");
             assert_eq!(
                 (f32::from(timer.center().x) - width / 2.).abs() <= 1.,
@@ -372,7 +373,7 @@ fn header_timer_centers_and_ignores_filename_length(cx: &mut TestAppContext) {
             digits = Some(actual);
         }
     }
-    // Narrow windows stack the capsule on its own centered row.
+    // Narrow windows give the readout and its actions their own centered row.
     cx.test_window(handle)
         .simulate_resize(size(px(600.), px(800.)));
     redraw(handle, cx);
@@ -382,7 +383,68 @@ fn header_timer_centers_and_ignores_filename_length(cx: &mut TestAppContext) {
     let digits = visual.debug_bounds("presenter-timer-digits").unwrap();
     assert!(timer.top() >= title.bottom());
     assert!((f32::from(timer.center().x) - 300.).abs() <= 1.);
-    assert!(digits.size.width >= px(30. * 0.6 * 7.));
+    assert!(timer.contains(&digits.center()));
+    assert!(visual.debug_bounds("presenter-timer-label").unwrap().bottom() <= digits.top());
+}
+
+#[gpui::test]
+fn large_timer_fits_narrow_and_threshold_widths_in_both_languages(cx: &mut TestAppContext) {
+    let (shell, handle) = workbench_fixture(cx);
+    shell.update(cx, |shell, cx| {
+        shell.settings.settings.general.ui_font_size = 18;
+        shell.path = Some("a deliberately long document name for the presenter.pdf".into());
+        shell
+            .state
+            .apply_at(
+                Command::StartPresentation {
+                    audience_available: true,
+                },
+                Instant::now(),
+            )
+            .unwrap();
+        cx.notify();
+    });
+    for language in ["zh-CN", "en-US"] {
+        shell.update(cx, |shell, cx| {
+            shell.locale = crate::locale::Locale::new(language);
+            cx.notify();
+        });
+        for width in [320., 390., 799., 800., 960., 1280.] {
+            cx.simulate_window_resize(handle, size(px(width), px(780.)));
+            redraw(handle, cx);
+            let mut v = gpui::VisualTestContext::from_window(handle, cx);
+            let bar = v.debug_bounds("presenter-bar").unwrap();
+            let timer = v.debug_bounds("presenter-timer").unwrap();
+            let stage = v.debug_bounds("stage-label").unwrap();
+            let actions = v.debug_bounds("presenter-actions").unwrap();
+            assert!(
+                stage.right() <= timer.left() || stage.bottom() <= timer.top(),
+                "stage {stage:?} / timer {timer:?} at {language} {width}"
+            );
+            assert!(
+                actions.left() >= timer.right() || actions.top() >= timer.bottom(),
+                "actions overlap at {language} {width}"
+            );
+            for id in [
+                "timer-pause",
+                "timer-reset",
+                "presenter-timer-digits",
+                "presenter-clock",
+                "displays",
+            ] {
+                let b = v.debug_bounds(id).unwrap();
+                assert!(
+                    b.left() >= bar.left()
+                        && b.right() <= bar.right()
+                        && b.bottom() <= bar.bottom(),
+                    "{id} {b:?} outside {bar:?} at {language} {width}"
+                );
+            }
+            if width < 800. || width == 1280. {
+                assert!((timer.center().x - bar.center().x).abs() <= px(1.));
+            }
+        }
+    }
 }
 
 #[gpui::test]

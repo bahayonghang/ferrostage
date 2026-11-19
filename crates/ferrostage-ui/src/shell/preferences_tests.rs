@@ -346,6 +346,67 @@ fn display_settings_both_hosts_fit_windows_main_thread_stack() {
 }
 
 #[gpui::test]
+fn settings_category_text_stays_centered_when_selection_changes(cx: &mut TestAppContext) {
+    let (shell, handle) = input_presenter(cx);
+    shell.update(cx, |shell, cx| {
+        shell.modal = Some(Modal::Settings);
+        shell.settings.settings.general.ui_font_size = 18;
+        cx.notify();
+    });
+    for width in [1280., 710.] {
+        cx.simulate_window_resize(handle, size(px(width), px(780.)));
+        let mut previous = Vec::new();
+        for selected in ["settings-category-general", "settings-category-pointer"] {
+            redraw(handle, cx);
+            click_control(handle, selected, cx);
+            redraw(handle, cx);
+            let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+            let mut centers = Vec::new();
+            for (id, text, mark) in [
+                (
+                    "settings-category-general",
+                    "settings-category-general-label",
+                    "settings-category-general-selected",
+                ),
+                (
+                    "settings-category-pointer",
+                    "settings-category-pointer-label",
+                    "settings-category-pointer-selected",
+                ),
+            ] {
+                let row = visual.debug_bounds(id).unwrap();
+                let label = visual.debug_bounds(text).unwrap();
+                assert!(label.size.width < row.size.width);
+                let delta = label.center() - row.center();
+                assert!(
+                    f32::from(delta.x).abs() <= 1. && f32::from(delta.y).abs() <= 1.,
+                    "{width}/{id}/{selected}: {delta:?}"
+                );
+                assert_eq!(visual.debug_bounds(mark).is_some(), selected == id);
+                centers.push(label.center());
+            }
+            if !previous.is_empty() {
+                assert_eq!(previous, centers);
+            }
+            previous = centers;
+        }
+        cx.simulate_keystrokes(handle, "shift-tab enter");
+        cx.run_until_parked();
+        assert_eq!(
+            shell.read_with(cx, |s, _| s.preferences.category),
+            crate::settings_panel::Category::Timer
+        );
+        redraw(handle, cx);
+        cx.simulate_keystrokes(handle, "tab space");
+        cx.run_until_parked();
+        assert_eq!(
+            shell.read_with(cx, |s, _| s.preferences.category),
+            crate::settings_panel::Category::Pointer
+        );
+    }
+}
+
+#[gpui::test]
 fn settings_centers_navigation_and_category_body_with_aligned_header_and_feedback(
     cx: &mut TestAppContext,
 ) {

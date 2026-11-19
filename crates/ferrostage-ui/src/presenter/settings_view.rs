@@ -23,6 +23,59 @@ impl SettingsData {
     }
 }
 impl Presenter {
+    fn category_row(&self, category: Category, selected: bool, p: Palette) -> Stateful<Div> {
+        let id = format!("settings-category-{}", category.id());
+        let label = self.locale.text(&id).to_owned();
+        let text_id = format!("{id}-label");
+        let face_id = SharedString::from(format!("{id}-face"));
+        let mark_id = format!("{id}-selected");
+        self.activation_target(
+            id,
+            label.clone(),
+            true,
+            Intent::SettingsCategory(category),
+            p,
+        )
+        .group("settings-category-row")
+        .rounded(px(0.))
+        .aria_toggled(if selected {
+            gpui::Toggled::True
+        } else {
+            gpui::Toggled::False
+        })
+        .child(
+            div()
+                .id(face_id)
+                .relative()
+                .min_h(px(theme::CONTROL))
+                .px(px(theme::SPACING))
+                .flex()
+                .items_center()
+                .justify_center()
+                .text_size(px(self.ui_text_size(14.)))
+                .text_color(rgb(if selected { p.ink } else { p.body }))
+                .when(selected, |face| face.bg(rgb(p.accent_wash)))
+                .group_hover("settings-category-row", move |face| {
+                    face.bg(rgb(p.control_hover))
+                })
+                .group_active("settings-category-row", move |face| {
+                    face.bg(rgb(p.control_pressed))
+                })
+                .when(selected, |face| {
+                    face.child(
+                        div()
+                            .absolute()
+                            .left(px(6.))
+                            .w(px(3.))
+                            .h(px(18.))
+                            .debug_selector(move || mark_id.clone())
+                            .bg(rgb(p.focus)),
+                    )
+                })
+                .child(div().debug_selector(move || text_id.clone()).child(label)),
+        )
+    }
+
     pub(super) fn settings_panel(
         &self,
         p: Palette,
@@ -47,18 +100,8 @@ impl Presenter {
             .gap(px(4.))
             .when(narrow, |v| v.flex_wrap())
             .when(!narrow, |v| v.flex_col().w(px(rail_width)).flex_shrink_0());
-        for category in Category::ALL {
-            rail = rail.child(
-                self.button(
-                    format!("settings-category-{}", category.id()),
-                    l.text(&format!("settings-category-{}", category.id()))
-                        .into(),
-                    true,
-                    data.panel.category == category,
-                    Intent::SettingsCategory(category),
-                    p,
-                ),
-            );
+        for entry in Category::ALL {
+            rail = rail.child(self.category_row(entry, category == entry, p));
         }
         let mut content = div()
             .id(SharedString::from(format!(

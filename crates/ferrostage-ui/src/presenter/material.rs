@@ -1,7 +1,7 @@
 //! Native window backdrop for the presenter; slide and audience pixels are independent.
 use crate::theme::{self, Palette};
 use gpui::{
-    BoxShadow, Div, Hsla, Window, WindowBackgroundAppearance, div, linear_color_stop,
+    Background, BoxShadow, Div, Window, WindowBackgroundAppearance, div, linear_color_stop,
     linear_gradient, prelude::*, px, rgb, rgba,
 };
 use std::time::{Duration, Instant};
@@ -91,18 +91,37 @@ impl Material {
         )
     }
 
-    /// Panel layer color: translucent over the native field, otherwise solid.
-    pub(super) fn layer(&self, p: Palette) -> Hsla {
-        if self.native() {
-            Hsla::from(rgb(p.layer)).alpha(p.layer_alpha)
+    /// Lift the upper part of each panel with one fill, including in solid mode.
+    pub(super) fn layer(&self, p: Palette) -> Background {
+        let (top, base, alpha) = if self.native() {
+            (p.layer_top, p.layer, p.layer_alpha)
         } else {
-            rgb(p.layer_solid).into()
-        }
+            (p.layer_solid_top, p.layer_solid, 1.)
+        };
+        linear_gradient(
+            180.,
+            linear_color_stop(rgb(top).alpha(alpha), 0.),
+            linear_color_stop(rgb(base).alpha(alpha), 0.55),
+        )
     }
 
     /// One L1 panel: same hue as the field, bounded by its fill, never stroked.
     pub(super) fn panel(&self, p: Palette) -> Div {
         div().rounded(px(theme::PANEL_RADIUS)).bg(self.layer(p))
+    }
+
+    /// Shallow highlight on the shared header glass, above the inset wall clock.
+    pub(super) fn readout(&self, p: Palette) -> gpui::Background {
+        let (top, base) = if self.native() {
+            (theme::READOUT_TOP_ALPHA, theme::READOUT_BASE_ALPHA)
+        } else {
+            (1., 1.)
+        };
+        linear_gradient(
+            180.,
+            linear_color_stop(rgb(p.raised).alpha(top), 0.),
+            linear_color_stop(rgb(p.layer_solid_top).alpha(base), 1.),
+        )
     }
 
     /// A status line on its own panel, led by a status-colored mark so the meaning
