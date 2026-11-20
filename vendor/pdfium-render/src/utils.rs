@@ -1,6 +1,5 @@
 pub(crate) mod pixels {
 
-    const BYTES_PER_GRAYSCALE_PIXEL: usize = 1;
     const BYTES_PER_THREE_CHANNEL_PIXEL: usize = 3;
     const BYTES_PER_FOUR_CHANNEL_PIXEL: usize = 4;
 
@@ -139,6 +138,7 @@ pub(crate) mod pixels {
     /// a single scanline - is always a multiple of four, irrespective of the pixel data format.
     /// The number of empty alignment bytes to be skipped is determined from the given width
     /// and stride parameters.
+    #[cfg(any(feature = "image_api", test))]
     #[inline]
     pub(crate) fn aligned_grayscale_to_unaligned(
         grayscale: &[u8],
@@ -147,7 +147,7 @@ pub(crate) mod pixels {
     ) -> Vec<u8> {
         grayscale
             .chunks_exact(stride)
-            .flat_map(|scanline| &scanline[..width * BYTES_PER_GRAYSCALE_PIXEL])
+            .flat_map(|scanline| &scanline[..width])
             .copied()
             .collect::<Vec<_>>()
     }

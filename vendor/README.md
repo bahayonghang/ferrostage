@@ -63,6 +63,8 @@ FerroStage uses Jiff 1.0.1 for wall time. The [maintenance scope](../.trellis/sp
 
 The PDF wrapper archive has SHA256 `8948a803616a9e936b15a6637af2cd48c5fb8ae0fcdeb3c32eac3a540e255a19` at upstream commit `6cee8b9a3951832ac0ff62ce4c32800278001cb8`. The copy retains its VCS metadata, license, headers and generated ABI bindings. Cargo resolves it through the application lockfile. The 0.9.5 release still requires chrono. The upstream proposal targets a different wrapper revision and Jiff 0.2. At the time of migration, Zed main also still required chrono in both packages. [PDFium upstream proposal](https://github.com/ajrcarey/pdfium-render/pull/287) · [Zed scheduler](https://github.com/zed-industries/zed/blob/b51ffab0153f3372b71d1bd565d48d5203fefe6a/crates/scheduler/Cargo.toml) · [Zed zlog](https://github.com/zed-industries/zed/blob/b51ffab0153f3372b71d1bd565d48d5203fefe6a/crates/zlog/Cargo.toml)
 
+The wrapper also carries two build-warning fixes. The grayscale scanline helper compiles with `image_api` or in unit tests. The public `PdfPageObjectMark` retains its opaque handle and lifetime, with the unused private constructor and accessor removed.
+
 Run the targeted checks from the repository root. The wrapper's upstream unit tests also compile image tests, so that invocation enables `image_025`. The product uses only `pdfium_7881`.
 
 ```sh
