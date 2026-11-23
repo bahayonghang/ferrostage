@@ -95,7 +95,9 @@ impl Presenter {
     }
 
     pub(super) fn utility_menu_panel(&self, p: Palette) -> gpui::AnyElement {
-        let mut panel = super::material::floating(p)
+        let mut panel = self
+            .material
+            .floating(p)
             .id("presenter-utility-menu")
             .debug_selector(|| "presenter-utility-menu".into())
             .w(px(240.))

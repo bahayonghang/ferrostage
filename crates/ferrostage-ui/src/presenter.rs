@@ -274,12 +274,13 @@ pub(crate) fn quiet_header(stage: SessionStage, intent: &Intent) -> bool {
 struct FilenameTooltip {
     filename: String,
     palette: Palette,
+    glass: bool,
     typography: theme::Typography,
 }
 
 impl Render for FilenameTooltip {
     fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
-        material::floating(self.palette)
+        material::floating_surface(self.palette, self.glass)
             .id("presenter-text-tooltip")
             .debug_selector(|| "presenter-text-tooltip".into())
             .max_w(px(560.))
@@ -344,6 +345,15 @@ impl Presenter {
     }
     pub(crate) fn ui_text_size(&self, role: f32) -> f32 {
         self.data.typography.size(role)
+    }
+    pub(crate) fn well_bg(&self, p: Palette) -> gpui::Rgba {
+        self.material.well_bg(p)
+    }
+    pub(crate) fn control_bg(&self, p: Palette) -> gpui::Rgba {
+        self.material.control_bg(p)
+    }
+    pub(crate) fn hairline_color(&self, p: Palette) -> gpui::Rgba {
+        self.material.hairline_color(p)
     }
     pub(crate) fn staged(&self, attempt: u64) -> bool {
         self.textures.borrow().staged(attempt)
@@ -574,6 +584,15 @@ impl Presenter {
         self.rendered_titlebar.borrow().clone()
     }
 
+    #[cfg(all(test, feature = "test-support"))]
+    pub(crate) fn material_probe(&self) -> (&'static str, bool, Option<[u64; 3]>) {
+        (
+            self.material.status_key(),
+            self.material.is_glass(),
+            self.material.blob_ids(),
+        )
+    }
+
     pub(crate) fn button(
         &self,
         id: String,
@@ -674,7 +693,7 @@ impl Presenter {
         // Header, timer and menu-row actions rest on their surface without a fill.
         let quiet_face = quiet_header || menu_row;
         let quiet = quiet_face && !selected;
-        let style = palette.button(kind, enabled, selected);
+        let style = palette.button(kind, enabled, selected, self.material.is_glass());
         let indicator = style.indicator.filter(|_| selected);
         let selected_id = id.clone();
         self.activation_target(id.clone(), label.clone(), enabled, intent, palette)
@@ -715,7 +734,9 @@ impl Presenter {
                     .gap(px(8.))
                     .relative()
                     .rounded(px(style.radius))
-                    .when(!quiet, |view| view.bg(rgb(style.fill)))
+                    .when(!quiet && style.fill.alpha > 0.0, |view| {
+                        view.bg(style.fill.color())
+                    })
                     .text_color(rgb(style.ink))
                     .min_w_0()
                     .when(
@@ -764,8 +785,8 @@ impl Presenter {
                         ))
                     })
                     .when(enabled, |view| {
-                        view.hover(move |state| state.bg(rgb(style.hover)))
-                            .active(move |state| state.bg(rgb(style.pressed)).top(px(1.)))
+                        view.hover(move |state| state.bg(style.hover.color()))
+                            .active(move |state| state.bg(style.pressed.color()).top(px(1.)))
                     }),
             )
     }
@@ -912,15 +933,27 @@ impl Presenter {
     }
 
     /// Full-height panel that holds a modal page (settings, displays, crop check).
-    fn modal_surface(&self, p: Palette) -> Div {
+    /// Keeps `overflow_hidden` on an inner wrapper so the panel's outer drop shadow is never clipped.
+    fn modal_surface(&self, p: Palette, content: impl IntoElement) -> Div {
         self.material
             .panel(p)
             .size_full()
             .min_h_0()
             .min_w_0()
-            .overflow_hidden()
             .flex()
             .flex_col()
+            .child(
+                div()
+                    .flex_1()
+                    .min_h_0()
+                    .min_w_0()
+                    .w_full()
+                    .rounded(px(theme::PANEL_RADIUS))
+                    .overflow_hidden()
+                    .flex()
+                    .flex_col()
+                    .child(content),
+            )
     }
 
     /// One `control` track holding the options of a segmented control. Each option's
@@ -933,13 +966,14 @@ impl Presenter {
             .rounded(px(theme::CONTROL / 2.
                 + theme::FOCUS_WIDTH
                 + theme::FOCUS_GAP))
-            .bg(rgb(p.control))
+            .bg(self.material.control_bg(p))
     }
 
     fn command_bar(&self, p: Palette, window: &Window) -> gpui::AnyElement {
         let l = self.locale;
         let stage = self.data.stage;
         let busy = self.data.busy;
+        let glass = self.material.is_glass();
         let stage_label = match stage {
             SessionStage::Idle => l.text("stage-idle"),
             SessionStage::Ready => l.text("stage-ready"),
@@ -969,6 +1003,7 @@ impl Presenter {
                         cx.new(|_| FilenameTooltip {
                             filename: tooltip_filename.clone(),
                             palette: p,
+                            glass,
                             typography: typography.clone(),
                         })
                         .into()
@@ -994,11 +1029,11 @@ impl Presenter {
                     .items_center()
                     .gap(px(6.))
                     .rounded_full()
-                    .bg(rgb(if stage == SessionStage::Presenting {
-                        p.accent_wash
+                    .bg(if stage == SessionStage::Presenting {
+                        rgb(p.accent_wash)
                     } else {
-                        p.control
-                    }))
+                        self.material.control_bg(p)
+                    })
                     .font_weight(gpui::FontWeight::MEDIUM)
                     .text_size(px(self.data.typography.size(12.)))
                     .text_color(rgb(p.body))
@@ -1047,7 +1082,7 @@ impl Presenter {
                         .w(px(1.))
                         .h(px(24.))
                         .flex_shrink_0()
-                        .bg(gpui::rgba(p.hairline)),
+                        .bg(self.material.hairline_color(p)),
                 )
             });
         if stage == SessionStage::Presenting {
@@ -1256,6 +1291,7 @@ impl Render for Presenter {
         );
         let p = theme::palette(self.data.theme, dark);
         self.material.update(self.data.glass_effect, window);
+        let field_backdrop = self.material.field_backdrop(p);
         let stage = self.data.stage;
         let stage_label = match stage {
             SessionStage::Idle => l.text("stage-idle"),
@@ -1469,10 +1505,10 @@ impl Render for Presenter {
             .relative()
             .flex()
             .flex_col()
-            .bg(self.material.field(p))
             .text_color(rgb(p.body))
             .font(self.data.typography.font())
             .text_size(px(self.data.typography.size(16.)))
+            .child(field_backdrop)
             .child(
                 gpui::canvas(
                     |_, _, _| (),
@@ -1545,8 +1581,7 @@ impl Render for Presenter {
                     .track_focus(&self.modal_focus)
                     .key_context("FerroStageCropDialog")
                     .child(
-                        content_shell
-                            .child(self.modal_surface(p).child(self.crop_panel(p, window, cx))),
+                        content_shell.child(self.modal_surface(p, self.crop_panel(p, window, cx))),
                     )
                     .into_any_element();
             }
@@ -1554,20 +1589,17 @@ impl Render for Presenter {
                 return root
                     .track_focus(&self.modal_focus)
                     .key_context("FerroStageModal")
-                    .child(
-                        content_shell.child(self.modal_surface(p).child(self.settings_panel(
-                            p,
-                            viewport.width.into(),
-                            inset,
-                        ))),
-                    )
+                    .child(content_shell.child(
+                        self.modal_surface(p, self.settings_panel(p, viewport.width.into(), inset)),
+                    ))
                     .into_any_element();
             }
             if let Some(panel) = &self.data.displays {
                 return root
                     .track_focus(&self.modal_focus)
                     .key_context("FerroStageModal")
-                    .child(content_shell.child(self.modal_surface(p).child(
+                    .child(content_shell.child(self.modal_surface(
+                        p,
                         crate::display_settings::view::panel(
                             self,
                             panel,
@@ -1653,7 +1685,7 @@ impl Render for Presenter {
                             .size(px(20.))
                             .rounded_full()
                             .bg(rgb(p.error))
-                            .text_color(rgb(p.layer_solid))
+                            .text_color(rgb(p.sheet_solid))
                             .text_size(px(self.ui_text_size(12.)))
                             .flex()
                             .items_center()

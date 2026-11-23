@@ -155,12 +155,33 @@ mod tests {
     }
 
     #[test]
-    fn win10_glass_fallback_notice_is_localized() {
-        let zh = Locale::new("zh-CN").text("settings-glass-win10");
-        let en = Locale::new("en-US").text("settings-glass-win10");
-        assert!(!zh.is_empty());
-        assert!(!en.is_empty());
-        assert!(zh.contains("Windows 10") && zh.contains("实色表面"));
-        assert!(en.contains("Windows 10") && en.contains("solid surfaces"));
+    fn airy_glass_status_notices_are_localized() {
+        for obsolete in [
+            "settings-glass-native",
+            "settings-glass-narrow",
+            "settings-glass-unavailable",
+            "settings-glass-win10",
+        ] {
+            assert!(!EN.contains_key(obsolete), "obsolete en-US key: {obsolete}");
+            assert!(!ZH.contains_key(obsolete), "obsolete zh-CN key: {obsolete}");
+        }
+
+        let zh = Locale::new("zh-CN");
+        let en = Locale::new("en-US");
+        assert_eq!(zh.text("settings-glass-airy"), "已启用暖橙轻盈毛玻璃。");
+        assert_eq!(
+            en.text("settings-glass-airy"),
+            "Warm airy frosted glass is active."
+        );
+        assert_eq!(
+            zh.text("settings-glass-system"),
+            "系统已启用减少透明度或高对比度，当前使用实色表面。"
+        );
+        assert_eq!(
+            en.text("settings-glass-system"),
+            "Using solid surfaces because reduced transparency or high contrast is enabled."
+        );
+        assert_eq!(zh.text("settings-glass-disabled"), "当前使用实色表面。");
+        assert_eq!(en.text("settings-glass-disabled"), "Using solid surfaces.");
     }
 }

@@ -599,7 +599,7 @@ pub(crate) mod view {
             .w(px(preview_width))
             .h(px(preview_height))
             .flex_shrink_0()
-            .bg(rgb(p.well))
+            .bg(view.well_bg(p))
             .rounded(px(theme::WELL_RADIUS));
         let mut callouts = Vec::new();
         for (number, x, y, w, h) in topology_rectangles(&panel.monitors) {
@@ -752,7 +752,7 @@ pub(crate) mod view {
                 .debug_selector(move || format!("display-card-{number}"))
                 .min_w_0()
                 .border_b_1()
-                .border_color(gpui::rgba(p.hairline))
+                .border_color(view.hairline_color(p))
                 .py(px(6.))
                 .flex()
                 .flex_col()
@@ -769,7 +769,7 @@ pub(crate) mod view {
                                 .h(px(theme::CONTROL))
                                 .flex_shrink_0()
                                 .rounded(px(theme::RADIUS))
-                                .bg(rgb(p.control))
+                                .bg(view.control_bg(p))
                                 .flex()
                                 .items_center()
                                 .justify_center()
@@ -968,7 +968,7 @@ pub(crate) mod view {
             .flex_shrink_0()
             .gap(px(4.))
             .border_t_1()
-            .border_color(gpui::rgba(p.hairline))
+            .border_color(view.hairline_color(p))
             .pt(px(8.))
             .child(
                 div()

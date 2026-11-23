@@ -272,12 +272,12 @@ impl Presenter {
                 btn = btn
                     .hover(move |style| {
                         style
-                            .bg(gpui::rgba(p.titlebar_control_hover))
+                            .bg(p.titlebar_control_hover.color())
                             .text_color(rgb(p.titlebar_icon))
                     })
                     .active(move |style| {
                         style
-                            .bg(gpui::rgba(p.titlebar_control_pressed))
+                            .bg(p.titlebar_control_pressed.color())
                             .text_color(rgb(p.titlebar_icon))
                     });
             }

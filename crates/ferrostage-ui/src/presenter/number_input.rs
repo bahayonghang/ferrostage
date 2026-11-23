@@ -167,7 +167,7 @@ impl Presenter {
             .border_2()
             .border_color(rgb(p.border))
             .focus(|s| s.border_color(rgb(p.focus)))
-            .bg(rgb(p.well))
+            .bg(self.material.well_bg(p))
             .text_color(rgb(p.ink))
             .font(self.data.typography.numeric_font())
             .text_size(px(self.data.typography.size(20.)))

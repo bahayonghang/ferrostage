@@ -217,6 +217,9 @@ impl Presenter {
             - f32::from(self.layout_anchor.get().bottom())
             - 20.)
             .max(120.);
+        let hover_bg = self.material.control_hover_bg(p);
+        let pressed_bg = self.material.control_pressed_bg(p);
+        let hairline = self.material.hairline_color(p);
         let detected = layout_label(menu.detected);
         let mut body = div()
             .id("layout-menu-body")
@@ -231,13 +234,7 @@ impl Presenter {
         for (index, focus) in self.layout_row_focus.iter().enumerate() {
             if index == LAYOUTS.len() {
                 body = body
-                    .child(
-                        div()
-                            .my(px(6.))
-                            .h(px(1.))
-                            .bg(gpui::rgba(p.hairline))
-                            .flex_shrink_0(),
-                    )
+                    .child(div().my(px(6.)).h(px(1.)).bg(hairline).flex_shrink_0())
                     .child(self.layout_group_heading("ln-page-group", p));
             }
             let (label, checked, helper) = match index {
@@ -304,8 +301,8 @@ impl Presenter {
                         .gap(px(8.))
                         .bg(rgb(if checked { p.accent_wash } else { p.raised }))
                         .text_color(rgb(if enabled { p.ink } else { p.muted }))
-                        .hover(|style| style.bg(rgb(p.control_hover)))
-                        .active(|style| style.bg(rgb(p.control_pressed)).top(px(1.)))
+                        .hover(move |style| style.bg(hover_bg))
+                        .active(move |style| style.bg(pressed_bg).top(px(1.)))
                         .child(
                             div()
                                 .w(px(16.))
@@ -335,7 +332,8 @@ impl Presenter {
                 ),
             );
         }
-        super::material::floating(p)
+        self.material
+            .floating(p)
             .id("layout-navigation-menu")
             .debug_selector(|| "layout-navigation-menu".into())
             .role(Role::Menu)
@@ -399,6 +397,7 @@ impl Presenter {
             .flex_col_reverse()
             .items_start()
             .gap(px(8.));
+        let hover_bg = self.material.control_hover_bg(p);
         for (index, warning) in self.data.document_warnings.iter().enumerate() {
             let id = format!("document-warning-{index}");
             let dismiss_id = format!("dismiss-document-warning-{index}");
@@ -409,7 +408,8 @@ impl Presenter {
                 .tab_index(0)
                 .tab_stop(!blocked);
             stack = stack.child(
-                super::material::floating(p)
+                self.material
+                    .floating(p)
                     .id(SharedString::from(id))
                     .debug_selector(move || selector)
                     .role(Role::Status)
@@ -456,7 +456,7 @@ impl Presenter {
                                 .rounded(px(crate::theme::RADIUS))
                                 .text_size(px(self.ui_text_size(16.)))
                                 .text_color(rgb(p.body))
-                                .hover(|style| style.bg(rgb(p.control_hover)))
+                                .hover(move |style| style.bg(hover_bg))
                                 .active(|style| style.top(px(1.)))
                                 .child("×"),
                         ),

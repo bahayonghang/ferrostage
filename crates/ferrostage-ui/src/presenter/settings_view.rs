@@ -29,6 +29,8 @@ impl Presenter {
         let text_id = format!("{id}-label");
         let face_id = SharedString::from(format!("{id}-face"));
         let mark_id = format!("{id}-selected");
+        let hover_bg = self.material.control_hover_bg(p);
+        let pressed_bg = self.material.control_pressed_bg(p);
         self.activation_target(
             id,
             label.clone(),
@@ -55,12 +57,8 @@ impl Presenter {
                 .text_size(px(self.ui_text_size(14.)))
                 .text_color(rgb(if selected { p.ink } else { p.body }))
                 .when(selected, |face| face.bg(rgb(p.accent_wash)))
-                .group_hover("settings-category-row", move |face| {
-                    face.bg(rgb(p.control_hover))
-                })
-                .group_active("settings-category-row", move |face| {
-                    face.bg(rgb(p.control_pressed))
-                })
+                .group_hover("settings-category-row", move |face| face.bg(hover_bg))
+                .group_active("settings-category-row", move |face| face.bg(pressed_bg))
                 .when(selected, |face| {
                     face.child(
                         div()
@@ -155,7 +153,7 @@ impl Presenter {
                         .px(px(12.))
                         .py(px(12.))
                         .mb(px(8.))
-                        .bg(rgb(p.well))
+                        .bg(self.material.well_bg(p))
                         .rounded(px(theme::WELL_RADIUS))
                         .child(l.text("settings-font-preview"))
                         .child(
@@ -203,7 +201,7 @@ impl Presenter {
                         .h(px(64.))
                         .p(px(12.))
                         .rounded(px(theme::WELL_RADIUS))
-                        .bg(rgb(p.well))
+                        .bg(self.material.well_bg(p))
                         .flex()
                         .items_center()
                         .gap(px(20.))
@@ -236,7 +234,7 @@ impl Presenter {
                         .gap(px(4.))
                         .p(px(12.))
                         .border_b_1()
-                        .border_color(gpui::rgba(p.hairline));
+                        .border_color(self.material.hairline_color(p));
                     row = row.child(
                         div()
                             .text_color(rgb(p.ink))
@@ -315,7 +313,7 @@ impl Presenter {
                         div()
                             .p(px(12.))
                             .rounded(px(theme::WELL_RADIUS))
-                            .bg(rgb(p.well))
+                            .bg(self.material.well_bg(p))
                             .child(l.text("settings-hot-reload-help")),
                     )
                     .child(
@@ -369,7 +367,7 @@ impl Presenter {
                                 .gap(px(4.))
                                 .py(px(12.))
                                 .border_b_1()
-                                .border_color(gpui::rgba(p.hairline))
+                                .border_color(self.material.hairline_color(p))
                                 .child(
                                     div()
                                         .text_size(px(self.ui_text_size(16.)))
@@ -407,7 +405,7 @@ impl Presenter {
                             div()
                                 .px(px(6.))
                                 .rounded(px(4.))
-                                .bg(rgb(p.control))
+                                .bg(self.material.control_bg(p))
                                 .text_size(px(self.ui_text_size(12.)))
                                 .text_color(rgb(p.muted))
                                 .child(time.strftime("UTC%:z").to_string()),
@@ -452,7 +450,7 @@ impl Presenter {
                             .gap(px(12.))
                             .py(px(12.))
                             .border_b_1()
-                            .border_color(gpui::rgba(p.hairline))
+                            .border_color(self.material.hairline_color(p))
                             .child(
                                 div()
                                     .text_size(px(self.ui_text_size(16.)))
@@ -472,7 +470,7 @@ impl Presenter {
             .flex_col()
             .gap(px(4.))
             .border_t_1()
-            .border_color(gpui::rgba(p.hairline))
+            .border_color(self.material.hairline_color(p))
             .pt(px(8.));
         if !data.writable {
             footer = footer.child(
@@ -629,6 +627,7 @@ impl Presenter {
                     .child(l.text("recent-empty")),
             );
         }
+        let glass = self.material.is_glass();
         for (index, path) in files.iter().enumerate() {
             let (name, parent) = settings_panel::recent_copy(path);
             let tooltip_path = path.clone();
@@ -648,6 +647,7 @@ impl Presenter {
                         cx.new(|_| FilenameTooltip {
                             filename: tooltip_path.clone(),
                             palette: p,
+                            glass,
                             typography: typography.clone(),
                         })
                         .into()
@@ -855,7 +855,7 @@ impl Presenter {
             .flex_shrink_0()
             .py(px(4.))
             .border_b_1()
-            .border_color(gpui::rgba(p.hairline))
+            .border_color(self.material.hairline_color(p))
             .flex()
             .flex_wrap()
             .items_center()
@@ -917,8 +917,9 @@ impl Presenter {
             return;
         };
         let size = self.ui_text_size(16.);
+        let glass = self.material.is_glass();
         if let Some(search) = &self.font_search {
-            search.update(cx, |field, cx| field.update_style(p, size, cx));
+            search.update(cx, |field, cx| field.update_style(p, glass, size, cx));
         } else {
             let focus = self.data.font_search_focus.clone();
             self.font_search = Some(cx.new(|_| {
@@ -927,6 +928,7 @@ impl Presenter {
                     focus.clone(),
                     self.locale,
                     p,
+                    glass,
                     size,
                 )
             }));
@@ -987,6 +989,7 @@ impl Presenter {
             .flex()
             .flex_col();
         let effective = &self.data.typography.family;
+        let hover_bg = self.material.control_hover_bg(p);
         for (index, family) in matches.iter().copied().enumerate() {
             let applied = family.eq_ignore_ascii_case(effective);
             let candidate = picker.selected == index;
@@ -1007,7 +1010,7 @@ impl Presenter {
                         gpui::transparent_black()
                     })
                     .when(candidate, |row| row.bg(rgb(p.accent_wash)))
-                    .hover(|row| row.bg(rgb(p.control_hover)))
+                    .hover(move |row| row.bg(hover_bg))
                     .px(px(10.))
                     .flex()
                     .items_center()
@@ -1040,7 +1043,7 @@ impl Presenter {
             .w_full()
             .flex_shrink_0()
             .rounded(px(theme::WELL_RADIUS))
-            .bg(rgb(p.well))
+            .bg(self.material.well_bg(p))
             .p(px(8.))
             .flex()
             .flex_col()
@@ -1144,7 +1147,7 @@ impl Presenter {
             .border_color(rgb(p.border))
             .rounded(px(theme::RADIUS))
             .focus(|v| v.border_color(rgb(p.focus)))
-            .bg(rgb(p.well))
+            .bg(self.material.well_bg(p))
             .child(
                 div()
                     .absolute()

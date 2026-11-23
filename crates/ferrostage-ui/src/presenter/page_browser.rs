@@ -234,7 +234,8 @@ impl Presenter {
                         .rounded(px(theme::RADIUS))
                         .bg(rgb(if current { p.accent_wash } else { p.raised }))
                         .when(enabled, |view| {
-                            view.hover(|s| s.bg(rgb(p.control_hover)))
+                            let hover_bg = self.material.control_hover_bg(p);
+                            view.hover(move |s| s.bg(hover_bg))
                                 .active(|s| s.top(px(1.)))
                         })
                         .child(
@@ -552,7 +553,7 @@ impl Presenter {
                             .rounded(px(12.))
                             .border_1()
                             .border_color(rgb(if target { p.focus } else { p.border }))
-                            .bg(rgb(p.well))
+                            .bg(self.material.well_bg(p))
                             .active(|s| s.top(px(1.)))
                             .overflow_hidden()
                             .child(
@@ -650,7 +651,8 @@ impl Presenter {
             .error
             .map(|key| l.format(key, &[("pages", data.entries.len().to_string())]))
             .unwrap_or_else(|| data.target_context.clone());
-        super::material::floating(p)
+        self.material
+            .floating(p)
             .id("page-browser")
             .debug_selector(|| "page-browser".into())
             .role(Role::Group)
