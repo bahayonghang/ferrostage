@@ -1898,3 +1898,52 @@ fn shortcut_warnings_recompute_on_language_switch_and_preserve_escape_stops(
         assert!(shell.shortcut_warnings.iter().all(|w| w.contains("已禁用")));
     });
 }
+
+#[gpui::test]
+fn language_hot_switch_updates_open_font_search_locale_and_placeholder(cx: &mut TestAppContext) {
+    let fixture = SaveFixture::new();
+    fixture.unblock();
+    let (shell, handle) = input_presenter(cx);
+    shell.update(cx, |shell, cx| {
+        shell.store = fixture.store();
+        shell.ui_fonts = std::sync::Arc::new(vec!["Arial".into(), "Segoe UI".into()]);
+        shell.modal = Some(Modal::Settings);
+        cx.notify();
+    });
+    redraw(handle, cx);
+    click_control(handle, "setting-font-family", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+
+    let presenter = handle.downcast::<Presenter>().unwrap();
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    assert!(visual.debug_bounds("settings-font-search").is_some());
+    let (locale, rendered) = presenter
+        .read_with(cx, |view, cx| view.font_search_probe(cx))
+        .unwrap()
+        .expect("font search entity must be mounted");
+    assert!(locale == crate::locale::Locale::new("zh-CN"));
+    assert_eq!(rendered, Some(("搜索界面字体", "输入字体名称…")));
+
+    click_control(handle, "setting-general.language-en-US", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+    assert!(visual.debug_bounds("settings-font-search").is_some());
+    let (locale, rendered) = presenter
+        .read_with(cx, |view, cx| view.font_search_probe(cx))
+        .unwrap()
+        .expect("font search entity must stay mounted across language switch");
+    assert!(locale == crate::locale::Locale::new("en-US"));
+    assert!(locale != crate::locale::Locale::new("zh-CN"));
+    assert_eq!(rendered, Some(("Search interface fonts", "Type a font name…")));
+
+    click_control(handle, "setting-general.language-zh-CN", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+    let (locale, rendered) = presenter
+        .read_with(cx, |view, cx| view.font_search_probe(cx))
+        .unwrap()
+        .expect("font search entity must stay mounted after switching back");
+    assert!(locale == crate::locale::Locale::new("zh-CN"));
+    assert_eq!(rendered, Some(("搜索界面字体", "输入字体名称…")));
+}

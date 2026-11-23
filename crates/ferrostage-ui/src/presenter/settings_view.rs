@@ -917,7 +917,9 @@ impl Presenter {
         let size = self.ui_text_size(16.);
         let glass = self.material.is_glass();
         if let Some(search) = &self.font_search {
-            search.update(cx, |field, cx| field.update_style(p, glass, size, cx));
+            search.update(cx, |field, cx| {
+                field.update_style(self.locale, p, glass, size, cx);
+            });
         } else {
             let focus = self.data.font_search_focus.clone();
             self.font_search = Some(cx.new(|_| {

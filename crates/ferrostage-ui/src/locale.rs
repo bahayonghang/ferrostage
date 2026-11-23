@@ -13,6 +13,12 @@ fn catalog(source: &str) -> BTreeMap<String, String> {
 
 #[derive(Clone, Copy)]
 pub struct Locale(&'static BTreeMap<String, String>);
+impl PartialEq for Locale {
+    fn eq(&self, other: &Self) -> bool {
+        std::ptr::eq(self.0, other.0)
+    }
+}
+impl Eq for Locale {}
 impl Locale {
     pub fn new(language: &str) -> Self {
         Self(if language == "en-US" { &EN } else { &ZH })

@@ -117,6 +117,8 @@ pub(super) struct FontSearch {
     query: Query,
     layout: Rc<RefCell<Option<Layout>>>,
     selecting: bool,
+    #[cfg(all(test, feature = "test-support"))]
+    rendered_copy: std::cell::Cell<Option<(&'static str, &'static str)>>,
 }
 
 impl FontSearch {
@@ -138,7 +140,14 @@ impl FontSearch {
             query: Query::default(),
             layout: Rc::default(),
             selecting: false,
+            #[cfg(all(test, feature = "test-support"))]
+            rendered_copy: std::cell::Cell::new(None),
         }
+    }
+
+    #[cfg(all(test, feature = "test-support"))]
+    pub(super) fn locale_probe(&self) -> (Locale, Option<(&'static str, &'static str)>) {
+        (self.locale, self.rendered_copy.get())
     }
 
     pub(super) fn composing(&self) -> bool {
@@ -147,12 +156,18 @@ impl FontSearch {
 
     pub(super) fn update_style(
         &mut self,
+        locale: Locale,
         palette: Palette,
         glass: bool,
         size: f32,
         cx: &mut Context<Self>,
     ) {
-        if self.palette != palette || self.glass != glass || self.text_size != size {
+        if self.locale != locale
+            || self.palette != palette
+            || self.glass != glass
+            || self.text_size != size
+        {
+            self.locale = locale;
             self.palette = palette;
             self.glass = glass;
             self.text_size = size;
@@ -330,12 +345,18 @@ impl FontSearch {
 impl Render for FontSearch {
     fn render(&mut self, _: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let p = self.palette;
+        let aria_label = self.locale.text("settings-font-search");
+        #[cfg(all(test, feature = "test-support"))]
+        self.rendered_copy.set(Some((
+            aria_label,
+            self.locale.text("settings-font-placeholder"),
+        )));
         div()
             .id("settings-font-search")
             .accessibility_id("settings-font-search")
             .debug_selector(|| "settings-font-search".into())
             .role(Role::TextInput)
-            .aria_label(self.locale.text("settings-font-search"))
+            .aria_label(aria_label)
             .aria_value(self.query.text.clone())
             .track_focus(&self.focus)
             .tab_index(0)

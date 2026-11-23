@@ -350,6 +350,15 @@ impl Presenter {
             self.data.typography.missing,
         )
     }
+    #[cfg(all(test, feature = "test-support"))]
+    pub(crate) fn font_search_probe(
+        &self,
+        cx: &gpui::App,
+    ) -> Option<(crate::locale::Locale, Option<(&'static str, &'static str)>)> {
+        self.font_search
+            .as_ref()
+            .map(|search| search.read(cx).locale_probe())
+    }
     pub(crate) fn ui_text_size(&self, role: f32) -> f32 {
         self.data.typography.size(role)
     }
@@ -1142,7 +1151,7 @@ impl Presenter {
         let mut bar = div()
             .id("presenter-bar")
             .debug_selector(|| "presenter-bar".into())
-            .px(px(16.))
+            .px(px(12.))
             .pt(px(if stage == SessionStage::Presenting {
                 0.
             } else {
@@ -1156,7 +1165,7 @@ impl Presenter {
             .flex()
             .when(!narrow, |bar| bar.flex_wrap())
             .items_center()
-            .gap(px(12.));
+            .gap(px(8.));
         if narrow {
             bar = bar
                 .flex_col()
