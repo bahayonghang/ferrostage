@@ -814,9 +814,7 @@ impl Presenter {
             .child(div().text_color(rgb(p.ink)).child(label));
         let help = match field.id {
             "general.glass_effect" => Some(self.material.status_key()),
-            "general.language" | "display.presenter_start_fullscreen" => {
-                Some("settings-restart-help")
-            }
+            "display.presenter_start_fullscreen" => Some("settings-restart-help"),
             "general.reopen_last_document" => Some("settings-startup-help"),
             "display.audience_fullscreen" => Some("settings-fullscreen-help"),
             "display.audience_click_to_advance" => Some("settings-click-to-advance-help"),

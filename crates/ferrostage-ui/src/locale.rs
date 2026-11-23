@@ -1,4 +1,4 @@
-//! Small startup-selected catalog; task09 owns any language settings interface.
+//! Embedded bilingual application catalogs for live UI localization.
 use std::{collections::BTreeMap, sync::LazyLock};
 
 static EN: LazyLock<BTreeMap<String, String>> =
@@ -162,5 +162,28 @@ mod tests {
         assert!(!en.is_empty());
         assert!(zh.contains("Windows 10") && zh.contains("实色表面"));
         assert!(en.contains("Windows 10") && en.contains("solid surfaces"));
+    }
+
+    #[test]
+    fn language_restart_notice_removed_and_english_font_preview_leads_with_english() {
+        assert!(!EN.contains_key("settings-language-restart"));
+        assert!(!ZH.contains_key("settings-language-restart"));
+        let en_preview = Locale::new("en-US").text("settings-font-preview");
+        assert!(en_preview.starts_with("Presentation ready"));
+        assert!(en_preview.contains("演示就绪"));
+        assert_eq!(
+            Locale::new("zh-CN").text("settings-font-preview"),
+            "演示准备就绪 · FerroStage 123 Aa"
+        );
+        assert!(
+            !Locale::new("en-US")
+                .text("settings-restart-help")
+                .is_empty()
+        );
+        assert!(
+            !Locale::new("zh-CN")
+                .text("settings-restart-help")
+                .is_empty()
+        );
     }
 }

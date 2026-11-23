@@ -198,6 +198,7 @@ pub(crate) struct Shell {
     pub error: Option<String>,
     pub graphics_error: Option<String>,
     pub warnings: Vec<String>,
+    pub(crate) shortcut_warnings: Vec<String>,
     /// Localized document warnings hidden for `dismissed_warning_generation`.
     pub(crate) dismissed_document_warnings: HashSet<String>,
     pub(crate) dismissed_warning_generation: DocumentGeneration,
@@ -243,7 +244,7 @@ pub fn run(inputs: ShellInputs) {
         let keys = shell.read(cx).settings.settings.keybindings.clone();
         let warnings = actions::install(shell.downgrade(), &keys, shell.read(cx).locale, cx);
         shell.update(cx, |shell, cx| {
-            shell.warnings.extend(warnings);
+            shell.shortcut_warnings = warnings;
             shell.refresh_mapping(cx);
             shell.recover_presenter(cx);
             if let Some(path) = initial {
@@ -415,6 +416,7 @@ impl Shell {
             error: None,
             graphics_error: None,
             warnings,
+            shortcut_warnings: Vec::new(),
             dismissed_document_warnings: HashSet::new(),
             dismissed_warning_generation: DocumentGeneration(0),
             modal: None,
@@ -5497,13 +5499,14 @@ mod tests {
 
     pub(super) fn input_presenter(cx: &mut TestAppContext) -> (Entity<Shell>, AnyWindowHandle) {
         let (shell, _) = headless_shell(cx);
-        cx.update(|cx| {
+        let warnings = cx.update(|cx| {
             let model = shell.read(cx);
             let keys = model.settings.settings.keybindings.clone();
             let locale = model.locale;
-            actions::install(shell.downgrade(), &keys, locale, cx);
+            actions::install(shell.downgrade(), &keys, locale, cx)
         });
         let handle = shell.update(cx, |shell, cx| {
+            shell.shortcut_warnings = warnings;
             shell.error = None;
             shell.presenter = Some(test_window(shell, false, cx));
             cx.notify();

@@ -27,6 +27,7 @@ pub(crate) use workbench_view::TimerPhase;
 /// Drawing data, captured before open_window synchronously draws its first
 /// frame. Rendering never leases the controller that may be opening this view.
 pub(crate) struct PresenterData {
+    locale: crate::locale::Locale,
     theme: ferrostage_settings::Theme,
     glass_effect: bool,
     typography: theme::Typography,
@@ -75,6 +76,7 @@ struct RecentFile {
 impl PresenterData {
     pub(crate) fn from_shell(shell: &Shell) -> Self {
         Self {
+            locale: shell.locale,
             theme: shell.settings.settings.general.theme,
             glass_effect: shell.settings.settings.general.glass_effect,
             typography: theme::Typography::resolve(
@@ -113,7 +115,12 @@ impl PresenterData {
                 .map(|error| shell.locale.error("wb-upload-error", error))
                 .or_else(|| shell.error.clone())
                 .or_else(|| shell.monitor_error_text()),
-            shell_warnings: shell.warnings.clone(),
+            shell_warnings: shell
+                .warnings
+                .iter()
+                .chain(&shell.shortcut_warnings)
+                .cloned()
+                .collect(),
             document_warnings: {
                 let generation = shell.state.generation();
                 let dismissed = shell.dismissed_warning_generation == generation;
@@ -450,6 +457,7 @@ impl Presenter {
                         .borrow_mut()
                         .retry_failed(crate::workbench::Surface::Current);
                 }
+                presenter.locale = data.locale;
                 presenter.data = data;
                 cx.notify();
             })
