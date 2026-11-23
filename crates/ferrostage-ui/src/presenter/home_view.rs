@@ -88,12 +88,14 @@ impl Presenter {
                     .child(preview),
             )
             .child(
-                div()
+                self.material
+                    .paper(p)
                     .id("home-preparation")
                     .debug_selector(|| "home-preparation".into())
-                    .border_t_1()
-                    .border_color(self.material.hairline_color(p))
-                    .pt(px(16.))
+                    .w_full()
+                    .min_w_0()
+                    .px(px(16.))
+                    .py(px(10.))
                     .flex()
                     .flex_wrap()
                     .items_center()
@@ -115,17 +117,19 @@ impl Presenter {
 
     fn home_history(&self, p: Palette, window: &Window) -> Stateful<Div> {
         let l = self.locale;
-        let mut list = div()
+        let mut list = self
+            .material
+            .paper(p)
             .id("home-history")
             .debug_selector(|| "home-history".into())
             .min_w_0()
+            .p(px(16.))
             .flex()
             .flex_col()
             .gap(px(8.))
             .child(
                 div()
-                    .px(px(12.))
-                    .pb(px(8.))
+                    .pb(px(4.))
                     .text_color(rgb(p.muted))
                     .child(l.text("recent")),
             );
@@ -134,7 +138,7 @@ impl Presenter {
                 div()
                     .id("home-empty")
                     .debug_selector(|| "home-empty".into())
-                    .px(px(12.))
+                    .whitespace_normal()
                     .text_color(rgb(p.muted))
                     .child(l.text("recent-empty")),
             );
@@ -331,9 +335,12 @@ impl Presenter {
                     })),
             );
         }
-        div()
+        self.material
+            .paper(p)
             .id("home-preview")
             .debug_selector(|| "home-preview".into())
+            .min_w_0()
+            .p(px(16.))
             .flex()
             .flex_col()
             .gap(px(12.))
