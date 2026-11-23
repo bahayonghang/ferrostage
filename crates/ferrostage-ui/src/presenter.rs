@@ -1737,15 +1737,9 @@ impl Render for Presenter {
                     }),
             );
         }
-        // Home statuses already sit on the home card; document statuses get their
-        // own notice panel because the workbench gaps show the bare field.
-        let status_line = |mark: u32| {
-            if document_open {
-                self.material.notice(p, mark)
-            } else {
-                div().flex_shrink_0()
-            }
-        };
+        // Both workbench gaps and multi-paper home expose the bare field, so
+        // status lines always sit on their own notice paper.
+        let status_line = |mark: u32| self.material.notice(p, mark);
         for (index, warning) in shell_warnings.into_iter().enumerate() {
             body = body.child(
                 status_line(p.warning)
@@ -1753,7 +1747,7 @@ impl Render for Presenter {
                     .debug_selector(move || format!("shell-warning-{index}"))
                     .flex_shrink_0()
                     .text_color(rgb(p.warning))
-                    .child(warning),
+                    .child(div().flex_1().min_w_0().whitespace_normal().child(warning)),
             );
         }
         if dirty {
@@ -1770,22 +1764,20 @@ impl Render for Presenter {
                 Intent::RetrySave,
                 p,
             ));
-            body = if document_open {
-                body.child(
-                    status_line(p.warning)
-                        .flex_wrap()
-                        .child(message.flex_1().min_w_0())
-                        .child(retry),
-                )
-            } else {
-                body.child(message).child(retry)
-            };
+            body = body.child(
+                status_line(p.warning)
+                    .flex_wrap()
+                    .child(message.flex_1().min_w_0())
+                    .child(retry),
+            );
         }
         let body = if document_open {
             body.into_any_element()
         } else {
+            let side_pad = if viewport.width < px(800.) { 12. } else { 8. };
             div()
                 .id("presenter-content")
+                .debug_selector(|| "presenter-content".into())
                 .flex_1()
                 .min_h_0()
                 .min_w_0()
@@ -1794,38 +1786,10 @@ impl Render for Presenter {
                 .flex()
                 .flex_col()
                 .items_center()
-                .p(px(8.))
-                .child({
-                    // The workspace fills the available client area, not a
-                    // height-matched welcome card floating above empty background.
-                    let pad = if window.viewport_size().width < px(800.) {
-                        16.
-                    } else {
-                        32.
-                    };
-                    let titlebar_height = if titlebar_visible {
-                        theme::TITLEBAR_HEIGHT
-                    } else {
-                        0.
-                    };
-                    self.material
-                        .panel(p)
-                        .id("home-card")
-                        .debug_selector(|| "home-card".into())
-                        .flex_shrink_0()
-                        .w_full()
-                        .min_h(px((f32::from(window.viewport_size().height)
-                            - titlebar_height
-                            - top_inset
-                            - inset
-                            - 16.)
-                            .max(0.)))
-                        .p(px(pad))
-                        .flex()
-                        .flex_col()
-                        .items_center()
-                        .child(body.flex_shrink_0())
-                })
+                .px(px(side_pad))
+                .pt(px(8.))
+                .pb(px(16.))
+                .child(body.flex_shrink_0())
                 .into_any_element()
         };
         let content_shell = content_shell
