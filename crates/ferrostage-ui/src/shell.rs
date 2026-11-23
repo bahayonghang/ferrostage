@@ -274,6 +274,18 @@ fn install_close_handler(shell: &Entity<Shell>, cx: &mut App) {
     .detach();
 }
 
+pub(crate) fn request_window_close(window: &gpui::Window, cx: &App) {
+    let handle = window.window_handle();
+    // Return to the caller / platform close callback before removal. This keeps
+    // GPUI's platform Drop as the sole owner of native destruction.
+    cx.spawn(async move |cx| {
+        if let Err(error) = handle.update(cx, |_, window, _| window.remove_window()) {
+            tracing::debug!(%error, "close request for retired window");
+        }
+    })
+    .detach();
+}
+
 impl Shell {
     fn start_polling(&mut self, cx: &mut Context<Self>) {
         if let Ok(worker) = &self.renderer {
@@ -1262,7 +1274,13 @@ impl Shell {
             } else {
                 Some(TitlebarOptions {
                     title: Some("FerroStage".into()),
-                    ..Default::default()
+                    appears_transparent: true,
+                    traffic_light_position: cfg!(target_os = "macos").then(|| {
+                        point(
+                            px(crate::theme::MACOS_TRAFFIC_LIGHT_X),
+                            px(crate::theme::MACOS_TRAFFIC_LIGHT_Y),
+                        )
+                    }),
                 })
             },
             focus: takes_focus,
@@ -1448,15 +1466,7 @@ impl Shell {
 
     fn intercept_close(window: &gpui::Window, cx: &App) {
         window.on_window_should_close(cx, |window, cx| {
-            let handle = window.window_handle();
-            // Return to the platform close callback before removal. This keeps
-            // GPUI's platform Drop as the sole owner of native destruction.
-            cx.spawn(async move |cx| {
-                if let Err(error) = handle.update(cx, |_, window, _| window.remove_window()) {
-                    tracing::debug!(%error, "close request for retired window");
-                }
-            })
-            .detach();
+            request_window_close(window, cx);
             false
         });
     }
@@ -4191,6 +4201,7 @@ mod tests {
     include!("shell/session_resume_tests.rs");
     include!("shell/crop_gate_tests.rs");
     include!("shell/crop_view_tests.rs");
+    include!("shell/titlebar_tests.rs");
 
     fn headless_shell(
         cx: &mut TestAppContext,

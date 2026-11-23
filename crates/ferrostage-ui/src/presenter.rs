@@ -8,6 +8,7 @@ mod page_browser;
 mod projection_status;
 mod settings_view;
 mod start_mode;
+pub(crate) mod titlebar;
 mod utility_menu;
 mod workbench_view;
 use crate::{
@@ -224,6 +225,8 @@ pub(crate) struct Presenter {
     drawing: std::rc::Rc<std::cell::Cell<bool>>,
     paint_ms: std::rc::Rc<std::cell::Cell<f64>>,
     traced_preview: std::rc::Rc<std::cell::Cell<Option<ferrostage_core::DocumentGeneration>>>,
+    #[cfg(all(test, feature = "test-support"))]
+    rendered_titlebar: std::cell::RefCell<Option<titlebar::TitlebarProbe>>,
 }
 
 /// Which workbench divider is being dragged.
@@ -452,6 +455,8 @@ impl Presenter {
             })
             .detach();
         }
+        cx.observe_window_activation(window, |_, _, cx| cx.notify())
+            .detach();
         cx.on_release(|presenter, cx| {
             presenter.textures.borrow_mut().release(cx);
             presenter.home_textures.borrow_mut().release(cx);
@@ -550,6 +555,8 @@ impl Presenter {
             drawing: Default::default(),
             paint_ms: Default::default(),
             traced_preview: Default::default(),
+            #[cfg(all(test, feature = "test-support"))]
+            rendered_titlebar: std::cell::RefCell::new(None),
         }
     }
 
@@ -560,6 +567,11 @@ impl Presenter {
             self.data.workbench.overlay.current_page.0 + 1,
             self.data.pages,
         )
+    }
+
+    #[cfg(all(test, feature = "test-support"))]
+    pub(crate) fn titlebar_probe(&self) -> Option<titlebar::TitlebarProbe> {
+        self.rendered_titlebar.borrow().clone()
     }
 
     pub(crate) fn button(
@@ -1266,11 +1278,28 @@ impl Render for Presenter {
         let shell_warnings = self.data.shell_warnings.clone();
         let dirty = self.data.dirty;
         let save_error = self.data.save_error.clone();
-        if stage == SessionStage::Idle {
-            window.set_window_title("FerroStage");
-        } else {
-            window.set_window_title(&format!("{filename} — {stage_label} — FerroStage"));
+        let title = titlebar::presenter_window_title(stage, &filename, stage_label);
+        window.set_window_title(&title);
+        let titlebar_platform = titlebar::TitlebarPlatform::current();
+        let titlebar_layout = titlebar::TitlebarLayout::resolve(
+            titlebar_platform,
+            window.is_fullscreen(),
+            window.window_decorations(),
+            window.window_controls(),
+        );
+        #[cfg(all(test, feature = "test-support"))]
+        {
+            let active = window.is_window_active();
+            *self.rendered_titlebar.borrow_mut() = Some(titlebar::TitlebarProbe {
+                title: title.clone(),
+                active,
+                colors: titlebar::TitlebarColors::resolve(p, active),
+                layout: titlebar_layout,
+                field_top: p.field_top,
+                field_bottom: p.field_bottom,
+            });
         }
+        let titlebar_visible = titlebar_layout.visible;
         let layout_open = self.data.layout_menu.is_some();
         let surface_open = modal.is_some()
             || self.data.browser.is_some()
@@ -1422,6 +1451,16 @@ impl Render for Presenter {
         } else {
             8.
         };
+        let top_inset = if titlebar_visible { 4. } else { inset };
+        let content_shell = div()
+            .flex_1()
+            .min_h_0()
+            .min_w_0()
+            .flex()
+            .flex_col()
+            .px(px(inset))
+            .pb(px(inset))
+            .pt(px(top_inset));
         let root = div()
             .id("presenter-root")
             .role(Role::Application)
@@ -1431,7 +1470,6 @@ impl Render for Presenter {
             .flex()
             .flex_col()
             .bg(self.material.field(p))
-            .p(px(inset))
             .text_color(rgb(p.body))
             .font(self.data.typography.font())
             .text_size(px(self.data.typography.size(16.)))
@@ -1458,6 +1496,9 @@ impl Render for Presenter {
                 .absolute()
                 .size_full(),
             )
+            .when(titlebar_visible, |view| {
+                view.child(self.titlebar(titlebar_platform, titlebar_layout, p, &title, window))
+            })
             .capture_key_down(cx.listener(|this, event: &gpui::KeyDownEvent, window, cx| {
                 if this.crop_key(event, window, cx)
                     || this.utility_menu_key(event, window, cx)
@@ -1503,35 +1544,39 @@ impl Render for Presenter {
                 return root
                     .track_focus(&self.modal_focus)
                     .key_context("FerroStageCropDialog")
-                    .child(self.modal_surface(p).child(self.crop_panel(p, window, cx)))
+                    .child(
+                        content_shell
+                            .child(self.modal_surface(p).child(self.crop_panel(p, window, cx))),
+                    )
                     .into_any_element();
             }
             if modal == Modal::Settings {
                 return root
                     .track_focus(&self.modal_focus)
                     .key_context("FerroStageModal")
-                    .child(self.modal_surface(p).child(self.settings_panel(
-                        p,
-                        viewport.width.into(),
-                        inset,
-                    )))
+                    .child(
+                        content_shell.child(self.modal_surface(p).child(self.settings_panel(
+                            p,
+                            viewport.width.into(),
+                            inset,
+                        ))),
+                    )
                     .into_any_element();
             }
             if let Some(panel) = &self.data.displays {
                 return root
                     .track_focus(&self.modal_focus)
                     .key_context("FerroStageModal")
-                    .child(
-                        self.modal_surface(p)
-                            .child(crate::display_settings::view::panel(
-                                self,
-                                panel,
-                                l,
-                                p,
-                                false,
-                                f32::from(window.viewport_size().width) - 32.,
-                            )),
-                    )
+                    .child(content_shell.child(self.modal_surface(p).child(
+                        crate::display_settings::view::panel(
+                            self,
+                            panel,
+                            l,
+                            p,
+                            false,
+                            f32::from(window.viewport_size().width) - 32.,
+                        ),
+                    )))
                     .into_any_element();
             }
             unreachable!("all modal drawing branches handled above");
@@ -1705,6 +1750,11 @@ impl Render for Presenter {
                     } else {
                         32.
                     };
+                    let titlebar_height = if titlebar_visible {
+                        theme::TITLEBAR_HEIGHT
+                    } else {
+                        0.
+                    };
                     self.material
                         .panel(p)
                         .id("home-card")
@@ -1712,7 +1762,9 @@ impl Render for Presenter {
                         .flex_shrink_0()
                         .w_full()
                         .min_h(px((f32::from(window.viewport_size().height)
-                            - 2. * inset
+                            - titlebar_height
+                            - top_inset
+                            - inset
                             - 16.)
                             .max(0.)))
                         .p(px(pad))
@@ -1723,19 +1775,21 @@ impl Render for Presenter {
                 })
                 .into_any_element()
         };
-        root.track_focus(&self.focus)
-            .on_drop::<ExternalPaths>(move |paths, _, cx| {
-                if let Some(path) = paths.paths().first() {
-                    actions::dispatch(&drop_target, Intent::Import(path.clone()), cx);
-                }
-            })
+        let content_shell = content_shell
             .when(document_open, |view| {
                 view.child(self.command_bar(p, window))
             })
             .child(body)
             .when(document_open, |view| {
                 view.child(self.tools_panel(p, window))
+            });
+        root.track_focus(&self.focus)
+            .on_drop::<ExternalPaths>(move |paths, _, cx| {
+                if let Some(path) = paths.paths().first() {
+                    actions::dispatch(&drop_target, Intent::Import(path.clone()), cx);
+                }
             })
+            .child(content_shell)
             .when(self.data.browser.is_some(), |view| {
                 view.child(self.contextual_host(
                     self.page_browser_panel(p, window, cx),
