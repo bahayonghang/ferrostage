@@ -1275,6 +1275,7 @@ fn about_tab_shows_version_author_build_time_license_and_repository(cx: &mut Tes
         }
         assert!(visual.debug_bounds("about-commit").is_none());
         assert!(visual.debug_bounds("about-changelog").is_some());
+        assert!(visual.debug_bounds("changelog-1.4.0").is_none());
         assert!(visual.debug_bounds("changelog-1.3.1").is_none());
     }
     click_control(handle, "about-changelog", cx);
@@ -1282,7 +1283,9 @@ fn about_tab_shows_version_author_build_time_license_and_repository(cx: &mut Tes
     redraw(handle, cx);
     {
         let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let mut previous_top = None;
         for id in [
+            "changelog-1.4.0",
             "changelog-1.3.1",
             "changelog-1.3.0",
             "changelog-1.2.1",
@@ -1291,18 +1294,22 @@ fn about_tab_shows_version_author_build_time_license_and_repository(cx: &mut Tes
             "changelog-1.1.0",
             "changelog-1.0.0",
         ] {
-            assert!(visual.debug_bounds(id).is_some(), "{id}");
+            let bounds = visual.debug_bounds(id).unwrap_or_else(|| panic!("{id}"));
+            if let Some(prev) = previous_top {
+                assert!(bounds.top() > prev, "{id} should appear below previous entry");
+            }
+            previous_top = Some(bounds.top());
         }
     }
     assert!(cx.opened_url().is_none());
     click_control(handle, "about-changelog", cx);
     cx.run_until_parked();
     redraw(handle, cx);
-    assert!(
-        gpui::VisualTestContext::from_window(handle, cx)
-            .debug_bounds("changelog-1.3.1")
-            .is_none()
-    );
+    {
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        assert!(visual.debug_bounds("changelog-1.4.0").is_none());
+        assert!(visual.debug_bounds("changelog-1.3.1").is_none());
+    }
     click_control(handle, "about-changelog", cx);
     cx.run_until_parked();
     click_control(handle, "settings-category-general", cx);
@@ -1310,6 +1317,7 @@ fn about_tab_shows_version_author_build_time_license_and_repository(cx: &mut Tes
     redraw(handle, cx);
     {
         let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        assert!(visual.debug_bounds("changelog-1.4.0").is_none());
         assert!(visual.debug_bounds("changelog-1.3.1").is_none());
         assert!(visual.debug_bounds("about-changelog").is_none());
     }
@@ -1317,24 +1325,28 @@ fn about_tab_shows_version_author_build_time_license_and_repository(cx: &mut Tes
     click_control(handle, "settings-category-about", cx);
     cx.run_until_parked();
     redraw(handle, cx);
-    assert_eq!(crate::about::VERSION, "1.3.1");
+    assert_eq!(crate::about::VERSION, "1.4.0");
     assert_eq!(crate::about::LICENSE, "MIT");
     assert_eq!(crate::about::CHANGELOG[0].0, crate::about::VERSION);
-    for (language, v131, v130, v100) in [
+    assert_eq!(crate::about::CHANGELOG[0].1, "about-changelog-1-4-0");
+    for (language, v140, v131, v130, v100) in [
         (
             "zh-CN",
+            "校准浅色与深色暖橙毛玻璃主题；讲者窗口改用与当前明暗主题一致的一体化透明标题栏；Windows 10 自动回退实色表面以消除窗口拖拽粘滞。",
             "软件许可证改为 MIT。",
             "讲者界面改为可关闭的暖橙毛玻璃。翻页笔方向键可以翻页，旧的默认绑定会自动升级。放映前可以预览并确认备注裁切。没有备注的文稿使用稳定的双预览布局。讲者可以看到真实绘制进度和观众窗口位置。答疑跳转后可以精确返回原来的讲述位置。PDF 首张预览和 Beamer 翻页更快。",
             "首次发布：双窗口 PDF / Beamer 演讲、演讲者备注、批注，以及外部 PDF 热重载。",
         ),
         (
             "en-US",
+            "Calibrated the light and dark warm-orange frosted glass themes. The presenter window now uses an integrated transparent title bar that matches the active light or dark theme. Windows 10 automatically falls back to solid surfaces so dragging the window stays smooth.",
             "The software license is MIT.",
             "The presenter uses warm-orange frosted glass, which can be turned off. Clicker arrow keys turn pages, and old default bindings upgrade automatically. Before a talk, notes cropping can be previewed and confirmed. Decks without notes use a stable dual-preview layout. The presenter shows real paint progress and the audience window position. After a Q&A jump, you can return to the exact previous speaking position. The first PDF preview and Beamer page turns are faster.",
             "First release: dual-window PDF and Beamer presentation, speaker notes, annotations, and external PDF hot reload.",
         ),
     ] {
         let locale = crate::locale::Locale::new(language);
+        assert_eq!(locale.text("about-changelog-1-4-0"), v140);
         assert_eq!(locale.text("about-changelog-1-3-1"), v131);
         assert_eq!(locale.text("about-changelog-1-3-0"), v130);
         assert_eq!(locale.text("about-changelog-1-0-0"), v100);
