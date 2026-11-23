@@ -92,7 +92,7 @@ impl Presenter {
                     .id("home-preparation")
                     .debug_selector(|| "home-preparation".into())
                     .border_t_1()
-                    .border_color(gpui::rgba(p.hairline))
+                    .border_color(self.material.hairline_color(p))
                     .pt(px(16.))
                     .flex()
                     .flex_wrap()
@@ -139,6 +139,8 @@ impl Presenter {
                     .child(l.text("recent-empty")),
             );
         }
+        let hover_bg = self.material.control_hover_bg(p);
+        let glass = self.material.is_glass();
         for (index, recent) in self.data.recent.iter().enumerate() {
             let path = std::path::Path::new(&recent.path);
             let filename = path
@@ -152,6 +154,11 @@ impl Presenter {
             let selected = self.data.home_preview.path.as_deref() == Some(path);
             let tooltip_path = recent.path.clone();
             let typography = self.data.typography.clone();
+            let row_bg = if selected {
+                rgb(p.accent_wash)
+            } else {
+                self.material.well_bg(p)
+            };
             list = list.child(
                 self.activation_target(
                     format!("recent-{index}"),
@@ -171,6 +178,7 @@ impl Presenter {
                     cx.new(|_| FilenameTooltip {
                         filename: tooltip_path.clone(),
                         palette: p,
+                        glass,
                         typography: typography.clone(),
                     })
                     .into()
@@ -181,11 +189,7 @@ impl Presenter {
                         .debug_selector(move || format!("recent-{index}-face"))
                         .p(px(12.))
                         .rounded(px(theme::WELL_RADIUS))
-                        .bg(rgb(if selected {
-                            p.accent_wash
-                        } else {
-                            p.layer_solid
-                        }))
+                        .bg(row_bg)
                         .flex()
                         .flex_col()
                         .gap(px(4.))
@@ -231,7 +235,7 @@ impl Presenter {
                                 .child(recent.last_opened.clone()),
                         )
                         .when(self.data.can_open, |view| {
-                            view.hover(move |style| style.bg(rgb(p.control_hover)))
+                            view.hover(move |style| style.bg(hover_bg))
                         }),
                 ),
             );
@@ -280,7 +284,7 @@ impl Presenter {
             .min_w_0()
             .p(px(16.))
             .rounded(px(theme::WELL_RADIUS))
-            .bg(rgb(p.well))
+            .bg(self.material.well_bg(p))
             .overflow_hidden()
             .flex()
             .items_center()

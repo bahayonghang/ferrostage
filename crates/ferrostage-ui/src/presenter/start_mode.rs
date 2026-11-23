@@ -77,6 +77,8 @@ impl Presenter {
         let width = 360f32
             .min(f32::from(window.viewport_size().width) - 24.)
             .max(200.);
+        let hover_bg = self.material.control_hover_bg(p);
+        let pressed_bg = self.material.control_pressed_bg(p);
         let mut body = div().flex().flex_col().gap(px(2.));
         for (index, (mode, key, help)) in CHOICES.into_iter().enumerate() {
             let checked = self.data.start_mode == mode;
@@ -113,8 +115,8 @@ impl Presenter {
                         .gap(px(8.))
                         .bg(rgb(if checked { p.accent_wash } else { p.raised }))
                         .text_color(rgb(p.ink))
-                        .hover(|style| style.bg(rgb(p.control_hover)))
-                        .active(|style| style.bg(rgb(p.control_pressed)).top(px(1.)))
+                        .hover(move |style| style.bg(hover_bg))
+                        .active(move |style| style.bg(pressed_bg).top(px(1.)))
                         .child(
                             div()
                                 .w(px(16.))
@@ -143,7 +145,8 @@ impl Presenter {
                 ),
             );
         }
-        super::material::floating(p)
+        self.material
+            .floating(p)
             .id("start-mode-menu")
             .debug_selector(|| "start-mode-menu".into())
             .role(Role::Menu)

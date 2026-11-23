@@ -112,6 +112,7 @@ pub(super) struct FontSearch {
     focus: FocusHandle,
     locale: Locale,
     palette: Palette,
+    glass: bool,
     text_size: f32,
     query: Query,
     layout: Rc<RefCell<Option<Layout>>>,
@@ -124,6 +125,7 @@ impl FontSearch {
         focus: FocusHandle,
         locale: Locale,
         palette: Palette,
+        glass: bool,
         text_size: f32,
     ) -> Self {
         Self {
@@ -131,6 +133,7 @@ impl FontSearch {
             focus,
             locale,
             palette,
+            glass,
             text_size,
             query: Query::default(),
             layout: Rc::default(),
@@ -142,9 +145,16 @@ impl FontSearch {
         self.query.marked.is_some()
     }
 
-    pub(super) fn update_style(&mut self, palette: Palette, size: f32, cx: &mut Context<Self>) {
-        if self.palette != palette || self.text_size != size {
+    pub(super) fn update_style(
+        &mut self,
+        palette: Palette,
+        glass: bool,
+        size: f32,
+        cx: &mut Context<Self>,
+    ) {
+        if self.palette != palette || self.glass != glass || self.text_size != size {
             self.palette = palette;
+            self.glass = glass;
             self.text_size = size;
             cx.notify();
         }
@@ -337,7 +347,7 @@ impl Render for FontSearch {
             .border_2()
             .border_color(rgb(p.border))
             .focus(|style| style.border_color(rgb(p.focus)))
-            .bg(rgb(p.well))
+            .bg(super::material::well_bg_for(p, self.glass))
             .text_size(px(self.text_size))
             .flex()
             .items_center()

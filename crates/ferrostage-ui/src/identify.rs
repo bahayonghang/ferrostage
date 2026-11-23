@@ -22,7 +22,7 @@ impl Render for Identify {
             .flex_col()
             .items_center()
             .justify_center()
-            .bg(rgb(palette.layer_solid))
+            .bg(rgb(palette.sheet_solid))
             .text_color(rgb(palette.ink))
             .font(self.typography.font())
             .border_2()

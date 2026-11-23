@@ -208,7 +208,8 @@ fn original_notes_keep_width_and_natural_height_for_multiple_pages(cx: &mut Test
     let notes = visual.debug_bounds("notes-panel").unwrap();
     let first = visual.debug_bounds("surface-Notes(0)").unwrap();
     let second = visual.debug_bounds("surface-Notes(1)").unwrap();
-    assert!((first.size.width - (notes.size.width - px(24.))).abs() < px(1.));
+    // 1px L1 sheet border (x2) + 4px inner scroll padding (x2) + 8px well padding (x2) = 26px.
+    assert!((first.size.width - (notes.size.width - px(26.))).abs() < px(1.));
     assert!((first.size.width / first.size.height - 4. / 3.).abs() < 0.01);
     assert!((first.size.height - second.size.height).abs() < px(1.));
     assert!(
@@ -452,9 +453,67 @@ fn airy_faces_keep_semantic_badge_and_pill_controls() {
         assert_eq!(crate::presenter::stage_dot(SessionStage::Presenting, p), p.focus);
         assert_eq!(crate::presenter::stage_dot(SessionStage::Idle, p), p.muted);
         for enabled in [false, true] {
-            assert_eq!(p.button(ButtonKind::Destructive, enabled, false).radius, PILL_RADIUS);
+            for glass in [false, true] {
+                assert_eq!(
+                    p.button(ButtonKind::Destructive, enabled, false, glass).radius,
+                    PILL_RADIUS
+                );
+            }
         }
     }
+}
+
+#[gpui::test]
+fn presenter_keeps_airy_glass_and_cached_blobs_at_narrow_width_and_restores_on_toggle(
+    cx: &mut TestAppContext,
+) {
+    let fixture = SaveFixture::new();
+    fixture.unblock();
+    let (shell, handle) = workbench_fixture(cx);
+    let presenter = handle.downcast::<Presenter>().unwrap();
+
+    shell.update(cx, |s, cx| {
+        s.store = fixture.store();
+        s.modal = Some(Modal::Settings);
+        s.preferences.category = crate::settings_panel::Category::General;
+        cx.notify();
+    });
+    // Narrow width (< 960px) still enables airy glass (unless OS itself restricts transparency).
+    cx.test_window(handle).simulate_resize(size(px(640.), px(720.)));
+    redraw(handle, cx);
+    let (narrow_key, narrow_glass, narrow_blobs) = presenter
+        .read_with(cx, |view, _| view.material_probe())
+        .unwrap();
+    if narrow_glass {
+        assert_eq!(narrow_key, "settings-glass-airy");
+        let first_ids = narrow_blobs.expect("blobs cached in airy glass");
+        redraw(handle, cx);
+        let (_, _, second_blobs) = presenter
+            .read_with(cx, |view, _| view.material_probe())
+            .unwrap();
+        assert_eq!(second_blobs, Some(first_ids), "blob images reused across redraws");
+    } else {
+        assert_eq!(narrow_key, "settings-glass-system");
+    }
+
+    // Turning glass off switches immediately to solid surfaces, then toggling back restores.
+    click_control(handle, "setting-general.glass_effect", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+    let (off_key, off_glass, _) = presenter
+        .read_with(cx, |view, _| view.material_probe())
+        .unwrap();
+    assert!(!off_glass);
+    assert_eq!(off_key, "settings-glass-disabled");
+
+    click_control(handle, "setting-general.glass_effect", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+    let (restored_key, restored_glass, _) = presenter
+        .read_with(cx, |view, _| view.material_probe())
+        .unwrap();
+    assert_eq!(restored_glass, narrow_glass);
+    assert_eq!(restored_key, narrow_key);
 }
 
 #[gpui::test]

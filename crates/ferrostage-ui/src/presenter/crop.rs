@@ -301,7 +301,7 @@ impl Presenter {
                 .min_w_0()
                 .p(px(8.))
                 .rounded(px(theme::WELL_RADIUS))
-                .bg(rgb(p.well))
+                .bg(self.material.well_bg(p))
                 .flex()
                 .flex_col()
                 .gap(px(8.))
