@@ -31,6 +31,15 @@ colors:
   warning: "#66400A"
   error: "#802821"
   error-wash: "#F8E3DF"
+  titlebar-ink: "#1F1B17"
+  titlebar-inactive-ink: "#524B44"
+  titlebar-icon: "#1F1B17"
+  titlebar-inactive-icon: "#524B44"
+  titlebar-control-hover: "rgba(31,27,23,0.08)"
+  titlebar-control-pressed: "rgba(31,27,23,0.14)"
+  titlebar-close-hover: "#C42B1C"
+  titlebar-close-pressed: "#A62317"
+  titlebar-on-close: "#FFFDF9"
   dark-field-top: "#1D1B19"
   dark-field-bottom: "#26221E"
   dark-layer: "rgba(118,105,93,0.07)"
@@ -55,6 +64,15 @@ colors:
   dark-warning: "#E8B774"
   dark-error: "#FFA5A0"
   dark-error-wash: "#3B2523"
+  dark-titlebar-ink: "#F5F1EB"
+  dark-titlebar-inactive-ink: "#ACA49A"
+  dark-titlebar-icon: "#F5F1EB"
+  dark-titlebar-inactive-icon: "#ACA49A"
+  dark-titlebar-control-hover: "rgba(255,255,255,0.09)"
+  dark-titlebar-control-pressed: "rgba(255,255,255,0.15)"
+  dark-titlebar-close-hover: "#C42B1C"
+  dark-titlebar-close-pressed: "#A62317"
+  dark-titlebar-on-close: "#FFFDF9"
 typography:
   display-num:
     fontFamily: 'Figtree, "PingFang SC", "Noto Sans SC", sans-serif'
@@ -114,7 +132,7 @@ motion:
 
 Read status, then the number, then the action. There is no marketing hero.
 
-One accent hue only. Orange marks the primary action, focus, selection, the running-timer dot and links. Success, warning and error colors appear only in status text and status marks, never as a button or panel fill.
+One accent hue only. Orange marks the primary action, focus, selection, the running-timer dot and links. Success, warning and error colors appear only in status text and status marks, never as a general button or panel fill; the integrated titlebar Close button uses dedicated danger-red fills on hover and press only.
 
 Light is the default. Dark is a full variant with the same roles (`dark-*` tokens). The presenter's Light / Dark / System setting selects the variant; System follows the presenter window's observed appearance.
 
@@ -142,6 +160,13 @@ Accent:
 - `{colors.primary}` (`#D97757`) fills the primary action in both variants. Its text is `{colors.on-primary}` (`#1F1712`). White text on this orange is about 3.1:1 and is not allowed.
 - `{colors.accent-text}` (`#76341C`, dark `#EBA98C`) for orange text and links; `{colors.focus}` is the same value for the focus ring and selection marks.
 - `{colors.accent-wash}` (`#F7E6DC`, dark `#3A2A22`) fills a selected row or menu entry.
+
+Integrated titlebar (32px strip, 46px caption buttons):
+
+- Sits transparently directly over the full-bleed warm `field` (`L0`), sharing its native frosted glass or solid fallback rather than drawing a separate opaque bar or system-colored strip.
+- Active window title and icons use `{colors.titlebar-ink}` and `{colors.titlebar-icon}` (`#1F1B17`, dark `#F5F1EB`). Inactive (unfocused) windows step down to `{colors.titlebar-inactive-ink}` and `{colors.titlebar-inactive-icon}` (`#524B44`, dark `#ACA49A`) so focus changes remain clear while staying readable.
+- Neutral window controls (minimize, maximize/restore) are transparent at rest and use translucent overlays `{colors.titlebar-control-hover}` (`rgba(31,27,23,0.08)`, dark `rgba(255,255,255,0.09)`) and `{colors.titlebar-control-pressed}` (`rgba(31,27,23,0.14)`, dark `rgba(255,255,255,0.15)`).
+- The Close control is transparent at rest and switches to semantic danger reds `{colors.titlebar-close-hover}` (`#C42B1C`) and `{colors.titlebar-close-pressed}` (`#A62317`) with `{colors.titlebar-on-close}` (`#FFFDF9`) icon foreground on hover and press. These close danger reds are reserved exclusively for the titlebar Close button and never appear on general buttons or panel fills.
 
 ## Typography
 
@@ -234,6 +259,10 @@ General-purpose buttons are pills bounded by their fill. Settings categories use
 | Quiet (header, timer, menu rows) | none | `control-hover` / `control-pressed` | `body` |
 | Selected segment | `segment` | ink at 0.03 / 0.06 over `segment` | `ink` |
 | Disabled | `control` | none | `muted` |
+| Titlebar control (min/max) | none (over `field`) | `titlebar-control-hover` / `titlebar-control-pressed` | `titlebar-icon` (inactive: `titlebar-inactive-icon`) |
+| Titlebar close | none (over `field`) | `titlebar-close-hover` / `titlebar-close-pressed` | `titlebar-icon` (inactive: `titlebar-inactive-icon`; hover/pressed: `titlebar-on-close`) |
+
+The integrated presenter titlebar is 32px tall (`TITLEBAR_HEIGHT`), sits transparently on `field`, and places square-edged 46px-wide caption buttons (`TITLEBAR_BUTTON_WIDTH`) on the trailing edge (hidden on macOS, where a 78px leading inset reserves space for native traffic lights positioned at `(12px, 10px)`). Active and unfocused windows switch between `titlebar-ink`/`titlebar-icon` and `titlebar-inactive-ink`/`titlebar-inactive-icon`. Clicking Close routes through the presenter's safe close chain; danger red (`titlebar-close-hover` / `titlebar-close-pressed`) is strictly confined to the Close hover and pressed states.
 
 Grouped choices (black/white cover, drawing tools, crop layouts, setting choices, page-browser numbering, view and grid density) use a segmented control: one `control` track, the selected option lifted to `segment`. Each option's 2px focus ring and 2px gap form the 4px inset between track and segment. Do not wrap a group in a colored shell.
 
@@ -245,7 +274,7 @@ Keyboard focus is a 2px `{colors.focus}` ring outside a 2px gap.
 
 Meet WCAG 2.2 AA on the worst specified background. The native panel is measured as the panel layer over the field over a pure black and a pure white desktop; the table lists the lowest of those composites. Text is at least 4.5:1, the focus ring and selection marks at least 3:1. A labeled button is identified by its text, so it does not need a 3:1 outline.
 
-The table uses the rounded 8-bit composites checked by the theme tests. It includes both field and panel gradient ends, black and white desktops, opaque fallback stops, standard source-over and Windows Direct3D additive quad alpha.
+The table uses the rounded 8-bit composites checked by the theme tests. It includes both field and panel gradient ends, black and white desktops, opaque fallback stops, standard source-over and Windows Direct3D additive quad alpha. Integrated titlebar tokens are evaluated directly against the solid `field` endpoints and the worst-case black/white desktop composites of the translucent field (and, for titlebar control overlays, both source-over and Windows Direct3D additive quad alpha).
 
 | 前景 | 背景 | 浅色 | 深色 | 用途 |
 | --- | --- | --- | --- | --- |
@@ -271,6 +300,18 @@ The table uses the rounded 8-bit composites checked by the theme tests. It inclu
 | `border` | `well` | 3.19 (`#8C847A` / `#F3EEE7`) | 4.63 (`#8F877C` / `#221F1C`) | 输入框边界 |
 | `error` | `error_wash` | 7.60 (`#802821` / `#F8E3DF`) | 7.55 (`#FFA5A0` / `#3B2523`) | 停止/危险文字 |
 | `warning` | `layer_solid` | 8.61 (`#66400A` / `#FBF8F4`) | 8.19 (`#E8B774` / `#2A2622`) | 警告文字 |
+| `titlebar_ink` | 实色底场（`field_bottom`） | 13.86 (`#1F1B17` / `#EFE6DB`) | 14.03 (`#F5F1EB` / `#26221E`) | 一体化标题栏激活标题，实色底场 |
+| `titlebar_ink` | 底场毛玻璃最差合成 | 7.09 (`#1F1B17` / `#ACA69E`) | 8.98 (`#F5F1EB` / `#45413E`) | 一体化标题栏激活标题，毛玻璃最差合成 |
+| `titlebar_icon` | 实色底场（`field_bottom`） | 13.86 (`#1F1B17` / `#EFE6DB`) | 14.03 (`#F5F1EB` / `#26221E`) | 一体化标题栏激活控制图标，实色静止态 |
+| `titlebar_icon` | 底场毛玻璃最差合成 | 7.09 (`#1F1B17` / `#ACA69E`) | 8.98 (`#F5F1EB` / `#45413E`) | 一体化标题栏激活控制图标，毛玻璃静止态 |
+| `titlebar_inactive_ink` / `titlebar_inactive_icon` | 实色底场（`field_bottom`） | 6.95 (`#524B44` / `#EFE6DB`) | 6.41 (`#ACA49A` / `#26221E`) | 一体化标题栏失焦标题与图标，实色底场 |
+| `titlebar_inactive_ink` / `titlebar_inactive_icon` | 底场毛玻璃最差合成 | 3.55 (`#524B44` / `#ACA69E`) | 4.10 (`#ACA49A` / `#45413E`) | 一体化标题栏失焦标题与图标，毛玻璃最差合成 |
+| `titlebar_icon` | `titlebar_control_hover` 最差合成 | 6.21 (`#1F1B17` / `#A19B93`) | 6.90 (`#F5F1EB` / `#55524F`) | 一体化标题栏激活控制按钮悬停 |
+| `titlebar_icon` | `titlebar_control_pressed` 最差合成 | 5.56 (`#1F1B17` / `#98928B`) | 5.81 (`#F5F1EB` / `#605D5B`) | 一体化标题栏激活控制按钮按下 |
+| `titlebar_inactive_icon` | `titlebar_control_hover` 最差合成 | 3.11 (`#524B44` / `#A19B93`) | 3.15 (`#ACA49A` / `#55524F`) | 一体化标题栏失焦控制按钮悬停 |
+| `titlebar_on_close` | `titlebar_close_hover` | 5.57 (`#FFFDF9` / `#C42B1C`) | 5.57 (`#FFFDF9` / `#C42B1C`) | 一体化标题栏关闭按钮悬停 |
+| `titlebar_on_close` | `titlebar_close_pressed` | 7.19 (`#FFFDF9` / `#A62317`) | 7.19 (`#FFFDF9` / `#A62317`) | 一体化标题栏关闭按钮按下 |
+| `titlebar_ink` | `titlebar_inactive_ink` | 1.99 (`#1F1B17` / `#524B44`) | 2.19 (`#F5F1EB` / `#ACA49A`) | 一体化标题栏激活与失焦视觉区分（≥ 1.8） |
 
 ## Writing Tone
 
@@ -280,19 +321,20 @@ State the status, then the number, then the action. Keep labels short. No slogan
 
 ### Do
 
-- Put text only on a panel, a well, a control or a raised surface.
+- Put presenter text and controls only on a panel, a well, a control or a raised surface; only the 32px integrated titlebar sits transparently on the window field using its dedicated field-calibrated `titlebar-*` tokens.
 - Use `{colors.primary}` with `{colors.on-primary}` for the one primary action in a view.
 - Use `{colors.focus}` for the 2px focus ring and selection marks.
+- Use `{colors.titlebar-close-hover}` and `{colors.titlebar-close-pressed}` with `{colors.titlebar-on-close}` exclusively for the integrated titlebar Close button's hover and press states.
 - Separate layers by opacity and lightness of one warm hue.
-- Use the solid fallback below 960px, for reduced transparency, and when the platform cannot blur.
+- Use the solid fallback below 960px, for reduced transparency, on Windows 10 (build < 22000 or unresolved build), and when the platform cannot blur.
 - Set numbers in `tabular-nums`.
 
 ### Don't
 
-- Don't put text directly on the field. Over native blur the field shows an arbitrary desktop.
+- Except for the integrated titlebar (whose tokens are calibrated against worst-case black/white desktop composites), don't put text or controls directly on the bare field. Over native blur the field shows an arbitrary desktop.
 - Don't indent a whole-window sheet or draw an outer window stroke.
 - Don't outline every button. Use `border` only for inputs and frames that need a visible edge.
-- Don't add a second accent hue. No green or purple in presenter chrome; status colors only for status text and marks.
+- Don't add a second accent hue. No green or purple in presenter chrome; status colors stay in status text and marks, and titlebar close danger red (`#C42B1C` / `#A62317`) never appears on general buttons or panel fills.
 - Don't put white text on `#D97757`.
 - Keep the window field warm. At the specified opacity the desktop contributes 28% to the light field and 14% to the dark field before applying a panel.
 - Don't mark selection with a prefixed glyph that changes button width.
@@ -305,7 +347,8 @@ State the status, then the number, then the action. Keep labels short. No slogan
 
 | Condition | Field | Panel |
 | --- | --- | --- |
-| 960px and above, glass on, system allows blur | Gradient at 0.72 (dark 0.86) over requested blur | Highlight to base at 0.21 (dark 0.07) |
+| 960px and above, glass on, Windows 11+ (build ≥ 22000) or non-Windows host, system allows blur | Gradient at 0.72 (dark 0.86) over requested blur | Highlight to base at 0.21 (dark 0.07) |
+| Windows 10 (build < 22000 or unresolved build) with glass on | Opaque gradient | `layer-solid-top` to `layer-solid` |
 | Below 960px | Opaque gradient | `layer-solid-top` to `layer-solid` |
 | Reduced transparency, unsupported backend or glass off | Opaque gradient | `layer-solid-top` to `layer-solid` |
 
@@ -317,14 +360,15 @@ Pills stay pills. The focus ring stays 2px. Keyboard focus does not move or scal
 - Contrast is measured on the specified surfaces and on the native composites over black and white desktops, not on photographs behind the window.
 - If Figtree is unavailable, fall back to the system sans-serif and keep `"PingFang SC", "Noto Sans SC"` after the Latin family.
 - Title weight 650 needs the Figtree variable font. If only a static file is available, use 600.
-- The OS-owned title bar keeps its own system color.
 - PDF previews are still painted with square corners. The paint path is the slide surface shared with the audience window, which this restyle does not change.
 
 ## FerroStage native presenter
 
-The presenter owns this theme. Its home, document header, timer, tools, settings, menus and dialogs use the single Rust token layer in `crates/ferrostage-ui/src/theme.rs`. PDF previews and private note images retain the document's colors and aspect ratio. The audience window paints only its public snapshot, including its original black and white covers, and never reads this theme.
+The presenter owns this theme. Its integrated titlebar, home, document header, timer, tools, settings, menus and dialogs use the single Rust token layer in `crates/ferrostage-ui/src/theme.rs`. PDF previews and private note images retain the document's colors and aspect ratio. The audience window paints only its public snapshot, including its original black and white covers, and never reads this theme.
 
-**Appearance.** General settings provide Light, Dark and System plus an independent glass preference. The initial appearance is light with glass enabled. An explicitly stored theme survives upgrade. Applying appearance settings updates the presenter in place through the existing settings transaction. Selecting a solid surface keeps the chosen color scheme. A window below 960 logical pixels, a system reduced-transparency preference or an unsupported backend uses the solid fallback while keeping the saved glass choice.
+**Integrated Titlebar.** Home, Settings/Displays and the Ready/Presenting workbench share a 32px-tall transparent integrated titlebar painted directly over the full-bleed warm `field`, always matching FerroStage's Light or Dark palette regardless of OS appearance. Trailing 46px caption buttons provide minimize, maximize/restore (preserving native drag, double-click zoom and Windows Snap Layouts) and safe close; macOS reserves a 78px leading inset for native traffic lights (`(12px, 10px)`) without duplicate controls, while Linux follows platform decoration negotiation. Unfocused windows lower title and icon emphasis from `titlebar-ink`/`titlebar-icon` to `titlebar-inactive-ink`/`titlebar-inactive-icon`, and fullscreen presenter mode hides the titlebar and restores it on exit. Titlebar Close danger red (`#C42B1C` / `#A62317`) is confined solely to the Close button's hover and pressed states.
+
+**Appearance.** General settings provide Light, Dark and System plus an independent glass preference. The initial appearance is light with glass enabled. An explicitly stored theme survives upgrade. Applying appearance settings updates the presenter in place through the existing settings transaction. Selecting a solid surface keeps the chosen color scheme. On Windows 10 (build < 22000 or when the Windows build number cannot be resolved), the presenter automatically falls back to the opaque solid surface to eliminate DWM window-drag and resize stutter, skips periodic system transparency polling, preserves the saved `glass_effect` preference unchanged, and reports the fallback honestly under General → Frosted glass; native blur remains active only on Windows 11 and above (build ≥ 22000) or non-Windows hosts when enabled, at least 960 logical pixels wide, and permitted by system transparency settings. A window below 960 logical pixels, a system reduced-transparency preference or an unsupported backend likewise uses the solid fallback while keeping the saved glass choice.
 
 **Material.** Maintained GPUI has no per-element backdrop blur, only window-level `WindowBackgroundAppearance::Blurred`. When glass is available, the field and panel share an opacity budget. At a blank panel point the theoretical desktop weight is 22.12% in light and 13.02% in dark with source-over, or 7% in both themes with the maintained Windows quad blend. The system controls the blur. Settings reports the request. Opaque fallback fills preserve the upper highlight. Panels are not outlined; the focus indicator and control fill provide the interactive boundary. Font overrides and interface scaling apply to presenter controls.
 

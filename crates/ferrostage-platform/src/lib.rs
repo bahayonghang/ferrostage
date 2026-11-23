@@ -10,6 +10,7 @@ use std::time::Duration;
 #[cfg(any(target_os = "windows", test))]
 mod friendly;
 mod monitor;
+mod os_version;
 mod reload;
 mod topology;
 mod watch;
@@ -18,6 +19,10 @@ mod windows;
 
 pub use monitor::{
     IdentityConfidence, IdentitySource, MonitorInfo, PlatformError, ScaleSource, enumerate_monitors,
+};
+pub use os_version::{
+    WINDOWS_11_MIN_BUILD, host_supports_windows_native_blur, parse_windows_build_number,
+    windows_build_allows_native_blur, windows_build_number,
 };
 pub use reload::{PdfWatchEvent, PdfWatcher, watch_pdf};
 pub use topology::{

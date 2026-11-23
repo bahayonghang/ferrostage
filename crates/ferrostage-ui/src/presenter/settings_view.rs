@@ -121,7 +121,7 @@ impl Presenter {
             .gap(px(0.));
         content = content.child(
             div()
-                .pb(px(12.))
+                .pb(px(8.))
                 .font_weight(gpui::FontWeight::SEMIBOLD)
                 .text_size(px(self.data.typography.size(20.)))
                 .text_color(rgb(p.ink))
@@ -544,10 +544,11 @@ impl Presenter {
             .size_full()
             .max_w(px(body_cap + body_offset + 2. * theme::SPACING))
             .self_center()
-            .p(px(theme::SPACING))
+            .px(px(theme::SPACING))
+            .py(px(12.))
             .flex()
             .flex_col()
-            .gap(px(12.))
+            .gap(px(8.))
             .child(
                 div()
                     .debug_selector(|| "settings-title".into())
