@@ -28,6 +28,13 @@ pub const SETTINGS_DISPLAY_WIDTH: f32 = 1120.;
 pub const SETTINGS_ROW: f32 = 56.;
 pub const DISPLAY_PREVIEW_WIDTH: f32 = 420.;
 pub const DISPLAY_PREVIEW_HEIGHT: f32 = 240.;
+/// Integrated window titlebar height and caption control button width.
+pub const TITLEBAR_HEIGHT: f32 = 32.0;
+pub const TITLEBAR_BUTTON_WIDTH: f32 = 46.0;
+/// Leading clearance and coordinates for macOS native traffic lights.
+pub const MACOS_TRAFFIC_LIGHT_INSET: f32 = 78.0;
+pub const MACOS_TRAFFIC_LIGHT_X: f32 = 12.0;
+pub const MACOS_TRAFFIC_LIGHT_Y: f32 = 10.0;
 
 /// Resolved presenter typography. Requested preferences remain in Settings.
 #[derive(Clone, Debug)]
@@ -100,11 +107,13 @@ impl Typography {
 }
 
 /// Presenter colors. Every value is opaque `0xRRGGBB` except the fields documented
-/// as RGBA (`hairline`, `shadow`); `layer` is drawn at `layer_alpha` only when the
-/// native window blur is requested. Solid panels use their opaque gradient stops.
+/// as RGBA (`hairline`, `shadow`, `titlebar_control_hover`, `titlebar_control_pressed`);
+/// `layer` is drawn at `layer_alpha` only when the native window blur is requested.
+/// Solid panels use their opaque gradient stops.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Palette {
-    /// Window field gradient ends (160deg). Text never sits directly on the field.
+    /// Window field gradient ends (160deg). Presenter content stays off the bare
+    /// field except the integrated titlebar.
     pub field_top: u32,
     pub field_bottom: u32,
     /// Field opacity over the native blurred window backdrop. High enough that an
@@ -152,6 +161,17 @@ pub struct Palette {
     pub error_wash: u32,
     /// The single floating-surface shadow, RGBA.
     pub shadow: u32,
+    /// Integrated titlebar text, icons, and hover/pressed control fills (RGBA).
+    pub titlebar_ink: u32,
+    pub titlebar_inactive_ink: u32,
+    pub titlebar_icon: u32,
+    pub titlebar_inactive_icon: u32,
+    pub titlebar_control_hover: u32,
+    pub titlebar_control_pressed: u32,
+    /// Exclusive danger-red hover/pressed fills and icon foreground for the titlebar close button.
+    pub titlebar_close_hover: u32,
+    pub titlebar_close_pressed: u32,
+    pub titlebar_on_close: u32,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -277,6 +297,15 @@ pub const LIGHT: Palette = Palette {
     error: 0x802821,
     error_wash: 0xF8E3DF,
     shadow: 0x1F1B171F,
+    titlebar_ink: 0x1F1B17,
+    titlebar_inactive_ink: 0x524B44,
+    titlebar_icon: 0x1F1B17,
+    titlebar_inactive_icon: 0x524B44,
+    titlebar_control_hover: 0x1F1B1714,
+    titlebar_control_pressed: 0x1F1B1724,
+    titlebar_close_hover: 0xC42B1C,
+    titlebar_close_pressed: 0xA62317,
+    titlebar_on_close: 0xFFFDF9,
 };
 
 pub const DARK: Palette = Palette {
@@ -312,6 +341,15 @@ pub const DARK: Palette = Palette {
     error: 0xFFA5A0,
     error_wash: 0x3B2523,
     shadow: 0x00000066,
+    titlebar_ink: 0xF5F1EB,
+    titlebar_inactive_ink: 0xACA49A,
+    titlebar_icon: 0xF5F1EB,
+    titlebar_inactive_icon: 0xACA49A,
+    titlebar_control_hover: 0xFFFFFF17,
+    titlebar_control_pressed: 0xFFFFFF26,
+    titlebar_close_hover: 0xC42B1C,
+    titlebar_close_pressed: 0xA62317,
+    titlebar_on_close: 0xFFFDF9,
 };
 
 pub fn palette(theme: Theme, system_dark: bool) -> Palette {
@@ -388,6 +426,16 @@ mod tests {
         ButtonKind::Segment,
         ButtonKind::Stop,
     ];
+    fn d3d_composite(premultiplied: u32, desktop: u32, desktop_weight: f32) -> u32 {
+        let mut composite = 0;
+        for shift in [0, 8, 16] {
+            let channel = (premultiplied >> shift) & 255u32;
+            let back = (desktop >> shift) & 255u32;
+            composite |=
+                (channel + (back as f32 * desktop_weight).round() as u32).min(255) << shift;
+        }
+        composite
+    }
     /// Every opaque panel color text can land on, including the native composite of
     /// field and layer over the two desktop extremes behind the blurred window.
     fn panels(p: Palette) -> Vec<u32> {
@@ -404,19 +452,47 @@ mod tests {
                     // RGB uses source-over, but less desktop survives at composition.
                     let premultiplied = over(layer, over(edge, 0, p.field_alpha), p.layer_alpha);
                     let desktop_weight = (1. - p.field_alpha - p.layer_alpha).max(0.);
-                    let mut composite = 0;
-                    for shift in [0, 8, 16] {
-                        let channel = (premultiplied >> shift) & 255u32;
-                        let back = (desktop >> shift) & 255u32;
-                        composite |= (channel + (back as f32 * desktop_weight).round() as u32)
-                            .min(255)
-                            << shift;
-                    }
-                    panels.push(composite);
+                    panels.push(d3d_composite(premultiplied, desktop, desktop_weight));
                 }
             }
         }
         panels
+    }
+    /// Every opaque field color integrated titlebar content can land on, including
+    /// solid field gradient stops and native glass composites over black/white desktops.
+    fn fields(p: Palette) -> Vec<u32> {
+        let mut fields = vec![p.field_top, p.field_bottom];
+        for edge in [p.field_top, p.field_bottom] {
+            for desktop in [0, 0xFFFFFF] {
+                fields.push(over(edge, desktop, p.field_alpha));
+                let premultiplied = over(edge, 0, p.field_alpha);
+                let desktop_weight = (1. - p.field_alpha).max(0.);
+                fields.push(d3d_composite(premultiplied, desktop, desktop_weight));
+            }
+        }
+        fields
+    }
+    /// Every opaque surface an integrated titlebar control icon can land on when
+    /// hovered or pressed, covering solid fallback, source-over glass, and GPUI
+    /// Windows D3D11 additive quad alpha blending over black/white desktops.
+    fn titlebar_control_surfaces(p: Palette, rgba: u32) -> Vec<u32> {
+        let ctrl_rgb = rgba >> 8;
+        let ctrl_alpha = (rgba & 255) as f32 / 255.;
+        let mut surfaces = Vec::new();
+        for edge in [p.field_top, p.field_bottom] {
+            surfaces.push(over(ctrl_rgb, edge, ctrl_alpha));
+            for desktop in [0, 0xFFFFFF] {
+                surfaces.push(over(
+                    ctrl_rgb,
+                    over(edge, desktop, p.field_alpha),
+                    ctrl_alpha,
+                ));
+                let premultiplied = over(ctrl_rgb, over(edge, 0, p.field_alpha), ctrl_alpha);
+                let desktop_weight = (1. - p.field_alpha - ctrl_alpha).max(0.);
+                surfaces.push(d3d_composite(premultiplied, desktop, desktop_weight));
+            }
+        }
+        surfaces
     }
 
     #[test]
@@ -580,6 +656,13 @@ mod tests {
                 p.focus,
                 p.accent_wash,
                 p.error_wash,
+                p.titlebar_ink,
+                p.titlebar_inactive_ink,
+                p.titlebar_icon,
+                p.titlebar_inactive_icon,
+                p.titlebar_control_hover >> 8,
+                p.titlebar_control_pressed >> 8,
+                p.titlebar_on_close,
             ] {
                 let (hue, saturation) = hue_saturation(color);
                 assert!(
@@ -587,7 +670,91 @@ mod tests {
                     "{color:06x}: hue {hue:.0} saturation {saturation:.2}"
                 );
             }
+            // Close button danger red is reserved exclusively for titlebar close hover/pressed.
+            for close_red in [p.titlebar_close_hover, p.titlebar_close_pressed] {
+                let (hue, saturation) = hue_saturation(close_red);
+                assert!(
+                    (hue <= 20. || hue >= 340.) && saturation >= 0.5,
+                    "close red {close_red:06x}: hue {hue:.0} saturation {saturation:.2}"
+                );
+                for kind in KINDS {
+                    for enabled in [false, true] {
+                        for selected in [false, true] {
+                            let style = p.button(kind, enabled, selected);
+                            assert_ne!(style.fill, close_red, "{kind:?} fill");
+                            assert_ne!(style.hover, close_red, "{kind:?} hover");
+                            assert_ne!(style.pressed, close_red, "{kind:?} pressed");
+                        }
+                    }
+                }
+            }
         }
+    }
+
+    #[test]
+    fn integrated_titlebar_states_meet_contrast_and_focus_distinction() {
+        for (p, is_dark) in [(LIGHT, false), (DARK, true)] {
+            for bg in [p.field_top, p.field_bottom] {
+                assert!(
+                    contrast(p.titlebar_inactive_ink, bg) >= 4.5,
+                    "inactive ink on solid {bg:06x}"
+                );
+                assert!(
+                    contrast(p.titlebar_inactive_icon, bg) >= 4.5,
+                    "inactive icon on solid {bg:06x}"
+                );
+            }
+            for bg in fields(p) {
+                assert!(
+                    contrast(p.titlebar_ink, bg) >= 4.5,
+                    "titlebar_ink on {bg:06x}"
+                );
+                assert!(
+                    contrast(p.titlebar_icon, bg) >= 4.5,
+                    "titlebar_icon on {bg:06x}"
+                );
+                assert!(
+                    contrast(p.titlebar_inactive_ink, bg) >= 3.0,
+                    "titlebar_inactive_ink on {bg:06x}"
+                );
+                assert!(
+                    contrast(p.titlebar_inactive_icon, bg) >= 3.0,
+                    "titlebar_inactive_icon on {bg:06x}"
+                );
+            }
+            for bg in titlebar_control_surfaces(p, p.titlebar_control_hover) {
+                assert!(
+                    contrast(p.titlebar_icon, bg) >= 4.5,
+                    "titlebar_icon hover on {bg:06x}"
+                );
+                assert!(
+                    contrast(p.titlebar_inactive_icon, bg) >= 3.0,
+                    "titlebar_inactive_icon hover on {bg:06x}"
+                );
+            }
+            for bg in titlebar_control_surfaces(p, p.titlebar_control_pressed) {
+                assert!(
+                    contrast(p.titlebar_icon, bg) >= 4.5,
+                    "titlebar_icon pressed on {bg:06x}"
+                );
+            }
+            assert!(contrast(p.titlebar_on_close, p.titlebar_close_hover) >= 4.5);
+            assert!(contrast(p.titlebar_on_close, p.titlebar_close_pressed) >= 4.5);
+
+            assert_ne!(p.titlebar_ink, p.titlebar_inactive_ink);
+            assert_ne!(p.titlebar_icon, p.titlebar_inactive_icon);
+            assert!(contrast(p.titlebar_ink, p.titlebar_inactive_ink) >= 1.8);
+            if is_dark {
+                assert!(luminance(p.titlebar_ink) > luminance(p.titlebar_inactive_ink));
+            } else {
+                assert!(luminance(p.titlebar_ink) < luminance(p.titlebar_inactive_ink));
+            }
+        }
+        assert_eq!(palette(Theme::System, true).titlebar_ink, DARK.titlebar_ink);
+        assert_eq!(
+            palette(Theme::System, false).titlebar_ink,
+            LIGHT.titlebar_ink
+        );
     }
 
     #[test]
