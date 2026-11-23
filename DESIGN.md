@@ -326,7 +326,7 @@ State the status, then the number, then the action. Keep labels short. No slogan
 - Use `{colors.focus}` for the 2px focus ring and selection marks.
 - Use `{colors.titlebar-close-hover}` and `{colors.titlebar-close-pressed}` with `{colors.titlebar-on-close}` exclusively for the integrated titlebar Close button's hover and press states.
 - Separate layers by opacity and lightness of one warm hue.
-- Use the solid fallback below 960px, for reduced transparency, and when the platform cannot blur.
+- Use the solid fallback below 960px, for reduced transparency, on Windows 10 (build < 22000 or unresolved build), and when the platform cannot blur.
 - Set numbers in `tabular-nums`.
 
 ### Don't
@@ -347,7 +347,8 @@ State the status, then the number, then the action. Keep labels short. No slogan
 
 | Condition | Field | Panel |
 | --- | --- | --- |
-| 960px and above, glass on, system allows blur | Gradient at 0.72 (dark 0.86) over requested blur | Highlight to base at 0.21 (dark 0.07) |
+| 960px and above, glass on, Windows 11+ (build ≥ 22000) or non-Windows host, system allows blur | Gradient at 0.72 (dark 0.86) over requested blur | Highlight to base at 0.21 (dark 0.07) |
+| Windows 10 (build < 22000 or unresolved build) with glass on | Opaque gradient | `layer-solid-top` to `layer-solid` |
 | Below 960px | Opaque gradient | `layer-solid-top` to `layer-solid` |
 | Reduced transparency, unsupported backend or glass off | Opaque gradient | `layer-solid-top` to `layer-solid` |
 
@@ -367,7 +368,7 @@ The presenter owns this theme. Its integrated titlebar, home, document header, t
 
 **Integrated Titlebar.** Home, Settings/Displays and the Ready/Presenting workbench share a 32px-tall transparent integrated titlebar painted directly over the full-bleed warm `field`, always matching FerroStage's Light or Dark palette regardless of OS appearance. Trailing 46px caption buttons provide minimize, maximize/restore (preserving native drag, double-click zoom and Windows Snap Layouts) and safe close; macOS reserves a 78px leading inset for native traffic lights (`(12px, 10px)`) without duplicate controls, while Linux follows platform decoration negotiation. Unfocused windows lower title and icon emphasis from `titlebar-ink`/`titlebar-icon` to `titlebar-inactive-ink`/`titlebar-inactive-icon`, and fullscreen presenter mode hides the titlebar and restores it on exit. Titlebar Close danger red (`#C42B1C` / `#A62317`) is confined solely to the Close button's hover and pressed states.
 
-**Appearance.** General settings provide Light, Dark and System plus an independent glass preference. The initial appearance is light with glass enabled. An explicitly stored theme survives upgrade. Applying appearance settings updates the presenter in place through the existing settings transaction. Selecting a solid surface keeps the chosen color scheme. A window below 960 logical pixels, a system reduced-transparency preference or an unsupported backend uses the solid fallback while keeping the saved glass choice.
+**Appearance.** General settings provide Light, Dark and System plus an independent glass preference. The initial appearance is light with glass enabled. An explicitly stored theme survives upgrade. Applying appearance settings updates the presenter in place through the existing settings transaction. Selecting a solid surface keeps the chosen color scheme. On Windows 10 (build < 22000 or when the Windows build number cannot be resolved), the presenter automatically falls back to the opaque solid surface to eliminate DWM window-drag and resize stutter, skips periodic system transparency polling, preserves the saved `glass_effect` preference unchanged, and reports the fallback honestly under General → Frosted glass; native blur remains active only on Windows 11 and above (build ≥ 22000) or non-Windows hosts when enabled, at least 960 logical pixels wide, and permitted by system transparency settings. A window below 960 logical pixels, a system reduced-transparency preference or an unsupported backend likewise uses the solid fallback while keeping the saved glass choice.
 
 **Material.** Maintained GPUI has no per-element backdrop blur, only window-level `WindowBackgroundAppearance::Blurred`. When glass is available, the field and panel share an opacity budget. At a blank panel point the theoretical desktop weight is 22.12% in light and 13.02% in dark with source-over, or 7% in both themes with the maintained Windows quad blend. The system controls the blur. Settings reports the request. Opaque fallback fills preserve the upper highlight. Panels are not outlined; the focus indicator and control fill provide the interactive boundary. Font overrides and interface scaling apply to presenter controls.
 

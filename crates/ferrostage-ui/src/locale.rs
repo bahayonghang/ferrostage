@@ -153,4 +153,14 @@ mod tests {
             "Open PDF (unavailable)"
         );
     }
+
+    #[test]
+    fn win10_glass_fallback_notice_is_localized() {
+        let zh = Locale::new("zh-CN").text("settings-glass-win10");
+        let en = Locale::new("en-US").text("settings-glass-win10");
+        assert!(!zh.is_empty());
+        assert!(!en.is_empty());
+        assert!(zh.contains("Windows 10") && zh.contains("实色表面"));
+        assert!(en.contains("Windows 10") && en.contains("solid surfaces"));
+    }
 }

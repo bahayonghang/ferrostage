@@ -10,6 +10,7 @@ use std::time::{Duration, Instant};
 enum Surface {
     #[default]
     Disabled,
+    LegacyWindows,
     Narrow,
     Reduced,
     Unsupported,
@@ -17,13 +18,26 @@ enum Surface {
 }
 
 impl Surface {
-    fn resolve(requested: bool, width: f32, system: Self) -> Self {
+    fn resolve(requested: bool, width: f32, windows_blur_supported: bool, system: Self) -> Self {
         if !requested {
             Self::Disabled
+        } else if !windows_blur_supported {
+            Self::LegacyWindows
         } else if width < 960. {
             Self::Narrow
         } else {
             system
+        }
+    }
+
+    const fn status_key(self) -> &'static str {
+        match self {
+            Self::Disabled => "settings-glass-disabled",
+            Self::LegacyWindows => "settings-glass-win10",
+            Self::Narrow => "settings-glass-narrow",
+            Self::Reduced => "settings-glass-system",
+            Self::Unsupported => "settings-glass-unavailable",
+            Self::Native => "settings-glass-native",
         }
     }
 }
@@ -36,16 +50,36 @@ pub(super) struct Material {
 
 impl Material {
     pub(super) fn update(&mut self, requested: bool, window: &Window) {
-        let width = f32::from(window.viewport_size().width);
+        self.update_with(
+            requested,
+            f32::from(window.viewport_size().width),
+            ferrostage_platform::host_supports_windows_native_blur(),
+            system_allows_blur,
+            |appearance| window.set_background_appearance(appearance),
+        );
+    }
+
+    fn update_with<P, A>(
+        &mut self,
+        requested: bool,
+        width: f32,
+        windows_blur_supported: bool,
+        mut probe_system: P,
+        mut apply_appearance: A,
+    ) where
+        P: FnMut() -> Option<bool>,
+        A: FnMut(WindowBackgroundAppearance),
+    {
         // The OS can change transparency without changing light/dark appearance.
         // Bound native policy queries independently of the presentation frame rate.
         if requested
+            && windows_blur_supported
             && width >= 960.
             && self
                 .policy
                 .is_none_or(|(at, _)| at.elapsed() >= Duration::from_secs(2))
         {
-            let surface = match system_allows_blur() {
+            let surface = match probe_system() {
                 Some(true) => Surface::Native,
                 Some(false) => Surface::Reduced,
                 None => Surface::Unsupported,
@@ -55,10 +89,11 @@ impl Material {
         let next = Surface::resolve(
             requested,
             width,
+            windows_blur_supported,
             self.policy.map_or(Surface::Unsupported, |(_, p)| p),
         );
         if (next == Surface::Native) != (self.surface == Surface::Native) {
-            window.set_background_appearance(if next == Surface::Native {
+            apply_appearance(if next == Surface::Native {
                 WindowBackgroundAppearance::Blurred
             } else {
                 WindowBackgroundAppearance::Opaque
@@ -68,13 +103,7 @@ impl Material {
     }
 
     pub(super) fn status_key(&self) -> &'static str {
-        match self.surface {
-            Surface::Disabled => "settings-glass-disabled",
-            Surface::Narrow => "settings-glass-narrow",
-            Surface::Reduced => "settings-glass-system",
-            Surface::Unsupported => "settings-glass-unavailable",
-            Surface::Native => "settings-glass-native",
-        }
+        self.surface.status_key()
     }
 
     fn native(&self) -> bool {
@@ -185,14 +214,230 @@ fn system_allows_blur() -> Option<bool> {
 
 #[cfg(test)]
 mod tests {
-    use super::Surface;
+    use super::{Material, Surface};
+    use gpui::WindowBackgroundAppearance;
 
     #[test]
-    fn material_resolves_requested_width_and_system_policy_independently() {
+    fn material_resolves_requested_width_windows_build_and_system_policy() {
         for system in [Surface::Reduced, Surface::Unsupported, Surface::Native] {
-            assert_eq!(Surface::resolve(false, 1200., system), Surface::Disabled);
-            assert_eq!(Surface::resolve(true, 959., system), Surface::Narrow);
-            assert_eq!(Surface::resolve(true, 960., system), system);
+            for windows_blur_supported in [false, true] {
+                for width in [959., 960., 1200.] {
+                    let disabled = Surface::resolve(false, width, windows_blur_supported, system);
+                    assert_eq!(disabled, Surface::Disabled);
+                    assert_eq!(disabled.status_key(), "settings-glass-disabled");
+                }
+            }
+
+            for width in [959., 960., 1200.] {
+                let win10 = Surface::resolve(true, width, false, system);
+                assert_eq!(win10, Surface::LegacyWindows);
+                assert_eq!(win10.status_key(), "settings-glass-win10");
+            }
+
+            let narrow = Surface::resolve(true, 959., true, system);
+            assert_eq!(narrow, Surface::Narrow);
+            assert_eq!(narrow.status_key(), "settings-glass-narrow");
+
+            for width in [960., 1200.] {
+                assert_eq!(Surface::resolve(true, width, true, system), system);
+            }
+        }
+
+        assert_eq!(Surface::Reduced.status_key(), "settings-glass-system");
+        assert_eq!(
+            Surface::Unsupported.status_key(),
+            "settings-glass-unavailable"
+        );
+        assert_eq!(Surface::Native.status_key(), "settings-glass-native");
+    }
+
+    #[test]
+    fn legacy_windows_skips_system_probe_and_keeps_opaque_surface() {
+        let mut material = Material::default();
+        let mut probe_calls = 0usize;
+        let mut appearances = Vec::new();
+
+        for width in [1200., 959., 1200.] {
+            material.update_with(
+                true,
+                width,
+                false,
+                || {
+                    probe_calls += 1;
+                    Some(true)
+                },
+                |appearance| appearances.push(appearance),
+            );
+            assert!(!material.native());
+            assert_eq!(material.status_key(), "settings-glass-win10");
+        }
+
+        material.update_with(
+            false,
+            1200.,
+            false,
+            || {
+                probe_calls += 1;
+                Some(true)
+            },
+            |appearance| appearances.push(appearance),
+        );
+        assert!(!material.native());
+        assert_eq!(material.status_key(), "settings-glass-disabled");
+
+        material.update_with(
+            true,
+            1200.,
+            false,
+            || {
+                probe_calls += 1;
+                Some(true)
+            },
+            |appearance| appearances.push(appearance),
+        );
+        assert!(!material.native());
+        assert_eq!(material.status_key(), "settings-glass-win10");
+        assert_eq!(probe_calls, 0);
+        assert!(appearances.is_empty());
+    }
+
+    #[test]
+    fn win11_probes_on_demand_and_toggles_window_background_only_on_native_transitions() {
+        let mut material = Material::default();
+        let mut probe_calls = 0usize;
+        let mut appearances = Vec::new();
+
+        // First wide update probes once and requests Blurred once.
+        material.update_with(
+            true,
+            1200.,
+            true,
+            || {
+                probe_calls += 1;
+                Some(true)
+            },
+            |appearance| appearances.push(appearance),
+        );
+        assert!(material.native());
+        assert_eq!(material.status_key(), "settings-glass-native");
+        assert_eq!(probe_calls, 1);
+        assert_eq!(appearances, vec![WindowBackgroundAppearance::Blurred]);
+
+        // Immediate repeat stays cached within 2s and emits no duplicate appearance update.
+        material.update_with(
+            true,
+            1200.,
+            true,
+            || {
+                probe_calls += 1;
+                Some(true)
+            },
+            |appearance| appearances.push(appearance),
+        );
+        assert!(material.native());
+        assert_eq!(probe_calls, 1);
+        assert_eq!(appearances, vec![WindowBackgroundAppearance::Blurred]);
+
+        // Narrow window falls back to Opaque once and stays quiet on repeats.
+        material.update_with(
+            true,
+            959.,
+            true,
+            || {
+                probe_calls += 1;
+                Some(true)
+            },
+            |appearance| appearances.push(appearance),
+        );
+        material.update_with(
+            true,
+            959.,
+            true,
+            || {
+                probe_calls += 1;
+                Some(true)
+            },
+            |appearance| appearances.push(appearance),
+        );
+        assert!(!material.native());
+        assert_eq!(material.status_key(), "settings-glass-narrow");
+        assert_eq!(probe_calls, 1);
+        assert_eq!(
+            appearances,
+            vec![
+                WindowBackgroundAppearance::Blurred,
+                WindowBackgroundAppearance::Opaque,
+            ]
+        );
+
+        // Widening back reuses the cached policy within 2s and restores Blurred once.
+        material.update_with(
+            true,
+            960.,
+            true,
+            || {
+                probe_calls += 1;
+                Some(true)
+            },
+            |appearance| appearances.push(appearance),
+        );
+        assert!(material.native());
+        assert_eq!(probe_calls, 1);
+        assert_eq!(
+            appearances,
+            vec![
+                WindowBackgroundAppearance::Blurred,
+                WindowBackgroundAppearance::Opaque,
+                WindowBackgroundAppearance::Blurred,
+            ]
+        );
+
+        // Turning glass off restores Opaque once without re-probing.
+        material.update_with(
+            false,
+            960.,
+            true,
+            || {
+                probe_calls += 1;
+                Some(true)
+            },
+            |appearance| appearances.push(appearance),
+        );
+        assert!(!material.native());
+        assert_eq!(material.status_key(), "settings-glass-disabled");
+        assert_eq!(probe_calls, 1);
+        assert_eq!(
+            appearances,
+            vec![
+                WindowBackgroundAppearance::Blurred,
+                WindowBackgroundAppearance::Opaque,
+                WindowBackgroundAppearance::Blurred,
+                WindowBackgroundAppearance::Opaque,
+            ]
+        );
+
+        // Reduced transparency and unsupported backends keep the window opaque.
+        for (system_reply, expected_key) in [
+            (Some(false), "settings-glass-system"),
+            (None, "settings-glass-unavailable"),
+        ] {
+            let mut fallback = Material::default();
+            let mut fallback_probes = 0usize;
+            let mut fallback_appearances = Vec::new();
+            fallback.update_with(
+                true,
+                1200.,
+                true,
+                || {
+                    fallback_probes += 1;
+                    system_reply
+                },
+                |appearance| fallback_appearances.push(appearance),
+            );
+            assert!(!fallback.native());
+            assert_eq!(fallback.status_key(), expected_key);
+            assert_eq!(fallback_probes, 1);
+            assert!(fallback_appearances.is_empty());
         }
     }
 }
