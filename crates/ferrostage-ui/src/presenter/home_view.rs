@@ -36,7 +36,7 @@ impl Presenter {
                     l.text(if self.data.loading { "loading" } else { "open" })
                         .into(),
                     self.data.can_open,
-                    true,
+                    self.data.home_preview.path.is_none(),
                     Intent::Open,
                     p,
                 ),
@@ -89,7 +89,7 @@ impl Presenter {
             )
             .child(
                 self.material
-                    .paper(p)
+                    .panel(p)
                     .id("home-preparation")
                     .debug_selector(|| "home-preparation".into())
                     .w_full()
@@ -119,7 +119,7 @@ impl Presenter {
         let l = self.locale;
         let mut list = self
             .material
-            .paper(p)
+            .panel(p)
             .id("home-history")
             .debug_selector(|| "home-history".into())
             .min_w_0()
@@ -144,7 +144,6 @@ impl Presenter {
             );
         }
         let hover_bg = self.material.control_hover_bg(p);
-        let glass = self.material.is_glass();
         for (index, recent) in self.data.recent.iter().enumerate() {
             let path = std::path::Path::new(&recent.path);
             let filename = path
@@ -156,8 +155,6 @@ impl Presenter {
                 .map(|parent| parent.to_string_lossy().into_owned())
                 .unwrap_or_default();
             let selected = self.data.home_preview.path.as_deref() == Some(path);
-            let tooltip_path = recent.path.clone();
-            let typography = self.data.typography.clone();
             let row_bg = if selected {
                 rgb(p.accent_wash)
             } else {
@@ -178,15 +175,7 @@ impl Presenter {
                     p,
                 )
                 .aria_toggled(selected.into())
-                .tooltip(move |_, cx| {
-                    cx.new(|_| FilenameTooltip {
-                        filename: tooltip_path.clone(),
-                        palette: p,
-                        glass,
-                        typography: typography.clone(),
-                    })
-                    .into()
-                })
+                .tooltip(self.text_tooltip(recent.path.clone(), p))
                 .child(
                     div()
                         .id(SharedString::from(format!("recent-{index}-face")))
@@ -336,7 +325,7 @@ impl Presenter {
             );
         }
         self.material
-            .paper(p)
+            .panel(p)
             .id("home-preview")
             .debug_selector(|| "home-preview".into())
             .min_w_0()

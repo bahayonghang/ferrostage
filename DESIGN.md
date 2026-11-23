@@ -60,11 +60,11 @@ colors:
   dark-sheet-highlight: "rgba(255,246,238,0.08)"
   dark-sheet-shadow: "rgba(0,0,0,0.45)"
   dark-overlay: "rgba(49,44,39,0.96)"
-  dark-overlay-solid: "#342F2A"
+  dark-overlay-solid: "#312C27"
   dark-overlay-edge: "rgba(255,246,238,0.12)"
   dark-overlay-highlight: "rgba(255,246,238,0.10)"
   dark-overlay-shadow: "rgba(0,0,0,0.60)"
-  dark-raised: "#342F2A"
+  dark-raised: "#312C27"
   dark-segment: "#544E48"
   dark-well: "rgba(245,241,235,0.045)"
   dark-control: "rgba(245,241,235,0.08)"
@@ -74,13 +74,13 @@ colors:
   dark-border: "#958C81"
   dark-ink: "#F5F1EB"
   dark-body: "#E2DBD2"
-  dark-muted: "#C4BCB2"
-  dark-accent-text: "#EBA98C"
-  dark-focus: "#EBA98C"
+  dark-muted: "#C8C0B6"
+  dark-accent-text: "#F0B296"
+  dark-focus: "#F0B296"
   dark-accent-wash: "#3A2A22"
   dark-success: "#8DCEA0"
   dark-warning: "#E8B774"
-  dark-error: "#FFA5A0"
+  dark-error: "#FFACA7"
   dark-error-wash: "#3B2523"
   dark-titlebar-ink: "#F5F1EB"
   dark-titlebar-inactive-ink: "#ACA49A"
@@ -177,23 +177,23 @@ Light is the default. Dark is a full variant with the same roles (`dark-*` token
 - **Well** `{colors.well}` (`rgba(31,27,23,0.045)`, dark `rgba(245,241,235,0.045)`): inset area inside a panel (notes, inputs, preview frames, grouped settings). Always sinks beneath the sheet in Light (`lum(sheet) > lum(well)`) and steps cleanly above in Dark (`lum(sheet) < lum(well)`), eliminating Light-mode brightness inversion. Precomposited over `sheet-solid` in solid fallback mode.
 - **Control** `{colors.control}` / `-hover` / `-pressed`: `rgba(31,27,23, 0.075 / 0.115 / 0.155)` (dark: `rgba(245,241,235, 0.08 / 0.12 / 0.16)`), precomposited over `sheet-solid` in solid mode. Unselected options on a `control` segmented track rest at `Tint::TRANSPARENT` so they do not double-darken over the translucent track.
 - **Segment** `{colors.segment}` (`#FFFFFF`, dark `#544E48`): the selected option lifted off a `control` track, always brighter than the track.
-- **Raised** `{colors.raised}` (`#FFFFFF`, dark `#342F2A`): inline raised items and diagram tiles.
+- **Raised** `{colors.raised}` (`#FFFFFF`, dark `#312C27`): inline raised items and diagram tiles.
 
 **L2 Overlay (Menus, dialogs, tooltips, page browser)**:
 
-- Maintained GPUI has no per-element `backdrop_blur`, so overlays use high-opacity `{colors.overlay}` (`rgba(255,253,251,0.96)`, dark `rgba(49,44,39,0.96)`) or solid `{colors.overlay-solid}` (`#FFFFFF`, dark `#342F2A`), 1px `{colors.overlay-edge}` (`{colors.hairline}` in solid fallback), `{elevation.overlay-highlight}`, and clipped bottom `{elevation.overlay-shadow}` (`0 24px 64px -24px rgba(74,50,34,0.22)`, dark `rgba(0,0,0,0.60)`).
+- Maintained GPUI has no per-element `backdrop_blur`, so overlays use high-opacity `{colors.overlay}` (`rgba(255,253,251,0.96)`, dark `rgba(49,44,39,0.96)`) or solid `{colors.overlay-solid}` (`#FFFFFF`, dark `#312C27`), 1px `{colors.overlay-edge}`, `{elevation.overlay-highlight}`, and clipped bottom `{elevation.overlay-shadow}` (`0 24px 64px -24px rgba(74,50,34,0.22)`, dark `rgba(0,0,0,0.60)`).
 
 Lines:
 
-- `{colors.hairline}` (`rgba(31,27,23,0.08)`, dark `rgba(255,255,255,0.08)`) is a decorative separator and solid-mode sheet edge. It is never a control boundary.
+- `{colors.hairline}` (`rgba(31,27,23,0.08)`, dark `rgba(255,255,255,0.08)`) is a decorative separator and solid-mode L1 sheet edge (without highlight or drop shadow). It is never a control boundary.
 - `{colors.border}` (`#7F776E`, dark `#958C81`) is only for inputs and frames that need a visible edge; it is at least 3:1 on `well`, `sheet` and `overlay`.
 
-Text: `{colors.ink}` (`#1F1B17`, dark `#F5F1EB`) for titles and figures, `{colors.body}` (`#3D3833`, dark `#E2DBD2`) for running text and control labels, `{colors.muted}` (`#524B44`, dark `#C4BCB2`) for 12px secondary text.
+Text: `{colors.ink}` (`#1F1B17`, dark `#F5F1EB`) for titles and figures, `{colors.body}` (`#3D3833`, dark `#E2DBD2`) for running text and control labels, `{colors.muted}` (`#524B44`, dark `#C8C0B6`) for 12px secondary text.
 
 Accent:
 
 - `{colors.primary}` (`#D97757`) fills the primary action in both variants. Its text is `{colors.on-primary}` (`#1F1712`). White text on this orange is about 3.12:1 and is not allowed.
-- `{colors.accent-text}` (`#8A3B1E`, dark `#EBA98C`) for orange text and links; `{colors.focus}` is the same value for the focus ring and selection marks.
+- `{colors.accent-text}` (`#8A3B1E`, dark `#F0B296`) for orange text and links; `{colors.focus}` is the same value for the focus ring and selection marks.
 - `{colors.accent-wash}` (`#F7E6DC`, dark `#3A2A22`) fills a selected row or menu entry.
 
 Integrated titlebar (32px strip, 46px caption buttons):
@@ -222,7 +222,7 @@ Spacing is 8 / 12 / 16 / 24 / 32 / 48 (`{spacing.min}` through `{spacing.xxl}`).
 
 Order on the workbench is status, number, action. Do not add a marketing hero.
 
-The field fills the window. Insets are margins between panels (home/workbench 8px, narrow workbench windows 4px; home guarantees at least 16px outer field margin at narrow widths and 32px at desktop viewports), not a band around a sheet. Home floats directly over the warm field and blobs without a whole-window card: a top header row (wordmark in ink on the field plus Settings/Displays and Open PDF pills), two independent L1 glass papers separated by a 32px field gap (`home-history` at 340px scaled width left of `home-preview` with a translucent `well` canvas on wide viewports, stacked vertically in a single column below 1000px scaled width), a lightweight `home-preparation` L1 glass summary bar below with a 24px field gap, and L1 `notice` panels for any home warnings or unsaved state.
+The field fills the window. Insets are margins between panels (home/workbench 8px, narrow workbench windows 4px; home guarantees at least 16px outer field margin at narrow widths and 32px at desktop viewports), not a band around a sheet. Home floats directly over the warm field and blobs without a whole-window card: a top header row (wordmark in ink on the field plus Settings/Displays and Open PDF pills, where Open PDF steps down to a secondary pill whenever a recent preview is selected so Open this document stays the sole warm-orange primary action), two independent L1 glass papers separated by a 32px field gap (`home-history` at 340px scaled width left of `home-preview` with a translucent `well` canvas on wide viewports, stacked vertically in a single column below 1000px scaled width), a lightweight `home-preparation` L1 glass summary bar below with a 24px field gap, and L1 `notice` panels for any home warnings or unsaved state.
 
 Home shows the configured output target and start mode, never claiming that configuration is observed live output. Settings/Displays stay directly accessible. Preserve the first-three recent limit, accurate local minute timestamps, full-path disclosure, original import paths and user font preferences. Row activation selects a read-only first-content-page preview; only Open this document imports it. Initially select the first recent document. Selection has a reserved check mark and warm accent wash. Clear old pixels immediately when selection changes, and show localized loading, empty, unavailable and retry states.
 
@@ -300,26 +300,28 @@ Meet WCAG 2.2 AA on the worst specified background. Because the presenter window
 | `ink` | `sheet` 最差合成（含色斑） | 15.22 (`#1F1B17` / `#FAF0E7`) | 13.15 (`#F5F1EB` / `#2F2620`) | 标题与主文字，毛玻璃面板 |
 | `body` | `sheet_solid` | 11.41 (`#3D3833` / `#FFFDF9`) | 11.04 (`#E2DBD2` / `#2A2521`) | 正文与按钮文字，实色回退面板 |
 | `body` | `sheet` 最差合成 | 10.31 (`#3D3833` / `#FAF0E7`) | 10.78 (`#E2DBD2` / `#2F2620`) | 正文与按钮文字，毛玻璃面板 |
-| `muted` | `sheet` 最差合成 | 7.63 (`#524B44` / `#FAF0E7`) | 7.88 (`#C4BCB2` / `#2F2620`) | 次要文字，毛玻璃面板 |
-| `muted` | `well` 最差合成 | 6.97 (`#524B44` / `#F0E6DE`) | 6.96 (`#C4BCB2` / `#382F29`) | 次要文字，半透凹槽 |
-| `muted` | `control_pressed` 最差合成 | 5.58 (`#524B44` / `#D8CFC7`) | 4.90 (`#C4BCB2` / `#4F4640`) | 次要文字，按下的中性控件 |
-| `accent_text` | `sheet` 最差合成 | 6.86 (`#8A3B1E` / `#FAF0E7`) | 7.46 (`#EBA98C` / `#2F2620`) | 强调文字与链接 |
-| `accent_text` | `control` 最差合成 | 5.92 (`#8A3B1E` / `#EAE0D7`) | 5.94 (`#EBA98C` / `#3F3630`) | 橙色文字压中性控件 |
-| `accent_text` | `accent_wash` | 6.35 (`#8A3B1E` / `#F7E6DC`) | 6.90 (`#EBA98C` / `#3A2A22`) | 橙色文字压选中洗底 |
+| `muted` | `sheet` 最差合成 | 7.63 (`#524B44` / `#FAF0E7`) | 8.23 (`#C8C0B6` / `#2F2620`) | 次要文字，毛玻璃面板 |
+| `muted` | `well` 最差合成 | 6.97 (`#524B44` / `#F0E6DE`) | 7.26 (`#C8C0B6` / `#382F29`) | 次要文字，半透凹槽 |
+| `muted` | `control_pressed` 最差合成 | 5.58 (`#524B44` / `#D8CFC7`) | 5.11 (`#C8C0B6` / `#4F4640`) | 次要文字，按下的中性控件 |
+| `accent_text` | `sheet` 最差合成 | 6.86 (`#8A3B1E` / `#FAF0E7`) | 8.11 (`#F0B296` / `#2F2620`) | 强调文字与链接 |
+| `accent_text` | `control` 最差合成 | 5.92 (`#8A3B1E` / `#EAE0D7`) | 6.46 (`#F0B296` / `#3F3630`) | 橙色文字压中性控件 |
+| `accent_text` | `accent_wash` | 6.35 (`#8A3B1E` / `#F7E6DC`) | 7.50 (`#F0B296` / `#3A2A22`) | 橙色文字压选中洗底 |
 | `success` | `sheet` 最差合成 | 7.74 (`#215534` / `#FAF0E7`) | 8.08 (`#8DCEA0` / `#2F2620`) | 成功状态文字与标记 |
 | `warning` | `sheet` 最差合成 | 7.68 (`#6B430A` / `#FAF0E7`) | 8.07 (`#E8B774` / `#2F2620`) | 警告状态文字与标记 |
 | `warning` | `sheet_solid` | 8.50 (`#6B430A` / `#FFFDF9`) | 8.27 (`#E8B774` / `#2A2521`) | 警告文字，实色面板 |
-| `error` | `sheet` 最差合成 | 7.84 (`#872A22` / `#FAF0E7`) | 7.85 (`#FFA5A0` / `#2F2620`) | 错误状态文字与标记 |
-| `error` | `error_wash` | 7.15 (`#872A22` / `#F8E3DF`) | 7.55 (`#FFA5A0` / `#3B2523`) | 停止/危险文字 |
+| `error` | `sheet` 最差合成 | 7.84 (`#872A22` / `#FAF0E7`) | 8.25 (`#FFACA7` / `#2F2620`) | 错误状态文字与标记 |
+| `error` | `error_wash` | 7.15 (`#872A22` / `#F8E3DF`) | 7.94 (`#FFACA7` / `#3B2523`) | 停止/危险文字 |
 | `on_accent` | `accent` | 5.65 (`#1F1712` / `#D97757`) | 5.65 (`#1F1712` / `#D97757`) | 主按钮文字 |
 | `on_accent` | `accent_pressed` | 4.71 (`#1F1712` / `#C9694A`) | 4.71 (`#1F1712` / `#C9694A`) | 主按钮按下 |
 | `#FFFFFF` | `accent` | 3.12 (`#FFFFFF` / `#D97757`) | 3.12 (`#FFFFFF` / `#D97757`) | 白字压橙色，禁止 |
-| `focus` | `sheet` 最差合成 | 6.86 (`#8A3B1E` / `#FAF0E7`) | 7.46 (`#EBA98C` / `#2F2620`) | 焦点环与选中标记，玻璃纸 |
-| `focus` | `control_pressed` 最差合成 | 5.02 (`#8A3B1E` / `#D8CFC7`) | 4.64 (`#EBA98C` / `#4F4640`) | 焦点环压最深中性填充 |
-| `focus` | `segment` | 7.71 (`#8A3B1E` / `#FFFFFF`) | 4.13 (`#EBA98C` / `#544E48`) | 选中分段上的选中标记 |
+| `focus` | `sheet` 最差合成 | 6.86 (`#8A3B1E` / `#FAF0E7`) | 8.11 (`#F0B296` / `#2F2620`) | 焦点环与选中标记，玻璃纸 |
+| `focus` | `control_pressed` 最差合成 | 5.02 (`#8A3B1E` / `#D8CFC7`) | 5.04 (`#F0B296` / `#4F4640`) | 焦点环压最深中性填充 |
+| `focus` | `segment` | 7.71 (`#8A3B1E` / `#FFFFFF`) | 4.50 (`#F0B296` / `#544E48`) | 选中分段上的选中标记 |
 | `ink` | `segment` | 17.11 (`#1F1B17` / `#FFFFFF`) | 7.29 (`#F5F1EB` / `#544E48`) | 选中分段文字 |
 | `border` | `well` 最差合成 | 3.58 (`#7F776E` / `#F0E6DE`) | 3.95 (`#958C81` / `#382F29`) | 输入框与线框边界 |
-| `ink` / `muted` | `overlay` 最差合成 | 16.60 / 8.32 | 11.77 / 7.05 | 浮层正文与次要文字 |
+| `ink` / `muted` | `overlay` 最差合成 | 16.60 / 8.32 | 12.28 / 7.68 | 浮层正文与次要文字 |
+| `muted` / `accent_text` | `overlay_pressed` 最差合成 | 6.05 / 5.43 (`#DBD8D6`) | 4.74 / 4.67 (`#504C46`) | L2 浮层按下态次要与强调文字 |
+| `ink` / `Utility` 按钮 | L0 底场与色斑最差合成 | 12.33 / 6.17 (`#F1D6C1`) | 13.03 / 6.59 (`#35251C`) | 首页顶栏与设置页标题/关闭行 |
 | `titlebar_ink` / `icon` | 底场与色斑最差合成 | 12.33 (`#1F1B17` / `#F1D6C1`) | 13.03 (`#F5F1EB` / `#35251C`) | 一体化标题栏激活状态 |
 | `titlebar_inactive_ink` / `icon` | 底场与色斑最差合成 | 6.18 (`#524B44` / `#F1D6C1`) | 5.95 (`#ACA49A` / `#35251C`) | 一体化标题栏失焦状态 |
 | `titlebar_icon` | `titlebar_control_hover` 最差 | 10.58 (`#1F1B17` / `#E0C7B3`) | 9.84 (`#F5F1EB` / `#473930`) | 标题栏激活控制按钮悬停 |
@@ -337,12 +339,12 @@ State the status, then the number, then the action. Keep labels short. No slogan
 
 ### Do
 
-- Put presenter text and controls only on a sheet, a well, a control or an overlay; only the 32px integrated titlebar sits transparently on the window field using its dedicated field-calibrated `titlebar-*` tokens.
+- Put presenter text and controls on a sheet, a well, a control or an overlay, except for the three surfaces explicitly calibrated over the warm L0 window field: the 32px integrated titlebar (using `titlebar-*` tokens), the Home top header row (`ink` wordmark + `Utility`/`Primary` pills), and the Settings page title/Close header row (`ink` title + `Utility` Close pill).
 - Use `{colors.primary}` with `{colors.on-primary}` for the one primary action in a view.
 - Use `{colors.focus}` for the 2px focus ring and selection marks.
 - Use `{colors.titlebar-close-hover}` and `{colors.titlebar-close-pressed}` with `{colors.titlebar-on-close}` exclusively for the integrated titlebar Close button's hover and press states.
 - Separate layers by opacity, edge, highlight, bottom ground shadow and lightness steps of one warm hue (ensuring `lum(sheet) > lum(well) > lum(control)` in Light, and `lum(sheet) < lum(well) < lum(control) < lum(segment)` in Dark).
-- Use the solid fallback (`sheet-solid`, `overlay-solid`, precomposited wells/controls, no blobs) only when `glass_effect` is off or OS reduced transparency / high contrast is enabled.
+- Use the solid fallback (`sheet-solid` + 1px `hairline` without L1 highlight/shadow, `overlay-solid` + `overlay-edge` + elevation shadow, precomposited wells/controls, no blobs) only when `glass_effect` is off or OS reduced transparency / high contrast is enabled.
 - Set numbers in `tabular-nums`.
 
 ### Don't

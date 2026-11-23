@@ -146,30 +146,28 @@ impl Material {
     }
 
     /// One L1 glass paper surface: 1px edge, 1px top inner highlight, and a
-    /// clipped bottom negative-spread shadow. Callers must NOT attach
-    /// `overflow_hidden()` directly to this outer element.
+    /// clipped bottom negative-spread shadow when airy glass is active; clean
+    /// `sheet_solid` + 1px `hairline` border without highlight or shadow in solid
+    /// fallback. Callers must NOT attach `overflow_hidden()` directly to this
+    /// outer element.
     pub(super) fn panel(&self, p: Palette) -> Div {
-        let (fill, edge) = if self.is_glass() {
+        let glass = self.is_glass();
+        let (fill, edge) = if glass {
             (p.sheet.color(), p.sheet_edge.color())
         } else {
             (rgb(p.sheet_solid), p.hairline.color())
         };
-        div()
+        let mut surface = div()
             .rounded(px(theme::PANEL_RADIUS))
             .bg(fill)
             .border_1()
-            .border_color(edge)
-            .shadow(vec![top_highlight(p.sheet_highlight)])
-            .child(ground_shadow(
-                soft_shadow(p.sheet_shadow, 12.0, 40.0, -16.0),
-                theme::PANEL_RADIUS,
-            ))
-    }
-
-    /// Alias of [`Self::panel`] matching `design-atlas` paper terminology.
-    #[allow(dead_code)]
-    pub(super) fn paper(&self, p: Palette) -> Div {
-        self.panel(p)
+            .border_color(edge);
+        if let Some((highlight, shadow)) = panel_decoration(p, glass) {
+            surface = surface
+                .shadow(vec![highlight])
+                .child(ground_shadow(shadow, theme::PANEL_RADIUS));
+        }
+        surface
     }
 
     /// L2 floating overlay: high-opacity overlay fill, 1px edge, top highlight,
@@ -183,15 +181,19 @@ impl Material {
     }
 
     pub(super) fn control_bg(&self, p: Palette) -> Rgba {
-        resolve_tint(p.control, p.sheet_solid, self.is_glass())
+        p.control.resolve(p.sheet_solid, self.is_glass()).color()
     }
 
     pub(super) fn control_hover_bg(&self, p: Palette) -> Rgba {
-        resolve_tint(p.control_hover, p.sheet_solid, self.is_glass())
+        p.control_hover
+            .resolve(p.sheet_solid, self.is_glass())
+            .color()
     }
 
     pub(super) fn control_pressed_bg(&self, p: Palette) -> Rgba {
-        resolve_tint(p.control_pressed, p.sheet_solid, self.is_glass())
+        p.control_pressed
+            .resolve(p.sheet_solid, self.is_glass())
+            .color()
     }
 
     pub(super) fn hairline_color(&self, p: Palette) -> Rgba {
@@ -253,33 +255,34 @@ impl Material {
 }
 
 pub(super) fn well_bg_for(p: Palette, glass: bool) -> Rgba {
-    resolve_tint(p.well, p.sheet_solid, glass)
+    p.well.resolve(p.sheet_solid, glass).color()
+}
+
+fn panel_decoration(p: Palette, glass: bool) -> Option<(BoxShadow, BoxShadow)> {
+    glass.then(|| {
+        (
+            top_highlight(p.sheet_highlight),
+            soft_shadow(p.sheet_shadow, 12.0, 40.0, -16.0),
+        )
+    })
 }
 
 pub(super) fn floating_surface(p: Palette, glass: bool) -> Div {
-    let (fill, edge) = if glass {
-        (p.overlay.color(), p.overlay_edge.color())
+    let fill = if glass {
+        p.overlay.color()
     } else {
-        (rgb(p.overlay_solid), p.hairline.color())
+        rgb(p.overlay_solid)
     };
     div()
         .rounded(px(theme::PANEL_RADIUS))
         .bg(fill)
         .border_1()
-        .border_color(edge)
+        .border_color(p.overlay_edge.color())
         .shadow(vec![top_highlight(p.overlay_highlight)])
         .child(ground_shadow(
             soft_shadow(p.overlay_shadow, 24.0, 64.0, -24.0),
             theme::PANEL_RADIUS,
         ))
-}
-
-fn resolve_tint(tint: Tint, sheet_solid: u32, glass: bool) -> Rgba {
-    if glass {
-        tint.color()
-    } else {
-        rgb(tint.composite_over(sheet_solid))
-    }
 }
 
 fn blob_svg(tint: Tint, edge: f32) -> Arc<Image> {
@@ -550,6 +553,56 @@ mod tests {
             assert_eq!(material.control_bg(p), p.control.color());
             assert_eq!(material.control_hover_bg(p), p.control_hover.color());
             assert_eq!(material.control_pressed_bg(p), p.control_pressed.color());
+        }
+    }
+
+    #[test]
+    fn solid_fallback_omits_l1_panel_highlight_and_shadow_while_l2_overlay_keeps_elevation() {
+        use gpui::Styled;
+
+        let mut material = Material::default();
+        material.update_with(false, || true, |_| {});
+        assert!(!material.is_glass());
+
+        for p in [LIGHT, DARK] {
+            assert!(super::panel_decoration(p, false).is_none());
+            let mut solid_panel = material.panel(p);
+            assert!(
+                solid_panel.style().box_shadow.is_none(),
+                "solid L1 panel must omit top_highlight"
+            );
+            assert_eq!(
+                solid_panel.style().border_color,
+                Some(p.hairline.color().into()),
+                "solid L1 panel must use hairline border"
+            );
+
+            let mut solid_floating = material.floating(p);
+            assert!(
+                solid_floating.style().box_shadow.is_some(),
+                "solid L2 overlay keeps elevation shadow"
+            );
+            assert_eq!(
+                solid_floating.style().border_color,
+                Some(p.overlay_edge.color().into()),
+                "solid L2 overlay keeps overlay_edge border"
+            );
+        }
+
+        material.update_with(true, || true, |_| {});
+        assert!(material.is_glass());
+        for p in [LIGHT, DARK] {
+            assert!(super::panel_decoration(p, true).is_some());
+            let mut glass_panel = material.panel(p);
+            assert!(
+                glass_panel.style().box_shadow.is_some(),
+                "glass L1 panel must include top_highlight"
+            );
+            assert_eq!(
+                glass_panel.style().border_color,
+                Some(p.sheet_edge.color().into()),
+                "glass L1 panel must use sheet_edge border"
+            );
         }
     }
 }

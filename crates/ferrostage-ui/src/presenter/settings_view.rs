@@ -180,7 +180,7 @@ impl Presenter {
             rail_rows = rail_rows.child(self.category_row(entry, category == entry, p));
         }
         self.material
-            .paper(p)
+            .panel(p)
             .id("settings-nav-paper")
             .debug_selector(|| "settings-nav-paper".into())
             .flex_shrink_0()
@@ -196,7 +196,7 @@ impl Presenter {
     fn settings_body_paper(&self, layout: SettingsLayout, p: Palette) -> gpui::AnyElement {
         let content = self.settings_content(layout, p);
         self.material
-            .paper(p)
+            .panel(p)
             .id("settings-body-paper")
             .debug_selector(|| "settings-body-paper".into())
             .flex_1()
@@ -659,7 +659,7 @@ impl Presenter {
         let l = self.locale;
         let mut footer = self
             .material
-            .paper(p)
+            .panel(p)
             .id("settings-feedback")
             .debug_selector(|| "settings-feedback".into())
             .when(!layout.narrow, |v| v.ml(px(layout.body_offset)))
@@ -785,11 +785,8 @@ impl Presenter {
                     .child(l.text("recent-empty")),
             );
         }
-        let glass = self.material.is_glass();
         for (index, path) in files.iter().enumerate() {
             let (name, parent) = settings_panel::recent_copy(path);
-            let tooltip_path = path.clone();
-            let typography = self.data.typography.clone();
             content = content.child(
                 div()
                     .id(SharedString::from(format!("settings-recent-{index}")))
@@ -801,15 +798,7 @@ impl Presenter {
                     .border(px(theme::FOCUS_WIDTH))
                     .border_color(gpui::transparent_black())
                     .focus(|style| style.border_color(rgb(p.focus)))
-                    .tooltip(move |_, cx| {
-                        cx.new(|_| FilenameTooltip {
-                            filename: tooltip_path.clone(),
-                            palette: p,
-                            glass,
-                            typography: typography.clone(),
-                        })
-                        .into()
-                    })
+                    .tooltip(self.text_tooltip(path.clone(), p))
                     .min_h(px(theme::SETTINGS_ROW))
                     .flex_shrink_0()
                     .py(px(8.))

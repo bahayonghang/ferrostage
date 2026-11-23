@@ -2087,3 +2087,82 @@ fn language_hot_switch_updates_open_font_search_locale_and_placeholder(cx: &mut 
     assert!(locale == crate::locale::Locale::new("zh-CN"));
     assert_eq!(rendered, Some(("搜索界面字体", "输入字体名称…")));
 }
+
+#[gpui::test]
+fn dismissed_document_warning_stays_dismissed_across_language_hot_switch(cx: &mut TestAppContext) {
+    let fixture = SaveFixture::new();
+    fixture.unblock();
+    let (shell, handle) = input_presenter(cx);
+    shell.update(cx, |shell, cx| {
+        shell.store = fixture.store();
+        show_labeled_document(shell, 2);
+        shell
+            .workbench
+            .document
+            .as_mut()
+            .unwrap()
+            .document
+            .warnings
+            .push(ferrostage_document::DocumentWarning::MixedGeometry);
+        cx.notify();
+    });
+    redraw(handle, cx);
+    let presenter = handle.downcast::<Presenter>().unwrap();
+    let zh = crate::locale::Locale::new("zh-CN");
+    let en = crate::locale::Locale::new("en-US");
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    assert!(visual.debug_bounds("document-warning-0").is_some());
+    assert!(visual.debug_bounds("document-warning-1").is_some());
+    assert!(visual.debug_bounds("document-warning-2").is_none());
+    presenter
+        .read_with(cx, |view, _| {
+            assert_eq!(
+                view.document_warnings_probe(),
+                vec![
+                    ("mixed", zh.text("ln-warning-mixed")),
+                    ("overlays", zh.text("ln-warning-overlays")),
+                ]
+            );
+        })
+        .unwrap();
+
+    click_control(handle, "dismiss-document-warning-0", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    assert!(visual.debug_bounds("document-warning-0").is_some());
+    assert!(visual.debug_bounds("document-warning-1").is_none());
+    shell.read_with(cx, |shell, _| {
+        assert!(shell.dismissed_document_warnings.contains("mixed"));
+        assert_eq!(shell.dismissed_document_warnings.len(), 1);
+    });
+
+    shell.update(cx, |shell, cx| {
+        shell.modal = Some(Modal::Settings);
+        cx.notify();
+    });
+    redraw(handle, cx);
+    click_control(handle, "setting-general.language-en-US", cx);
+    cx.run_until_parked();
+    click_control(handle, "close-settings", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    assert!(
+        visual.debug_bounds("document-warning-0").is_some(),
+        "remaining warning must stay visible in en-US"
+    );
+    assert!(
+        visual.debug_bounds("document-warning-1").is_none(),
+        "dismissed warning must not resurrect after hot-switching zh-CN -> en-US"
+    );
+    presenter
+        .read_with(cx, |view, _| {
+            assert_eq!(
+                view.document_warnings_probe(),
+                vec![("overlays", en.text("ln-warning-overlays"))]
+            );
+        })
+        .unwrap();
+}

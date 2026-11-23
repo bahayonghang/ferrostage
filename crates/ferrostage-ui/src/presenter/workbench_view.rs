@@ -1036,8 +1036,6 @@ impl Presenter {
                 p,
             ));
             let detail = self.data.workbench.progress.clone();
-            let typography = self.data.typography.clone();
-            let glass = self.material.is_glass();
             let hover_bg = self.material.control_hover_bg(p);
             let pressed_bg = self.material.control_pressed_bg(p);
             navigation = navigation.child(
@@ -1056,15 +1054,7 @@ impl Presenter {
                         .tab_stop(self.data.browser.is_none()),
                 )
                 .when(!self.progress_focus.is_focused(window), |view| {
-                    view.tooltip(move |_, cx| {
-                        cx.new(|_| FilenameTooltip {
-                            filename: detail.clone(),
-                            palette: p,
-                            glass,
-                            typography: typography.clone(),
-                        })
-                        .into()
-                    })
+                    view.tooltip(self.text_tooltip(detail.clone(), p))
                 })
                 .child(
                     div()

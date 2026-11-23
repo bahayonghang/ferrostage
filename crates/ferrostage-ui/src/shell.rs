@@ -593,9 +593,9 @@ impl Shell {
         cx.notify();
     }
 
-    fn dismiss_document_warning(&mut self, text: String) {
+    fn dismiss_document_warning(&mut self, key: String) {
         let current = crate::presenter::layout_navigation::document_warnings(self);
-        if !current.iter().any(|warning| warning == &text) {
+        if !current.iter().any(|(candidate, _)| candidate == &key) {
             return;
         }
         let generation = self.state.generation();
@@ -603,7 +603,7 @@ impl Shell {
             self.dismissed_document_warnings.clear();
             self.dismissed_warning_generation = generation;
         }
-        self.dismissed_document_warnings.insert(text);
+        self.dismissed_document_warnings.insert(key);
     }
 
     pub fn dispatch(&mut self, intent: Intent, cx: &mut Context<Self>) {
@@ -751,7 +751,7 @@ impl Shell {
                 self.error = None;
                 self.graphics_error = None;
             }
-            Intent::DismissDocumentWarning(text) => self.dismiss_document_warning(text),
+            Intent::DismissDocumentWarning(key) => self.dismiss_document_warning(key),
             Intent::StartModeMenu
                 if !self.busy() && self.state.stage() != SessionStage::Presenting =>
             {
@@ -4759,14 +4759,10 @@ mod tests {
         assert!(visual.debug_bounds("document-warning-1").is_some());
         assert!(visual.debug_bounds("document-warning-2").is_none());
         assert!(visual.debug_bounds("shell-warning-0").is_some());
-        let (overlay, mixed_index) = shell.read_with(cx, |shell, _| {
-            let locale = shell.locale;
-            let overlay = locale.text("ln-warning-overlays").to_string();
-            let mixed = locale.text("ln-warning-mixed").to_string();
-            let mut ordered = [overlay.clone(), mixed.clone()];
-            ordered.sort();
-            let mixed_index = ordered.iter().position(|text| text == &mixed).unwrap();
-            (overlay, mixed_index)
+        let (overlay_key, mixed_index) = shell.read_with(cx, |shell, _| {
+            let warnings = crate::presenter::layout_navigation::document_warnings(shell);
+            let mixed_index = warnings.iter().position(|(key, _)| key == "mixed").unwrap();
+            ("overlays".to_string(), mixed_index)
         });
         let mut visual = gpui::VisualTestContext::from_window(handle, cx);
         let content = visual.debug_bounds("presenter-content").unwrap();
@@ -4804,7 +4800,8 @@ mod tests {
         assert!(visual.debug_bounds("document-warning-1").is_none());
         assert!(visual.debug_bounds("shell-warning-0").is_some());
         shell.read_with(cx, |shell, _| {
-            assert!(!shell.dismissed_document_warnings.contains(&overlay));
+            assert!(shell.dismissed_document_warnings.contains("mixed"));
+            assert!(!shell.dismissed_document_warnings.contains(&overlay_key));
             assert_eq!(shell.dismissed_document_warnings.len(), 1);
         });
         let reached = handle
@@ -4831,7 +4828,7 @@ mod tests {
         cx.run_until_parked();
         redraw(handle, cx);
         shell.read_with(cx, |shell, _| {
-            assert!(shell.dismissed_document_warnings.contains(&overlay));
+            assert!(shell.dismissed_document_warnings.contains(&overlay_key));
             assert_eq!(shell.state.generation().0, 2);
         });
         let mut visual = gpui::VisualTestContext::from_window(handle, cx);
