@@ -22,6 +22,18 @@ impl SettingsData {
         }
     }
 }
+
+#[derive(Clone, Copy)]
+struct SettingsLayout {
+    viewport_width: f32,
+    inset: f32,
+    narrow: bool,
+    rail_width: f32,
+    body_offset: f32,
+    body_cap: f32,
+    content_pad_x: f32,
+    enabled: bool,
+}
 impl Presenter {
     fn category_row(&self, category: Category, selected: bool, p: Palette) -> Stateful<Div> {
         let id = format!("settings-category-{}", category.id());
@@ -81,26 +93,138 @@ impl Presenter {
         inset: f32,
     ) -> impl IntoElement {
         let data = &self.data.preferences;
-        let l = self.locale;
-        let enabled = data.writable && !self.data.busy;
-        let narrow = viewport_width < 760.;
         let category = data.panel.category;
+        let narrow = viewport_width < 760.;
         let rail_width = 176.;
         let gap = theme::SPACING;
-        let body_offset = if narrow { 0. } else { rail_width + gap };
-        let body_cap = if category == Category::Displays {
-            theme::SETTINGS_DISPLAY_WIDTH
-        } else {
-            theme::SETTINGS_WIDTH
+        let layout = SettingsLayout {
+            viewport_width,
+            inset,
+            narrow,
+            rail_width,
+            body_offset: if narrow { 0. } else { rail_width + gap },
+            body_cap: if category == Category::Displays {
+                theme::SETTINGS_DISPLAY_WIDTH
+            } else {
+                theme::SETTINGS_WIDTH
+            },
+            content_pad_x: 20.,
+            enabled: data.writable && !self.data.busy,
         };
-        let mut rail = div()
+        let header = self.settings_header(p);
+        let nav_paper = self.settings_nav_paper(category, layout, p);
+        let body_paper = self.settings_body_paper(layout, p);
+        let footer = self.settings_footer_paper(layout, p);
+        div()
+            .w_full()
+            .h_full()
+            .min_h_0()
+            .max_w(px(layout.body_cap + layout.body_offset))
+            .self_center()
+            .flex()
+            .flex_col()
+            .gap(px(12.))
+            .child(header)
+            .child(
+                div()
+                    .flex_1()
+                    .min_h_0()
+                    .flex()
+                    .when(!layout.narrow, |v| v.gap(px(gap)))
+                    .when(layout.narrow, |v| v.flex_col().gap(px(12.)))
+                    .child(nav_paper)
+                    .child(body_paper),
+            )
+            .child(footer)
+    }
+
+    #[inline(never)]
+    fn settings_header(&self, p: Palette) -> gpui::AnyElement {
+        div()
+            .debug_selector(|| "settings-title".into())
+            .flex_shrink_0()
+            .text_size(px(self.data.typography.size(24.)))
+            .font_weight(gpui::FontWeight::SEMIBOLD)
+            .text_color(rgb(p.ink))
+            .flex()
+            .items_center()
+            .justify_between()
+            .child(self.locale.text("settings"))
+            .child(self.button(
+                "close-settings".into(),
+                self.locale.text("close").into(),
+                true,
+                false,
+                Intent::Escape,
+                p,
+            ))
+            .into_any_element()
+    }
+
+    #[inline(never)]
+    fn settings_nav_paper(
+        &self,
+        category: Category,
+        layout: SettingsLayout,
+        p: Palette,
+    ) -> gpui::AnyElement {
+        let mut rail_rows = div()
+            .w_full()
+            .rounded(px(theme::PANEL_RADIUS))
+            .overflow_hidden()
             .flex()
             .gap(px(4.))
-            .when(narrow, |v| v.flex_wrap())
-            .when(!narrow, |v| v.flex_col().w(px(rail_width)).flex_shrink_0());
+            .when(layout.narrow, |v| v.flex_wrap().p(px(6.)))
+            .when(!layout.narrow, |v| v.flex_col().py(px(6.)));
         for entry in Category::ALL {
-            rail = rail.child(self.category_row(entry, category == entry, p));
+            rail_rows = rail_rows.child(self.category_row(entry, category == entry, p));
         }
+        self.material
+            .paper(p)
+            .id("settings-nav-paper")
+            .debug_selector(|| "settings-nav-paper".into())
+            .flex_shrink_0()
+            .flex()
+            .flex_col()
+            .when(layout.narrow, |v| v.w_full())
+            .when(!layout.narrow, |v| v.w(px(layout.rail_width)).self_start())
+            .child(rail_rows)
+            .into_any_element()
+    }
+
+    #[inline(never)]
+    fn settings_body_paper(&self, layout: SettingsLayout, p: Palette) -> gpui::AnyElement {
+        let content = self.settings_content(layout, p);
+        self.material
+            .paper(p)
+            .id("settings-body-paper")
+            .debug_selector(|| "settings-body-paper".into())
+            .flex_1()
+            .min_w_0()
+            .min_h_0()
+            .when(layout.narrow, |v| v.w_full())
+            .when(!layout.narrow, |v| v.h_full())
+            .flex()
+            .flex_col()
+            .child(
+                div()
+                    .flex_1()
+                    .min_h_0()
+                    .min_w_0()
+                    .w_full()
+                    .rounded(px(theme::PANEL_RADIUS))
+                    .overflow_hidden()
+                    .flex()
+                    .flex_col()
+                    .child(content),
+            )
+            .into_any_element()
+    }
+
+    #[inline(never)]
+    fn settings_content(&self, layout: SettingsLayout, p: Palette) -> gpui::AnyElement {
+        let category = self.data.preferences.panel.category;
+        let l = self.locale;
         let mut content = div()
             .id(SharedString::from(format!(
                 "settings-content-{}",
@@ -113,18 +237,46 @@ impl Presenter {
             .flex_1()
             .min_h_0()
             .min_w_0()
+            .w_full()
             .overflow_y_scroll()
+            .px(px(layout.content_pad_x))
+            .py(px(12.))
             .flex()
             .flex_col()
-            .gap(px(0.));
-        content = content.child(
-            div()
-                .pb(px(8.))
-                .font_weight(gpui::FontWeight::SEMIBOLD)
-                .text_size(px(self.data.typography.size(20.)))
-                .text_color(rgb(p.ink))
-                .child(l.text(&format!("settings-category-{}", category.id()))),
-        );
+            .gap(px(0.))
+            .child(
+                div()
+                    .pb(px(4.))
+                    .font_weight(gpui::FontWeight::SEMIBOLD)
+                    .text_size(px(self.data.typography.size(20.)))
+                    .text_color(rgb(p.ink))
+                    .child(l.text(&format!("settings-category-{}", category.id()))),
+            );
+        if category != Category::Displays {
+            content = self.settings_category_fields(content, category, layout.enabled, p);
+        }
+        content = match category {
+            Category::General => self.settings_recent_files(content, layout.enabled, p),
+            Category::Displays => self.settings_displays_section(content, layout, p),
+            Category::Pointer => self.settings_pointer_section(content, p),
+            Category::Keys => self.settings_keys_section(content, layout.enabled, p),
+            Category::Advanced => self.settings_advanced_section(content, layout.enabled, p),
+            Category::About => self.settings_about_section(content, p),
+            _ => content,
+        };
+        content.into_any_element()
+    }
+
+    #[inline(never)]
+    fn settings_category_fields(
+        &self,
+        mut content: gpui::Stateful<gpui::Div>,
+        category: Category,
+        enabled: bool,
+        p: Palette,
+    ) -> gpui::Stateful<gpui::Div> {
+        let data = &self.data.preferences;
+        let l = self.locale;
         for field in settings_panel::FIELDS
             .iter()
             .filter(|field| field.category == category)
@@ -139,9 +291,6 @@ impl Presenter {
                 if let Some(section) = section {
                     content = content.child(self.settings_section(l.text(section), p));
                 }
-            }
-            if category == Category::Displays {
-                continue;
             }
             content = content.child(self.setting_row(*field, enabled, p));
             if field.id == "general.ui_font_family" && data.panel.font_picker.is_some() {
@@ -166,312 +315,360 @@ impl Presenter {
                 );
             }
         }
-        match category {
-            Category::General => {
-                content = self.settings_recent_files(content, enabled, p);
-            }
-            Category::Displays => {
-                if let Some(panel) = &self.data.displays {
-                    let width = (viewport_width - 2. * (inset + theme::SPACING) - body_offset)
-                        .clamp(0., body_cap);
-                    content = content.child(crate::display_settings::view::panel(
-                        self, panel, l, p, true, width,
-                    ));
-                }
-                for field in settings_panel::FIELDS
-                    .iter()
-                    .filter(|field| field.category == Category::Displays)
-                {
-                    content = content.child(self.setting_row(*field, enabled, p));
-                }
-            }
-            Category::Pointer => {
-                let pointer = &data.settings.pointer;
-                let rgba = |color: [u8; 4], alpha: u8| {
-                    gpui::rgba(
-                        (u32::from(color[2]) << 24)
-                            | (u32::from(color[1]) << 16)
-                            | (u32::from(color[0]) << 8)
-                            | u32::from(alpha),
-                    )
-                };
-                content = content.child(
+        content
+    }
+
+    #[inline(never)]
+    fn settings_displays_section(
+        &self,
+        mut content: gpui::Stateful<gpui::Div>,
+        layout: SettingsLayout,
+        p: Palette,
+    ) -> gpui::Stateful<gpui::Div> {
+        if let Some(panel) = &self.data.displays {
+            let paper_width = (layout.viewport_width - 2. * layout.inset - layout.body_offset)
+                .clamp(0., layout.body_cap);
+            let width = (paper_width - 2. - 2. * layout.content_pad_x).max(0.);
+            content = content.child(crate::display_settings::view::panel(
+                self,
+                panel,
+                self.locale,
+                p,
+                true,
+                width,
+            ));
+        }
+        for field in settings_panel::FIELDS
+            .iter()
+            .filter(|field| field.category == Category::Displays)
+        {
+            content = content.child(self.setting_row(*field, layout.enabled, p));
+        }
+        content
+    }
+
+    #[inline(never)]
+    fn settings_pointer_section(
+        &self,
+        content: gpui::Stateful<gpui::Div>,
+        p: Palette,
+    ) -> gpui::Stateful<gpui::Div> {
+        let pointer = &self.data.preferences.settings.pointer;
+        let rgba = |color: [u8; 4], alpha: u8| {
+            gpui::rgba(
+                (u32::from(color[2]) << 24)
+                    | (u32::from(color[1]) << 16)
+                    | (u32::from(color[0]) << 8)
+                    | u32::from(alpha),
+            )
+        };
+        content.child(
+            div()
+                .id("pointer-live-preview")
+                .h(px(64.))
+                .p(px(12.))
+                .rounded(px(theme::WELL_RADIUS))
+                .bg(self.material.well_bg(p))
+                .flex()
+                .items_center()
+                .gap(px(20.))
+                .child(
                     div()
-                        .id("pointer-live-preview")
-                        .h(px(64.))
-                        .p(px(12.))
-                        .rounded(px(theme::WELL_RADIUS))
-                        .bg(self.material.well_bg(p))
-                        .flex()
-                        .items_center()
-                        .gap(px(20.))
-                        .child(
-                            div()
-                                .size(px((pointer.laser_radius_norm as f32 * 360.).max(2.)))
-                                .rounded_full()
-                                .bg(rgba(pointer.laser_color_bgra, pointer.laser_color_bgra[3])),
-                        )
-                        .child(
-                            div()
-                                .w(px(70.))
-                                .h(px((pointer.pen_width_norm as f32 * 180.).max(1.)))
-                                .bg(rgba(pointer.pen_color_bgra, pointer.pen_color_bgra[3])),
-                        )
-                        .child(div().w(px(70.)).h(px(24.)).bg(rgba(
-                            pointer.pen_color_bgra,
-                            (pointer.highlighter_alpha * 255.).round() as u8,
-                        ))),
-                );
-            }
-            Category::Keys => {
-                let accepted = crate::policy::bindings(&data.settings.keybindings, l).0;
-                for (action, keys) in data.settings.keybindings.actions() {
-                    let mut row = div()
-                        .flex()
-                        .flex_wrap()
-                        .justify_between()
-                        .items_center()
-                        .gap(px(4.))
-                        .p(px(12.))
-                        .border_b_1()
-                        .border_color(self.material.hairline_color(p));
-                    row = row.child(
-                        div()
-                            .text_color(rgb(p.ink))
-                            .child(l.text(&format!("settings-action-{action}"))),
-                    );
-                    let mut controls = div().flex().flex_wrap().gap(px(4.));
-                    for (index, key) in keys.iter().enumerate() {
-                        let valid = crate::policy::canonical_key(key).is_some_and(|key| {
-                            accepted.iter().any(|(k, a)| k == &key && *a == action)
-                        });
-                        controls = controls.child(self.button(
-                            format!("binding-{action}-{index}"),
-                            format!("{key} ×"),
-                            enabled,
-                            false,
-                            Intent::RemoveBinding(action, index),
-                            p,
-                        ));
-                        if !valid {
-                            row = row.child(
-                                div()
-                                    .id(SharedString::from(format!(
-                                        "binding-warning-{action}-{index}"
-                                    )))
-                                    .role(Role::Alert)
-                                    .text_size(px(self.data.typography.size(14.)))
-                                    .text_color(rgb(p.warning))
-                                    .child(
-                                        l.format("settings-key-conflict", &[("key", key.clone())]),
-                                    ),
-                            );
-                        }
-                    }
-                    controls = controls.child(
-                        self.button(
-                            format!("record-{action}"),
-                            l.text(if data.panel.recording == Some(action) {
-                                "settings-recording"
-                            } else {
-                                "settings-record"
-                            })
-                            .into(),
-                            enabled,
-                            data.panel.recording == Some(action),
-                            Intent::RecordBinding(action),
-                            p,
-                        ),
-                    );
-                    content = content.child(row.child(controls));
-                }
-                content = content
-                    .child(
-                        div()
-                            .text_size(px(self.data.typography.size(14.)))
-                            .text_color(rgb(p.muted))
-                            .child(l.text("settings-key-help")),
-                    )
-                    .child(self.button(
-                        "settings-reset-keys".into(),
-                        l.text("settings-reset-keys").into(),
-                        enabled,
-                        false,
-                        Intent::ResetBindings,
-                        p,
-                    ));
-            }
-            Category::Advanced => {
-                content = content
-                    .child(
-                        div()
-                            .text_size(px(self.data.typography.size(14.)))
-                            .text_color(rgb(p.muted))
-                            .child(l.text("settings-cache-help")),
-                    )
-                    .child(
-                        div()
-                            .p(px(12.))
-                            .rounded(px(theme::WELL_RADIUS))
-                            .bg(self.material.well_bg(p))
-                            .child(l.text("settings-hot-reload-help")),
-                    )
-                    .child(
-                        div()
-                            .text_size(px(self.data.typography.size(14.)))
-                            .whitespace_normal()
-                            .child(data.path.clone()),
-                    )
-                    .child(self.button(
-                        "settings-open-directory".into(),
-                        l.text("settings-open-directory").into(),
-                        enabled,
-                        false,
-                        Intent::OpenConfigDirectory,
-                        p,
-                    ))
-                    .child(
-                        self.button(
-                            "settings-reset-all".into(),
-                            l.text(if data.panel.confirm_reset {
-                                "settings-confirm-reset"
-                            } else {
-                                "settings-reset-all"
-                            })
-                            .into(),
-                            enabled,
-                            data.panel.confirm_reset,
-                            Intent::ResetPreferences(data.panel.confirm_reset),
-                            p,
-                        ),
-                    );
-            }
-            Category::About => {
-                content = content.child(self.button(
-                    "about-changelog".into(),
-                    l.text("about-changelog").into(),
-                    true,
-                    data.panel.changelog_open,
-                    Intent::ToggleChangelog,
+                        .size(px((pointer.laser_radius_norm as f32 * 360.).max(2.)))
+                        .rounded_full()
+                        .bg(rgba(pointer.laser_color_bgra, pointer.laser_color_bgra[3])),
+                )
+                .child(
+                    div()
+                        .w(px(70.))
+                        .h(px((pointer.pen_width_norm as f32 * 180.).max(1.)))
+                        .bg(rgba(pointer.pen_color_bgra, pointer.pen_color_bgra[3])),
+                )
+                .child(div().w(px(70.)).h(px(24.)).bg(rgba(
+                    pointer.pen_color_bgra,
+                    (pointer.highlighter_alpha * 255.).round() as u8,
+                ))),
+        )
+    }
+
+    #[inline(never)]
+    fn settings_keys_section(
+        &self,
+        mut content: gpui::Stateful<gpui::Div>,
+        enabled: bool,
+        p: Palette,
+    ) -> gpui::Stateful<gpui::Div> {
+        let data = &self.data.preferences;
+        let l = self.locale;
+        let accepted = crate::policy::bindings(&data.settings.keybindings, l).0;
+        for (action, keys) in data.settings.keybindings.actions() {
+            let mut row = div()
+                .flex()
+                .flex_wrap()
+                .justify_between()
+                .items_center()
+                .gap(px(4.))
+                .p(px(12.))
+                .border_b_1()
+                .border_color(self.material.hairline_color(p));
+            row = row.child(
+                div()
+                    .text_color(rgb(p.ink))
+                    .child(l.text(&format!("settings-action-{action}"))),
+            );
+            let mut controls = div().flex().flex_wrap().gap(px(4.));
+            for (index, key) in keys.iter().enumerate() {
+                let valid = crate::policy::canonical_key(key)
+                    .is_some_and(|key| accepted.iter().any(|(k, a)| k == &key && *a == action));
+                controls = controls.child(self.button(
+                    format!("binding-{action}-{index}"),
+                    format!("{key} ×"),
+                    enabled,
+                    false,
+                    Intent::RemoveBinding(action, index),
                     p,
                 ));
-                if data.panel.changelog_open {
-                    for (version, key) in crate::about::CHANGELOG {
-                        let selector = format!("changelog-{version}");
-                        content = content.child(
-                            div()
-                                .id(SharedString::from(selector.clone()))
-                                .debug_selector(move || selector.clone())
-                                .flex()
-                                .flex_col()
-                                .gap(px(4.))
-                                .py(px(12.))
-                                .border_b_1()
-                                .border_color(self.material.hairline_color(p))
-                                .child(
-                                    div()
-                                        .text_size(px(self.ui_text_size(16.)))
-                                        .text_color(rgb(p.ink))
-                                        .child(*version),
-                                )
-                                .child(
-                                    div()
-                                        .text_size(px(self.ui_text_size(14.)))
-                                        .text_color(rgb(p.muted))
-                                        .whitespace_normal()
-                                        .child(l.text(key)),
-                                ),
-                        );
-                    }
-                }
-                let text = |value: String| {
-                    div()
-                        .text_size(px(self.ui_text_size(14.)))
-                        .text_color(rgb(p.muted))
-                        .child(value)
-                        .into_any_element()
-                };
-                let built_at = crate::about::build_info()
-                    .and_then(|build| build.local_time(jiff::tz::TimeZone::system()));
-                let built_at = match built_at {
-                    Some(time) => div()
-                        .flex()
-                        .items_center()
-                        .gap(px(8.))
-                        .child(text(
-                            time.strftime(l.text("about-build-time-format")).to_string(),
-                        ))
-                        .child(
-                            div()
-                                .px(px(6.))
-                                .rounded(px(4.))
-                                .bg(self.material.control_bg(p))
-                                .text_size(px(self.ui_text_size(12.)))
-                                .text_color(rgb(p.muted))
-                                .child(time.strftime("UTC%:z").to_string()),
-                        )
-                        .into_any_element(),
-                    None => text(l.text("about-unknown").into()),
-                };
-                let repository = crate::about::REPOSITORY;
-                let repository = self
-                    .activation_target(
-                        "about-repository-link".into(),
-                        repository.into(),
-                        true,
-                        Intent::OpenRepository,
-                        p,
-                    )
-                    .role(Role::Link)
-                    .rounded(px(4.))
-                    .text_size(px(self.ui_text_size(14.)))
-                    .text_color(rgb(p.accent_text))
-                    .hover(|style| style.underline())
-                    .child(repository)
-                    .into_any_element();
-                for (key, value) in [
-                    ("about-version", text(crate::about::VERSION.to_owned())),
-                    (
-                        "about-author",
-                        text(crate::about::AUTHORS.replace(':', ", ")),
-                    ),
-                    ("about-build-time", built_at),
-                    ("about-license", text(crate::about::LICENSE.to_owned())),
-                    ("about-repository", repository),
-                ] {
-                    content = content.child(
+                if !valid {
+                    row = row.child(
                         div()
-                            .id(SharedString::from(key))
-                            .debug_selector(move || key.into())
-                            .flex()
-                            .flex_wrap()
-                            .items_center()
-                            .justify_between()
-                            .gap(px(12.))
-                            .py(px(12.))
-                            .border_b_1()
-                            .border_color(self.material.hairline_color(p))
-                            .child(
-                                div()
-                                    .text_size(px(self.ui_text_size(16.)))
-                                    .text_color(rgb(p.ink))
-                                    .child(l.text(key)),
-                            )
-                            .child(value),
+                            .id(SharedString::from(format!(
+                                "binding-warning-{action}-{index}"
+                            )))
+                            .role(Role::Alert)
+                            .text_size(px(self.data.typography.size(14.)))
+                            .text_color(rgb(p.warning))
+                            .child(l.format("settings-key-conflict", &[("key", key.clone())])),
                     );
                 }
             }
-            _ => {}
+            controls = controls.child(
+                self.button(
+                    format!("record-{action}"),
+                    l.text(if data.panel.recording == Some(action) {
+                        "settings-recording"
+                    } else {
+                        "settings-record"
+                    })
+                    .into(),
+                    enabled,
+                    data.panel.recording == Some(action),
+                    Intent::RecordBinding(action),
+                    p,
+                ),
+            );
+            content = content.child(row.child(controls));
         }
-        let mut footer = div()
-            .ml(px(body_offset))
+        content
+            .child(
+                div()
+                    .text_size(px(self.data.typography.size(14.)))
+                    .text_color(rgb(p.muted))
+                    .child(l.text("settings-key-help")),
+            )
+            .child(self.button(
+                "settings-reset-keys".into(),
+                l.text("settings-reset-keys").into(),
+                enabled,
+                false,
+                Intent::ResetBindings,
+                p,
+            ))
+    }
+
+    #[inline(never)]
+    fn settings_advanced_section(
+        &self,
+        content: gpui::Stateful<gpui::Div>,
+        enabled: bool,
+        p: Palette,
+    ) -> gpui::Stateful<gpui::Div> {
+        let data = &self.data.preferences;
+        let l = self.locale;
+        content
+            .child(
+                div()
+                    .text_size(px(self.data.typography.size(14.)))
+                    .text_color(rgb(p.muted))
+                    .child(l.text("settings-cache-help")),
+            )
+            .child(
+                div()
+                    .p(px(12.))
+                    .rounded(px(theme::WELL_RADIUS))
+                    .bg(self.material.well_bg(p))
+                    .child(l.text("settings-hot-reload-help")),
+            )
+            .child(
+                div()
+                    .text_size(px(self.data.typography.size(14.)))
+                    .whitespace_normal()
+                    .child(data.path.clone()),
+            )
+            .child(self.button(
+                "settings-open-directory".into(),
+                l.text("settings-open-directory").into(),
+                enabled,
+                false,
+                Intent::OpenConfigDirectory,
+                p,
+            ))
+            .child(
+                self.button(
+                    "settings-reset-all".into(),
+                    l.text(if data.panel.confirm_reset {
+                        "settings-confirm-reset"
+                    } else {
+                        "settings-reset-all"
+                    })
+                    .into(),
+                    enabled,
+                    data.panel.confirm_reset,
+                    Intent::ResetPreferences(data.panel.confirm_reset),
+                    p,
+                ),
+            )
+    }
+
+    #[inline(never)]
+    fn settings_about_section(
+        &self,
+        mut content: gpui::Stateful<gpui::Div>,
+        p: Palette,
+    ) -> gpui::Stateful<gpui::Div> {
+        let data = &self.data.preferences;
+        let l = self.locale;
+        content = content.child(self.button(
+            "about-changelog".into(),
+            l.text("about-changelog").into(),
+            true,
+            data.panel.changelog_open,
+            Intent::ToggleChangelog,
+            p,
+        ));
+        if data.panel.changelog_open {
+            for (version, key) in crate::about::CHANGELOG {
+                let selector = format!("changelog-{version}");
+                content = content.child(
+                    div()
+                        .id(SharedString::from(selector.clone()))
+                        .debug_selector(move || selector.clone())
+                        .flex()
+                        .flex_col()
+                        .gap(px(4.))
+                        .py(px(12.))
+                        .border_b_1()
+                        .border_color(self.material.hairline_color(p))
+                        .child(
+                            div()
+                                .text_size(px(self.ui_text_size(16.)))
+                                .text_color(rgb(p.ink))
+                                .child(*version),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(self.ui_text_size(14.)))
+                                .text_color(rgb(p.muted))
+                                .whitespace_normal()
+                                .child(l.text(key)),
+                        ),
+                );
+            }
+        }
+        let text = |value: String| {
+            div()
+                .text_size(px(self.ui_text_size(14.)))
+                .text_color(rgb(p.muted))
+                .child(value)
+                .into_any_element()
+        };
+        let built_at = crate::about::build_info()
+            .and_then(|build| build.local_time(jiff::tz::TimeZone::system()));
+        let built_at = match built_at {
+            Some(time) => div()
+                .flex()
+                .items_center()
+                .gap(px(8.))
+                .child(text(
+                    time.strftime(l.text("about-build-time-format")).to_string(),
+                ))
+                .child(
+                    div()
+                        .px(px(6.))
+                        .rounded(px(4.))
+                        .bg(self.material.control_bg(p))
+                        .text_size(px(self.ui_text_size(12.)))
+                        .text_color(rgb(p.muted))
+                        .child(time.strftime("UTC%:z").to_string()),
+                )
+                .into_any_element(),
+            None => text(l.text("about-unknown").into()),
+        };
+        let repository = crate::about::REPOSITORY;
+        let repository = self
+            .activation_target(
+                "about-repository-link".into(),
+                repository.into(),
+                true,
+                Intent::OpenRepository,
+                p,
+            )
+            .role(Role::Link)
+            .rounded(px(4.))
+            .text_size(px(self.ui_text_size(14.)))
+            .text_color(rgb(p.accent_text))
+            .hover(|style| style.underline())
+            .child(repository)
+            .into_any_element();
+        for (key, value) in [
+            ("about-version", text(crate::about::VERSION.to_owned())),
+            (
+                "about-author",
+                text(crate::about::AUTHORS.replace(':', ", ")),
+            ),
+            ("about-build-time", built_at),
+            ("about-license", text(crate::about::LICENSE.to_owned())),
+            ("about-repository", repository),
+        ] {
+            content = content.child(
+                div()
+                    .id(SharedString::from(key))
+                    .debug_selector(move || key.into())
+                    .flex()
+                    .flex_wrap()
+                    .items_center()
+                    .justify_between()
+                    .gap(px(12.))
+                    .py(px(12.))
+                    .border_b_1()
+                    .border_color(self.material.hairline_color(p))
+                    .child(
+                        div()
+                            .text_size(px(self.ui_text_size(16.)))
+                            .text_color(rgb(p.ink))
+                            .child(l.text(key)),
+                    )
+                    .child(value),
+            );
+        }
+        content
+    }
+
+    #[inline(never)]
+    fn settings_footer_paper(&self, layout: SettingsLayout, p: Palette) -> gpui::AnyElement {
+        let data = &self.data.preferences;
+        let l = self.locale;
+        let mut footer = self
+            .material
+            .paper(p)
+            .id("settings-feedback")
+            .debug_selector(|| "settings-feedback".into())
+            .when(!layout.narrow, |v| v.ml(px(layout.body_offset)))
             .flex_shrink_0()
+            .px(px(layout.content_pad_x))
+            .py(px(4.))
             .flex()
             .flex_col()
-            .gap(px(4.))
-            .border_t_1()
-            .border_color(self.material.hairline_color(p))
-            .pt(px(8.));
+            .gap(px(4.));
         if !data.writable {
             footer = footer.child(
                 div()
@@ -499,85 +696,46 @@ impl Presenter {
                     .child(error.clone()),
             );
         }
-        footer = footer.child(
-            div()
-                .flex()
-                .flex_wrap()
-                .items_center()
-                .gap(px(8.))
-                .child(
-                    div()
-                        .debug_selector(|| "settings-feedback".into())
-                        .text_size(px(self.data.typography.size(14.)))
-                        .text_color(rgb(p.muted))
-                        .child(l.text(if self.data.busy {
-                            "settings-applying"
-                        } else if self.data.dirty {
-                            "settings-unsaved"
-                        } else {
-                            if self
-                                .data
-                                .displays
-                                .as_ref()
-                                .is_some_and(|panel| panel.roles.pending)
-                            {
-                                "settings-saved-display-pending"
-                            } else {
-                                "settings-saved"
-                            }
-                        })),
-                )
-                .when(self.data.dirty, |v| {
-                    v.child(self.button(
-                        "settings-retry".into(),
-                        l.text("retry-save").into(),
-                        enabled,
-                        false,
-                        Intent::RetrySave,
-                        p,
-                    ))
-                }),
-        );
-        div()
-            .size_full()
-            .max_w(px(body_cap + body_offset + 2. * theme::SPACING))
-            .self_center()
-            .px(px(theme::SPACING))
-            .py(px(12.))
-            .flex()
-            .flex_col()
-            .gap(px(8.))
+        footer
             .child(
                 div()
-                    .debug_selector(|| "settings-title".into())
-                    .flex_shrink_0()
-                    .text_size(px(self.data.typography.size(24.)))
-                    .font_weight(gpui::FontWeight::SEMIBOLD)
-                    .text_color(rgb(p.ink))
                     .flex()
+                    .flex_wrap()
                     .items_center()
-                    .justify_between()
-                    .child(l.text("settings"))
-                    .child(self.button(
-                        "close-settings".into(),
-                        l.text("close").into(),
-                        true,
-                        false,
-                        Intent::Escape,
-                        p,
-                    )),
+                    .gap(px(8.))
+                    .child(
+                        div()
+                            .text_size(px(self.data.typography.size(14.)))
+                            .text_color(rgb(p.muted))
+                            .child(
+                                l.text(if self.data.busy {
+                                    "settings-applying"
+                                } else if self.data.dirty {
+                                    "settings-unsaved"
+                                } else if self
+                                    .data
+                                    .displays
+                                    .as_ref()
+                                    .is_some_and(|panel| panel.roles.pending)
+                                {
+                                    "settings-saved-display-pending"
+                                } else {
+                                    "settings-saved"
+                                }),
+                            ),
+                    )
+                    .when(self.data.dirty, |v| {
+                        v.child(self.button(
+                            "settings-retry".into(),
+                            l.text("retry-save").into(),
+                            layout.enabled,
+                            false,
+                            Intent::RetrySave,
+                            p,
+                        ))
+                    }),
             )
-            .child(
-                div()
-                    .flex_1()
-                    .min_h_0()
-                    .flex()
-                    .gap(px(gap))
-                    .when(narrow, |v| v.flex_col())
-                    .child(rail)
-                    .child(content),
-            )
-            .child(footer)
+            .into_any_element()
     }
     fn settings_recent_files(
         &self,

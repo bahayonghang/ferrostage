@@ -437,16 +437,84 @@ fn settings_centers_navigation_and_category_body_with_aligned_header_and_feedbac
         click_control(handle, category, cx);
         redraw(handle, cx);
         let mut visual = gpui::VisualTestContext::from_window(handle, cx);
-        let rail = visual.debug_bounds(category).unwrap();
+        let nav_paper = visual.debug_bounds("settings-nav-paper").unwrap();
+        let body_paper = visual.debug_bounds("settings-body-paper").unwrap();
         let body = visual.debug_bounds("settings-content").unwrap();
-        let left = rail.left();
-        let right = px(1600.) - body.right();
-        assert!(f32::from(left - right).abs() <= 1., "{category}: {left:?} vs {right:?}");
-        assert_eq!(body.size.width, px(body_width), "{category}");
-        assert_eq!(visual.debug_bounds("settings-title").unwrap().left(), rail.left());
-        assert_eq!(visual.debug_bounds("close-settings").unwrap().right(), body.right());
-        assert_eq!(visual.debug_bounds("settings-feedback").unwrap().left(), body.left());
+        let title = visual.debug_bounds("settings-title").unwrap();
+        let close = visual.debug_bounds("close-settings").unwrap();
+        let feedback = visual.debug_bounds("settings-feedback").unwrap();
+        let bar = visual.debug_bounds("presenter-titlebar").unwrap();
+        assert_eq!(nav_paper.size.width, px(176.), "{category}");
+        assert_eq!(body_paper.size.width, px(body_width), "{category}");
+        assert!(
+            body_paper.left() >= nav_paper.right() + px(16.),
+            "{category}: paper gap {:?} vs {:?}",
+            nav_paper,
+            body_paper
+        );
+        assert!(
+            body.left() >= body_paper.left()
+                && body.right() <= body_paper.right()
+                && body.top() >= body_paper.top()
+                && body.bottom() <= body_paper.bottom(),
+            "{category}: settings-content {body:?} must stay inside body paper {body_paper:?}"
+        );
+        let left = nav_paper.left();
+        let right = px(1600.) - body_paper.right();
+        assert!(
+            f32::from(left - right).abs() <= 1.,
+            "{category}: {left:?} vs {right:?}"
+        );
+        assert_eq!(title.left(), nav_paper.left());
+        assert_eq!(close.right(), body_paper.right());
+        assert_eq!(feedback.left(), body_paper.left());
+        assert!(feedback.top() >= body_paper.bottom() + px(12.));
+        assert!(nav_paper.left() >= px(16.) && body_paper.right() <= px(1600. - 16.));
+        assert!(title.top() >= bar.bottom() && nav_paper.top() >= px(16.) && body_paper.top() >= px(16.));
+        assert!(feedback.bottom() <= px(900. - 16.));
     }
+
+    for (w, h) in [(1000., 760.), (760., 700.)] {
+        cx.simulate_window_resize(handle, size(px(w), px(h)));
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let nav_paper = visual.debug_bounds("settings-nav-paper").unwrap();
+        let body_paper = visual.debug_bounds("settings-body-paper").unwrap();
+        let feedback = visual.debug_bounds("settings-feedback").unwrap();
+        let title = visual.debug_bounds("settings-title").unwrap();
+        let bar = visual.debug_bounds("presenter-titlebar").unwrap();
+        assert!(
+            body_paper.left() >= nav_paper.right() + px(16.),
+            "{w}x{h}: wide viewport must keep two separate papers: {nav_paper:?} vs {body_paper:?}"
+        );
+        assert!(nav_paper.left() >= px(16.), "{w}x{h}: {nav_paper:?}");
+        assert!(body_paper.right() <= px(w - 16.), "{w}x{h}: {body_paper:?}");
+        assert!(title.top() >= bar.bottom(), "{w}x{h}: {title:?} vs {bar:?}");
+        assert!(feedback.bottom() <= px(h - 16.), "{w}x{h}: {feedback:?}");
+        assert_eq!(feedback.left(), body_paper.left(), "{w}x{h}");
+        assert_eq!(feedback.right(), body_paper.right(), "{w}x{h}");
+    }
+
+    // Just below the 760px threshold, Settings folds into a single vertical column.
+    cx.simulate_window_resize(handle, size(px(759.), px(700.)));
+    redraw(handle, cx);
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    let nav_paper = visual.debug_bounds("settings-nav-paper").unwrap();
+    let body_paper = visual.debug_bounds("settings-body-paper").unwrap();
+    let feedback = visual.debug_bounds("settings-feedback").unwrap();
+    let title = visual.debug_bounds("settings-title").unwrap();
+    let close = visual.debug_bounds("close-settings").unwrap();
+    assert!(
+        body_paper.top() >= nav_paper.bottom() + px(12.),
+        "759x700 must stack vertically: {nav_paper:?} vs {body_paper:?}"
+    );
+    assert!(nav_paper.left() >= px(8.) && nav_paper.right() <= px(759. - 8.));
+    assert!(body_paper.left() >= px(8.) && body_paper.right() <= px(759. - 8.));
+    assert_eq!(title.left(), nav_paper.left());
+    assert_eq!(close.right(), body_paper.right());
+    assert_eq!(feedback.left(), body_paper.left());
+    assert_eq!(feedback.right(), body_paper.right());
+    assert!(feedback.top() >= body_paper.bottom() + px(12.) && feedback.bottom() <= px(700. - 8.));
 }
 
 #[gpui::test]
@@ -464,9 +532,36 @@ fn narrow_settings_wraps_categories_and_scrolls_to_the_last_display_control(
     click_control(handle, "settings-category-displays", cx);
     redraw(handle, cx);
     let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    let nav_paper = visual.debug_bounds("settings-nav-paper").unwrap();
+    let body_paper = visual.debug_bounds("settings-body-paper").unwrap();
+    let feedback = visual.debug_bounds("settings-feedback").unwrap();
+    let title = visual.debug_bounds("settings-title").unwrap();
+    let close = visual.debug_bounds("close-settings").unwrap();
     let body = visual.debug_bounds("settings-content").unwrap();
     let first = visual.debug_bounds("settings-category-general").unwrap();
     let last = visual.debug_bounds("settings-category-about").unwrap();
+    assert!(
+        body_paper.top() >= nav_paper.bottom() + px(12.),
+        "narrow mode must stack body paper below nav paper: {nav_paper:?} vs {body_paper:?}"
+    );
+    assert!(
+        nav_paper.left() >= px(8.) && nav_paper.right() <= px(390. - 8.),
+        "narrow nav paper outer margin >= 8px: {nav_paper:?}"
+    );
+    assert!(
+        body_paper.left() >= px(8.) && body_paper.right() <= px(390. - 8.),
+        "narrow body paper outer margin >= 8px: {body_paper:?}"
+    );
+    assert_eq!(title.left(), nav_paper.left());
+    assert_eq!(close.right(), body_paper.right());
+    assert!(close.right() <= px(390. - 8.), "narrow header must not overflow: {close:?}");
+    assert!(
+        feedback.top() >= body_paper.bottom() + px(12.) && feedback.bottom() <= px(640. - 8.),
+        "narrow feedback bottom margin >= 8px: {feedback:?} vs {body_paper:?}"
+    );
+    assert_eq!(feedback.left(), body_paper.left());
+    assert_eq!(feedback.right(), body_paper.right());
+    assert!(first.left() >= nav_paper.left() && last.right() <= nav_paper.right());
     assert!(first.bottom() <= last.top() && last.bottom() <= body.top());
     assert!(body.size.height >= px(44.));
     visual.simulate_event(gpui::ScrollWheelEvent {
@@ -538,11 +633,56 @@ fn settings_v09_all_categories_render_and_footer_stays_reachable(cx: &mut TestAp
             redraw(handle, cx);
             let mut visual = gpui::VisualTestContext::from_window(handle, cx);
             let bounds = visual.debug_bounds("close-settings").unwrap();
+            let feedback = visual.debug_bounds("settings-feedback").unwrap();
+            let inset = if w < 760. { 8. } else { 16. };
             assert!(
                 bounds.bottom() <= px(h) && bounds.right() <= px(w),
                 "{category:?}: {bounds:?}"
             );
+            assert!(
+                feedback.bottom() <= px(h - inset) && feedback.right() <= px(w - inset),
+                "{category:?} {w}x{h}: {feedback:?}"
+            );
         }
+    }
+}
+
+#[gpui::test]
+fn settings_feedback_paper_keeps_alerts_and_retry_bounded_across_widths(cx: &mut TestAppContext) {
+    let fixture = SaveFixture::new();
+    let (shell, handle) = input_presenter(cx);
+    shell.update(cx, |shell, cx| {
+        shell.store = fixture.store();
+        shell.modal = Some(Modal::Settings);
+        shell.preferences.error = Some("invalid value".into());
+        shell.settings.write_policy = ferrostage_settings::from_toml("schema_version=999")
+            .unwrap()
+            .write_policy;
+        shell.settings.dirty = true;
+        shell.settings.save_error = Some(ferrostage_settings::SaveError::Write {
+            reason: "disk locked".into(),
+        });
+        cx.notify();
+    });
+    for (w, h) in [(1280., 760.), (710., 640.)] {
+        cx.simulate_window_resize(handle, size(px(w), px(h)));
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let body_paper = visual.debug_bounds("settings-body-paper").unwrap();
+        let feedback = visual.debug_bounds("settings-feedback").unwrap();
+        let retry = visual.debug_bounds("settings-retry").unwrap();
+        let inset = if w < 760. { 8. } else { 16. };
+        assert_eq!(feedback.left(), body_paper.left(), "{w}x{h}");
+        assert_eq!(feedback.right(), body_paper.right(), "{w}x{h}");
+        assert!(feedback.top() >= body_paper.bottom() + px(12.), "{w}x{h}");
+        assert!(feedback.bottom() <= px(h - inset), "{w}x{h}: {feedback:?}");
+        assert!(
+            retry.left() >= feedback.left()
+                && retry.right() <= feedback.right()
+                && retry.top() >= feedback.top()
+                && retry.bottom() <= feedback.bottom(),
+            "{w}x{h}: retry {retry:?} must stay inside feedback paper {feedback:?}"
+        );
     }
 }
 

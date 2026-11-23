@@ -1493,7 +1493,9 @@ impl Render for Presenter {
         let home = stage == SessionStage::Idle && modal.is_none();
         // Margin between the full-bleed field and its panels; the field itself has
         // no inset band or outer stroke.
-        let inset = if viewport.width < px(800.) {
+        let inset = if modal == Some(Modal::Settings) {
+            if viewport.width < px(760.) { 8. } else { 16. }
+        } else if viewport.width < px(800.) {
             4.
         } else if home {
             if viewport.width >= px(960.) && viewport.height >= px(600.) {
@@ -1606,9 +1608,11 @@ impl Render for Presenter {
                 return root
                     .track_focus(&self.modal_focus)
                     .key_context("FerroStageModal")
-                    .child(content_shell.child(
-                        self.modal_surface(p, self.settings_panel(p, viewport.width.into(), inset)),
-                    ))
+                    .child(content_shell.child(self.settings_panel(
+                        p,
+                        viewport.width.into(),
+                        inset,
+                    )))
                     .into_any_element();
             }
             if let Some(panel) = &self.data.displays {
