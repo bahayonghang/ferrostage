@@ -49,24 +49,24 @@ colors:
   titlebar-close-hover: "#C42B1C"
   titlebar-close-pressed: "#A62317"
   titlebar-on-close: "#FFFDF9"
-  dark-field-top: "#1C1917"
-  dark-field-bottom: "#26201B"
-  dark-blob-start: "rgba(59,39,28,0.70)"
-  dark-blob-mid: "rgba(50,35,26,0.70)"
-  dark-blob-end: "rgba(47,36,28,0.70)"
-  dark-sheet: "rgba(43,38,34,0.64)"
-  dark-sheet-solid: "#2A2521"
-  dark-sheet-edge: "rgba(255,246,238,0.10)"
-  dark-sheet-highlight: "rgba(255,246,238,0.08)"
+  dark-field-top: "#14110E"
+  dark-field-bottom: "#1A1511"
+  dark-blob-start: "rgba(46,31,21,0.65)"
+  dark-blob-mid: "rgba(40,27,19,0.65)"
+  dark-blob-end: "rgba(37,26,19,0.65)"
+  dark-sheet: "rgba(45,39,34,0.74)"
+  dark-sheet-solid: "#2B2521"
+  dark-sheet-edge: "rgba(255,244,232,0.12)"
+  dark-sheet-highlight: "rgba(255,244,232,0.12)"
   dark-sheet-shadow: "rgba(0,0,0,0.45)"
-  dark-overlay: "rgba(49,44,39,0.96)"
-  dark-overlay-solid: "#312C27"
-  dark-overlay-edge: "rgba(255,246,238,0.12)"
-  dark-overlay-highlight: "rgba(255,246,238,0.10)"
+  dark-overlay: "rgba(51,45,40,0.96)"
+  dark-overlay-solid: "#332D28"
+  dark-overlay-edge: "rgba(255,244,232,0.14)"
+  dark-overlay-highlight: "rgba(255,244,232,0.12)"
   dark-overlay-shadow: "rgba(0,0,0,0.60)"
-  dark-raised: "#312C27"
+  dark-raised: "#332D28"
   dark-segment: "#544E48"
-  dark-well: "rgba(245,241,235,0.045)"
+  dark-well: "rgba(10,8,6,0.34)"
   dark-control: "rgba(245,241,235,0.08)"
   dark-control-hover: "rgba(245,241,235,0.12)"
   dark-control-pressed: "rgba(245,241,235,0.16)"
@@ -131,11 +131,11 @@ spacing:
 material:
   field-angle: 160deg
   blob-opacity: 0.65
-  dark-blob-opacity: 0.70
+  dark-blob-opacity: 0.65
   blob-fade: 70%
   blob-max: 3
   sheet-alpha: 0.66
-  dark-sheet-alpha: 0.64
+  dark-sheet-alpha: 0.74
   overlay-alpha: 0.96
   dark-overlay-alpha: 0.96
 elevation:
@@ -143,9 +143,9 @@ elevation:
   sheet-shadow: "0 12px 40px -16px rgba(74,50,34,0.14)"
   overlay-highlight: "inset 0 1px 0 rgba(255,255,255,0.72)"
   overlay-shadow: "0 24px 64px -24px rgba(74,50,34,0.22)"
-  dark-sheet-highlight: "inset 0 1px 0 rgba(255,246,238,0.08)"
+  dark-sheet-highlight: "inset 0 1px 0 rgba(255,244,232,0.12)"
   dark-sheet-shadow: "0 12px 40px -16px rgba(0,0,0,0.45)"
-  dark-overlay-highlight: "inset 0 1px 0 rgba(255,246,238,0.10)"
+  dark-overlay-highlight: "inset 0 1px 0 rgba(255,244,232,0.12)"
   dark-overlay-shadow: "0 24px 64px -24px rgba(0,0,0,0.60)"
 motion:
   press-offset: 1px
@@ -165,23 +165,23 @@ Light is the default. Dark is a full variant with the same roles (`dark-*` token
 
 ## Colors
 
-**L0 Field**: `{colors.field-top}` (`#FBF6F0`) to `{colors.field-bottom}` (`#F1E4D6`) at 160deg; dark `#1C1917` to `#26201B`. When airy glass is active, three cached soft radial-gradient ambient blobs (`{colors.blob-start}`, `{colors.blob-mid}`, `{colors.blob-end}`, fading to alpha 0 at 70% radius) sit on the field at `(12%, 6%)` (`42rem × 32rem`), `(92%, 96%)` (`40rem × 32rem`), and `(82%, 10%)` (`30rem × 24rem`). The field fills the whole opaque window edge to edge. When glass is off or system reduced-transparency / high-contrast is enabled, the field omits all blobs and renders the solid 160deg gradient only.
+**L0 Field**: `{colors.field-top}` (`#FBF6F0`) to `{colors.field-bottom}` (`#F1E4D6`) at 160deg; dark `#14110E` to `#1A1511`. When airy glass is active, three cached soft radial-gradient ambient blobs (`{colors.blob-start}`, `{colors.blob-mid}`, `{colors.blob-end}`, fading to alpha 0 at 70% radius) sit on the field at `(12%, 6%)` (`42rem × 32rem`), `(92%, 96%)` (`40rem × 32rem`), and `(82%, 10%)` (`30rem × 24rem`). The field fills the whole opaque window edge to edge. When glass is off or system reduced-transparency / high-contrast is enabled, the field omits all blobs and renders the solid 160deg gradient only.
 
 **L1 Sheet (Glass Paper)**:
 
-- Glass fill `{colors.sheet}` (`rgba(255,253,251,0.66)`, dark `rgba(43,38,34,0.64)`), bounded by 1px `{colors.sheet-edge}` (`rgba(255,255,255,0.78)`, dark `rgba(255,246,238,0.10)`), top 1px inner highlight `{elevation.sheet-highlight}` (`rgba(255,255,255,0.65)`, dark `rgba(255,246,238,0.08)`), and negative-spread clipped bottom drop shadow `{elevation.sheet-shadow}` (`0 12px 40px -16px rgba(74,50,34,0.14)`, dark `rgba(0,0,0,0.45)`).
-- Solid fallback fill `{colors.sheet-solid}` (`#FFFDF9`, dark `#2A2521`) with `{colors.hairline}` 1px edge when glass is disabled or reduced-transparency / high-contrast is active.
+- Glass fill `{colors.sheet}` (`rgba(255,253,251,0.66)`, dark `rgba(45,39,34,0.74)`), bounded by 1px `{colors.sheet-edge}` (`rgba(255,255,255,0.78)`, dark `rgba(255,244,232,0.12)`), top 1px inner highlight `{elevation.sheet-highlight}` (`rgba(255,255,255,0.65)`, dark `rgba(255,244,232,0.12)`), and negative-spread clipped bottom drop shadow `{elevation.sheet-shadow}` (`0 12px 40px -16px rgba(74,50,34,0.14)`, dark `rgba(0,0,0,0.45)`).
+- Solid fallback fill `{colors.sheet-solid}` (`#FFFDF9`, dark `#2B2521`) with `{colors.hairline}` 1px edge when glass is disabled or reduced-transparency / high-contrast is active.
 
 **Wells & Controls (inside sheets/overlays)**:
 
-- **Well** `{colors.well}` (`rgba(31,27,23,0.045)`, dark `rgba(245,241,235,0.045)`): inset area inside a panel (notes, inputs, preview frames, grouped settings). Always sinks beneath the sheet in Light (`lum(sheet) > lum(well)`) and steps cleanly above in Dark (`lum(sheet) < lum(well)`), eliminating Light-mode brightness inversion. Precomposited over `sheet-solid` in solid fallback mode.
+- **Well** `{colors.well}` (`rgba(31,27,23,0.045)`, dark `rgba(10,8,6,0.34)`): inset area inside a panel (notes, inputs, preview frames, grouped settings). Always sinks beneath its parent sheet in both Light (`lum(sheet) > lum(well)`) and Dark (`lum(well) < lum(sheet) < lum(control) < lum(segment)`), eliminating brightness inversion in both appearances. Precomposited over `sheet-solid` in solid fallback mode.
 - **Control** `{colors.control}` / `-hover` / `-pressed`: `rgba(31,27,23, 0.075 / 0.115 / 0.155)` (dark: `rgba(245,241,235, 0.08 / 0.12 / 0.16)`), precomposited over `sheet-solid` in solid mode. Unselected options on a `control` segmented track rest at `Tint::TRANSPARENT` so they do not double-darken over the translucent track.
 - **Segment** `{colors.segment}` (`#FFFFFF`, dark `#544E48`): the selected option lifted off a `control` track, always brighter than the track.
-- **Raised** `{colors.raised}` (`#FFFFFF`, dark `#312C27`): inline raised items and diagram tiles.
+- **Raised** `{colors.raised}` (`#FFFFFF`, dark `#332D28`): inline raised items and diagram tiles.
 
 **L2 Overlay (Menus, dialogs, tooltips, page browser)**:
 
-- Maintained GPUI has no per-element `backdrop_blur`, so overlays use high-opacity `{colors.overlay}` (`rgba(255,253,251,0.96)`, dark `rgba(49,44,39,0.96)`) or solid `{colors.overlay-solid}` (`#FFFFFF`, dark `#312C27`), 1px `{colors.overlay-edge}`, `{elevation.overlay-highlight}`, and clipped bottom `{elevation.overlay-shadow}` (`0 24px 64px -24px rgba(74,50,34,0.22)`, dark `rgba(0,0,0,0.60)`).
+- Maintained GPUI has no per-element `backdrop_blur`, so overlays use high-opacity `{colors.overlay}` (`rgba(255,253,251,0.96)`, dark `rgba(51,45,40,0.96)`) or solid `{colors.overlay-solid}` (`#FFFFFF`, dark `#332D28`), 1px `{colors.overlay-edge}`, `{elevation.overlay-highlight}`, and clipped bottom `{elevation.overlay-shadow}` (`0 24px 64px -24px rgba(74,50,34,0.22)`, dark `rgba(0,0,0,0.60)`).
 
 Lines:
 
@@ -232,7 +232,7 @@ The workbench is a top bar panel, one panel per pane (Current, Next, Notes) and 
 
 With 4px panel padding, an inner rounded area uses a 12px radius, because outer radius = inner radius + padding.
 
-Settings sits directly on the warm window field with a 16px outer margin at widths of 760 logical pixels and above (8px below 760), centering the header, split L1 glass papers, and footer together. At 760 logical pixels and above, the 176px navigation paper (`settings-nav-paper`, `self_start`, inner rounded clipping wrapper) sits 16px from the scrolling category body paper (`settings-body-paper`, at most 960px wide, or 1120px for Displays, with 20px×12px inner content padding), exposing the field and blobs between and around the papers; save feedback sits on a lightweight L1 paper strip aligned under the body paper. Each category has a square-cornered full-row target whose text box is centered on both axes; the selected row has an accent wash and an absolutely positioned short left bar, resting rows expose the navigation paper, hover and press use control fills, and the focus ring follows the rectangle. The title starts at the navigation paper edge and Close ends at the body paper edge. Below 760 logical pixels the layout stacks vertically with 12px gaps, wrapping category rows inside the full-width navigation paper above the scrolling body paper and full-width feedback strip.
+Settings sits directly on the warm window field with a 16px outer margin at widths of 760 logical pixels and above (8px below 760), centering the header, split L1 glass papers, and footer together. At 760 logical pixels and above, the 176px navigation paper (`settings-nav-paper`, `self_start`, inner rounded clipping wrapper with 6px padding) sits 16px from the scrolling category body paper (`settings-body-paper`, at most 960px wide, or 1120px for Displays, with 20px×12px–24px inner content padding), exposing the field and blobs between and around the papers; save feedback sits on a lightweight L1 paper strip aligned under the body paper. Each category has a concentric rounded-corner (`{rounded.well}`) full-row target whose text box is centered on both axes; the selected row has an accent wash and an absolutely positioned pill-rounded short left bar, resting rows expose the navigation paper, hover and press use control fills, and the focus ring follows the rounded rectangle. The title starts at the navigation paper edge and Close ends at the body paper edge. Below 760 logical pixels the layout stacks vertically with 12px gaps, wrapping category rows inside the full-width navigation paper above the scrolling body paper and full-width feedback strip.
 
 Icons are linear, about a 1.5px stroke, in `currentColor`. Do not add illustrated characters.
 
@@ -296,37 +296,37 @@ Meet WCAG 2.2 AA on the worst specified background. Because the presenter window
 
 | 前景 | 背景 | 浅色 | 深色 | 用途 |
 | --- | --- | --- | --- | --- |
-| `ink` | `sheet_solid` | 16.84 (`#1F1B17` / `#FFFDF9`) | 13.48 (`#F5F1EB` / `#2A2521`) | 标题与主文字，实色回退面板 |
-| `ink` | `sheet` 最差合成（含色斑） | 15.22 (`#1F1B17` / `#FAF0E7`) | 13.15 (`#F5F1EB` / `#2F2620`) | 标题与主文字，毛玻璃面板 |
-| `body` | `sheet_solid` | 11.41 (`#3D3833` / `#FFFDF9`) | 11.04 (`#E2DBD2` / `#2A2521`) | 正文与按钮文字，实色回退面板 |
-| `body` | `sheet` 最差合成 | 10.31 (`#3D3833` / `#FAF0E7`) | 10.78 (`#E2DBD2` / `#2F2620`) | 正文与按钮文字，毛玻璃面板 |
-| `muted` | `sheet` 最差合成 | 7.63 (`#524B44` / `#FAF0E7`) | 8.23 (`#C8C0B6` / `#2F2620`) | 次要文字，毛玻璃面板 |
-| `muted` | `well` 最差合成 | 6.97 (`#524B44` / `#F0E6DE`) | 7.26 (`#C8C0B6` / `#382F29`) | 次要文字，半透凹槽 |
-| `muted` | `control_pressed` 最差合成 | 5.58 (`#524B44` / `#D8CFC7`) | 5.11 (`#C8C0B6` / `#4F4640`) | 次要文字，按下的中性控件 |
-| `accent_text` | `sheet` 最差合成 | 6.86 (`#8A3B1E` / `#FAF0E7`) | 8.11 (`#F0B296` / `#2F2620`) | 强调文字与链接 |
-| `accent_text` | `control` 最差合成 | 5.92 (`#8A3B1E` / `#EAE0D7`) | 6.46 (`#F0B296` / `#3F3630`) | 橙色文字压中性控件 |
+| `ink` | `sheet_solid` | 16.84 (`#1F1B17` / `#FFFDF9`) | 13.43 (`#F5F1EB` / `#2B2521`) | 标题与主文字，实色回退面板 |
+| `ink` | `sheet` 最差合成（含色斑） | 15.22 (`#1F1B17` / `#FAF0E7`) | 13.43 (`#F5F1EB` / `#2B2521`) | 标题与主文字，毛玻璃面板 |
+| `body` | `sheet_solid` | 11.41 (`#3D3833` / `#FFFDF9`) | 11.01 (`#E2DBD2` / `#2B2521`) | 正文与按钮文字，实色回退面板 |
+| `body` | `sheet` 最差合成 | 10.31 (`#3D3833` / `#FAF0E7`) | 11.01 (`#E2DBD2` / `#2B2521`) | 正文与按钮文字，毛玻璃面板 |
+| `muted` | `sheet` 最差合成 | 7.63 (`#524B44` / `#FAF0E7`) | 8.40 (`#C8C0B6` / `#2B2521`) | 次要文字，毛玻璃面板 |
+| `muted` | `well` 最差合成 | 6.97 (`#524B44` / `#F0E6DE`) | 9.48 (`#C8C0B6` / `#201B18`) | 次要文字，半透凹槽 |
+| `muted` | `control_pressed` 最差合成 | 5.58 (`#524B44` / `#D8CFC7`) | 5.18 (`#C8C0B6` / `#4B4641`) | 次要文字，按下的中性控件 |
+| `accent_text` | `sheet` 最差合成 | 6.86 (`#8A3B1E` / `#FAF0E7`) | 8.29 (`#F0B296` / `#2B2521`) | 强调文字与链接 |
+| `accent_text` | `control` 最差合成 | 5.92 (`#8A3B1E` / `#EAE0D7`) | 6.62 (`#F0B296` / `#3B3531`) | 橙色文字压中性控件 |
 | `accent_text` | `accent_wash` | 6.35 (`#8A3B1E` / `#F7E6DC`) | 7.50 (`#F0B296` / `#3A2A22`) | 橙色文字压选中洗底 |
-| `success` | `sheet` 最差合成 | 7.74 (`#215534` / `#FAF0E7`) | 8.08 (`#8DCEA0` / `#2F2620`) | 成功状态文字与标记 |
-| `warning` | `sheet` 最差合成 | 7.68 (`#6B430A` / `#FAF0E7`) | 8.07 (`#E8B774` / `#2F2620`) | 警告状态文字与标记 |
-| `warning` | `sheet_solid` | 8.50 (`#6B430A` / `#FFFDF9`) | 8.27 (`#E8B774` / `#2A2521`) | 警告文字，实色面板 |
-| `error` | `sheet` 最差合成 | 7.84 (`#872A22` / `#FAF0E7`) | 8.25 (`#FFACA7` / `#2F2620`) | 错误状态文字与标记 |
+| `success` | `sheet` 最差合成 | 7.74 (`#215534` / `#FAF0E7`) | 8.25 (`#8DCEA0` / `#2B2521`) | 成功状态文字与标记 |
+| `warning` | `sheet` 最差合成 | 7.68 (`#6B430A` / `#FAF0E7`) | 8.25 (`#E8B774` / `#2B2521`) | 警告状态文字与标记 |
+| `warning` | `sheet_solid` | 8.50 (`#6B430A` / `#FFFDF9`) | 8.25 (`#E8B774` / `#2B2521`) | 警告文字，实色面板 |
+| `error` | `sheet` 最差合成 | 7.84 (`#872A22` / `#FAF0E7`) | 8.43 (`#FFACA7` / `#2B2521`) | 错误状态文字与标记 |
 | `error` | `error_wash` | 7.15 (`#872A22` / `#F8E3DF`) | 7.94 (`#FFACA7` / `#3B2523`) | 停止/危险文字 |
 | `on_accent` | `accent` | 5.65 (`#1F1712` / `#D97757`) | 5.65 (`#1F1712` / `#D97757`) | 主按钮文字 |
 | `on_accent` | `accent_pressed` | 4.71 (`#1F1712` / `#C9694A`) | 4.71 (`#1F1712` / `#C9694A`) | 主按钮按下 |
 | `#FFFFFF` | `accent` | 3.12 (`#FFFFFF` / `#D97757`) | 3.12 (`#FFFFFF` / `#D97757`) | 白字压橙色，禁止 |
-| `focus` | `sheet` 最差合成 | 6.86 (`#8A3B1E` / `#FAF0E7`) | 8.11 (`#F0B296` / `#2F2620`) | 焦点环与选中标记，玻璃纸 |
-| `focus` | `control_pressed` 最差合成 | 5.02 (`#8A3B1E` / `#D8CFC7`) | 5.04 (`#F0B296` / `#4F4640`) | 焦点环压最深中性填充 |
+| `focus` | `sheet` 最差合成 | 6.86 (`#8A3B1E` / `#FAF0E7`) | 8.29 (`#F0B296` / `#2B2521`) | 焦点环与选中标记，玻璃纸 |
+| `focus` | `control_pressed` 最差合成 | 5.02 (`#8A3B1E` / `#D8CFC7`) | 5.11 (`#F0B296` / `#4B4641`) | 焦点环压最深中性填充 |
 | `focus` | `segment` | 7.71 (`#8A3B1E` / `#FFFFFF`) | 4.50 (`#F0B296` / `#544E48`) | 选中分段上的选中标记 |
 | `ink` | `segment` | 17.11 (`#1F1B17` / `#FFFFFF`) | 7.29 (`#F5F1EB` / `#544E48`) | 选中分段文字 |
-| `border` | `well` 最差合成 | 3.58 (`#7F776E` / `#F0E6DE`) | 3.95 (`#958C81` / `#382F29`) | 输入框与线框边界 |
-| `ink` / `muted` | `overlay` 最差合成 | 16.60 / 8.32 | 12.28 / 7.68 | 浮层正文与次要文字 |
-| `muted` / `accent_text` | `overlay_pressed` 最差合成 | 6.05 / 5.43 (`#DBD8D6`) | 4.74 / 4.67 (`#504C46`) | L2 浮层按下态次要与强调文字 |
-| `ink` / `Utility` 按钮 | L0 底场与色斑最差合成 | 12.33 / 6.17 (`#F1D6C1`) | 13.03 / 6.59 (`#35251C`) | 首页顶栏与设置页标题/关闭行 |
-| `titlebar_ink` / `icon` | 底场与色斑最差合成 | 12.33 (`#1F1B17` / `#F1D6C1`) | 13.03 (`#F5F1EB` / `#35251C`) | 一体化标题栏激活状态 |
-| `titlebar_inactive_ink` / `icon` | 底场与色斑最差合成 | 6.18 (`#524B44` / `#F1D6C1`) | 5.95 (`#ACA49A` / `#35251C`) | 一体化标题栏失焦状态 |
-| `titlebar_icon` | `titlebar_control_hover` 最差 | 10.58 (`#1F1B17` / `#E0C7B3`) | 9.84 (`#F5F1EB` / `#473930`) | 标题栏激活控制按钮悬停 |
-| `titlebar_icon` | `titlebar_control_pressed` 最差 | 9.42 (`#1F1B17` / `#D4BCA9`) | 8.07 (`#F5F1EB` / `#53463E`) | 标题栏激活控制按钮按下 |
-| `titlebar_inactive_icon` | `titlebar_control_hover` 最差 | 5.30 (`#524B44` / `#E0C7B3`) | 4.50 (`#ACA49A` / `#473930`) | 标题栏失焦控制按钮悬停 |
+| `border` | `well` 最差合成 | 3.58 (`#7F776E` / `#F0E6DE`) | 5.15 (`#958C81` / `#201B18`) | 输入框与线框边界 |
+| `ink` / `muted` | `overlay` 最差合成 | 16.60 / 8.32 | 12.07 / 7.55 | 浮层正文与次要文字 |
+| `muted` / `accent_text` | `overlay_pressed` 最差合成 | 6.05 / 5.43 (`#DBD8D6`) | 4.70 / 4.64 (`#524C47`) | L2 浮层按下态次要与强调文字 |
+| `ink` / `Utility` 按钮 | L0 底场与色斑最差合成 | 12.33 / 6.17 (`#F1D6C1`) | 14.78 / 7.58 (`#271C14`) | 首页顶栏与设置页标题/关闭行 |
+| `titlebar_ink` / `icon` | 底场与色斑最差合成 | 12.33 (`#1F1B17` / `#F1D6C1`) | 14.78 (`#F5F1EB` / `#271C14`) | 一体化标题栏激活状态 |
+| `titlebar_inactive_ink` / `icon` | 底场与色斑最差合成 | 6.18 (`#524B44` / `#F1D6C1`) | 6.76 (`#ACA49A` / `#271C14`) | 一体化标题栏失焦状态 |
+| `titlebar_icon` | `titlebar_control_hover` 最差 | 10.58 (`#1F1B17` / `#E0C7B3`) | 11.42 (`#F5F1EB` / `#3A3029`) | 标题栏激活控制按钮悬停 |
+| `titlebar_icon` | `titlebar_control_pressed` 最差 | 9.42 (`#1F1B17` / `#D4BCA9`) | 9.28 (`#F5F1EB` / `#473E37`) | 标题栏激活控制按钮按下 |
+| `titlebar_inactive_icon` | `titlebar_control_hover` 最差 | 5.30 (`#524B44` / `#E0C7B3`) | 5.22 (`#ACA49A` / `#3A3029`) | 标题栏失焦控制按钮悬停 |
 | `titlebar_on_close` | `titlebar_close_hover` | 5.57 (`#FFFDF9` / `#C42B1C`) | 5.57 (`#FFFDF9` / `#C42B1C`) | 标题栏关闭按钮悬停 |
 | `titlebar_on_close` | `titlebar_close_pressed` | 7.19 (`#FFFDF9` / `#A62317`) | 7.19 (`#FFFDF9` / `#A62317`) | 标题栏关闭按钮按下 |
 | `titlebar_ink` | `titlebar_inactive_ink` | 1.99 (`#1F1B17` / `#524B44`) | 2.19 (`#F5F1EB` / `#ACA49A`) | 标题栏激活与失焦区分（≥ 1.8） |
@@ -343,7 +343,7 @@ State the status, then the number, then the action. Keep labels short. No slogan
 - Use `{colors.primary}` with `{colors.on-primary}` for the one primary action in a view.
 - Use `{colors.focus}` for the 2px focus ring and selection marks.
 - Use `{colors.titlebar-close-hover}` and `{colors.titlebar-close-pressed}` with `{colors.titlebar-on-close}` exclusively for the integrated titlebar Close button's hover and press states.
-- Separate layers by opacity, edge, highlight, bottom ground shadow and lightness steps of one warm hue (ensuring `lum(sheet) > lum(well) > lum(control)` in Light, and `lum(sheet) < lum(well) < lum(control) < lum(segment)` in Dark).
+- Separate layers by opacity, edge, highlight, bottom ground shadow and lightness steps of one warm hue (ensuring `lum(sheet) > lum(well) > lum(control)` in Light, and `lum(field) < lum(sheet)` with `lum(well) < lum(sheet) < lum(control) < lum(segment)` in Dark).
 - Use the solid fallback (`sheet-solid` + 1px `hairline` without L1 highlight/shadow, `overlay-solid` + `overlay-edge` + elevation shadow, precomposited wells/controls, no blobs) only when `glass_effect` is off or OS reduced transparency / high contrast is enabled.
 - Set numbers in `tabular-nums`.
 
@@ -366,7 +366,7 @@ State the status, then the number, then the action. Keep labels short. No slogan
 
 | Condition | Window Background | Field | Sheet & Overlay |
 | --- | --- | --- | --- |
-| Glass on, system allows transparency & contrast normal (all widths, all Windows 10/11 & macOS/Linux hosts) | `Opaque` | 160° warm gradient + 3 cached SVG `<radialGradient>` blobs | `sheet` (`0.66`/`0.64`), `overlay` (`0.96`), `well`/`control` translucent, `sheet_edge` + highlight + `ground_shadow` |
+| Glass on, system allows transparency & contrast normal (all widths, all Windows 10/11 & macOS/Linux hosts) | `Opaque` | 160° warm gradient + 3 cached SVG `<radialGradient>` blobs | `sheet` (`0.66`/`0.74`), `overlay` (`0.96`), `well`/`control` translucent, `sheet_edge` + highlight + `ground_shadow` |
 | Glass off (`general.glass_effect = false`) | `Opaque` | Solid 160° warm gradient (no blobs) | `sheet-solid` / `overlay-solid`, `hairline` edge, precomposited `well`/`control`, `glass_effect` preference preserved |
 | OS reduced transparency or high contrast enabled | `Opaque` | Solid 160° warm gradient (no blobs) | `sheet-solid` / `overlay-solid`, `hairline` edge, precomposited `well`/`control`, restores airy glass automatically once OS conditions clear |
 
@@ -378,6 +378,10 @@ Pills stay pills. The focus ring stays 2px. Keyboard focus does not move or scal
 - If Figtree is unavailable, fall back to the system sans-serif and keep `"PingFang SC", "Noto Sans SC"` after the Latin family.
 - Title weight 650 needs the Figtree variable font. If only a static file is available, use 600.
 - PDF previews are still painted with square corners. The paint path is the slide surface shared with the audience window, which this restyle does not change.
+
+## Anti-slop Waivers
+
+- **Gate 29 (Ambient radial blobs)**: Waived by `style:airy-glass`. The `L0` window field paints up to three cached in-memory SVG `<radialGradient>` blobs strictly beneath `L1` sheets with subtle warm-ivory (`0.65`) or warm-amber (`0.65`, darker than `L1` sheets) fills fading to zero at `70%` radius, zero neon glow, and immediate removal in solid fallback / reduced transparency.
 
 ## FerroStage native presenter
 
@@ -394,3 +398,17 @@ The presenter owns this theme. Its integrated titlebar, home, document header, t
 **Controls.** Primary actions use the orange fill with dark text. Preserve hover, pressed, disabled, selected and focused states, the 2 px focus indicator and the minimum 44 px interactive target. Time digits keep a stable width. PDF and media are never assigned control fonts or tinted by the presenter.
 
 The presenter uses an installed interface-font override first, then installed Figtree, then the platform UI family. It reads the available family names once per session. The General settings font button opens a focused, single-line search field. Typing narrows installed family names, arrows browse the scrollable results, and Enter or a click applies the highlighted or clicked family. The panel shows the current font separately. Escape returns to the button, Tab leaves the search, and Use default restores the system choice. The clock and timer request tabular digits on that same face, so a missing optional font does not trigger a new native font search when the first PDF opens.
+
+## Native Verification & Audit Summary
+
+- **GPUI Capability Probe (`vendor/gpui 0.2.2` / Zed `v1.23.3` + `gpui_macros 0.1.0`)**: Verified 13 available capabilities (`BoxShadow` with `inset` and negative `spread_radius`, `ImageFormat::Svg`, `Image::from_bytes`, `img()`, `linear_gradient`, `WindowBackgroundAppearance::Opaque`, `overflow_hidden`, `aspect_ratio`, `font_features`, `font_weight`, focus tracking, interactive hover/active styling, `Action`) and 3 absent framework primitives (`backdrop_blur`, `radial_gradient`, built-in `high_contrast`/`reduce_transparency` styling hooks — addressed cleanly by `Opaque` + cached SVG `<radialGradient>` blobs + Windows/macOS OS probes).
+- **Windows 120 DPI Native Verification (Interactive Desktop)**: Two capture passes covering Light/Dark × Glass ON/OFF × Wide (`1584×1067`) / Narrow (`834×1017`) across Home, Settings, Workbench (`fixtures/pdf/raster.pdf`), Audience isolation, Integrated Titlebar states, Tab focus rings, Missing-PDF error banner, and `en-US` UI, compared against `runs/airy-shots-01/`:
+  - **Dark elevation calibrated on pixels**: L0 max blob (`#251B14`, `L=0.01228`) stays strictly darker than L1 min glass (`#27211D`, `L=0.01608`); recessed wells (`#1D1915–#201B18`, `L=0.01011–0.01157`) sink cleanly below L1 in both Glass ON and Glass OFF, eliminating card-in-card brightness inversion.
+  - **Solid fallback (`Glass OFF`)**: Drops all blobs, top 1px highlight (`#58524C`), and bottom shadows (`ground_shadow`), leaving clean `sheet_solid` + `1px hairline` surfaces with `#14110E–#1A1511` vs `#2B2521` tonal separation in Dark and `#FBF6F0–#F1E4D6` vs `#FFFDF9` in Light.
+  - **Interactive states & audience isolation**: Verified 2px Tab focus rings (`#8A3B1E` Light, `#F0B296` Dark), Titlebar Close hover danger red `#C42B1C`, inactive titlebar dimming (`#1F1B17` → `#524B44`), smooth window drag (`delta=(140,70)`), pinned `#presenter-error` alert banner above the fold on Home, 100% `en-US` Home & Settings without language-restart notice, and Audience window pixel scan confirming 0 warm-orange leakage pixels (pure `#000000` letterbox + `#FF0000` slide).
+  - **Transparent capture note**: Pass-2's `narrow-light-*` frames were momentarily occluded by the terminal window during capture, while Pass-1's narrow-light frames and Pass-2's structurally identical `narrow-dark-*` frames passed (`narrow-dark-on-home` places `打开此文稿` above the fold with a minor 15px bottom capsule clip at the viewport scroll edge).
+- **Anti-Slop & Literal Audit (`design-atlas`)**:
+  - `slop_check.mjs` exited with code `2` (`no scannable files` on pure Rust UI sources) → recorded honestly as **机械门禁未运行**.
+  - Manual anti-slop review passed across active gates (Gate 4 no nested cards, Gate 29 waived above, Gate 40/41 WCAG 2.2 AA & no white-on-orange, Gate 44b above-the-fold CTA, Gate F4 single primary CTA, DA4 optical alignment & concentric radii).
+  - Non-token color literal audit outside `crates/ferrostage-ui/src/theme.rs` found 0 presenter theme leaks (only allowlisted audience black/white cover, thumbnail letterbox, presentation blank swatch, focus transparent placeholder, and out-of-scope slide media overlay).
+- **Untested Platforms**: Native window rendering on `macOS` and `Linux` was not runtime-tested on this Windows host.

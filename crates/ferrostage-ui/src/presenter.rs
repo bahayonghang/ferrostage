@@ -1529,7 +1529,7 @@ impl Render for Presenter {
                 16.
             }
         } else {
-            8.
+            10.
         };
         let top_inset = if titlebar_visible { 4. } else { inset };
         let content_shell = div()
@@ -1704,62 +1704,63 @@ impl Render for Presenter {
             }
             content
         } else {
-            self.home_content(p, window)
+            self.home_content(p, error.is_some(), window)
         };
 
-        if let Some(error) = error {
-            body = body.child(
-                div()
-                    .id("presenter-error")
-                    .debug_selector(|| "presenter-error".into())
-                    .flex_shrink_0()
-                    .role(Role::Alert)
-                    .flex()
-                    .items_center()
-                    .gap(px(8.))
-                    .pl(px(12.))
-                    .pr(px(4.))
-                    .py(px(4.))
-                    .rounded(px(theme::RADIUS))
-                    .border_l_4()
-                    .border_color(rgb(p.error))
-                    .bg(rgb(p.error_wash))
-                    .child(
-                        div()
-                            .flex_shrink_0()
-                            .size(px(20.))
-                            .rounded_full()
-                            .bg(rgb(p.error))
-                            .text_color(rgb(p.sheet_solid))
-                            .text_size(px(self.ui_text_size(12.)))
-                            .flex()
-                            .items_center()
-                            .justify_center()
-                            .child("!"),
-                    )
-                    .child(
-                        div()
-                            .flex_1()
-                            .min_w_0()
-                            .whitespace_normal()
-                            .text_color(rgb(p.error))
-                            .child(error),
-                    )
-                    .when(dismissible, |view| {
-                        view.child(
-                            self.button(
-                                "dismiss-error".into(),
-                                "×".into(),
-                                true,
-                                false,
-                                Intent::DismissError,
-                                p,
-                            )
-                            .flex_shrink_0()
-                            .aria_label(l.text("dismiss-error")),
+        let mut error_banner = error.map(|error| {
+            div()
+                .id("presenter-error")
+                .debug_selector(|| "presenter-error".into())
+                .flex_shrink_0()
+                .role(Role::Alert)
+                .flex()
+                .items_center()
+                .gap(px(8.))
+                .pl(px(12.))
+                .pr(px(4.))
+                .py(px(4.))
+                .rounded(px(theme::RADIUS))
+                .border_l_4()
+                .border_color(rgb(p.error))
+                .bg(rgb(p.error_wash))
+                .child(
+                    div()
+                        .flex_shrink_0()
+                        .size(px(20.))
+                        .rounded_full()
+                        .bg(rgb(p.error))
+                        .text_color(rgb(p.sheet_solid))
+                        .text_size(px(self.ui_text_size(12.)))
+                        .flex()
+                        .items_center()
+                        .justify_center()
+                        .child("!"),
+                )
+                .child(
+                    div()
+                        .flex_1()
+                        .min_w_0()
+                        .whitespace_normal()
+                        .text_color(rgb(p.error))
+                        .child(error),
+                )
+                .when(dismissible, |view| {
+                    view.child(
+                        self.button(
+                            "dismiss-error".into(),
+                            "×".into(),
+                            true,
+                            false,
+                            Intent::DismissError,
+                            p,
                         )
-                    }),
-            );
+                        .flex_shrink_0()
+                        .aria_label(l.text("dismiss-error")),
+                    )
+                })
+        });
+        if document_open && let Some(banner) = error_banner.take() {
+            body = body.child(banner);
         }
         // Both workbench gaps and multi-paper home expose the bare field, so
         // status lines always sit on their own notice paper.
@@ -1795,10 +1796,10 @@ impl Render for Presenter {
                     .child(retry),
             );
         }
+        let side_pad = if viewport.width < px(800.) { 12. } else { 8. };
         let body = if document_open {
             body.into_any_element()
         } else {
-            let side_pad = if viewport.width < px(800.) { 12. } else { 8. };
             div()
                 .id("presenter-content")
                 .debug_selector(|| "presenter-content".into())
@@ -1819,6 +1820,21 @@ impl Render for Presenter {
         let content_shell = content_shell
             .when(document_open, |view| {
                 view.child(self.command_bar(p, window))
+            })
+            .when(!document_open, |view| {
+                if let Some(banner) = error_banner {
+                    view.child(
+                        div()
+                            .w_full()
+                            .flex_shrink_0()
+                            .px(px(side_pad))
+                            .pt(px(4.))
+                            .pb(px(4.))
+                            .child(banner),
+                    )
+                } else {
+                    view
+                }
             })
             .child(body)
             .when(document_open, |view| {

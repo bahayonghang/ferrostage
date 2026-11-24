@@ -384,29 +384,29 @@ pub const LIGHT: Palette = Palette {
 };
 
 pub const DARK: Palette = Palette {
-    field_top: 0x1C1917,
-    field_bottom: 0x26201B,
+    field_top: 0x14110E,
+    field_bottom: 0x1A1511,
     blobs: [
-        Tint::new(0x3B271C, 0.70),
-        Tint::new(0x32231A, 0.70),
-        Tint::new(0x2F241C, 0.70),
+        Tint::new(0x2E1F15, 0.65),
+        Tint::new(0x281B13, 0.65),
+        Tint::new(0x251A13, 0.65),
     ],
-    sheet: Tint::new(0x2B2622, 0.64),
-    sheet_solid: 0x2A2521,
-    sheet_edge: Tint::new(0xFFF6EE, 0.10),
-    sheet_highlight: Tint::new(0xFFF6EE, 0.08),
+    sheet: Tint::new(0x2D2722, 0.74),
+    sheet_solid: 0x2B2521,
+    sheet_edge: Tint::new(0xFFF4E8, 0.12),
+    sheet_highlight: Tint::new(0xFFF4E8, 0.12),
     sheet_shadow: Tint::new(0x000000, 0.45),
-    overlay: Tint::new(0x312C27, 0.96),
-    overlay_solid: 0x312C27,
-    overlay_edge: Tint::new(0xFFF6EE, 0.12),
-    overlay_highlight: Tint::new(0xFFF6EE, 0.10),
+    overlay: Tint::new(0x332D28, 0.96),
+    overlay_solid: 0x332D28,
+    overlay_edge: Tint::new(0xFFF4E8, 0.14),
+    overlay_highlight: Tint::new(0xFFF4E8, 0.12),
     overlay_shadow: Tint::new(0x000000, 0.60),
-    well: Tint::new(0xF5F1EB, 0.045),
+    well: Tint::new(0x0A0806, 0.34),
     control: Tint::new(0xF5F1EB, 0.08),
     control_hover: Tint::new(0xF5F1EB, 0.12),
     control_pressed: Tint::new(0xF5F1EB, 0.16),
     segment: 0x544E48,
-    raised: 0x312C27,
+    raised: 0x332D28,
     hairline: Tint::new(0xFFFFFF, 0.08),
     border: 0x958C81,
     ink: 0xF5F1EB,
@@ -551,18 +551,37 @@ mod tests {
                 .collect();
 
             if p.is_dark {
-                for &sheet in &sheets(p) {
+                let max_field_lum = fields(p).into_iter().map(luminance).fold(0.0_f64, f64::max);
+                let sheet_list = sheets(p);
+                let min_sheet_lum = sheet_list
+                    .iter()
+                    .copied()
+                    .map(luminance)
+                    .fold(f64::INFINITY, f64::min);
+                let max_well_lum = sheet_list
+                    .iter()
+                    .map(|&sheet| luminance(p.well.composite_over(sheet)))
+                    .fold(0.0_f64, f64::max);
+                assert!(
+                    max_field_lum < min_sheet_lum,
+                    "dark field/blob ceiling ({max_field_lum:.4}) must stay darker than L1 sheet floor ({min_sheet_lum:.4})"
+                );
+                assert!(
+                    max_well_lum < min_sheet_lum,
+                    "dark well ceiling ({max_well_lum:.4}) must sink below L1 sheet floor ({min_sheet_lum:.4})"
+                );
+                for &sheet in &sheet_list {
                     let well = p.well.composite_over(sheet);
                     let ctrl = p.control.composite_over(sheet);
                     let hover = p.control_hover.composite_over(sheet);
                     let pressed = p.control_pressed.composite_over(sheet);
                     assert!(
-                        luminance(sheet) < luminance(well),
-                        "dark well brighter than sheet"
+                        luminance(well) < luminance(sheet),
+                        "dark well must sink darker than sheet"
                     );
                     assert!(
-                        luminance(well) < luminance(ctrl),
-                        "dark ctrl brighter than well"
+                        luminance(sheet) < luminance(ctrl),
+                        "dark ctrl brighter than sheet"
                     );
                     assert!(luminance(ctrl) < luminance(hover));
                     assert!(luminance(hover) < luminance(pressed));

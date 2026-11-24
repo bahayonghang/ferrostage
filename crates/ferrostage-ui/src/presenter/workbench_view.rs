@@ -1378,15 +1378,14 @@ impl Presenter {
                 this.advance_on_click(event, cx);
             }))
             .w_full()
+            .min_h_full()
             .flex_shrink_0()
             .flex()
             .flex_col()
             .gap(px(4.))
-            .my(px(4.))
             .p(px(8.))
             .rounded(px(theme::WELL_RADIUS))
-            .bg(self.material.well_bg(p))
-            .child(self.pane_caption("wb-notes", p));
+            .bg(self.material.well_bg(p));
         if self.data.workbench.note_aspects.is_empty() {
             let has_notes = self.data.workbench.has_current_notes;
             note_panel = note_panel.child(
@@ -1533,16 +1532,27 @@ impl Presenter {
                         .flex_col()
                         .child(
                             div()
-                                .id("notes-scroll")
                                 .flex_1()
                                 .min_h_0()
                                 .w_full()
                                 .rounded(px(theme::PANEL_RADIUS))
-                                .overflow_y_scroll()
+                                .overflow_hidden()
                                 .px(px(4.))
                                 .flex()
                                 .flex_col()
-                                .child(note_panel),
+                                .child(self.pane_caption("wb-notes", p))
+                                .child(
+                                    div()
+                                        .id("notes-scroll")
+                                        .flex_1()
+                                        .min_h_0()
+                                        .w_full()
+                                        .overflow_y_scroll()
+                                        .pb(px(4.))
+                                        .flex()
+                                        .flex_col()
+                                        .child(note_panel),
+                                ),
                         ),
                 )
                 .child(self.hairline_split(
@@ -1788,16 +1798,27 @@ impl Presenter {
                                     .flex_col()
                                     .child(
                                         div()
-                                            .id("notes-scroll")
                                             .flex_1()
                                             .min_h_0()
                                             .w_full()
                                             .rounded(px(theme::PANEL_RADIUS))
-                                            .overflow_y_scroll()
+                                            .overflow_hidden()
                                             .px(px(4.))
                                             .flex()
                                             .flex_col()
-                                            .child(note_panel),
+                                            .child(self.pane_caption("wb-notes", p))
+                                            .child(
+                                                div()
+                                                    .id("notes-scroll")
+                                                    .flex_1()
+                                                    .min_h_0()
+                                                    .w_full()
+                                                    .overflow_y_scroll()
+                                                    .pb(px(4.))
+                                                    .flex()
+                                                    .flex_col()
+                                                    .child(note_panel),
+                                            ),
                                     ),
                             )
                         }),

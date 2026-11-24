@@ -51,7 +51,7 @@ impl Presenter {
             p,
         )
         .group("settings-category-row")
-        .rounded(px(0.))
+        .rounded(px(theme::WELL_RADIUS))
         .aria_toggled(if selected {
             gpui::Toggled::True
         } else {
@@ -63,6 +63,7 @@ impl Presenter {
                 .relative()
                 .min_h(px(theme::CONTROL))
                 .px(px(theme::SPACING))
+                .rounded(px(theme::WELL_RADIUS))
                 .flex()
                 .items_center()
                 .justify_center()
@@ -78,6 +79,7 @@ impl Presenter {
                             .left(px(6.))
                             .w(px(3.))
                             .h(px(18.))
+                            .rounded_full()
                             .debug_selector(move || mark_id.clone())
                             .bg(rgb(p.focus)),
                     )
@@ -175,7 +177,7 @@ impl Presenter {
             .flex()
             .gap(px(4.))
             .when(layout.narrow, |v| v.flex_wrap().p(px(6.)))
-            .when(!layout.narrow, |v| v.flex_col().py(px(6.)));
+            .when(!layout.narrow, |v| v.flex_col().p(px(6.)));
         for entry in Category::ALL {
             rail_rows = rail_rows.child(self.category_row(entry, category == entry, p));
         }
@@ -240,7 +242,8 @@ impl Presenter {
             .w_full()
             .overflow_y_scroll()
             .px(px(layout.content_pad_x))
-            .py(px(12.))
+            .pt(px(12.))
+            .pb(px(24.))
             .flex()
             .flex_col()
             .gap(px(0.))
