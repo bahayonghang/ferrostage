@@ -198,6 +198,7 @@ pub(crate) struct Shell {
     pub error: Option<String>,
     pub graphics_error: Option<String>,
     pub warnings: Vec<String>,
+    pub(crate) shortcut_warnings: Vec<String>,
     /// Localized document warnings hidden for `dismissed_warning_generation`.
     pub(crate) dismissed_document_warnings: HashSet<String>,
     pub(crate) dismissed_warning_generation: DocumentGeneration,
@@ -243,7 +244,7 @@ pub fn run(inputs: ShellInputs) {
         let keys = shell.read(cx).settings.settings.keybindings.clone();
         let warnings = actions::install(shell.downgrade(), &keys, shell.read(cx).locale, cx);
         shell.update(cx, |shell, cx| {
-            shell.warnings.extend(warnings);
+            shell.shortcut_warnings = warnings;
             shell.refresh_mapping(cx);
             shell.recover_presenter(cx);
             if let Some(path) = initial {
@@ -415,6 +416,7 @@ impl Shell {
             error: None,
             graphics_error: None,
             warnings,
+            shortcut_warnings: Vec::new(),
             dismissed_document_warnings: HashSet::new(),
             dismissed_warning_generation: DocumentGeneration(0),
             modal: None,
@@ -591,9 +593,9 @@ impl Shell {
         cx.notify();
     }
 
-    fn dismiss_document_warning(&mut self, text: String) {
+    fn dismiss_document_warning(&mut self, key: String) {
         let current = crate::presenter::layout_navigation::document_warnings(self);
-        if !current.iter().any(|warning| warning == &text) {
+        if !current.iter().any(|(candidate, _)| candidate == &key) {
             return;
         }
         let generation = self.state.generation();
@@ -601,7 +603,7 @@ impl Shell {
             self.dismissed_document_warnings.clear();
             self.dismissed_warning_generation = generation;
         }
-        self.dismissed_document_warnings.insert(text);
+        self.dismissed_document_warnings.insert(key);
     }
 
     pub fn dispatch(&mut self, intent: Intent, cx: &mut Context<Self>) {
@@ -749,7 +751,7 @@ impl Shell {
                 self.error = None;
                 self.graphics_error = None;
             }
-            Intent::DismissDocumentWarning(text) => self.dismiss_document_warning(text),
+            Intent::DismissDocumentWarning(key) => self.dismiss_document_warning(key),
             Intent::StartModeMenu
                 if !self.busy() && self.state.stage() != SessionStage::Presenting =>
             {
@@ -4757,14 +4759,10 @@ mod tests {
         assert!(visual.debug_bounds("document-warning-1").is_some());
         assert!(visual.debug_bounds("document-warning-2").is_none());
         assert!(visual.debug_bounds("shell-warning-0").is_some());
-        let (overlay, mixed_index) = shell.read_with(cx, |shell, _| {
-            let locale = shell.locale;
-            let overlay = locale.text("ln-warning-overlays").to_string();
-            let mixed = locale.text("ln-warning-mixed").to_string();
-            let mut ordered = [overlay.clone(), mixed.clone()];
-            ordered.sort();
-            let mixed_index = ordered.iter().position(|text| text == &mixed).unwrap();
-            (overlay, mixed_index)
+        let (overlay_key, mixed_index) = shell.read_with(cx, |shell, _| {
+            let warnings = crate::presenter::layout_navigation::document_warnings(shell);
+            let mixed_index = warnings.iter().position(|(key, _)| key == "mixed").unwrap();
+            ("overlays".to_string(), mixed_index)
         });
         let mut visual = gpui::VisualTestContext::from_window(handle, cx);
         let content = visual.debug_bounds("presenter-content").unwrap();
@@ -4802,7 +4800,8 @@ mod tests {
         assert!(visual.debug_bounds("document-warning-1").is_none());
         assert!(visual.debug_bounds("shell-warning-0").is_some());
         shell.read_with(cx, |shell, _| {
-            assert!(!shell.dismissed_document_warnings.contains(&overlay));
+            assert!(shell.dismissed_document_warnings.contains("mixed"));
+            assert!(!shell.dismissed_document_warnings.contains(&overlay_key));
             assert_eq!(shell.dismissed_document_warnings.len(), 1);
         });
         let reached = handle
@@ -4829,7 +4828,7 @@ mod tests {
         cx.run_until_parked();
         redraw(handle, cx);
         shell.read_with(cx, |shell, _| {
-            assert!(shell.dismissed_document_warnings.contains(&overlay));
+            assert!(shell.dismissed_document_warnings.contains(&overlay_key));
             assert_eq!(shell.state.generation().0, 2);
         });
         let mut visual = gpui::VisualTestContext::from_window(handle, cx);
@@ -5497,13 +5496,14 @@ mod tests {
 
     pub(super) fn input_presenter(cx: &mut TestAppContext) -> (Entity<Shell>, AnyWindowHandle) {
         let (shell, _) = headless_shell(cx);
-        cx.update(|cx| {
+        let warnings = cx.update(|cx| {
             let model = shell.read(cx);
             let keys = model.settings.settings.keybindings.clone();
             let locale = model.locale;
-            actions::install(shell.downgrade(), &keys, locale, cx);
+            actions::install(shell.downgrade(), &keys, locale, cx)
         });
         let handle = shell.update(cx, |shell, cx| {
+            shell.shortcut_warnings = warnings;
             shell.error = None;
             shell.presenter = Some(test_window(shell, false, cx));
             cx.notify();
@@ -7967,21 +7967,52 @@ mod tests {
                         cx.simulate_window_resize(handle, size(px(width), px(height)));
                         redraw(handle, cx);
                         let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+                        assert!(visual.debug_bounds("home-card").is_none());
+                        assert!(visual.debug_bounds("presenter-content").is_some());
                         let column = visual.debug_bounds("home-content").unwrap();
                         let brand = visual.debug_bounds("home-brand").unwrap();
                         let utilities = visual.debug_bounds("home-utilities").unwrap();
                         let open = visual.debug_bounds("welcome-open").unwrap();
                         let face = open;
                         let preview = visual.debug_bounds("home-preview").unwrap();
+                        let image = visual.debug_bounds("home-preview-image").unwrap();
                         let preparation = visual.debug_bounds("home-preparation").unwrap();
                         let history = visual.debug_bounds("home-history").unwrap();
+                        assert!(history.origin.y >= utilities.bottom() + px(16.));
+                        assert!(history.origin.y >= brand.bottom() + px(16.));
                         if width >= 1000. {
                             assert!(history.right() + px(32.) <= preview.left());
                             assert_eq!(history.top(), preview.top());
+                            if height >= 600. {
+                                assert!(
+                                    column.origin.x >= px(32.) && column.right() <= px(width - 32.)
+                                );
+                            }
                         } else {
                             assert!(preview.top() >= history.bottom() + px(32.));
+                            assert_eq!(history.left(), column.left());
+                            assert_eq!(preview.left(), column.left());
                         }
-                        assert!(preparation.top() >= preview.bottom());
+                        assert!(
+                            history.left() >= column.left() && history.right() <= column.right()
+                        );
+                        assert!(
+                            preview.left() >= column.left() && preview.right() <= column.right()
+                        );
+                        assert!(
+                            image.left() >= preview.left() + px(16.)
+                                && image.right() <= preview.right() - px(16.)
+                        );
+                        assert!(
+                            image.top() >= preview.top() + px(16.)
+                                && image.bottom() <= preview.bottom() - px(16.)
+                        );
+                        assert!(preparation.top() >= preview.bottom() + px(24.));
+                        assert!(preparation.top() >= history.bottom() + px(24.));
+                        assert!(
+                            preparation.left() >= column.left()
+                                && preparation.right() <= column.right()
+                        );
                         assert!(visual.debug_bounds("home-configured-target").is_some());
                         assert!(column.origin.x >= px(16.) && column.right() <= px(width - 16.));
                         assert!(face.size.width >= px(60.) && face.size.width <= px(200.));
@@ -8000,8 +8031,12 @@ mod tests {
                                 (88. ..=112.).contains(&f32::from(row.size.height)),
                                 "{row:?}"
                             );
-                            assert!((row.origin.x - history.origin.x).abs() <= px(2.));
-                            assert!(row.right() <= column.right());
+                            assert!(
+                                (row.origin.x - history.origin.x - px(17.)).abs() <= px(2.),
+                                "row must sit inside the padded glass paper: row={row:?} history={history:?}"
+                            );
+                            assert!(row.right() <= history.right() - px(16.));
+                            assert!(row.bottom() <= history.bottom() - px(16.));
                             if let Some(bottom) = previous_bottom {
                                 assert!(row.origin.y - bottom <= px(8.));
                             }
@@ -8018,6 +8053,114 @@ mod tests {
                     .update(cx, |_, window, _| window.remove_window())
                     .unwrap();
             }
+        }
+    }
+
+    #[gpui::test]
+    fn home_multi_paper_layout_separates_surfaces_scrolls_narrow_and_boxes_status_notices(
+        cx: &mut TestAppContext,
+    ) {
+        for theme in [
+            ferrostage_settings::Theme::Light,
+            ferrostage_settings::Theme::Dark,
+        ] {
+            let fixture = SaveFixture::new();
+            let (shell, handle) = input_presenter(cx);
+            shell.update(cx, |shell, cx| {
+                shell.store = fixture.store();
+                shell.settings.settings.general.theme = theme;
+                shell.settings.settings.general.glass_effect = true;
+                shell.settings.settings.general.recent_files = vec![
+                    r"C:\演示资料\项目评审\第一份文稿.pdf".into(),
+                    r"D:\Archive\第二份文稿.pdf".into(),
+                    r"D:\Other\第三份文稿.pdf".into(),
+                ];
+                shell.poll_home_preview(cx);
+                cx.notify();
+            });
+            cx.simulate_window_resize(handle, size(px(1280.), px(800.)));
+            redraw(handle, cx);
+            {
+                let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+                assert!(visual.debug_bounds("home-card").is_none());
+                assert!(visual.debug_bounds("presenter-content").is_some());
+                let column = visual.debug_bounds("home-content").unwrap();
+                let history = visual.debug_bounds("home-history").unwrap();
+                let preview = visual.debug_bounds("home-preview").unwrap();
+                let preparation = visual.debug_bounds("home-preparation").unwrap();
+                assert!(column.origin.x >= px(32.) && column.right() <= px(1280. - 32.));
+                assert!(history.right() + px(32.) <= preview.left());
+                assert_eq!(history.top(), preview.top());
+                assert!(preparation.top() >= preview.bottom() + px(24.));
+                assert!(preparation.bottom() <= px(800. - 24.));
+            }
+
+            shell.update(cx, |shell, cx| {
+                shell.warnings = vec![
+                    "Startup notice requiring its own glass paper when home has no whole-window card"
+                        .into(),
+                ];
+                shell.settings.dirty = true;
+                cx.notify();
+            });
+            cx.simulate_window_resize(handle, size(px(1280.), px(800.)));
+            redraw(handle, cx);
+            {
+                let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+                let column = visual.debug_bounds("home-content").unwrap();
+                let preparation = visual.debug_bounds("home-preparation").unwrap();
+                let warning = visual.debug_bounds("shell-warning-0").unwrap();
+                let retry = visual.debug_bounds("retry-save").unwrap();
+                assert!(warning.top() >= preparation.bottom() + px(24.));
+                assert!(warning.right() <= column.right());
+                assert!(retry.top() >= warning.bottom() + px(24.));
+                assert!(retry.right() <= column.right());
+            }
+
+            cx.simulate_window_resize(handle, size(px(320.), px(240.)));
+            handle
+                .update(cx, |_, window, _| window.activate_window())
+                .unwrap();
+            redraw(handle, cx);
+            {
+                let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+                let column = visual.debug_bounds("home-content").unwrap();
+                let history = visual.debug_bounds("home-history").unwrap();
+                let preview = visual.debug_bounds("home-preview").unwrap();
+                let preparation = visual.debug_bounds("home-preparation").unwrap();
+                let warning = visual.debug_bounds("shell-warning-0").unwrap();
+                assert!(column.origin.x >= px(16.) && column.right() <= px(320. - 16.));
+                assert!(preview.top() >= history.bottom() + px(32.));
+                assert!(preparation.top() >= preview.bottom() + px(24.));
+                assert!(history.right() <= column.right());
+                assert!(preview.right() <= column.right());
+                assert!(preparation.right() <= column.right());
+                assert!(warning.right() <= column.right());
+            }
+            for target_id in ["home-open-selected", "retry-save"] {
+                let mut visible = false;
+                for _ in 0..20 {
+                    cx.simulate_keystrokes(handle, "tab");
+                    cx.run_until_parked();
+                    cx.test_window(handle).simulate_scheduled_frame();
+                    redraw(handle, cx);
+                    cx.run_until_parked();
+                    cx.test_window(handle).simulate_scheduled_frame();
+                    redraw(handle, cx);
+                    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+                    if let Some(bounds) = visual.debug_bounds(target_id)
+                        && bounds.top() >= px(0.)
+                        && bounds.bottom() <= px(240.)
+                    {
+                        visible = true;
+                        break;
+                    }
+                }
+                assert!(visible, "{target_id} did not scroll into narrow viewport");
+            }
+            handle
+                .update(cx, |_, window, _| window.remove_window())
+                .unwrap();
         }
     }
 

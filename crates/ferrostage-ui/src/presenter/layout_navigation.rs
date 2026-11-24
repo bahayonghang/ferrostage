@@ -79,7 +79,8 @@ impl LayoutMenuData {
 }
 
 /// Real document warnings stay in ordinary feedback, without an internal Debug dump.
-pub(crate) fn document_warnings(shell: &Shell) -> Vec<String> {
+/// Each entry pairs a language-independent stable key with its localized display text.
+pub(crate) fn document_warnings(shell: &Shell) -> Vec<(String, String)> {
     let Some(session) = &shell.workbench.document else {
         return vec![];
     };
@@ -89,46 +90,61 @@ pub(crate) fn document_warnings(shell: &Shell) -> Vec<String> {
         .warnings
         .iter()
         .map(|warning| match warning {
-            DocumentWarning::AmbiguousLayout => l.text("ln-warning-ambiguous").into(),
-            DocumentWarning::MixedGeometry => l.text("ln-warning-mixed").into(),
-            DocumentWarning::OverlayHeuristic => l.text("ln-warning-overlays").into(),
-            DocumentWarning::OrphanNotes { page } => {
-                l.format("ln-warning-orphan", &[("page", (page.0 + 1).to_string())])
+            DocumentWarning::AmbiguousLayout => {
+                ("ambiguous".into(), l.text("ln-warning-ambiguous").into())
             }
-            DocumentWarning::MediaOutsideSlide { page, .. } => {
-                l.format("ln-warning-media", &[("page", (page.0 + 1).to_string())])
+            DocumentWarning::MixedGeometry => ("mixed".into(), l.text("ln-warning-mixed").into()),
+            DocumentWarning::OverlayHeuristic => {
+                ("overlays".into(), l.text("ln-warning-overlays").into())
             }
+            DocumentWarning::OrphanNotes { page } => (
+                format!("orphan:{}", page.0 + 1),
+                l.format("ln-warning-orphan", &[("page", (page.0 + 1).to_string())]),
+            ),
+            DocumentWarning::MediaOutsideSlide { page, .. } => (
+                format!("media:{}", page.0 + 1),
+                l.format("ln-warning-media", &[("page", (page.0 + 1).to_string())]),
+            ),
         })
-        .collect::<Vec<_>>();
+        .collect::<Vec<(String, String)>>();
     for diagnostic in &session.document.structure_diagnostics {
         if diagnostic.field.ends_with("/ActiveContent") {
             warnings.push(if diagnostic.field.starts_with("Document/") {
-                l.text("ln-warning-active-document").into()
+                (
+                    "active-doc".into(),
+                    l.text("ln-warning-active-document").into(),
+                )
             } else {
-                l.format(
-                    "ln-warning-active-page",
-                    &[("page", (diagnostic.page.0 + 1).to_string())],
+                (
+                    format!("active-page:{}", diagnostic.page.0 + 1),
+                    l.format(
+                        "ln-warning-active-page",
+                        &[("page", (diagnostic.page.0 + 1).to_string())],
+                    ),
                 )
             });
             continue;
         }
         use ferrostage_document::DiagnosticKind;
-        let kind = match diagnostic.kind {
-            DiagnosticKind::Missing => "ln-diagnostic-missing",
-            DiagnosticKind::Malformed => "ln-diagnostic-malformed",
-            DiagnosticKind::Unsupported => "ln-diagnostic-unsupported",
-            DiagnosticKind::UnscaledTime => "ln-diagnostic-time",
+        let (reason_key, kind) = match diagnostic.kind {
+            DiagnosticKind::Missing => ("missing", "ln-diagnostic-missing"),
+            DiagnosticKind::Malformed => ("malformed", "ln-diagnostic-malformed"),
+            DiagnosticKind::Unsupported => ("unsupported", "ln-diagnostic-unsupported"),
+            DiagnosticKind::UnscaledTime => ("time", "ln-diagnostic-time"),
         };
-        warnings.push(l.format(
-            "ln-warning-structure",
-            &[
-                ("page", (diagnostic.page.0 + 1).to_string()),
-                ("reason", l.text(kind).into()),
-            ],
+        warnings.push((
+            format!("structure:{}:{reason_key}", diagnostic.page.0 + 1),
+            l.format(
+                "ln-warning-structure",
+                &[
+                    ("page", (diagnostic.page.0 + 1).to_string()),
+                    ("reason", l.text(kind).into()),
+                ],
+            ),
         ));
     }
-    warnings.sort();
-    warnings.dedup();
+    warnings.sort_by(|a, b| a.0.cmp(&b.0));
+    warnings.dedup_by(|a, b| a.0 == b.0);
     warnings
 }
 
@@ -217,6 +233,9 @@ impl Presenter {
             - f32::from(self.layout_anchor.get().bottom())
             - 20.)
             .max(120.);
+        let hover_bg = self.material.control_hover_bg(p);
+        let pressed_bg = self.material.control_pressed_bg(p);
+        let hairline = self.material.hairline_color(p);
         let detected = layout_label(menu.detected);
         let mut body = div()
             .id("layout-menu-body")
@@ -231,13 +250,7 @@ impl Presenter {
         for (index, focus) in self.layout_row_focus.iter().enumerate() {
             if index == LAYOUTS.len() {
                 body = body
-                    .child(
-                        div()
-                            .my(px(6.))
-                            .h(px(1.))
-                            .bg(gpui::rgba(p.hairline))
-                            .flex_shrink_0(),
-                    )
+                    .child(div().my(px(6.)).h(px(1.)).bg(hairline).flex_shrink_0())
                     .child(self.layout_group_heading("ln-page-group", p));
             }
             let (label, checked, helper) = match index {
@@ -304,8 +317,8 @@ impl Presenter {
                         .gap(px(8.))
                         .bg(rgb(if checked { p.accent_wash } else { p.raised }))
                         .text_color(rgb(if enabled { p.ink } else { p.muted }))
-                        .hover(|style| style.bg(rgb(p.control_hover)))
-                        .active(|style| style.bg(rgb(p.control_pressed)).top(px(1.)))
+                        .hover(move |style| style.bg(hover_bg))
+                        .active(move |style| style.bg(pressed_bg).top(px(1.)))
                         .child(
                             div()
                                 .w(px(16.))
@@ -335,7 +348,8 @@ impl Presenter {
                 ),
             );
         }
-        super::material::floating(p)
+        self.material
+            .floating(p)
             .id("layout-navigation-menu")
             .debug_selector(|| "layout-navigation-menu".into())
             .role(Role::Menu)
@@ -399,7 +413,8 @@ impl Presenter {
             .flex_col_reverse()
             .items_start()
             .gap(px(8.));
-        for (index, warning) in self.data.document_warnings.iter().enumerate() {
+        let hover_bg = self.material.control_hover_bg(p);
+        for (index, (key, text)) in self.data.document_warnings.iter().enumerate() {
             let id = format!("document-warning-{index}");
             let dismiss_id = format!("dismiss-document-warning-{index}");
             let selector = id.clone();
@@ -409,7 +424,8 @@ impl Presenter {
                 .tab_index(0)
                 .tab_stop(!blocked);
             stack = stack.child(
-                super::material::floating(p)
+                self.material
+                    .floating(p)
                     .id(SharedString::from(id))
                     .debug_selector(move || selector)
                     .role(Role::Status)
@@ -434,14 +450,14 @@ impl Presenter {
                             .font_weight(gpui::FontWeight::MEDIUM)
                             .text_size(px(self.ui_text_size(14.)))
                             .text_color(rgb(p.warning))
-                            .child(warning.clone()),
+                            .child(text.clone()),
                     )
                     .child(
                         self.activation_target(
                             dismiss_id,
                             self.locale.text("dismiss-warning").into(),
                             true,
-                            Intent::DismissDocumentWarning(warning.clone()),
+                            Intent::DismissDocumentWarning(key.clone()),
                             p,
                         )
                         .flex_shrink_0()
@@ -456,7 +472,7 @@ impl Presenter {
                                 .rounded(px(crate::theme::RADIUS))
                                 .text_size(px(self.ui_text_size(16.)))
                                 .text_color(rgb(p.body))
-                                .hover(|style| style.bg(rgb(p.control_hover)))
+                                .hover(move |style| style.bg(hover_bg))
                                 .active(|style| style.top(px(1.)))
                                 .child("×"),
                         ),

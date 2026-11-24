@@ -106,39 +106,89 @@ impl Typography {
     }
 }
 
-/// Presenter colors. Every value is opaque `0xRRGGBB` except the fields documented
-/// as RGBA (`hairline`, `shadow`, `titlebar_control_hover`, `titlebar_control_pressed`);
-/// `layer` is drawn at `layer_alpha` only when the native window blur is requested.
-/// Solid panels use their opaque gradient stops.
+/// Translucent color token (`0xRRGGBB` + `alpha`). Keeps fill and alpha paired so
+/// compositing and GPUI color conversion cannot drift apart.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct Tint {
+    pub rgb: u32,
+    pub alpha: f32,
+}
+
+impl Tint {
+    pub const TRANSPARENT: Self = Self {
+        rgb: 0x000000,
+        alpha: 0.0,
+    };
+
+    pub const fn new(rgb: u32, alpha: f32) -> Self {
+        Self { rgb, alpha }
+    }
+
+    pub const fn opaque(rgb: u32) -> Self {
+        Self { rgb, alpha: 1.0 }
+    }
+
+    pub fn composite_over(self, back: u32) -> u32 {
+        if self.alpha <= 0.0 {
+            back
+        } else if self.alpha >= 1.0 {
+            self.rgb
+        } else {
+            over(self.rgb, back, self.alpha)
+        }
+    }
+
+    pub fn resolve(self, sheet_solid: u32, glass: bool) -> Self {
+        if glass {
+            self
+        } else {
+            Self::opaque(self.composite_over(sheet_solid))
+        }
+    }
+
+    #[cfg(feature = "gpui")]
+    pub fn color(self) -> gpui::Rgba {
+        gpui::rgb(self.rgb).alpha(self.alpha)
+    }
+}
+
+/// Presenter colors. Opaque values use `0xRRGGBB`; translucent layers, overlays,
+/// wells, controls, hairlines and titlebar hover/press overlays use [`Tint`].
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Palette {
-    /// Window field gradient ends (160deg). Presenter content stays off the bare
-    /// field except the integrated titlebar.
+    /// Full-bleed window field gradient ends (160deg). Besides the integrated
+    /// titlebar (`titlebar-*`), the Home top header row and Settings title/Close
+    /// header row float directly on this warm field using `ink` and
+    /// `Utility`/`Primary` button fills; all other presenter content stays on L1/L2 surfaces.
     pub field_top: u32,
     pub field_bottom: u32,
-    /// Field opacity over the native blurred window backdrop. High enough that an
-    /// arbitrary desktop tints the field without replacing its warm hue.
-    pub field_alpha: f32,
-    /// Panel layer over the native blurred field.
-    pub layer: u32,
-    pub layer_top: u32,
-    pub layer_alpha: f32,
-    /// Panel color for every solid fallback surface.
-    pub layer_solid: u32,
-    pub layer_solid_top: u32,
-    /// Floating menus and dialogs.
-    pub raised: u32,
-    /// The selected option on a `control` track; always lighter than the track.
+    /// Up to three soft ambient blobs painted onto the L0 field when airy glass is active.
+    pub blobs: [Tint; 3],
+    /// L1 glass paper fill, solid fallback, 1px border edge, top inner highlight, and drop shadow.
+    pub sheet: Tint,
+    pub sheet_solid: u32,
+    pub sheet_edge: Tint,
+    pub sheet_highlight: Tint,
+    pub sheet_shadow: Tint,
+    /// L2 floating overlay fill, solid fallback, border edge, top inner highlight, and drop shadow.
+    pub overlay: Tint,
+    pub overlay_solid: u32,
+    pub overlay_edge: Tint,
+    pub overlay_highlight: Tint,
+    pub overlay_shadow: Tint,
+    /// Inset well inside a panel: note text, inputs and grouped settings.
+    pub well: Tint,
+    /// Neutral control fill and its hover/pressed states.
+    pub control: Tint,
+    pub control_hover: Tint,
+    pub control_pressed: Tint,
+    /// The selected option on a `control` track; always brighter than the track.
     pub segment: u32,
-    /// Inset area inside a panel: note text, inputs and grouped settings.
-    pub well: u32,
-    /// Neutral control fill and its hover/pressed states, precomposited over `layer_solid`.
-    pub control: u32,
-    pub control_hover: u32,
-    pub control_pressed: u32,
-    /// Decorative separator, RGBA. Never a control boundary.
-    pub hairline: u32,
-    /// Boundary for inputs that need one; >=3:1 on `well` and `layer_solid`.
+    /// Raised inline surface (e.g. list rows / diagram tiles).
+    pub raised: u32,
+    /// Decorative separator. Never a control boundary.
+    pub hairline: Tint,
+    /// Boundary for inputs that need one; >=3:1 on `well` and `sheet`.
     pub border: u32,
     pub ink: u32,
     pub body: u32,
@@ -159,19 +209,18 @@ pub struct Palette {
     pub warning: u32,
     pub error: u32,
     pub error_wash: u32,
-    /// The single floating-surface shadow, RGBA.
-    pub shadow: u32,
-    /// Integrated titlebar text, icons, and hover/pressed control fills (RGBA).
+    /// Integrated titlebar text, icons, and hover/pressed control fills.
     pub titlebar_ink: u32,
     pub titlebar_inactive_ink: u32,
     pub titlebar_icon: u32,
     pub titlebar_inactive_icon: u32,
-    pub titlebar_control_hover: u32,
-    pub titlebar_control_pressed: u32,
+    pub titlebar_control_hover: Tint,
+    pub titlebar_control_pressed: Tint,
     /// Exclusive danger-red hover/pressed fills and icon foreground for the titlebar close button.
     pub titlebar_close_hover: u32,
     pub titlebar_close_pressed: u32,
     pub titlebar_on_close: u32,
+    pub is_dark: bool,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -189,40 +238,54 @@ pub enum ButtonKind {
     Stop,
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct ButtonStyle {
-    pub fill: u32,
+    pub fill: Tint,
     pub ink: u32,
-    pub hover: u32,
-    pub pressed: u32,
+    pub hover: Tint,
+    pub pressed: Tint,
     pub radius: f32,
     /// Non-color selected-state mark, drawn in a fixed slot.
     pub indicator: Option<u32>,
 }
 
 impl Palette {
-    pub fn button(self, kind: ButtonKind, enabled: bool, selected: bool) -> ButtonStyle {
+    pub fn button(
+        self,
+        kind: ButtonKind,
+        enabled: bool,
+        selected: bool,
+        glass: bool,
+    ) -> ButtonStyle {
+        let is_segmented = matches!(
+            kind,
+            ButtonKind::Segment | ButtonKind::Black | ButtonKind::White | ButtonKind::Tool
+        );
         let mut style = ButtonStyle {
-            fill: self.control,
+            fill: if is_segmented && !selected {
+                Tint::TRANSPARENT
+            } else {
+                self.control.resolve(self.sheet_solid, glass)
+            },
             ink: self.body,
-            hover: self.control_hover,
-            pressed: self.control_pressed,
+            hover: self.control_hover.resolve(self.sheet_solid, glass),
+            pressed: self.control_pressed.resolve(self.sheet_solid, glass),
             radius: PILL_RADIUS,
             indicator: None,
         };
         match kind {
             ButtonKind::Primary => {
-                style.fill = self.accent;
+                style.fill = Tint::opaque(self.accent);
                 style.ink = self.on_accent;
-                style.hover = self.accent_hover;
-                style.pressed = self.accent_pressed;
+                style.hover = Tint::opaque(self.accent_hover);
+                style.pressed = Tint::opaque(self.accent_pressed);
                 style.indicator = selected.then_some(self.on_accent);
             }
             ButtonKind::Stop => {
-                style.fill = self.error_wash;
+                style.fill = Tint::opaque(self.error_wash);
                 style.ink = self.error;
-                style.hover = over(self.ink, self.error_wash, 0.03);
-                style.pressed = over(self.ink, self.error_wash, 0.06);
+                style.hover = Tint::opaque(over(self.ink, self.error_wash, 0.03));
+                style.pressed = Tint::opaque(over(self.ink, self.error_wash, 0.06));
                 style.indicator = selected.then_some(self.focus);
             }
             ButtonKind::Destructive => {
@@ -233,21 +296,25 @@ impl Palette {
             ButtonKind::Segment | ButtonKind::Black | ButtonKind::White | ButtonKind::Tool
                 if selected =>
             {
-                style.fill = self.segment;
+                style.fill = Tint::opaque(self.segment);
                 style.ink = self.ink;
-                style.hover = over(self.ink, self.segment, 0.03);
-                style.pressed = over(self.ink, self.segment, 0.06);
+                style.hover = Tint::opaque(over(self.ink, self.segment, 0.03));
+                style.pressed = Tint::opaque(over(self.ink, self.segment, 0.06));
                 style.indicator = Some(self.focus);
             }
             _ if selected => {
-                style.fill = self.accent_wash;
+                style.fill = Tint::opaque(self.accent_wash);
                 style.ink = self.ink;
                 style.indicator = Some(self.focus);
             }
             _ => {}
         }
         if !enabled {
-            style.fill = self.control;
+            style.fill = if is_segmented {
+                Tint::TRANSPARENT
+            } else {
+                self.control.resolve(self.sheet_solid, glass)
+            };
             style.ink = self.muted;
             style.indicator = selected.then_some(self.muted);
         }
@@ -265,91 +332,107 @@ pub fn over(front: u32, back: u32, alpha: f32) -> u32 {
 }
 
 pub const LIGHT: Palette = Palette {
-    field_top: 0xF7F2EB,
-    field_bottom: 0xEFE6DB,
-    field_alpha: 0.72,
-    layer: 0xFFFAF4,
-    layer_top: 0xFFFFFF,
-    layer_alpha: 0.21,
-    layer_solid: 0xFBF8F4,
-    layer_solid_top: 0xFFFDF9,
-    raised: 0xFFFFFF,
+    field_top: 0xFBF6F0,
+    field_bottom: 0xF1E4D6,
+    blobs: [
+        Tint::new(0xF7D7BE, 0.65),
+        Tint::new(0xF1CEB6, 0.65),
+        Tint::new(0xF6E0C8, 0.65),
+    ],
+    sheet: Tint::new(0xFFFDFB, 0.66),
+    sheet_solid: 0xFFFDF9,
+    sheet_edge: Tint::new(0xFFFFFF, 0.78),
+    sheet_highlight: Tint::new(0xFFFFFF, 0.65),
+    sheet_shadow: Tint::new(0x4A3222, 0.14),
+    overlay: Tint::new(0xFFFDFB, 0.96),
+    overlay_solid: 0xFFFFFF,
+    overlay_edge: Tint::new(0x1F1B17, 0.10),
+    overlay_highlight: Tint::new(0xFFFFFF, 0.72),
+    overlay_shadow: Tint::new(0x4A3222, 0.22),
+    well: Tint::new(0x1F1B17, 0.045),
+    control: Tint::new(0x1F1B17, 0.075),
+    control_hover: Tint::new(0x1F1B17, 0.115),
+    control_pressed: Tint::new(0x1F1B17, 0.155),
     segment: 0xFFFFFF,
-    well: 0xF3EEE7,
-    // Ink #1F1B17 at 0.06 / 0.10 / 0.14 over `layer_solid`.
-    control: 0xEEEBE7,
-    control_hover: 0xE5E2DE,
-    control_pressed: 0xDCD9D5,
-    hairline: 0x1F1B1714,
-    border: 0x8C847A,
+    raised: 0xFFFFFF,
+    hairline: Tint::new(0x1F1B17, 0.08),
+    border: 0x7F776E,
     ink: 0x1F1B17,
     body: 0x3D3833,
-    muted: 0x49433C,
+    muted: 0x524B44,
     accent: 0xD97757,
     on_accent: 0x1F1712,
     accent_hover: 0xE0866A,
     accent_pressed: 0xC9694A,
-    accent_text: 0x76341C,
-    focus: 0x76341C,
+    accent_text: 0x8A3B1E,
+    focus: 0x8A3B1E,
     accent_wash: 0xF7E6DC,
-    success: 0x215132,
-    warning: 0x66400A,
-    error: 0x802821,
+    success: 0x215534,
+    warning: 0x6B430A,
+    error: 0x872A22,
     error_wash: 0xF8E3DF,
-    shadow: 0x1F1B171F,
     titlebar_ink: 0x1F1B17,
     titlebar_inactive_ink: 0x524B44,
     titlebar_icon: 0x1F1B17,
     titlebar_inactive_icon: 0x524B44,
-    titlebar_control_hover: 0x1F1B1714,
-    titlebar_control_pressed: 0x1F1B1724,
+    titlebar_control_hover: Tint::new(0x1F1B17, 0.08),
+    titlebar_control_pressed: Tint::new(0x1F1B17, 0.14),
     titlebar_close_hover: 0xC42B1C,
     titlebar_close_pressed: 0xA62317,
     titlebar_on_close: 0xFFFDF9,
+    is_dark: false,
 };
 
 pub const DARK: Palette = Palette {
-    field_top: 0x1D1B19,
-    field_bottom: 0x26221E,
-    field_alpha: 0.86,
-    layer: 0x76695D,
-    layer_top: 0xB7A899,
-    layer_alpha: 0.07,
-    layer_solid: 0x2A2622,
-    layer_solid_top: 0x322D29,
-    raised: 0x38332E,
-    segment: 0x524D48,
-    well: 0x221F1C,
-    // White at 0.08 / 0.12 / 0.16 over `layer_solid`.
-    control: 0x3B3734,
-    control_hover: 0x44403D,
-    control_pressed: 0x4C4945,
-    hairline: 0xFFFFFF14,
-    border: 0x8F877C,
+    field_top: 0x14110E,
+    field_bottom: 0x1A1511,
+    blobs: [
+        Tint::new(0x2E1F15, 0.65),
+        Tint::new(0x281B13, 0.65),
+        Tint::new(0x251A13, 0.65),
+    ],
+    sheet: Tint::new(0x2D2722, 0.74),
+    sheet_solid: 0x2B2521,
+    sheet_edge: Tint::new(0xFFF4E8, 0.12),
+    sheet_highlight: Tint::new(0xFFF4E8, 0.12),
+    sheet_shadow: Tint::new(0x000000, 0.45),
+    overlay: Tint::new(0x332D28, 0.96),
+    overlay_solid: 0x332D28,
+    overlay_edge: Tint::new(0xFFF4E8, 0.14),
+    overlay_highlight: Tint::new(0xFFF4E8, 0.12),
+    overlay_shadow: Tint::new(0x000000, 0.60),
+    well: Tint::new(0x0A0806, 0.34),
+    control: Tint::new(0xF5F1EB, 0.08),
+    control_hover: Tint::new(0xF5F1EB, 0.12),
+    control_pressed: Tint::new(0xF5F1EB, 0.16),
+    segment: 0x544E48,
+    raised: 0x332D28,
+    hairline: Tint::new(0xFFFFFF, 0.08),
+    border: 0x958C81,
     ink: 0xF5F1EB,
     body: 0xE2DBD2,
-    muted: 0xC4BCB2,
+    muted: 0xC8C0B6,
     accent: 0xD97757,
     on_accent: 0x1F1712,
     accent_hover: 0xE0866A,
     accent_pressed: 0xC9694A,
-    accent_text: 0xEBA98C,
-    focus: 0xEBA98C,
+    accent_text: 0xF0B296,
+    focus: 0xF0B296,
     accent_wash: 0x3A2A22,
     success: 0x8DCEA0,
     warning: 0xE8B774,
-    error: 0xFFA5A0,
+    error: 0xFFACA7,
     error_wash: 0x3B2523,
-    shadow: 0x00000066,
     titlebar_ink: 0xF5F1EB,
     titlebar_inactive_ink: 0xACA49A,
     titlebar_icon: 0xF5F1EB,
     titlebar_inactive_icon: 0xACA49A,
-    titlebar_control_hover: 0xFFFFFF17,
-    titlebar_control_pressed: 0xFFFFFF26,
+    titlebar_control_hover: Tint::new(0xFFFFFF, 0.09),
+    titlebar_control_pressed: Tint::new(0xFFFFFF, 0.15),
     titlebar_close_hover: 0xC42B1C,
     titlebar_close_pressed: 0xA62317,
     titlebar_on_close: 0xFFFDF9,
+    is_dark: true,
 };
 
 pub fn palette(theme: Theme, system_dark: bool) -> Palette {
@@ -426,107 +509,162 @@ mod tests {
         ButtonKind::Segment,
         ButtonKind::Stop,
     ];
-    fn d3d_composite(premultiplied: u32, desktop: u32, desktop_weight: f32) -> u32 {
-        let mut composite = 0;
-        for shift in [0, 8, 16] {
-            let channel = (premultiplied >> shift) & 255u32;
-            let back = (desktop >> shift) & 255u32;
-            composite |=
-                (channel + (back as f32 * desktop_weight).round() as u32).min(255) << shift;
-        }
-        composite
-    }
-    /// Every opaque panel color text can land on, including the native composite of
-    /// field and layer over the two desktop extremes behind the blurred window.
-    fn panels(p: Palette) -> Vec<u32> {
-        let mut panels = vec![p.layer_solid, p.layer_solid_top];
-        for edge in [p.field_top, p.field_bottom] {
-            for desktop in [0, 0xFFFFFF] {
-                for layer in [p.layer_top, p.layer] {
-                    panels.push(over(
-                        layer,
-                        over(edge, desktop, p.field_alpha),
-                        p.layer_alpha,
-                    ));
-                    // GPUI's D3D11 quad blend accumulates destination alpha.
-                    // RGB uses source-over, but less desktop survives at composition.
-                    let premultiplied = over(layer, over(edge, 0, p.field_alpha), p.layer_alpha);
-                    let desktop_weight = (1. - p.field_alpha - p.layer_alpha).max(0.);
-                    panels.push(d3d_composite(premultiplied, desktop, desktop_weight));
-                }
-            }
-        }
-        panels
-    }
-    /// Every opaque field color integrated titlebar content can land on, including
-    /// solid field gradient stops and native glass composites over black/white desktops.
+    /// Every field color across gradient endpoints and blob peaks.
     fn fields(p: Palette) -> Vec<u32> {
         let mut fields = vec![p.field_top, p.field_bottom];
-        for edge in [p.field_top, p.field_bottom] {
-            for desktop in [0, 0xFFFFFF] {
-                fields.push(over(edge, desktop, p.field_alpha));
-                let premultiplied = over(edge, 0, p.field_alpha);
-                let desktop_weight = (1. - p.field_alpha).max(0.);
-                fields.push(d3d_composite(premultiplied, desktop, desktop_weight));
+        for end in [p.field_top, p.field_bottom] {
+            for blob in p.blobs {
+                fields.push(blob.composite_over(end));
             }
         }
         fields
     }
-    /// Every opaque surface an integrated titlebar control icon can land on when
-    /// hovered or pressed, covering solid fallback, source-over glass, and GPUI
-    /// Windows D3D11 additive quad alpha blending over black/white desktops.
-    fn titlebar_control_surfaces(p: Palette, rgba: u32) -> Vec<u32> {
-        let ctrl_rgb = rgba >> 8;
-        let ctrl_alpha = (rgba & 255) as f32 / 255.;
-        let mut surfaces = Vec::new();
-        for edge in [p.field_top, p.field_bottom] {
-            surfaces.push(over(ctrl_rgb, edge, ctrl_alpha));
-            for desktop in [0, 0xFFFFFF] {
-                surfaces.push(over(
-                    ctrl_rgb,
-                    over(edge, desktop, p.field_alpha),
-                    ctrl_alpha,
-                ));
-                let premultiplied = over(ctrl_rgb, over(edge, 0, p.field_alpha), ctrl_alpha);
-                let desktop_weight = (1. - p.field_alpha - ctrl_alpha).max(0.);
-                surfaces.push(d3d_composite(premultiplied, desktop, desktop_weight));
-            }
+
+    /// Every opaque L1 panel color text can land on (solid fallback + glass sheet over field/blobs).
+    fn sheets(p: Palette) -> Vec<u32> {
+        let mut out = vec![p.sheet_solid];
+        for field in fields(p) {
+            out.push(p.sheet.composite_over(field));
         }
-        surfaces
+        out
+    }
+
+    /// Every opaque L2 overlay color text can land on.
+    fn overlays(p: Palette) -> Vec<u32> {
+        let mut out = vec![p.overlay_solid, p.raised];
+        for field in fields(p) {
+            out.push(p.overlay.composite_over(field));
+        }
+        out
     }
 
     #[test]
-    fn glass_panel_transmits_more_backdrop_than_the_original_material() {
-        // Previous source-over spans were ceil(255 × 4.08%) and ceil(255 × 4.68%).
-        // Windows used to saturate alpha; preserve at least 4% desktop there too.
-        for (p, original_span) in [(LIGHT, 11), (DARK, 12)] {
-            assert!(
-                1. - p.field_alpha - p.layer_alpha > 0.04,
-                "native alpha budget"
-            );
-            for field in [p.field_top, p.field_bottom] {
-                let panel =
-                    |desktop| over(p.layer, over(field, desktop, p.field_alpha), p.layer_alpha);
-                let black = panel(0);
-                let white = panel(0xFFFFFF);
-                for shift in [0, 8, 16] {
+    fn airy_glass_sheet_and_wells_avoid_brightness_inversion() {
+        for p in [LIGHT, DARK] {
+            let glass_sheets: Vec<u32> = fields(p)
+                .into_iter()
+                .map(|field| p.sheet.composite_over(field))
+                .collect();
+            let glass_wells: Vec<u32> = glass_sheets
+                .iter()
+                .map(|&sheet| p.well.composite_over(sheet))
+                .collect();
+
+            if p.is_dark {
+                let max_field_lum = fields(p).into_iter().map(luminance).fold(0.0_f64, f64::max);
+                let sheet_list = sheets(p);
+                let min_sheet_lum = sheet_list
+                    .iter()
+                    .copied()
+                    .map(luminance)
+                    .fold(f64::INFINITY, f64::min);
+                let max_well_lum = sheet_list
+                    .iter()
+                    .map(|&sheet| luminance(p.well.composite_over(sheet)))
+                    .fold(0.0_f64, f64::max);
+                assert!(
+                    max_field_lum < min_sheet_lum,
+                    "dark field/blob ceiling ({max_field_lum:.4}) must stay darker than L1 sheet floor ({min_sheet_lum:.4})"
+                );
+                assert!(
+                    max_well_lum < min_sheet_lum,
+                    "dark well ceiling ({max_well_lum:.4}) must sink below L1 sheet floor ({min_sheet_lum:.4})"
+                );
+                for &sheet in &sheet_list {
+                    let well = p.well.composite_over(sheet);
+                    let ctrl = p.control.composite_over(sheet);
+                    let hover = p.control_hover.composite_over(sheet);
+                    let pressed = p.control_pressed.composite_over(sheet);
                     assert!(
-                        ((white >> shift) & 255u32) - ((black >> shift) & 255u32) > original_span
+                        luminance(well) < luminance(sheet),
+                        "dark well must sink darker than sheet"
                     );
+                    assert!(
+                        luminance(sheet) < luminance(ctrl),
+                        "dark ctrl brighter than sheet"
+                    );
+                    assert!(luminance(ctrl) < luminance(hover));
+                    assert!(luminance(hover) < luminance(pressed));
+                    assert!(luminance(p.segment) > luminance(ctrl), "dark segment lift");
+                    assert!(contrast(p.segment, ctrl) >= 1.1, "dark segment contrast");
+                }
+            } else {
+                let min_sheet_lum = glass_sheets
+                    .iter()
+                    .map(|&c| luminance(c))
+                    .fold(f64::INFINITY, f64::min);
+                let max_well_lum = glass_wells
+                    .iter()
+                    .map(|&c| luminance(c))
+                    .fold(0.0_f64, f64::max);
+                assert!(
+                    min_sheet_lum > max_well_lum,
+                    "light glass sheet floor ({min_sheet_lum:.4}) must exceed glass well ceiling ({max_well_lum:.4})"
+                );
+                for &sheet in &sheets(p) {
+                    let well = p.well.composite_over(sheet);
+                    let ctrl = p.control.composite_over(sheet);
+                    let hover = p.control_hover.composite_over(sheet);
+                    let pressed = p.control_pressed.composite_over(sheet);
+                    assert!(
+                        luminance(sheet) > luminance(well),
+                        "light well darker than sheet"
+                    );
+                    assert!(
+                        luminance(well) > luminance(ctrl),
+                        "light ctrl darker than well"
+                    );
+                    assert!(luminance(ctrl) > luminance(hover));
+                    assert!(luminance(hover) > luminance(pressed));
+                    assert!(luminance(p.segment) > luminance(ctrl), "light segment lift");
+                    assert!(contrast(p.segment, ctrl) >= 1.1, "light segment contrast");
                 }
             }
         }
     }
 
     #[test]
-    fn control_fills_are_the_documented_precomposites() {
-        for (p, base, alphas) in [
-            (LIGHT, LIGHT.ink, [0.06, 0.10, 0.14]),
-            (DARK, 0xFFFFFF, [0.08, 0.12, 0.16]),
-        ] {
-            let fills = [p.control, p.control_hover, p.control_pressed];
-            for (fill, alpha) in fills.into_iter().zip(alphas) {
-                assert_eq!(fill, over(base, p.layer_solid, alpha), "{fill:06x}");
+    fn button_solid_fallback_precomposites_and_segments_stay_transparent() {
+        for p in [LIGHT, DARK] {
+            for kind in [
+                ButtonKind::Navigation,
+                ButtonKind::Utility,
+                ButtonKind::Destructive,
+            ] {
+                let solid = p.button(kind, true, false, false);
+                assert_eq!(
+                    solid.fill,
+                    Tint::opaque(p.control.composite_over(p.sheet_solid))
+                );
+                assert_eq!(
+                    solid.hover,
+                    Tint::opaque(p.control_hover.composite_over(p.sheet_solid))
+                );
+                assert_eq!(
+                    solid.pressed,
+                    Tint::opaque(p.control_pressed.composite_over(p.sheet_solid))
+                );
+                let glass = p.button(kind, true, false, true);
+                assert_eq!(glass.fill, p.control);
+                assert_eq!(glass.hover, p.control_hover);
+                assert_eq!(glass.pressed, p.control_pressed);
+            }
+            for kind in [
+                ButtonKind::Segment,
+                ButtonKind::Black,
+                ButtonKind::White,
+                ButtonKind::Tool,
+            ] {
+                for glass in [false, true] {
+                    for enabled in [false, true] {
+                        let unselected = p.button(kind, enabled, false, glass);
+                        assert_eq!(
+                            unselected.fill,
+                            Tint::TRANSPARENT,
+                            "{kind:?} unselected must be transparent"
+                        );
+                    }
+                }
             }
         }
     }
@@ -534,36 +672,62 @@ mod tests {
     #[test]
     fn semantic_button_states_keep_text_focus_and_selection_readable() {
         for p in [LIGHT, DARK] {
+            let panel_surfaces = sheets(p);
             for kind in KINDS {
+                let is_segmented = matches!(
+                    kind,
+                    ButtonKind::Segment | ButtonKind::Black | ButtonKind::White | ButtonKind::Tool
+                );
                 for enabled in [false, true] {
                     for selected in [false, true] {
-                        let style = p.button(kind, enabled, selected);
-                        assert!(contrast(style.ink, style.fill) >= 4.5, "{kind:?}");
-                        if enabled {
-                            assert!(contrast(style.ink, style.hover) >= 4.5, "hover {kind:?}");
-                            assert!(contrast(style.ink, style.pressed) >= 4.5, "press {kind:?}");
-                        }
-                        // The 2px ring sits outside a 2px gap on the panel; it must
-                        // also read against every neutral fill it can touch.
-                        if kind != ButtonKind::Primary {
-                            assert!(contrast(p.focus, style.fill) >= 3., "focus {kind:?}");
-                        }
-                        // Selection always carries a non-color mark.
-                        assert_eq!(style.indicator.is_some(), selected, "{kind:?}");
-                        if let Some(mark) = style.indicator.filter(|_| enabled) {
-                            for fill in [style.fill, style.hover, style.pressed] {
-                                assert!(contrast(mark, fill) >= 3., "mark {kind:?} {fill:06x}");
+                        for glass in [false, true] {
+                            let style = p.button(kind, enabled, selected, glass);
+                            for &sheet in &panel_surfaces {
+                                let base = if is_segmented {
+                                    p.control.composite_over(sheet)
+                                } else {
+                                    sheet
+                                };
+                                let fill_bg = style.fill.composite_over(base);
+                                let hover_bg = style.hover.composite_over(base);
+                                let pressed_bg = style.pressed.composite_over(base);
+                                assert!(
+                                    contrast(style.ink, fill_bg) >= 4.5,
+                                    "{kind:?} enabled={enabled} selected={selected} glass={glass} on {fill_bg:06x}"
+                                );
+                                if enabled {
+                                    assert!(
+                                        contrast(style.ink, hover_bg) >= 4.5,
+                                        "hover {kind:?} on {hover_bg:06x}"
+                                    );
+                                    assert!(
+                                        contrast(style.ink, pressed_bg) >= 4.5,
+                                        "press {kind:?} on {pressed_bg:06x}"
+                                    );
+                                }
+                                if kind != ButtonKind::Primary {
+                                    assert!(
+                                        contrast(p.focus, fill_bg) >= 3.0,
+                                        "focus {kind:?} on {fill_bg:06x}"
+                                    );
+                                }
+                                assert_eq!(style.indicator.is_some(), selected, "{kind:?}");
+                                if let Some(mark) = style.indicator.filter(|_| enabled) {
+                                    for bg in [fill_bg, hover_bg, pressed_bg] {
+                                        assert!(
+                                            contrast(mark, bg) >= 3.0,
+                                            "mark {kind:?} {bg:06x}"
+                                        );
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
-            for panel in panels(p) {
-                assert!(contrast(p.focus, panel) >= 3., "focus on {panel:06x}");
+            for &sheet in &panel_surfaces {
+                assert!(contrast(p.focus, sheet) >= 3.0, "focus on {sheet:06x}");
             }
-            // The selected segment reads as lifted off its track in both variants.
-            assert!(luminance(p.segment) > luminance(p.control));
-            assert!(contrast(p.segment, p.control) >= 1.1, "segment lift");
         }
     }
 
@@ -582,8 +746,27 @@ mod tests {
     #[test]
     fn used_text_and_boundary_pairs_meet_design_contrast() {
         for p in [LIGHT, DARK] {
-            let mut surfaces = panels(p);
-            surfaces.extend([p.raised, p.well, p.accent_wash, p.control]);
+            let sheet_list = sheets(p);
+            let overlay_list = overlays(p);
+            let mut bases = Vec::new();
+            bases.extend_from_slice(&sheet_list);
+            bases.extend_from_slice(&overlay_list);
+
+            let mut surfaces = sheet_list.clone();
+            surfaces.extend_from_slice(&overlay_list);
+            surfaces.push(p.accent_wash);
+            for &sheet in &sheet_list {
+                surfaces.push(p.well.composite_over(sheet));
+                surfaces.push(p.control.composite_over(sheet));
+                surfaces.push(p.control_hover.composite_over(sheet));
+                surfaces.push(p.control_pressed.composite_over(sheet));
+            }
+            for &overlay in &overlay_list {
+                surfaces.push(p.well.composite_over(overlay));
+                surfaces.push(p.control.composite_over(overlay));
+                surfaces.push(p.control_hover.composite_over(overlay));
+                surfaces.push(p.control_pressed.composite_over(overlay));
+            }
             for surface in surfaces {
                 for text in [
                     p.ink,
@@ -597,17 +780,20 @@ mod tests {
                     assert!(contrast(text, surface) >= 4.5, "{text:06x}/{surface:06x}");
                 }
             }
-            for surface in [p.well, p.layer_solid, p.raised] {
-                assert!(contrast(p.border, surface) >= 3., "border/{surface:06x}");
+            for &base in &bases {
+                let well = p.well.composite_over(base);
+                assert!(contrast(p.border, base) >= 3.0, "border/base {base:06x}");
+                assert!(contrast(p.border, well) >= 3.0, "border/well {well:06x}");
+                assert!(contrast(p.focus, well) >= 3.0, "focus/well {well:06x}");
             }
             assert!(contrast(p.error, p.error_wash) >= 4.5);
-            // The alert badge glyph, and the slider's value fill on its well.
-            assert!(contrast(p.layer_solid, p.error) >= 4.5);
-            assert!(contrast(p.focus, p.well) >= 3.);
+            assert!(contrast(p.sheet_solid, p.error) >= 4.5);
         }
 
-        assert_eq!(palette(Theme::System, true).layer_solid, DARK.layer_solid);
-        assert_eq!(palette(Theme::System, false).layer_solid, LIGHT.layer_solid);
+        assert!(palette(Theme::System, true).is_dark);
+        assert!(!palette(Theme::System, false).is_dark);
+        assert_eq!(palette(Theme::System, true).sheet_solid, DARK.sheet_solid);
+        assert_eq!(palette(Theme::System, false).sheet_solid, LIGHT.sheet_solid);
     }
 
     #[test]
@@ -631,19 +817,27 @@ mod tests {
             (hue, saturation)
         }
         for p in [LIGHT, DARK] {
-            // Status colors are excluded: they mark state text only.
             for color in [
                 p.field_top,
                 p.field_bottom,
-                p.layer,
-                p.layer_solid,
+                p.blobs[0].rgb,
+                p.blobs[1].rgb,
+                p.blobs[2].rgb,
+                p.sheet.rgb,
+                p.sheet_solid,
+                p.sheet_edge.rgb,
+                p.sheet_highlight.rgb,
+                p.overlay.rgb,
+                p.overlay_solid,
+                p.overlay_edge.rgb,
+                p.overlay_highlight.rgb,
+                p.well.rgb,
+                p.control.rgb,
+                p.control_hover.rgb,
+                p.control_pressed.rgb,
                 p.raised,
                 p.segment,
-                p.well,
-                p.control,
-                p.control_hover,
-                p.control_pressed,
-                p.hairline >> 8,
+                p.hairline.rgb,
                 p.border,
                 p.ink,
                 p.body,
@@ -660,8 +854,8 @@ mod tests {
                 p.titlebar_inactive_ink,
                 p.titlebar_icon,
                 p.titlebar_inactive_icon,
-                p.titlebar_control_hover >> 8,
-                p.titlebar_control_pressed >> 8,
+                p.titlebar_control_hover.rgb,
+                p.titlebar_control_pressed.rgb,
                 p.titlebar_on_close,
             ] {
                 let (hue, saturation) = hue_saturation(color);
@@ -670,7 +864,6 @@ mod tests {
                     "{color:06x}: hue {hue:.0} saturation {saturation:.2}"
                 );
             }
-            // Close button danger red is reserved exclusively for titlebar close hover/pressed.
             for close_red in [p.titlebar_close_hover, p.titlebar_close_pressed] {
                 let (hue, saturation) = hue_saturation(close_red);
                 assert!(
@@ -680,10 +873,12 @@ mod tests {
                 for kind in KINDS {
                     for enabled in [false, true] {
                         for selected in [false, true] {
-                            let style = p.button(kind, enabled, selected);
-                            assert_ne!(style.fill, close_red, "{kind:?} fill");
-                            assert_ne!(style.hover, close_red, "{kind:?} hover");
-                            assert_ne!(style.pressed, close_red, "{kind:?} pressed");
+                            for glass in [false, true] {
+                                let style = p.button(kind, enabled, selected, glass);
+                                assert_ne!(style.fill.rgb, close_red, "{kind:?} fill");
+                                assert_ne!(style.hover.rgb, close_red, "{kind:?} hover");
+                                assert_ne!(style.pressed.rgb, close_red, "{kind:?} pressed");
+                            }
                         }
                     }
                 }
@@ -693,18 +888,9 @@ mod tests {
 
     #[test]
     fn integrated_titlebar_states_meet_contrast_and_focus_distinction() {
-        for (p, is_dark) in [(LIGHT, false), (DARK, true)] {
-            for bg in [p.field_top, p.field_bottom] {
-                assert!(
-                    contrast(p.titlebar_inactive_ink, bg) >= 4.5,
-                    "inactive ink on solid {bg:06x}"
-                );
-                assert!(
-                    contrast(p.titlebar_inactive_icon, bg) >= 4.5,
-                    "inactive icon on solid {bg:06x}"
-                );
-            }
-            for bg in fields(p) {
+        for p in [LIGHT, DARK] {
+            let field_list = fields(p);
+            for bg in field_list {
                 assert!(
                     contrast(p.titlebar_ink, bg) >= 4.5,
                     "titlebar_ink on {bg:06x}"
@@ -714,29 +900,18 @@ mod tests {
                     "titlebar_icon on {bg:06x}"
                 );
                 assert!(
-                    contrast(p.titlebar_inactive_ink, bg) >= 3.0,
+                    contrast(p.titlebar_inactive_ink, bg) >= 4.5,
                     "titlebar_inactive_ink on {bg:06x}"
                 );
                 assert!(
-                    contrast(p.titlebar_inactive_icon, bg) >= 3.0,
+                    contrast(p.titlebar_inactive_icon, bg) >= 4.5,
                     "titlebar_inactive_icon on {bg:06x}"
                 );
-            }
-            for bg in titlebar_control_surfaces(p, p.titlebar_control_hover) {
-                assert!(
-                    contrast(p.titlebar_icon, bg) >= 4.5,
-                    "titlebar_icon hover on {bg:06x}"
-                );
-                assert!(
-                    contrast(p.titlebar_inactive_icon, bg) >= 3.0,
-                    "titlebar_inactive_icon hover on {bg:06x}"
-                );
-            }
-            for bg in titlebar_control_surfaces(p, p.titlebar_control_pressed) {
-                assert!(
-                    contrast(p.titlebar_icon, bg) >= 4.5,
-                    "titlebar_icon pressed on {bg:06x}"
-                );
+                let hover_bg = p.titlebar_control_hover.composite_over(bg);
+                let press_bg = p.titlebar_control_pressed.composite_over(bg);
+                assert!(contrast(p.titlebar_icon, hover_bg) >= 4.5);
+                assert!(contrast(p.titlebar_icon, press_bg) >= 4.5);
+                assert!(contrast(p.titlebar_inactive_icon, hover_bg) >= 3.0);
             }
             assert!(contrast(p.titlebar_on_close, p.titlebar_close_hover) >= 4.5);
             assert!(contrast(p.titlebar_on_close, p.titlebar_close_pressed) >= 4.5);
@@ -744,7 +919,7 @@ mod tests {
             assert_ne!(p.titlebar_ink, p.titlebar_inactive_ink);
             assert_ne!(p.titlebar_icon, p.titlebar_inactive_icon);
             assert!(contrast(p.titlebar_ink, p.titlebar_inactive_ink) >= 1.8);
-            if is_dark {
+            if p.is_dark {
                 assert!(luminance(p.titlebar_ink) > luminance(p.titlebar_inactive_ink));
             } else {
                 assert!(luminance(p.titlebar_ink) < luminance(p.titlebar_inactive_ink));
@@ -760,11 +935,13 @@ mod tests {
     #[test]
     fn timer_readouts_and_split_session_pairs_meet_design_contrast() {
         for p in [LIGHT, DARK] {
-            let mut surfaces = vec![p.well, p.raised, p.layer_solid_top];
-            for panel in panels(p) {
+            let sheet_list = sheets(p);
+            let mut surfaces = vec![p.raised, p.sheet_solid];
+            for &sheet in &sheet_list {
                 surfaces.extend([
-                    over(p.raised, panel, READOUT_TOP_ALPHA),
-                    over(p.layer_solid_top, panel, READOUT_BASE_ALPHA),
+                    p.well.composite_over(sheet),
+                    over(p.raised, sheet, READOUT_TOP_ALPHA),
+                    over(p.sheet_solid, sheet, READOUT_BASE_ALPHA),
                 ]);
             }
             for bg in surfaces {
@@ -775,11 +952,68 @@ mod tests {
                     assert!(contrast(mark, bg) >= 3.0, "{mark:x}/{bg:x}");
                 }
             }
-            // Restart segment: navigation face with a muted sublabel.
-            let restart = p.button(ButtonKind::Navigation, true, false);
-            for fill in [restart.fill, restart.hover, restart.pressed] {
-                assert!(contrast(p.muted, fill) >= 4.5, "{fill:06x}");
+            for glass in [false, true] {
+                let restart = p.button(ButtonKind::Navigation, true, false, glass);
+                for &sheet in &sheet_list {
+                    for fill in [restart.fill, restart.hover, restart.pressed] {
+                        let bg = fill.composite_over(sheet);
+                        assert!(contrast(p.muted, bg) >= 4.5, "{bg:06x}");
+                    }
+                }
             }
+        }
+    }
+
+    #[test]
+    fn field_header_text_and_buttons_meet_contrast_across_field_and_blobs() {
+        for p in [LIGHT, DARK] {
+            for field in fields(p) {
+                assert!(contrast(p.ink, field) >= 4.5, "ink on field {field:06x}");
+                assert!(
+                    contrast(p.focus, field) >= 3.0,
+                    "focus on field {field:06x}"
+                );
+                for kind in [ButtonKind::Utility, ButtonKind::Primary] {
+                    for enabled in [false, true] {
+                        for glass in [false, true] {
+                            let style = p.button(kind, enabled, false, glass);
+                            let fill_bg = style.fill.composite_over(field);
+                            assert!(
+                                contrast(style.ink, fill_bg) >= 4.5,
+                                "{kind:?} enabled={enabled} glass={glass} on field {field:06x} -> {fill_bg:06x}"
+                            );
+                            if enabled {
+                                let hover_bg = style.hover.composite_over(field);
+                                let pressed_bg = style.pressed.composite_over(field);
+                                assert!(
+                                    contrast(style.ink, hover_bg) >= 4.5,
+                                    "hover {kind:?} glass={glass} on field {field:06x} -> {hover_bg:06x}"
+                                );
+                                assert!(
+                                    contrast(style.ink, pressed_bg) >= 4.5,
+                                    "press {kind:?} glass={glass} on field {field:06x} -> {pressed_bg:06x}"
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn tint_resolve_keeps_alpha_in_glass_and_precomposites_in_solid() {
+        for p in [LIGHT, DARK] {
+            assert_eq!(p.control.resolve(p.sheet_solid, true), p.control);
+            assert_eq!(
+                p.control.resolve(p.sheet_solid, false),
+                Tint::opaque(p.control.composite_over(p.sheet_solid))
+            );
+            assert_eq!(p.well.resolve(p.sheet_solid, true), p.well);
+            assert_eq!(
+                p.well.resolve(p.sheet_solid, false),
+                Tint::opaque(p.well.composite_over(p.sheet_solid))
+            );
         }
     }
 }

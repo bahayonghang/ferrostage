@@ -112,10 +112,13 @@ pub(super) struct FontSearch {
     focus: FocusHandle,
     locale: Locale,
     palette: Palette,
+    glass: bool,
     text_size: f32,
     query: Query,
     layout: Rc<RefCell<Option<Layout>>>,
     selecting: bool,
+    #[cfg(all(test, feature = "test-support"))]
+    rendered_copy: std::cell::Cell<Option<(&'static str, &'static str)>>,
 }
 
 impl FontSearch {
@@ -124,6 +127,7 @@ impl FontSearch {
         focus: FocusHandle,
         locale: Locale,
         palette: Palette,
+        glass: bool,
         text_size: f32,
     ) -> Self {
         Self {
@@ -131,20 +135,41 @@ impl FontSearch {
             focus,
             locale,
             palette,
+            glass,
             text_size,
             query: Query::default(),
             layout: Rc::default(),
             selecting: false,
+            #[cfg(all(test, feature = "test-support"))]
+            rendered_copy: std::cell::Cell::new(None),
         }
+    }
+
+    #[cfg(all(test, feature = "test-support"))]
+    pub(super) fn locale_probe(&self) -> (Locale, Option<(&'static str, &'static str)>) {
+        (self.locale, self.rendered_copy.get())
     }
 
     pub(super) fn composing(&self) -> bool {
         self.query.marked.is_some()
     }
 
-    pub(super) fn update_style(&mut self, palette: Palette, size: f32, cx: &mut Context<Self>) {
-        if self.palette != palette || self.text_size != size {
+    pub(super) fn update_style(
+        &mut self,
+        locale: Locale,
+        palette: Palette,
+        glass: bool,
+        size: f32,
+        cx: &mut Context<Self>,
+    ) {
+        if self.locale != locale
+            || self.palette != palette
+            || self.glass != glass
+            || self.text_size != size
+        {
+            self.locale = locale;
             self.palette = palette;
+            self.glass = glass;
             self.text_size = size;
             cx.notify();
         }
@@ -320,12 +345,18 @@ impl FontSearch {
 impl Render for FontSearch {
     fn render(&mut self, _: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let p = self.palette;
+        let aria_label = self.locale.text("settings-font-search");
+        #[cfg(all(test, feature = "test-support"))]
+        self.rendered_copy.set(Some((
+            aria_label,
+            self.locale.text("settings-font-placeholder"),
+        )));
         div()
             .id("settings-font-search")
             .accessibility_id("settings-font-search")
             .debug_selector(|| "settings-font-search".into())
             .role(Role::TextInput)
-            .aria_label(self.locale.text("settings-font-search"))
+            .aria_label(aria_label)
             .aria_value(self.query.text.clone())
             .track_focus(&self.focus)
             .tab_index(0)
@@ -337,7 +368,7 @@ impl Render for FontSearch {
             .border_2()
             .border_color(rgb(p.border))
             .focus(|style| style.border_color(rgb(p.focus)))
-            .bg(rgb(p.well))
+            .bg(super::material::well_bg_for(p, self.glass))
             .text_size(px(self.text_size))
             .flex()
             .items_center()

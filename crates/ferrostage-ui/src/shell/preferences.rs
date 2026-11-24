@@ -478,16 +478,22 @@ impl Shell {
             return false;
         };
         let changed_keys = pending.next.keybindings != self.settings.settings.keybindings;
+        let changed_language =
+            pending.next.general.language != self.settings.settings.general.language;
         self.state = state;
         self.settings.settings = pending.next;
+        if changed_language {
+            self.locale = crate::locale::Locale::new(&self.settings.settings.general.language);
+        }
         self.preferences.edit = None;
         self.preferences.error = None;
         self.preferences.confirm_reset = false;
         if pending.return_settings {
             self.modal = Some(Modal::Settings);
         }
-        if changed_keys {
-            actions::replace_bindings(&self.settings.settings.keybindings, self.locale, cx);
+        if changed_keys || changed_language {
+            self.shortcut_warnings =
+                actions::replace_bindings(&self.settings.settings.keybindings, self.locale, cx);
             self.escape_stops = policy::bindings(&self.settings.settings.keybindings, self.locale)
                 .0
                 .iter()

@@ -519,7 +519,7 @@ impl Presenter {
                 .px(px(8.))
                 .py(px(3.))
                 .rounded(px(theme::READOUT_RADIUS))
-                .bg(rgb(p.well))
+                .bg(self.material.well_bg(p))
                 .font(self.data.typography.numeric_font())
                 .text_size(px(self.data.typography.size(14.)))
                 .text_color(rgb(p.muted))
@@ -900,7 +900,7 @@ impl Presenter {
             } else {
                 label
             };
-            let style = p.button(kind, enabled, false);
+            let style = p.button(kind, enabled, false, self.material.is_glass());
             let detail_ink = match (enabled, resume) {
                 (true, true) => style.ink,
                 (true, false) => p.muted,
@@ -916,7 +916,7 @@ impl Presenter {
                 .items_center()
                 .gap(px(8.))
                 .relative()
-                .bg(rgb(style.fill))
+                .bg(style.fill.color())
                 .text_color(rgb(style.ink))
                 .when(resume, |view| view.rounded_tl(radius).rounded_bl(radius))
                 .when(!resume, |view| view.rounded_tr(radius).rounded_br(radius))
@@ -945,8 +945,8 @@ impl Presenter {
                         ),
                 )
                 .when(enabled, |view| {
-                    view.hover(move |state| state.bg(rgb(style.hover)))
-                        .active(move |state| state.bg(rgb(style.pressed)).top(px(1.)))
+                    view.hover(move |state| state.bg(style.hover.color()))
+                        .active(move |state| state.bg(style.pressed.color()).top(px(1.)))
                 });
             split = split.child(
                 self.activation_target(id.into(), accessible, enabled, intent, p)
@@ -1036,7 +1036,8 @@ impl Presenter {
                 p,
             ));
             let detail = self.data.workbench.progress.clone();
-            let typography = self.data.typography.clone();
+            let hover_bg = self.material.control_hover_bg(p);
+            let pressed_bg = self.material.control_pressed_bg(p);
             navigation = navigation.child(
                 self.activation_target(
                     "workbench-progress".into(),
@@ -1053,14 +1054,7 @@ impl Presenter {
                         .tab_stop(self.data.browser.is_none()),
                 )
                 .when(!self.progress_focus.is_focused(window), |view| {
-                    view.tooltip(move |_, cx| {
-                        cx.new(|_| FilenameTooltip {
-                            filename: detail.clone(),
-                            palette: p,
-                            typography: typography.clone(),
-                        })
-                        .into()
-                    })
+                    view.tooltip(self.text_tooltip(detail.clone(), p))
                 })
                 .child(
                     div()
@@ -1072,11 +1066,11 @@ impl Presenter {
                         .gap(px(8.))
                         .relative()
                         .rounded_full()
-                        .bg(rgb(p.control))
+                        .bg(self.material.control_bg(p))
                         .text_size(px(self.data.typography.size(14.)))
                         .text_color(rgb(p.body))
-                        .hover(move |style| style.bg(rgb(p.control_hover)))
-                        .active(move |style| style.bg(rgb(p.control_pressed)).top(px(1.)))
+                        .hover(move |style| style.bg(hover_bg))
+                        .active(move |style| style.bg(pressed_bg).top(px(1.)))
                         .child(
                             div()
                                 .id("progress-current")
@@ -1265,7 +1259,8 @@ impl Presenter {
                 self.progress_focus.is_focused(window) && has_steps,
                 |view| {
                     view.child(
-                        super::material::floating(p)
+                        self.material
+                            .floating(p)
                             .id("progress-detail")
                             .debug_selector(|| "progress-detail".into())
                             .absolute()
@@ -1341,7 +1336,7 @@ impl Presenter {
                     .bg(if dragging {
                         gpui::Hsla::from(rgb(p.focus))
                     } else {
-                        gpui::rgba(p.hairline).into()
+                        self.material.hairline_color(p).into()
                     })
                     .when(can_drag, |view| {
                         view.group_hover(id, move |style| style.bg(rgb(p.focus)))
@@ -1383,15 +1378,14 @@ impl Presenter {
                 this.advance_on_click(event, cx);
             }))
             .w_full()
+            .min_h_full()
             .flex_shrink_0()
             .flex()
             .flex_col()
             .gap(px(4.))
-            .my(px(4.))
             .p(px(8.))
             .rounded(px(theme::WELL_RADIUS))
-            .bg(rgb(p.well))
-            .child(self.pane_caption("wb-notes", p));
+            .bg(self.material.well_bg(p));
         if self.data.workbench.note_aspects.is_empty() {
             let has_notes = self.data.workbench.has_current_notes;
             note_panel = note_panel.child(
@@ -1527,19 +1521,39 @@ impl Presenter {
         let content = if layout == WorkbenchLayout::NotesFirst {
             content
                 .child(
-                    div()
+                    self.material
+                        .panel(p)
                         .id("notes-panel")
                         .debug_selector(|| "notes-panel".into())
                         .w(gpui::relative(notes_width))
                         .h_full()
                         .flex_shrink_0()
-                        .overflow_y_scroll()
                         .flex()
                         .flex_col()
-                        .rounded(px(theme::PANEL_RADIUS))
-                        .bg(self.material.layer(p))
-                        .px(px(4.))
-                        .child(note_panel),
+                        .child(
+                            div()
+                                .flex_1()
+                                .min_h_0()
+                                .w_full()
+                                .rounded(px(theme::PANEL_RADIUS))
+                                .overflow_hidden()
+                                .px(px(4.))
+                                .flex()
+                                .flex_col()
+                                .child(self.pane_caption("wb-notes", p))
+                                .child(
+                                    div()
+                                        .id("notes-scroll")
+                                        .flex_1()
+                                        .min_h_0()
+                                        .w_full()
+                                        .overflow_y_scroll()
+                                        .pb(px(4.))
+                                        .flex()
+                                        .flex_col()
+                                        .child(note_panel),
+                                ),
+                        ),
                 )
                 .child(self.hairline_split(
                     "column-split",
@@ -1557,7 +1571,6 @@ impl Presenter {
                         .flex_1()
                         .min_w_0()
                         .h_full()
-                        .overflow_hidden()
                         .flex()
                         .flex_col()
                         .child(
@@ -1569,12 +1582,10 @@ impl Presenter {
                             .size_full(),
                         )
                         .child(
-                            div()
+                            self.material
+                                .panel(p)
                                 .id("current-pane")
                                 .debug_selector(|| "current-pane".into())
-                                .bg(self.material.layer(p))
-                                .rounded(px(theme::PANEL_RADIUS))
-                                .px(px(4.))
                                 .on_click(cx.listener(|this, event: &gpui::ClickEvent, _, cx| {
                                     this.advance_on_click(event, cx);
                                 }))
@@ -1582,16 +1593,26 @@ impl Presenter {
                                 .flex_shrink(1.)
                                 .flex_basis(gpui::relative(0.))
                                 .min_h_0()
-                                .overflow_hidden()
                                 .flex()
                                 .flex_col()
-                                .child(self.pane_caption("wb-current-slide", p))
                                 .child(
                                     div()
                                         .flex_1()
                                         .min_h_0()
-                                        .mb(px(4.))
-                                        .child(self.picture(Surface::Current, true)),
+                                        .w_full()
+                                        .rounded(px(theme::PANEL_RADIUS))
+                                        .overflow_hidden()
+                                        .px(px(4.))
+                                        .flex()
+                                        .flex_col()
+                                        .child(self.pane_caption("wb-current-slide", p))
+                                        .child(
+                                            div()
+                                                .flex_1()
+                                                .min_h_0()
+                                                .mb(px(4.))
+                                                .child(self.picture(Surface::Current, true)),
+                                        ),
                                 ),
                         )
                         .child(self.hairline_split(
@@ -1603,12 +1624,10 @@ impl Presenter {
                             cx,
                         ))
                         .child(
-                            div()
+                            self.material
+                                .panel(p)
                                 .id("next-pane")
                                 .debug_selector(|| "next-pane".into())
-                                .bg(self.material.layer(p))
-                                .rounded(px(theme::PANEL_RADIUS))
-                                .px(px(4.))
                                 .on_click(cx.listener(|this, event: &gpui::ClickEvent, _, cx| {
                                     this.advance_on_click(event, cx);
                                 }))
@@ -1616,28 +1635,36 @@ impl Presenter {
                                 .flex_shrink(1.)
                                 .flex_basis(gpui::relative(0.))
                                 .min_h_0()
-                                .overflow_hidden()
                                 .flex()
                                 .flex_col()
-                                .child(self.pane_caption("wb-next-slide", p))
                                 .child(
                                     div()
                                         .flex_1()
                                         .min_h_0()
-                                        .mb(px(4.))
-                                        .child(self.picture(Surface::Next, false)),
+                                        .w_full()
+                                        .rounded(px(theme::PANEL_RADIUS))
+                                        .overflow_hidden()
+                                        .px(px(4.))
+                                        .flex()
+                                        .flex_col()
+                                        .child(self.pane_caption("wb-next-slide", p))
+                                        .child(
+                                            div()
+                                                .flex_1()
+                                                .min_h_0()
+                                                .mb(px(4.))
+                                                .child(self.picture(Surface::Next, false)),
+                                        ),
                                 ),
                         ),
                 )
         } else {
             content
                 .child(
-                    div()
+                    self.material
+                        .panel(p)
                         .id("current-pane")
                         .debug_selector(|| "current-pane".into())
-                        .bg(self.material.layer(p))
-                        .rounded(px(theme::PANEL_RADIUS))
-                        .px(px(4.))
                         .on_click(cx.listener(|this, event: &gpui::ClickEvent, _, cx| {
                             this.advance_on_click(event, cx);
                         }))
@@ -1651,25 +1678,32 @@ impl Presenter {
                                 .h_full()
                         })
                         .when(stacked, |view| view.w_full().flex_1().min_h_0())
-                        .when(!previews, |view| view.py(px(4.)))
-                        .overflow_hidden()
-                        .when(previews, |view| {
-                            view.flex()
+                        .flex()
+                        .flex_col()
+                        .child(
+                            div()
+                                .flex_1()
+                                .min_h_0()
+                                .w_full()
+                                .rounded(px(theme::PANEL_RADIUS))
+                                .overflow_hidden()
+                                .px(px(4.))
+                                .when(!previews, |view| view.py(px(4.)))
+                                .flex()
                                 .flex_col()
-                                .child(self.pane_caption("wb-current-slide", p))
-                        })
-                        .when(previews, |view| {
-                            view.child(
-                                div()
-                                    .flex_1()
-                                    .min_h_0()
-                                    .mb(px(4.))
-                                    .child(self.picture(Surface::Current, true)),
-                            )
-                        })
-                        .when(!previews, |view| {
-                            view.child(self.picture(Surface::Current, true))
-                        }),
+                                .when(previews, |view| {
+                                    view.child(self.pane_caption("wb-current-slide", p)).child(
+                                        div()
+                                            .flex_1()
+                                            .min_h_0()
+                                            .mb(px(4.))
+                                            .child(self.picture(Surface::Current, true)),
+                                    )
+                                })
+                                .when(!previews, |view| {
+                                    view.child(self.picture(Surface::Current, true))
+                                }),
+                        ),
                 )
                 .when(!stacked, |view| {
                     view.child(self.hairline_split(
@@ -1695,7 +1729,6 @@ impl Presenter {
                         })
                         .when(!stacked, |view| view.h_full())
                         .when(stacked, |view| view.w_full().flex_1().min_h_0())
-                        .overflow_hidden()
                         .flex()
                         .flex_col()
                         .gap(px(4.))
@@ -1708,12 +1741,10 @@ impl Presenter {
                             .size_full(),
                         )
                         .child(
-                            div()
+                            self.material
+                                .panel(p)
                                 .id("next-pane")
                                 .debug_selector(|| "next-pane".into())
-                                .bg(self.material.layer(p))
-                                .rounded(px(theme::PANEL_RADIUS))
-                                .px(px(4.))
                                 .on_click(cx.listener(|this, event: &gpui::ClickEvent, _, cx| {
                                     this.advance_on_click(event, cx);
                                 }))
@@ -1721,16 +1752,26 @@ impl Presenter {
                                 .flex_shrink(1.)
                                 .flex_basis(gpui::relative(0.))
                                 .min_h_0()
-                                .overflow_hidden()
                                 .flex()
                                 .flex_col()
-                                .child(self.pane_caption("wb-next-slide", p))
                                 .child(
                                     div()
                                         .flex_1()
                                         .min_h_0()
-                                        .mb(px(4.))
-                                        .child(self.picture(Surface::Next, false)),
+                                        .w_full()
+                                        .rounded(px(theme::PANEL_RADIUS))
+                                        .overflow_hidden()
+                                        .px(px(4.))
+                                        .flex()
+                                        .flex_col()
+                                        .child(self.pane_caption("wb-next-slide", p))
+                                        .child(
+                                            div()
+                                                .flex_1()
+                                                .min_h_0()
+                                                .mb(px(4.))
+                                                .child(self.picture(Surface::Next, false)),
+                                        ),
                                 ),
                         )
                         .when(!previews, |view| {
@@ -1745,20 +1786,40 @@ impl Presenter {
                         })
                         .when(!previews, |view| {
                             view.child(
-                                div()
+                                self.material
+                                    .panel(p)
                                     .id("notes-panel")
                                     .debug_selector(|| "notes-panel".into())
                                     .flex_grow(notes)
                                     .flex_shrink(1.)
                                     .flex_basis(gpui::relative(0.))
                                     .min_h_0()
-                                    .overflow_y_scroll()
                                     .flex()
                                     .flex_col()
-                                    .rounded(px(theme::PANEL_RADIUS))
-                                    .bg(self.material.layer(p))
-                                    .px(px(4.))
-                                    .child(note_panel),
+                                    .child(
+                                        div()
+                                            .flex_1()
+                                            .min_h_0()
+                                            .w_full()
+                                            .rounded(px(theme::PANEL_RADIUS))
+                                            .overflow_hidden()
+                                            .px(px(4.))
+                                            .flex()
+                                            .flex_col()
+                                            .child(self.pane_caption("wb-notes", p))
+                                            .child(
+                                                div()
+                                                    .id("notes-scroll")
+                                                    .flex_1()
+                                                    .min_h_0()
+                                                    .w_full()
+                                                    .overflow_y_scroll()
+                                                    .pb(px(4.))
+                                                    .flex()
+                                                    .flex_col()
+                                                    .child(note_panel),
+                                            ),
+                                    ),
                             )
                         }),
                 )

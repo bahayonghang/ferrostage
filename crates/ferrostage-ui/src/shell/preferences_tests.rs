@@ -175,13 +175,12 @@ fn settings_v09_edit_save_retry_readonly_and_runtime_consumers(cx: &mut TestAppC
         );
         assert_eq!(
             shell.locale.text("settings"),
-            crate::locale::Locale::new("zh-CN").text("settings"),
-            "language keeps current catalog until restart"
+            crate::locale::Locale::new("en-US").text("settings"),
+            "language switches catalog immediately without restart"
         );
         assert_eq!(
-            crate::locale::Locale::new(&shell.store.load().unwrap().settings.general.language)
-                .text("settings"),
-            "Settings"
+            shell.store.load().unwrap().settings.general.language,
+            "en-US"
         );
         let before = shell.settings.settings.clone();
         shell.dispatch(
@@ -198,6 +197,20 @@ fn settings_v09_edit_save_retry_readonly_and_runtime_consumers(cx: &mut TestAppC
         shell.dispatch(Intent::ClearRecent, cx);
         assert_eq!(shell.settings.settings, before);
     });
+    redraw(handle, cx);
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    assert_eq!(
+        handle
+            .downcast::<Presenter>()
+            .unwrap()
+            .read_with(cx, |view, _| view.titlebar_probe().unwrap().title)
+            .unwrap(),
+        "FerroStage — Ready — FerroStage"
+    );
+    assert_eq!(
+        visual.window_title(),
+        Some("FerroStage — Ready — FerroStage".into())
+    );
 }
 
 #[gpui::test]
@@ -424,16 +437,84 @@ fn settings_centers_navigation_and_category_body_with_aligned_header_and_feedbac
         click_control(handle, category, cx);
         redraw(handle, cx);
         let mut visual = gpui::VisualTestContext::from_window(handle, cx);
-        let rail = visual.debug_bounds(category).unwrap();
+        let nav_paper = visual.debug_bounds("settings-nav-paper").unwrap();
+        let body_paper = visual.debug_bounds("settings-body-paper").unwrap();
         let body = visual.debug_bounds("settings-content").unwrap();
-        let left = rail.left();
-        let right = px(1600.) - body.right();
-        assert!(f32::from(left - right).abs() <= 1., "{category}: {left:?} vs {right:?}");
-        assert_eq!(body.size.width, px(body_width), "{category}");
-        assert_eq!(visual.debug_bounds("settings-title").unwrap().left(), rail.left());
-        assert_eq!(visual.debug_bounds("close-settings").unwrap().right(), body.right());
-        assert_eq!(visual.debug_bounds("settings-feedback").unwrap().left(), body.left());
+        let title = visual.debug_bounds("settings-title").unwrap();
+        let close = visual.debug_bounds("close-settings").unwrap();
+        let feedback = visual.debug_bounds("settings-feedback").unwrap();
+        let bar = visual.debug_bounds("presenter-titlebar").unwrap();
+        assert_eq!(nav_paper.size.width, px(176.), "{category}");
+        assert_eq!(body_paper.size.width, px(body_width), "{category}");
+        assert!(
+            body_paper.left() >= nav_paper.right() + px(16.),
+            "{category}: paper gap {:?} vs {:?}",
+            nav_paper,
+            body_paper
+        );
+        assert!(
+            body.left() >= body_paper.left()
+                && body.right() <= body_paper.right()
+                && body.top() >= body_paper.top()
+                && body.bottom() <= body_paper.bottom(),
+            "{category}: settings-content {body:?} must stay inside body paper {body_paper:?}"
+        );
+        let left = nav_paper.left();
+        let right = px(1600.) - body_paper.right();
+        assert!(
+            f32::from(left - right).abs() <= 1.,
+            "{category}: {left:?} vs {right:?}"
+        );
+        assert_eq!(title.left(), nav_paper.left());
+        assert_eq!(close.right(), body_paper.right());
+        assert_eq!(feedback.left(), body_paper.left());
+        assert!(feedback.top() >= body_paper.bottom() + px(12.));
+        assert!(nav_paper.left() >= px(16.) && body_paper.right() <= px(1600. - 16.));
+        assert!(title.top() >= bar.bottom() && nav_paper.top() >= px(16.) && body_paper.top() >= px(16.));
+        assert!(feedback.bottom() <= px(900. - 16.));
     }
+
+    for (w, h) in [(1000., 760.), (760., 700.)] {
+        cx.simulate_window_resize(handle, size(px(w), px(h)));
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let nav_paper = visual.debug_bounds("settings-nav-paper").unwrap();
+        let body_paper = visual.debug_bounds("settings-body-paper").unwrap();
+        let feedback = visual.debug_bounds("settings-feedback").unwrap();
+        let title = visual.debug_bounds("settings-title").unwrap();
+        let bar = visual.debug_bounds("presenter-titlebar").unwrap();
+        assert!(
+            body_paper.left() >= nav_paper.right() + px(16.),
+            "{w}x{h}: wide viewport must keep two separate papers: {nav_paper:?} vs {body_paper:?}"
+        );
+        assert!(nav_paper.left() >= px(16.), "{w}x{h}: {nav_paper:?}");
+        assert!(body_paper.right() <= px(w - 16.), "{w}x{h}: {body_paper:?}");
+        assert!(title.top() >= bar.bottom(), "{w}x{h}: {title:?} vs {bar:?}");
+        assert!(feedback.bottom() <= px(h - 16.), "{w}x{h}: {feedback:?}");
+        assert_eq!(feedback.left(), body_paper.left(), "{w}x{h}");
+        assert_eq!(feedback.right(), body_paper.right(), "{w}x{h}");
+    }
+
+    // Just below the 760px threshold, Settings folds into a single vertical column.
+    cx.simulate_window_resize(handle, size(px(759.), px(700.)));
+    redraw(handle, cx);
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    let nav_paper = visual.debug_bounds("settings-nav-paper").unwrap();
+    let body_paper = visual.debug_bounds("settings-body-paper").unwrap();
+    let feedback = visual.debug_bounds("settings-feedback").unwrap();
+    let title = visual.debug_bounds("settings-title").unwrap();
+    let close = visual.debug_bounds("close-settings").unwrap();
+    assert!(
+        body_paper.top() >= nav_paper.bottom() + px(12.),
+        "759x700 must stack vertically: {nav_paper:?} vs {body_paper:?}"
+    );
+    assert!(nav_paper.left() >= px(8.) && nav_paper.right() <= px(759. - 8.));
+    assert!(body_paper.left() >= px(8.) && body_paper.right() <= px(759. - 8.));
+    assert_eq!(title.left(), nav_paper.left());
+    assert_eq!(close.right(), body_paper.right());
+    assert_eq!(feedback.left(), body_paper.left());
+    assert_eq!(feedback.right(), body_paper.right());
+    assert!(feedback.top() >= body_paper.bottom() + px(12.) && feedback.bottom() <= px(700. - 8.));
 }
 
 #[gpui::test]
@@ -451,9 +532,36 @@ fn narrow_settings_wraps_categories_and_scrolls_to_the_last_display_control(
     click_control(handle, "settings-category-displays", cx);
     redraw(handle, cx);
     let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    let nav_paper = visual.debug_bounds("settings-nav-paper").unwrap();
+    let body_paper = visual.debug_bounds("settings-body-paper").unwrap();
+    let feedback = visual.debug_bounds("settings-feedback").unwrap();
+    let title = visual.debug_bounds("settings-title").unwrap();
+    let close = visual.debug_bounds("close-settings").unwrap();
     let body = visual.debug_bounds("settings-content").unwrap();
     let first = visual.debug_bounds("settings-category-general").unwrap();
     let last = visual.debug_bounds("settings-category-about").unwrap();
+    assert!(
+        body_paper.top() >= nav_paper.bottom() + px(12.),
+        "narrow mode must stack body paper below nav paper: {nav_paper:?} vs {body_paper:?}"
+    );
+    assert!(
+        nav_paper.left() >= px(8.) && nav_paper.right() <= px(390. - 8.),
+        "narrow nav paper outer margin >= 8px: {nav_paper:?}"
+    );
+    assert!(
+        body_paper.left() >= px(8.) && body_paper.right() <= px(390. - 8.),
+        "narrow body paper outer margin >= 8px: {body_paper:?}"
+    );
+    assert_eq!(title.left(), nav_paper.left());
+    assert_eq!(close.right(), body_paper.right());
+    assert!(close.right() <= px(390. - 8.), "narrow header must not overflow: {close:?}");
+    assert!(
+        feedback.top() >= body_paper.bottom() + px(12.) && feedback.bottom() <= px(640. - 8.),
+        "narrow feedback bottom margin >= 8px: {feedback:?} vs {body_paper:?}"
+    );
+    assert_eq!(feedback.left(), body_paper.left());
+    assert_eq!(feedback.right(), body_paper.right());
+    assert!(first.left() >= nav_paper.left() && last.right() <= nav_paper.right());
     assert!(first.bottom() <= last.top() && last.bottom() <= body.top());
     assert!(body.size.height >= px(44.));
     visual.simulate_event(gpui::ScrollWheelEvent {
@@ -525,11 +633,56 @@ fn settings_v09_all_categories_render_and_footer_stays_reachable(cx: &mut TestAp
             redraw(handle, cx);
             let mut visual = gpui::VisualTestContext::from_window(handle, cx);
             let bounds = visual.debug_bounds("close-settings").unwrap();
+            let feedback = visual.debug_bounds("settings-feedback").unwrap();
+            let inset = if w < 760. { 8. } else { 16. };
             assert!(
                 bounds.bottom() <= px(h) && bounds.right() <= px(w),
                 "{category:?}: {bounds:?}"
             );
+            assert!(
+                feedback.bottom() <= px(h - inset) && feedback.right() <= px(w - inset),
+                "{category:?} {w}x{h}: {feedback:?}"
+            );
         }
+    }
+}
+
+#[gpui::test]
+fn settings_feedback_paper_keeps_alerts_and_retry_bounded_across_widths(cx: &mut TestAppContext) {
+    let fixture = SaveFixture::new();
+    let (shell, handle) = input_presenter(cx);
+    shell.update(cx, |shell, cx| {
+        shell.store = fixture.store();
+        shell.modal = Some(Modal::Settings);
+        shell.preferences.error = Some("invalid value".into());
+        shell.settings.write_policy = ferrostage_settings::from_toml("schema_version=999")
+            .unwrap()
+            .write_policy;
+        shell.settings.dirty = true;
+        shell.settings.save_error = Some(ferrostage_settings::SaveError::Write {
+            reason: "disk locked".into(),
+        });
+        cx.notify();
+    });
+    for (w, h) in [(1280., 760.), (710., 640.)] {
+        cx.simulate_window_resize(handle, size(px(w), px(h)));
+        redraw(handle, cx);
+        let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+        let body_paper = visual.debug_bounds("settings-body-paper").unwrap();
+        let feedback = visual.debug_bounds("settings-feedback").unwrap();
+        let retry = visual.debug_bounds("settings-retry").unwrap();
+        let inset = if w < 760. { 8. } else { 16. };
+        assert_eq!(feedback.left(), body_paper.left(), "{w}x{h}");
+        assert_eq!(feedback.right(), body_paper.right(), "{w}x{h}");
+        assert!(feedback.top() >= body_paper.bottom() + px(12.), "{w}x{h}");
+        assert!(feedback.bottom() <= px(h - inset), "{w}x{h}: {feedback:?}");
+        assert!(
+            retry.left() >= feedback.left()
+                && retry.right() <= feedback.right()
+                && retry.top() >= feedback.top()
+                && retry.bottom() <= feedback.bottom(),
+            "{w}x{h}: retry {retry:?} must stay inside feedback paper {feedback:?}"
+        );
     }
 }
 
@@ -943,18 +1096,18 @@ fn settings_general_help_is_contained_by_its_content_driven_row(cx: &mut TestApp
     });
     redraw(handle, cx);
     let mut visual = gpui::VisualTestContext::from_window(handle, cx);
-    for (row_id, help_id) in [
-        ("setting-row-general.language", "setting-help-general.language"),
-        (
-            "setting-row-general.reopen_last_document",
-            "setting-help-general.reopen_last_document",
-        ),
-    ] {
-        let row = visual.debug_bounds(row_id).unwrap();
-        let help = visual.debug_bounds(help_id).unwrap();
+    assert!(visual.debug_bounds("setting-row-general.language").is_some());
+    assert!(visual.debug_bounds("setting-help-general.language").is_none());
+    {
+        let row = visual
+            .debug_bounds("setting-row-general.reopen_last_document")
+            .unwrap();
+        let help = visual
+            .debug_bounds("setting-help-general.reopen_last_document")
+            .unwrap();
         assert!(
             help.top() >= row.top() && help.bottom() <= row.bottom(),
-            "{help_id} must fit inside its row: help={help:?}, row={row:?}"
+            "setting-help-general.reopen_last_document must fit inside its row: help={help:?}, row={row:?}"
         );
     }
     let content = visual.debug_bounds("settings-content").unwrap();
@@ -982,6 +1135,26 @@ fn settings_general_help_is_contained_by_its_content_driven_row(cx: &mut TestApp
         );
         assert!(parent.top() >= content.top() && parent.bottom() <= content.bottom());
     }
+    click_control(handle, "settings-category-displays", cx);
+    redraw(handle, cx);
+    let content = visual.debug_bounds("settings-content").unwrap();
+    visual.simulate_event(gpui::ScrollWheelEvent {
+        position: content.center(),
+        delta: gpui::ScrollDelta::Lines(gpui::point(0., -100.)),
+        modifiers: gpui::Modifiers::default(),
+        touch_phase: gpui::TouchPhase::Moved,
+    });
+    redraw(handle, cx);
+    let row = visual
+        .debug_bounds("setting-row-display.presenter_start_fullscreen")
+        .unwrap();
+    let help = visual
+        .debug_bounds("setting-help-display.presenter_start_fullscreen")
+        .unwrap();
+    assert!(
+        help.top() >= row.top() && help.bottom() <= row.bottom(),
+        "setting-help-display.presenter_start_fullscreen must fit inside its row: help={help:?}, row={row:?}"
+    );
 }
 
 #[gpui::test]
@@ -1403,4 +1576,593 @@ fn event_error_flag_closes_and_persistent_monitor_error_has_no_close_button(
     let mut visual = gpui::VisualTestContext::from_window(handle, cx);
     assert!(visual.debug_bounds("presenter-error").is_some());
     assert!(visual.debug_bounds("dismiss-error").is_none());
+}
+
+fn open_shell_from_store(
+    store: SettingsStore,
+    cx: &mut TestAppContext,
+) -> (Entity<Shell>, AnyWindowHandle) {
+    let settings = SettingsSession::from_outcome(store.load().unwrap());
+    let (_, topology) = std::sync::mpsc::channel();
+    let shell = cx.new(|cx| {
+        Shell::new(
+            ShellInputs {
+                settings,
+                store,
+                renderer: Err(RenderError::FeatureDisabled),
+                topology,
+                watcher: Err(ferrostage_platform::PlatformError::UnsupportedPlatform),
+                initial_monitors: Ok(Vec::new()),
+                initial_pdf: None,
+            },
+            cx,
+        )
+    });
+    cx.update(|cx| install_close_handler(&shell, cx));
+    let warnings = cx.update(|cx| {
+        let model = shell.read(cx);
+        let keys = model.settings.settings.keybindings.clone();
+        let locale = model.locale;
+        actions::install(shell.downgrade(), &keys, locale, cx)
+    });
+    let handle = shell.update(cx, |shell, cx| {
+        let id = MonitorId("headless-test-display".into());
+        let display = u64::from(cx.displays().first().unwrap().id());
+        shell.mapped = Ok([(id, display)].into());
+        shell.shortcut_warnings = warnings;
+        shell.error = None;
+        shell.presenter = Some(test_window(shell, false, cx));
+        cx.notify();
+        shell.presenter.as_ref().unwrap().handle
+    });
+    (shell, handle)
+}
+
+#[gpui::test]
+fn language_hot_switch_updates_settings_home_titlebar_and_window_title(cx: &mut TestAppContext) {
+    let fixture = SaveFixture::new();
+    fixture.unblock();
+    let (shell, handle) = input_presenter(cx);
+    shell.update(cx, |shell, cx| {
+        shell.store = fixture.store();
+        shell.monitors = vec![test_monitor()];
+        shell.settings.settings.general.recent_files = vec![r"C:\slides\talk.pdf".into()];
+        cx.notify();
+    });
+    redraw(handle, cx);
+    let presenter = handle.downcast::<Presenter>().unwrap();
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    assert_eq!(
+        presenter.read_with(cx, |view, _| view.recent_probe()[0].1.to_owned()).unwrap(),
+        "暂无记录"
+    );
+    assert_eq!(
+        shell.read_with(cx, |shell, _| shell.configured_projection_target()),
+        "屏幕 1 Headless display · 同屏全屏"
+    );
+    assert_eq!(visual.window_title(), Some("FerroStage".into()));
+
+    click_control(handle, "settings", cx);
+    shell.update(cx, |shell, cx| shell.poll_focus(cx));
+    cx.run_until_parked();
+    redraw(handle, cx);
+    assert!(visual.debug_bounds("setting-help-general.language").is_none());
+
+    click_control(handle, "setting-general.language-en-US", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+    shell.read_with(cx, |shell, _| {
+        assert_eq!(shell.settings.settings.general.language, "en-US");
+        assert_eq!(shell.locale.text("settings"), "Settings");
+        assert_eq!(
+            shell.locale.text("settings-font-preview"),
+            "Presentation ready · 演示就绪 · 123 Aa"
+        );
+        assert_eq!(shell.store.load().unwrap().settings.general.language, "en-US");
+    });
+
+    click_control(handle, "close-settings", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+    assert_eq!(
+        presenter.read_with(cx, |view, _| view.recent_probe()[0].1.to_owned()).unwrap(),
+        "Not recorded"
+    );
+    assert_eq!(
+        shell.read_with(cx, |shell, _| shell.configured_projection_target()),
+        "Display 1 Headless display · Same-screen fullscreen"
+    );
+
+    shell.update(cx, |shell, cx| {
+        load_ready(shell);
+        shell.path = Some(PathBuf::from("slides/talk.pdf"));
+        cx.notify();
+    });
+    redraw(handle, cx);
+    assert_eq!(
+        presenter.read_with(cx, |view, _| view.titlebar_probe().unwrap().title).unwrap(),
+        "talk.pdf — Ready — FerroStage"
+    );
+    assert_eq!(
+        visual.window_title(),
+        Some("talk.pdf — Ready — FerroStage".into())
+    );
+    assert_eq!(
+        shell.read_with(cx, |shell, _| shell.projection_status().unwrap().summary),
+        "Not presenting"
+    );
+
+    click_control(handle, "settings", cx);
+    shell.update(cx, |shell, cx| shell.poll_focus(cx));
+    cx.run_until_parked();
+    redraw(handle, cx);
+    click_control(handle, "setting-general.language-zh-CN", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+    assert_eq!(
+        presenter.read_with(cx, |view, _| view.titlebar_probe().unwrap().title).unwrap(),
+        "talk.pdf — 准备就绪 — FerroStage"
+    );
+    assert_eq!(
+        visual.window_title(),
+        Some("talk.pdf — 准备就绪 — FerroStage".into())
+    );
+    assert_eq!(
+        shell.read_with(cx, |shell, _| shell.projection_status().unwrap().summary),
+        "尚未放映"
+    );
+}
+
+#[gpui::test]
+fn language_hot_switch_during_presentation_updates_workbench_and_preserves_session(
+    cx: &mut TestAppContext,
+) {
+    let fixture = SaveFixture::new();
+    fixture.unblock();
+    let (shell, presenter) = workbench_fixture(cx);
+    let audience = shell.update(cx, |shell, cx| {
+        shell.store = fixture.store();
+        shell.monitors = vec![test_monitor()];
+        shell.path = Some(PathBuf::from("slides/demo.pdf"));
+        let started = Instant::now() - Duration::from_secs(15);
+        shell
+            .state
+            .apply_at(
+                Command::StartPresentation {
+                    audience_available: true,
+                },
+                started,
+            )
+            .unwrap();
+        shell.apply(Command::JumpTo(PhysicalPage(2)), cx);
+        shell.record_return_position(true, shell.state.generation(), PhysicalPage(0));
+        shell.apply(
+            Command::BeginStroke {
+                color: [0x11, 0x22, 0x33, 0xFF],
+                width: 0.01,
+                is_highlighter: false,
+            },
+            cx,
+        );
+        shell.apply(Command::AppendStrokePoint((0.25, 0.35)), cx);
+        shell.apply(Command::EndStroke, cx);
+        let audience = test_window(shell, true, cx);
+        let handle = audience.handle;
+        shell.audience = Some(audience);
+        shell.publish(false, cx);
+        handle
+    });
+    redraw(presenter, cx);
+    redraw(audience, cx);
+
+    let before = shell.read_with(cx, |shell, cx| {
+        (
+            shell.state.stage(),
+            shell.state.current_page(),
+            shell.state.has_annotations(),
+            shell.state.elapsed_at(Instant::now()),
+            shell.snapshot.read(cx).clone(),
+            shell.return_label(),
+        )
+    });
+    assert_eq!(before.0, SessionStage::Presenting);
+    assert_eq!(before.1, PhysicalPage(2));
+    assert!(before.2);
+    assert!(before.5.as_deref().is_some_and(|label| label.contains("返回")));
+    assert_eq!(
+        shell.read_with(cx, |shell, _| shell.projection_status().unwrap().summary),
+        "等待首幅完整画面 · 待切换：第 2/3 页"
+    );
+
+    let mut visual = gpui::VisualTestContext::from_window(presenter, cx);
+    let presenter_entity = presenter.downcast::<Presenter>().unwrap();
+    assert_eq!(
+        presenter_entity
+            .read_with(cx, |view, _| view.titlebar_probe().unwrap().title)
+            .unwrap(),
+        "demo.pdf — 演示中 — FerroStage"
+    );
+
+    shell.update(cx, |shell, cx| {
+        shell.modal = Some(Modal::Settings);
+        cx.notify();
+    });
+    redraw(presenter, cx);
+    click_control(presenter, "setting-general.language-en-US", cx);
+    cx.run_until_parked();
+    redraw(presenter, cx);
+
+    assert_eq!(
+        presenter_entity
+            .read_with(cx, |view, _| view.titlebar_probe().unwrap().title)
+            .unwrap(),
+        "demo.pdf — Presenting — FerroStage"
+    );
+    assert_eq!(
+        visual.window_title(),
+        Some("demo.pdf — Presenting — FerroStage".into())
+    );
+    click_control(presenter, "close-settings", cx);
+    cx.run_until_parked();
+    redraw(presenter, cx);
+
+    shell.read_with(cx, |shell, cx| {
+        assert_eq!(shell.state.stage(), SessionStage::Presenting);
+        assert_eq!(shell.state.current_page(), before.1);
+        assert_eq!(shell.state.has_annotations(), before.2);
+        assert!(shell.state.elapsed_at(Instant::now()) >= before.3);
+        assert_eq!(shell.presenter.as_ref().unwrap().handle, presenter);
+        assert_eq!(shell.audience.as_ref().unwrap().handle, audience);
+        let snapshot = shell.snapshot.read(cx);
+        assert_eq!(snapshot.stage, AudienceStage::Live);
+        assert_eq!(snapshot.current_page, before.4.current_page);
+        assert_eq!(snapshot.strokes, before.4.strokes);
+        assert_eq!(
+            shell.return_label().as_deref(),
+            Some("Return to Slide 1/3")
+        );
+        assert_eq!(
+            shell.projection_status().unwrap().summary,
+            "Awaiting first complete draw · Pending: Slide 2/3"
+        );
+    });
+
+    shell.update(cx, |shell, cx| {
+        shell.stop(cx);
+        shell.open_browser();
+        cx.notify();
+    });
+    redraw(presenter, cx);
+    assert!(visual.debug_bounds("page-browser").is_some());
+    assert_eq!(
+        shell.read_with(cx, |shell, _| shell.projection_status().unwrap().summary),
+        "Not presenting"
+    );
+    shell.update(cx, |shell, cx| {
+        shell.close_contextual();
+        shell.new_display_draft();
+        cx.notify();
+    });
+    redraw(presenter, cx);
+    assert!(visual.debug_bounds("display-panel-content").is_some());
+    shell.update(cx, |shell, cx| {
+        shell.modal = None;
+        shell.open_crop(None);
+        cx.notify();
+    });
+    redraw(presenter, cx);
+    assert!(visual.debug_bounds("crop-panel").is_some());
+}
+
+#[gpui::test]
+fn reset_preferences_hot_switches_english_to_zh_cn_and_relaunch_uses_saved_language(
+    cx: &mut TestAppContext,
+) {
+    let fixture = SaveFixture::new();
+    fixture.unblock();
+    let (shell, handle) = input_presenter(cx);
+    shell.update(cx, |shell, cx| {
+        shell.store = fixture.store();
+        shell.modal = Some(Modal::Settings);
+        cx.notify();
+    });
+    redraw(handle, cx);
+    click_control(handle, "setting-general.language-en-US", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+    assert_eq!(
+        shell.read_with(cx, |shell, _| shell.locale.text("settings")),
+        "Settings"
+    );
+
+    let (relaunched, relaunched_handle) = open_shell_from_store(fixture.store(), cx);
+    shell.update(cx, |shell, _| shell.stop_tasks("end first session"));
+    let _ = handle.update(cx, |_, window, _| window.remove_window());
+    cx.run_until_parked();
+
+    relaunched.update(cx, |shell, cx| {
+        load_ready(shell);
+        shell.path = Some(PathBuf::from("slides/relaunch.pdf"));
+        shell.modal = Some(Modal::Settings);
+        cx.notify();
+    });
+    redraw(relaunched_handle, cx);
+    let mut visual = gpui::VisualTestContext::from_window(relaunched_handle, cx);
+    assert_eq!(
+        relaunched.read_with(cx, |shell, _| shell.locale.text("settings")),
+        "Settings"
+    );
+    assert_eq!(
+        visual.window_title(),
+        Some("relaunch.pdf — Ready — FerroStage".into())
+    );
+
+    click_control(relaunched_handle, "settings-category-advanced", cx);
+    redraw(relaunched_handle, cx);
+    let content = visual.debug_bounds("settings-content").unwrap();
+    visual.simulate_event(gpui::ScrollWheelEvent {
+        position: content.center(),
+        delta: gpui::ScrollDelta::Lines(gpui::point(0., -100.)),
+        modifiers: gpui::Modifiers::default(),
+        touch_phase: gpui::TouchPhase::Moved,
+    });
+    redraw(relaunched_handle, cx);
+    click_control(relaunched_handle, "settings-reset-all", cx);
+    cx.run_until_parked();
+    assert!(relaunched.read_with(cx, |shell, _| shell.preferences.confirm_reset));
+    redraw(relaunched_handle, cx);
+    click_control(relaunched_handle, "settings-reset-all", cx);
+    cx.run_until_parked();
+    redraw(relaunched_handle, cx);
+
+    relaunched.read_with(cx, |shell, _| {
+        assert_eq!(shell.settings.settings.general.language, "zh-CN");
+        assert_eq!(shell.locale.text("settings"), "设置");
+        assert_eq!(shell.store.load().unwrap().settings.general.language, "zh-CN");
+    });
+    assert_eq!(
+        visual.window_title(),
+        Some("relaunch.pdf — 准备就绪 — FerroStage".into())
+    );
+}
+
+#[gpui::test]
+fn readonly_policy_disables_language_switch_and_preserves_config(cx: &mut TestAppContext) {
+    let fixture = SaveFixture::new();
+    fixture.unblock();
+    let config_path = fixture.store().path().to_path_buf();
+    std::fs::create_dir_all(config_path.parent().unwrap()).unwrap();
+    std::fs::write(
+        &config_path,
+        "schema_version = 999\n[general]\nlanguage = \"zh-CN\"\n",
+    )
+    .unwrap();
+    let bytes = std::fs::read(fixture.store().path()).unwrap();
+    let (shell, handle) = open_shell_from_store(fixture.store(), cx);
+    shell.update(cx, |shell, cx| {
+        shell.modal = Some(Modal::Settings);
+        cx.notify();
+    });
+    redraw(handle, cx);
+    click_control(handle, "setting-general.language-en-US", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+    shell.read_with(cx, |shell, _| {
+        assert_eq!(shell.settings.settings.general.language, "zh-CN");
+        assert_eq!(shell.locale.text("settings"), "设置");
+    });
+    assert_eq!(std::fs::read(fixture.store().path()).unwrap(), bytes);
+}
+
+#[gpui::test]
+fn shortcut_warnings_recompute_on_language_switch_and_preserve_escape_stops(
+    cx: &mut TestAppContext,
+) {
+    let fixture = SaveFixture::new();
+    fixture.unblock();
+    let config_path = fixture.store().path().to_path_buf();
+    std::fs::create_dir_all(config_path.parent().unwrap()).unwrap();
+    std::fs::write(
+        &config_path,
+        "schema_version = 1\n[general]\nlanguage = \"zh-CN\"\n\n[keybindings]\nnext = [\"bad-key\"]\nprevious = [\"ctrl-o\"]\nstop_presentation = [\"escape\"]\n",
+    )
+    .unwrap();
+    let (shell, handle) = open_shell_from_store(fixture.store(), cx);
+    shell.update(cx, |shell, cx| {
+        shell.warnings.push("startup-warning".into());
+        cx.notify();
+    });
+    redraw(handle, cx);
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    shell.read_with(cx, |shell, _| {
+        assert_eq!(shell.warnings, vec!["startup-warning"]);
+        assert_eq!(shell.shortcut_warnings.len(), 2);
+        assert!(shell.shortcut_warnings.iter().all(|w| w.contains("已禁用")));
+        assert!(shell.escape_stops);
+    });
+    assert!(visual.debug_bounds("shell-warning-0").is_some());
+    assert!(visual.debug_bounds("shell-warning-1").is_some());
+    assert!(visual.debug_bounds("shell-warning-2").is_some());
+    assert!(visual.debug_bounds("shell-warning-3").is_none());
+
+    shell.update(cx, |shell, cx| {
+        shell.modal = Some(Modal::Settings);
+        cx.notify();
+    });
+    redraw(handle, cx);
+    click_control(handle, "setting-general.language-en-US", cx);
+    cx.run_until_parked();
+    click_control(handle, "close-settings", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+
+    shell.read_with(cx, |shell, _| {
+        assert_eq!(shell.warnings, vec!["startup-warning"]);
+        assert_eq!(shell.shortcut_warnings.len(), 2);
+        assert!(
+            shell
+                .shortcut_warnings
+                .iter()
+                .any(|w| w.contains("Disabled invalid shortcut")),
+            "{:?}",
+            shell.shortcut_warnings
+        );
+        assert!(
+            shell
+                .shortcut_warnings
+                .iter()
+                .any(|w| w.contains("Disabled conflicting shortcut")),
+            "{:?}",
+            shell.shortcut_warnings
+        );
+        assert!(
+            shell.shortcut_warnings.iter().all(|w| !w.contains("已禁用")),
+            "stale zh-CN shortcut warning remained: {:?}",
+            shell.shortcut_warnings
+        );
+        assert!(shell.escape_stops);
+    });
+    assert!(visual.debug_bounds("shell-warning-0").is_some());
+    assert!(visual.debug_bounds("shell-warning-1").is_some());
+    assert!(visual.debug_bounds("shell-warning-2").is_some());
+    assert!(visual.debug_bounds("shell-warning-3").is_none());
+
+    // Also verify escape_stops == false stays false across language switch.
+    shell.update(cx, |shell, cx| {
+        let mut next = shell.settings.settings.clone();
+        next.keybindings.stop_presentation.clear();
+        shell.apply_preferences(next, cx);
+        assert!(!shell.escape_stops);
+        shell.dispatch(Intent::EditSetting("general.language", "zh-CN".into()), cx);
+        assert!(!shell.escape_stops);
+        assert!(shell.shortcut_warnings.iter().all(|w| w.contains("已禁用")));
+    });
+}
+
+#[gpui::test]
+fn language_hot_switch_updates_open_font_search_locale_and_placeholder(cx: &mut TestAppContext) {
+    let fixture = SaveFixture::new();
+    fixture.unblock();
+    let (shell, handle) = input_presenter(cx);
+    shell.update(cx, |shell, cx| {
+        shell.store = fixture.store();
+        shell.ui_fonts = std::sync::Arc::new(vec!["Arial".into(), "Segoe UI".into()]);
+        shell.modal = Some(Modal::Settings);
+        cx.notify();
+    });
+    redraw(handle, cx);
+    click_control(handle, "setting-font-family", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+
+    let presenter = handle.downcast::<Presenter>().unwrap();
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    assert!(visual.debug_bounds("settings-font-search").is_some());
+    let (locale, rendered) = presenter
+        .read_with(cx, |view, cx| view.font_search_probe(cx))
+        .unwrap()
+        .expect("font search entity must be mounted");
+    assert!(locale == crate::locale::Locale::new("zh-CN"));
+    assert_eq!(rendered, Some(("搜索界面字体", "输入字体名称…")));
+
+    click_control(handle, "setting-general.language-en-US", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+    assert!(visual.debug_bounds("settings-font-search").is_some());
+    let (locale, rendered) = presenter
+        .read_with(cx, |view, cx| view.font_search_probe(cx))
+        .unwrap()
+        .expect("font search entity must stay mounted across language switch");
+    assert!(locale == crate::locale::Locale::new("en-US"));
+    assert!(locale != crate::locale::Locale::new("zh-CN"));
+    assert_eq!(rendered, Some(("Search interface fonts", "Type a font name…")));
+
+    click_control(handle, "setting-general.language-zh-CN", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+    let (locale, rendered) = presenter
+        .read_with(cx, |view, cx| view.font_search_probe(cx))
+        .unwrap()
+        .expect("font search entity must stay mounted after switching back");
+    assert!(locale == crate::locale::Locale::new("zh-CN"));
+    assert_eq!(rendered, Some(("搜索界面字体", "输入字体名称…")));
+}
+
+#[gpui::test]
+fn dismissed_document_warning_stays_dismissed_across_language_hot_switch(cx: &mut TestAppContext) {
+    let fixture = SaveFixture::new();
+    fixture.unblock();
+    let (shell, handle) = input_presenter(cx);
+    shell.update(cx, |shell, cx| {
+        shell.store = fixture.store();
+        show_labeled_document(shell, 2);
+        shell
+            .workbench
+            .document
+            .as_mut()
+            .unwrap()
+            .document
+            .warnings
+            .push(ferrostage_document::DocumentWarning::MixedGeometry);
+        cx.notify();
+    });
+    redraw(handle, cx);
+    let presenter = handle.downcast::<Presenter>().unwrap();
+    let zh = crate::locale::Locale::new("zh-CN");
+    let en = crate::locale::Locale::new("en-US");
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    assert!(visual.debug_bounds("document-warning-0").is_some());
+    assert!(visual.debug_bounds("document-warning-1").is_some());
+    assert!(visual.debug_bounds("document-warning-2").is_none());
+    presenter
+        .read_with(cx, |view, _| {
+            assert_eq!(
+                view.document_warnings_probe(),
+                vec![
+                    ("mixed", zh.text("ln-warning-mixed")),
+                    ("overlays", zh.text("ln-warning-overlays")),
+                ]
+            );
+        })
+        .unwrap();
+
+    click_control(handle, "dismiss-document-warning-0", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    assert!(visual.debug_bounds("document-warning-0").is_some());
+    assert!(visual.debug_bounds("document-warning-1").is_none());
+    shell.read_with(cx, |shell, _| {
+        assert!(shell.dismissed_document_warnings.contains("mixed"));
+        assert_eq!(shell.dismissed_document_warnings.len(), 1);
+    });
+
+    shell.update(cx, |shell, cx| {
+        shell.modal = Some(Modal::Settings);
+        cx.notify();
+    });
+    redraw(handle, cx);
+    click_control(handle, "setting-general.language-en-US", cx);
+    cx.run_until_parked();
+    click_control(handle, "close-settings", cx);
+    cx.run_until_parked();
+    redraw(handle, cx);
+
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    assert!(
+        visual.debug_bounds("document-warning-0").is_some(),
+        "remaining warning must stay visible in en-US"
+    );
+    assert!(
+        visual.debug_bounds("document-warning-1").is_none(),
+        "dismissed warning must not resurrect after hot-switching zh-CN -> en-US"
+    );
+    presenter
+        .read_with(cx, |view, _| {
+            assert_eq!(
+                view.document_warnings_probe(),
+                vec![("overlays", en.text("ln-warning-overlays"))]
+            );
+        })
+        .unwrap();
 }

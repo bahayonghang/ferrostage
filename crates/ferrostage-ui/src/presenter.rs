@@ -27,6 +27,7 @@ pub(crate) use workbench_view::TimerPhase;
 /// Drawing data, captured before open_window synchronously draws its first
 /// frame. Rendering never leases the controller that may be opening this view.
 pub(crate) struct PresenterData {
+    locale: crate::locale::Locale,
     theme: ferrostage_settings::Theme,
     glass_effect: bool,
     typography: theme::Typography,
@@ -46,7 +47,7 @@ pub(crate) struct PresenterData {
     /// The shown error is an event message that `Intent::DismissError` clears.
     error_dismissible: bool,
     shell_warnings: Vec<String>,
-    document_warnings: Vec<String>,
+    document_warnings: Vec<(String, String)>,
     start_reason: Option<String>,
     projection: Option<crate::shell::projection_status::ProjectionStatus>,
     configured_target: String,
@@ -75,6 +76,7 @@ struct RecentFile {
 impl PresenterData {
     pub(crate) fn from_shell(shell: &Shell) -> Self {
         Self {
+            locale: shell.locale,
             theme: shell.settings.settings.general.theme,
             glass_effect: shell.settings.settings.general.glass_effect,
             typography: theme::Typography::resolve(
@@ -113,14 +115,19 @@ impl PresenterData {
                 .map(|error| shell.locale.error("wb-upload-error", error))
                 .or_else(|| shell.error.clone())
                 .or_else(|| shell.monitor_error_text()),
-            shell_warnings: shell.warnings.clone(),
+            shell_warnings: shell
+                .warnings
+                .iter()
+                .chain(&shell.shortcut_warnings)
+                .cloned()
+                .collect(),
             document_warnings: {
                 let generation = shell.state.generation();
                 let dismissed = shell.dismissed_warning_generation == generation;
                 layout_navigation::document_warnings(shell)
                     .into_iter()
-                    .filter(|warning| {
-                        !(dismissed && shell.dismissed_document_warnings.contains(warning))
+                    .filter(|(key, _)| {
+                        !(dismissed && shell.dismissed_document_warnings.contains(key))
                     })
                     .collect()
             },
@@ -271,15 +278,54 @@ pub(crate) fn quiet_header(stage: SessionStage, intent: &Intent) -> bool {
         )
 }
 
+/// Maps presenter button intents to semantic kinds. Controls placed inside a
+/// `segmented(p)` track resolve to segmented kinds (`Segment` / `Black` /
+/// `White` / `Tool`) so unselected options rest at `Tint::TRANSPARENT` instead
+/// of double-darkening over the translucent `control` track.
+pub(crate) fn button_kind(intent: &Intent, primary: bool, menu_row: bool) -> theme::ButtonKind {
+    let segment = matches!(
+        intent,
+        Intent::EditSetting(_, _)
+            | Intent::BeginSettingEdit(_)
+            | Intent::ToggleFontPicker
+            | Intent::CropLayout { .. }
+            | Intent::GridDensity { .. }
+            | Intent::BrowserMode { .. }
+            | Intent::BrowserView { .. }
+            | Intent::PresenterMenu(true)
+    );
+    match intent {
+        _ if segment => theme::ButtonKind::Segment,
+        // A menu entry has no track to lift from; selection uses the row wash.
+        Intent::Tool(_) if menu_row => theme::ButtonKind::Utility,
+        Intent::Start | Intent::Resume => theme::ButtonKind::Primary,
+        Intent::Stop => theme::ButtonKind::Stop,
+        Intent::Core(ferrostage_core::PresentationCommand::ClearStrokes) => {
+            theme::ButtonKind::Destructive
+        }
+        Intent::Next
+        | Intent::Previous
+        | Intent::StartModeMenu
+        | Intent::Document
+        | Intent::ToggleAutoplay => theme::ButtonKind::Navigation,
+        Intent::Black => theme::ButtonKind::Black,
+        Intent::White => theme::ButtonKind::White,
+        Intent::Tool(_) => theme::ButtonKind::Tool,
+        _ if primary => theme::ButtonKind::Primary,
+        _ => theme::ButtonKind::Utility,
+    }
+}
+
 struct FilenameTooltip {
     filename: String,
     palette: Palette,
+    glass: bool,
     typography: theme::Typography,
 }
 
 impl Render for FilenameTooltip {
     fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
-        material::floating(self.palette)
+        material::floating_surface(self.palette, self.glass)
             .id("presenter-text-tooltip")
             .debug_selector(|| "presenter-text-tooltip".into())
             .max_w(px(560.))
@@ -296,6 +342,14 @@ impl Presenter {
     #[cfg(all(test, feature = "test-support"))]
     pub(crate) fn presented_error(&self) -> Option<&str> {
         self.data.error.as_deref()
+    }
+    #[cfg(all(test, feature = "test-support"))]
+    pub(crate) fn document_warnings_probe(&self) -> Vec<(&str, &str)> {
+        self.data
+            .document_warnings
+            .iter()
+            .map(|(key, text)| (key.as_str(), text.as_str()))
+            .collect()
     }
     #[cfg(all(test, feature = "test-support"))]
     pub(crate) fn recent_probe(&self) -> Vec<(&str, &str)> {
@@ -342,8 +396,26 @@ impl Presenter {
             self.data.typography.missing,
         )
     }
+    #[cfg(all(test, feature = "test-support"))]
+    pub(crate) fn font_search_probe(
+        &self,
+        cx: &gpui::App,
+    ) -> Option<(crate::locale::Locale, Option<(&'static str, &'static str)>)> {
+        self.font_search
+            .as_ref()
+            .map(|search| search.read(cx).locale_probe())
+    }
     pub(crate) fn ui_text_size(&self, role: f32) -> f32 {
         self.data.typography.size(role)
+    }
+    pub(crate) fn well_bg(&self, p: Palette) -> gpui::Rgba {
+        self.material.well_bg(p)
+    }
+    pub(crate) fn control_bg(&self, p: Palette) -> gpui::Rgba {
+        self.material.control_bg(p)
+    }
+    pub(crate) fn hairline_color(&self, p: Palette) -> gpui::Rgba {
+        self.material.hairline_color(p)
     }
     pub(crate) fn staged(&self, attempt: u64) -> bool {
         self.textures.borrow().staged(attempt)
@@ -450,6 +522,7 @@ impl Presenter {
                         .borrow_mut()
                         .retry_failed(crate::workbench::Surface::Current);
                 }
+                presenter.locale = data.locale;
                 presenter.data = data;
                 cx.notify();
             })
@@ -574,6 +647,15 @@ impl Presenter {
         self.rendered_titlebar.borrow().clone()
     }
 
+    #[cfg(all(test, feature = "test-support"))]
+    pub(crate) fn material_probe(&self) -> (&'static str, bool, Option<[u64; 3]>) {
+        (
+            self.material.status_key(),
+            self.material.is_glass(),
+            self.material.blob_ids(),
+        )
+    }
+
     pub(crate) fn button(
         &self,
         id: String,
@@ -610,37 +692,8 @@ impl Presenter {
                 | Intent::BrowserMode { .. }
                 | Intent::BrowserView { .. }
         );
-        // Options that share a `segmented` track with their alternatives.
-        let segment = matches!(
-            &intent,
-            Intent::EditSetting(_, _)
-                | Intent::CropLayout { .. }
-                | Intent::GridDensity { .. }
-                | Intent::BrowserMode { .. }
-                | Intent::BrowserView { .. }
-        );
         let menu_row = self.utility_row_index(&id).is_some();
-        let kind = match &intent {
-            _ if segment => theme::ButtonKind::Segment,
-            _ if preference_control => theme::ButtonKind::Utility,
-            // A menu entry has no track to lift from; selection uses the row wash.
-            Intent::Tool(_) if menu_row => theme::ButtonKind::Utility,
-            Intent::Start | Intent::Resume => theme::ButtonKind::Primary,
-            Intent::Stop => theme::ButtonKind::Stop,
-            Intent::Core(ferrostage_core::PresentationCommand::ClearStrokes) => {
-                theme::ButtonKind::Destructive
-            }
-            Intent::Next
-            | Intent::Previous
-            | Intent::StartModeMenu
-            | Intent::Document
-            | Intent::ToggleAutoplay => theme::ButtonKind::Navigation,
-            Intent::Black => theme::ButtonKind::Black,
-            Intent::White => theme::ButtonKind::White,
-            Intent::Tool(_) => theme::ButtonKind::Tool,
-            _ if primary => theme::ButtonKind::Primary,
-            _ => theme::ButtonKind::Utility,
-        };
+        let kind = button_kind(&intent, primary, menu_row);
         let selected = match &intent {
             Intent::ToggleAutoplay => self.data.workbench.autoplay_paused,
             Intent::CropLayout { .. } => primary,
@@ -674,7 +727,7 @@ impl Presenter {
         // Header, timer and menu-row actions rest on their surface without a fill.
         let quiet_face = quiet_header || menu_row;
         let quiet = quiet_face && !selected;
-        let style = palette.button(kind, enabled, selected);
+        let style = palette.button(kind, enabled, selected, self.material.is_glass());
         let indicator = style.indicator.filter(|_| selected);
         let selected_id = id.clone();
         self.activation_target(id.clone(), label.clone(), enabled, intent, palette)
@@ -715,7 +768,9 @@ impl Presenter {
                     .gap(px(8.))
                     .relative()
                     .rounded(px(style.radius))
-                    .when(!quiet, |view| view.bg(rgb(style.fill)))
+                    .when(!quiet && style.fill.alpha > 0.0, |view| {
+                        view.bg(style.fill.color())
+                    })
                     .text_color(rgb(style.ink))
                     .min_w_0()
                     .when(
@@ -764,8 +819,8 @@ impl Presenter {
                         ))
                     })
                     .when(enabled, |view| {
-                        view.hover(move |state| state.bg(rgb(style.hover)))
-                            .active(move |state| state.bg(rgb(style.pressed)).top(px(1.)))
+                        view.hover(move |state| state.bg(style.hover.color()))
+                            .active(move |state| state.bg(style.pressed.color()).top(px(1.)))
                     }),
             )
     }
@@ -912,15 +967,27 @@ impl Presenter {
     }
 
     /// Full-height panel that holds a modal page (settings, displays, crop check).
-    fn modal_surface(&self, p: Palette) -> Div {
+    /// Keeps `overflow_hidden` on an inner wrapper so the panel's outer drop shadow is never clipped.
+    fn modal_surface(&self, p: Palette, content: impl IntoElement) -> Div {
         self.material
             .panel(p)
             .size_full()
             .min_h_0()
             .min_w_0()
-            .overflow_hidden()
             .flex()
             .flex_col()
+            .child(
+                div()
+                    .flex_1()
+                    .min_h_0()
+                    .min_w_0()
+                    .w_full()
+                    .rounded(px(theme::PANEL_RADIUS))
+                    .overflow_hidden()
+                    .flex()
+                    .flex_col()
+                    .child(content),
+            )
     }
 
     /// One `control` track holding the options of a segmented control. Each option's
@@ -933,7 +1000,26 @@ impl Presenter {
             .rounded(px(theme::CONTROL / 2.
                 + theme::FOCUS_WIDTH
                 + theme::FOCUS_GAP))
-            .bg(rgb(p.control))
+            .bg(self.material.control_bg(p))
+    }
+
+    /// Shared L2 text tooltip builder for truncated filenames, paths and progress details.
+    pub(super) fn text_tooltip(
+        &self,
+        text: String,
+        palette: Palette,
+    ) -> impl Fn(&mut Window, &mut gpui::App) -> gpui::AnyView + 'static {
+        let glass = self.material.is_glass();
+        let typography = self.data.typography.clone();
+        move |_, cx| {
+            cx.new(|_| FilenameTooltip {
+                filename: text.clone(),
+                palette,
+                glass,
+                typography: typography.clone(),
+            })
+            .into()
+        }
     }
 
     fn command_bar(&self, p: Palette, window: &Window) -> gpui::AnyElement {
@@ -948,8 +1034,6 @@ impl Presenter {
         let filename = self.data.filename.clone();
         let narrow = window.viewport_size().width < px(800.);
         let control = px(theme::CONTROL + (theme::FOCUS_WIDTH + theme::FOCUS_GAP) * 2.);
-        let tooltip_filename = filename.clone();
-        let typography = self.data.typography.clone();
         let identity = div()
             .flex()
             .items_center()
@@ -965,14 +1049,7 @@ impl Presenter {
                     .accessibility_id("document-title")
                     .role(Role::Label)
                     .aria_value(filename.clone())
-                    .tooltip(move |_, cx| {
-                        cx.new(|_| FilenameTooltip {
-                            filename: tooltip_filename.clone(),
-                            palette: p,
-                            typography: typography.clone(),
-                        })
-                        .into()
-                    })
+                    .tooltip(self.text_tooltip(filename.clone(), p))
                     .min_h(control)
                     .min_w(px(self.ui_text_size(24.)))
                     .flex()
@@ -994,11 +1071,11 @@ impl Presenter {
                     .items_center()
                     .gap(px(6.))
                     .rounded_full()
-                    .bg(rgb(if stage == SessionStage::Presenting {
-                        p.accent_wash
+                    .bg(if stage == SessionStage::Presenting {
+                        rgb(p.accent_wash)
                     } else {
-                        p.control
-                    }))
+                        self.material.control_bg(p)
+                    })
                     .font_weight(gpui::FontWeight::MEDIUM)
                     .text_size(px(self.data.typography.size(12.)))
                     .text_color(rgb(p.body))
@@ -1047,7 +1124,7 @@ impl Presenter {
                         .w(px(1.))
                         .h(px(24.))
                         .flex_shrink_0()
-                        .bg(gpui::rgba(p.hairline)),
+                        .bg(self.material.hairline_color(p)),
                 )
             });
         if stage == SessionStage::Presenting {
@@ -1099,7 +1176,7 @@ impl Presenter {
         let mut bar = div()
             .id("presenter-bar")
             .debug_selector(|| "presenter-bar".into())
-            .px(px(16.))
+            .px(px(12.))
             .pt(px(if stage == SessionStage::Presenting {
                 0.
             } else {
@@ -1113,7 +1190,7 @@ impl Presenter {
             .flex()
             .when(!narrow, |bar| bar.flex_wrap())
             .items_center()
-            .gap(px(12.));
+            .gap(px(8.));
         if narrow {
             bar = bar
                 .flex_col()
@@ -1256,6 +1333,7 @@ impl Render for Presenter {
         );
         let p = theme::palette(self.data.theme, dark);
         self.material.update(self.data.glass_effect, window);
+        let field_backdrop = self.material.field_backdrop(p);
         let stage = self.data.stage;
         let stage_label = match stage {
             SessionStage::Idle => l.text("stage-idle"),
@@ -1440,7 +1518,9 @@ impl Render for Presenter {
         let home = stage == SessionStage::Idle && modal.is_none();
         // Margin between the full-bleed field and its panels; the field itself has
         // no inset band or outer stroke.
-        let inset = if viewport.width < px(800.) {
+        let inset = if modal == Some(Modal::Settings) {
+            if viewport.width < px(760.) { 8. } else { 16. }
+        } else if viewport.width < px(800.) {
             4.
         } else if home {
             if viewport.width >= px(960.) && viewport.height >= px(600.) {
@@ -1449,7 +1529,7 @@ impl Render for Presenter {
                 16.
             }
         } else {
-            8.
+            10.
         };
         let top_inset = if titlebar_visible { 4. } else { inset };
         let content_shell = div()
@@ -1469,10 +1549,10 @@ impl Render for Presenter {
             .relative()
             .flex()
             .flex_col()
-            .bg(self.material.field(p))
             .text_color(rgb(p.body))
             .font(self.data.typography.font())
             .text_size(px(self.data.typography.size(16.)))
+            .child(field_backdrop)
             .child(
                 gpui::canvas(
                     |_, _, _| (),
@@ -1545,8 +1625,7 @@ impl Render for Presenter {
                     .track_focus(&self.modal_focus)
                     .key_context("FerroStageCropDialog")
                     .child(
-                        content_shell
-                            .child(self.modal_surface(p).child(self.crop_panel(p, window, cx))),
+                        content_shell.child(self.modal_surface(p, self.crop_panel(p, window, cx))),
                     )
                     .into_any_element();
             }
@@ -1554,20 +1633,19 @@ impl Render for Presenter {
                 return root
                     .track_focus(&self.modal_focus)
                     .key_context("FerroStageModal")
-                    .child(
-                        content_shell.child(self.modal_surface(p).child(self.settings_panel(
-                            p,
-                            viewport.width.into(),
-                            inset,
-                        ))),
-                    )
+                    .child(content_shell.child(self.settings_panel(
+                        p,
+                        viewport.width.into(),
+                        inset,
+                    )))
                     .into_any_element();
             }
             if let Some(panel) = &self.data.displays {
                 return root
                     .track_focus(&self.modal_focus)
                     .key_context("FerroStageModal")
-                    .child(content_shell.child(self.modal_surface(p).child(
+                    .child(content_shell.child(self.modal_surface(
+                        p,
                         crate::display_settings::view::panel(
                             self,
                             panel,
@@ -1598,7 +1676,6 @@ impl Render for Presenter {
                 .gap(px(8.))
                 .flex()
                 .flex_col()
-                .overflow_hidden()
                 .child(
                     div()
                         .flex_1()
@@ -1627,72 +1704,67 @@ impl Render for Presenter {
             }
             content
         } else {
-            self.home_content(p, window)
+            self.home_content(p, error.is_some(), window)
         };
 
-        if let Some(error) = error {
-            body = body.child(
-                div()
-                    .id("presenter-error")
-                    .debug_selector(|| "presenter-error".into())
-                    .flex_shrink_0()
-                    .role(Role::Alert)
-                    .flex()
-                    .items_center()
-                    .gap(px(8.))
-                    .pl(px(12.))
-                    .pr(px(4.))
-                    .py(px(4.))
-                    .rounded(px(theme::RADIUS))
-                    .border_l_4()
-                    .border_color(rgb(p.error))
-                    .bg(rgb(p.error_wash))
-                    .child(
-                        div()
-                            .flex_shrink_0()
-                            .size(px(20.))
-                            .rounded_full()
-                            .bg(rgb(p.error))
-                            .text_color(rgb(p.layer_solid))
-                            .text_size(px(self.ui_text_size(12.)))
-                            .flex()
-                            .items_center()
-                            .justify_center()
-                            .child("!"),
-                    )
-                    .child(
-                        div()
-                            .flex_1()
-                            .min_w_0()
-                            .whitespace_normal()
-                            .text_color(rgb(p.error))
-                            .child(error),
-                    )
-                    .when(dismissible, |view| {
-                        view.child(
-                            self.button(
-                                "dismiss-error".into(),
-                                "×".into(),
-                                true,
-                                false,
-                                Intent::DismissError,
-                                p,
-                            )
-                            .flex_shrink_0()
-                            .aria_label(l.text("dismiss-error")),
+        let mut error_banner = error.map(|error| {
+            div()
+                .id("presenter-error")
+                .debug_selector(|| "presenter-error".into())
+                .flex_shrink_0()
+                .role(Role::Alert)
+                .flex()
+                .items_center()
+                .gap(px(8.))
+                .pl(px(12.))
+                .pr(px(4.))
+                .py(px(4.))
+                .rounded(px(theme::RADIUS))
+                .border_l_4()
+                .border_color(rgb(p.error))
+                .bg(rgb(p.error_wash))
+                .child(
+                    div()
+                        .flex_shrink_0()
+                        .size(px(20.))
+                        .rounded_full()
+                        .bg(rgb(p.error))
+                        .text_color(rgb(p.sheet_solid))
+                        .text_size(px(self.ui_text_size(12.)))
+                        .flex()
+                        .items_center()
+                        .justify_center()
+                        .child("!"),
+                )
+                .child(
+                    div()
+                        .flex_1()
+                        .min_w_0()
+                        .whitespace_normal()
+                        .text_color(rgb(p.error))
+                        .child(error),
+                )
+                .when(dismissible, |view| {
+                    view.child(
+                        self.button(
+                            "dismiss-error".into(),
+                            "×".into(),
+                            true,
+                            false,
+                            Intent::DismissError,
+                            p,
                         )
-                    }),
-            );
+                        .flex_shrink_0()
+                        .aria_label(l.text("dismiss-error")),
+                    )
+                })
+        });
+        if document_open && let Some(banner) = error_banner.take() {
+            body = body.child(banner);
         }
-        // Home statuses already sit on the home card; document statuses get their
-        // own notice panel because the workbench gaps show the bare field.
-        let status_line = |mark: u32| {
-            if document_open {
-                self.material.notice(p, mark)
-            } else {
-                div().flex_shrink_0()
-            }
-        };
+        // Both workbench gaps and multi-paper home expose the bare field, so
+        // status lines always sit on their own notice paper.
+        let status_line = |mark: u32| self.material.notice(p, mark);
         for (index, warning) in shell_warnings.into_iter().enumerate() {
             body = body.child(
                 status_line(p.warning)
@@ -1700,7 +1772,7 @@ impl Render for Presenter {
                     .debug_selector(move || format!("shell-warning-{index}"))
                     .flex_shrink_0()
                     .text_color(rgb(p.warning))
-                    .child(warning),
+                    .child(div().flex_1().min_w_0().whitespace_normal().child(warning)),
             );
         }
         if dirty {
@@ -1717,22 +1789,20 @@ impl Render for Presenter {
                 Intent::RetrySave,
                 p,
             ));
-            body = if document_open {
-                body.child(
-                    status_line(p.warning)
-                        .flex_wrap()
-                        .child(message.flex_1().min_w_0())
-                        .child(retry),
-                )
-            } else {
-                body.child(message).child(retry)
-            };
+            body = body.child(
+                status_line(p.warning)
+                    .flex_wrap()
+                    .child(message.flex_1().min_w_0())
+                    .child(retry),
+            );
         }
+        let side_pad = if viewport.width < px(800.) { 12. } else { 8. };
         let body = if document_open {
             body.into_any_element()
         } else {
             div()
                 .id("presenter-content")
+                .debug_selector(|| "presenter-content".into())
                 .flex_1()
                 .min_h_0()
                 .min_w_0()
@@ -1741,43 +1811,30 @@ impl Render for Presenter {
                 .flex()
                 .flex_col()
                 .items_center()
-                .p(px(8.))
-                .child({
-                    // The workspace fills the available client area, not a
-                    // height-matched welcome card floating above empty background.
-                    let pad = if window.viewport_size().width < px(800.) {
-                        16.
-                    } else {
-                        32.
-                    };
-                    let titlebar_height = if titlebar_visible {
-                        theme::TITLEBAR_HEIGHT
-                    } else {
-                        0.
-                    };
-                    self.material
-                        .panel(p)
-                        .id("home-card")
-                        .debug_selector(|| "home-card".into())
-                        .flex_shrink_0()
-                        .w_full()
-                        .min_h(px((f32::from(window.viewport_size().height)
-                            - titlebar_height
-                            - top_inset
-                            - inset
-                            - 16.)
-                            .max(0.)))
-                        .p(px(pad))
-                        .flex()
-                        .flex_col()
-                        .items_center()
-                        .child(body.flex_shrink_0())
-                })
+                .px(px(side_pad))
+                .pt(px(8.))
+                .pb(px(16.))
+                .child(body.flex_shrink_0())
                 .into_any_element()
         };
         let content_shell = content_shell
             .when(document_open, |view| {
                 view.child(self.command_bar(p, window))
+            })
+            .when(!document_open, |view| {
+                if let Some(banner) = error_banner {
+                    view.child(
+                        div()
+                            .w_full()
+                            .flex_shrink_0()
+                            .px(px(side_pad))
+                            .pt(px(4.))
+                            .pb(px(4.))
+                            .child(banner),
+                    )
+                } else {
+                    view
+                }
             })
             .child(body)
             .when(document_open, |view| {
@@ -1824,5 +1881,97 @@ impl Render for Presenter {
                 ))
             })
             .into_any_element()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::button_kind;
+    use crate::actions::Intent;
+    use crate::theme::{ButtonKind, DARK, LIGHT, Tint};
+
+    #[test]
+    fn segmented_track_controls_stay_transparent_at_rest_and_standalone_controls_keep_single_fill()
+    {
+        let track_intents = [
+            Intent::ToggleFontPicker,
+            Intent::BeginSettingEdit("general.ui_font_size"),
+            Intent::EditSetting("general.ui_font_family", String::new()),
+            Intent::EditSetting("general.ui_font_size", "16".into()),
+            Intent::PresenterMenu(true),
+            Intent::CropLayout {
+                id: 1,
+                layout: ferrostage_document::NotesLayout::None,
+            },
+            Intent::GridDensity {
+                column: true,
+                value: 2,
+            },
+            Intent::BrowserMode {
+                id: 1,
+                mode: crate::workbench::PageNumberMode::Content,
+            },
+            Intent::BrowserView {
+                id: 1,
+                view: crate::workbench::BrowserView::Thumbnails,
+            },
+            Intent::Black,
+            Intent::White,
+            Intent::Tool(crate::workbench::Tool::Laser),
+        ];
+
+        for intent in &track_intents {
+            let kind = button_kind(intent, false, false);
+            assert!(
+                matches!(
+                    kind,
+                    ButtonKind::Segment | ButtonKind::Black | ButtonKind::White | ButtonKind::Tool
+                ),
+                "{intent:?} must resolve to a segmented ButtonKind, got {kind:?}"
+            );
+            for p in [LIGHT, DARK] {
+                for glass in [false, true] {
+                    for enabled in [false, true] {
+                        let style = p.button(kind, enabled, false, glass);
+                        assert_eq!(
+                            style.fill,
+                            Tint::TRANSPARENT,
+                            "{intent:?} unselected must not double-darken over segmented track"
+                        );
+                    }
+                }
+            }
+        }
+
+        // Standalone utility / navigation buttons keep a single control fill.
+        for intent in [
+            Intent::Home,
+            Intent::Open,
+            Intent::Settings,
+            Intent::Displays,
+            Intent::Escape,
+            Intent::ResetPreferences(false),
+            Intent::PresenterMenu(false),
+        ] {
+            let kind = button_kind(&intent, false, false);
+            assert_eq!(kind, ButtonKind::Utility, "{intent:?} standalone kind");
+            for p in [LIGHT, DARK] {
+                for glass in [false, true] {
+                    let style = p.button(kind, true, false, glass);
+                    assert_eq!(
+                        style.fill,
+                        p.control.resolve(p.sheet_solid, glass),
+                        "{intent:?} standalone fill"
+                    );
+                }
+            }
+        }
+
+        // Home primary Open PDF vs secondary Open PDF when a preview is selected.
+        assert_eq!(button_kind(&Intent::Open, true, false), ButtonKind::Primary);
+        assert_eq!(
+            button_kind(&Intent::Open, false, false),
+            ButtonKind::Utility
+        );
     }
 }

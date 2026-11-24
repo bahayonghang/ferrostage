@@ -233,3 +233,23 @@ fn home_preview_failure_is_local_and_retry_is_keyboard_reachable(cx: &mut TestAp
     settle_home_preview(&shell, cx);
     shell.read_with(cx, |s, _| assert!(s.home_preview.token > token));
 }
+
+#[gpui::test]
+fn home_error_banner_is_pinned_above_the_fold(cx: &mut TestAppContext) {
+    let (shell, handle) = input_presenter(cx);
+    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../fixtures/pdf/raster.pdf");
+    shell.update(cx, |s, cx| {
+        s.settings.settings.general.recent_files = vec![path.to_string_lossy().into_owned()];
+        s.error = Some("cannot open missing pdf".into());
+        cx.notify();
+    });
+    cx.simulate_window_resize(handle, size(px(1280.), px(860.)));
+    redraw(handle, cx);
+    let mut visual = gpui::VisualTestContext::from_window(handle, cx);
+    let banner = visual.debug_bounds("presenter-error").unwrap();
+    let history = visual.debug_bounds("home-history").unwrap();
+    assert!(
+        banner.top() >= px(0.) && banner.bottom() <= px(860.) && banner.bottom() <= history.top(),
+        "home error banner must stay visible above home cards: {banner:?} vs {history:?}"
+    );
+}

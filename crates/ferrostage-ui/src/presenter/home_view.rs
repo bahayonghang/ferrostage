@@ -17,7 +17,12 @@ pub(super) fn last_opened(
 }
 
 impl Presenter {
-    pub(super) fn home_content(&self, p: Palette, window: &Window) -> Stateful<Div> {
+    pub(super) fn home_content(
+        &self,
+        p: Palette,
+        has_error: bool,
+        window: &Window,
+    ) -> Stateful<Div> {
         let l = self.locale;
         let columns = window.viewport_size().width >= px(self.ui_text_size(1000.));
         let compact = window.viewport_size().width < px(self.ui_text_size(700.));
@@ -36,7 +41,7 @@ impl Presenter {
                     l.text(if self.data.loading { "loading" } else { "open" })
                         .into(),
                     self.data.can_open,
-                    true,
+                    self.data.home_preview.path.is_none(),
                     Intent::Open,
                     p,
                 ),
@@ -65,7 +70,7 @@ impl Presenter {
             })
             .when(!columns, |view| view.w_full());
         let preview = self
-            .home_preview_panel(p, window, columns)
+            .home_preview_panel(p, window, columns, has_error)
             .when(columns, |view| view.flex_1().min_w_0())
             .when(!columns, |view| view.w_full());
         div()
@@ -88,12 +93,14 @@ impl Presenter {
                     .child(preview),
             )
             .child(
-                div()
+                self.material
+                    .panel(p)
                     .id("home-preparation")
                     .debug_selector(|| "home-preparation".into())
-                    .border_t_1()
-                    .border_color(gpui::rgba(p.hairline))
-                    .pt(px(16.))
+                    .w_full()
+                    .min_w_0()
+                    .px(px(16.))
+                    .py(px(10.))
                     .flex()
                     .flex_wrap()
                     .items_center()
@@ -115,17 +122,19 @@ impl Presenter {
 
     fn home_history(&self, p: Palette, window: &Window) -> Stateful<Div> {
         let l = self.locale;
-        let mut list = div()
+        let mut list = self
+            .material
+            .panel(p)
             .id("home-history")
             .debug_selector(|| "home-history".into())
             .min_w_0()
+            .p(px(16.))
             .flex()
             .flex_col()
             .gap(px(8.))
             .child(
                 div()
-                    .px(px(12.))
-                    .pb(px(8.))
+                    .pb(px(4.))
                     .text_color(rgb(p.muted))
                     .child(l.text("recent")),
             );
@@ -134,11 +143,12 @@ impl Presenter {
                 div()
                     .id("home-empty")
                     .debug_selector(|| "home-empty".into())
-                    .px(px(12.))
+                    .whitespace_normal()
                     .text_color(rgb(p.muted))
                     .child(l.text("recent-empty")),
             );
         }
+        let hover_bg = self.material.control_hover_bg(p);
         for (index, recent) in self.data.recent.iter().enumerate() {
             let path = std::path::Path::new(&recent.path);
             let filename = path
@@ -150,8 +160,11 @@ impl Presenter {
                 .map(|parent| parent.to_string_lossy().into_owned())
                 .unwrap_or_default();
             let selected = self.data.home_preview.path.as_deref() == Some(path);
-            let tooltip_path = recent.path.clone();
-            let typography = self.data.typography.clone();
+            let row_bg = if selected {
+                rgb(p.accent_wash)
+            } else {
+                self.material.well_bg(p)
+            };
             list = list.child(
                 self.activation_target(
                     format!("recent-{index}"),
@@ -167,42 +180,34 @@ impl Presenter {
                     p,
                 )
                 .aria_toggled(selected.into())
-                .tooltip(move |_, cx| {
-                    cx.new(|_| FilenameTooltip {
-                        filename: tooltip_path.clone(),
-                        palette: p,
-                        typography: typography.clone(),
-                    })
-                    .into()
-                })
+                .tooltip(self.text_tooltip(recent.path.clone(), p))
                 .child(
                     div()
                         .id(SharedString::from(format!("recent-{index}-face")))
                         .debug_selector(move || format!("recent-{index}-face"))
                         .p(px(12.))
                         .rounded(px(theme::WELL_RADIUS))
-                        .bg(rgb(if selected {
-                            p.accent_wash
-                        } else {
-                            p.layer_solid
-                        }))
+                        .bg(row_bg)
                         .flex()
-                        .flex_col()
-                        .gap(px(4.))
+                        .items_start()
+                        .gap(px(8.))
                         .min_w_0()
                         .text_color(rgb(p.ink))
                         .child(
                             div()
+                                .w(px(16.))
+                                .flex_shrink_0()
+                                .pt(px(1.))
+                                .text_color(rgb(p.accent_text))
+                                .child(if selected { "✓" } else { "" }),
+                        )
+                        .child(
+                            div()
+                                .flex_1()
+                                .min_w_0()
                                 .flex()
-                                .items_center()
-                                .gap(px(8.))
-                                .child(
-                                    div()
-                                        .w(px(16.))
-                                        .flex_shrink_0()
-                                        .text_color(rgb(p.accent_text))
-                                        .child(if selected { "✓" } else { "" }),
-                                )
+                                .flex_col()
+                                .gap(px(4.))
                                 .child(
                                     div()
                                         .id(SharedString::from(format!("recent-{index}-name")))
@@ -211,27 +216,27 @@ impl Presenter {
                                         .truncate()
                                         .font_weight(gpui::FontWeight::SEMIBOLD)
                                         .child(filename),
+                                )
+                                .child(
+                                    div()
+                                        .id(SharedString::from(format!("recent-{index}-parent")))
+                                        .debug_selector(move || format!("recent-{index}-parent"))
+                                        .truncate()
+                                        .text_size(px(self.ui_text_size(12.)))
+                                        .text_color(rgb(p.muted))
+                                        .child(parent),
+                                )
+                                .child(
+                                    div()
+                                        .id(SharedString::from(format!("recent-{index}-time")))
+                                        .debug_selector(move || format!("recent-{index}-time"))
+                                        .text_size(px(self.ui_text_size(12.)))
+                                        .text_color(rgb(p.muted))
+                                        .child(recent.last_opened.clone()),
                                 ),
                         )
-                        .child(
-                            div()
-                                .id(SharedString::from(format!("recent-{index}-parent")))
-                                .debug_selector(move || format!("recent-{index}-parent"))
-                                .truncate()
-                                .text_size(px(self.ui_text_size(12.)))
-                                .text_color(rgb(p.muted))
-                                .child(parent),
-                        )
-                        .child(
-                            div()
-                                .id(SharedString::from(format!("recent-{index}-time")))
-                                .debug_selector(move || format!("recent-{index}-time"))
-                                .text_size(px(self.ui_text_size(12.)))
-                                .text_color(rgb(p.muted))
-                                .child(recent.last_opened.clone()),
-                        )
                         .when(self.data.can_open, |view| {
-                            view.hover(move |style| style.bg(rgb(p.control_hover)))
+                            view.hover(move |style| style.bg(hover_bg))
                         }),
                 ),
             );
@@ -261,16 +266,25 @@ impl Presenter {
         list
     }
 
-    fn home_preview_panel(&self, p: Palette, window: &Window, columns: bool) -> Stateful<Div> {
+    fn home_preview_panel(
+        &self,
+        p: Palette,
+        window: &Window,
+        columns: bool,
+        has_error: bool,
+    ) -> Stateful<Div> {
         let l = self.locale;
         let preview = &self.data.home_preview;
         let selected = preview.path.as_ref();
-        // Available workspace height, with space reserved for header, metadata and
-        // output summary. Narrow windows keep an ordinary scrollable preview.
+        // Available workspace height, with space reserved for header, metadata,
+        // output summary and any pinned top error banner. Narrow windows keep a
+        // compact scrollable preview.
+        let error_reserve = if has_error { 64. } else { 0. };
         let height = if columns {
-            (f32::from(window.viewport_size().height) - self.ui_text_size(440.)).max(220.)
+            (f32::from(window.viewport_size().height) - self.ui_text_size(440. + error_reserve))
+                .max(220.)
         } else {
-            260.
+            160.
         };
         let mut picture = div()
             .id("home-preview-image")
@@ -280,7 +294,7 @@ impl Presenter {
             .min_w_0()
             .p(px(16.))
             .rounded(px(theme::WELL_RADIUS))
-            .bg(rgb(p.well))
+            .bg(self.material.well_bg(p))
             .overflow_hidden()
             .flex()
             .items_center()
@@ -327,9 +341,12 @@ impl Presenter {
                     })),
             );
         }
-        div()
+        self.material
+            .panel(p)
             .id("home-preview")
             .debug_selector(|| "home-preview".into())
+            .min_w_0()
+            .p(px(16.))
             .flex()
             .flex_col()
             .gap(px(12.))

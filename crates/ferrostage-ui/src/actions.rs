@@ -100,6 +100,8 @@ pub(crate) enum Intent {
     CancelCrop(u64),
     StartModeMenu,
     DismissError,
+    /// Dismisses one document warning for the current document generation by its
+    /// language-independent stable key.
     DismissDocumentWarning(String),
     OpenRepository,
     ToggleChangelog,
