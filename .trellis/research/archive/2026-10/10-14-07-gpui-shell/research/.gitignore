@@ -1,2 +1,0 @@
-# Retain task07 audit evidence despite the repository-wide log ignore.
-!*.log

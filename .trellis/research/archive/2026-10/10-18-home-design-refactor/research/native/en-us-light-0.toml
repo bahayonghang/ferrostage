@@ -1,9 +1,0 @@
-schema_version = 1
-[general]
-language = "en-US"
-theme = "light"
-reopen_last_document = false
-recent_files = []
-[display]
-presenter_start_fullscreen = false
-single_monitor_mode = "presenter_only"
